@@ -39,7 +39,7 @@ public static Test suite() {
 public void setUp() throws Exception {
 	super.setUp();
 	
-	project = createJavaProject("P", new String[]{"src"}, "bin"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	project = createJavaProject("P", new String[]{"src"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 }
 /**
  * Cleanup after the previous test.

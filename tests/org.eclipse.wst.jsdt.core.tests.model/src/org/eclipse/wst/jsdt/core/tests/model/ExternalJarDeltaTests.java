@@ -55,7 +55,7 @@ private void touch(File f) {
 public void testExternalJar0() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
@@ -86,7 +86,7 @@ public void testExternalJar0() throws CoreException, IOException {
 public void testExternalJarChanged1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -119,7 +119,7 @@ public void testExternalJarChanged1() throws CoreException, IOException {
 public void testExternalJarChanged2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -152,7 +152,7 @@ public void testExternalJarChanged2() throws CoreException, IOException {
 public void testExternalJarChanged3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -187,7 +187,7 @@ public void testExternalJarChanged3() throws CoreException, IOException {
 public void testExternalJarChanged4() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -225,7 +225,7 @@ public void testExternalJarChanged4() throws CoreException, IOException {
 public void testExternalJarChanged5() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -266,7 +266,7 @@ public void testExternalJarChanged6() throws CoreException, IOException {
 		String pPath = getExternalPath() + "p.jar";
 		f = new File(pPath);
 		f.createNewFile();
-		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB", pPath}, "");
+		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB", pPath});
 		createFile("/P/X.js", "public class X{}");
 		getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 		getJavaModel().refreshExternalArchives(null,null);
@@ -299,7 +299,7 @@ public void testExternalJarChanged6() throws CoreException, IOException {
 public void testExternalJarAdded1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "pAdded1.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -331,7 +331,7 @@ public void testExternalJarAdded1() throws CoreException, IOException {
 public void testExternalJarAdded2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "pAdded2.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -363,7 +363,7 @@ public void testExternalJarAdded2() throws CoreException, IOException {
 public void testExternalJarAdded3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "pAdded3.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -396,7 +396,7 @@ public void testExternalJarAdded3() throws CoreException, IOException {
 public void testExternalJarRemoved1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -429,7 +429,7 @@ public void testExternalJarRemoved1() throws CoreException, IOException {
 public void testExternalJarRemoved2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -462,7 +462,7 @@ public void testExternalJarRemoved2() throws CoreException, IOException {
 public void testExternalJarRemoved3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String pPath = getExternalPath() + "p.jar";
 		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
@@ -498,7 +498,7 @@ public void testExternalJarRemoved3() throws CoreException, IOException {
 public void testExternalJarInternalExternalJar() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		
 		String internalFooPath = "/P/foo.jar";
 		IFile fooIFile = this.createFile(internalFooPath, new byte[0]);

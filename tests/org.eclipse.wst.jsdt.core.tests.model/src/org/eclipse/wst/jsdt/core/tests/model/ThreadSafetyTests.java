@@ -43,8 +43,7 @@ public void testDeadlock01() throws CoreException {
 		final IJavaScriptProject project = this.createJavaProject(
 				"P", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		
 		// simulate state on startup (flush containers, and discard their previous values)
 		waitUntilIndexesReady();

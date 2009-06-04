@@ -236,8 +236,7 @@ public void testBug29832() throws Exception {
 		IJavaScriptProject p = this.createJavaProject(
 			"P1",
 			new String[]{"/"},
-			new String[]{},
-			 "");
+			new String[]{});
 		IFile libFile = this.createFile("/P1/ZZZ.js", f.getContents());
 		this.addLibraryEntry(p, libFile.getLocation().toString(), true);
 		
@@ -246,8 +245,7 @@ public void testBug29832() throws Exception {
 			"P2",
 			new String[]{"/"},
 			new String[]{},
-			new String[]{"/P1"},
-			"bin");
+			new String[]{"/P1"});
 		this.createFile(
 			"/P2/X.js",
 			"function testZZZClass {\n"+
@@ -364,8 +362,7 @@ public void testBug33560() throws Exception {
 		IJavaScriptProject p = this.createJavaProject(
 					"P1",
 					new String[]{"/"},
-					new String[]{},
-					 "");;
+					new String[]{});;
 					 IFile libFile = this.createFile("/P1/ZZZ.js", f.getContents());
 						this.addLibraryEntry(p, libFile.getLocation().toString(), true);
 		
@@ -374,16 +371,14 @@ public void testBug33560() throws Exception {
 									"P2",
 									new String[]{"/"},
 									new String[]{},
-									new String[]{"/P1"},
-									"bin");
+									new String[]{"/P1"});
 					
 		// create P3
 						this.createJavaProject(
 									"P3",
 									new String[]{"/"},
 									new String[]{},
-									new String[]{"/P1"},
-									"bin");
+									new String[]{"/P1"});
 						this.createFile(
 									"/P3/X.js",
 									"function testZZZClass {\n"+

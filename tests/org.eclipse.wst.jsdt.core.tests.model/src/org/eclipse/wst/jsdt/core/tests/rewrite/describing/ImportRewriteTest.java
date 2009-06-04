@@ -62,7 +62,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB"});
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "4");
 		proj.setOption(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);

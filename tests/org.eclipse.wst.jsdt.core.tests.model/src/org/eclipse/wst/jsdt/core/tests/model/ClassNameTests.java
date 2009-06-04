@@ -52,7 +52,7 @@ protected void setUp() throws Exception {
 		for (int i=0; i<SF_LENGTH; i++) {
 			sourceFolders[i] = "src" + i;
 		}
-		TEST_PROJECT = createJavaProject("TestProject", sourceFolders, new String[] {"JCL_LIB"}, "bin");
+		TEST_PROJECT = createJavaProject("TestProject", sourceFolders, new String[] {"JCL_LIB"});
 		createFolder("/TestProject/src0/org/eclipse/jdt/core/test0");
 		createFile(
 			"/TestProject/src0/org/eclipse/jdt/core/test0/Foo.js", 
@@ -527,7 +527,7 @@ public void testClassNameWithDollar() throws JavaScriptModelException, CoreExcep
 		tab[369]=0;
 		tab[370]=0;
 		tab[371]=0;
-		IJavaScriptProject javaProject = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {"src"});
 		IFile jarFile = createFile("P/lib.jar", tab);
 		javaProject.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
 		javaProject.findType("p1.A$");
@@ -543,7 +543,7 @@ public void testClassNameWithDollar() throws JavaScriptModelException, CoreExcep
  */
 public void testFindTypeWithDot() throws JavaScriptModelException, CoreException {
 	try {
-		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""});
 		this.createFolder("/P/p");
 		this.createFile(
 			"/P/p/X.js", 
@@ -1048,7 +1048,7 @@ public void testSearchTypeNameInJars() throws JavaScriptModelException, CoreExce
 		tab[475]=0;
 		tab[476]=0;
 		tab[477]=0;
-		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {"src"});
 		IFile jarFile = createFile("P1/lib.jar", tab);
 		javaProject.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
 		assertNotNull(javaProject.findType("p1.p2.p3.X"));
@@ -1108,7 +1108,7 @@ public void testFindSecondaryType_Exist06() throws JavaScriptModelException, Cor
 // duplicate bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=72179
 public void testFindSecondaryType_Bug72179() throws JavaScriptModelException, CoreException {
 	try {
-		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""});
 		createFolder("/P/p1");
 		createFile(
 			"/P/p1/jc.js", 

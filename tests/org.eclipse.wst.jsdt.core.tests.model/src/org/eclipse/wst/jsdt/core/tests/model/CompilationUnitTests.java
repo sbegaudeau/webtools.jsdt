@@ -30,7 +30,7 @@ public CompilationUnitTests(String name) {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	
-	this.testProject = createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin", "1.5");
+	this.testProject = createJavaProject("P", new String[] {"src"}, new String[] {getSystemJsPathString()}, "bin", "1.5");
 	createFolder("/P/src/p");
 	createFile(
 		"/P/src/p/X.js",

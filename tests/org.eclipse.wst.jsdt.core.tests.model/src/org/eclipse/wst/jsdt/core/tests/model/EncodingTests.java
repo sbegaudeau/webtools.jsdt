@@ -139,7 +139,7 @@ public class EncodingTests extends ModifyingResourceTests {
 			
 			ResourcesPlugin.getPlugin().savePluginPreferences();
 
-			IJavaScriptProject newProject = createJavaProject("P", new String[] { "" }, "");
+			IJavaScriptProject newProject = createJavaProject("P", new String[] { "" });
 			IPackageFragment pkg = getPackageFragment("P", "", "");
 			String source = "public class A {\r\n" +
 				"	public static main(String[] args) {\r\n" +
@@ -510,7 +510,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		IJavaScriptUnit workingCopy = null;
 		try {
 			String encoding = "UTF-8";
-			this.createJavaProject("P", new String[] {""}, "");
+			this.createJavaProject("P", new String[] {""});
 			String initialContent = "/**\n"+
 				" */\n"+
 				"public class Test {}";
@@ -556,7 +556,7 @@ public class EncodingTests extends ModifyingResourceTests {
 		IJavaScriptUnit workingCopy = null;
 		try {
 			String encoding = "UTF-8";
-			this.createJavaProject("P", new String[] {""}, "");
+			this.createJavaProject("P", new String[] {""});
 			String initialContent = "/**\n"+
 				" */\n"+
 				"public class Test {}";

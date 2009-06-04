@@ -81,7 +81,7 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"});
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "4");
 		proj.setOption(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);

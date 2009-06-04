@@ -7000,7 +7000,7 @@ public void testBug148380_SearchAllTypes_cu_wksp() throws CoreException, JavaScr
  */
 public void testBug156340() throws CoreException {
 	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	IPackageFragment fragment = getPackageFragment("JavaSearchBugs", getExternalJCLPathString(), "java.lang");
+	IPackageFragment fragment = getPackageFragment("JavaSearchBugs", getSystemJsPathString(), "java.lang");
 	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { fragment });
 	new SearchEngine().searchAllTypeNames(
 	   null,

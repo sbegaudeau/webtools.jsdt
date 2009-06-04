@@ -622,7 +622,7 @@ public void testSourceRangeNonJavaProject() throws CoreException {
  */
 public void testSourceRangeNotOnClasspath() throws CoreException {
 	try {
-		createJavaProject("P2", new String[] {"src"}, "bin");
+		createJavaProject("P2", new String[] {"src"});
 		createFile("/P2/bin/X.class", "");
 		IClassFile classX = getClassFile("/P2/bin/X.class");
 		assertNull("Unxepected source range", classX.getSourceRange());

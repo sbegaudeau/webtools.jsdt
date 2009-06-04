@@ -48,8 +48,7 @@ protected void setUp() throws Exception {
 		this.createJavaProject(
 			"P", 
 			new String[] {"src"}, 
-			new String[] {this.getExternalJCLPathString(), "lib"}, 
-			"bin");
+			new String[] {this.getSystemJsPathString(), "lib"});
 //		this.createFolder("P/src");
 		this.createFile("P/src/A.js", 
 			"  var FIELD;\n" +

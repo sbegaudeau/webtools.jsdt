@@ -89,7 +89,7 @@ public void testCreateNonJavaProject() throws CoreException {
  */
 public void testContains1() throws CoreException {
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 
 		// .java file
 		IFile file = this.getFile("/P/X.js");
@@ -123,7 +123,7 @@ public void testContains1() throws CoreException {
 public void testContains2() throws CoreException {
 	try {
 		// Java project
-		IProject project = this.createJavaProject("P1", new String[] {""}, "").getProject();
+		IProject project = this.createJavaProject("P1", new String[] {""}).getProject();
 		assertTrue("/P1 should be in model", getJavaModel().contains(project));
 
 		// non-Java project
@@ -140,7 +140,7 @@ public void testContains2() throws CoreException {
  */
 public void testContains3() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {""}, "");
+		this.createJavaProject("P", new String[] {""});
 
 		// .java file
 		IFile file = this.createFile("/P/X.js", "");
@@ -167,7 +167,7 @@ public void testContains3() throws CoreException {
  */
 public void testContains4() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, "bin");
+		this.createJavaProject("P", new String[] {});
 
 		// .java file
 		IFile file = this.createFile("/P/X.js", "");
@@ -207,7 +207,7 @@ public void testContains4() throws CoreException {
  */
 public void testContains5() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 
 		// .java file
 		IFile file = this.createFile("/P/src/X.js", "");
@@ -248,7 +248,7 @@ public void testContains5() throws CoreException {
  */
 public void testContains6() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {""}, "bin");
+		this.createJavaProject("P", new String[] {""});
 
 		// .java file
 		IFile file = this.createFile("/P/X.js", "");
@@ -291,9 +291,9 @@ public void testContains6() throws CoreException {
  */
 public void testCreatePkgHandleInDifferentProject() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {}, "bin");
+		createJavaProject("P1", new String[] {});
 		IFolder folder = createFolder("/P1/lib/x/y");
-		createJavaProject("P2", new String[] {}, new String[] {"/P1/lib"}, "");
+		createJavaProject("P2", new String[] {}, new String[] {"/P1/lib"});
 		IJavaScriptElement element = JavaScriptCore.create(folder);
 		assertElementEquals(
 			"Unexpected element",
@@ -391,7 +391,7 @@ public void testGetJavaProjects1() throws CoreException {
 		this.indexOf("P", projects) == -1
 	);
 	try {
-		this.createJavaProject("P", new String[] {}, "");
+		this.createJavaProject("P", new String[] {});
 		projects = model.getJavaScriptProjects();
 		assertTrue(
 			"Project P should be present",
@@ -435,7 +435,7 @@ public void testGetNonJavaResources() throws CoreException {
 	try {
 		IJavaScriptModel model = this.getJavaModel();
 
-		this.createJavaProject("JP", new String[]{}, "");
+		this.createJavaProject("JP", new String[]{});
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources",
 			"",

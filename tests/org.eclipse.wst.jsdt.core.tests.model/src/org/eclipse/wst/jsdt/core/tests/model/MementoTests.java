@@ -65,7 +65,7 @@ protected void assertMemento(String expected, IJavaScriptElement element) {
 		restored);
 }
 protected String getEscapedExternalJCLPath() {
-	String path = getExternalJCLPath().toString();
+	String path = getExternalJCLPath("").toString();
 	StringBuffer buffer = new StringBuffer();
 	for (int i = 0; i < path.length(); i++) {
 		char character = path.charAt(i);
@@ -81,13 +81,12 @@ public void setUpSuite() throws Exception {
 			"P", 
 			new String[] {"src"}, 
 			new String[] {
-				getExternalJCLPathString(), 
+					getSystemJsPathString(), 
 				"/P/lib",
 				"/P/lib/myLib.jar",
 				"/OtherProj/lib", 
 				"/OtherProj/lib/myLib.jar",
-			},
-			"bin");
+			});
 }
 public void tearDownSuite() throws Exception {
 	this.deleteProject("P");
@@ -255,7 +254,7 @@ public void testCompilationUnitMemento() {
  * Tests that a binary field in an external jar can be persisted and restored using its memento.
  */
 public void testExternalJarBinaryFieldMemento() throws JavaScriptModelException {	
-	IType type = getClassFile("P", getExternalJCLPathString(), "p", "X.class").getType();
+	IType type = getClassFile("P", getSystemJsPathString(), "p", "X.class").getType();
 	IField field = type.getField("field");
 	assertMemento(
 		"=P/"+ getEscapedExternalJCLPath() + "<p(X.class[X^field",
@@ -265,7 +264,7 @@ public void testExternalJarBinaryFieldMemento() throws JavaScriptModelException 
  * Tests that a inner binary type and field in an external jar can be persisted and restored using its memento.
  */
 public void testExternalJarBinaryInnerTypeMemento() throws JavaScriptModelException {
-	IType type = getClassFile("P", getExternalJCLPathString(), "p", "X$Inner.class").getType();
+	IType type = getClassFile("P", getSystemJsPathString(), "p", "X$Inner.class").getType();
 	assertMemento(
 		"=P/" + getEscapedExternalJCLPath() + "<p(X$Inner.class[Inner",
 		type);
@@ -274,7 +273,7 @@ public void testExternalJarBinaryInnerTypeMemento() throws JavaScriptModelExcept
  * Tests that a binary method in an external jar can be persisted and restored using its memento.
  */
 public void testExternalJarBinaryMethodMemento() throws JavaScriptModelException {	
-	IType type = getClassFile("P", getExternalJCLPathString(), "p", "X.class").getType();
+	IType type = getClassFile("P", getSystemJsPathString(), "p", "X.class").getType();
 	IFunction method = type.getFunction("foo", new String[] {"[Ljava.lang.String;"});
 	assertMemento(
 		"=P/" + getEscapedExternalJCLPath() + "<p(X.class[X~foo~\\[Ljava.lang.String;",
@@ -284,7 +283,7 @@ public void testExternalJarBinaryMethodMemento() throws JavaScriptModelException
  * Tests that a binary type in an external jar can be persisted and restored using its memento.
  */
 public void testExternalJarBinaryTypeMemento() throws JavaScriptModelException {	
-	IType type = getClassFile("P", getExternalJCLPathString(), "p", "X.class").getType();
+	IType type = getClassFile("P", getSystemJsPathString(), "p", "X.class").getType();
 	assertMemento(
 		"=P/" + getEscapedExternalJCLPath() + "<p(X.class[X",
 		type);	
@@ -491,7 +490,7 @@ public void testPackageFragmentMemento() {
  */
 public void testPackageFragmentMemento2() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {""}, "");
+		createJavaProject("P1", new String[] {""});
 		IPackageFragment pkg = getPackage("/P1/p");
 		assertMemento(
 			"=P1/<p",
@@ -516,7 +515,7 @@ public void testPackageFragmentRootMemento1() {
  */
 public void testPackageFragmentRootMemento2() throws CoreException {
 	try {
-		IJavaScriptProject project = this.createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P1", new String[] {""});
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(project.getProject());
 		assertMemento(
 			"=P1/",
@@ -578,7 +577,7 @@ public void testPackageFragmentRootMemento6() {
  * can be persisted and restored using its memento.
  */
 public void testPackageFragmentRootMemento7() throws CoreException {
-	IPackageFragmentRoot root = getPackageFragmentRoot("P", getExternalJCLPathString());
+	IPackageFragmentRoot root = getPackageFragmentRoot("P", getSystemJsPathString());
 	assertMemento(
 		"=P/" + getEscapedExternalJCLPath() + "",
 		root);

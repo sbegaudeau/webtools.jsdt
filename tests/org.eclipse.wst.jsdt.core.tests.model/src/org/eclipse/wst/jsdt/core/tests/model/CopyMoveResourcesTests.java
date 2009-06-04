@@ -195,7 +195,7 @@ public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] des
 public void setUp() throws Exception {
 	super.setUp();
 	
-	this.createJavaProject("P", new String[] {"src", "src2"}, "bin");
+	this.createJavaProject("P", new String[] {"src", "src2"});
 }
 static {
 //	TESTS_NAMES = new String[] { "testCopyWorkingCopyDestination"};

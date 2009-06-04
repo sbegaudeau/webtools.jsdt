@@ -33,7 +33,7 @@ protected void setClasspath(String[] sourceFoldersAndExclusionPatterns) throws J
 }
 protected void setUp() throws Exception {
 	super.setUp();
-	this.project = createJavaProject("P", new String[] {"src"}, "bin");
+	this.project = createJavaProject("P", new String[] {"src"});
 	startDeltas();
 }
 
@@ -94,7 +94,7 @@ public void testAddExclusionOnCompilationUnit() throws CoreException {
  */
 public void testAddExclusionOnFolderUnderProject() throws CoreException {
 	try {
-		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {""});
 		createFolder("/P1/doc");
 
 		clearDeltas();
@@ -803,7 +803,7 @@ public void testSearchPotentialMatchInOutput() throws CoreException {
 	try {
 		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				IJavaScriptProject javaProject = createJavaProject("P2", new String[] {}, "bin");
+				IJavaScriptProject javaProject = createJavaProject("P2", new String[] {});
 				javaProject.setRawIncludepath(createClasspath(new String[] {"/P2", "src/", "/P2/src", ""}, false/*no inclusion*/, true/*exclusion*/), null);
 				createFile(
 					"/P2/bin/X.js",

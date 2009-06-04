@@ -30,7 +30,7 @@ public static Test suite() {
  */
 public void testCreateBinaryToolObject() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
+		this.createJavaProject("P", new String[] {}, new String[] {"lib"});
 		IFile file = this.createFile("/P/lib/X.class", "");
 		
 		IJavaScriptElement object = JavaScriptCore.create(file);
@@ -48,7 +48,7 @@ public void testCreateBinaryToolObject() throws CoreException {
  */
 public void testCreateCompilationUnits() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFolder("/P/src/x/y/z");
 		IFile fileA = this.createFile(
 			"/P/src/x/y/z/A.js", 
@@ -84,7 +84,7 @@ public void testCreateCompilationUnits() throws CoreException {
  */
 public void testCreateCompilationUnitsNotOnClasspath() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFolder("/P/other/nested");
 		IFile fileA = this.createFile("/P/other/A.js", "public class A {}");
 		IFile fileB = this.createFile("/P/other/nested/B.js", "public class B {}");
@@ -124,7 +124,7 @@ public void testCreateCompilationUnitsNotOnClasspath() throws CoreException {
  */
 public void testCreateFolderToolObjects() throws CoreException {
 	try {
-		IJavaScriptProject javaProject = this.createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject javaProject = this.createJavaProject("P", new String[] {});
 		this.createFolder("/P/src/x/y/z");
 		
 		IFolder src =this.getFolder("/P/src");
@@ -169,7 +169,7 @@ public void testCreateFolderToolObjects() throws CoreException {
  */
 public void testCreateFromEmptyJavaFile() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		IFile file = this.createFile("/P/src/X.js", "");
 
 		IJavaScriptElement cu = JavaScriptCore.create(file);
@@ -183,7 +183,7 @@ public void testCreateFromEmptyJavaFile() throws CoreException {
  */
 public void testCreateFromFileWithoutExtension() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		IFile file = this.createFile("/P/src/FileWithoutExtension", "public class X {}");
 
 		IJavaScriptElement cu = JavaScriptCore.create(file);
@@ -205,7 +205,7 @@ public void testCreateFromInvalidMemento()  {
  */
 public void testCreateJarToolObject() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib.jar"}, "");
+		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib.jar"});
 		IFile file = this.createFile("/P/lib.jar", "");
 
 		IJavaScriptElement jar = JavaScriptCore.create(file);
@@ -220,7 +220,7 @@ public void testCreateJarToolObject() throws CoreException {
 */ 
 public void testCreateLibInOutput() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib"}, "");
+		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib"});
 		IFolder folder = this.createFolder("/P/lib");
 
 		IJavaScriptElement lib = JavaScriptCore.create(folder);

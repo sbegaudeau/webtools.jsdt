@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,42 +162,6 @@ public void testBinaryTypeCorrespondingResource() throws CoreException {
 	assertTrue("incorrect corresponding resource", corr == null);
 }
 /**
- * When the output location is changed, package fragments can be added/removed
- */
-public void testChangeOutputLocation() throws JavaScriptModelException, CoreException {
-	IJavaScriptProject project= getJavaProject("JavaProjectTests");
-	IContainer underLyingResource = (IContainer)project.getUnderlyingResource();
-	IFolder folder= underLyingResource.getFolder(new Path("output"));
-
-	try {
-		startDeltas();
-		project.setOutputLocation(folder.getFullPath(), null);
-		assertDeltas(
-			"Unexpected delta 1",
-			"JavaProjectTests[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
-			"	<project root>[*]: {CHILDREN}\n" + 
-			"		bin[+]: {}\n" + 
-			"	ResourceDelta(/JavaProjectTests/.classpath)[*]"
-		);
-	} finally {
-		stopDeltas();
-		try {
-			startDeltas();
-			folder= underLyingResource.getFolder(new Path("bin"));	
-			project.setOutputLocation(folder.getFullPath(), null);
-			assertDeltas(
-				"Unexpected delta 2",
-				"JavaProjectTests[*]: {CHILDREN | CONTENT | CLASSPATH CHANGED}\n" + 
-				"	<project root>[*]: {CHILDREN}\n" + 
-				"		bin[-]: {}\n" + 
-				"	ResourceDelta(/JavaProjectTests/.classpath)[*]"
-			);
-		} finally {
-			stopDeltas();
-		}
-	}
-}
-/**
  * Test that a class file
  * has a corresponding resource.
  */
@@ -270,7 +234,7 @@ public void lastlyTestDeletePackageWithAutobuild() throws CoreException {
  */
 public void testExternalArchiveCorrespondingResource() throws JavaScriptModelException {
 	IJavaScriptProject project= getJavaProject("JavaProjectTests");
-	IPackageFragmentRoot element= project.getPackageFragmentRoot(getExternalJCLPathString());
+	IPackageFragmentRoot element= project.getPackageFragmentRoot(getSystemJsPathString());
 	IResource corr= element.getCorrespondingResource();
 	assertTrue("incorrect corresponding resource", corr == null);
 }
@@ -380,7 +344,7 @@ public void testFindElementPackage() throws JavaScriptModelException {
 public void testFindElementPrereqSimpleProject() throws CoreException {
 	try {
 		this.createProject("R");
-		IJavaScriptProject project = this.createJavaProject("J", new String[] {"src"}, new String[] {}, new String[] {"/R"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("J", new String[] {"src"}, new String[] {}, new String[] {"/R"});
 		this.createFile(
 			"J/src/X.js",
 			"public class X {\n" +
@@ -468,7 +432,7 @@ public void testGetClasspathOnClosedProject() throws CoreException {
  */
 public void testGetNonJavaResources1() throws CoreException {
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"});
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
 			"/P/.classpath\n" +
@@ -499,7 +463,7 @@ public void testGetNonJavaResources2() throws CoreException {
  */
 public void testGetNonJavaResources3() throws CoreException {
 	try {
-		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""});
 		this.createFolder("/P/p1");
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
@@ -538,8 +502,7 @@ public void testGetRequiredProjectNames() throws CoreException {
 			"P", 
 			new String[] {}, 
 			new String[] {}, 
-			new String[] {"/JavaProjectTests", "/P1", "/P0", "/P2", "/JavaProjectSrcTests"}, 
-			"");
+			new String[] {"/JavaProjectTests", "/P1", "/P0", "/P2", "/JavaProjectSrcTests"});
 		String[] requiredProjectNames = project.getRequiredProjectNames();
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0, length = requiredProjectNames.length; i < length; i++) {
@@ -592,25 +555,6 @@ public void testJarPackageFragmentCorrespondingResource() throws JavaScriptModel
 	assertTrue("incorrect corresponding resource", corr == null);
 }
 /**
- * Test that an output location can't be set to a location inside a package fragment
- * root, except the root project folder.
- */
-public void testOutputLocationNestedInRoot() throws JavaScriptModelException, CoreException {
-	IPackageFragmentRoot root= getPackageFragmentRoot("JavaProjectSrcTests", "src");
-	IFolder folder= (IFolder) root.getUnderlyingResource();
-	IJavaScriptProject project= getJavaProject("JavaProjectSrcTests");
-	folder= folder.getFolder("x");
-	boolean failed= false;
-	try {
-		project.setOutputLocation(folder.getFullPath(), null);
-	} catch (JavaScriptModelException e) {
-		assertTrue("should be an invalid classpath", e.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH);
-		failed= true;
-	}
-	assertTrue("should have failed", failed);
-	
-}
-/**
  * Test that an output location folder is not created as a package fragment.
  */
 public void testOutputLocationNotAddedAsPackageFragment() throws JavaScriptModelException, CoreException {
@@ -660,8 +604,8 @@ public void testPackageFragmentHasSubpackages() throws JavaScriptModelException 
 	assertTrue("x should have subpackages",								x.hasSubpackages());
 	assertTrue("x.y should NOT have subpackages",		!y.hasSubpackages());
 
-	IPackageFragment java = getPackageFragment("JavaProjectTests", getExternalJCLPathString(), "java");
-	IPackageFragment lang= getPackageFragment("JavaProjectTests", getExternalJCLPathString(), "java.lang");
+	IPackageFragment java = getPackageFragment("JavaProjectTests", getSystemJsPathString(), "java");
+	IPackageFragment lang= getPackageFragment("JavaProjectTests", getSystemJsPathString(), "java.lang");
 
 	assertTrue("java should have subpackages",					java.hasSubpackages());
 	assertTrue("java.lang  should NOT have subpackages",			!lang.hasSubpackages());
@@ -892,7 +836,7 @@ public void testPackageFragmentRootRawEntry() throws CoreException, IOException 
 	try {
 		String libPath = getExternalPath() + "lib";
 		JavaScriptCore.setIncludepathVariable("MyVar", new Path(libPath), null);
-		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {});
 		libDir = new File(libPath);
 		libDir.mkdirs();
 		final int length = 200;
@@ -930,7 +874,7 @@ public void testPackageFragmentRootRawEntryWhenDuplicate() throws CoreException,
 		String externalPath = getExternalPath();
 		String libPath = externalPath + "lib";
 		JavaScriptCore.setIncludepathVariable("MyVar", new Path(externalPath), null);
-		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {});
 		libDir = new File(libPath);
 		libDir.mkdirs();
 		IIncludePathEntry[] classpath = new IIncludePathEntry[2];
@@ -960,7 +904,7 @@ public void testPackageFragmentRootRawEntryWhenDuplicate() throws CoreException,
 public void testProjectOpen() throws CoreException {
 	try {
 		createJavaProject("P1");
-		createJavaProject("P2", new String[0], new String[0], new String[] {"/P1"}, "");
+		createJavaProject("P2", new String[0], new String[0], new String[] {"/P1"});
 		IProject p2 = getProject("P2");
 		p2.close(null);
 		p2.open(null);
@@ -1028,7 +972,7 @@ public void testProjectGetChildren() throws JavaScriptModelException {
 	assertElementsEqual(
 		"Unexpected package fragment roots",
 		"<project root> [in JavaProjectTests]\n" + 
-		getExternalJCLPathString() + "\n" + 
+		getSystemJsPathString() + "\n" + 
 		"lib.jar [in JavaProjectTests]\n" + 
 		"lib142530.jar [in JavaProjectTests]\n" + 
 		"lib148949.jar [in JavaProjectTests]",
@@ -1042,14 +986,14 @@ public void testProjectGetPackageFragments() throws JavaScriptModelException {
 	IPackageFragment[] fragments= project.getPackageFragments();
 	assertSortedElementsEqual(
 		"unexpected package fragments",
-		"<default> [in "+ getExternalJCLPathString() + "]\n" + 
+		"<default> [in "+ getSystemJsPathString() + "]\n" + 
 		"<default> [in <project root> [in JavaProjectTests]]\n" + 
 		"<default> [in lib.jar [in JavaProjectTests]]\n" + 
 		"<default> [in lib142530.jar [in JavaProjectTests]]\n" + 
 		"<default> [in lib148949.jar [in JavaProjectTests]]\n" + 
-		"java [in "+ getExternalJCLPathString() + "]\n" + 
-		"java.io [in "+ getExternalJCLPathString() + "]\n" + 
-		"java.lang [in "+ getExternalJCLPathString() + "]\n" + 
+		"java [in "+ getSystemJsPathString() + "]\n" + 
+		"java.io [in "+ getSystemJsPathString() + "]\n" + 
+		"java.lang [in "+ getSystemJsPathString() + "]\n" + 
 		"p [in lib.jar [in JavaProjectTests]]\n" + 
 		"p [in lib142530.jar [in JavaProjectTests]]\n" + 
 		"p [in lib148949.jar [in JavaProjectTests]]\n" + 
@@ -1180,7 +1124,7 @@ public void testRootGetPackageFragments3() throws CoreException {
  */
 public void testSourceFolderWithJarName() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src.jar"}, "bin");
+		this.createJavaProject("P", new String[] {"src.jar"});
 		IFile file = createFile("/P/src.jar/X.js", "class X {}");
 		IJavaScriptUnit unit = (IJavaScriptUnit)JavaScriptCore.create(file);
 		unit.getAllTypes(); // force to open

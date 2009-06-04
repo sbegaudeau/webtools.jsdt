@@ -646,7 +646,7 @@ public void testProjectAsClassFolder1() throws CoreException {
 		);
 		IProject p1 = getProject("P1");
 		p1.build(IncrementalProjectBuilder.FULL_BUILD, null);
-		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
+		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"});
 		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(p1);
 		attachSource(root, "/P1", null);
 		IClassFile cf = root.getPackageFragment("p").getClassFile("X.class");
@@ -677,7 +677,7 @@ public void testProjectAsClassFolder2() throws CoreException {
 		);
 		IProject p1 = getProject("P1");
 		p1.build(IncrementalProjectBuilder.FULL_BUILD, null);
-		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
+		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"});
 		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(p1);
 		attachSource(root, "/P1", null);
 		IClassFile cf = root.getPackageFragment("").getClassFile("X.class");
@@ -698,7 +698,7 @@ public void testProjectAsClassFolder2() throws CoreException {
  */
 public void testProjectAsSourceAttachment() throws CoreException {
 	try {
-		IJavaScriptProject javaProject = createJavaProject("Test", new String[]{""}, new String[]{"/AttachSourceTests/test.jar"}, "");
+		IJavaScriptProject javaProject = createJavaProject("Test", new String[]{""}, new String[]{"/AttachSourceTests/test.jar"});
 		createFolder("/Test/test1");
 		createFile("/Test/test1/Test.js",
 			"package test1;\n" + 

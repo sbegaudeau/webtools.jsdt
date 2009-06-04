@@ -137,7 +137,7 @@ public void renamePositive(IJavaScriptElement element, String rename, boolean fo
 public void setUp() throws Exception {
 	super.setUp();
 
-	this.createJavaProject("P", new String[] {"src"}, "bin");
+	this.createJavaProject("P", new String[] {"src"});
 	this.createFile(
 		"/P/src/X.js",
 		"public class X {\n" +
@@ -161,7 +161,7 @@ public void setUp() throws Exception {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	
-	IJavaScriptProject project = this.createJavaProject("BinaryProject", new String[] {"src"}, new String[] {"JCL_LIB"}, "lib");
+	IJavaScriptProject project = this.createJavaProject("BinaryProject", new String[] {"src"}, new String[] {"JCL_LIB"});
 	this.createFile(
 		"/BinaryProject/src/X.js",
 		"public class X {\n" +

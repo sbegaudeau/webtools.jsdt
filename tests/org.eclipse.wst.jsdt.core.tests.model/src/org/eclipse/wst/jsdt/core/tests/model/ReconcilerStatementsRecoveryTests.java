@@ -129,7 +129,7 @@ public void setUpSuite() throws Exception {
 	super.setUpSuite();
 
 	// Create project with 1.4 compliance
-	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"});
 	createFolder("/Reconciler/src/p1");
 	createFolder("/Reconciler/src/p2");
 	createFile(

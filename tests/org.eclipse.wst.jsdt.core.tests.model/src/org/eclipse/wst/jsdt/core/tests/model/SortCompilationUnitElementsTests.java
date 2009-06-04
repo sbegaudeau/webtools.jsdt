@@ -43,7 +43,7 @@ public SortCompilationUnitElementsTests(String name) {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	
-	this.createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin", "1.5"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	this.createJavaProject("P", new String[] {"src"}, new String[] {getSystemJsPathString()}, "bin", "1.5"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	this.createFolder("/P/src/p"); //$NON-NLS-1$
 }
 /** @deprecated */

@@ -740,13 +740,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * Creates a Java project where prj=src=bin and with JCL_LIB on its classpath.
 	 */
 	protected IJavaScriptProject createJavaProject(String projectName) throws CoreException {
-		return this.createJavaProject(projectName, new String[] {""}, new String[] {"JCL_LIB"}, "");
+		return this.createJavaProject(projectName, new String[] {""}, new String[] {"JCL_LIB"});
 	}
 	/*
 	 * Creates a Java project with the given source folders an output location. 
 	 * Add those on the project's classpath.
 	 */
-	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String output) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -758,9 +758,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				output, 
-				null/*no source outputs*/,
-				null/*no inclusion pattern*/,
+				null/*no inclusion pattern*/, 
 				null/*no exclusion pattern*/,
 				"1.4"
 			);
@@ -781,14 +779,12 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				output, 
-				sourceOutputs,
-				null/*no inclusion pattern*/,
+				null/*no inclusion pattern*/, 
 				null/*no exclusion pattern*/,
 				"1.4"
 			);
 	}
-	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String output) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -800,9 +796,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				output, 
-				null/*no source outputs*/,
-				null/*no inclusion pattern*/,
+				null/*no inclusion pattern*/, 
 				null/*no exclusion pattern*/,
 				"1.4"
 			);
@@ -819,14 +813,12 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				output, 
-				null/*no source outputs*/,
-				null/*no inclusion pattern*/,
+				null/*no inclusion pattern*/, 
 				null/*no exclusion pattern*/,
 				compliance
 			);
 	}
-	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, String projectOutput) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects) throws CoreException {
 		return
 			this.createJavaProject(
 				projectName,
@@ -838,8 +830,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				projectOutput,
-				null/*no source outputs*/,
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				"1.4"
@@ -867,8 +857,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				exportedProject, 
-				projectOutput,
-				null/*no source outputs*/,
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				"1.4"
@@ -886,9 +874,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				null/*no inclusion pattern*/,
 				null/*no exclusion pattern*/,
 				null/*no exported project*/, 
-				projectOutput, 
-				null/*no source outputs*/,
-				null/*no inclusion pattern*/,
+				null/*no inclusion pattern*/, 
 				null/*no exclusion pattern*/,
 				compliance
 			);
@@ -905,8 +891,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			null/*no inclusion pattern*/,
 			null/*no exclusion pattern*/,
 			exportedProjects, 
-			projectOutput,
-			sourceOutputs,
 			inclusionPatterns,
 			exclusionPatterns,
 			compliance
@@ -922,8 +906,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			final String[][] projectsInclusionPatterns,
 			final String[][] projectsExclusionPatterns,
 			final boolean[] exportedProjects,
-			final String projectOutput,
-			final String[] sourceOutputs,
 			final String[][] inclusionPatterns,
 			final String[][] exclusionPatterns,
 			final String compliance) throws CoreException {
@@ -938,8 +920,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			projectsExclusionPatterns,
 			true, // combine access restrictions by default
 			exportedProjects,
-			projectOutput,
-			sourceOutputs,
 			inclusionPatterns,
 			exclusionPatterns,
 			compliance);
@@ -955,8 +935,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			final String[][] projectsExclusionPatterns,
 			final boolean combineAccessRestrictions,
 			final boolean[] exportedProjects,
-			final String projectOutput,
-			final String[] sourceOutputs,
 			final String[][] inclusionPatterns,
 			final String[][] exclusionPatterns,
 			final String compliance) throws CoreException {
@@ -998,17 +976,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 							container = folder;
 						}
 					}
-					IPath outputPath = null;
-					if (sourceOutputs != null) {
-						// create out folder for source entry
-						outputPath = sourceOutputs[i] == null ? null : new Path(sourceOutputs[i]);
-						if (outputPath != null && outputPath.segmentCount() > 0) {
-							IFolder output = project.getFolder(outputPath);
-							if (!output.exists()) {
-								output.create(true, true, null);
-							}
-						}
-					}
+
 					// inclusion patterns
 					IPath[] inclusionPaths;
 					if (inclusionPatterns == null) {
@@ -1041,7 +1009,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 							projectPath.append(sourcePath), 
 							inclusionPaths,
 							exclusionPaths, 
-							outputPath == null ? null : projectPath.append(outputPath)
+							null
 						);
 				}
 				
@@ -1150,15 +1118,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 								isExported);
 				}
 				
-				// create project's output folder
-				IPath outputPath = new Path(projectOutput);
-				if (outputPath.segmentCount() > 0) {
-					IFolder output = project.getFolder(outputPath);
-					if (!output.exists()) {
-						output.create(true, true, null);
-					}
-				}
-				
 				// set classpath and output location
 				IJavaScriptProject javaProject = JavaScriptCore.create(project);
 				
@@ -1170,7 +1129,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				entries[entries.length-1] = jreEntry;
 				
 				
-				javaProject.setRawIncludepath(entries, projectPath.append(outputPath), null);
+				javaProject.setRawIncludepath(entries, null);
 				
 				// set compliance level options
 				if ("1.5".equals(compliance)) {
@@ -1381,37 +1340,28 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		return result;
 	}
-
-	/**
-	 * Returns the IPath to the external java class library (e.g. jclMin.jar)
-	 */
-	protected IPath getExternalJCLPath() {
-		return new Path(getExternalJCLPathString(""));
-	}	
+	
 	/**
 	 * Returns the IPath to the external java class library (e.g. jclMin.jar)
 	 */
 	protected IPath getExternalJCLPath(String compliance) {
  		return new Path(getExternalJCLPathString(compliance));
 	}
-	/**
-	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
-	 */
-	protected String getExternalJCLPathString() {
-		return getSystemJsPath();
-//		return SystemLibraries.getLibraryPath("system.js");
-//		return getExternalJCLPathString("");
-	}
+
 	/**
 	 * Returns the java.io path to the external java class library (e.g. jclMin.jar)
 	 */
 	protected String getExternalJCLPathString(String compliance) {
-		return getSystemJsPath();
+		return getSystemJsPathString();
 //		return SystemLibraries.getLibraryPath("system.js");
 //		return getExternalPath() + "jclMin" + compliance + ".jar";
 	}
 	
-	private String getSystemJsPath()
+	protected IPath getSystemJsPath() {
+		return new Path(getSystemJsPathString());
+	}
+	
+	protected String getSystemJsPathString()
 	{
 		IPath targetRoot =  (new Path(System.getProperty("user.dir"))).removeLastSegments(1);
 		IPath pluginDir = targetRoot.append(new Path("org.eclipse.wst.jsdt.core"));
@@ -1637,8 +1587,8 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
     	char[] toDisplay = 
     		CharOperation.replace(
     			toPrint.toCharArray(), 
-    			getExternalJCLPathString().toCharArray(), 
-    			"getExternalJCLPathString()".toCharArray());
+    			getSystemJsPathString().toCharArray(), 
+    			"getSystemJsPathString()".toCharArray());
 		toDisplay = 
     		CharOperation.replace(
     			toDisplay, 
@@ -2156,7 +2106,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 //				setupExternalJCL("jclMin");
 				JavaScriptCore.setIncludepathVariables(
 					new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
-					new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
+					new IPath[] {getExternalJCLPath(""), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 					null);
 			} 
 		}	
@@ -2186,11 +2136,11 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				char[] tempJCLPath = "<externalJCLPath>".toCharArray();
 	    		String idA = new String(CharOperation.replace(
 	    			elementA.toStringWithAncestors().toCharArray(), 
-	    			getExternalJCLPathString().toCharArray(), 
+	    			getSystemJsPathString().toCharArray(), 
 	    			tempJCLPath));
 	    		String idB = new String(CharOperation.replace(
 	    			elementB.toStringWithAncestors().toCharArray(), 
-	    			getExternalJCLPathString().toCharArray(), 
+	    			getSystemJsPathString().toCharArray(), 
 	    			tempJCLPath));
 				return idA.compareTo(idB);
 			}

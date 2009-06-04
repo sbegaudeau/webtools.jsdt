@@ -328,7 +328,7 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
 			assertCreation(newCU3);
 			this.assertOneChange(h);
 			h.refresh(null);
-			IType throwableClass = getClassFile("TypeHierarchyNotification", getExternalJCLPathString(), "java.lang", "Throwable.class").getType();
+			IType throwableClass = getClassFile("TypeHierarchyNotification", getSystemJsPathString(), "java.lang", "Throwable.class").getType();
 			assertEquals("Superclass of Z3 should be java.lang.Throwable", throwableClass, h.getSuperclass(newCU3.getType("Z3")));
 		} finally {
 			// cleanup	
@@ -384,7 +384,7 @@ public void testAddExternalPackage() throws CoreException {
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 
 	try {
-		this.createJavaProject("Other", new String[] {"src"}, "bin");
+		this.createJavaProject("Other", new String[] {"src"});
 	
 		h.addTypeHierarchyChangedListener(this);
 	
@@ -676,7 +676,7 @@ public void testAddDependentProject() throws CoreException {
 		);
 		h = getCompilationUnit("/P1/p/X.js").getType("X").newTypeHierarchy(null);
 		h.addTypeHierarchyChangedListener(this);
-		createJavaProject("P2", new String[] {""}, new String[0], new String[] {"/P1"}, "");
+		createJavaProject("P2", new String[] {""}, new String[0], new String[] {"/P1"});
 		assertOneChange(h);
 	} finally {
 		if (h != null)
@@ -1025,7 +1025,7 @@ public void testRemoveExternalPackageFragmentRoot() throws CoreException {
  */
 public void testRemoveExternalProject() throws CoreException {
 	try {
-		this.createJavaProject("External", new String[] {""}, new String[] {"JCL_LIB"}, new String[]{"/TypeHierarchyNotification"}, "");
+		this.createJavaProject("External", new String[] {""}, new String[] {"JCL_LIB"}, new String[]{"/TypeHierarchyNotification"});
 		this.createFolder("/External/p");
 		this.createFile("/External/p/Y.js", "package p; public class Y extends X {}");
 		IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");

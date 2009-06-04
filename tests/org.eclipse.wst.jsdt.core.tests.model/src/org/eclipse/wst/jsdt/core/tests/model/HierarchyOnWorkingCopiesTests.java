@@ -58,7 +58,7 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
 		assertHierarchyEquals(
 			"Focus: B [in B.js [in x.y [in src [in P]]]]\n" + 
 			"Super types:\n" + 
-			"  Object [in Object.class [in java.lang [in "+ getExternalJCLPathString() + " [in P]]]]\n" + 
+			"  Object [in Object.class [in java.lang [in "+ getSystemJsPathString() + " [in P]]]]\n" + 
 			"Sub types:\n" + 
 			"  A [in [Working copy] A.js [in x.y [in src [in P]]]]\n",
 			h);
@@ -95,7 +95,7 @@ public void testSimpleSuperTypeHierarchy() throws CoreException {
 			"Focus: C [in C.js [in x.y [in src [in P]]]]\n" + 
 			"Super types:\n" + 
 			"  B [in [Working copy] A.js [in x.y [in src [in P]]]]\n" + 
-			"    Object [in Object.class [in java.lang [in "+ getExternalJCLPathString() + " [in P]]]]\n" + 
+			"    Object [in Object.class [in java.lang [in "+ getSystemJsPathString() + " [in P]]]]\n" + 
 			"Sub types:\n",
 			h);
 	} finally {

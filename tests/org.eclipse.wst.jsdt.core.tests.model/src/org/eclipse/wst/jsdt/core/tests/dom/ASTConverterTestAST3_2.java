@@ -8262,7 +8262,7 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 	}
 	
 	public void test0659() throws CoreException, JavaScriptModelException {
-		IJavaScriptProject javaProject = createJavaProject("P659", new String[] { "src" }, new String[0], "bin");
+		IJavaScriptProject javaProject = createJavaProject("P659", new String[] { "src" }, new String[0]);
 		try {
 			ASTParser parser = ASTParser.newParser(AST.JLS3);
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);

@@ -64,15 +64,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			Hashtable options = new Hashtable();
 			options.put(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE, JavaScriptCore.DISABLED);
@@ -117,15 +115,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			String globalEncoding = JavaScriptCore.getOption(JavaScriptCore.CORE_ENCODING);
 	
@@ -159,15 +155,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			Hashtable options = new Hashtable();
 			options.put(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE, JavaScriptCore.DISABLED);
@@ -211,15 +205,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			Hashtable options = new Hashtable();
 			options.put(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE, JavaScriptCore.DISABLED);
@@ -264,15 +256,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			String globalEncoding = JavaScriptCore.getOption(JavaScriptCore.CORE_ENCODING);
 	
@@ -306,15 +296,13 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 			IJavaScriptProject projectB = 
 				this.createJavaProject(
 					"B", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 					
 			Hashtable options = new Hashtable();
 			options.put(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE, JavaScriptCore.DISABLED);
@@ -361,8 +349,7 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 	//		Preferences preferences = projectA.getPreferences();
 	//		preferences.addPropertyChangeListener(new TestPropertyListener());
 			IEclipsePreferences eclipsePreferences = projectA.getEclipsePreferences();
@@ -407,8 +394,7 @@ public class OptionTests extends ModifyingResourceTests {
 					"A", 
 					new String[] {}, // source folders
 					new String[] {}, // lib folders
-					new String[] {}, // projects
-					"");
+					new String[] {});
 	
 			Hashtable options = new Hashtable();
 			options.put(JavaScriptCore.COMPILER_TASK_TAGS, "TODO:");
@@ -448,7 +434,7 @@ public class OptionTests extends ModifyingResourceTests {
 	public void test09() throws CoreException {
 		try {
 			this.eventCount = 0;
-			JavaProject projectA = (JavaProject) this.createJavaProject("A", new String[] {}, "");
+			JavaProject projectA = (JavaProject) this.createJavaProject("A", new String[] {});
 	//		Preferences preferences = projectA.getPreferences();
 	//		preferences.addPropertyChangeListener(new TestPropertyListener());
 			IEclipsePreferences eclipsePreferences = projectA.getEclipsePreferences();
@@ -467,7 +453,7 @@ public class OptionTests extends ModifyingResourceTests {
 		
 			// delete/create project A and verify that options are well reset
 			this.deleteProject("A");
-			projectA = (JavaProject) this.createJavaProject("A", new String[] {}, "");
+			projectA = (JavaProject) this.createJavaProject("A", new String[] {});
 			assertEquals("projA:unexpected custom value for deprecation option", JavaScriptCore.getOption(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE), projectA.getOptions(true).get(JavaScriptCore.COMPILER_PB_DEPRECATION_IN_DEPRECATED_CODE));
 			assertEquals("projA:unexpected custom value for compliance option", JavaScriptCore.getOption(JavaScriptCore.COMPILER_COMPLIANCE), projectA.getOptions(true).get(JavaScriptCore.COMPILER_COMPLIANCE));
 			assertTrue("projA:preferences should not be reset", eclipsePreferences != projectA.getEclipsePreferences());
@@ -513,9 +499,9 @@ public class OptionTests extends ModifyingResourceTests {
 	public void test12() throws CoreException {
 		IEclipsePreferences preferences = JavaModelManager.getJavaModelManager().getInstancePreferences();
 		try {
-			IJavaScriptProject project = createJavaProject("P", new String[0], new String[] {"TEST"}, "");
+			IJavaScriptProject project = createJavaProject("P", new String[0], new String[] {"TEST"});
 			waitForAutoBuild();
-			preferences.put(JavaModelManager.CP_VARIABLE_PREFERENCES_PREFIX+"TEST", getExternalJCLPathString());
+			preferences.put(JavaModelManager.CP_VARIABLE_PREFERENCES_PREFIX+"TEST", getSystemJsPathString());
 			assertMarkers("Unexpected markers", "", project);
 		} finally {
 			deleteProject("P");
@@ -533,8 +519,7 @@ public class OptionTests extends ModifyingResourceTests {
 				"A", 
 				new String[] {}, // source folders
 				new String[] {}, // lib folders
-				new String[] {}, // projects
-				"");
+				new String[] {});
 
 			// Store project eclipse prefs
 			IEclipsePreferences eclipsePreferences = projectA.getEclipsePreferences();
@@ -610,8 +595,7 @@ public class OptionTests extends ModifyingResourceTests {
 				"P", 
 				new String[] {}, // source folders
 				new String[] {}, // lib folders
-				new String[] {}, // projects
-				"");
+				new String[] {});
 			project.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
 			project.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
 			String option = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);

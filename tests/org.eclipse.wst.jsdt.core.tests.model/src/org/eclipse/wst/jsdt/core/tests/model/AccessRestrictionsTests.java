@@ -68,8 +68,7 @@ public void test001() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
 			"/P1/src/p/X1.js",
@@ -99,7 +98,7 @@ public void test001() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		IIncludePathEntry[] classpath = p2.getRawIncludepath();
 		int length = classpath.length;
 		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
@@ -175,8 +174,7 @@ public void test002() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
 			"/P1/src/p/X1.js",
@@ -205,7 +203,7 @@ public void test002() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		IIncludePathEntry[] classpath = p2.getRawIncludepath();
 		int length = classpath.length;
 		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
@@ -258,8 +256,7 @@ public void test003() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
 			"/P1/src/p/X1.js",
@@ -293,7 +290,7 @@ public void test003() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		IIncludePathEntry[] classpath = p2.getRawIncludepath();
 		int length = classpath.length;
 		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
@@ -376,8 +373,7 @@ public void test004() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
 			"/P1/src/p/X1.js",
@@ -394,7 +390,7 @@ public void test004() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		IIncludePathEntry[] classpath = p2.getRawIncludepath();
 		int length = classpath.length;
 		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
@@ -448,8 +444,7 @@ public void test005() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		this.problemRequestor = new ProblemRequestor();
 		x1 = getWorkingCopy(
 			"/P1/src/p/X1.js",
@@ -496,8 +491,7 @@ public void test005() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 			"P2", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		IIncludePathEntry[] classpath = p2.getRawIncludepath();
 		int length = classpath.length;
 		System.arraycopy(classpath, 0, 
@@ -551,8 +545,7 @@ public void test006() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");
@@ -574,8 +567,7 @@ public void test006() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 				"P2", 
 				new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, 
-				"bin");
+				new String[] {"JCL_LIB"});
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");
@@ -643,8 +635,7 @@ public void test007() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");
@@ -669,8 +660,7 @@ public void test007() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 				"P2", 
 				new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, 
-				"bin");
+				new String[] {"JCL_LIB"});
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");
@@ -738,8 +728,7 @@ public void test008() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		
@@ -773,7 +762,7 @@ public void test008() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		
@@ -828,8 +817,7 @@ public void test009() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		
@@ -862,7 +850,7 @@ public void test009() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		
@@ -917,8 +905,7 @@ public void test010() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 			"P1", 
 			new String[] {"src"}, 
-			new String[] {"JCL_LIB"}, 
-			"bin");
+			new String[] {"JCL_LIB"});
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p1.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		
@@ -956,7 +943,7 @@ public void test010() throws CoreException {
 			"----------\n"
 		);
 		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, 
-				new String[] {"JCL_LIB"}, "bin");
+				new String[] {"JCL_LIB"});
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.compliance", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.source", "1.5");
 		p2.setOption("org.eclipse.wst.jsdt.core.compiler.targetPlatform", "1.5");		

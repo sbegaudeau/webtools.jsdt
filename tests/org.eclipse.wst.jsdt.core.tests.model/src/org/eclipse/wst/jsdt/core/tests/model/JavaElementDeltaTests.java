@@ -113,7 +113,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 				ElementChangedEvent.POST_CHANGE);
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "function X() {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			copy = unit.getWorkingCopy(null);
@@ -146,7 +146,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testAddCuInDefaultPkg1() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			createFile("P/X.js", "function X() {\n" + "}");
 			assertDeltas("Unexpected delta", "P[*]: {CHILDREN}\n"
@@ -163,7 +163,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testAddCuInDefaultPkg2() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 			startDeltas();
 			createFile("P/src/X.js", "function X() {\n" + "}");
 			assertDeltas("Unexpected delta", "P[*]: {CHILDREN}\n"
@@ -182,9 +182,9 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testAddCuAfterProjectOpen() throws CoreException {
 		try {
 			IJavaScriptProject p1 = createJavaProject("P1",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 			IJavaScriptProject p2 = createJavaProject("P2",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 			createFile("P2/src/X.js", "function X() {\n" + "}");
 			IProject project = p2.getProject();
 			project.close(null);
@@ -341,7 +341,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 					getJavaProject("P").setRawIncludepath(
 							new IIncludePathEntry[] { JavaScriptCore
 									.newSourceEntry(new Path("/P/src")) },
-							new Path("/P/bin"), null);
+							null);
 				}
 			}, null);
 			startDeltas();
@@ -361,7 +361,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testAddJavaProject() throws CoreException {
 		try {
 			startDeltas();
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			assertDeltas("Unexpected delta", "P[+]: {}");
 		} finally {
 			stopDeltas();
@@ -386,7 +386,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 
 	public void testAddPackageSourceIsBin() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "src");
+			createJavaProject("P", new String[] { "src" });
 			startDeltas();
 			createFolder("P/src/x");
 			assertDeltas("Unexpected delta", "P[*]: {CHILDREN}\n"
@@ -405,8 +405,8 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			startDeltas();
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					createJavaProject("P1", new String[] { "" }, "");
-					createJavaProject("P2", new String[] { "src" }, "bin");
+					createJavaProject("P1", new String[] { "" });
+					createJavaProject("P2", new String[] { "src" });
 				}
 			}, null);
 			assertEquals("Unexpected delta", "P1[+]: {}\n" + "P2[+]: {}",
@@ -428,12 +428,11 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					IJavaScriptProject p1 = createJavaProject("P1",
-							new String[] { "" }, "");
+							new String[] { "" });
 					// should be a no-op and no extra delta volley should be
 					// fired
-					p1.setRawIncludepath(p1.getRawIncludepath(), p1
-							.getOutputLocation(), null);
-					createJavaProject("P2", new String[] { "src" }, "bin");
+					p1.setRawIncludepath(p1.getRawIncludepath(), null);
+					createJavaProject("P2", new String[] { "src" });
 				}
 			}, null);
 			assertEquals("Unexpected delta", "P1[+]: {}\n" + "P2[+]: {}",
@@ -450,7 +449,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testBatchOperation() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 			createFolder("P/src/x");
 			createFile("P/src/x/A.js", "function A() {\n" + "}");
 			startDeltas();
@@ -482,9 +481,9 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testBuildProjectUsedAsLib() throws CoreException {
 		try {
 			IJavaScriptProject p1 = createJavaProject("P1",
-					new String[] { "src1" }, new String[] { "JCL_LIB" }, "bin1");
+					new String[] { "src1" }, new String[] { "JCL_LIB" });
 			createJavaProject("P2", new String[] { "src2" },
-					new String[] { "/P1/bin1" }, "bin2");
+					new String[] { "/P1/bin1" });
 			createFile("/P1/src1/X.js", "function X() {\n" + "}");
 
 			// force opening of project to avoid external jar delta
@@ -580,7 +579,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testChangeRootKind() throws CoreException {
 		try {
 			IJavaScriptProject proj = createJavaProject("P",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 			startDeltas();
 			setClasspath(proj, new IIncludePathEntry[] { JavaScriptCore
 					.newLibraryEntry(new Path("/P/src"), null, null, false) });
@@ -600,7 +599,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testCloseJavaProject() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			IProject project = getProject("P");
 			startDeltas();
 			project.close(null);
@@ -689,7 +688,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testCreateSharedWorkingCopy() throws CoreException {
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "function X() {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			startDeltas();
@@ -710,7 +709,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testCreateWorkingCopy() throws CoreException {
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "function X() {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			startDeltas();
@@ -734,7 +733,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testCopyAndOverwritePackage() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src1", "src2" }, "bin");
+			createJavaProject("P", new String[] { "src1", "src2" });
 			// createFolder("/P/src1/p");
 			createFile("P/src1/X.js", "function X() {\n" + "}");
 			createFolder("/P/src2");
@@ -757,7 +756,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testCUNotOnClasspath() throws CoreException {
 		try {
-			createJavaProject("P", new String[] {}, "bin");
+			createJavaProject("P", new String[] {});
 			// createFolder("/P/src/p");
 			IFile file = createFile("/P/src/p/X.js", "function X() {\n" + "}");
 
@@ -811,7 +810,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testDeleteNonJavaFolder() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "foo/bar" }, "bin");
+			createJavaProject("P", new String[] { "foo/bar" });
 			IFolder folder = getFolder("/P/foo");
 			startDeltas();
 			deleteResource(folder);
@@ -834,7 +833,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					project.setRawIncludepath(createClasspath("P",
-							new String[] { "/P/src", "" }), new Path("/P/bin"),
+							new String[] { "/P/src", "" }),
 							monitor);
 					deleteProject("P");
 				}
@@ -854,8 +853,8 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 
 	public void testDeleteProjectSetCPAnotherProject() throws CoreException {
 		final IJavaScriptProject project = createJavaProject("P1",
-				new String[] { "src" }, "bin");
-		createJavaProject("P2", new String[] {}, "");
+				new String[] { "src" });
+		createJavaProject("P2", new String[] {});
 
 		try {
 			startDeltas();
@@ -884,7 +883,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 																	// testDestroyWorkingCopy
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "public class X {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			copy = unit.getWorkingCopy(null);
@@ -906,7 +905,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 																	// testDestroySharedWorkingCopy
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "public class X {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			copy = unit.getWorkingCopy(new WorkingCopyOwner() {
@@ -934,7 +933,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 				ElementChangedEvent.POST_CHANGE);
 		IJavaScriptUnit wc = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			JavaScriptCore.addElementChangedListener(listener,
 					ElementChangedEvent.POST_CHANGE);
 
@@ -1027,7 +1026,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 				ElementChangedEvent.POST_RECONCILE);
 		IJavaScriptUnit wc = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			JavaScriptCore.addElementChangedListener(listener,
 					ElementChangedEvent.POST_RECONCILE);
 
@@ -1097,7 +1096,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testMergeResourceDeltas() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
@@ -1124,7 +1123,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testModifyMethodBodyAndSave() throws CoreException {
 		IJavaScriptUnit workingCopy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/x/y");
 			createFile("P/x/y/A.js", "package x.y;\n" + "public class A {\n"
 					+ "  public void foo() {\n" + "  }\n" + "}");
@@ -1156,7 +1155,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testModifyOutputLocation1() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 
 			startDeltas();
 			createFile("/P/bin/X.class", "");
@@ -1267,7 +1266,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testMoveCuInEnclosingPkg() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/x/y");
 			createFile("P/x/y/A.js", "package x.y;\n" + "public class A {\n"
 					+ "}");
@@ -1301,7 +1300,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testMoveResInDotNamedFolder() throws CoreException {
 		try {
-			createJavaProject("P", new String[] {}, "");
+			createJavaProject("P", new String[] {});
 			IProject project = getProject("P");
 			createFolder("P/x.y");
 			IFile file = createFile("P/x.y/test.txt", "");
@@ -1324,7 +1323,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testMoveTwoResInRoot() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 			final IFile f1 = createFile("P/X.js", "public class X {}");
 			final IFile f2 = createFile("P/Y.js", "public class Y {}");
 
@@ -1353,7 +1352,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testNestedRootParentMove() throws CoreException {
 		try {
 			createJavaProject("P",
-					new String[] { "nested2/src", "nested/src" }, "bin");
+					new String[] { "nested2/src", "nested/src" });
 			deleteFolder("/P/nested2/src");
 
 			startDeltas();
@@ -1375,7 +1374,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testNonJavaResourceRemoveAndAdd() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 			IFile file = createFile("/P/src/read.txt", "");
 
 			startDeltas();
@@ -1401,7 +1400,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testOpenJavaProject() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			IProject project = getProject("P");
 			project.close(null);
 			startDeltas();
@@ -1437,7 +1436,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testOverwriteClasspath() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/src");
 			createFolder("P/bin");
 			final IFile newCP = createFile(
@@ -1474,7 +1473,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testPackageFragmentAddAndRemove() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 
 			startDeltas();
 			IFolder folder = createFolder("/P/src/p");
@@ -1497,7 +1496,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testPackageFragmentMove() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 			IFolder folder = createFolder("/P/src/p");
 
 			startDeltas();
@@ -1518,7 +1517,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testPackageFragmentRootRemoveAndAdd() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "src" }, "bin");
+			createJavaProject("P", new String[] { "src" });
 
 			startDeltas();
 			deleteFolder("/P/src");
@@ -1543,7 +1542,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testRemoveAddBinaryProject() throws CoreException {
 		try {
 			IJavaScriptProject project = createJavaProject("P",
-					new String[] { "" }, "");
+					new String[] { "" });
 			createFile("P/lib.jar", "");
 			project.setRawIncludepath(new IIncludePathEntry[] { JavaScriptCore
 					.newLibraryEntry(new Path("/P/lib.jar"), null, null) },
@@ -1553,7 +1552,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					deleteProject("P");
-					createJavaProject("P", new String[] { "" }, "");
+					createJavaProject("P", new String[] { "" });
 				}
 			}, null);
 			assertDeltas("Unexpected delta",
@@ -1573,12 +1572,12 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testRemoveAddJavaProject() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			getWorkspace().run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					deleteProject("P");
-					createJavaProject("P", new String[] { "" }, "");
+					createJavaProject("P", new String[] { "" });
 				}
 			}, null);
 			assertDeltas("Unexpected delta",
@@ -1599,7 +1598,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testRemoveCPEntryAndRoot1() throws CoreException {
 		try {
 			IJavaScriptProject project = createJavaProject("P",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 
 			// ensure that the project is open (there are clients of the delta
 			// only if the project is open)
@@ -1633,7 +1632,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testRemoveCPEntryAndRoot2() throws CoreException {
 		try {
 			final IJavaScriptProject project = createJavaProject("P",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 
 			// ensure that the project is open (there are clients of the delta
 			// only if the project is open)
@@ -1663,7 +1662,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testRemoveCPEntryAndRoot3() throws CoreException {
 		try {
 			final IJavaScriptProject project = createJavaProject("P",
-					new String[] { "src" }, "bin");
+					new String[] { "src" });
 
 			// ensure that the project is open (there are clients of the delta
 			// only if the project is open)
@@ -1690,7 +1689,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testRemoveJavaNature() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			removeJavaNature("P");
 			assertDeltas("Unexpected delta", "P[-]: {}\n" + "ResourceDelta(/P)");
@@ -1702,7 +1701,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 
 	public void testRemoveJavaProject() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			deleteProject("P");
 			assertDeltas("Unexpected delta", "P[-]: {}");
@@ -1737,7 +1736,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			createProject("SP");
 			createFile("/SP/x.jar", "");
 			createJavaProject("JP", new String[] { "" },
-					new String[] { "/SP/x.jar" }, "");
+					new String[] { "/SP/x.jar" });
 			startDeltas();
 			deleteProject("SP");
 			assertDeltas("Unexpected delta", "JP[*]: {CHILDREN}\n"
@@ -1759,7 +1758,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 		try {
 			createProject("SP");
 			createJavaProject("JP", new String[] { "" },
-					new String[] { "/SP/missing" }, "");
+					new String[] { "/SP/missing" });
 			startDeltas();
 			deleteProject("SP");
 			assertDeltas("Unexpected delta", "ResourceDelta(/SP)");
@@ -1781,7 +1780,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			createProject("SP");
 			createFile("/SP/x.jar", "");
 			createJavaProject("JP", new String[] { "" },
-					new String[] { "/SP/x.jar" }, "");
+					new String[] { "/SP/x.jar" });
 
 			// simulate start-up state of DeltaProcessor
 			DeltaProcessingState deltaState = JavaModelManager
@@ -1811,7 +1810,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testRenameJavaProject() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			startDeltas();
 			renameProject("P", "P1");
 			assertDeltas("Unexpected delta", "P[-]: {MOVED_TO(P1)}\n"
@@ -1826,7 +1825,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testRenameMethodAndSave() throws CoreException {
 		IJavaScriptUnit workingCopy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/x/y");
 			createFile("P/x/y/A.js", "package x.y;\n" + "public class A {\n"
 					+ "  public void foo1() {\n" + "  }\n" + "}");
@@ -1879,7 +1878,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testRenameOuterPkgFragment() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/x/y");
 			createFile("P/x/y/X.js", "package x.y;\n" + "public class X {\n"
 					+ "}");
@@ -1901,7 +1900,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	public void testSaveWorkingCopy() throws CoreException {
 		IJavaScriptUnit copy = null;
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFile("P/X.js", "public class X {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			copy = unit.getWorkingCopy(null);
@@ -1935,7 +1934,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			createProject("LibProj");
 			createFile("LibProj/mylib.jar", "");
 			JavaProject p1 = (JavaProject) createJavaProject("P1",
-					new String[] { "" }, "bin");
+					new String[] { "" });
 			createFolder("P1/src2");
 
 			p1.getProject().close(null);
@@ -1973,8 +1972,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			createFile("LibProj/otherlib.jar", "");
 			JavaScriptCore.setIncludepathVariables(new String[] { "LIB" },
 					new IPath[] { new Path("/LibProj/mylib.jar") }, null);
-			createJavaProject("P", new String[] { "" }, new String[] { "LIB" },
-					"");
+			createJavaProject("P", new String[] { "" }, new String[] { "LIB" });
 			startDeltas();
 			JavaScriptCore.setIncludepathVariables(new String[] { "LIB" },
 					new IPath[] { new Path("/LibProj/otherlib.jar") }, null);
@@ -2002,9 +2000,9 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			JavaScriptCore.setIncludepathVariables(new String[] { "LIB" },
 					new IPath[] { new Path("/LibProj/mylib.jar") }, null);
 			createJavaProject("P1", new String[] { "" },
-					new String[] { "LIB" }, "");
+					new String[] { "LIB" });
 			createJavaProject("P2", new String[] { "" },
-					new String[] { "LIB" }, "");
+					new String[] { "LIB" });
 			startDeltas();
 			JavaScriptCore.setIncludepathVariables(new String[] { "LIB" },
 					new IPath[] { new Path("/LibProj/otherlib.jar") }, null);
@@ -2030,7 +2028,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 	 */
 	public void testWorkingCopyCommit() throws CoreException {
 		try {
-			createJavaProject("P", new String[] { "" }, "");
+			createJavaProject("P", new String[] { "" });
 			createFolder("P/x/y");
 			createFile("P/x/y/A.js", "package x.y;\n" + "public class A {\n"
 					+ "}");

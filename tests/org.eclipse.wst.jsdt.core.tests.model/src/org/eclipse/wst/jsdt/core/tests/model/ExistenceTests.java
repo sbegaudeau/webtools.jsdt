@@ -64,8 +64,8 @@ protected void assertUnderlyingResourceFails(IJavaScriptElement element) {
 }
 public void testBinaryMethodAfterNonExistingMember() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"JCL_LIB"}, "");
-		IClassFile classFile = project.getPackageFragmentRoot(getExternalJCLPathString()).getPackageFragment("java.lang").getClassFile("Object.class");
+		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"JCL_LIB"});
+		IClassFile classFile = project.getPackageFragmentRoot(getSystemJsPathString()).getPackageFragment("java.lang").getClassFile("Object.class");
 		classFile.open(null);
 		IType type = classFile.getType();
 		type.getFunction("foo", new String[0]).exists();
@@ -76,7 +76,7 @@ public void testBinaryMethodAfterNonExistingMember() throws CoreException {
 }
 public void testClassFileInBinary() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFile("P/bin/X.class", "");
 		IClassFile classFile = this.getClassFile("P/bin/X.class");
 		assertTrue(!classFile.exists());
@@ -86,7 +86,7 @@ public void testClassFileInBinary() throws CoreException {
 }
 public void testClassFileInLibrary() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
+		this.createJavaProject("P", new String[] {}, new String[] {"lib"});
 		this.createFile("P/lib/X.class", "");
 		IClassFile classFile = this.getClassFile("P/lib/X.class");
 		assertTrue(classFile.exists());
@@ -96,11 +96,11 @@ public void testClassFileInLibrary() throws CoreException {
 }
 public void testClassFileInLibraryInOtherProject() throws CoreException {
 	try {
-		this.createJavaProject("P2", new String[] {}, "bin");
+		this.createJavaProject("P2", new String[] {});
 		this.createFolder("P2/lib");
 		String path = "P2/lib/X.class";
 		IFile file = this.createFile(path, "");
-		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"/P2/lib"}, "bin");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"/P2/lib"});
 		IClassFile nonExistingFile = getClassFile(path);
 		assertFalse("File '"+path+"' should not exist in P2!", nonExistingFile.exists());
 		IJavaScriptElement element = JavaScriptCore.create(getFolder("/P2/lib"));
@@ -122,7 +122,7 @@ public void testJarFile() throws Exception {
 			"}",
 		};
 		addLibrary(p2, "lib.jar", "libsrc.zip", pathsAndContents, JavaScriptCore.VERSION_1_5);
-		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"/P2/lib.jar"}, "bin");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"/P2/lib.jar"});
 		IPackageFragmentRoot root2 = getPackageFragmentRoot("/P2/lib.jar");
 		assertTrue(root2.exists());
 		assertEquals(p1.getPackageFragmentRoots()[0], root2);
@@ -138,7 +138,7 @@ public void testJarFile() throws Exception {
  */
 public void testClassFileInSource1() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFile("P/src/X.class", "");
 		IClassFile classFile = this.getClassFile("P/src/X.class");
 		assertTrue("Class file should not exist", !classFile.exists()); 
@@ -153,7 +153,7 @@ public void testClassFileInSource1() throws CoreException {
  */
  public void testClassFileInSource2() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFile("P/src/X.class", "");
 		IClassFile classFile = this.getClassFile("P/src/X.class");
 		assertOpenFails(
@@ -170,7 +170,7 @@ public void testClassFileInSource1() throws CoreException {
  */
 public void testCompilationUnitInLibrary1() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"lib"},  "bin");
+		this.createJavaProject("P", new String[] {}, new String[] {"lib"});
 		this.createFile(
 			"P/lib/X.js", 
 			"public class X {}"
@@ -188,7 +188,7 @@ public void testCompilationUnitInLibrary1() throws CoreException {
  */
 public void testCompilationUnitInLibrary2() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {}, new String[] {"lib"},  "bin");
+		this.createJavaProject("P", new String[] {}, new String[] {"lib"});
 		this.createFile(
 			"P/lib/X.js", 
 			"public class X {}"
@@ -223,7 +223,7 @@ public void testMethodWithInvalidParameter() throws CoreException {
  */
 public void testNonExistingClassFile1() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, new String[] {"lib"}, "bin");
+		this.createJavaProject("P", new String[] {"src"}, new String[] {"lib"});
 		IClassFile classFile = getClassFile("/P/lib/X.class");
 		assertOpenFails(
 			"X.class [in <default> [in lib [in P]]] does not exist", 
@@ -238,7 +238,7 @@ public void testNonExistingClassFile1() throws CoreException {
  */
 public void testNonExistingClassFile2() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, new String[] {}, "bin");
+		this.createJavaProject("P", new String[] {"src"}, new String[] {});
 		IClassFile classFile = getClassFile("/P/lib/X.class");
 		assertOpenFails(
 			"lib [in P] is not on its project\'s build path",
@@ -253,7 +253,7 @@ public void testNonExistingClassFile2() throws CoreException {
  */
 public void testNonExistingCompilationUnit() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		IJavaScriptUnit cu = getCompilationUnit("/P/src/X.js");
 		assertOpenFails(
 			"X.java [in <default> [in src [in P]]] does not exist", 
@@ -267,7 +267,7 @@ public void testNonExistingCompilationUnit() throws CoreException {
  */
 public void testNonExistingPackageFragment1() throws CoreException {
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		IPackageFragment pkg = this.getPackage("/P/src/x");
 		assertOpenFails(
 			"x [in src [in P]] does not exist", 
@@ -281,7 +281,7 @@ public void testNonExistingPackageFragment1() throws CoreException {
  */
 public void testNonExistingPackageFragment2() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {});
 		IFolder folder = createFolder("/P/src/x");
 		IPackageFragment pkg = project.getPackageFragmentRoot(folder).getPackageFragment("x");
 		assertOpenFails(
@@ -333,7 +333,7 @@ public void testNonJavaProject() throws CoreException {
  */
 public void testPkgFragmentRootNotInClasspath() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
 		IFolder folder = createFolder("/P/otherRoot");
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(folder);
 		assertTrue("Root should not exist", !root.exists());
@@ -400,7 +400,7 @@ public void testTypeParameter5() throws CoreException {
  */
 public void testCorrespondingResourceNonExistingClassFile() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, new String[] {"lib"}, "bin");
+		createJavaProject("P", new String[] {"src"}, new String[] {"lib"});
 		IClassFile classFile = getClassFile("/P/lib/X.class");
 		assertCorrespondingResourceFails(classFile);
 	} finally {
@@ -412,7 +412,7 @@ public void testCorrespondingResourceNonExistingClassFile() throws CoreException
  */
 public void testCorrespondingResourceNonExistingCompilationUnit() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		IJavaScriptUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		assertCorrespondingResourceFails(compilationUnit);
 	} finally {
@@ -424,7 +424,7 @@ public void testCorrespondingResourceNonExistingCompilationUnit() throws CoreExc
  */
 public void testCorrespondingResourceNonExistingJarPkgFragmentRoot() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
 		IPackageFragmentRoot root = project.getPackageFragmentRoot("/nonExisting.jar");
 		assertCorrespondingResourceFails(root);
 	} finally {
@@ -436,7 +436,7 @@ public void testCorrespondingResourceNonExistingJarPkgFragmentRoot() throws Core
  */
 public void testCorrespondingResourceNonExistingPkgFragment() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		IPackageFragment pkg = getPackage("/P/src/nonExisting");
 		assertCorrespondingResourceFails(pkg);
 	} finally {
@@ -448,7 +448,7 @@ public void testCorrespondingResourceNonExistingPkgFragment() throws CoreExcepti
  */
 public void testCorrespondingResourceNonExistingPkgFragmentRoot() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
 		IFolder folder = createFolder("/P/nonExistingRoot");
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(folder);
 		assertCorrespondingResourceFails(root);
@@ -469,7 +469,7 @@ public void testCorrespondingResourceNonExistingProject() {
  */
 public void testCorrespondingResourceNonExistingType() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		createFile(
 			"/P/src/X.js",
 			"public class X{\n" +
@@ -486,7 +486,7 @@ public void testCorrespondingResourceNonExistingType() throws CoreException {
  */
 public void testUnderlyingResourceNonExistingClassFile() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, new String[] {"lib"}, "bin");
+		createJavaProject("P", new String[] {"src"}, new String[] {"lib"});
 		IClassFile classFile = getClassFile("/P/lib/X.class");
 		assertUnderlyingResourceFails(classFile);
 	} finally {
@@ -498,7 +498,7 @@ public void testUnderlyingResourceNonExistingClassFile() throws CoreException {
  */
 public void testUnderlyingResourceNonExistingCompilationUnit() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		IJavaScriptUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		assertUnderlyingResourceFails(compilationUnit);
 	} finally {
@@ -510,7 +510,7 @@ public void testUnderlyingResourceNonExistingCompilationUnit() throws CoreExcept
  */
 public void testUnderlyingResourceNonExistingJarPkgFragmentRoot() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
 		IPackageFragmentRoot root = project.getPackageFragmentRoot("/nonExisting.jar");
 		assertUnderlyingResourceFails(root);
 	} finally {
@@ -522,7 +522,7 @@ public void testUnderlyingResourceNonExistingJarPkgFragmentRoot() throws CoreExc
  */
 public void testUnderlyingResourceNonExistingPkgFragment() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		IPackageFragment pkg = getPackage("/P/src/nonExisting");
 		assertUnderlyingResourceFails(pkg);
 	} finally {
@@ -534,7 +534,7 @@ public void testUnderlyingResourceNonExistingPkgFragment() throws CoreException 
  */
 public void testUnderlyingResourceNonExistingPkgFragmentRoot() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
 		IFolder folder = createFolder("/P/nonExistingRoot");
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(folder);
 		assertUnderlyingResourceFails(root);
@@ -555,7 +555,7 @@ public void testUnderlyingResourceNonExistingProject() {
  */
 public void testUnderlyingResourceNonExistingType() throws CoreException {
 	try {
-		createJavaProject("P", new String[] {"src"}, "bin");
+		createJavaProject("P", new String[] {"src"});
 		createFile(
 			"/P/src/X.js",
 			"public class X{\n" +

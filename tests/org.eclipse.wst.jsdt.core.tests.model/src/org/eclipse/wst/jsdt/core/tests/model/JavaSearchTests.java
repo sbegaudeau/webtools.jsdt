@@ -1610,7 +1610,7 @@ public void testMethodReference13() throws CoreException { // was testMethodRefe
  * (regression test for 1GHDA2V: ITPJCORE:WINNT - ClassCastException when doing a search)
  */
 public void testMethodReference14() throws CoreException { // was testMethodReferenceThroughArray
-	IType type = getClassFile("JSSearch", getExternalJCLPathString(), "java.lang", "Object.class").getType();
+	IType type = getClassFile("JSSearch", getSystemJsPathString(), "java.lang", "Object.class").getType();
 	IFunction method = type.getFunction("clone", new String[] {});
 
 	search(
@@ -1719,7 +1719,7 @@ public void testPackageDeclaration2() throws CoreException { // was testVariousP
  * (regression test for bug 62698 NPE while searching for declaration of binary package)
  */
 public void testPackageDeclaration3() throws CoreException { // was testPackageDeclaration
-	IPackageFragment pkg = getPackageFragment("JSSearch", getExternalJCLPathString(), "java.lang");
+	IPackageFragment pkg = getPackageFragment("JSSearch", getSystemJsPathString(), "java.lang");
 
 	search(
 		pkg, 
@@ -1727,7 +1727,7 @@ public void testPackageDeclaration3() throws CoreException { // was testPackageD
 		getJavaSearchScope(), 
 		this.resultCollector);
 	assertSearchResults(
-		getExternalJCLPath() + " java.lang",
+		getExternalJCLPath("") + " java.lang",
 		this.resultCollector);
 }
 /**
@@ -3469,28 +3469,28 @@ public void testCamelCaseTypePattern01() throws CoreException {
 	search("RE", TYPE, DECLARATIONS, SearchPattern.R_CAMELCASE_MATCH, getJavaSearchScope());
 	assertSearchResults(
 		"src/a3/References.java a3.References [References]\n" + 
-		""+ getExternalJCLPathString() + " java.lang.RuntimeException"
+		""+ getSystemJsPathString() + " java.lang.RuntimeException"
 	);
 }
 
 public void testCamelCaseTypePattern02() throws CoreException {
 	search("RException", TYPE, DECLARATIONS, SearchPattern.R_CAMELCASE_MATCH, getJavaSearchScope());
 	assertSearchResults(
-		""+ getExternalJCLPathString() + " java.lang.RuntimeException"
+		""+ getSystemJsPathString() + " java.lang.RuntimeException"
 	);
 }
 
 public void testCamelCaseTypePattern03() throws CoreException {
 	search("RuntimeException", TYPE, DECLARATIONS, SearchPattern.R_CAMELCASE_MATCH, getJavaSearchScope());
 	assertSearchResults(
-		""+ getExternalJCLPathString() + " java.lang.RuntimeException"
+		""+ getSystemJsPathString() + " java.lang.RuntimeException"
 	);
 }
 
 public void testCamelCaseTypePattern04() throws CoreException {
 	search("RUNTIMEEXCEPTION", TYPE, DECLARATIONS, SearchPattern.R_CAMELCASE_MATCH, getJavaSearchScope());
 	assertSearchResults(
-		""+ getExternalJCLPathString() + " java.lang.RuntimeException"
+		""+ getSystemJsPathString() + " java.lang.RuntimeException"
 	);
 }
 
@@ -3498,7 +3498,7 @@ public void testCamelCaseTypePattern05() throws CoreException {
 	search("R*E*", TYPE, DECLARATIONS, SearchPattern.R_CAMELCASE_MATCH, getJavaSearchScope());
 	assertSearchResults(
 		"src/a3/References.java a3.References [References]\n" + 
-		""+ getExternalJCLPathString() + " java.lang.RuntimeException"
+		""+ getSystemJsPathString() + " java.lang.RuntimeException"
 	);
 }
 

@@ -178,8 +178,7 @@ public void testContainerInitializer01() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 				"P2", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		IPackageFragmentRoot root = p2.getPackageFragmentRoot(getFile("/P1/lib.jar"));
 		assertTrue("/P1/lib.jar should exist", root.exists());
 	} finally {
@@ -196,8 +195,7 @@ public void testContainerInitializer02() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 				"P2", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 				
 		// simulate state on startup
 		simulateExitRestart();
@@ -223,8 +221,7 @@ public void testContainerInitializer03() throws CoreException {
 		createJavaProject(
 				"P2", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 				
 		// change value of TEST_CONTAINER
 		createFile("/P1/lib2.jar", "");
@@ -260,8 +257,7 @@ public void testContainerInitializer04() throws CoreException {
 		createJavaProject(
 				"P2", 
 				new String[] {""}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 				
 		// simulate state on startup
 		simulateExitRestart();
@@ -294,8 +290,7 @@ public void testContainerInitializer05() throws CoreException {
 		createJavaProject(
 				"P1", 
 				new String[] {""}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 				
 		// simulate state on startup
 		simulateExitRestart();
@@ -352,8 +347,7 @@ public void testContainerInitializer06() throws CoreException {
 		createJavaProject(
 				"P2", 
 				new String[] {"src"}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"bin");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		createFile(
 			"/P2/src/X,java",
 			"public class X {\n" +
@@ -399,8 +393,7 @@ public void testContainerInitializer07() throws CoreException {
 			IJavaScriptProject p1 = createJavaProject(
 					"P1", 
 					new String[] {}, 
-					new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-					"");
+					new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 			p1.getResolvedIncludepath(true);
 		} catch (OperationCanceledException e) {
 			gotException = true;
@@ -584,7 +577,7 @@ public void testContainerInitializer10() throws CoreException {
 		});
 		getWorkspace().run(new IWorkspaceRunnable() {
             public void run(IProgressMonitor monitor) throws CoreException {
-                p2.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newSourceEntry(new Path("/P2/src"))}, new Path("/P2/bin"), null);
+                p2.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newSourceEntry(new Path("/P2/src"))}, null);
 				createProject("P3");
                 editFile(
                 	"/P3/.project",
@@ -638,8 +631,7 @@ public void testContainerInitializer11() throws CoreException {
 		createJavaProject(
 			"P", 
 			new String[] {}, 
-			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-			"");
+			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		simulateExitRestart();
 		ClasspathInitializerTests.DefaultContainerInitializer initializer = new ClasspathInitializerTests.DefaultContainerInitializer(new String[] {}) {
 			public void initialize(IPath containerPath,IJavaScriptProject project) throws CoreException {
@@ -667,8 +659,7 @@ public void testContainerInitializer12() throws CoreException {
 		IJavaScriptProject project =  createJavaProject(
 			"P1", 
 			new String[] {}, 
-			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-			"");
+			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		createFile("/P1/lib.jar", "");
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(getFile("/P1/lib.jar"));
 		assertTrue("/P1/lib.jar should exist", root.exists());
@@ -689,8 +680,7 @@ public void testContainerInitializer12() throws CoreException {
 		createJavaProject(
 			"P1", 
 			new String[] {}, 
-			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-			"");
+			new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		createFile("/P1/lib.jar", "");
 		assertTrue("/P1/lib.jar should exist", root.exists());
 		assertTrue("Should have been initialized", initializer.initialized);
@@ -720,8 +710,7 @@ public void testContainerInitializer13() throws CoreException {
 		IJavaScriptProject project = createJavaProject(
 				"P1", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 				
 		// simulate state on startup
 		simulateExitRestart();
@@ -766,8 +755,7 @@ public void testContainerInitializer14() throws CoreException {
 		IJavaScriptProject p2 = createJavaProject(
 				"P2", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		p2.getResolvedIncludepath(true);
 		assertEquals("Unexpected number of initalizations", 1, container.initializeCount);
 	} finally {
@@ -796,8 +784,7 @@ public void testContainerInitializer15() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject(
 				"P1", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 		IJsGlobalScopeContainer JsGlobalScopeContainer = JavaScriptCore.getJsGlobalScopeContainer(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"), p1);
 		assertClasspathEquals(JsGlobalScopeContainer.getIncludepathEntries(), "");
 	} finally {
@@ -816,8 +803,7 @@ public void testContainerInitializer16() throws CoreException {
 			IJavaScriptProject p1 = createJavaProject(
 				"P1", 
 				new String[] {}, 
-				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
-				"");
+				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"});
 			p1.getResolvedIncludepath(true);
 		} catch (JavaScriptModelException e) {
 			exception = e;
@@ -836,7 +822,7 @@ public void testVariableInitializer01() throws CoreException {
 		createProject("P1");
 		createFile("/P1/lib.jar", "");
 		VariablesInitializer.setInitializer(new DefaultVariableInitializer(new String[] {"TEST_LIB", "/P1/lib.jar"}));
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB"}, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB"});
 		IPackageFragmentRoot root = p2.getPackageFragmentRoot(getFile("/P1/lib.jar"));
 		assertTrue("/P1/lib.jar should exist", root.exists());
 	} finally {
@@ -855,7 +841,7 @@ public void testVariableInitializer02() throws CoreException {
 			"TEST_SRC", "/P1/src.zip",
 			"TEST_ROOT", "src",
 		}));
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"}, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"});
 		IPackageFragmentRoot root = p2.getPackageFragmentRoot(getFile("/P1/lib.jar"));
 		assertEquals("Unexpected source attachment path", "/P1/src.zip", root.getSourceAttachmentPath().toString());
 		assertEquals("Unexpected source attachment root path", "src", root.getSourceAttachmentRootPath().toString());
@@ -876,7 +862,7 @@ public void testVariableInitializer03() throws CoreException {
 			"TEST_ROOT", "src",
 		};
 		VariablesInitializer.setInitializer(new DefaultVariableInitializer(variableValues));
-		createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"}, "");
+		createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"});
 
 		// simulate state on startup
 		simulateExitRestart();
@@ -908,7 +894,7 @@ public void testVariableInitializer04() throws CoreException {
 				JavaScriptCore.setIncludepathVariable(variable, path, null);
 			}
 		});
-		createJavaProject("P", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"}, "");
+		createJavaProject("P", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"});
 		assertEquals(
 			"Initializing TEST_LIB\n" +
 			"Setting variable TEST_LIB to test_lib\n",
@@ -930,7 +916,7 @@ public void testVariableInitializer05() throws CoreException {
 				JavaScriptCore.setIncludepathVariable(variable, path, null);
 			}
 		});
-		createJavaProject("P", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"}, "");
+		createJavaProject("P", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"});
 		assertEquals(
 			"Initializing TEST_LIB\n" +
 			"Initializing TEST_SRC\n" +
@@ -982,7 +968,7 @@ public void testVariableInitializer07() throws CoreException {
 			"TEST_ROOT", "src",
 		};
 		VariablesInitializer.setInitializer(new DefaultVariableInitializer(variableValues));
-		createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"}, "");
+		createJavaProject("P2", new String[] {}, new String[] {"TEST_LIB,TEST_SRC,TEST_ROOT"});
 
 		// change value of TEST_LIB
 		createFile("/P1/lib2.jar", "");
@@ -1027,7 +1013,7 @@ public void testVariableInitializer08() throws CoreException {
 					throw new OperationCanceledException("test");
 				}
 			});
-			IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"TEST_LIB"}, "");
+			IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"TEST_LIB"});
 			p1.getResolvedIncludepath(true);
 		} catch (OperationCanceledException e) {
 			gotException = true;
@@ -1050,7 +1036,7 @@ public void testVariableInitializer09() throws CoreException {
 				JavaScriptCore.removeIncludepathVariable("TEST_LIB", null);
 			}
 		});
-		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"TEST_LIB"}, "");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"TEST_LIB"});
 		IIncludePathEntry[] resolvedClasspath = p1.getResolvedIncludepath(true);
 		assertClasspathEquals(
 			resolvedClasspath, 

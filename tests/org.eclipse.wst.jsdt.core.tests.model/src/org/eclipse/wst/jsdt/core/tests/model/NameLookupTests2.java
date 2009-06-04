@@ -50,8 +50,8 @@ private NameLookup getNameLookup(JavaProject project) throws JavaScriptModelExce
 }
 public void testAddPackageFragmentRootAndPackageFrament() throws CoreException {
 	try {
-		IJavaScriptProject p1 = createJavaProject("P1", new String[] {"src1"}, "bin");
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, "");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {"src1"});
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {});
 		IIncludePathEntry[] classpath = 
 			new IIncludePathEntry[] {
 				JavaScriptCore.newProjectEntry(new Path("/P1"))
@@ -83,8 +83,8 @@ public void testAddPackageFragmentRootAndPackageFrament() throws CoreException {
 }
 public void testAddPackageFragment() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {"src1"}, "bin");
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, "");
+		createJavaProject("P1", new String[] {"src1"});
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {});
 		IIncludePathEntry[] classpath = 
 			new IIncludePathEntry[] {
 				JavaScriptCore.newProjectEntry(new Path("/P1"))
@@ -114,7 +114,7 @@ public void testAddPackageFragment() throws CoreException {
  */
 public void testAddPackageFragment2() throws CoreException {
 	try {
-		JavaProject project = (JavaProject)createJavaProject("P", new String[] {"src"}, "bin");
+		JavaProject project = (JavaProject)createJavaProject("P", new String[] {"src"});
 		createFolder("/P/src/p1");
 		
 		IPackageFragment[] pkgs = getNameLookup(project).findPackageFragments("p1", false);
@@ -176,7 +176,7 @@ public void testDuplicateTypesInWorkingCopies() throws CoreException {
  */
 public void testFindDefaultPackageFragmentInNonDefaultRoot() throws CoreException {
 	try {
-		JavaProject project = (JavaProject)createJavaProject("P", new String[] {"src"}, "bin");
+		JavaProject project = (JavaProject)createJavaProject("P", new String[] {"src"});
 		
 		IPackageFragment pkg = getNameLookup(project).findPackageFragment(new Path("/P/src"));
 		assertElementsEqual(
@@ -247,7 +247,7 @@ public void testFindBinaryTypeWithDollarName() throws CoreException, IOException
  */
 public void testFindBinaryTypeWithSameNameAsMember() throws CoreException, IOException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"/P/lib"}, new String[] {}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"/P/lib"}, new String[] {});
 		createFolder("/P/lib/p");
 		createFile("/P/lib/p/X.class", "");
 		createFile("/P/lib/p/X$X.class", "");

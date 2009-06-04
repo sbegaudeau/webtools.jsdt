@@ -87,7 +87,7 @@ public void testAddInclusionOnCompilationUnit() throws CoreException {
  */
 public void testAddInclusionOnFolderUnderProject() throws CoreException {
 	try {
-		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {""});
 		createFolder("/P1/doc");
 
 		clearDeltas();
@@ -392,7 +392,7 @@ public void testDefaultPackageProjectIsSource() throws CoreException {
  */
 public void testIncludeCUOnly01() throws CoreException {
 	setClasspath(new String[] {"/P/src", "p1/p2/*.java|q/*.js"});
-	addLibraryEntry(getJavaProject("P"), getExternalJCLPathString(), false);
+	addLibraryEntry(getJavaProject("P"), getSystemJsPathString(), false);
 	createFolder("/P/src/p1/p2");
 	createFile(
 		"/P/src/p1/p2/X.js",
@@ -426,7 +426,7 @@ public void testIncludeCUOnly01() throws CoreException {
  */
 public void testIncludeCUOnly02() throws CoreException {
 	setClasspath(new String[] {"/P/src", "p1/p2/p3/*.java|q/*.js"});
-	addLibraryEntry(getJavaProject("P"), getExternalJCLPathString(), false);
+	addLibraryEntry(getJavaProject("P"), getSystemJsPathString(), false);
 	createFolder("/P/src/p1/p2/p3");
 	createFile(
 		"/P/src/p1/p2/p3/X.js",
@@ -902,7 +902,7 @@ public void testSearchPotentialMatchInOutput() throws CoreException {
 	try {
 		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				IJavaScriptProject javaProject = createJavaProject("P2", new String[] {}, "bin");
+				IJavaScriptProject javaProject = createJavaProject("P2", new String[] {});
 				javaProject.setRawIncludepath(createClasspath(new String[] {"/P2", "**/X.js", "/P2/src", ""}, true/*inclusion*/, false/*no exclusion*/), null);
 				createFile(
 					"/P2/bin/X.js",

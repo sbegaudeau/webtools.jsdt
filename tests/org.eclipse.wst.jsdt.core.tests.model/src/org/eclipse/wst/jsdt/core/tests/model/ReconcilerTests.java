@@ -162,7 +162,7 @@ public void setUpSuite() throws Exception {
 	super.setUpSuite();
 
 	// Create project with 1.4 compliance
-	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"});
 	createFolder("/Reconciler/src/p1");
 	createFolder("/Reconciler/src/p2");
 	createFile(
@@ -275,10 +275,10 @@ public void test00a() throws JavaScriptModelException {
 
 public void testAccessRestriction() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {"src"}, new String[] {"JCL_LIB"}, null, null, new String[0], null, null, new boolean[0], "bin", null, new String[][] {{"**/X.js"}}, null, "1.4");
+		createJavaProject("P1", new String[] {"src"}, new String[] {"JCL_LIB"}, null, null, new String[0], null, null, new boolean[0], new String[][] {{"**/X.js"}}, null, "1.4");
 		createFile("/P1/src/X.js", "function foo() {}");
 		
-		createJavaProject("P2", new String[] {"src"}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "bin");
+		createJavaProject("P2", new String[] {"src"}, new String[] {"JCL_LIB"}, new String[] {"/P1"});
 		setUpWorkingCopy("/P2/src/Y.js", "foo();");
 		assertProblems(
 			"Unexpected problems", 
@@ -2873,7 +2873,7 @@ public void testBug114338() throws CoreException {
 public void testBug36032a() throws CoreException, InterruptedException {
 	try {
 		// Resources creation
-		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB"});
 		String source = 
 			"public class Test {\n" + 
 			"	public static void main(String[] args) {\n" + 
@@ -2923,7 +2923,7 @@ public void testBug36032a() throws CoreException, InterruptedException {
 public void testBug36032b() throws CoreException, InterruptedException {
 	try {
 		// Resources creation
-		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P", new String[] {""}, new String[] {"JCL_LIB"});
 		String source = 
 			"public class Test {\n" + 
 			"	public static void main(String[] args) {\n" + 
@@ -2987,7 +2987,7 @@ public void testBug36032b() throws CoreException, InterruptedException {
 public void testBug36032c() throws CoreException, InterruptedException {
 	try {
 		// Create first project
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		createFolder("/P1/test");
 		createFile(
 			"/P1/test/Foo.js", 
@@ -3005,7 +3005,7 @@ public void testBug36032c() throws CoreException, InterruptedException {
 		);
 
 		// Create second project
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		String source = 
 			"package test;\n" +
 			"public class Test2 {\n" + 
@@ -3038,13 +3038,13 @@ public void testBug36032c() throws CoreException, InterruptedException {
 public void testBug118823() throws CoreException, InterruptedException, IOException {
 	try {
 		// Resources creation
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		String source = "class Test {}\n";
 		createFile(
 			"/P1/Test.js", 
 			source
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		String source2 = 
 			"class A {\n" +
 			"	Secondary s;\n" +
@@ -3120,13 +3120,13 @@ public void testBug118823() throws CoreException, InterruptedException, IOExcept
 public void testBug118823b() throws CoreException, InterruptedException {
 	try {
 		// Resources creation
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		String source1 = "class Test {}\n";
 		createFile(
 			"/P1/Test.js", 
 			source1
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		String source2 = 
 			"class A {\n" +
 			"	Secondary s;\n" +
@@ -3188,13 +3188,13 @@ public void testBug118823b() throws CoreException, InterruptedException {
 public void testBug118823c() throws CoreException, InterruptedException {
 	try {
 		// Resources creation
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		String source1 = "class Test {}\n";
 		createFile(
 			"/P1/Test.js", 
 			source1
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		String source2 = 
 			"class A {\n" +
 			"	Secondary s;\n" +
@@ -3270,13 +3270,13 @@ public void test1001() throws CoreException, InterruptedException, IOException {
 		// Resources creation
 		String sources[] = new String[3];
 		char[] sourcesAsCharArrays[] = new char[3][];
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		sources[0] = "class X {}\n";
 		createFile(
 			"/P1/X.js", 
 			sources[0]
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		sources[1] = 
 			"interface I {\n" +
 			"  void foo();\n" +
@@ -3286,7 +3286,7 @@ public void test1001() throws CoreException, InterruptedException, IOException {
 			"/P2/I.js",
 			sources[1]
 		);
-		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P2" }, "bin");
+		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P2" });
 		sources[2] = 
 			"class Y implements I {\n" +
 			"  // public void foo() { }\n" +
@@ -3344,13 +3344,13 @@ public void test1002() throws CoreException, InterruptedException, IOException {
 		// Resources creation
 		String sources[] = new String[3];
 		char[] sourcesAsCharArrays[] = new char[3][];
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, "bin");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"});
 		sources[0] = "class X {}\n";
 		createFile(
 			"/P1/X.js", 
 			sources[0]
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "bin");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		sources[1] = 
 			"interface I {\n" +
 			"  void foo();\n" +
@@ -3360,7 +3360,7 @@ public void test1002() throws CoreException, InterruptedException, IOException {
 			"/P2/I.js",
 			sources[1]
 		);
-		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" /* compare with test1001 */, "/P2" }, "bin");
+		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" /* compare with test1001 */, "/P2" });
 		sources[2] = 
 			"class Y implements I {\n" +
 			"  // public void foo() { }\n" +

@@ -59,7 +59,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 		);
 		
 		// setup project P2
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"});
 		createFolder("/P2/p2");
 		createFile(
 			"/P2/p2/Y.js",
@@ -136,7 +136,7 @@ public void testHierarchyScope1() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"});
 		createFile(
 			"/P2/Y.js",
 			"import p.X;\n" +
@@ -183,7 +183,7 @@ public void testHierarchyScope2() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"});
 		createFile(
 			"/P2/Y.js",
 			"import p.X;\n" +
@@ -235,7 +235,7 @@ public void testHierarchyScope3() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"});
 		createFolder("/P2/q");
 		createFile(
 			"/P2/q/Y.js",
@@ -284,7 +284,7 @@ public void testHierarchyScope4() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0"}, "");
+		createJavaProject("P1", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0"});
 		createFolder("/P1/p1");
 		createFile(
 			"/P1/p1/T.js",
@@ -296,7 +296,7 @@ public void testHierarchyScope4() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P1"}, "");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P1"});
 		createFolder("/P2/p2");
 		createFile(
 			"/P2/p2/Y.js",
@@ -309,7 +309,7 @@ public void testHierarchyScope4() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P2"}, "");
+		createJavaProject("P3", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P0", "/P2"});
 		createFolder("/P3/p3");
 		createFile(
 			"/P3/p3/Z.js",
@@ -451,8 +451,7 @@ public void testPackageReference1() throws CoreException {
 			"P2", 
 			new String[] {""}, 
 			new String[] {"JCL_LIB"}, 
-			new String[] {"/P1"}, 
-			"");
+			new String[] {"/P1"});
 		createFolder("/P2/p");
 		createFile(
 			"/P2/p/Y.js",
@@ -559,8 +558,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 			"P2", 
 			new String[] {""}, 
 			new String[] {"JCL_LIB"}, 
-			new String[] {"/P1"}, 
-			"");
+			new String[] {"/P1"});
 		createFolder("/P2/p2");
 		createFile(
 			"/P2/p2/Y.js",
@@ -630,8 +628,8 @@ public void testReferenceInWorkingCopies() throws CoreException {
  */
 public void testTypeDeclarationInJar() throws CoreException {
 	try {
-		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB"}, "");
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"JCL_LIB"}, "");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB"});
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"JCL_LIB"});
 		
 		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
@@ -644,7 +642,7 @@ public void testTypeDeclarationInJar() throws CoreException {
 			resultCollector);
 		assertSearchResults(
 			"Unexpected result in scope of P1",
-			getExternalJCLPathString() + " [in P1] java.lang.Object", 
+			getSystemJsPathString() + " [in P1] java.lang.Object", 
 			resultCollector);
 			
 		scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p2});
@@ -658,7 +656,7 @@ public void testTypeDeclarationInJar() throws CoreException {
 			resultCollector);
 		assertSearchResults(
 			"Unexpected result in scope of P2",
-			getExternalJCLPathString() + " [in P2] java.lang.Object", 
+			getSystemJsPathString() + " [in P2] java.lang.Object", 
 			resultCollector);
 	} finally {
 		deleteProject("P1");
@@ -691,7 +689,7 @@ public void testBug151189_Workspace() throws CoreException {
 		);
 
 		// setup project P2
-		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
+		createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		createFolder("/P2/test");
 		createFile(
 			"/P2/test/Declaration_bis.js",
@@ -759,7 +757,7 @@ public void testBug151189_Project() throws CoreException {
 		);
 
 		// setup project P2
-		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" });
 		createFolder("/P2/test");
 		createFile(
 			"/P2/test/Declaration_bis.js",

@@ -61,7 +61,7 @@ public class BufferTests extends ModifyingResourceTests implements
 	public void setUpSuite() throws Exception {
 		super.setUpSuite();
 		try {
-			this.createJavaProject("P", new String[] { "" }, "");
+			this.createJavaProject("P", new String[] { "" });
 			this.createFolder("P/x/y");
 		} catch (CoreException e) {
 			e.printStackTrace();

@@ -87,8 +87,7 @@ public void test0001() throws Exception {
 		this.createJavaProject(
 			"P1",
 			new String[]{"src"},
-			new String[]{"JCL_LIB"},
-			 "bin");
+			new String[]{"JCL_LIB"});
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
@@ -117,8 +116,6 @@ public void test0001() throws Exception {
 			new String[][]{{}},
 			new String[][]{{"a/*"}},
 			new boolean[]{false},
-			"bin",
-			null,
 			null,
 			null,
 			"1.4");
@@ -181,8 +178,7 @@ public void test0002() throws Exception {
 		this.createJavaProject(
 			"P1",
 			new String[]{"src"},
-			new String[]{"JCL_LIB"},
-			 "bin");
+			new String[]{"JCL_LIB"});
 		
 		this.createFolder("/P1/src/a");
 		this.createFile(
@@ -211,8 +207,6 @@ public void test0002() throws Exception {
 			new String[][]{{}},
 			new String[][]{{"a/*"}},
 			new boolean[]{false},
-			"bin",
-			null,
 			null,
 			null,
 			"1.4");

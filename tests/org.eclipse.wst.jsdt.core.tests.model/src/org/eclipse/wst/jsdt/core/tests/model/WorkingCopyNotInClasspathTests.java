@@ -39,7 +39,7 @@ public static Test suite() {
 public void setUp() throws Exception {
 	super.setUp();
 	try {
-		this.createJavaProject("P", new String[] {"src"}, "bin");
+		this.createJavaProject("P", new String[] {"src"});
 		this.createFolder("P/txt");
 		IFile file = this.createFile("P/txt/X.js",
 			"public class X {\n" +
@@ -116,7 +116,7 @@ public void testExistence()  {
 public void testGetSource() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
-		this.createJavaProject("P1", new String[] {}, "bin");
+		this.createJavaProject("P1", new String[] {});
 		this.createFolder("/P1/src/junit/test");
 		String source = 
 			"package junit.test;\n" +
@@ -277,7 +277,7 @@ public void testIsOnClasspath() throws CoreException {
 public void testReconcileAndCommit1() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
-		this.createJavaProject("JavaProject", new String[] {"src"}, "bin");
+		this.createJavaProject("JavaProject", new String[] {"src"});
 		this.createFolder("/JavaProject/src/native.1");
 		String source = 
 			"class X {}";
@@ -430,7 +430,7 @@ public void testReconcileAndCommit4() throws CoreException {
 public void testReconcileAndCommit5() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
-		this.createJavaProject("JavaProject", new String[] {"src"}, "bin");
+		this.createJavaProject("JavaProject", new String[] {"src"});
 		this.createFolder("/JavaProject/src/p");
 		String source = 
 			"package p; \n" +

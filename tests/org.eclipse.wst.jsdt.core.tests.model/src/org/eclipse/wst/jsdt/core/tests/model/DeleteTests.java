@@ -101,7 +101,7 @@ public void testDeleteAllImports() throws CoreException {
  */
 public void testDeleteBinaryMethod() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {}, new String[] {"lib"}, "");
+		createJavaProject("P1", new String[] {}, new String[] {"lib"});
 		
 		/* Evaluate the following in a scrapbook:
 			org.eclipse.wst.jsdt.core.tests.model.ModifyingResourceTests.generateClassFile(
@@ -137,7 +137,7 @@ public void testDeleteBinaryMethod() throws CoreException {
  */
 public void testDeleteBinaryType() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {}, new String[] {"lib"}, "");
+		createJavaProject("P1", new String[] {}, new String[] {"lib"});
 		
 		/* Evaluate the following in a scrapbook:
 			org.eclipse.wst.jsdt.core.tests.model.ModifyingResourceTests.generateClassFile(
@@ -709,7 +709,7 @@ public void testDeletePackageFragment1() throws CoreException {
  */
 public void testDeletePackageFragment2() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {"src"}, "bin");
+		createJavaProject("P1", new String[] {"src"});
 		IFile file = createFile(
 			"P1/src/X.js",
 			"public class X {\n" +
@@ -986,7 +986,7 @@ public void testDeleteType1() throws CoreException{
  */
 public void testDeleteType2() throws CoreException {
 	try {
-		createJavaProject("P1", new String[] {"src"}, "bin");
+		createJavaProject("P1", new String[] {"src"});
 		createFile(
 			"P1/src/X.js",
 			"public class X {\n" +

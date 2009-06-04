@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -267,7 +267,7 @@ public void testChangeClasspath() throws CoreException, TimeOutException {
  */
 public void testChangeClasspath2() throws CoreException {
 	try {
-		final IJavaScriptProject project = createJavaProject("P1", new String[] {""}, "bin");
+		final IJavaScriptProject project = createJavaProject("P1", new String[] {""});
 		createFile(
 				"/P1/X.js",
 				"function bar() {\n" +
@@ -330,7 +330,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 		indexManager.disable();
 		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				createJavaProject("P1", new String[] {}, new String[] {"/P1/jclMin.jar"}, "bin");
+				createJavaProject("P1", new String[] {}, new String[] {"/P1/jclMin.jar"});
 				createFile("/P1/jclMin.jar", EMPTY_JAR);
 			}
 		}, null);
@@ -379,7 +379,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 		monitor.sem.acquire(30000); // wait 30s max
 
 		// change jar contents
-		getFile("/P1/jclMin.jar").setContents(new FileInputStream(getExternalJCLPathString()), IResource.NONE, null);
+		getFile("/P1/jclMin.jar").setContents(new FileInputStream(getSystemJsPathString()), IResource.NONE, null);
 			
 		// resume waiting job
 		job.runningSem.release();
@@ -432,7 +432,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
   */
  public void _testProjectLib() throws CoreException { // TODO disabled due to transcient failures (see bug 84164)
  	try {
- 		IJavaScriptProject javaProject = createJavaProject("P1", new String[0], new String[] {"/P1"}, "bin");
+ 		IJavaScriptProject javaProject = createJavaProject("P1", new String[0], new String[] {"/P1"});
  		createClassFile("/P1", "X.class", "public class X {}");
  		IProject project = javaProject.getProject();
  		project.close(null);
@@ -460,7 +460,6 @@ public void testRemoveOuterFolder() throws CoreException {
 				IJavaScriptProject project = createJavaProject("P1");
 				project.setRawIncludepath(
 					createClasspath(new String[] {"/P1/src1", "src2/", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), 
-					new Path("/P1/bin"),
 					null);
 				createFolder("/P1/src1/src2");
 				createFile(
