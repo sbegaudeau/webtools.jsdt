@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,14 +149,14 @@ public class MethodChecks {
 		final IType declaringType= method.getDeclaringType();
 		if (declaringType==null)
 			return method;
-		if (!declaringType.isInterface()) {
-			if ((hierarchy == null) || !declaringType.equals(hierarchy.getType()))
-				hierarchy= declaringType.newTypeHierarchy(monitor);
-			
-			IFunction inInterface= isDeclaredInInterface(method, hierarchy, monitor);
-			if (inInterface != null && !inInterface.equals(method))
-				topmostMethod= inInterface;
-		}
+		
+		if ((hierarchy == null) || !declaringType.equals(hierarchy.getType()))
+			hierarchy= declaringType.newTypeHierarchy(monitor);
+		
+		IFunction inInterface= isDeclaredInInterface(method, hierarchy, monitor);
+		if (inInterface != null && !inInterface.equals(method))
+			topmostMethod= inInterface;
+		
 		if (topmostMethod == null) {
 			if (hierarchy == null)
 				hierarchy= declaringType.newSupertypeHierarchy(monitor);

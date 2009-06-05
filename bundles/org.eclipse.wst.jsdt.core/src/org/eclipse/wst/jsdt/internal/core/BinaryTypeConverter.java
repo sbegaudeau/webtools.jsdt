@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
@@ -92,7 +91,7 @@ public class BinaryTypeConverter {
 			decl.isDefaultConstructor = false;
 			methodDeclaration = decl;
 		} else {
-			MethodDeclaration decl = type.isAnnotation() ? new AnnotationMethodDeclaration(compilationResult) : new MethodDeclaration(compilationResult);
+			MethodDeclaration decl = new MethodDeclaration(compilationResult);
 			/* convert return type */
 			decl.returnType = createTypeReference(Signature.toString(method.getReturnType()).toCharArray());
 			methodDeclaration = decl;
@@ -182,8 +181,7 @@ public class BinaryTypeConverter {
 				break;
 			}
 		}
-		boolean isInterface = type.isInterface();
-		neededCount = isInterface ? 0 : neededCount;
+
 		typeDeclaration.methods = new AbstractMethodDeclaration[methodCount + neededCount];
 		if (neededCount != 0) { // add default constructor in first position
 			typeDeclaration.methods[0] = typeDeclaration.createDefaultConstructor(false, false);
@@ -191,8 +189,8 @@ public class BinaryTypeConverter {
 		boolean hasAbstractMethods = false;
 		for (int i = 0; i < methodCount; i++) {
 			AbstractMethodDeclaration method =convert(methods[i], type, compilationResult);
-			boolean isAbstract;
-			if ((isAbstract = method.isAbstract()) || isInterface) { // fix-up flag
+			boolean isAbstract = method.isAbstract();
+			if (isAbstract) { // fix-up flag
 				method.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
 			}
 			if (isAbstract) {

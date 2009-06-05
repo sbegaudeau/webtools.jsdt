@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1003,7 +1003,7 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 				collapse= ctx.collapseImportContainer();
 				break;
 			case IJavaScriptElement.TYPE:
-				collapseCode= isInnerType((IType) element) && !isAnonymousEnum((IType) element);
+				collapseCode= isInnerType((IType) element);
 				collapse= ctx.collapseInnerTypes() && collapseCode;
 				break;
 			case IJavaScriptElement.METHOD:
@@ -1042,22 +1042,6 @@ public class DefaultJavaFoldingStructureProvider implements IJavaFoldingStructur
 						ctx.addProjectionRange(new JavaProjectionAnnotation(collapse, element, false), position);
 				}
 			}
-		}
-	}
-
-	/**
-	 * Returns <code>true</code> if <code>type</code> is an anonymous enum declaration,
-	 * <code>false</code> otherwise. See also https://bugs.eclipse.org/bugs/show_bug.cgi?id=143276
-	 * 
-	 * @param type the type to test
-	 * @return <code>true</code> if <code>type</code> is an anonymous enum declaration
-	 * 
-	 */
-	private boolean isAnonymousEnum(IType type) {
-		try {
-			return type.isEnum() && type.isAnonymous();
-		} catch (JavaScriptModelException x) {
-			return false; // optimistically
 		}
 	}
 

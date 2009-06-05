@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1326,7 +1326,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				// GT is repeatedly applied
 						
 				IFunction root= selectedMethod;
-				if (! root.getDeclaringType().isInterface() && MethodChecks.isVirtual(root)) {
+				if (MethodChecks.isVirtual(root)) {
 					final SubProgressMonitor subMonitor= new SubProgressMonitor(pm, 5);
 					IFunction inInterface= MethodChecks.isDeclaredInInterface(root, root.getDeclaringType().newTypeHierarchy(new SubProgressMonitor(subMonitor, 1)), subMonitor);
 					if (inInterface != null && !inInterface.equals(root))

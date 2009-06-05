@@ -543,7 +543,7 @@ class TypeBinding implements ITypeBinding {
 				if (typeBinding2 == null) return null;
 				declaringTypeBinding = typeBinding2;
 				IType declaringType = (IType) declaringTypeBinding.getJavaElement();
-				return (JavaElement) declaringType.getTypeParameter(typeVariableName);
+				return null;
 			}
 		} else {
 			if (fileName == null) return null; // case of a WilCardBinding that doesn't have a corresponding JavaScript element

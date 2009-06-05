@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,12 +16,10 @@ import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 
 /**
 *
@@ -57,30 +55,6 @@ public class Implementors {
      */
     public IJavaScriptElement[] searchForImplementors(IJavaScriptElement[] elements,
         IProgressMonitor progressMonitor) {
-        if ((elements != null) && (elements.length > 0)) {
-            IJavaScriptElement element = elements[0];
-
-            try {
-                if (element instanceof IMember) {
-                    IMember member = (IMember) element;
-                    IType type = member.getDeclaringType();
-
-                    if (type!=null && type.isInterface()) {
-                        IType[] implementingTypes = findImplementingTypes(type,
-                                progressMonitor);
-
-                        if (member.getElementType() == IJavaScriptElement.METHOD) {
-                            return findMethods((IFunction)member, implementingTypes, progressMonitor);
-                        } else {
-                            return implementingTypes;
-                        }
-                    }
-                }
-            } catch (JavaScriptModelException e) {
-                JavaScriptPlugin.log(e);
-            }
-        }
-
         return null;
     }
 

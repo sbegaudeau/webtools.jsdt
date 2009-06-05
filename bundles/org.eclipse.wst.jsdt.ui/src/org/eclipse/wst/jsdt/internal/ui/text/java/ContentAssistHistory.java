@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -428,7 +428,7 @@ public final class ContentAssistHistory {
 	}
 	
 	private boolean isCacheableRHS(IType type) throws JavaScriptModelException {
-		return !type.isInterface() && !Flags.isAbstract(type.getFlags());
+		return !Flags.isAbstract(type.getFlags());
 	}
 
 	private Set getCache(String lhs) {

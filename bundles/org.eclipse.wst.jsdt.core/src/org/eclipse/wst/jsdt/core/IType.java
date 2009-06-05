@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -378,21 +378,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @exception JavaScriptModelException if this element does not exist or if an
 	 *		exception occurs while accessing its corresponding resource.
 	 * @return the methods and constructors declared by this type
-	 * @deprecated Use {@link #getFunctions()} instead
-	 */
-	IFunction[] getMethods() throws JavaScriptModelException;
-
-	/**
-	 * Returns the methods and constructors declared by this type.
-	 * For binary types, this may include the special <code>&lt;clinit&gt;</code>; method
-	 * and synthetic methods.
-	 * If this is a source type, the results are listed in the order
-	 * in which they appear in the source, otherwise, the results are
-	 * in no particular order.
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return the methods and constructors declared by this type
 	 */
 	IFunction[] getFunctions() throws JavaScriptModelException;
 
@@ -496,37 +481,6 @@ public interface IType extends IMember, IFunctionContainer {
 	String[] getSuperInterfaceNames() throws JavaScriptModelException;
 
 	/**
-	 * Returns the formal type parameter signatures for this type.
-	 * Returns an empty array if this type has no formal type parameters.
-	 * <p>
-	 * The formal type parameter signatures may be either unresolved (for source
-	 * types) or resolved (for binary types). See {@link Signature} for details.
-	 * </p>
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *      exception occurs while accessing its corresponding resource.
-	 * @return the formal type parameter signatures of this type,
-	 * in the order declared in the source, an empty array if none
-	 * @see Signature
-	 */
-	String[] getTypeParameterSignatures() throws JavaScriptModelException;
-
-	/**
-	 * Returns the formal type parameters for this type.
-	 * Returns an empty array if this type has no formal type parameters.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *      exception occurs while accessing its corresponding resource.
-	 * @return the formal type parameters of this type,
-	 * in the order declared in the source, an empty array if none
-	 */
-	ITypeParameter[] getTypeParameters() throws JavaScriptModelException;
-
-	/**
 	 * Returns the member type declared in this type with the given simple name.
 	 * This is a handle-only method. The type may or may not exist.
 	 *
@@ -534,17 +488,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return the member type declared in this type with the given simple name
 	 */
 	IType getType(String name);
-
-	/**
-	 * Returns the type parameter declared in this type with the given name.
-	 * This is a handle-only method. The type parameter may or may not exist.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param name the given simple name
-	 * @return the type parameter declared in this type with the given name
-	 */
-	ITypeParameter getTypeParameter(String name);
 
 	/**
 	 * Returns the type-qualified name of this type,
@@ -598,46 +541,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 * @return true if this type represents a class, false otherwise
 	 */
 	boolean isClass() throws JavaScriptModelException;
-
-	/*
-	 * Returns whether this type represents an enumeration class.
-	 * <p>
-	 * Note that an enumeration class can neither be a class, an interface, nor an annotation type.
-	 * </p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return true if this type represents an enumeration class,
-	 * false otherwise
-	 */
-	boolean isEnum() throws JavaScriptModelException;
-
-	/**
-	 * Returns whether this type represents an interface.
-	 * <p>
-	 * Note that an interface can also be an annotation type, but it can neither be a class nor an enumeration class.
-	 * </p>
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return true if this type represents an interface, false otherwise
-	 */
-	boolean isInterface() throws JavaScriptModelException;
-
-	/*
-	 * Returns whether this type represents an annotation type.
-	 * <p>
-	 * Note that an annotation type is also an interface, but it can neither be a class nor an enumeration class.
-	 * </p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return true if this type represents an annotation type,
-	 * false otherwise
-	 */
-	boolean isAnnotation() throws JavaScriptModelException;
 
 	/**
 	 * Returns whether this type represents a local type.
@@ -800,25 +703,6 @@ public interface IType extends IMember, IFunctionContainer {
 	 *		exception occurs while accessing its corresponding resource.
 	 */
 	ITypeHierarchy newTypeHierarchy(IJavaScriptUnit[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
-
-	/**
-	 * Creates and returns a type hierarchy for this type containing
-	 * this type, all of its supertypes, and all its subtypes in the workspace,
-	 * considering types in the given working copies. In other words, the list of working
-	 * copies that will take precedence over their original compilation units in the workspace.
-	 * <p>
-	 * Note that passing an empty working copy will be as if the original compilation
-	 * unit had been deleted.
-	 *
-	 * @param workingCopies the working copies that take precedence over their original compilation units
-	 * @param monitor the given progress monitor
-	 * @return a type hierarchy for this type containing
-	 * this type, all of its supertypes, and all its subtypes in the workspace
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @deprecated Use {@link #newTypeHierarchy(IJavaScriptUnit[], IProgressMonitor)} instead
-	 */
-	ITypeHierarchy newTypeHierarchy(IWorkingCopy[] workingCopies, IProgressMonitor monitor) throws JavaScriptModelException;
 
 	/**
 	 * Creates and returns a type hierarchy for this type containing

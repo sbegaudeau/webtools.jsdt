@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -397,7 +397,7 @@ public final class UseSuperTypeProcessor extends SuperTypeRefactoringProcessor {
 	 * @see org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor#isApplicable()
 	 */
 	public final boolean isApplicable() throws CoreException {
-		return Checks.isAvailable(fSubType) && Checks.isAvailable(fSuperType) && !fSubType.isAnonymous() && !fSubType.isAnnotation() && !fSuperType.isAnonymous() && !fSuperType.isAnnotation() && !fSuperType.isEnum();
+		return Checks.isAvailable(fSubType) && Checks.isAvailable(fSuperType) && !fSubType.isAnonymous() && !fSuperType.isAnonymous();
 	}
 
 	/*

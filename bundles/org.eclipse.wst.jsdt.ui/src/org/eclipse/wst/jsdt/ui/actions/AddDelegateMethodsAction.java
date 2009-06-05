@@ -370,7 +370,7 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getJavaScriptUnit() != null && !type.isInterface();
+			return type.getJavaScriptUnit() != null;
 		}
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
@@ -396,12 +396,6 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 		if (type == null || type.getJavaScriptUnit() == null) {
 			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddDelegateMethodsAction_not_in_source_file); 
 			return false;
-		} else if (type.isAnnotation()) {
-			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddDelegateMethodsAction_annotation_not_applicable); 
-			return false;
-		} else if (type.isInterface()) {
-			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddDelegateMethodsAction_interface_not_applicable); 
-			return false;
 		}
 		return canRunOn(type.getFields());
 	}
@@ -423,15 +417,6 @@ public class AddDelegateMethodsAction extends SelectionDispatchAction {
 						}
 					} else if (!unit.equals(field.getJavaScriptUnit())) {
 						// all fields must be in the same CU
-						return null;
-					}
-					try {
-						final IType type= field.getDeclaringType();
-						if (type!=null && type.isInterface()) {
-							return null;
-						}
-					} catch (JavaScriptModelException exception) {
-						JavaScriptPlugin.log(exception);
 						return null;
 					}
 

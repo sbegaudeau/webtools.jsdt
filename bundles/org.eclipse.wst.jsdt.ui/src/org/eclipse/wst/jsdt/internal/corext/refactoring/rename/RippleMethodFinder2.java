@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,8 +176,6 @@ public class RippleMethodFinder2 {
 		for (Iterator iter= relatedTypes.iterator(); iter.hasNext();) {
 			IType relatedType= (IType) iter.next();
 			relatedMethods.add(fTypeToMethod.get(relatedType));
-			if (relatedType.isInterface())
-				hasRelatedInterfaces= true;
 		}
 		
 		//Definition: An alien type is a type that is not a related type. The set of
@@ -192,8 +190,6 @@ public class RippleMethodFinder2 {
 			IFunction alienDeclaration= (IFunction) iter.next();
 			IType alienType= alienDeclaration.getDeclaringType();
 			alienTypes.add(alienType);
-			if (alienType.isInterface())
-				hasAlienInterfaces= true;
 		}
 		if (alienTypes.size() == 0) //no nasty marriage scenarios without types to marry with...
 			return (IFunction[]) relatedMethods.toArray(new IFunction[relatedMethods.size()]);

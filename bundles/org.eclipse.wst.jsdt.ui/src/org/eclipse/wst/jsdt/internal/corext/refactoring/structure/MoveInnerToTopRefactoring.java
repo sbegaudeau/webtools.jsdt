@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -526,7 +525,7 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		fQualifiedTypeName= JavaModelUtil.concatenateName(fType.getPackageFragment().getElementName(), fType.getElementName());
 		fEnclosingInstanceFieldName= getInitialNameForEnclosingInstanceField();
 		fSourceRewrite= new CompilationUnitRewrite(fType.getJavaScriptUnit());
-		fIsInstanceFieldCreationPossible= !(JdtFlags.isStatic(fType) || fType.isAnnotation() || fType.isEnum());
+		fIsInstanceFieldCreationPossible= !(JdtFlags.isStatic(fType));
 		fIsInstanceFieldCreationMandatory= fIsInstanceFieldCreationPossible && isInstanceFieldCreationMandatory();
 		fCreateInstanceField= fIsInstanceFieldCreationMandatory;
 	}
@@ -1003,14 +1002,7 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 
 	private Type createEnclosingType(final AST ast) throws JavaScriptModelException {
 		Assert.isNotNull(ast);
-		final ITypeParameter[] parameters= fType.getDeclaringType().getTypeParameters();
 		final Type type= ASTNodeFactory.newType(ast, JavaModelUtil.getTypeQualifiedName(fType.getDeclaringType()));
-		if (parameters.length > 0) {
-			final ParameterizedType parameterized= ast.newParameterizedType(type);
-			for (int index= 0; index < parameters.length; index++)
-				parameterized.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getElementName())));
-			return parameterized;
-		}
 		return type;
 	}
 

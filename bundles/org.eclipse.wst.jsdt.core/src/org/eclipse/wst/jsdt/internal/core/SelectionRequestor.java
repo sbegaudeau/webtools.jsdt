@@ -14,14 +14,13 @@ import java.util.ArrayList;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -387,18 +386,6 @@ public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
 		SourceTypeBinding typeBinding = (SourceTypeBinding)typeVariableBinding.declaringElement;
 		res = findLocalElement(typeBinding.sourceStart());
 	}
-	if (res != null && res.getElementType() == IJavaScriptElement.TYPE) {
-		IType type = (IType) res;
-		ITypeParameter typeParameter = type.getTypeParameter(new String(typeVariableBinding.sourceName));
-		if (typeParameter.exists()) {
-			addElement(typeParameter);
-			if(SelectionEngine.DEBUG){
-				System.out.print("SELECTION - accept type parameter("); //$NON-NLS-1$
-				System.out.print(typeParameter.toString());
-				System.out.println(")"); //$NON-NLS-1$
-			}
-		}
-	}
 }
 public void acceptLocalVariable(LocalVariableBinding binding) {
 	LocalDeclaration local = binding.declaration;
@@ -694,21 +681,11 @@ public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName
 	}
 
 	if(type != null) {
-		ITypeParameter typeParameter = type.getTypeParameter(new String(typeParameterName));
-		if(typeParameter == null) {
-			addElement(type);
-			if(SelectionEngine.DEBUG){
-				System.out.print("SELECTION - accept type("); //$NON-NLS-1$
-				System.out.print(type.toString());
-				System.out.println(")"); //$NON-NLS-1$
-			}
-		} else {
-			addElement(typeParameter);
-			if(SelectionEngine.DEBUG){
-				System.out.print("SELECTION - accept type parameter("); //$NON-NLS-1$
-				System.out.print(typeParameter.toString());
-				System.out.println(")"); //$NON-NLS-1$
-			}
+		addElement(type);
+		if(SelectionEngine.DEBUG){
+			System.out.print("SELECTION - accept type("); //$NON-NLS-1$
+			System.out.print(type.toString());
+			System.out.println(")"); //$NON-NLS-1$
 		}
 	}
 }

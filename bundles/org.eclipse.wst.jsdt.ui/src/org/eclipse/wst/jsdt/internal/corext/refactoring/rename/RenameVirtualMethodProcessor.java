@@ -98,7 +98,7 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 				
 				ITypeHierarchy hierarchy= null;
 				IType declaringType= method.getDeclaringType();
-				if (declaringType!=null && !declaringType.isInterface())
+				if (declaringType!=null)
 					hierarchy= getCachedHierarchy(declaringType, new SubProgressMonitor(monitor, 1));
 
 				IFunction topmost= getMethod();
@@ -127,33 +127,22 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 			final IType declaring= method.getDeclaringType();
 			final ITypeHierarchy hierarchy= getCachedHierarchy(declaring, new SubProgressMonitor(pm, 1));
 			final String name= getNewElementName();
-			if (declaring.isInterface()) {
-				if (isSpecialCase())
-					result.addError(RefactoringCoreMessages.RenameMethodInInterfaceRefactoring_special_case); 
-				pm.worked(1);
-				IFunction[] relatedMethods= relatedTypeDeclaresMethodName(new SubProgressMonitor(pm, 1), method, name);
-				for (int i= 0; i < relatedMethods.length; i++) {
-					IFunction relatedMethod= relatedMethods[i];
-					RefactoringStatusContext context= JavaStatusContext.create(relatedMethod);
-					result.addError(RefactoringCoreMessages.RenameMethodInInterfaceRefactoring_already_defined, context); 
-				}
-			} else {
-	
-				IFunction[] hierarchyMethods= hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), hierarchy, method, name);
-				for (int i= 0; i < hierarchyMethods.length; i++) {
-					IFunction hierarchyMethod= hierarchyMethods[i];
-					RefactoringStatusContext context= JavaStatusContext.create(hierarchyMethod);
-					if (Checks.compareParamTypes(method.getParameterTypes(), hierarchyMethod.getParameterTypes())) {
-						result.addError(Messages.format(
-							RefactoringCoreMessages.RenameVirtualMethodRefactoring_hierarchy_declares2, 
-							name), context); 
-					} else {
-						result.addWarning(Messages.format(
-							RefactoringCoreMessages.RenameVirtualMethodRefactoring_hierarchy_declares1, 
-							name), context); 
-					}					
-				}
+			
+			IFunction[] hierarchyMethods= hierarchyDeclaresMethodName(new SubProgressMonitor(pm, 1), hierarchy, method, name);
+			for (int i= 0; i < hierarchyMethods.length; i++) {
+				IFunction hierarchyMethod= hierarchyMethods[i];
+				RefactoringStatusContext context= JavaStatusContext.create(hierarchyMethod);
+				if (Checks.compareParamTypes(method.getParameterTypes(), hierarchyMethod.getParameterTypes())) {
+					result.addError(Messages.format(
+						RefactoringCoreMessages.RenameVirtualMethodRefactoring_hierarchy_declares2, 
+						name), context); 
+				} else {
+					result.addWarning(Messages.format(
+						RefactoringCoreMessages.RenameVirtualMethodRefactoring_hierarchy_declares1, 
+						name), context); 
+				}					
 			}
+			
 			fCachedHierarchy= null;
 			return result;
 		} finally{

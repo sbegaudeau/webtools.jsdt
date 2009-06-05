@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -397,7 +397,7 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getJavaScriptUnit() != null && !type.isInterface() && !type.isEnum();
+			return type.getJavaScriptUnit() != null;
 		}
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
@@ -418,13 +418,13 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 		Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			IType type= (IType) elements[0];
-			if (type.getJavaScriptUnit() != null && !type.isInterface() && !type.isEnum()) {
+			if (type.getJavaScriptUnit() != null) {
 				return type;
 			}
 		} else if (elements[0] instanceof IJavaScriptUnit) {
 			IJavaScriptUnit cu= (IJavaScriptUnit) elements[0];
 			IType type= cu.findPrimaryType();
-			if (type != null && !type.isInterface() && !type.isEnum())
+			if (type != null)
 				return type;
 		}
 		return null;
@@ -439,16 +439,6 @@ public class AddUnimplementedConstructorsAction extends SelectionDispatchAction 
 			IType type= getSelectedType(selection);
 			if (type == null) {
 				MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.AddUnimplementedConstructorsAction_not_applicable); 
-				return;
-			}
-			if (type.isAnnotation()) {
-				MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.AddUnimplementedConstructorsAction_annotation_not_applicable); 
-				return;
-			} else if (type.isInterface()) {
-				MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.AddUnimplementedConstructorsAction_interface_not_applicable); 
-				return;
-			} else if (type.isEnum()) {
-				MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.AddUnimplementedConstructorsAction_enum_not_applicable); 
 				return;
 			}
 			run(shell, type, false);

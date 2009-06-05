@@ -19,11 +19,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
@@ -125,15 +124,7 @@ public class StubCreator {
 				} else if (child instanceof IFunction) {
 					final IFunction method= (IFunction) child;
 					final String name= method.getElementName();
-					if (method.getDeclaringType()!=null && method.getDeclaringType().isEnum()) {
-						final int count= method.getNumberOfParameters();
-						if (count == 0 && "values".equals(name)) //$NON-NLS-1$
-							continue;
-						if (count == 1 && "valueOf".equals(name) && "Ljava.lang.String;".equals(method.getParameterTypes()[0])) //$NON-NLS-1$ //$NON-NLS-2$
-							continue;
-						if (method.isConstructor())
-							continue;
-					}
+					
 					boolean skip= !stub || name.equals("<clinit>"); //$NON-NLS-1$
 					if (method.isConstructor())
 						skip= false;
@@ -235,10 +226,7 @@ public class StubCreator {
 	protected void appendSuperInterfaceTypes(final IType type) throws JavaScriptModelException {
 		final String[] signatures= type.getSuperInterfaceTypeSignatures();
 		if (signatures.length > 0) {
-			if (type.isInterface())
-				fBuffer.append(" extends "); //$NON-NLS-1$
-			else
-				fBuffer.append(" implements "); //$NON-NLS-1$
+			fBuffer.append(" implements "); //$NON-NLS-1$
 		}
 		for (int index= 0; index < signatures.length; index++) {
 			if (index > 0)
@@ -260,20 +248,10 @@ public class StubCreator {
 	protected void appendTypeDeclaration(final IType type, final IProgressMonitor monitor) throws JavaScriptModelException {
 		try {
 			monitor.beginTask(RefactoringCoreMessages.StubCreationOperation_creating_type_stubs, 1);
-			if (type.isInterface()) {
-				appendFlags(type);
-				fBuffer.append(" interface "); //$NON-NLS-1$
-				fBuffer.append(type.getElementName());
-				appendTypeParameters(type.getTypeParameters());
-				appendSuperInterfaceTypes(type);
-				fBuffer.append("{\n"); //$NON-NLS-1$
-				appendMembers(type, new SubProgressMonitor(monitor, 1));
-				fBuffer.append("}"); //$NON-NLS-1$
-			} else if (type.isClass()) {
+			if (type.isClass()) {
 				appendFlags(type);
 				fBuffer.append(" class "); //$NON-NLS-1$
 				fBuffer.append(type.getElementName());
-				appendTypeParameters(type.getTypeParameters());
 				final String signature= type.getSuperclassTypeSignature();
 				if (signature != null) {
 					fBuffer.append(" extends "); //$NON-NLS-1$
@@ -283,49 +261,10 @@ public class StubCreator {
 				fBuffer.append("{\n"); //$NON-NLS-1$
 				appendMembers(type, new SubProgressMonitor(monitor, 1));
 				fBuffer.append("}"); //$NON-NLS-1$
-			} else if (type.isAnnotation()) {
-				appendFlags(type);
-				fBuffer.append(" @interface "); //$NON-NLS-1$
-				fBuffer.append(type.getElementName());
-				fBuffer.append("{\n"); //$NON-NLS-1$
-				appendMembers(type, new SubProgressMonitor(monitor, 1));
-				fBuffer.append("}"); //$NON-NLS-1$
-			} else if (type.isEnum()) {
-				appendFlags(type);
-				fBuffer.append(" enum "); //$NON-NLS-1$
-				fBuffer.append(type.getElementName());
-				appendSuperInterfaceTypes(type);
-				fBuffer.append("{\n"); //$NON-NLS-1$
-				appendEnumConstants(type);
-				appendMembers(type, new SubProgressMonitor(monitor, 1));
-				fBuffer.append("}"); //$NON-NLS-1$
 			}
 		} finally {
 			monitor.done();
 		}
-	}
-
-	protected void appendTypeParameters(final ITypeParameter[] parameters) throws JavaScriptModelException {
-		final int length= parameters.length;
-		if (length > 0)
-			fBuffer.append("<"); //$NON-NLS-1$
-		for (int index= 0; index < length; index++) {
-			if (index > 0)
-				fBuffer.append(","); //$NON-NLS-1$
-			final ITypeParameter parameter= parameters[index];
-			fBuffer.append(parameter.getElementName());
-			final String[] bounds= parameter.getBounds();
-			final int size= bounds.length;
-			if (size > 0)
-				fBuffer.append(" extends "); //$NON-NLS-1$
-			for (int offset= 0; offset < size; offset++) {
-				if (offset > 0)
-					fBuffer.append(" & "); //$NON-NLS-1$
-				fBuffer.append(bounds[offset]);
-			}
-		}
-		if (length > 0)
-			fBuffer.append(">"); //$NON-NLS-1$
 	}
 
 	/**

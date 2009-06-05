@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,9 @@ package org.eclipse.wst.jsdt.ui.actions;
 
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -69,16 +68,6 @@ public class FindImplementorsAction extends FindAction {
 	}
 
 	boolean canOperateOn(IJavaScriptElement element) {
-		if (!super.canOperateOn(element))
-			return false;
-
-		if (element.getElementType() == IJavaScriptElement.TYPE)
-			try {
-				return ((IType) element).isInterface();
-			} catch (JavaScriptModelException ex) {
-				return false;
-			}
-		// should not happen: handled by super.canOperateOn
 		return false;
 	}
 

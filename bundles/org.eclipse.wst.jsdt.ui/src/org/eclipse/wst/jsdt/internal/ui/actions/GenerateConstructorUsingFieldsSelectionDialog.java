@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -112,10 +111,7 @@ public class GenerateConstructorUsingFieldsSelectionDialog extends SourceActionD
 			fGenConstructorSettings.put(OMIT_SUPER, false); 
 		}
 
-		final boolean isEnum= type.isEnum();
-		fOmitSuper= fGenConstructorSettings.getBoolean(OMIT_SUPER) || isEnum;
-		if (isEnum)
-			setVisibility(Modifier.PRIVATE);
+		fOmitSuper= fGenConstructorSettings.getBoolean(OMIT_SUPER);
 	}
 
 	Composite addSuperClassConstructorChoices(Composite composite) {
@@ -283,13 +279,11 @@ public class GenerateConstructorUsingFieldsSelectionDialog extends SourceActionD
 			}
 		});
 		fOmitSuperButton.setSelection(isOmitSuper());
-		try {
-			// Disable omit super checkbox unless default constructor and enum
-			final boolean hasContructor= getSuperConstructorChoice().getParameterTypes().length == 0;
-			fOmitSuperButton.setEnabled(hasContructor && !getType().isEnum());
-		} catch (JavaScriptModelException exception) {
-			JavaScriptPlugin.log(exception);
-		}
+		
+		// Disable omit super checkbox unless default constructor and enum
+		final boolean hasContructor= getSuperConstructorChoice().getParameterTypes().length == 0;
+		fOmitSuperButton.setEnabled(hasContructor);
+		
 		GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 		gd.horizontalSpan= 2;
 		fOmitSuperButton.setLayoutData(gd);
@@ -327,12 +321,6 @@ public class GenerateConstructorUsingFieldsSelectionDialog extends SourceActionD
 
 	protected Composite createVisibilityControlAndModifiers(Composite parent, final IVisibilityChangeListener visibilityChangeListener, int[] availableVisibilities, int correctVisibility) {
 		int[] visibilities= availableVisibilities;
-		try {
-			if (getType().isEnum())
-				visibilities= new int[] { };
-		} catch (JavaScriptModelException exception) {
-			JavaScriptPlugin.log(exception);
-		}
 		return createVisibilityControl(parent, visibilityChangeListener, visibilities, correctVisibility);
 	}
 

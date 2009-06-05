@@ -17,14 +17,13 @@ import java.util.StringTokenizer;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.search.ui.text.MatchFilter;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -331,22 +330,6 @@ class PolymorphicFilter extends JavaMatchFilter {
 
 abstract class GenericTypeFilter extends JavaMatchFilter {
 	public boolean isApplicable(JavaSearchQuery query) {
-		QuerySpecification spec= query.getSpecification();
-		if (spec instanceof ElementQuerySpecification) {
-			ElementQuerySpecification elementSpec= (ElementQuerySpecification) spec;
-			Object element= elementSpec.getElement();
-			ITypeParameter[] typeParameters= null;
-			try {
-				if (element instanceof IType) {
-					typeParameters= ((IType)element).getTypeParameters();
-				} else if (element instanceof IFunction) {
-					typeParameters= null;
-				}
-			} catch (JavaScriptModelException e) {
-				return false;
-			}
-			return typeParameters != null && typeParameters.length > 0;
-		}
 		return false;
 	}
 }

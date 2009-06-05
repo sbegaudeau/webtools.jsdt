@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,15 +27,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
@@ -245,7 +244,7 @@ public class JavaDocAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy
 	private String createTypeTags(IDocument document, DocumentCommand command, String indentation, String lineDelimiter, IType type)
 		throws CoreException, BadLocationException
 	{
-		String[] typeParamNames= StubUtility.getTypeParameterNames(type.getTypeParameters());
+		String[] typeParamNames= new String[0];
 		String comment= CodeGeneration.getTypeComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), typeParamNames, lineDelimiter);
 		if (comment != null) {
 			boolean javadocComment= comment.startsWith("/**"); //$NON-NLS-1$

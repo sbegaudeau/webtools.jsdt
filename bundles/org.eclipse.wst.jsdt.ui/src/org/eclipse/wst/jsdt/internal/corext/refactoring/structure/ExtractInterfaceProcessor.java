@@ -54,7 +54,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -71,7 +70,6 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -214,8 +212,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractInterfaceProcessor_no_binary, JavaStatusContext.create(fSubType)));
 				else if (fSubType.isAnonymous())
 					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractInterfaceProcessor_no_anonymous, JavaStatusContext.create(fSubType)));
-				else if (fSubType.isAnnotation())
-					status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ExtractInterfaceProcessor_no_annotation, JavaStatusContext.create(fSubType)));
 				else {
 					status.merge(checkSuperType());
 					if (!status.hasFatalError()) {
@@ -382,11 +378,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 				final IField[] fields= getExtractedFields(fSubType.getJavaScriptUnit());
 				if (fields.length > 0)
 					ASTNodeDeleteUtil.markAsDeleted(fields, sourceRewrite, sourceRewrite.createCategorizedGroupDescription(RefactoringCoreMessages.ExtractInterfaceProcessor_remove_field_label, SET_EXTRACT_INTERFACE));
-				if (fSubType.isInterface()) {
-					final IFunction[] methods= getExtractedMethods(fSubType.getJavaScriptUnit());
-					if (methods.length > 0)
-						ASTNodeDeleteUtil.markAsDeleted(methods, sourceRewrite, sourceRewrite.createCategorizedGroupDescription(RefactoringCoreMessages.ExtractInterfaceProcessor_remove_method_label, SET_EXTRACT_INTERFACE));
-				}
 				final String name= JavaModelUtil.getRenamedCUName(fSubType.getJavaScriptUnit(), fSuperName);
 				final IJavaScriptUnit original= fSubType.getPackageFragment().getJavaScriptUnit(name);
 				final IJavaScriptUnit copy= getSharedWorkingCopy(original.getPrimary(), new SubProgressMonitor(monitor, 20));
@@ -605,7 +596,6 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 		final ListRewrite list= rewrite.getListRewrite(declaration, declaration.getModifiersProperty());
 		boolean publicFound= false;
 		boolean abstractFound= false;
-		ITypeBinding binding= null;
 		Modifier modifier= null;
 		IExtendedModifier extended= null;
 		for (final Iterator iterator= declaration.modifiers().iterator(); iterator.hasNext();) {
@@ -668,14 +658,7 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 			monitor.beginTask("", 1); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.ExtractInterfaceProcessor_creating);
 			final AST ast= declaration.getAST();
-			final ITypeParameter[] parameters= fSubType.getTypeParameters();
 			Type type= ast.newSimpleType(ast.newSimpleName(fSuperName));
-			if (parameters.length > 0) {
-				final ParameterizedType parameterized= ast.newParameterizedType(type);
-				for (int index= 0; index < parameters.length; index++)
-					parameterized.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getElementName())));
-				type= parameterized;
-			}
 			final ASTRewrite rewriter= rewrite.getASTRewrite();
 			if (declaration instanceof TypeDeclaration)
 				rewriter.getListRewrite(declaration, TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY).insertLast(type, rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.ExtractInterfaceProcessor_add_super_interface, SET_EXTRACT_INTERFACE));
@@ -881,7 +864,7 @@ public final class ExtractInterfaceProcessor extends SuperTypeRefactoringProcess
 	 * @see org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor#isApplicable()
 	 */
 	public final boolean isApplicable() throws CoreException {
-		return Checks.isAvailable(fSubType) && !fSubType.isBinary() && !fSubType.isReadOnly() && !fSubType.isAnnotation() && !fSubType.isAnonymous();
+		return Checks.isAvailable(fSubType) && !fSubType.isBinary() && !fSubType.isReadOnly() && !fSubType.isAnonymous();
 	}
 
 	/**

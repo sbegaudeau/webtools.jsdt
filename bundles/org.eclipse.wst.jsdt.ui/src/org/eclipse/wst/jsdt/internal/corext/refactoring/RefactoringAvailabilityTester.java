@@ -329,7 +329,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isExtractInterfaceAvailable(final IType type) throws JavaScriptModelException {
-		return Checks.isAvailable(type) && !type.isBinary() && !type.isReadOnly() && !type.isAnnotation() && !type.isAnonymous();
+		return Checks.isAvailable(type) && !type.isBinary() && !type.isReadOnly() && !type.isAnonymous();
 	}
 
 	public static boolean isExtractInterfaceAvailable(final JavaTextSelection selection) throws JavaScriptModelException {
@@ -371,9 +371,6 @@ public final class RefactoringAvailabilityTester {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
 				return false;
-			final IType declaring= method.getDeclaringType();
-			if (declaring != null && declaring.isAnnotation())
-				return false;
 		}
 		return true;
 	}
@@ -381,7 +378,7 @@ public final class RefactoringAvailabilityTester {
 	public static boolean isExtractSupertypeAvailable(final IMember[] members) throws JavaScriptModelException {
 		if (members != null && members.length != 0) {
 			final IType type= getTopLevelType(members);
-			if (type != null && !type.isInterface())
+			if (type != null)
 				return true;
 			for (int index= 0; index < members.length; index++) {
 				if (!isExtractSupertypeAvailable(members[index]))
@@ -652,8 +649,6 @@ public final class RefactoringAvailabilityTester {
 			return false;
 		if (method.isConstructor())
 			return false;
-		if (method.getDeclaringType()!=null && method.getDeclaringType().isAnnotation())
-			return false;
 
 		return true;
 	}
@@ -734,7 +729,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isMoveMethodAvailable(final IFunction method) throws JavaScriptModelException {
-		return method.exists() && !method.isConstructor() && !method.isBinary() && (method.getDeclaringType()==null || !method.getDeclaringType().isAnnotation()) && !method.isReadOnly() && !JdtFlags.isStatic(method);
+		return method.exists() && !method.isConstructor() && !method.isBinary() && !method.isReadOnly() && !JdtFlags.isStatic(method);
 	}
 
 	public static boolean isMoveMethodAvailable(final IStructuredSelection selection) throws JavaScriptModelException {
@@ -763,15 +758,13 @@ public final class RefactoringAvailabilityTester {
 			return false;
 		if (!Checks.isAvailable(member))
 			return false;
-		if (type == IJavaScriptElement.METHOD && declaring.isInterface())
-			return false;
 		if (type == IJavaScriptElement.METHOD && !JdtFlags.isStatic(member))
 			return false;
 		if (type == IJavaScriptElement.METHOD && ((IFunction) member).isConstructor())
 			return false;
 		if (type == IJavaScriptElement.TYPE && !JdtFlags.isStatic(member))
 			return false;
-		if (!declaring.isInterface() && !JdtFlags.isStatic(member))
+		if (!JdtFlags.isStatic(member))
 			return false;
 		return true;
 	}
@@ -829,9 +822,6 @@ public final class RefactoringAvailabilityTester {
 		if (member instanceof IFunction) {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
-				return false;
-			final IType declaring= method.getDeclaringType();
-			if (declaring != null && declaring.isAnnotation())
 				return false;
 		}
 		return true;
@@ -891,9 +881,6 @@ public final class RefactoringAvailabilityTester {
 		if (type == IJavaScriptElement.METHOD) {
 			final IFunction method= (IFunction) member;
 			if (method.isConstructor())
-				return false;
-			final IType declaring= method.getDeclaringType();
-			if (declaring != null && declaring.isAnnotation())
 				return false;
 		}
 		return true;
@@ -1039,10 +1026,6 @@ public final class RefactoringAvailabilityTester {
 		return Checks.isAvailable(parameter);
 	}
 
-	public static boolean isRenameEnumConstAvailable(final IField field) throws JavaScriptModelException {
-		return Checks.isAvailable(field) && field.getDeclaringType().isEnum();
-	}
-
 	public static boolean isRenameFieldAvailable(final IField field) throws JavaScriptModelException {
 		return Checks.isAvailable(field);
 	}
@@ -1132,7 +1115,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isUseSuperTypeAvailable(final IType type) throws JavaScriptModelException {
-		return type != null && type.exists() && !type.isAnnotation() && !type.isAnonymous();
+		return type != null && type.exists();
 	}
 
 	public static boolean isUseSuperTypeAvailable(final JavaTextSelection selection) throws JavaScriptModelException {

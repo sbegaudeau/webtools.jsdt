@@ -225,9 +225,6 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 
 		final IMember member= fTypeParameter.getDeclaringMember();
 		if (member instanceof IType) {
-			final IType type= (IType) member;
-			if (type.getTypeParameter(name).exists())
-				result.addFatalError(RefactoringCoreMessages.RenameTypeParameterRefactoring_class_type_parameter_already_defined);
 		} else {
 			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
@@ -322,7 +319,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 		final IMember member= fTypeParameter.getDeclaringMember();
 		if (member instanceof IType) {
 			final IType type= (IType) member;
-			return type.getTypeParameter(getNewElementName());
+			return null;
 		} else if (member instanceof IFunction) {
 			return null;
 		} else {
@@ -355,7 +352,7 @@ public final class RenameTypeParameterProcessor extends JavaRenameProcessor impl
 					if (element instanceof IFunction)
 						fTypeParameter= null;
 					else if (element instanceof IType)
-						fTypeParameter= ((IType) element).getTypeParameter(parameter);
+						fTypeParameter= null;
 					else
 						return RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringCoreMessages.InitializableRefactoring_illegal_argument, new Object[] { handle, JDTRefactoringDescriptor.ATTRIBUTE_INPUT}));
 					if (fTypeParameter == null || !fTypeParameter.exists())

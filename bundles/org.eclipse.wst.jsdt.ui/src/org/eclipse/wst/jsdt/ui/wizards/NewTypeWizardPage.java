@@ -64,7 +64,6 @@ import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
@@ -526,22 +525,13 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				}
 			}
 			
-			try {
-				IType type= null;
-				if (elem.getElementType() == IJavaScriptElement.TYPE) {
-					type= (IType)elem;
-					if (type.exists()) {
-						String superName= JavaModelUtil.getFullyQualifiedName(type);
-						if (type.isInterface()) {
-							initSuperinterfaces.add(superName);
-						} else {
-							initSuperclass= superName;
-						}
-					}
+			IType type= null;
+			if (elem.getElementType() == IJavaScriptElement.TYPE) {
+				type= (IType)elem;
+				if (type.exists()) {
+					String superName= JavaModelUtil.getFullyQualifiedName(type);
+					initSuperclass= superName;
 				}
-			} catch (JavaScriptModelException e) {
-				JavaScriptPlugin.log(e);
-				// ignore this exception now
 			}			
 		}
 		
@@ -1947,18 +1937,9 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 
 				content.append(constructTypeStub(parentCU, imports, lineDelimiter));
 				IJavaScriptElement sibling= null;
-				if (enclosingType.isEnum()) {
-					IField[] fields = enclosingType.getFields();
-					if (fields.length > 0) {
-						for (int i = 0, max = fields.length; i < max; i++) {
-							sibling = fields[i];
-							break;
-						}
-					}
-				} else {
-					IJavaScriptElement[] elems= enclosingType.getChildren();
-					sibling = elems.length > 0 ? elems[0] : null;
-				}
+				
+				IJavaScriptElement[] elems= enclosingType.getChildren();
+				sibling = elems.length > 0 ? elems[0] : null;
 				
 				createdType= enclosingType.createType(content.toString(), sibling, false, new SubProgressMonitor(monitor, 2));
 			

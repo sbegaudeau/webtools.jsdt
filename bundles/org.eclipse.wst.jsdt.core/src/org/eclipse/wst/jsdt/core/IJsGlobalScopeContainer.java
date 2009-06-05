@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,49 +56,6 @@ public interface IJsGlobalScopeContainer {
 	 * Kind for a container mapping to a default system library, implicitly contributed by the runtime
 	 */
 	int K_DEFAULT_SYSTEM = 3;
-
-	/**
-	 * Answers the set of includepath entries this container is mapping to.
-	 * <p>
-	 * The set of entries associated with a includepath container may contain any of the following:
-	 * <ul>
-	 * <li> library entries (<code>CPE_LIBRARY</code>) </li>
-	 * <li> project entries (<code>CPE_PROJECT</code>) </li>
-	 * </ul>
-	 * A includepath container can neither reference further includepath containers
-	 * or includepath variables.
-	 * </p>
-	 * <p>
-	 * This method is called by the JavaScript model when it needs to resolve this
-	 * includepath container entry into a list of library and project entries.
-	 * The method is typically called exactly once for a given JavaScript project,
-	 * and the resulting list of entries cached internally by the JavaScript model.
-	 * This method must not be called by other clients.
-	 * <p>
-	 * There are a wide variety of conditions under which this method may be
-	 * invoked. To ensure that the implementation does not interfere with
-	 * correct functioning of the JavaScript model, the implementation should use
-	 * only the following JavaScript model APIs:
-	 * <ul>
-	 * <li>{@link JavaScriptCore#newLibraryEntry(IPath, IPath, IPath, boolean)} and variants</li>
-	 * <li>{@link JavaScriptCore#newProjectEntry(IPath, boolean)} and variants</li>
-	 * <li>{@link JavaScriptCore#create(org.eclipse.core.resources.IWorkspaceRoot)}</li>
-	 * <li>{@link JavaScriptCore#create(org.eclipse.core.resources.IProject)}</li>
-	 * <li>{@link IJavaScriptModel#getJavaScriptProjects()}</li>
-	 * <li>{@link IJavaScriptProject#getRawIncludepath()}</li>
-	 * <li>{@link IJavaScriptProject#readRawIncludepath()}</li>
-	 * <li>{@link IJavaScriptProject#getOutputLocation()}</li>
-	 * <li>{@link IJavaScriptProject#readOutputLocation()}</li>
-	 * <li>JavaScript element operations marked as "handle-only"</li>
-	 * </ul>
-	 * The effects of using other JavaScript model APIs are unspecified.
-	 * </p>
-	 *
-	 * @return IIncludePathEntry[] - the includepath entries this container represents
-	 * @see IIncludePathEntry
-	 * @deprecated Use {@link #getIncludepathEntries()} instead
-	 */
-	IIncludePathEntry[] getClasspathEntries();
 
 	/**
 	 * Answers the set of includepath entries this container is mapping to.

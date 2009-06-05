@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,13 +46,11 @@ public class MethodDeclarationCompletionProposal extends JavaTypeCompletionPropo
 
 	public static void evaluateProposals(IType type, String prefix, int offset, int length, int relevance, Set suggestedMethods, Collection result) throws CoreException {
 		IFunction[] methods= type.getFunctions();
-		if (!type.isInterface()) {
-			String constructorName= type.getElementName();
-			if (constructorName.length() > 0 && constructorName.startsWith(prefix) && !hasMethod(methods, constructorName) && suggestedMethods.add(constructorName)) {
-				result.add(new MethodDeclarationCompletionProposal(type, constructorName, null, offset, length, relevance + 500));
-			}
+		String constructorName= type.getElementName();
+		if (constructorName.length() > 0 && constructorName.startsWith(prefix) && !hasMethod(methods, constructorName) && suggestedMethods.add(constructorName)) {
+			result.add(new MethodDeclarationCompletionProposal(type, constructorName, null, offset, length, relevance + 500));
 		}
-
+		
 		if (prefix.length() > 0 && !"main".equals(prefix) && !hasMethod(methods, prefix) && suggestedMethods.add(prefix)) { //$NON-NLS-1$
 			if (!JavaScriptConventions.validateFunctionName(prefix).matches(IStatus.ERROR)) {
 				result.add(new MethodDeclarationCompletionProposal(type, prefix, Signature.SIG_VOID, offset, length, relevance));
@@ -121,7 +119,6 @@ public class MethodDeclarationCompletionProposal extends JavaTypeCompletionPropo
 		String[] empty= new String[0];
 		String lineDelim= TextUtilities.getDefaultLineDelimiter(document);
 		String declTypeName= fType.getTypeQualifiedName('.');
-		boolean isInterface= fType.isInterface();
 
 		StringBuffer buf= new StringBuffer();
 		if (addComments) {
@@ -132,9 +129,7 @@ public class MethodDeclarationCompletionProposal extends JavaTypeCompletionPropo
 			}
 		}
 		if (fReturnTypeSig != null) {
-			if (!isInterface) {
-				buf.append("private "); //$NON-NLS-1$
-			}
+			buf.append("private "); //$NON-NLS-1$
 		} else {
 			buf.append("public "); //$NON-NLS-1$
 		}
@@ -144,21 +139,18 @@ public class MethodDeclarationCompletionProposal extends JavaTypeCompletionPropo
 		}
 		buf.append(' ');
 		buf.append(fMethodName);
-		if (isInterface) {
-			buf.append("();"); //$NON-NLS-1$
-			buf.append(lineDelim);
-		} else {
-			buf.append("() {"); //$NON-NLS-1$
-			buf.append(lineDelim);
+		
+		buf.append("() {"); //$NON-NLS-1$
+		buf.append(lineDelim);
 
-			String body= CodeGeneration.getMethodBodyContent(fType.getJavaScriptUnit(), declTypeName, fMethodName, fReturnTypeSig == null, "", lineDelim); //$NON-NLS-1$
-			if (body != null) {
-				buf.append(body);
-				buf.append(lineDelim);
-			}
-			buf.append("}"); //$NON-NLS-1$
+		String body= CodeGeneration.getMethodBodyContent(fType.getJavaScriptUnit(), declTypeName, fMethodName, fReturnTypeSig == null, "", lineDelim); //$NON-NLS-1$
+		if (body != null) {
+			buf.append(body);
 			buf.append(lineDelim);
 		}
+		buf.append("}"); //$NON-NLS-1$
+		buf.append(lineDelim);
+		
 		String stub=  buf.toString();
 
 		// use the code formatter

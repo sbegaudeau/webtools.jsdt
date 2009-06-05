@@ -118,8 +118,6 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 
 	private boolean fSort;
 
-	private boolean fSynchronized;
-
 	private boolean fFinal;
 
 	private int fVisibility;
@@ -202,16 +200,8 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 					notifyResult(false);
 					return;
 				}
-				if (type.isAnnotation()) {
-					MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_annotation_not_applicable);
-					notifyResult(false);
-					return;
-				} else if (type.isInterface()) {
-					MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_interface_not_applicable);
-					notifyResult(false);
-					return;
-				} else
-					run(((IJavaScriptUnit) firstElement).findPrimaryType(), new IField[0], false);
+				
+				run(((IJavaScriptUnit) firstElement).findPrimaryType(), new IField[0], false);
 			}
 		} catch (CoreException e) {
 			ExceptionHandler.handle(e, getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_error_actionfailed); 
@@ -225,7 +215,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getJavaScriptUnit() != null && !type.isInterface() && !type.isLocal();
+			return type.getJavaScriptUnit() != null && !type.isLocal();
 		}
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
@@ -255,15 +245,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 	}
 
 	private void run(IType type, IField[] preselected, boolean editor) throws CoreException {
-		if (type.isAnnotation()) {
-			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_annotation_not_applicable);
-			notifyResult(false);
-			return;
-		} else if (type.isInterface()) {
-			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_interface_not_applicable);
-			notifyResult(false);
-			return;
-		} else if (type.getJavaScriptUnit() == null) {
+		if (type.getJavaScriptUnit() == null) {
 			MessageDialog.openInformation(getShell(), DIALOG_TITLE, ActionMessages.AddGetterSetterAction_error_not_in_source_file);
 			notifyResult(false);
 			return;
@@ -309,7 +291,6 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 				return;
 			}
 			fSort= dialog.getSortOrder();
-			fSynchronized= dialog.getSynchronized();
 			fFinal= dialog.getFinal();
 			fVisibility= dialog.getVisibilityModifier();
 			fGenerateComment= dialog.getGenerateComment();
@@ -673,15 +654,11 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 						// all fields must be in the same CU
 						return null;
 					}
-					try {
-						final IType declaringType= fld.getDeclaringType();
-						if (declaringType==null || declaringType.isInterface())
-							return null;
-					} catch (JavaScriptModelException e) {
-						JavaScriptPlugin.log(e);
+					
+					final IType declaringType= fld.getDeclaringType();
+					if (declaringType==null)
 						return null;
-					}
-
+					
 					res[i]= fld;
 				} else {
 					return null;

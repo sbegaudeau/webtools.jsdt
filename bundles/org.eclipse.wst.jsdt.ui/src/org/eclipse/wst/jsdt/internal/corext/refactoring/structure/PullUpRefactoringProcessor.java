@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -285,23 +284,11 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 	}
 
 	private static Set getEffectedSubTypes(final ITypeHierarchy hierarchy, final IType type) throws JavaScriptModelException {
-		 IType[] types= null;
-		 final boolean isInterface= type.isInterface();
-		if (isInterface) {
-			 final Collection remove= new ArrayList();
-			 final List list= new ArrayList(Arrays.asList(hierarchy.getSubtypes(type)));
-			 for (final Iterator iterator= list.iterator(); iterator.hasNext();) {
-	            final IType element= (IType) iterator.next();
-	            if (element.isInterface())
-	            	remove.add(element);
-            }
-			 list.removeAll(remove);
-			 types= (IType[]) list.toArray(new IType[list.size()]);
-		 } else
-			 types= hierarchy.getSubclasses(type);
+		IType[] types= null;
+		types= hierarchy.getSubclasses(type);
 		final Set result= new HashSet();
 		for (int index= 0; index < types.length; index++) {
-			if (!isInterface && JdtFlags.isAbstract(types[index]))
+			if (JdtFlags.isAbstract(types[index]))
 				result.addAll(getEffectedSubTypes(hierarchy, types[index]));
 			else
 				result.add(types[index]);
@@ -510,8 +497,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 
 	protected boolean canBeAccessedFrom(final IMember member, final IType target, final ITypeHierarchy hierarchy) throws JavaScriptModelException {
 		if (super.canBeAccessedFrom(member, target, hierarchy)) {
-			if (target.isInterface())
-				return true;
 			if (target.equals(member.getDeclaringType()))
 				return true;
 			if (target.equals(member))
@@ -635,8 +620,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 	}
 
 	private void checkAccessModifiers(final RefactoringStatus result, final Set notDeletedMembersInSubtypes) throws JavaScriptModelException {
-		if (fDestinationType.isInterface())
-			return;
 		final List toDeclareAbstract= Arrays.asList(fAbstractMethods);
 		for (final Iterator iter= notDeletedMembersInSubtypes.iterator(); iter.hasNext();) {
 			final IMember member= (IMember) iter.next();
@@ -739,9 +722,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 					if (JdtFlags.isFinal(member)) {
 						final RefactoringStatusContext context= JavaStatusContext.create(member);
 						result.addWarning(RefactoringCoreMessages.PullUpRefactoring_final_fields, context);
-					} else if (getDestinationType().isInterface()) {
-						final RefactoringStatusContext context= JavaStatusContext.create(member);
-						result.addWarning(RefactoringCoreMessages.PullUpRefactoring_non_final_pull_up_to_interface, context);
 					}
 				}
 			}
@@ -760,37 +740,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		try {
 			final IMember[] pullables= getMembersToMove();
 			monitor.beginTask(RefactoringCoreMessages.PullUpRefactoring_checking, pullables.length);
-
-			final IType declaring= getDeclaringType();
-			final ITypeParameter[] parameters= declaring.getTypeParameters();
-			if (parameters.length > 0) {
-				final TypeVariableMaplet[] mapping= TypeVariableUtil.subTypeToInheritedType(declaring);
-				IMember member= null;
-				int length= 0;
-				for (int index= 0; index < pullables.length; index++) {
-					member= pullables[index];
-					final String[] unmapped= TypeVariableUtil.getUnmappedVariables(mapping, declaring, member);
-					length= unmapped.length;
-					switch (length) {
-						case 0:
-							break;
-						case 1:
-							status.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_Type_variable_not_available, new String[] { unmapped[0], declaring.getSuperclassName()}), JavaStatusContext.create(member));
-							break;
-						case 2:
-							status.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_Type_variable2_not_available, new String[] { unmapped[0], unmapped[1], declaring.getSuperclassName()}), JavaStatusContext.create(member));
-							break;
-						case 3:
-							status.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_Type_variable3_not_available, new String[] { unmapped[0], unmapped[1], unmapped[2], declaring.getSuperclassName()}), JavaStatusContext.create(member));
-							break;
-						default:
-							status.addError(Messages.format(RefactoringCoreMessages.PullUpRefactoring_Type_variables_not_available, new String[] { declaring.getSuperclassName()}), JavaStatusContext.create(member));
-					}
-					monitor.worked(1);
-					if (monitor.isCanceled())
-						throw new OperationCanceledException();
-				}
-			}
 		} finally {
 			monitor.done();
 		}
@@ -1058,19 +1007,12 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 					rewrite= getCompilationUnitRewrite(fCompilationUnitRewrites, unit);
 					if (deleteMap.containsKey(unit)) {
 						LinkedList list= new LinkedList((List) deleteMap.get(unit));
-						if (destination.isInterface()) {
-							for (final Iterator iterator= list.iterator(); iterator.hasNext();) {
-								final IMember member= (IMember) iterator.next();
-								if (member instanceof IFunction)
-									iterator.remove();
-							}
-						}
 						deleteDeclarationNodes(sourceRewriter, sourceRewriter.getCu().equals(targetRewriter.getCu()), rewrite, list, SET_PULL_UP);
 					}
 					final JavaScriptUnit root= sourceRewriter.getRoot();
 					if (unit.equals(target)) {
 						final ASTRewrite rewriter= rewrite.getASTRewrite();
-						if (!JdtFlags.isAbstract(destination) && !destination.isInterface() && getAbstractMethods().length > 0) {
+						if (!JdtFlags.isAbstract(destination) && getAbstractMethods().length > 0) {
 							final AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(destination, rewrite.getRoot());
 							ModifierRewrite.create(rewriter, declaration).setModifiers(declaration.getModifiers() | Modifier.ABSTRACT, rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.PullUpRefactoring_make_target_abstract, SET_PULL_UP));
 						}
@@ -1098,8 +1040,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 								final VariableDeclarationFragment oldField= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) member, root);
 								if (oldField != null) {
 									int flags= getModifiersWithUpdatedVisibility(member, member.getFlags(), adjustments, new SubProgressMonitor(subsub, 1), true, status);
-									if (destination.isInterface())
-										flags|= Flags.AccFinal;
 									final FieldDeclaration newField= createNewFieldDeclarationNode(rewriter, root, (IField) member, oldField, mapping, new SubProgressMonitor(subsub, 1), status, flags);
 									rewriter.getListRewrite(declaration, declaration.getBodyDeclarationsProperty()).insertAt(newField, ASTNodes.getInsertionIndex(newField, declaration.bodyDeclarations()), rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.HierarchyRefactoring_add_member, SET_PULL_UP));
 									ImportRewriteUtil.addImports(rewrite, oldField.getParent(), new HashMap(), new HashMap(), false);
@@ -1107,8 +1047,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 							} else if (member instanceof IFunction) {
 								final FunctionDeclaration oldMethod= ASTNodeSearchUtil.getMethodDeclarationNode((IFunction) member, root);
 								if (oldMethod != null) {
-									if (JdtFlags.isStatic(member) && fDestinationType.isInterface())
-										status.merge(RefactoringStatus.createErrorStatus(Messages.format(RefactoringCoreMessages.PullUpRefactoring_moving_static_method_to_interface, new String[] { JavaScriptElementLabels.getTextLabel(member, JavaScriptElementLabels.ALL_FULLY_QUALIFIED)}), JavaStatusContext.create(member)));
 									final FunctionDeclaration newMethod= createNewMethodDeclarationNode(sourceRewriter, rewrite, ((IFunction) member), oldMethod, root, mapping, adjustments, new SubProgressMonitor(subsub, 1), status);
 									rewriter.getListRewrite(declaration, declaration.getBodyDeclarationsProperty()).insertAt(newMethod, ASTNodes.getInsertionIndex(newMethod, declaration.bodyDeclarations()), rewrite.createCategorizedGroupDescription(RefactoringCoreMessages.HierarchyRefactoring_add_member, SET_PULL_UP));
 									ImportRewriteUtil.addImports(rewrite, oldMethod, new HashMap(), new HashMap(), false);
@@ -1260,8 +1198,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		final ASTRewrite rewrite= targetRewrite.getASTRewrite();
 		final AST ast= rewrite.getAST();
 		final FunctionDeclaration newMethod= ast.newFunctionDeclaration();
-		if (!getDestinationType().isInterface())
-			copyBodyOfPulledUpMethod(sourceRewrite, targetRewrite, sourceMethod, oldMethod, newMethod, mapping, monitor);
+		copyBodyOfPulledUpMethod(sourceRewrite, targetRewrite, sourceMethod, oldMethod, newMethod, mapping, monitor);
 		newMethod.setConstructor(oldMethod.isConstructor());
 		newMethod.setExtraDimensions(oldMethod.getExtraDimensions());
 		copyJavadocNode(rewrite, sourceMethod, oldMethod, newMethod);
@@ -1337,9 +1274,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		final IFunction[] toDeclareAbstract= fAbstractMethods;
 		final IFunction[] abstractPulledUp= getAbstractMethodsToPullUp();
 		final Set result= new LinkedHashSet(toDeclareAbstract.length + abstractPulledUp.length + fMembersToMove.length);
-		if (fDestinationType.isInterface()) {
-			result.addAll(Arrays.asList(fMembersToMove));
-		}
+
 		result.addAll(Arrays.asList(toDeclareAbstract));
 		result.addAll(Arrays.asList(abstractPulledUp));
 		return (IFunction[]) result.toArray(new IFunction[result.size()]);
@@ -1550,12 +1485,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 			adjustment.setNeedsRewriting(false);
 			adjustments.put(member, adjustment);
 			return JdtFlags.clearAccessModifiers(modifiers) | Modifier.PROTECTED;
-		}
-		if (getDestinationType().isInterface()) {
-			final int flags= JdtFlags.clearAccessModifiers(modifiers) | Modifier.PUBLIC;
-			if (member instanceof IFunction)
-				return JdtFlags.clearFlag(Modifier.STATIC, flags);
-			return flags;
 		}
 		return modifiers;
 	}

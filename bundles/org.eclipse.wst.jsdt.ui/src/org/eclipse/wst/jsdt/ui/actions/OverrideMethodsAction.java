@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,7 +105,7 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 	private boolean canEnable(IStructuredSelection selection) throws JavaScriptModelException {
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			final IType type= (IType) selection.getFirstElement();
-			return type.getJavaScriptUnit() != null && !type.isInterface();
+			return type.getJavaScriptUnit() != null;
 		}
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
 			return true;
@@ -124,12 +124,12 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 		final Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			final IType type= (IType) elements[0];
-			if (type.getJavaScriptUnit() != null && !type.isInterface()) {
+			if (type.getJavaScriptUnit() != null) {
 				return type;
 			}
 		} else if (elements[0] instanceof IJavaScriptUnit) {
 			final IType type= ((IJavaScriptUnit) elements[0]).findPrimaryType();
-			if (type != null && !type.isInterface())
+			if (type != null)
 				return type;
 		}
 		return null;
@@ -164,16 +164,6 @@ public class OverrideMethodsAction extends SelectionDispatchAction {
 			final IType type= SelectionConverter.getTypeAtOffset(fEditor);
 			if (type != null) {
 				if (!ElementValidator.check(type, getShell(), getDialogTitle(), false) || !ActionUtil.isEditable(fEditor, getShell(), type)) {
-					notifyResult(false);
-					return;
-				}
-				if (type.isAnnotation()) {
-					MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.OverrideMethodsAction_annotation_not_applicable);
-					notifyResult(false);
-					return;
-				}
-				if (type.isInterface()) {
-					MessageDialog.openInformation(getShell(), getDialogTitle(), ActionMessages.OverrideMethodsAction_interface_not_applicable);
 					notifyResult(false);
 					return;
 				}

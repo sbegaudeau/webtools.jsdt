@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -36,18 +27,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
-import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -281,322 +262,10 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 			if (type == null)
 				return new TypeArgumentProposal[0];
 			
-			ITypeParameter[] parameters= type.getTypeParameters();
-			if (parameters.length == 0)
-				return new TypeArgumentProposal[0];
 			
-			TypeArgumentProposal[] arguments= new TypeArgumentProposal[parameters.length];
-			
-			ITypeBinding expectedTypeBinding= getExpectedType();
-			if (expectedTypeBinding != null && expectedTypeBinding.isParameterizedType()) {
-				// in this case, the type arguments we propose need to be compatible
-				// with the corresponding type parameters to declared type
-				
-				IType expectedType= (IType) expectedTypeBinding.getJavaElement();
-				
-				IType[] path= computeInheritancePath(type, expectedType);
-				if (path == null)
-					// proposed type does not inherit from expected type
-					// the user might be looking for an inner type of proposed type
-					// to instantiate -> do not add any type arguments
-					return new TypeArgumentProposal[0];
-				
-				int[] indices= new int[parameters.length];
-				for (int paramIdx= 0; paramIdx < parameters.length; paramIdx++) {
-					indices[paramIdx]= mapTypeParameterIndex(path, path.length - 1, paramIdx);
-				}
-				
-				// for type arguments that are mapped through to the expected type's
-				// parameters, take the arguments of the expected type
-				ITypeBinding[] typeArguments= expectedTypeBinding.getTypeArguments();
-				for (int paramIdx= 0; paramIdx < parameters.length; paramIdx++) {
-					if (indices[paramIdx] != -1) {
-						// type argument is mapped through
-						ITypeBinding binding= typeArguments[indices[paramIdx]];
-						arguments[paramIdx]= computeTypeProposal(binding, parameters[paramIdx]);
-					}
-				}
-			}
-			
-			// for type arguments that are not mapped through to the expected type,
-			// take the lower bound of the type parameter
-			for (int i= 0; i < arguments.length; i++) {
-				if (arguments[i] == null) {
-					arguments[i]= computeTypeProposal(parameters[i]);
-				}
-			}
-			fTypeArgumentProposals= arguments;
+			return new TypeArgumentProposal[0];
 		}
 		return fTypeArgumentProposals;
-	}
-
-	/**
-	 * Returns a type argument proposal for a given type parameter. The proposal is:
-	 * <ul>
-	 * <li>the type bound for type parameters with a single bound</li>
-	 * <li>the type parameter name for all other (unbounded or more than one bound) type parameters</li>
-	 * </ul>
-	 * Type argument proposals for type parameters are always ambiguous.
-	 * 
-	 * @param parameter the type parameter of the inserted type
-	 * @return a type argument proposal for <code>parameter</code>
-	 * @throws JavaScriptModelException
-	 */
-	private TypeArgumentProposal computeTypeProposal(ITypeParameter parameter) throws JavaScriptModelException {
-		String[] bounds= parameter.getBounds();
-		String elementName= parameter.getElementName();
-		String displayName= computeTypeParameterDisplayName(parameter, bounds);
-		if (bounds.length == 1 && !"java.lang.Object".equals(bounds[0])) //$NON-NLS-1$
-			return new TypeArgumentProposal(Signature.getSimpleName(bounds[0]), true, displayName);
-		else
-			return new TypeArgumentProposal(elementName, true, displayName);
-	}
-
-	private String computeTypeParameterDisplayName(ITypeParameter parameter, String[] bounds) {
-		if (bounds.length == 0 || bounds.length == 1 && "java.lang.Object".equals(bounds[0])) //$NON-NLS-1$
-			return parameter.getElementName();
-		StringBuffer buf= new StringBuffer(parameter.getElementName());
-		buf.append(" extends "); //$NON-NLS-1$
-		for (int i= 0; i < bounds.length; i++) {
-			buf.append(Signature.getSimpleName(bounds[i]));
-			if (i < bounds.length - 1)
-				buf.append(" & "); //$NON-NLS-1$
-		}
-		return buf.toString();
-	}
-
-	/**
-	 * Returns a type argument proposal for a given type binding. The proposal is:
-	 * <ul>
-	 * <li>the simple type name for normal types or type variables (unambigous proposal)</li>
-	 * <li>for wildcard types (ambigous proposals):
-	 * <ul>
-	 * <li>the upper bound for wildcards with an upper bound</li>
-	 * <li>the {@linkplain #computeTypeProposal(ITypeParameter) parameter proposal} for unbounded
-	 * wildcards or wildcards with a lower bound</li>
-	 * </ul>
-	 * </li>
-	 * </ul>
-	 * 
-	 * @param binding the type argument binding in the expected type
-	 * @param parameter the type parameter of the inserted type
-	 * @return a type argument proposal for <code>binding</code>
-	 * @throws JavaScriptModelException
-	 * @see #computeTypeProposal(ITypeParameter)
-	 */
-	private TypeArgumentProposal computeTypeProposal(ITypeBinding binding, ITypeParameter parameter) throws JavaScriptModelException {
-		final String name= binding.getName();
-		if (binding.isWildcardType()) {
-
-			if (binding.isUpperbound()) {
-				// replace the wildcard ? with the type parameter name to get "E extends Bound" instead of "? extends Bound"
-				String contextName= name.replaceFirst("\\?", parameter.getElementName()); //$NON-NLS-1$
-				// upper bound - the upper bound is the bound itself
-				return new TypeArgumentProposal(binding.getBound().getName(), true, contextName);
-			}
-			
-			// no or upper bound - use the type parameter of the inserted type, as it may be more
-			// restrictive (eg. List<?> list= new SerializableList<Serializable>()) 
-			return computeTypeProposal(parameter);
-		}
-
-		// not a wildcard but a type or type variable - this is unambigously the right thing to insert
-		return new TypeArgumentProposal(name, false, name);
-	}
-
-	/**
-	 * Computes one inheritance path from <code>superType</code> to
-	 * <code>subType</code> or <code>null</code> if <code>subType</code>
-	 * does not inherit from <code>superType</code>. Note that there may be
-	 * more than one inheritance path - this method simply returns one.
-	 * <p>
-	 * The returned array contains <code>superType</code> at its first index,
-	 * and <code>subType</code> at its last index. If <code>subType</code>
-	 * equals <code>superType</code>, an array of length 1 is returned
-	 * containing that type.
-	 * </p>
-	 *
-	 * @param subType the sub type
-	 * @param superType the super type
-	 * @return an inheritance path from <code>superType</code> to
-	 *         <code>subType</code>, or <code>null</code> if
-	 *         <code>subType</code> does not inherit from
-	 *         <code>superType</code>
-	 * @throws JavaScriptModelException
-	 */
-	private IType[] computeInheritancePath(IType subType, IType superType) throws JavaScriptModelException {
-		if (superType == null)
-			return null;
-
-		// optimization: avoid building the type hierarchy for the identity case
-		if (superType.equals(subType))
-			return new IType[] { subType };
-
-		ITypeHierarchy hierarchy= subType.newSupertypeHierarchy(getProgressMonitor());
-		if (!hierarchy.contains(superType))
-			return null; // no path
-
-		List path= new LinkedList();
-		path.add(superType);
-		do {
-			// any sub type must be on a hierarchy chain from superType to subType
-			superType= hierarchy.getSubtypes(superType)[0];
-			path.add(superType);
-		} while (!superType.equals(subType)); // since the equality case is handled above, we can spare one check
-
-		return (IType[]) path.toArray(new IType[path.size()]);
-	}
-
-	private NullProgressMonitor getProgressMonitor() {
-		return new NullProgressMonitor();
-	}
-
-	/**
-	 * For the type parameter at <code>paramIndex</code> in the type at
-	 * <code>path[pathIndex]</code>, this method computes the corresponding
-	 * type parameter index in the type at <code>path[0]</code>. If the type
-	 * parameter does not map to a type parameter of the super type,
-	 * <code>-1</code> is returned.
-	 *
-	 * @param path the type inheritance path, a non-empty array of consecutive
-	 *        sub types
-	 * @param pathIndex an index into <code>path</code> specifying the type to
-	 *        start with
-	 * @param paramIndex the index of the type parameter to map -
-	 *        <code>path[pathIndex]</code> must have a type parameter at that
-	 *        index, lest an <code>ArrayIndexOutOfBoundsException</code> is
-	 *        thrown
-	 * @return the index of the type parameter in <code>path[0]</code>
-	 *         corresponding to the type parameter at <code>paramIndex</code>
-	 *         in <code>path[pathIndex]</code>, or -1 if there is no
-	 *         corresponding type parameter
-	 * @throws JavaScriptModelException
-	 * @throws ArrayIndexOutOfBoundsException if <code>path[pathIndex]</code>
-	 *         has &lt;= <code>paramIndex</code> parameters
-	 */
-	private int mapTypeParameterIndex(IType[] path, int pathIndex, int paramIndex) throws JavaScriptModelException, ArrayIndexOutOfBoundsException {
-		if (pathIndex == 0)
-			// break condition: we've reached the top of the hierarchy
-			return paramIndex;
-
-		IType subType= path[pathIndex];
-		IType superType= path[pathIndex - 1];
-
-		String superSignature= findMatchingSuperTypeSignature(subType, superType);
-		ITypeParameter param= subType.getTypeParameters()[paramIndex];
-		int index= findMatchingTypeArgumentIndex(superSignature, param.getElementName());
-		if (index == -1) {
-			// not mapped through
-			return -1;
-		}
-
-		return mapTypeParameterIndex(path, pathIndex - 1, index);
-	}
-
-	/**
-	 * Finds and returns the super type signature in the
-	 * <code>extends</code> or <code>implements</code> clause of
-	 * <code>subType</code> that corresponds to <code>superType</code>.
-	 *
-	 * @param subType a direct and true sub type of <code>superType</code>
-	 * @param superType a direct super type (super class or interface) of
-	 *        <code>subType</code>
-	 * @return the super type signature of <code>subType</code> referring
-	 *         to <code>superType</code>
-	 * @throws JavaScriptModelException if extracting the super type signatures
-	 *         fails, or if <code>subType</code> contains no super type
-	 *         signature to <code>superType</code>
-	 */
-	private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaScriptModelException {
-		String[] signatures= getSuperTypeSignatures(subType, superType);
-		for (int i= 0; i < signatures.length; i++) {
-			String signature= signatures[i];
-			String qualified= SignatureUtil.qualifySignature(signature, subType);
-			String subFQN= SignatureUtil.stripSignatureToFQN(qualified);
-
-			String superFQN= superType.getFullyQualifiedName();
-			if (subFQN.equals(superFQN)) {
-				return signature;
-			}
-
-			// TODO handle local types
-		}
-
-		throw new JavaScriptModelException(new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
-	}
-
-	/**
-	 * Finds and returns the index of the type argument named
-	 * <code>argument</code> in the given super type signature.
-	 * <p>
-	 * If <code>signature</code> does not contain a corresponding type
-	 * argument, or if <code>signature</code> has no type parameters (i.e. is
-	 * a reference to a non-parameterized type or a raw type), -1 is returned.
-	 * </p>
-	 *
-	 * @param signature the super type signature from a type's
-	 *        <code>extends</code> or <code>implements</code> clause
-	 * @param argument the name of the type argument to find
-	 * @return the index of the given type argument, or -1 if there is none
-	 */
-	private int findMatchingTypeArgumentIndex(String signature, String argument) {
-		String[] typeArguments= Signature.getTypeArguments(signature);
-		for (int i= 0; i < typeArguments.length; i++) {
-			if (Signature.getSignatureSimpleName(typeArguments[i]).equals(argument))
-				return i;
-		}
-		return -1;
-	}
-
-	/**
-	 * Returns the super interface signatures of <code>subType</code> if
-	 * <code>superType</code> is an interface, otherwise returns the super
-	 * type signature.
-	 *
-	 * @param subType the sub type signature
-	 * @param superType the super type signature
-	 * @return the super type signatures of <code>subType</code>
-	 * @throws JavaScriptModelException if any java model operation fails
-	 */
-	private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaScriptModelException {
-		if (superType.isInterface())
-			return subType.getSuperInterfaceTypeSignatures();
-		else
-			return new String[] {subType.getSuperclassTypeSignature()};
-	}
-
-	/**
-	 * Returns the type binding of the expected type as it is contained in the
-	 * code completion context.
-	 *
-	 * @return the binding of the expected type
-	 */
-	private ITypeBinding getExpectedType() {
-		char[][] chKeys= fInvocationContext.getCoreContext().getExpectedTypesKeys();
-		if (chKeys == null || chKeys.length == 0)
-			return null;
-
-		String[] keys= new String[chKeys.length];
-		for (int i= 0; i < keys.length; i++) {
-			keys[i]= String.valueOf(chKeys[0]);
-		}
-
-		final ASTParser parser= ASTParser.newParser(AST.JLS3);
-		parser.setProject(fCompilationUnit.getJavaScriptProject());
-		parser.setResolveBindings(true);
-
-		final Map bindings= new HashMap();
-		ASTRequestor requestor= new ASTRequestor() {
-			public void acceptBinding(String bindingKey, IBinding binding) {
-				bindings.put(bindingKey, binding);
-			}
-		};
-		parser.createASTs(new IJavaScriptUnit[0], keys, requestor, null);
-
-		if (bindings.size() > 0)
-			return (ITypeBinding) bindings.get(keys[0]);
-
-		return null;
 	}
 
 	/**
@@ -777,14 +446,10 @@ public final class LazyGenericTypeProposal extends LazyJavaTypeCompletionProposa
 	}
 	
 	private boolean hasParameters() {
-		try {
-			IType type= (IType) getJavaElement();
-			if (type == null)
-				return false;
-
-			return type.getTypeParameters().length > 0;
-		} catch (JavaScriptModelException e) {
+		IType type= (IType) getJavaElement();
+		if (type == null)
 			return false;
-		}
+
+		return false;
 	}
 }

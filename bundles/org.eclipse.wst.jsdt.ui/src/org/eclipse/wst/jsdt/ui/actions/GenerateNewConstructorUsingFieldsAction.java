@@ -120,7 +120,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IType)) {
 			IType type= (IType) selection.getFirstElement();
-			return type.getJavaScriptUnit() != null && !type.isInterface() && !type.isAnnotation();
+			return type.getJavaScriptUnit() != null;
 		}
 
 		if ((selection.size() == 1) && (selection.getFirstElement() instanceof IJavaScriptUnit))
@@ -162,14 +162,11 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 						// all fields must be in the same CU
 						return null;
 					}
-					try {
-						final IType declaringType= field.getDeclaringType();
-						if (declaringType==null || declaringType.isInterface() || declaringType.isAnnotation())
-							return null;
-					} catch (JavaScriptModelException exception) {
-						JavaScriptPlugin.log(exception);
+					
+					final IType declaringType= field.getDeclaringType();
+					if (declaringType==null)
 						return null;
-					}
+					
 					fields[index]= field;
 				} else {
 					return null;
@@ -184,13 +181,13 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		Object[] elements= selection.toArray();
 		if (elements.length == 1 && (elements[0] instanceof IType)) {
 			IType type= (IType) elements[0];
-			if (type.getJavaScriptUnit() != null && !type.isInterface() && !type.isAnnotation()) {
+			if (type.getJavaScriptUnit() != null) {
 				return type;
 			}
 		} else if (elements[0] instanceof IJavaScriptUnit) {
 			IJavaScriptUnit unit= (IJavaScriptUnit) elements[0];
 			IType type= unit.findPrimaryType();
-			if (type != null && !type.isInterface() && !type.isAnnotation())
+			if (type != null)
 				return type;
 		} else if (elements[0] instanceof IField) {
 			return ((IField) elements[0]).getJavaScriptUnit().findPrimaryType();
@@ -221,17 +218,7 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			if (firstElement instanceof IType) {
 				run((IType) firstElement, new IField[0], false);
 			} else if (firstElement instanceof IJavaScriptUnit) {
-				IType type= ((IJavaScriptUnit) firstElement).findPrimaryType();
-				if (type.isAnnotation()) {
-					MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_annotation_not_applicable);
-					notifyResult(false);
-					return;
-				} else if (type.isInterface()) {
-					MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_interface_not_applicable);
-					notifyResult(false);
-					return;
-				} else
-					run(((IJavaScriptUnit) firstElement).findPrimaryType(), new IField[0], false);
+				run(((IJavaScriptUnit) firstElement).findPrimaryType(), new IField[0], false);
 			}
 		} catch (CoreException exception) {
 			ExceptionHandler.handle(exception, getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_error_actionfailed); 

@@ -553,12 +553,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 
 	protected RefactoringStatus checkDeclaringType(final IProgressMonitor monitor) throws JavaScriptModelException {
 		final IType type= getDeclaringType();
-		if (type.isEnum())
-			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.HierarchyRefactoring_enum_members);
-		if (type.isAnnotation())
-			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.HierarchyRefactoring_annotation_members);
-		if (type.isInterface())
-			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.HierarchyRefactoring_interface_members);
 		if (type.isBinary())
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.HierarchyRefactoring_members_of_binary);
 		if (type.isReadOnly())

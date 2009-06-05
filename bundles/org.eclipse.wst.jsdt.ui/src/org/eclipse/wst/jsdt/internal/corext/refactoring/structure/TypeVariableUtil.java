@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -103,7 +103,7 @@ public final class TypeVariableUtil {
 		Assert.isNotNull(declaring);
 		Assert.isNotNull(member);
 
-		final String[] variables= parametersToVariables(declaring.getTypeParameters());
+		final String[] variables= new String[0];
 		String[] result= new String[0];
 		if (member instanceof IField) {
 			final String signature= ((IField) member).getTypeSignature();
@@ -134,7 +134,7 @@ public final class TypeVariableUtil {
 			result= new String[set.size()];
 			set.toArray(result);
 		} else if (member instanceof IType)
-			result= parametersToVariables(((IType) member).getTypeParameters());
+			result= parametersToVariables(null);
 		else {
 			JavaScriptPlugin.logErrorMessage("Unexpected sub-type of IMember: " + member.getClass().getName()); //$NON-NLS-1$
 			Assert.isTrue(false);
@@ -335,15 +335,6 @@ public final class TypeVariableUtil {
 	public static TypeVariableMaplet[] subTypeToInheritedType(final IType type) throws JavaScriptModelException {
 		Assert.isNotNull(type);
 
-		final ITypeParameter[] domain= type.getTypeParameters();
-		if (domain.length > 0) {
-			final String signature= type.getSuperclassTypeSignature();
-			if (signature != null) {
-				final String[] range= getVariableSignatures(signature);
-				if (range.length > 0)
-					return parametersToSignatures(domain, range, false);
-			}
-		}
 		return new TypeVariableMaplet[0];
 	}
 
@@ -363,17 +354,7 @@ public final class TypeVariableUtil {
 		Assert.isNotNull(supertype);
 
 		final TypeVariableMaplet[] mapping= subTypeToInheritedType(subtype);
-		if (mapping.length > 0) {
-			final ITypeParameter[] range= supertype.getTypeParameters();
-			if (range.length > 0) {
-				final String signature= subtype.getSuperclassTypeSignature();
-				if (signature != null) {
-					final String[] domain= getVariableSignatures(signature);
-					if (domain.length > 0)
-						return composeMappings(mapping, signaturesToParameters(domain, range));
-				}
-			}
-		}
+
 		return mapping;
 	}
 
@@ -392,15 +373,6 @@ public final class TypeVariableUtil {
 		Assert.isNotNull(subtype);
 		Assert.isNotNull(supertype);
 
-		final ITypeParameter[] domain= supertype.getTypeParameters();
-		if (domain.length > 0) {
-			final String signature= subtype.getSuperclassTypeSignature();
-			if (signature != null) {
-				final String[] range= getVariableSignatures(signature);
-				if (range.length > 0)
-					return parametersToSignatures(domain, range, true);
-			}
-		}
 		return new TypeVariableMaplet[0];
 	}
 

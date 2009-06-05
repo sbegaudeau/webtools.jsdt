@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -44,26 +44,24 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditCopier;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeParameter;
@@ -466,10 +464,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			String typeComment= null;
 			String fileComment= null;
 			if (fSettings.createComments) {
-				final ITypeParameter[] parameters= declaring.getTypeParameters();
-				final String[] names= new String[parameters.length];
-				for (int index= 0; index < parameters.length; index++)
-					names[index]= parameters[index].getElementName();
+				final String[] names= new String[0];
 				typeComment= CodeGeneration.getTypeComment(extractedWorkingCopy, fTypeName, names, delimiter);
 				fileComment= CodeGeneration.getFileComment(extractedWorkingCopy, delimiter);
 			}
@@ -565,10 +560,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			buffer.append(fTypeName);
 			if (superType != null && !"java.lang.Object".equals(superType.getFullyQualifiedName())) { //$NON-NLS-1$
 				buffer.append(' ');
-				if (superType.isInterface())
-					buffer.append("implements "); //$NON-NLS-1$
-				else
-					buffer.append("extends "); //$NON-NLS-1$
+				buffer.append("extends "); //$NON-NLS-1$
 				buffer.append(superType.getElementName());
 			}
 			buffer.append(" {"); //$NON-NLS-1$
@@ -659,15 +651,6 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				type= ast.newSimpleType(ast.newSimpleName(extractedType.getElementName()));
 			}
 			subRewrite.getImportRemover().registerAddedImport(extractedType.getFullyQualifiedName('.'));
-			if (type != null) {
-				final ITypeParameter[] parameters= extractedType.getTypeParameters();
-				if (parameters.length > 0) {
-					final ParameterizedType parameterized= ast.newParameterizedType(type);
-					for (int index= 0; index < parameters.length; index++)
-						parameterized.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getElementName())));
-					type= parameterized;
-				}
-			}
 			final ASTRewrite rewriter= subRewrite.getASTRewrite();
 			if (type != null && declaration instanceof TypeDeclaration) {
 				final TypeDeclaration extended= (TypeDeclaration) declaration;

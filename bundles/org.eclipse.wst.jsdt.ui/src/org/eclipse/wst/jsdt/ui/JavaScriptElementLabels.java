@@ -882,18 +882,15 @@ public class JavaScriptElementLabels {
 		String typeName= type.getDisplayName();
 		if (typeName.length() == 0) { // anonymous
 			try {
-				if (type.getParent() instanceof IField && type.isEnum()) {
-					typeName= '{' + ELLIPSIS_STRING + '}'; 
+				String supertypeName;
+				String[] superInterfaceNames= type.getSuperInterfaceNames();
+				if (superInterfaceNames.length > 0) {
+					supertypeName= Signature.getSimpleName(superInterfaceNames[0]);
 				} else {
-					String supertypeName;
-					String[] superInterfaceNames= type.getSuperInterfaceNames();
-					if (superInterfaceNames.length > 0) {
-						supertypeName= Signature.getSimpleName(superInterfaceNames[0]);
-					} else {
-						supertypeName= Signature.getSimpleName(type.getSuperclassName());
-					}
-					typeName= Messages.format(JavaUIMessages.JavaElementLabels_anonym_type , supertypeName); 
+					supertypeName= Signature.getSimpleName(type.getSuperclassName());
 				}
+				typeName= Messages.format(JavaUIMessages.JavaElementLabels_anonym_type , supertypeName); 
+				
 			} catch (JavaScriptModelException e) {
 				//ignore
 				typeName= JavaUIMessages.JavaElementLabels_anonym; 
@@ -906,11 +903,7 @@ public class JavaScriptElementLabels {
 				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
 				getTypeParameterSignaturesLabel(typeParameters, flags, buf);
 			} else if (type.exists()) {
-				try {
-					getTypeParametersLabel(type.getTypeParameters(), flags, buf);
-				} catch (JavaScriptModelException e) {
-					// ignore
-				}
+				getTypeParametersLabel(null, flags, buf);
 			}
 		}
 		

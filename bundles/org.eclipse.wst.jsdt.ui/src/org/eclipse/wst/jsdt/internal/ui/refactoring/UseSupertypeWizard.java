@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,14 +86,6 @@ public class UseSupertypeWizard extends RefactoringWizard{
 				IType[] superInterface= fHierarchy.getSuperInterfaces(type);
 				for (int i=0; i < superInterface.length; i++){
 					result.add(superInterface[i]);
-				}
-				try {
-					if (type.isInterface()) {
-						IType found= type.getJavaScriptProject().findType("java.lang.Object"); //$NON-NLS-1$
-						result.add(found);
-					}
-				} catch (JavaScriptModelException exception) {
-					JavaScriptPlugin.log(exception);
 				}
 				return result;
 			}	
@@ -207,14 +199,7 @@ public class UseSupertypeWizard extends RefactoringWizard{
 				public int compare(Viewer viewer, Object first, Object second) {
 					final IType type1= (IType)first;
 					final IType type2= (IType)second;
-					try {
-						final int kind1= type1.isInterface() ? 1 : 0;
-						final int kind2= type2.isInterface() ? 1 : 0;
-						if (kind1 - kind2 != 0)
-							return kind1 - kind2;
-					} catch (JavaScriptModelException exception) {
-						JavaScriptPlugin.log(exception);
-					}
+					
 					return getComparator().compare(type1.getElementName(), type2.getElementName());
 				}
 			});

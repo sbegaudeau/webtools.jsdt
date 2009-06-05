@@ -718,17 +718,11 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			if (fTopMethod == null)
 				fTopMethod= fMethod;
 			if (! fTopMethod.equals(fMethod)) {
-				if (fTopMethod.getDeclaringType().isInterface()) {
-					RefactoringStatusContext context= JavaStatusContext.create(fTopMethod);
-					String message= Messages.format(RefactoringCoreMessages.MethodChecks_implements, 
-							new String[]{JavaElementUtil.createMethodSignature(fTopMethod), JavaModelUtil.getFullyQualifiedName(fTopMethod.getDeclaringType())});
-					return RefactoringStatus.createStatus(RefactoringStatus.FATAL, message, context, Corext.getPluginId(), RefactoringStatusCodes.METHOD_DECLARED_IN_INTERFACE, fTopMethod);
-				} else {
-					RefactoringStatusContext context= JavaStatusContext.create(fTopMethod);
-					String message= Messages.format(RefactoringCoreMessages.MethodChecks_overrides, 
-							new String[]{JavaElementUtil.createMethodSignature(fTopMethod), JavaModelUtil.getFullyQualifiedName(fTopMethod.getDeclaringType())});
-					return RefactoringStatus.createStatus(RefactoringStatus.FATAL, message, context, Corext.getPluginId(), RefactoringStatusCodes.OVERRIDES_ANOTHER_METHOD, fTopMethod);
-				}
+				RefactoringStatusContext context= JavaStatusContext.create(fTopMethod);
+				String message= Messages.format(RefactoringCoreMessages.MethodChecks_overrides, 
+						new String[]{JavaElementUtil.createMethodSignature(fTopMethod), JavaModelUtil.getFullyQualifiedName(fTopMethod.getDeclaringType())});
+				return RefactoringStatus.createStatus(RefactoringStatus.FATAL, message, context, Corext.getPluginId(), RefactoringStatusCodes.OVERRIDES_ANOTHER_METHOD, fTopMethod);
+			
 			}
 
 			if (monitor.isCanceled())
@@ -973,8 +967,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	
 	private boolean mustAnalyzeAstOfDeclaringCu() throws JavaScriptModelException{
 		if (JdtFlags.isAbstract(getMethod()))
-			return false;
-		else if (JavaScriptCore.IS_ECMASCRIPT4 && getMethod().getDeclaringType().isInterface())
 			return false;
 		else 
 			return true;

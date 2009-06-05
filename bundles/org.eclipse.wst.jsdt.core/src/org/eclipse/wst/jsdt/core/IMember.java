@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,16 +43,6 @@ String[] getCategories() throws JavaScriptModelException;
  * if this member is not declared in a class file (for example, a source type)
  */
 IClassFile getClassFile();
-/**
- * Returns the javaScript unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a javaScript unit .
- * This is a handle-only method.
- *
- * @return the javaScript unit in which this member is declared, or <code>null</code>
- * if this member is not declared in a javaScript unit  
- * @deprecated Use {@link #getJavaScriptUnit()} instead
- */
-IJavaScriptUnit getCompilationUnit();
 /**
  * Returns the javaScript unit in which this member is declared, or <code>null</code>
  * if this member is not declared in a javaScript unit.

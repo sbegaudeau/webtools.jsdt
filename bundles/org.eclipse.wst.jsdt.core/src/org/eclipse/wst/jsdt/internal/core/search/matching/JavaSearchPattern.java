@@ -13,9 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
@@ -268,30 +265,14 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 		char[][][] typeParameters = new char[10][][];
 		int ptr = -1;
 		boolean hasParameters = false;
-		try {
-			IJavaScriptElement parent = type;
-			ITypeParameter[] parameters = null;
-			while (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
-				if (++ptr > typeParameters.length) {
-					System.arraycopy(typeParameters, 0, typeParameters = new char[typeParameters.length+10][][], 0, ptr);
-				}
-				IType parentType = (IType) parent;
-				parameters = parentType.getTypeParameters();
-				if (parameters !=null) {
-					int length = parameters.length;
-					if (length > 0) {
-						hasParameters = true;
-						typeParameters[ptr] = new char[length][];
-						for (int i=0; i<length; i++)
-							typeParameters[ptr][i] = Signature.createTypeSignature(parameters[i].getElementName(), false).toCharArray();
-					}
-				}
-				parent = parent.getParent();
+		IJavaScriptElement parent = type;
+		while (parent != null && parent.getElementType() == IJavaScriptElement.TYPE) {
+			if (++ptr > typeParameters.length) {
+				System.arraycopy(typeParameters, 0, typeParameters = new char[typeParameters.length+10][][], 0, ptr);
 			}
+			parent = parent.getParent();
 		}
-		catch (JavaScriptModelException jme) {
-			return;
-		}
+		
 		// Store type arguments if any
 		if (hasParameters) {
 			if (++ptr < typeParameters.length)

@@ -82,9 +82,7 @@ import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.ModifierRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JavaRefactoringArguments;
@@ -409,8 +407,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 
 		RefactoringStatus result= new RefactoringStatus();				
 
-		if (fDestinationType.isInterface() && ! getDeclaringType().isInterface())
-			result.merge(checkFieldsForInterface());
 		if (result.hasFatalError())
 			return result;
 
@@ -465,9 +461,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 					return declaration.getInitializer() != null;
 
 			case IJavaScriptElement.TYPE: {
-				IType type= (IType) member;
-				if (type.isInterface() && !Checks.isTopLevel(type))
-					return true;
 				return (Flags.isPublic(flags) && Flags.isStatic(flags));
 			}
 			default:
@@ -835,21 +828,7 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 			MovedMemberAnalyzer analyzer= new MovedMemberAnalyzer(fSource, fMemberBindings, fSourceBinding, target);
 			declaration.accept(analyzer);
 			ImportRewriteUtil.addImports(fTarget, declaration, new HashMap(), new HashMap(), exclude, false);
-			if (getDeclaringType().isInterface() && !fDestinationType.isInterface()) {
-				if (declaration instanceof FieldDeclaration) {
-					FieldDeclaration fieldDecl= (FieldDeclaration) declaration;
-					int psfModifiers= Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL;
-					if ((fieldDecl.getModifiers() & psfModifiers) != psfModifiers) {
-						ModifierRewrite.create(fSource.getASTRewrite(), fieldDecl).setModifiers(psfModifiers, null);
-					}
-				} else if (declaration instanceof AbstractTypeDeclaration) {
-					AbstractTypeDeclaration typeDecl= (AbstractTypeDeclaration) declaration;
-					int psModifiers= Modifier.PUBLIC | Modifier.STATIC;
-					if ((typeDecl.getModifiers() & psModifiers) != psModifiers) {
-						ModifierRewrite.create(fSource.getASTRewrite(), typeDecl).setModifiers(typeDecl.getModifiers() | psModifiers, null);
-					}
-				}
-			}
+			
 			ITrackedNodePosition trackedPosition= fSource.getASTRewrite().track(declaration);
 			declaration.setProperty(TRACKED_POSITION_PROPERTY, trackedPosition);
 			targetNeedsSourceImport|= analyzer.targetNeedsSourceImport();

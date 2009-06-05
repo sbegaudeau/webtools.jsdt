@@ -564,15 +564,6 @@ public final class JavaModelUtil {
 	public static IType[] getAllSuperTypes(IType type, IProgressMonitor pm) throws JavaScriptModelException {
 		// workaround for 23656
 		IType[] superTypes= SuperTypeHierarchyCache.getTypeHierarchy(type).getAllSupertypes(type);
-		if (type.isInterface()) {
-			IType objekt= type.getJavaScriptProject().findType("java.lang.Object");//$NON-NLS-1$
-			if (objekt != null) {
-				IType[] superInterfacesAndObject= new IType[superTypes.length + 1];
-				System.arraycopy(superTypes, 0, superInterfacesAndObject, 0, superTypes.length);
-				superInterfacesAndObject[superTypes.length]= objekt;
-				return superInterfacesAndObject;
-			}
-		}
 		return superTypes;
 	}
 	

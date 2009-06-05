@@ -11,22 +11,20 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 
 public class GenericRefactoringHandleTransplanter {
 
@@ -153,16 +151,5 @@ public class GenericRefactoringHandleTransplanter {
 	
 	protected ILocalVariable transplantHandle(ILocalVariable element) {
 		return element; // can't get from parent!
-	}
-	
-	protected ITypeParameter transplantHandle(IMember parent, ITypeParameter element) {
-		switch (parent.getElementType()) {
-			case IJavaScriptElement.TYPE:
-				return ((IType) parent).getTypeParameter(element.getElementName());
-			case IJavaScriptElement.METHOD:
-				return null;
-			default:
-				throw new IllegalStateException(element.toString());
-		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -320,10 +320,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			target= getProject().findType(fullyQualifiedTypeName, new NullProgressMonitor());
 			if (target == null || !target.exists())
 				return RefactoringStatus.createErrorStatus(Messages.format(RefactoringCoreMessages.IntroduceIndirectionRefactoring_class_does_not_exist_error, fullyQualifiedTypeName));
-			if (target.isAnnotation())
-				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_cannot_create_in_annotation);
-			if (target.isInterface())
-				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_cannot_create_on_interface);
 		} catch (JavaScriptModelException e) {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceIndirectionRefactoring_unable_determine_declaring_type);
 		}

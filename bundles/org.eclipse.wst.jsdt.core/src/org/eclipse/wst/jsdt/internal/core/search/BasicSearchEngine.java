@@ -795,11 +795,7 @@ public class BasicSearchEngine {
 									}
 									char[] simpleName = type.getElementName().toCharArray();
 									int kind;
-									if (type.isEnum()) {
-										kind = TypeDeclaration.ENUM_DECL;
-									} else if (type.isAnnotation()) {
-										kind = TypeDeclaration.ANNOTATION_TYPE_DECL;
-									}	else if (type.isClass()) {
+									if (type.isClass()) {
 										kind = TypeDeclaration.CLASS_DECL;
 									} else /*if (type.isInterface())*/ {
 										kind = TypeDeclaration.INTERFACE_DECL;
@@ -1224,11 +1220,7 @@ public class BasicSearchEngine {
 							}
 							char[] simpleName = type.getElementName().toCharArray();
 							int kind;
-							if (type.isEnum()) {
-								kind = TypeDeclaration.ENUM_DECL;
-							} else if (type.isAnnotation()) {
-								kind = TypeDeclaration.ANNOTATION_TYPE_DECL;
-							}	else if (type.isClass()) {
+							if (type.isClass()) {
 								kind = TypeDeclaration.CLASS_DECL;
 							} else /*if (type.isInterface())*/ {
 								kind = TypeDeclaration.INTERFACE_DECL;
@@ -1465,12 +1457,6 @@ public class BasicSearchEngine {
 							char suffix = IIndexConstants.TYPE_SUFFIX;
 							if (type.isClass()) {
 								suffix = IIndexConstants.CLASS_SUFFIX;
-							} else if (type.isInterface()) {
-								suffix = IIndexConstants.INTERFACE_SUFFIX;
-							} else if (type.isEnum()) {
-								suffix = IIndexConstants.ENUM_SUFFIX;
-							} else if (type.isAnnotation()) {
-								suffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 							}
 							if (pattern.matchesDecodedKey(new QualifiedTypeDeclarationPattern(qualification, simpleName, suffix, matchRule))) {
 								nameRequestor.acceptType(type.getFlags(), packageDeclaration, simpleName, enclosingTypeNames, path, null);

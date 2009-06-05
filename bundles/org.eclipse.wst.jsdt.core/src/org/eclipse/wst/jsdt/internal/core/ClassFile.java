@@ -616,12 +616,6 @@ public boolean isClass() throws JavaScriptModelException {
 	return getType().isClass();
 }
 /**
- * @see IClassFile
- */
-public boolean isInterface() throws JavaScriptModelException {
-	return getType().isInterface();
-}
-/**
  * Returns true - class files are always read only.
  */
 public boolean isReadOnly() {

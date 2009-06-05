@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -320,9 +320,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			if (ctorOwningType.isBinary())
 				// Can't modify binary CU; don't know what CU to put factory method
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_constructorInBinaryClass); 
-			if (ctorOwningType.isEnum())
-				// Doesn't make sense to encapsulate enum constructors
-				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_constructorInEnum); 
 	
 			// Put the generated factory method inside the type that owns the constructor
 			fFactoryUnitHandle= ctorOwningType.getJavaScriptUnit();
@@ -1204,10 +1201,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			if (factoryType == null)
 				return RefactoringStatus.createErrorStatus(Messages.format(RefactoringCoreMessages.IntroduceFactory_noSuchClass, fullyQualifiedTypeName)); 
 
-			if (factoryType.isAnnotation())
-				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantPutFactoryMethodOnAnnotation); 
-			if (factoryType.isInterface())
-				return RefactoringStatus.createErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantPutFactoryMethodOnInterface); 
 		} catch (JavaScriptModelException e) {
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.IntroduceFactory_cantCheckForInterface); 
 		}

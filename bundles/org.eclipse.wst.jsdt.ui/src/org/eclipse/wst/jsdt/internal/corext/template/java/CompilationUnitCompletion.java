@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,17 +17,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -415,82 +413,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 */
 		public String[] computeBinding(IType superType, int index) throws JavaScriptModelException, IndexOutOfBoundsException {
 			initBounds();
-			computeTypeParameterBinding(superType, index);
 			return (String[]) fBounds.toArray(new String[fBounds.size()]);
-		}
-		
-		/**
-		 * Given a type parameter of <code>superType</code> at position
-		 * <code>index</code>, this method recursively computes the (lower)
-		 * type bound(s) of that parameter for an instance of <code>fType</code>.
-		 * <p>
-		 * <code>superType</code> must be a super type of <code>fType</code>,
-		 * and <code>superType</code> must have at least
-		 * <code>index + 1</code> type parameters.
-		 * </p>
-		 * <p>
-		 * The type bounds are stored in <code>fBounds</code>.
-		 * </p>
-		 * 
-		 * @param superType the super type to compute the type parameter binding
-		 *        for
-		 * @param index the index into the list of type parameters of
-		 *        <code>superType</code>
-		 * @throws JavaScriptModelException if any java model operation fails
-		 * @throws IndexOutOfBoundsException if the index is not valid
-		 */
-		private void computeTypeParameterBinding(final IType superType, final int index) throws JavaScriptModelException, IndexOutOfBoundsException {
-			int nParameters= superType.getTypeParameters().length;
-			if (nParameters <= index)
-				throw new IndexOutOfBoundsException();
-			
-			IType[] subTypes= fHierarchy.getSubtypes(superType);
-			
-			if (subTypes.length == 0) {
-				// we have reached down to the base type
-				Assert.isTrue(superType.equals(fType));
-				
-				String match= findMatchingTypeArgument(fVariable.signature, index, fUnit.findPrimaryType());
-				String bound= SignatureUtil.getUpperBound(match);
-				
-				// use the match whether it is a concrete type or not - if not,
-				// the generic type will at least be in visible in our context
-				// and can be referenced
-				addBound(bound);
-				return;
-			}
-			
-			IType subType= subTypes[0]; // take the first, as they all lead to fType
-
-			String signature= findMatchingSuperTypeSignature(subType, superType);
-			String match= findMatchingTypeArgument(signature, index, subType);
-			
-			if (isConcreteType(match, subType)) {
-				addBound(match);
-				return;
-			}
-			
-			ITypeParameter[] typeParameters= subType.getTypeParameters();
-			
-			for (int k= 0; k < typeParameters.length; k++) {
-				ITypeParameter formalParameter= typeParameters[k];
-				if (formalParameter.getElementName().equals(SignatureUtil.stripSignatureToFQN(match))) {
-					String[] bounds= formalParameter.getBounds();
-					for (int i= 0; i < bounds.length; i++) {
-						String boundSignature= Signature.createTypeSignature(bounds[i], true);
-						addBound(SignatureUtil.qualifySignature(boundSignature, subType));
-					}
-					computeTypeParameterBinding(subType, k);
-					return;
-				}
-			}
-			
-			// We have a non-concrete type argument T, but no matching type
-			// parameter in the sub type. This can happen if T is declared in
-			// the enclosing type. Since it the declaration is probably visible
-			// then, its fine to simply copy the match to the bounds and return.
-			addBound(match);
-			return;
 		}
 
 		/**
@@ -574,10 +497,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * @throws JavaScriptModelException if any java model operation fails
 		 */
 		private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaScriptModelException {
-			if (superType.isInterface())
-				return subType.getSuperInterfaceTypeSignatures();
-			else
-				return new String[] {subType.getSuperclassTypeSignature()};
+			return new String[] {subType.getSuperclassTypeSignature()};
 		}
 		
 		/**

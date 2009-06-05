@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,19 +36,12 @@ public class RenameMethodUserInterfaceStarter extends RenameUserInterfaceStarter
 				IFunction method= processor.getMethod();
 				if (!method.equals(processor.getOriginalMethod())) {
 					String message= null;
-					if (method.getDeclaringType()!=null && method.getDeclaringType().isInterface()) {
-						message= Messages.format(
-							RefactoringCoreMessages.MethodChecks_implements, 
-							new String[]{
-								JavaElementUtil.createMethodSignature(method), 
-								JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())});
-					} else {
-						message= Messages.format(
-							RefactoringCoreMessages.MethodChecks_overrides, 
-							new String[]{
-								JavaElementUtil.createMethodSignature(method), 
-								JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())});
-					}
+					message= Messages.format(
+						RefactoringCoreMessages.MethodChecks_overrides, 
+						new String[]{
+							JavaElementUtil.createMethodSignature(method), 
+							JavaModelUtil.getFullyQualifiedName(method.getDeclaringType())});
+					
 					message= Messages.format(
 						ReorgMessages.RenameMethodUserInterfaceStarter_message,  
 						message);

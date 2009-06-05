@@ -336,32 +336,6 @@ public class MethodOverrideTester {
 		Substitutions s= new Substitutions();
 		fTypeVariableSubstitutions.put(instantiatedType, s);
 		
-		ITypeParameter[] typeParameters= instantiatedType.getTypeParameters();
-		
-		if (instantiatingType == null) { // the focus type
-			for (int i= 0; i < typeParameters.length; i++) {
-				ITypeParameter curr= typeParameters[i];
-				// use star to make type variables different from type refs
-				s.addSubstitution(curr.getElementName(), '*' + curr.getElementName(), getTypeParameterErasure(curr, instantiatedType));
-			}
-		} else {
-			if (typeParameters.length == typeArguments.length) {
-				for (int i= 0; i < typeParameters.length; i++) {
-					ITypeParameter curr= typeParameters[i];
-					String substString= getSubstitutedTypeName(typeArguments[i], instantiatingType); // substitute in the context of the instantiatingType
-					String erasure= getErasedTypeName(typeArguments[i], instantiatingType); // get the erasure from the type argument
-					s.addSubstitution(curr.getElementName(), substString, erasure);
-				}
-			} else if (typeArguments.length == 0) { // raw type reference
-				for (int i= 0; i < typeParameters.length; i++) {
-					ITypeParameter curr= typeParameters[i];
-					String erasure= getTypeParameterErasure(curr, instantiatedType);
-					s.addSubstitution(curr.getElementName(), erasure, erasure);
-				}
-			} else {
-				// code with errors
-			}
-		}
 		String superclassTypeSignature= instantiatedType.getSuperclassTypeSignature();
 		if (superclassTypeSignature != null) {
 			String[] superTypeArguments= Signature.getTypeArguments(superclassTypeSignature);

@@ -661,7 +661,7 @@ public class SourceMapper
 		if (typeInfo.typeParameters != null) {
 			for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
 				TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-				ITypeParameter typeParameter = currentType.getTypeParameter(new String(typeParameterInfo.name));
+				ITypeParameter typeParameter = null;
 				setSourceRange(
 					typeParameter,
 					new SourceRange(

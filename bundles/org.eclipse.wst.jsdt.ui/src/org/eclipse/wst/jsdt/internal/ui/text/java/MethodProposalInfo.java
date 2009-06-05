@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,11 +15,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -127,17 +126,6 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 		if (declarationSignature == null) // array methods don't contain a declaration signature
 			return map;
 		char[][] concreteParameters= Signature.getTypeArguments(declarationSignature);
-
-		ITypeParameter[] typeParameters= type.getTypeParameters();
-		for (int i= 0; i < typeParameters.length; i++) {
-			String variable= typeParameters[i].getElementName();
-			if (concreteParameters.length > i)
-				// use lower bound since method equality is only parameter based
-				map.put(variable, SignatureUtil.getLowerBound(concreteParameters[i]));
-			else
-				// fProposal.getDeclarationSignature() is a raw type - use Object
-				map.put(variable, "Ljava.lang.Object;".toCharArray()); //$NON-NLS-1$
-		}
 
 		return map;
 	}

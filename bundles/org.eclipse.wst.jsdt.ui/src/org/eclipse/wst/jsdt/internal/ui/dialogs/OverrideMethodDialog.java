@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,7 +128,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 			if (parentElement instanceof IJavaScriptUnit) {
 				ArrayList result= new ArrayList(fMethods.length);
 				for (int index= 0; index < fMethods.length; index++) {
-					if (fMethods[index].getCompilationUnit() == parentElement)
+					if (fMethods[index].getJavaScriptUnit() == parentElement)
 						result.add(fMethods[index]);
 				}
 				return result.toArray();
@@ -148,7 +148,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 */
 		public Object getParent(Object element) {
 			if (element instanceof IFunction) {
-				return ((IFunction) element).getCompilationUnit();
+				return ((IFunction) element).getJavaScriptUnit();
 			}
 			return null;
 		}

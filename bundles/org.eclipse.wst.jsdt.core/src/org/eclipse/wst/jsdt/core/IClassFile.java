@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,17 +105,4 @@ public IType[] getTypes() throws JavaScriptModelException ;
  *      exception occurs while accessing its corresponding resource
  */
 boolean isClass() throws JavaScriptModelException;
-/**
- * Returns whether this type represents an interface. This is not guaranteed to
- * be instantaneous, as it may require parsing the underlying file.
- *
- * @return <code>true</code> if the file represents an interface.
- *
- * @exception JavaScriptModelException if this element does not exist or if an
- *      exception occurs while accessing its corresponding resource
- */
-boolean isInterface() throws JavaScriptModelException;
-
-
-
 }

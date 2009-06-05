@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -27,8 +26,8 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -36,12 +35,11 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -54,8 +52,8 @@ import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Strings;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OverrideMethodDialog;
 import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 
@@ -81,10 +79,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 		String lineDelim= "\n"; // Using newline is ok since source is used in dummy compilation unit //$NON-NLS-1$
 		buffer.append("class "); //$NON-NLS-1$
 		buffer.append(name);
-		if (fSuperType.isInterface())
-			buffer.append(" implements "); //$NON-NLS-1$
-		else
-			buffer.append(" extends "); //$NON-NLS-1$
+		buffer.append(" extends "); //$NON-NLS-1$
 		if (fDeclarationSignature != null)
 			buffer.append(Signature.toString(fDeclarationSignature));
 		else
@@ -149,31 +144,23 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 						IFunctionBinding[] bindings= StubUtility2.getOverridableMethods(unit.getAST(), binding, true);
 						CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(fSuperType.getJavaScriptProject());
 						String[] keys= null;
-						if (!fSuperType.isInterface() && !fSuperType.isAnnotation()) {
-							OverrideMethodDialog dialog= new OverrideMethodDialog(JavaScriptPlugin.getActiveWorkbenchShell(), null, type, true);
-							dialog.setGenerateComment(false);
-							dialog.setElementPositionEnabled(false);
-							if (dialog.open() == Window.OK) {
-								Object[] selection= dialog.getResult();
-								if (selection != null) {
-									ArrayList result= new ArrayList(selection.length);
-									for (int index= 0; index < selection.length; index++) {
-										if (selection[index] instanceof IFunctionBinding)
-											result.add(((IBinding) selection[index]).getKey());
-									}
-									keys= (String[]) result.toArray(new String[result.size()]);
-									settings.createComments= dialog.getGenerateComment();
+						
+						OverrideMethodDialog dialog= new OverrideMethodDialog(JavaScriptPlugin.getActiveWorkbenchShell(), null, type, true);
+						dialog.setGenerateComment(false);
+						dialog.setElementPositionEnabled(false);
+						if (dialog.open() == Window.OK) {
+							Object[] selection= dialog.getResult();
+							if (selection != null) {
+								ArrayList result= new ArrayList(selection.length);
+								for (int index= 0; index < selection.length; index++) {
+									if (selection[index] instanceof IFunctionBinding)
+										result.add(((IBinding) selection[index]).getKey());
 								}
+								keys= (String[]) result.toArray(new String[result.size()]);
+								settings.createComments= dialog.getGenerateComment();
 							}
-						} else {
-							settings.createComments= false;
-							List list= new ArrayList();
-							for (int index= 0; index < bindings.length; index++) {
-								if (Modifier.isAbstract(bindings[index].getModifiers()))
-									list.add(bindings[index].getKey());
-							}
-							keys= (String[]) list.toArray(new String[list.size()]);
 						}
+						
 						if (keys == null) {
 							setReplacementString(""); //$NON-NLS-1$
 							setReplacementLength(0);
@@ -224,17 +211,6 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 
 	private Image getImageForType(IType type) {
 		String imageName= JavaPluginImages.IMG_OBJS_CLASS; // default
-		if (type != null) {
-			try {
-				if (type.isAnnotation()) {
-					imageName= JavaPluginImages.IMG_OBJS_ANNOTATION;
-				} else if (type.isInterface()) {
-					imageName= JavaPluginImages.IMG_OBJS_INTERFACE;
-				}
-			} catch (JavaScriptModelException e) {
-				JavaScriptPlugin.log(e);
-			}
-		}
 		return JavaPluginImages.get(imageName);
 	}
 
