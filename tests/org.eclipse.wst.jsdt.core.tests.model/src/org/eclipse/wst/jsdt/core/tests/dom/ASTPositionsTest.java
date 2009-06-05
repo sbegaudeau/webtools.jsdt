@@ -66,9 +66,9 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	public void test001() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
-			"import java.util.Map;\r\n" +
-			"public class X {\r\n" +
-			"	Map<String, Number> map= null;\r\n" +
+			"var d = new Date();\r\n" +
+			"function X() {\r\n" +
+			"	var date= d;\r\n" +
 			"}";
     	ASTNode node = buildAST(
     			contents,
@@ -76,14 +76,14 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			false);
     	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
     	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
-    	assertEquals("Wrong char", 'X', contents.charAt(compilationUnit.getPosition(2, 13)));
-    	assertEquals("Wrong char", 'i', contents.charAt(compilationUnit.getPosition(1, 0)));
+    	assertEquals("Wrong char", 'X', contents.charAt(compilationUnit.getPosition(2, 9)));
+    	assertEquals("Wrong char", 'v', contents.charAt(compilationUnit.getPosition(1, 0)));
     	assertEquals("Wrong position", -1, compilationUnit.getPosition(1, -1));
     	assertEquals("Wrong position", -1, compilationUnit.getPosition(-1, 0));
     	assertEquals("Wrong position", -1, compilationUnit.getPosition(5, 0));
     	assertEquals("Wrong position", -1, compilationUnit.getPosition(4, 1));
     	assertEquals("Wrong char", '}', contents.charAt(compilationUnit.getPosition(4, 0)));
-    	assertEquals("Wrong char", '\r', contents.charAt(compilationUnit.getPosition(1, 21)));
+    	assertEquals("Wrong char", '\r', contents.charAt(compilationUnit.getPosition(1, 19)));
     	
     	sanityCheck(contents, compilationUnit);
 	}

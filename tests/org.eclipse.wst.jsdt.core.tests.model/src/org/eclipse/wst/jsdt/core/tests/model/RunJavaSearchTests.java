@@ -24,16 +24,6 @@ public class RunJavaSearchTests extends junit.framework.TestCase {
 	public final static List TEST_CLASSES = new ArrayList();
 	static {
 		TEST_CLASSES.add(JavaSearchTests.class);
-		TEST_CLASSES.add(JavaSearchGenericTypeTests.class);
-		TEST_CLASSES.add(JavaSearchGenericTypeEquivalentTests.class);
-		TEST_CLASSES.add(JavaSearchGenericTypeExactTests.class);
-		TEST_CLASSES.add(JavaSearchGenericFieldTests.class);
-		TEST_CLASSES.add(JavaSearchGenericMethodTests.class);
-		TEST_CLASSES.add(JavaSearchGenericMethodExactTests.class);
-		TEST_CLASSES.add(JavaSearchGenericMethodEquivalentTests.class);
-		TEST_CLASSES.add(JavaSearchGenericConstructorTests.class);
-		TEST_CLASSES.add(JavaSearchGenericConstructorExactTests.class);
-		TEST_CLASSES.add(JavaSearchGenericConstructorEquivalentTests.class);
 		TEST_CLASSES.add(WorkingCopySearchTests.class);
 		TEST_CLASSES.add(JavaSearchJavadocTests.class);
 	}

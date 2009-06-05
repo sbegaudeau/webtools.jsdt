@@ -43,7 +43,6 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 		if(false) COMPLETION_SUITES.add(JavadocTextCompletionModelTest.class);
 		if(false) COMPLETION_SUITES.add(JavadocBugsCompletionModelTest.class);
 		if(false) COMPLETION_SUITES.add(JavadocCompletionContextTests.class);
-		if(false) COMPLETION_SUITES.add(JavadocCompletionContextTests_1_5.class);
 	}
 
 	public static Class[] getTestClasses() {
