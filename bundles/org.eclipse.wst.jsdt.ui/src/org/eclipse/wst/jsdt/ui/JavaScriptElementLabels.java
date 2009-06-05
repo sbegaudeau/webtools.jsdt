@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
@@ -653,19 +652,6 @@ public class JavaScriptElementLabels {
 		}
 	}
 	
-	private static void getTypeParametersLabel(ITypeParameter[] typeParameters, long flags, StringBuffer buf) {
-		if (typeParameters.length > 0) {
-			buf.append('<');
-			for (int i = 0; i < typeParameters.length; i++) {
-				if (i > 0) {
-					buf.append(COMMA_STRING);
-				}
-				buf.append(typeParameters[i].getDisplayName());
-			}
-			buf.append('>');
-		}
-	}
-	
 	/**
 	 * Appends the label for a field to a {@link StringBuffer}. Considers the F_* flags.
 	 * 	@param field The element to render.
@@ -902,8 +888,6 @@ public class JavaScriptElementLabels {
 				BindingKey key= new BindingKey(type.getKey());
 				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
 				getTypeParameterSignaturesLabel(typeParameters, flags, buf);
-			} else if (type.exists()) {
-				getTypeParametersLabel(null, flags, buf);
 			}
 		}
 		
