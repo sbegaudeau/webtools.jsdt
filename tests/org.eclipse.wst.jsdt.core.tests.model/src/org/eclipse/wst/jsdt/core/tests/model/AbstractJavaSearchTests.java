@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -123,24 +123,6 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 					}
 					line.append(localVar.getElementName());
 					unit = (IJavaScriptUnit)localVar.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
-				} else if (element instanceof ITypeParameter) {
-					line.append(" ");
-					ITypeParameter typeParam = (ITypeParameter)element;
-					IJavaScriptElement parent = typeParam.getParent();
-					if (parent instanceof IType) {
-						IType type = (IType)parent;
-						append(type);
-						unit = type.getJavaScriptUnit();
-					} else if (parent instanceof IFunction) {
-						IFunction method = (IFunction)parent;
-						append(method);
-						unit = method.getJavaScriptUnit();
-					} else {
-						line.append("<Unexpected kind of parent for type parameter>");
-						unit = (IJavaScriptUnit)typeParam.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
-					}
-					line.append(".");
-					line.append(typeParam.getElementName());
 				} else if (element instanceof IImportDeclaration) {
 					IImportDeclaration importDeclaration = (IImportDeclaration)element;
 					unit = (IJavaScriptUnit)importDeclaration.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);

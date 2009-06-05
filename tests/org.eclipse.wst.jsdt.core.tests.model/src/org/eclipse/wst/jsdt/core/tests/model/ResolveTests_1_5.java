@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2237,24 +2237,6 @@ public void test0100() throws JavaScriptModelException {
 		"<TLocal> [in Local [in foo() [in Test [in [Working copy] Test.java [in test0100 [in src2 [in Resolve]]]]]]]",
 		elements
 	);
-}
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=99645
-public void test0101() throws JavaScriptModelException {
-	IClassFile cu = getClassFile("Resolve", "class-folder", "test0101", "Test.class");
-
-	String str = cu.getSource();
-	int start = str.indexOf("T field;");
-	int length = "T".length();
-	IJavaScriptElement[] elements = cu.codeSelect(start, length);
-	assertElementsEqual(
-			"Unexpected elements",
-			"<T> [in Test [in Test.class [in test0101 [in class-folder [in Resolve]]]]]",
-			elements
-	);
-	
-	ISourceRange nameRange = ((ITypeParameter)elements[0]).getNameRange();
-	assertEquals("Offset is not correct" , str.indexOf("T>"), nameRange.getOffset());
-	assertEquals("Length is not correct" , "T".length(), nameRange.getLength());
 }
 
 /*

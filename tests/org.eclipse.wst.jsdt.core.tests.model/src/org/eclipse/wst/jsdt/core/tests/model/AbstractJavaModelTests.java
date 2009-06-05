@@ -589,29 +589,6 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		assertEquals(message, expected, actual);
 	}
-	protected void assertTypeParametersEqual(String expected, ITypeParameter[] typeParameters) throws JavaScriptModelException {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; i < typeParameters.length; i++) {
-			ITypeParameter typeParameter = typeParameters[i];
-			buffer.append(typeParameter.getElementName());
-			String[] bounds = typeParameter.getBounds();
-			int length = bounds.length;
-			if (length > 0)
-				buffer.append(" extends ");
-			for (int j = 0; j < length; j++) {
-				buffer.append(bounds[j]);
-				if (j != length -1) {
-					buffer.append(" & ");
-				}
-			}
-			buffer.append("\n");
-		}
-		String actual = buffer.toString();
-		if (!expected.equals(actual)) {
-			System.out.println(displayString(actual, 3) + this.endChar);
-		}
-		assertEquals("Unepexeted type parameters", expected, actual);
-	}
 	protected void assertSortedStringsEqual(String message, String expected, String[] strings) {
 		Util.sort(strings);
 		assertStringsEqual(message, expected, strings);
@@ -1449,7 +1426,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		return getLocalVariable(cu, selectAt, selection);
 	}
 	protected String getNameSource(String cuSource, IJavaScriptElement element) throws JavaScriptModelException {
-		ISourceRange nameRange = element instanceof ITypeParameter ? ((ITypeParameter) element).getNameRange() : ((IMember) element).getNameRange();
+		ISourceRange nameRange = ((IMember) element).getNameRange();
 		int start = nameRange.getOffset();
 		int end = start+nameRange.getLength();
 		String actualSource = start >= 0 && end >= start ? cuSource.substring(start, end) : "";

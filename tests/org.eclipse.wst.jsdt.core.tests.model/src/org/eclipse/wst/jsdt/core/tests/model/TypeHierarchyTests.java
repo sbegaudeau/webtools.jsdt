@@ -344,18 +344,6 @@ public void testBinaryInnerTypeGetSuperclass() throws JavaScriptModelException {
 	assertTrue("Superclass not found for Y$Inner", superclass != null);
 	assertEquals("Unexpected super class", "Z", superclass.getElementName());
 }
-/**
- * Ensures that the superinterfaces can be retrieved for a binary inner type.
- */
-public void testBinaryInnerTypeGetSuperInterfaces() throws JavaScriptModelException {
-	IClassFile cf = getClassFile("TypeHierarchy", "lib.jar", "binary", "Y$Inner.class");
-	IType type = cf.getType();
-	ITypeHierarchy h = type.newSupertypeHierarchy(null);
-	assertTypesEqual(
-		"Unexpected super interfaces", 
-		"binary.I\n", 
-		h.getSuperInterfaces(type));
-}
 /*
  * Ensures that the hierarchy lookup mechanism get the right binary if it is missplaced.
  * (regression test for bug 139279 Fup of bug 134110, got CCE changing an external jar contents and refreshing the project)
@@ -422,34 +410,6 @@ public void testBinaryTypeGetSuperclass2() throws JavaScriptModelException {
 	IType superclass= h.getSuperclass(type);
 	assertTrue("Superclass not found for Deep", superclass != null);
 	assertEquals("Unexpected superclass of Deep", "Z", superclass.getElementName());
-}
-/**
- * Ensures that the superinterfaces can be retrieved for a binary type's superinterfaces.
- */
-public void testBinaryTypeGetSuperInterfaces() throws JavaScriptModelException {
-	IClassFile cf = getClassFile("TypeHierarchy", "lib.jar", "binary", "X.class");
-	IType type = cf.getType();
-	ITypeHierarchy h = type.newSupertypeHierarchy(null);
-	IType[] superInterfaces = h.getSuperInterfaces(type);
-	assertTypesEqual(
-		"Unexpected super interfaces of X", 
-		"binary.I\n", 
-		superInterfaces);
-}
-/**
- * Ensures that the superinterfaces can be retrieved for a binary type's superinterfaces.
- * Test with type that has a "rich" super hierarchy
- */
-public void testBinaryTypeGetSuperInterfaces2() throws JavaScriptModelException {
-	IClassFile cf = getClassFile("TypeHierarchy", "lib.jar", "rich", "C.class");
-	IType type = cf.getType();
-	ITypeHierarchy h = type.newSupertypeHierarchy(null);
-	IType[] superInterfaces = h.getSuperInterfaces(type);
-	assertTypesEqual(
-		"Unexpected super interfaces of C", 
-		"rich.I\n" +
-		"rich.I3\n", 
-		superInterfaces);
 }
 /*
  * Ensures that a hierarchy can be constructed on a binary type in a jar that is hidden by another jar with the same type.
@@ -905,19 +865,6 @@ public void testGetAllClassesInRegion() {
 		types);
 }
 /**
- * Ensures the correctness of all interfaces in a type hierarchy based on a region.
- */
-public void testGetAllInterfacesInRegion() {
-	IType[] types = this.typeHierarchy.getAllInterfaces();
-	assertTypesEqual(
-		"Unexpected all interfaces in hierarchy", 
-		"binary.I\n" +
-		"rich.I\n" +
-		"rich.I2\n" +
-		"rich.I3\n", 
-		types);
-}
-/**
  * Ensures that the correct subtypes of a type exist in the type 
  * hierarchy.
  */
@@ -1009,20 +956,6 @@ public void testGetAllSuperclassesFromBinary2() throws JavaScriptModelException 
 		false);
 }
 /**
- * Ensures that the correct superinterfaces of a type exist in the type 
- * hierarchy.
- */
-public void testGetAllSuperInterfaces() throws JavaScriptModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.js").getType("Z");
-	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getAllSuperInterfaces(type);
-	assertTypesEqual(
-		"Unexpected super interfaces of Z", 
-		"p1.I1\n" + 
-		"p1.I2\n",
-		types);
-}
-/**
  * Ensures that the correct supertypes of a type exist in the type 
  * hierarchy.
  */
@@ -1086,30 +1019,6 @@ public void testGetCachedFlags() throws JavaScriptModelException {
 	int flags = hierarchy.getCachedFlags(type2);
 }
 /**
- * Ensures that the correct extending interfaces exist in the type 
- * hierarchy.
- */
-public void testGetExtendingInterfaces() throws JavaScriptModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.js").getType("I");
-	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getExtendingInterfaces(type);
-	this.assertTypesEqual(
-		"Unexpected extending interfaces of I",
-		"p2.I1\n" + 
-		"p2.I2\n",
-		types
-	);
-
-	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.js").getType("X");
-	hierarchy = type.newTypeHierarchy(null);
-	types = hierarchy.getExtendingInterfaces(type);
-	this.assertTypesEqual(
-		"Unexpected extending interfaces of X",
-		"", // interfaces cannot extend a class
-		types
-	);
-}
-/**
  * Ensures that the correct implementing interfaces exist in the type 
  * hierarchy.
  */
@@ -1141,31 +1050,6 @@ public void testGetRootClasses() {
 	assertTypesEqual(
 		"Unexpected root classes",
 		"java.lang.Object\n",
-		types);
-}
-/**
- * Ensures that the correct root interfaces exist in the type 
- * hierarchy.
- */
-public void testGetRootInterfaces() throws JavaScriptModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "Y.js").getType("Y");
-	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getRootInterfaces();
-	assertTypesEqual(
-		"Unexpected root classes",
-		"p2.I\n",
-		types);
-}
-/**
- * Ensures that getRootInterfaces() works on a IRegion.
- */
-public void testGetRootInterfacesFromRegion() {
-	IType[] types = this.typeHierarchy.getRootInterfaces();
-	assertTypesEqual(
-		"Unexpected root classes",
-		"binary.I\n" + 
-		"rich.I\n" + 
-		"rich.I3\n",
 		types);
 }
 /**
@@ -1722,20 +1606,6 @@ public void testSourceTypeGetSuperclass4() throws JavaScriptModelException {
 	IType superclass = h.getSuperclass(type);
 	assertTrue("Superclass not found for A", superclass != null);
 	assertEquals("Unexpected super class for A", "B", superclass.getElementName());
-}
-
-/**
- * Ensures that the superinterfaces can be retrieved for a source type's superinterfaces.
- */
-public void testSourceTypeGetSuperInterfaces() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
-	IType type = cu.getType("Y");
-	ITypeHierarchy h = type.newSupertypeHierarchy(null);
-	IType[] superInterfaces = h.getSuperInterfaces(type);
-	assertTypesEqual("Unexpected super interfaces for Y", 
-		"p1.I1\n" +
-		"p1.I2\n", 
-		superInterfaces);
 }
 
 /**
