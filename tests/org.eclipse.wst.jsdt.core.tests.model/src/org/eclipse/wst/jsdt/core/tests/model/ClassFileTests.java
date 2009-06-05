@@ -468,77 +468,6 @@ public void testParameterNames02() throws CoreException {
 	}
 }
 
-/**
- * Ensure that the type parameter signatures of a binary type are correct.
- */
-public void testParameterTypeSignatures1() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"T:Ljava.lang.Object;\n",
-		type.getTypeParameterSignatures());
-}
-
-/**
- * Ensure that the type parameter signatures of a binary type are correct.
- */
-public void testParameterTypeSignatures2() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("nongeneric").getClassFile("A.class").getType();
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"",
-		type.getTypeParameterSignatures());
-}
-
-/**
- * Ensure that the type parameter signatures of a binary type are correct.
- */
-public void testParameterTypeSignatures3() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("Y.class").getType();
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"K:Ljava.lang.Object;\n" + 
-		"L:Ljava.lang.Object;\n",
-		type.getTypeParameterSignatures());
-}
-
-/**
- * Ensure that the type parameter signatures of a binary type are correct.
- */
-public void testParameterTypeSignatures4() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("Z.class").getType();
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"T:Ljava.lang.Object;:Lgeneric.I<-TT;>;\n",
-		type.getTypeParameterSignatures());
-}
-
-/**
- * Ensure that the type parameter signatures of a binary type are correct.
- */
-public void testParameterTypeSignatures5() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("W.class").getType();
-	assertStringsEqual(
-		"Unexpected type parameters",
-		"T:Lgeneric.X<TT;>;\n" + 
-		"U:TT;\n",
-		type.getTypeParameterSignatures());
-}
-//
-///**
-// * Ensure that the type parameter signatures of a binary method are correct.
-// * @deprecated
-// */
-//public void testParameterTypeSignatures6() throws JavaScriptModelException {
-//	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("X.class").getType();
-//	IFunction method = type.getFunction("foo", new String[] {"TK;", "TV;"});
-//	assertStringsEqual(
-//		"Unexpected type parameters",
-//		"K:Ljava.lang.Object;\n" + 
-//		"V:Ljava.lang.Object;\n",
-//		method.getTypeParameterSignatures());
-//}
-
 /*
  * Ensures that the raw parameter names of a binary method with source attached are correct.
  */
@@ -629,21 +558,6 @@ public void testSourceRangeNotOnClasspath() throws CoreException {
 	} finally {
 		deleteProject("P2");
 	}
-}
-
-/*
- * Ensure that opening a binary type parameter when its parent has not been open yet
- * doesn't throw a JavaScriptModelException
- * (regression test for bug 101228 JME on code assist)
- */
-public void testTypeParameter() throws CoreException {
-	IClassFile clazz = this.jarRoot.getPackageFragment("generic").getClassFile("X.class");
-	ITypeParameter typeParameter = clazz.getType().getTypeParameter("T");
-	clazz.close();
-	assertStringsEqual(
-		"Unexpected bounds", 
-		"java.lang.Object\n",
-		typeParameter.getBounds());
 }
 
 /*

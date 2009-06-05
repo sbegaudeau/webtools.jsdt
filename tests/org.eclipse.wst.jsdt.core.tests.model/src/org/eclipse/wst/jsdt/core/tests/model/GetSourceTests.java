@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,40 +200,6 @@ public class GetSourceTests extends ModifyingResourceTests {
 			String expectedSource = "Y";
 			assertSourceEquals("Unexpected source'", expectedSource,
 					actualSource);
-		} finally {
-			deleteFile("/P/p/Y.js");
-		}
-	}
-
-	/*
-	 * Ensures the name range for a type parameter is correct.
-	 */
-	public void testNameRangeTypeParameter1() throws CoreException {
-		try {
-			String cuSource = "package p;\n"
-					+ "public class Y<T extends String> {\n" + "}";
-			createFile("/P/p/Y.js", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js")
-					.getType("Y").getTypeParameter("T");
-			assertSourceEquals("Unexpected source'", "T", getNameSource(
-					cuSource, typeParameter));
-		} finally {
-			deleteFile("/P/p/Y.js");
-		}
-	}
-
-	/*
-	 * Ensures the source for a type parameter is correct.
-	 */
-	public void testTypeParameter1() throws CoreException {
-		try {
-			String cuSource = "package p;\n"
-					+ "public class Y<T extends String> {\n" + "}";
-			createFile("/P/p/Y.js", cuSource);
-			ITypeParameter typeParameter = getCompilationUnit("/P/p/Y.js")
-					.getType("Y").getTypeParameter("T");
-			assertSourceEquals("Unexpected source'", "T extends String",
-					typeParameter.getSource());
 		} finally {
 			deleteFile("/P/p/Y.js");
 		}

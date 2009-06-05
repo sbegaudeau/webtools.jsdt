@@ -2547,22 +2547,6 @@ public void testBug88174() throws CoreException {
 }
 
 /**
- * Bug 87627: [search] correct results are missing in java search
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=87627"
- */
-public void testBug87627() throws CoreException {
-	IType type = getClassFile("JavaSearchBugs", "lib/b87627.jar", "b87627", "List.class").getType();
-	ITypeParameter[] parameters = type.getTypeParameters();
-	assertNotNull(type.getFullyQualifiedName()+" should have parameters", parameters);
-	assertEquals("Wrong number of parameters", 1, parameters.length);
-	search(parameters[0], REFERENCES);
-	assertSearchResults(
-		"lib/b87627.jar b87627.List EXACT_MATCH\n" + 
-		"lib/b87627.jar boolean b87627.List.addAll(b87627.Collection<? extends E>) EXACT_MATCH"
-	);
-}
-
-/**
  * Bug 88300: [search] Reference search result is changed by placement of private method
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=88300"
  */

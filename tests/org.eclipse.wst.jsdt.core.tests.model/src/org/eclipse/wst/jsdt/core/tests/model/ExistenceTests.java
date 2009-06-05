@@ -64,8 +64,8 @@ protected void assertUnderlyingResourceFails(IJavaScriptElement element) {
 }
 public void testBinaryMethodAfterNonExistingMember() throws CoreException {
 	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"JCL_LIB"});
-		IClassFile classFile = project.getPackageFragmentRoot(getSystemJsPathString()).getPackageFragment("java.lang").getClassFile("Object.class");
+		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {});
+		IClassFile classFile = project.getPackageFragmentRoot(getSystemJsPathString()).getPackageFragment("").getClassFile("system.js");
 		classFile.open(null);
 		IType type = classFile.getType();
 		type.getFunction("foo", new String[0]).exists();
@@ -78,7 +78,7 @@ public void testClassFileInBinary() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src"});
 		this.createFile("P/bin/X.class", "");
-		IClassFile classFile = this.getClassFile("P/bin/X.class");
+		IJavaScriptElement classFile = this.getClassFile("P/bin/X.class");
 		assertTrue(!classFile.exists());
 	} finally {
 		this.deleteProject("P");
@@ -88,7 +88,7 @@ public void testClassFileInLibrary() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {}, new String[] {"lib"});
 		this.createFile("P/lib/X.class", "");
-		IClassFile classFile = this.getClassFile("P/lib/X.class");
+		IJavaScriptElement classFile = this.getClassFile("P/lib/X.class");
 		assertTrue(classFile.exists());
 	} finally {
 		this.deleteProject("P");
@@ -101,7 +101,7 @@ public void testClassFileInLibraryInOtherProject() throws CoreException {
 		String path = "P2/lib/X.class";
 		IFile file = this.createFile(path, "");
 		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"/P2/lib"});
-		IClassFile nonExistingFile = getClassFile(path);
+		IJavaScriptElement nonExistingFile = getClassFile(path);
 		assertFalse("File '"+path+"' should not exist in P2!", nonExistingFile.exists());
 		IJavaScriptElement element = JavaScriptCore.create(getFolder("/P2/lib"));
 		assertTrue("folder '/P2/lib' should be found in P1!", element.exists());
@@ -140,7 +140,7 @@ public void testClassFileInSource1() throws CoreException {
 	try {
 		this.createJavaProject("P", new String[] {"src"});
 		this.createFile("P/src/X.class", "");
-		IClassFile classFile = this.getClassFile("P/src/X.class");
+		IJavaScriptElement classFile = this.getClassFile("P/src/X.class");
 		assertTrue("Class file should not exist", !classFile.exists()); 
 	} finally {
 		this.deleteProject("P");
@@ -345,63 +345,12 @@ public void testPkgFragmentRootNotInClasspath() throws CoreException {
 	}
 }
 /*
- * Ensure that an ITypeParameter exists if it exists in source.
- */
-public void testTypeParameter1() throws CoreException {
-	try {
-		createJavaProject("P");
-		createFile(
-			"P/X.js", 
-			"public class X<T> {}"
-		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("T");
-		assertTrue("Type parameter should exist", typeParameter.exists()); 
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
- * Ensure that an ITypeParameter doesn't exist if it doesn't exist in source.
- */
-public void testTypeParameter3() throws CoreException {
-	try {
-		createJavaProject("P");
-		createFile(
-			"P/X.js", 
-			"public class X<T> {}"
-		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("U");
-		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
- * Ensure that an ITypeParameter doesn't exist even if a member class with the same name exists in source.
- * (regression test for bug 73255 [1.5][reconciling] ClassCastException in SourceTypeElementInfo#getTypeParameterBounds)
- */
-public void testTypeParameter5() throws CoreException {
-	try {
-		createJavaProject("P");
-		createFile(
-			"P/X.js", 
-			"public class X {\n" +
-			"  class T {}\n" +
-			"}"
-		);
-		ITypeParameter typeParameter = getCompilationUnit("P/X.js").getType("X").getTypeParameter("T");
-		assertTrue("Type parameter should not exist", !typeParameter.exists()); 
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
  * Ensures that one cannot get the corresponding resource of a non-existing class file.
  */
 public void testCorrespondingResourceNonExistingClassFile() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, new String[] {"lib"});
-		IClassFile classFile = getClassFile("/P/lib/X.class");
+		IJavaScriptElement classFile = getClassFile("/P/lib/X.class");
 		assertCorrespondingResourceFails(classFile);
 	} finally {
 		deleteProject("P");
@@ -487,7 +436,7 @@ public void testCorrespondingResourceNonExistingType() throws CoreException {
 public void testUnderlyingResourceNonExistingClassFile() throws CoreException {
 	try {
 		createJavaProject("P", new String[] {"src"}, new String[] {"lib"});
-		IClassFile classFile = getClassFile("/P/lib/X.class");
+		IJavaScriptElement classFile = getClassFile("/P/lib/X.js");
 		assertUnderlyingResourceFails(classFile);
 	} finally {
 		deleteProject("P");
@@ -501,18 +450,6 @@ public void testUnderlyingResourceNonExistingCompilationUnit() throws CoreExcept
 		createJavaProject("P", new String[] {"src"});
 		IJavaScriptUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		assertUnderlyingResourceFails(compilationUnit);
-	} finally {
-		deleteProject("P");
-	}
-}
-/*
- * Ensures that one cannot get the underlying resource of a non-existing jar package fragment root.
- */
-public void testUnderlyingResourceNonExistingJarPkgFragmentRoot() throws CoreException {
-	try {
-		IJavaScriptProject project = createJavaProject("P", new String[] {"src"});
-		IPackageFragmentRoot root = project.getPackageFragmentRoot("/nonExisting.jar");
-		assertUnderlyingResourceFails(root);
 	} finally {
 		deleteProject("P");
 	}
@@ -558,7 +495,7 @@ public void testUnderlyingResourceNonExistingType() throws CoreException {
 		createJavaProject("P", new String[] {"src"});
 		createFile(
 			"/P/src/X.js",
-			"public class X{\n" +
+			"function X(){\n" +
 			"}"
 		);
 		IType type = getCompilationUnit("/P/src/X.js").getType("NonExisting");
