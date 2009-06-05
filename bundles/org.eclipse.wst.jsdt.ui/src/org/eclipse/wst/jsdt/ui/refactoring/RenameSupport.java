@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameJavaScriptElementDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
@@ -42,7 +41,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameLocalVariab
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameNonVirtualMethodProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamePackageProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameSourceFolderProcessor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeParameterProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.INameUpdating;
@@ -382,25 +380,6 @@ public class RenameSupport {
 			processor.setRenameGetter(updateGetterMethod(flags));
 			processor.setRenameSetter(updateSetterMethod(flags));
 			return new RenameSupport(processor, newName, flags);
-	}
-
-	/**
-	 * Creates a new rename support for the given {@link ITypeParameter}.
-	 * 
-	 * @param parameter the {@link ITypeParameter} to be renamed.
-	 * @param newName the parameter's new name. <code>null</code> is a valid value
-	 * indicating that no new name is provided.
-	 * @param flags flags controlling additional parameters. Valid flags are
-	 * <code>UPDATE_REFERENCES</code>, or <code>NONE</code>.
-	 * @return the {@link RenameSupport}.
-	 * @throws CoreException if an unexpected error occurred while creating
-	 * the {@link RenameSupport}.
-	 * 
-	 */
-	public static RenameSupport create(ITypeParameter parameter, String newName, int flags) throws CoreException {
-		RenameTypeParameterProcessor processor= new RenameTypeParameterProcessor(parameter);
-		processor.setUpdateReferences(updateReferences(flags));
-		return new RenameSupport(processor, newName, flags);
 	}
 
 	/**

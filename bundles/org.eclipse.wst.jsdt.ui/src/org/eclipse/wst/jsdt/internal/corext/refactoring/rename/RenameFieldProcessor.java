@@ -277,7 +277,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 		final NullProgressMonitor monitor= new NullProgressMonitor();
 		if (MethodChecks.isVirtual(getter)) {
 			final ITypeHierarchy hierarchy= getter.getDeclaringType().newTypeHierarchy(monitor);
-			if (MethodChecks.isDeclaredInInterface(getter, hierarchy, monitor) != null || MethodChecks.overridesAnotherMethod(getter, hierarchy) != null)
+			if (MethodChecks.overridesAnotherMethod(getter, hierarchy) != null)
 				return RefactoringCoreMessages.RenameFieldRefactoring_declared_in_supertype;
 		}
 		return null;	
@@ -294,7 +294,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 		final NullProgressMonitor monitor= new NullProgressMonitor();
 		if (MethodChecks.isVirtual(setter)) {
 			final ITypeHierarchy hierarchy= setter.getDeclaringType().newTypeHierarchy(monitor);
-			if (MethodChecks.isDeclaredInInterface(setter, hierarchy, monitor) != null || MethodChecks.overridesAnotherMethod(setter, hierarchy) != null)
+			if (MethodChecks.overridesAnotherMethod(setter, hierarchy) != null)
 				return RefactoringCoreMessages.RenameFieldRefactoring_declared_in_supertype;
 		}
 		return null;	

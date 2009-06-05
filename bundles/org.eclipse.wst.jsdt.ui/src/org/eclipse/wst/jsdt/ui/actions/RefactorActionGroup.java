@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,7 +146,6 @@ public class RefactorActionGroup extends ActionGroup {
 	private SelectionDispatchAction fExtractSupertypeAction;
 //	private SelectionDispatchAction fChangeTypeAction;
 	private SelectionDispatchAction fUseSupertypeAction;
-	private SelectionDispatchAction fInferTypeArgumentsAction;
 	
 	private SelectionDispatchAction fInlineAction;
 //	private SelectionDispatchAction fReplaceInvocationsAction;
@@ -265,17 +264,6 @@ public class RefactorActionGroup extends ActionGroup {
 				initAction(fExtractSupertypeAction, selection, ExtractSuperClassAction.EXTRACT_SUPERTYPE);
 				editor.setAction("ExtractSupertype", fExtractSupertypeAction); //$NON-NLS-1$
 	
-//			fExtractInterfaceAction= new ExtractInterfaceAction(editor);
-//			initAction(fExtractInterfaceAction, selection, IJavaEditorActionDefinitionIds.EXTRACT_INTERFACE);
-//			editor.setAction("ExtractInterface", fExtractInterfaceAction); //$NON-NLS-1$
-	
-//			fChangeTypeAction= new ChangeTypeAction(editor);
-//			initUpdatingAction(fChangeTypeAction, provider, selection, IJavaEditorActionDefinitionIds.CHANGE_TYPE);
-//			editor.setAction("ChangeType", fChangeTypeAction); //$NON-NLS-1$
-	
-			fInferTypeArgumentsAction= new InferTypeArgumentsAction(editor);
-			initAction(fInferTypeArgumentsAction, selection, IJavaEditorActionDefinitionIds.INFER_TYPE_ARGUMENTS_ACTION);
-			editor.setAction("InferTypeArguments", fInferTypeArgumentsAction); //$NON-NLS-1$
 			}
 
 			fExtractMethodAction= new ExtractMethodAction(editor);
@@ -366,12 +354,6 @@ public class RefactorActionGroup extends ActionGroup {
 				fExtractSupertypeAction = new ExtractSuperClassAction(fSite);
 				initUpdatingAction(fExtractSupertypeAction, provider,
 						selection, ExtractSuperClassAction.EXTRACT_SUPERTYPE);
-				fInferTypeArgumentsAction = new InferTypeArgumentsAction(fSite);
-				initUpdatingAction(
-						fInferTypeArgumentsAction,
-						provider,
-						selection,
-						IJavaEditorActionDefinitionIds.INFER_TYPE_ARGUMENTS_ACTION);
 				fIntroduceFactoryAction = new IntroduceFactoryAction(fSite);
 				initUpdatingAction(fIntroduceFactoryAction, provider,
 						selection,
@@ -463,7 +445,6 @@ public class RefactorActionGroup extends ActionGroup {
 				actionBars.setGlobalActionHandler(ExtractSuperClassAction.EXTRACT_SUPERTYPES, fExtractSupertypeAction);
 	//			actionBars.setGlobalActionHandler(JdtActionConstants.CHANGE_TYPE, fChangeTypeAction);
 	//			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_NESTED_TO_TOP, fConvertNestedToTopAction);
-				actionBars.setGlobalActionHandler(JdtActionConstants.INFER_TYPE_ARGUMENTS, fInferTypeArgumentsAction);
 				actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_LOCAL_TO_FIELD, fConvertLocalToFieldAction);
 	//			actionBars.setGlobalActionHandler(JdtActionConstants.CONVERT_ANONYMOUS_TO_NESTED, fConvertAnonymousToNestedAction);
 			}
@@ -519,7 +500,6 @@ public class RefactorActionGroup extends ActionGroup {
 				disposeAction(fExtractSupertypeAction, provider);
 				//			disposeAction(fChangeTypeAction, provider);
 				//			disposeAction(fConvertNestedToTopAction, provider);
-				disposeAction(fInferTypeArgumentsAction, provider);
 				disposeAction(fConvertLocalToFieldAction, provider);
 				//			disposeAction(fConvertAnonymousToNestedAction, provider);
 			}
@@ -604,8 +584,6 @@ public class RefactorActionGroup extends ActionGroup {
 //		added+= addAction(refactorSubmenu, fReplaceInvocationsAction);
 		if (IUIConstants.SUPPORT_REFACTORING) {
 			refactorSubmenu.add(new Separator(GROUP_TYPE2));
-			//		added+= addAction(refactorSubmenu, fChangeTypeAction);
-			added+= addAction(refactorSubmenu, fInferTypeArgumentsAction);
 		}
 		return added;
 	}

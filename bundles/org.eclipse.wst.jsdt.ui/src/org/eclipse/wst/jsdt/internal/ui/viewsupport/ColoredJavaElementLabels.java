@@ -14,25 +14,24 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -343,19 +342,6 @@ public class ColoredJavaElementLabels {
 		}
 	}
 	
-	private static void getTypeParametersLabel(ITypeParameter[] typeParameters, long flags, ColoredString result) {
-		if (typeParameters.length > 0) {
-			result.append('<');
-			for (int i = 0; i < typeParameters.length; i++) {
-				if (i > 0) {
-					result.append(JavaScriptElementLabels.COMMA_STRING);
-				}
-				result.append(typeParameters[i].getElementName());
-			}
-			result.append('>');
-		}
-	}
-	
 	/**
 	 * Appends the label for a field to a {@link ColoredString}. Considers the F_* flags.
 	 * 	@param field The element to render.
@@ -595,8 +581,6 @@ public class ColoredJavaElementLabels {
 				BindingKey key= new BindingKey(type.getKey());
 				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
 				getTypeParameterSignaturesLabel(typeParameters, flags, result);
-			} else if (type.exists()) {
-				getTypeParametersLabel(null, flags, result);
 			}
 		}
 		

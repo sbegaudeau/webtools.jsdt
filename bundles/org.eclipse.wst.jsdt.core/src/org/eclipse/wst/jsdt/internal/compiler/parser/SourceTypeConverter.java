@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -338,29 +338,11 @@ public class SourceTypeConverter {
 		int start = methodInfo.getNameSourceStart();
 		int end = methodInfo.getNameSourceEnd();
 
-		// convert 1.5 specific constructs only if compliance is 1.5 or above
-		TypeParameter[] typeParams = null;
-		if (this.has1_5Compliance) {
-			/* convert type parameters */
-			char[][] typeParameterNames = methodInfo.getTypeParameterNames();
-			if (typeParameterNames != null) {
-				int parameterCount = typeParameterNames.length;
-				if (parameterCount > 0) { // method's type parameters must be null if no type parameter
-					char[][][] typeParameterBounds = methodInfo.getTypeParameterBounds();
-					typeParams = new TypeParameter[parameterCount];
-					for (int i = 0; i < parameterCount; i++) {
-						typeParams[i] = createTypeParameter(typeParameterNames[i], typeParameterBounds[i], start, end);
-					}
-				}
-			}
-		}
-
 		int modifiers = methodInfo.getModifiers();
 		if (methodInfo.isConstructor()) {
 			ConstructorDeclaration decl = new ConstructorDeclaration(compilationResult);
 			decl.isDefaultConstructor = false;
 			method = decl;
-			decl.typeParameters = typeParams;
 		} else {
 			MethodDeclaration decl;
 			if (methodInfo.isAnnotationMethod()) {
@@ -392,9 +374,6 @@ public class SourceTypeConverter {
 
 			// convert return type
 			decl.returnType = createTypeReference(methodInfo.getReturnTypeName(), start, end);
-
-			// type parameters
-			decl.typeParameters = typeParams;
 
 			method = decl;
 		}
@@ -509,17 +488,6 @@ public class SourceTypeConverter {
 		if (this.has1_5Compliance) {
 			/* convert annotations */
 			type.annotations = convertAnnotations(typeHandle);
-
-			/* convert type parameters */
-			char[][] typeParameterNames = typeInfo.getTypeParameterNames();
-			if (typeParameterNames.length > 0) {
-				int parameterCount = typeParameterNames.length;
-				char[][][] typeParameterBounds = typeInfo.getTypeParameterBounds();
-				type.typeParameters = new TypeParameter[parameterCount];
-				for (int i = 0; i < parameterCount; i++) {
-					type.typeParameters[i] = createTypeParameter(typeParameterNames[i], typeParameterBounds[i], start, end);
-				}
-			}
 		}
 
 		/* set superclass and superinterfaces */

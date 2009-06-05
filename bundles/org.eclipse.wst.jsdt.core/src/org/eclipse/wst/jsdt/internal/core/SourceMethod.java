@@ -11,11 +11,10 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -42,14 +41,6 @@ protected SourceMethod(JavaElement parent, String name, String[] parameterTypes)
 		this.parameterTypes= CharOperation.NO_STRINGS;
 	} else {
 		this.parameterTypes= parameterTypes;
-	}
-}
-protected void closing(Object info) throws JavaScriptModelException {
-	super.closing(info);
-	SourceMethodElementInfo elementInfo = (SourceMethodElementInfo) info;
-	ITypeParameter[] typeParameters = elementInfo.typeParameters;
-	for (int i = 0, length = typeParameters.length; i < length; i++) {
-		((TypeParameter) typeParameters[i]).close();
 	}
 }
 public boolean equals(Object o) {
@@ -124,16 +115,6 @@ public String[] getParameterNames() throws JavaScriptModelException {
 public String[] getParameterTypes() {
 	return this.parameterTypes;
 }
-
-public ITypeParameter getTypeParameter(String typeParameterName) {
-	return new TypeParameter(this, typeParameterName);
-}
-
-public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
-	return info.typeParameters;
-}
-
 
 /*
  * @see JavaElement#getPrimaryElement(boolean)

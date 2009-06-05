@@ -16,11 +16,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 
@@ -132,15 +131,6 @@ public class MethodOverrideTester {
 				}
 			}
 		}
-		if (!overriding.isConstructor()) {
-			IType[] interfaces= fHierarchy.getSuperInterfaces(type);
-			for (int i= 0; i < interfaces.length; i++) {
-				IFunction res= findOverriddenMethodInHierarchy(interfaces[i], overriding);
-				if (res != null) {
-					return res; // methods from interfaces are always public and therefore visible
-				}
-			}
-		}
 		return null;
 	}
 	
@@ -162,15 +152,6 @@ public class MethodOverrideTester {
 			IFunction res=  findOverriddenMethodInHierarchy(superClass, overriding);
 			if (res != null) {
 				return res;
-			}
-		}
-		if (!overriding.isConstructor()) {
-			IType[] superInterfaces= fHierarchy.getSuperInterfaces(type);
-			for (int i= 0; i < superInterfaces.length; i++) {
-				IFunction res= findOverriddenMethodInHierarchy(superInterfaces[i], overriding);
-				if (res != null) {
-					return res;
-				}
 			}
 		}
 		return method;		
@@ -344,30 +325,7 @@ public class MethodOverrideTester {
 				computeSubstitutions(superclass, instantiatedType, superTypeArguments);
 			}
 		}
-		String[] superInterfacesTypeSignature= instantiatedType.getSuperInterfaceTypeSignatures();
-		int nInterfaces= superInterfacesTypeSignature.length;
-		if (nInterfaces > 0) {
-			IType[] superInterfaces= fHierarchy.getSuperInterfaces(instantiatedType);
-			if (superInterfaces.length == nInterfaces) {
-				for (int i= 0; i < nInterfaces; i++) {
-					String[] superTypeArguments= Signature.getTypeArguments(superInterfacesTypeSignature[i]);
-					IType superInterface= superInterfaces[i];
-					if (!fTypeVariableSubstitutions.containsKey(superInterface)) {
-						computeSubstitutions(superInterface, instantiatedType, superTypeArguments);
-					}
-				}
-			}
-		}
 	}
-	
-	private String getTypeParameterErasure(ITypeParameter typeParameter, IType context) throws JavaScriptModelException {
-		String[] bounds= typeParameter.getBounds();
-		if (bounds.length > 0) {
-			return getSubstitutedTypeName(Signature.createTypeSignature(bounds[0], false), context);
-		}
-		return "Object"; //$NON-NLS-1$
-	}
-	
 
 	/**
 	 * Translates the type signature to a 'normalized' type name where all variables are substituted for the given type or method context.

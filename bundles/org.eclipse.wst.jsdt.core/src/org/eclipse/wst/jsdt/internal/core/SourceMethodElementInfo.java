@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
-import org.eclipse.wst.jsdt.core.ITypeParameter;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
 
 /**
@@ -39,10 +36,6 @@ public abstract class SourceMethodElementInfo extends MemberElementInfo implemen
 	 */
 	protected char[][] exceptionTypes;
 
-	/*
-	 * The type parameters of this source type. Empty if none.
-	 */
-	protected ITypeParameter[] typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
 
 public char[][] getArgumentNames() {
 	return this.argumentNames;
@@ -52,28 +45,6 @@ public char[][] getExceptionTypeNames() {
 }
 public abstract char[] getReturnTypeName();
 
-public char[][][] getTypeParameterBounds() {
-	int length = this.typeParameters.length;
-	char[][][] typeParameterBounds = new char[length][][];
-	for (int i = 0; i < length; i++) {
-		try {
-			TypeParameterElementInfo info = (TypeParameterElementInfo) ((JavaElement)this.typeParameters[i]).getElementInfo();
-			typeParameterBounds[i] = info.bounds;
-		} catch (JavaScriptModelException e) {
-			// type parameter does not exist: ignore
-		}
-	}
-	return typeParameterBounds;
-}
-public char[][] getTypeParameterNames() {
-	int length = this.typeParameters.length;
-	if (length == 0) return CharOperation.NO_CHAR_CHAR;
-	char[][] typeParameterNames = new char[length][];
-	for (int i = 0; i < length; i++) {
-		typeParameterNames[i] = this.typeParameters[i].getElementName().toCharArray();
-	}
-	return typeParameterNames;
-}
 public abstract boolean isConstructor();
 public abstract boolean isAnnotationMethod();
 protected void setArgumentNames(char[][] names) {

@@ -711,7 +711,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 //			} else 
 			if (MethodChecks.isVirtual(fMethod)) {
 				ITypeHierarchy hierarchy= getCachedTypeHierarchy(new SubProgressMonitor(monitor, 1));
-				fTopMethod= MethodChecks.isDeclaredInInterface(fMethod, hierarchy, new SubProgressMonitor(monitor, 1));
+				fTopMethod= null;
 				if (fTopMethod == null)
 					fTopMethod= MethodChecks.overridesAnotherMethod(fMethod, hierarchy);
 			}

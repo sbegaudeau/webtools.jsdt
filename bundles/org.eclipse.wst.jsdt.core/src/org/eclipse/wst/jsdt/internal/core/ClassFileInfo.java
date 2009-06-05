@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,10 +18,8 @@ import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryNestedType;
@@ -39,10 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 	 * access to the <code>BinaryType</code> info (<code>ClassFileReader</code>).
 	 */
 	protected JavaElement[] binaryChildren = null;
-	/*
-	 * The type parameters in this class file.
-	 */
-	protected ITypeParameter[] typeParameters;
 
 /**
  * Creates the handles and infos for the fields of the given binary type.
@@ -129,38 +123,6 @@ private void generateMethodInfos(IType type, IBinaryType typeInfo, HashMap newEl
 			method.occurrenceCount++;
 
 		newElements.put(method, methodInfo);
-
-		generateTypeParameterInfos(method, signature, newElements, typeParameterHandles);
-	}
-}
-/**
- * Creates the handles and infos for the type parameter of the given binary member.
- * Adds new handles to the given vector.
- */
-private void generateTypeParameterInfos(BinaryMember parent, char[] signature, HashMap newElements, ArrayList typeParameterHandles) {
-	if (signature == null) return;
-	char[][] typeParameterSignatures = Signature.getTypeParameters(signature);
-	for (int i = 0, typeParameterCount = typeParameterSignatures.length; i < typeParameterCount; i++) {
-		char[] typeParameterSignature = typeParameterSignatures[i];
-		char[] typeParameterName = Signature.getTypeVariable(typeParameterSignature);
-		char[][] typeParameterBoundSignatures = Signature.getTypeParameterBounds(typeParameterSignature);
-		int boundLength = typeParameterBoundSignatures.length;
-		char[][] typeParameterBounds = new char[boundLength][];
-		for (int j = 0; j < boundLength; j++) {
-			typeParameterBounds[j] = Signature.toCharArray(typeParameterBoundSignatures[j]);
-			CharOperation.replace(typeParameterBounds[j], '/', '.');
-		}
-		TypeParameter typeParameter = new TypeParameter(parent, new String(typeParameterName));
-		TypeParameterElementInfo info = new TypeParameterElementInfo();
-		info.bounds = typeParameterBounds;
-		typeParameterHandles.add(typeParameter);
-
-		// ensure that 2 binary methods with the same signature but with different return types have different occurence counts.
-		// (case of bridge methods in 1.5)
-		while (newElements.containsKey(typeParameter))
-			typeParameter.occurrenceCount++;
-
-		newElements.put(typeParameter, info);
 	}
 }
 /**
@@ -180,7 +142,6 @@ protected void readBinaryChildren(ClassFile classFile, HashMap newElements, IBin
 	BinaryType type = (BinaryType) classFile.getType();
 	ArrayList typeParameterHandles = new ArrayList();
 	if (typeInfo != null) { //may not be a valid class file
-		generateTypeParameterInfos(type, typeInfo.getGenericSignature(), newElements, typeParameterHandles);
 		generateFieldInfos(type, typeInfo, newElements, childrenHandles);
 		generateMethodInfos(type, typeInfo, newElements, childrenHandles, typeParameterHandles);
 		generateInnerClassHandles(type, typeInfo, childrenHandles); // Note inner class are separate openables that are not opened here: no need to pass in newElements
@@ -188,13 +149,6 @@ protected void readBinaryChildren(ClassFile classFile, HashMap newElements, IBin
 
 	this.binaryChildren = new JavaElement[childrenHandles.size()];
 	childrenHandles.toArray(this.binaryChildren);
-	int typeParameterHandleSize = typeParameterHandles.size();
-	if (typeParameterHandleSize == 0) {
-		this.typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
-	} else {
-		this.typeParameters = new ITypeParameter[typeParameterHandleSize];
-		typeParameterHandles.toArray(this.typeParameters);
-	}
 }
 /**
  * Removes the binary children handles and remove their infos from
@@ -212,14 +166,6 @@ void removeBinaryChildren() throws JavaScriptModelException {
 			}
 		}
 		this.binaryChildren = JavaElement.NO_ELEMENTS;
-	}
-	if (this.typeParameters != null) {
-		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		for (int i = 0; i <this.typeParameters.length; i++) {
-			TypeParameter typeParameter = (TypeParameter) this.typeParameters[i];
-			manager.removeInfoAndChildren(typeParameter);
-		}
-		this.typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
 	}
 }
 }

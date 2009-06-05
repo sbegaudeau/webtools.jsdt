@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameNonVirtualM
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenamePackageProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameResourceProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameSourceFolderProcessor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeParameterProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameTypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.UserInterfaceManager;
@@ -39,8 +38,6 @@ public class RenameUserInterfaceManager extends UserInterfaceManager {
 		put(RenameCompilationUnitProcessor.class, RenameUserInterfaceStarter.class, RenameCuWizard.class);
 		put(RenameTypeProcessor.class, RenameUserInterfaceStarter.class, RenameTypeWizard.class);
 		put(RenameFieldProcessor.class, RenameUserInterfaceStarter.class, RenameFieldWizard.class);
-//		put(RenameEnumConstProcessor.class, RenameUserInterfaceStarter.class, RenameEnumConstWizard.class);
-		put(RenameTypeParameterProcessor.class, RenameUserInterfaceStarter.class, RenameTypeParameterWizard.class);
 		put(RenameNonVirtualMethodProcessor.class, RenameMethodUserInterfaceStarter.class, RenameMethodWizard.class);
 		put(RenameVirtualMethodProcessor.class, RenameMethodUserInterfaceStarter.class, RenameMethodWizard.class);
 		put(RenameLocalVariableProcessor.class, RenameUserInterfaceStarter.class, RenameLocalVariableWizard.class);

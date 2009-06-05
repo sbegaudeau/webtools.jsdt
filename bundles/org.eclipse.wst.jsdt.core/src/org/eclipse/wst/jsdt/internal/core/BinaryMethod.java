@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,10 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -363,29 +362,6 @@ private char[][] splitParameters(char[] parametersSource, int paramCount) {
 public String[] getParameterTypes() {
 	return this.parameterTypes;
 }
-
-public ITypeParameter getTypeParameter(String typeParameterName) {
-	return new TypeParameter(this, typeParameterName);
-}
-
-public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-	IBinaryMethod info = (IBinaryMethod) getElementInfo();
-	char[] genericSignature = info.getGenericSignature();
-	if (genericSignature == null)
-		return TypeParameter.NO_TYPE_PARAMETERS;
-	char[] dotBasedSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
-	char[][] typeParams = Signature.getTypeParameters(dotBasedSignature);
-	String[] typeParameterSignatures = CharOperation.toStrings(typeParams);
-	int length = typeParameterSignatures.length;
-	if (length == 0) return TypeParameter.NO_TYPE_PARAMETERS;
-	ITypeParameter[] typeParameters = new ITypeParameter[length];
-	for (int i = 0; i < typeParameterSignatures.length; i++) {
-		String typeParameterName = Signature.getTypeVariable(typeParameterSignatures[i]);
-		typeParameters[i] = new TypeParameter(this, typeParameterName);
-	}
-	return typeParameters;
-}
-
 
 public String[] getRawParameterNames() throws JavaScriptModelException {
 	IBinaryMethod info = (IBinaryMethod) getElementInfo();

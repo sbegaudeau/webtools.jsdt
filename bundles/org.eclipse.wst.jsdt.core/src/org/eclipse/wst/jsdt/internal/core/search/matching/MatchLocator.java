@@ -728,8 +728,6 @@ protected IJavaScriptElement createHandle(AbstractVariableDeclaration variableDe
 				variableDeclaration.sourceEnd,
 				new String(variableDeclaration.type.resolvedType.signature())
 			);
-		case AbstractVariableDeclaration.TYPE_PARAMETER:
-			return new org.eclipse.wst.jsdt.internal.core.TypeParameter((JavaElement)parent, new String(variableDeclaration.name));
 	}
 	return null;
 }

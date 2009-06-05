@@ -33,22 +33,22 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -81,7 +81,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.SearchResultGroup;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.DynamicValidationRefactoringChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ScriptableRefactoring;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RippleMethodFinder2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.ASTCreator;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.CompositeOrTypeConstraint;
@@ -1326,12 +1325,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				// GT is repeatedly applied
 						
 				IFunction root= selectedMethod;
-				if (MethodChecks.isVirtual(root)) {
-					final SubProgressMonitor subMonitor= new SubProgressMonitor(pm, 5);
-					IFunction inInterface= MethodChecks.isDeclaredInInterface(root, root.getDeclaringType().newTypeHierarchy(new SubProgressMonitor(subMonitor, 1)), subMonitor);
-					if (inInterface != null && !inInterface.equals(root))
-						root= inInterface;
-				}
 
 				// end code fragment
 				

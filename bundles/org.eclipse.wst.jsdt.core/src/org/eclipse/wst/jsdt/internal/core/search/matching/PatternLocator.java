@@ -125,8 +125,6 @@ public static PatternLocator patternLocator(SearchPattern pattern) {
 			return new OrLocator((OrPattern) pattern);
 		case IIndexConstants.LOCAL_VAR_PATTERN :
 			return new LocalVariableLocator((LocalVariablePattern) pattern);
-		case IIndexConstants.TYPE_PARAM_PATTERN:
-			return new TypeParameterLocator((TypeParameterPattern) pattern);
 	}
 	return null;
 }

@@ -17,9 +17,8 @@ import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -366,7 +365,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	if (methodInfo.typeParameters != null) {
 		for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
 			TypeParameterInfo typeParameterInfo = methodInfo.typeParameters[i];
-			enterTypeParameter(typeParameterInfo);
 			exitMember(typeParameterInfo.declarationEnd);
 		}
 	}
@@ -426,42 +424,9 @@ public void enterType(TypeInfo typeInfo) {
 	if (typeInfo.typeParameters != null) {
 		for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
 			TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-			enterTypeParameter(typeParameterInfo);
 			exitMember(typeParameterInfo.declarationEnd);
 		}
 	}
-}
-protected void enterTypeParameter(TypeParameterInfo typeParameterInfo) {
-	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
-	JavaElement parentHandle = (JavaElement) this.handleStack.peek();
-	String nameString = new String(typeParameterInfo.name);
-	TypeParameter handle = new TypeParameter(parentHandle, nameString); //NB: occurenceCount is computed in resolveDuplicates
-	resolveDuplicates(handle);
-
-	TypeParameterElementInfo info = new TypeParameterElementInfo();
-	info.setSourceRangeStart(typeParameterInfo.declarationStart);
-	info.nameStart = typeParameterInfo.nameSourceStart;
-	info.nameEnd = typeParameterInfo.nameSourceEnd;
-	info.bounds = typeParameterInfo.bounds;
-	if (parentInfo instanceof SourceTypeElementInfo) {
-		SourceTypeElementInfo elementInfo = (SourceTypeElementInfo) parentInfo;
-		ITypeParameter[] typeParameters = elementInfo.typeParameters;
-		int length = typeParameters.length;
-		System.arraycopy(typeParameters, 0, typeParameters = new ITypeParameter[length+1], 0, length);
-		typeParameters[length] = handle;
-		elementInfo.typeParameters = typeParameters;
-	} else {
-		SourceMethodElementInfo elementInfo = (SourceMethodElementInfo) parentInfo;
-		ITypeParameter[] typeParameters = elementInfo.typeParameters;
-		int length = typeParameters.length;
-		System.arraycopy(typeParameters, 0, typeParameters = new ITypeParameter[length+1], 0, length);
-		typeParameters[length] = handle;
-		elementInfo.typeParameters = typeParameters;
-	}
-	this.unitInfo.addAnnotationPositions(handle, typeParameterInfo.annotationPositions);
-	this.newElements.put(handle, info);
-	this.infoStack.push(info);
-	this.handleStack.push(handle);
 }
 /**
  * @see ISourceElementRequestor

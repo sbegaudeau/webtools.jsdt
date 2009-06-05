@@ -14,7 +14,6 @@ import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
@@ -52,11 +51,6 @@ public class SourceTypeElementInfo extends MemberElementInfo implements ISourceT
 	 * from info to handle.
 	 */
 	protected IType handle = null;
-
-	/*
-	 * The type parameters of this source type. Empty if none.
-	 */
-	protected ITypeParameter[] typeParameters = TypeParameter.NO_TYPE_PARAMETERS;
 
 	/*
 	 * A map from an IJavaScriptElement (this type or a child of this type) to a String[] (the categories of this element)
@@ -267,28 +261,6 @@ public char[] getSuperclassName() {
 		}
 	}
 	return this.superclassName;
-}
-public char[][][] getTypeParameterBounds() {
-	int length = this.typeParameters.length;
-	char[][][] typeParameterBounds = new char[length][][];
-	for (int i = 0; i < length; i++) {
-		try {
-			TypeParameterElementInfo info = (TypeParameterElementInfo) ((JavaElement)this.typeParameters[i]).getElementInfo();
-			typeParameterBounds[i] = info.bounds;
-		} catch (JavaScriptModelException e) {
-			// type parameter does not exist: ignore
-		}
-	}
-	return typeParameterBounds;
-}
-public char[][] getTypeParameterNames() {
-	int length = this.typeParameters.length;
-	if (length == 0) return CharOperation.NO_CHAR_CHAR;
-	char[][] typeParameterNames = new char[length][];
-	for (int i = 0; i < length; i++) {
-		typeParameterNames[i] = this.typeParameters[i].getElementName().toCharArray();
-	}
-	return typeParameterNames;
 }
 /**
  * @see ISourceType

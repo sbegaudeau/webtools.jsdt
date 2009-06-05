@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -240,9 +240,7 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 		} else if (oldInfo instanceof SourceMethodElementInfo && newInfo instanceof SourceMethodElementInfo) {
 			SourceMethodElementInfo oldSourceMethodInfo = (SourceMethodElementInfo)oldInfo;
 			SourceMethodElementInfo newSourceMethodInfo = (SourceMethodElementInfo)newInfo;
-			if (!CharOperation.equals(oldSourceMethodInfo.getReturnTypeName(), newSourceMethodInfo.getReturnTypeName())
-					|| !CharOperation.equals(oldSourceMethodInfo.getTypeParameterNames(), newSourceMethodInfo.getTypeParameterNames())
-					|| !equals(oldSourceMethodInfo.getTypeParameterBounds(), newSourceMethodInfo.getTypeParameterBounds())) {
+			if (!CharOperation.equals(oldSourceMethodInfo.getReturnTypeName(), newSourceMethodInfo.getReturnTypeName())) {
 				this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
 			}
 		} else if (oldInfo instanceof SourceFieldElementInfo && newInfo instanceof SourceFieldElementInfo) {
@@ -260,10 +258,7 @@ private void findContentChange(JavaElementInfo oldInfo, JavaElementInfo newInfo,
 				|| !CharOperation.equals(oldSourceTypeInfo.getInterfaceNames(), newSourceTypeInfo.getInterfaceNames())) {
 			this.delta.changed(newElement, IJavaScriptElementDelta.F_SUPER_TYPES);
 		}
-		if (!CharOperation.equals(oldSourceTypeInfo.getTypeParameterNames(), newSourceTypeInfo.getTypeParameterNames())
-				|| !equals(oldSourceTypeInfo.getTypeParameterBounds(), newSourceTypeInfo.getTypeParameterBounds())) {
-			this.delta.changed(newElement, IJavaScriptElementDelta.F_CONTENT);
-		}
+
 		HashMap oldTypeCategories = oldSourceTypeInfo.categories;
 		HashMap newTypeCategories = newSourceTypeInfo.categories;
 		if (oldTypeCategories != null) {

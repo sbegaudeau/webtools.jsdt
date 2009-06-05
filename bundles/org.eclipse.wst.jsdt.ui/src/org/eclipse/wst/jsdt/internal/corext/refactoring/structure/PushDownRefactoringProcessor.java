@@ -587,7 +587,6 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 			TypeVariableMaplet[] mapping= null;
 			for (int index= 0; index < destinations.length; index++) {
 				type= destinations[index];
-				mapping= TypeVariableUtil.superTypeToInheritedType(getDeclaringType(), type);
 				if (unitRewriter.getCu().equals(type.getJavaScriptUnit())) {
 					IMember member= null;
 					MemberVisibilityAdjustor adjustor= null;

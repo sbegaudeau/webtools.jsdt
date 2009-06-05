@@ -18,7 +18,6 @@ Export-Package: org.eclipse.wst.jsdt.internal.corext;x-friends:="org.eclipse.wst
  org.eclipse.wst.jsdt.internal.corext.refactoring.code;x-internal:=true,
  org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow;x-internal:=true,
  org.eclipse.wst.jsdt.internal.corext.refactoring.delegates;x-internal:=true,
- org.eclipse.wst.jsdt.internal.corext.refactoring.generics;x-internal:=true,
  org.eclipse.wst.jsdt.internal.corext.refactoring.nls;x-internal:=true,
  org.eclipse.wst.jsdt.internal.corext.refactoring.nls.changes;x-internal:=true,
  org.eclipse.wst.jsdt.internal.corext.refactoring.participants;x-internal:=true,

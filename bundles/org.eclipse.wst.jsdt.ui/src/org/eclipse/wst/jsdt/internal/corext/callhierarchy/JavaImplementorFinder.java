@@ -47,24 +47,4 @@ public class JavaImplementorFinder implements IImplementorFinder {
 
         return null;
     }
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.corext.callhierarchy.IImplementorFinder#findInterfaces(org.eclipse.wst.jsdt.core.IType, org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public Collection findInterfaces(IType type, IProgressMonitor progressMonitor) {
-        ITypeHierarchy typeHierarchy;
-
-        try {
-            typeHierarchy = type.newSupertypeHierarchy(progressMonitor);
-
-            IType[] interfaces = typeHierarchy.getAllSuperInterfaces(type);
-            HashSet result = new HashSet(Arrays.asList(interfaces));
-
-            return result;
-        } catch (JavaScriptModelException e) {
-            JavaScriptPlugin.log(e);
-        }
-
-        return null;
-    }
 }

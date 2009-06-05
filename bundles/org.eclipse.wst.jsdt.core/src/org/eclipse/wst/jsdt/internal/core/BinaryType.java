@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.IWorkingCopy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -390,7 +389,7 @@ public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer me
 		case JEM_TYPE_PARAMETER:
 			if (!memento.hasMoreTokens()) return this;
 			String typeParameterName = memento.nextToken();
-			JavaElement typeParameter = new TypeParameter(this, typeParameterName);
+			JavaElement typeParameter = null;
 			return typeParameter.getHandleFromMemento(memento, workingCopyOwner);
 	}
 	return null;
@@ -594,18 +593,6 @@ public String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelExceptio
 	}
 }
 
-public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-	String[] typeParameterSignatures = getTypeParameterSignatures();
-	int length = typeParameterSignatures.length;
-	if (length == 0) return TypeParameter.NO_TYPE_PARAMETERS;
-	ITypeParameter[] typeParameters = new ITypeParameter[length];
-	for (int i = 0; i < typeParameterSignatures.length; i++) {
-		String typeParameterName = Signature.getTypeVariable(typeParameterSignatures[i]);
-		typeParameters[i] = new TypeParameter(this, typeParameterName);
-	}
-	return typeParameters;
-}
-
 /**
  * @see IType#getTypeParameterSignatures()
  * @since 3.0
@@ -628,9 +615,7 @@ public IType getType(String typeName) {
 	IClassFile classFile= getPackageFragment().getClassFile(getTypeQualifiedName() + "$" + typeName + SUFFIX_STRING_java); //$NON-NLS-1$
 	return new BinaryType((JavaElement)classFile, typeName);
 }
-public ITypeParameter getTypeParameter(String typeParameterName) {
-	return new TypeParameter(this, typeParameterName);
-}
+
 /*
  * @see IType#getTypeQualifiedName()
  */

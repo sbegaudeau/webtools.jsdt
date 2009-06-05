@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TypeVariable;
 
 public final class CollectionElementVariable2 extends ConstraintVariable2 {
 
@@ -36,13 +35,6 @@ public final class CollectionElementVariable2 extends ConstraintVariable2 {
 		if (! typeVariable.isTypeVariable())
 			throw new IllegalArgumentException(typeVariable.toString());
 		fTypeVariableKey= typeVariable.getKey();
-		fDeclarationTypeVariableIndex= declarationTypeVariableIndex;
-	}
-
-	public CollectionElementVariable2(ConstraintVariable2 parentCv, TypeVariable typeVariable, int declarationTypeVariableIndex) {
-		super(null);
-		fParentCv= parentCv;
-		fTypeVariableKey= typeVariable.getBindingKey();
 		fDeclarationTypeVariableIndex= declarationTypeVariableIndex;
 	}
 

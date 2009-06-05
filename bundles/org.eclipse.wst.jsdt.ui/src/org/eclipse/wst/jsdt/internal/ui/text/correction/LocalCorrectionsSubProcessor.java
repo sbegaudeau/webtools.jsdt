@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,23 +15,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -84,7 +76,6 @@ import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.CodeStyleFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
-import org.eclipse.wst.jsdt.internal.corext.fix.Java50Fix;
 import org.eclipse.wst.jsdt.internal.corext.fix.StringFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.UnusedCodeFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CompilationUnitChange;
@@ -96,17 +87,14 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.Java50CleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.StringCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.UnnecessaryCodeCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.ExternalizeWizard;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.RemoveDescription;
-import org.eclipse.wst.jsdt.ui.actions.InferTypeArgumentsAction;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -114,10 +102,8 @@ import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
   */
 public class LocalCorrectionsSubProcessor {
 
-	private static final String RAW_TYPE_REFERENCE_ID= "org.eclipse.wst.jsdt.ui.correction.rawTypeReference"; //$NON-NLS-1$
 	private static final String ADD_EXCEPTION_TO_THROWS_ID= "org.eclipse.wst.jsdt.ui.correction.addThrowsDecl"; //$NON-NLS-1$
 	private static final String ADD_NON_NLS_ID= "org.eclipse.wst.jsdt.ui.correction.addNonNLS"; //$NON-NLS-1$
-	private static final String ADD_FIELD_QUALIFICATION_ID= "org.eclipse.wst.jsdt.ui.correction.qualifyField"; //$NON-NLS-1$
 	private static final String ADD_STATIC_ACCESS_ID= "org.eclipse.wst.jsdt.ui.correction.changeToStatic"; //$NON-NLS-1$
 	private static final String REMOVE_UNNECESSARY_NLS_TAG_ID= "org.eclipse.wst.jsdt.ui.correction.removeNlsTag"; //$NON-NLS-1$
 	
@@ -906,54 +892,6 @@ public class LocalCorrectionsSubProcessor {
 //			proposals.add(proposal);		
 //		}
 //	}
-
-	public static void addTypePrametersToRawTypeReference(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		IFix fix= Java50Fix.createRawTypeReferenceFix(context.getASTRoot(), problem);
-		if (fix != null) {
-			for (Iterator iter= proposals.iterator(); iter.hasNext();) {
-				Object element= iter.next();
-				if (element instanceof FixCorrectionProposal) {
-					FixCorrectionProposal fixProp= (FixCorrectionProposal)element;
-					if (RAW_TYPE_REFERENCE_ID.equals(fixProp.getCommandId())) {
-						return;
-					}
-				}
-			}
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			Map options= new Hashtable();
-			options.put(CleanUpConstants.VARIABLE_DECLARATION_USE_TYPE_ARGUMENTS_FOR_RAW_TYPE_REFERENCES, CleanUpConstants.TRUE);
-			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new Java50CleanUp(options), 6, image, context);
-			proposal.setCommandId(RAW_TYPE_REFERENCE_ID);
-			proposals.add(proposal);
-		}
-		
-		//Infer Generic Type Arguments... proposal
-		final IJavaScriptUnit cu= context.getCompilationUnit();
-		ChangeCorrectionProposal proposal= new ChangeCorrectionProposal(CorrectionMessages.LocalCorrectionsSubProcessor_InferGenericTypeArguments, null, 5, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE)) {
-			public void apply(IDocument document) {
-				IEditorInput input= new FileEditorInput((IFile) cu.getResource());
-				IWorkbenchPage p= JavaScriptPlugin.getActivePage();
-				if (p == null)
-					return;
-				
-				IEditorPart part= p.findEditor(input);
-				if (!(part instanceof JavaEditor))
-					return;
-				
-				IEditorSite site= ((JavaEditor)part).getEditorSite();
-				InferTypeArgumentsAction action= new InferTypeArgumentsAction(site);
-				action.run(new StructuredSelection(cu));
-			}
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public String getAdditionalProposalInfo() {
-				return CorrectionMessages.LocalCorrectionsSubProcessor_InferGenericTypeArguments_description;
-			}
-		};
-		proposals.add(proposal);
-	}
 	
 	public static void addFallThroughProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
 		ASTNode selectedNode= problem.getCoveringNode(context.getASTRoot());

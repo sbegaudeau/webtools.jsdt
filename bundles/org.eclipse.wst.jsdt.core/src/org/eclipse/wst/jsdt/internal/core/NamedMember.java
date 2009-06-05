@@ -17,9 +17,9 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.ast.ITypeParameter;
 
 public abstract class NamedMember extends Member {
 
@@ -32,30 +32,6 @@ public abstract class NamedMember extends Member {
 	public NamedMember(JavaElement parent, String name) {
 		super(parent);
 		this.name = name;
-	}
-
-	private void appendTypeParameters(StringBuffer buffer) throws JavaScriptModelException {
-		ITypeParameter[] typeParameters = getTypeParameters();
-		int length = typeParameters.length;
-		if (length == 0) return;
-		buffer.append('<');
-		for (int i = 0; i < length; i++) {
-			ITypeParameter typeParameter = typeParameters[i];
-			buffer.append(typeParameter.getElementName());
-			String[] bounds = typeParameter.getBounds();
-			int boundsLength = bounds.length;
-			if (boundsLength > 0) {
-				buffer.append(" extends "); //$NON-NLS-1$
-				for (int j = 0; j < boundsLength; j++) {
-					buffer.append(bounds[j]);
-					if (j < boundsLength-1)
-						buffer.append(" & "); //$NON-NLS-1$
-				}
-			}
-			if (i < length-1)
-				buffer.append(", "); //$NON-NLS-1$
-		}
-		buffer.append('>');
 	}
 
 	public String getElementName() {
@@ -191,7 +167,6 @@ public abstract class NamedMember extends Member {
 			case IJavaScriptElement.JAVASCRIPT_UNIT:
 				if (showParameters) {
 					StringBuffer buffer = new StringBuffer(this.name);
-					appendTypeParameters(buffer);
 					return buffer.toString();
 				}
 				return this.name;
@@ -207,7 +182,6 @@ public abstract class NamedMember extends Member {
 				}
 				if (showParameters) {
 					StringBuffer buffer = new StringBuffer(typeName);
-					appendTypeParameters(buffer);
 					return buffer.toString();
 				}
 				return typeName;
@@ -228,9 +202,6 @@ public abstract class NamedMember extends Member {
 		buffer.append(enclosingTypeSeparator);
 		String simpleName = this.name.length() == 0 ? Integer.toString(this.occurrenceCount) : this.name;
 		buffer.append(simpleName);
-		if (showParameters) {
-			appendTypeParameters(buffer);
-		}
 		return buffer.toString();
 	}
 

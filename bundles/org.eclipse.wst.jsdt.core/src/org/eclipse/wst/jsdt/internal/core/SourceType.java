@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.IWorkingCopy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -58,14 +57,6 @@ public class SourceType extends NamedMember implements IType {
 
 protected SourceType(JavaElement parent, String name) {
 	super(parent, name);
-}
-protected void closing(Object info) throws JavaScriptModelException {
-	super.closing(info);
-	SourceTypeElementInfo elementInfo = (SourceTypeElementInfo) info;
-	ITypeParameter[] typeParameters = elementInfo.typeParameters;
-	for (int i = 0, length = typeParameters.length; i < length; i++) {
-		((TypeParameter) typeParameters[i]).close();
-	}
 }
 /**
  * @see IType
@@ -315,11 +306,6 @@ public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer me
 			} else {
 				return type.getHandleFromMemento(token, memento, workingCopyOwner);
 			}
-		case JEM_TYPE_PARAMETER:
-			if (!memento.hasMoreTokens()) return this;
-			String typeParameterName = memento.nextToken();
-			JavaElement typeParameter = new TypeParameter(this, typeParameterName);
-			return typeParameter.getHandleFromMemento(memento, workingCopyOwner);
 
 	}
 	return null;
@@ -460,46 +446,13 @@ public String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelExceptio
 	return strings;
 }
 
-public ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	return info.typeParameters;
-}
-
-/**
- * @see IType#getTypeParameterSignatures()
- * @since 3.0
- */
-public String[] getTypeParameterSignatures() throws JavaScriptModelException {
-	ITypeParameter[] typeParameters = getTypeParameters();
-	int length = typeParameters.length;
-	String[] typeParameterSignatures = new String[length];
-	for (int i = 0; i < length; i++) {
-		TypeParameter typeParameter = (TypeParameter) typeParameters[i];
-		TypeParameterElementInfo info = (TypeParameterElementInfo) typeParameter.getElementInfo();
-		char[][] bounds = info.bounds;
-		if (bounds == null) {
-			typeParameterSignatures[i] = Signature.createTypeParameterSignature(typeParameter.getElementName(), CharOperation.NO_STRINGS);
-		} else {
-			int boundsLength = bounds.length;
-			char[][] boundSignatures = new char[boundsLength][];
-			for (int j = 0; j < boundsLength; j++) {
-				boundSignatures[j] = Signature.createCharArrayTypeSignature(bounds[j], false);
-			}
-			typeParameterSignatures[i] = new String(Signature.createTypeParameterSignature(typeParameter.getElementName().toCharArray(), boundSignatures));
-		}
-	}
-	return typeParameterSignatures;
-}
-
 /**
  * @see IType
  */
 public IType getType(String typeName) {
 	return new SourceType(this, typeName);
 }
-public ITypeParameter getTypeParameter(String typeParameterName) {
-	return new TypeParameter(this, typeParameterName);
-}
+
 /**
  * @see IType#getTypeQualifiedName()
  */

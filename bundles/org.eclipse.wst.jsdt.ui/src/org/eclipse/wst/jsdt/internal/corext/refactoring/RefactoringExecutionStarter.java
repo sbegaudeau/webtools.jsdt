@@ -58,7 +58,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceFactoryRef
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceIndirectionRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.IntroduceParameterRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.ReplaceInvocationsRefactoring;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.generics.InferTypeArgumentsRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.JavaRenameRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.RenameResourceProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.JavaCopyProcessor;
@@ -96,7 +95,6 @@ import org.eclipse.wst.jsdt.internal.ui.refactoring.ChangeTypeWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ConvertAnonymousToNestedWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ExtractInterfaceWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ExtractSupertypeWizard;
-import org.eclipse.wst.jsdt.internal.ui.refactoring.InferTypeArgumentsWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.InlineConstantWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.InlineTempWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.IntroduceFactoryWizard;
@@ -287,17 +285,6 @@ public final class RefactoringExecutionStarter {
 			project= members[0].getJavaScriptProject();
 		final ExtractSupertypeRefactoring refactoring= new ExtractSupertypeRefactoring(new ExtractSupertypeProcessor(members, JavaPreferencesSettings.getCodeGenerationSettings(project)));
 		new RefactoringStarter().activate(refactoring, new ExtractSupertypeWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
-	}
-
-	public static void startInferTypeArgumentsRefactoring(final IJavaScriptElement[] elements, final Shell shell) {
-		try {
-			if (!RefactoringAvailabilityTester.isInferTypeArgumentsAvailable(elements))
-				return;
-			final InferTypeArgumentsRefactoring refactoring= new InferTypeArgumentsRefactoring(elements);
-			new RefactoringStarter().activate(refactoring, new InferTypeArgumentsWizard(refactoring), shell, RefactoringMessages.InferTypeArgumentsAction_dialog_title, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
-		} catch (CoreException e) {
-			ExceptionHandler.handle(e, RefactoringMessages.InferTypeArgumentsAction_dialog_title, RefactoringMessages.OpenRefactoringWizardAction_exception);
-		}
 	}
 
 	public static boolean startInlineConstantRefactoring(final IJavaScriptUnit unit, final JavaScriptUnit node, final int offset, final int length, final Shell shell) throws JavaScriptModelException {

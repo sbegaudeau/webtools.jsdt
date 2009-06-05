@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.corext.refactoring.rename;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusContext;
 import org.eclipse.wst.jsdt.core.IFunction;
@@ -23,7 +22,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.internal.corext.Corext;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.RefactoringStatusCodes;
@@ -71,54 +69,6 @@ public class MethodChecks {
 				new String[]{JavaElementUtil.createMethodSignature(overrides), JavaModelUtil.getFullyQualifiedName(overrides.getDeclaringType())});
 		return RefactoringStatus.createStatus(RefactoringStatus.FATAL, message, context, Corext.getPluginId(), RefactoringStatusCodes.OVERRIDES_ANOTHER_METHOD, overrides);
 	}
-	
-	/**
-	 * Checks if the given method is declared in an interface. If the method's declaring type
-	 * is an interface the method returns <code>false</code> if it is only declared in that
-	 * interface.
-	 */
-	public static RefactoringStatus checkIfComesFromInterface(IFunction method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaScriptModelException {
-		IFunction inInterface= MethodChecks.isDeclaredInInterface(method, hierarchy, monitor);
-			
-		if (inInterface == null)
-			return null;
-
-		RefactoringStatusContext context= JavaStatusContext.create(inInterface);
-		String message= Messages.format(RefactoringCoreMessages.MethodChecks_implements, 
-				new String[]{JavaElementUtil.createMethodSignature(inInterface), JavaModelUtil.getFullyQualifiedName(inInterface.getDeclaringType())});
-		return RefactoringStatus.createStatus(RefactoringStatus.FATAL, message, context, Corext.getPluginId(), RefactoringStatusCodes.METHOD_DECLARED_IN_INTERFACE, inInterface);
-	}
-	
-	/**
-	 * Checks if the given method is declared in an interface. If the method's declaring type
-	 * is an interface the method returns <code>false</code> if it is only declared in that
-	 * interface.
-	 */
-	public static IFunction isDeclaredInInterface(IFunction method, ITypeHierarchy hierarchy, IProgressMonitor monitor) throws JavaScriptModelException {
-		Assert.isTrue(isVirtual(method));
-		IProgressMonitor subMonitor= new SubProgressMonitor(monitor, 1);
-		try {
-			IType[] classes= hierarchy.getAllClasses();
-			subMonitor.beginTask("", classes.length); //$NON-NLS-1$
-			for (int i= 0; i < classes.length; i++) {
-				final IType clazz= classes[i];
-				IType[] superinterfaces= null;
-				if (clazz.equals(hierarchy.getType()))
-					superinterfaces= hierarchy.getAllSuperInterfaces(clazz);
-				else
-					superinterfaces= clazz.newSupertypeHierarchy(new SubProgressMonitor(subMonitor, 1)).getAllSuperInterfaces(clazz);
-				for (int j= 0; j < superinterfaces.length; j++) {
-					IFunction found= Checks.findSimilarMethod(method, superinterfaces[j]);
-					if (found != null && !found.equals(method))
-						return found;
-				}
-				subMonitor.worked(1);
-			}
-			return null;
-		} finally {
-			subMonitor.done();
-		}
-	}
 
 	public static IFunction overridesAnotherMethod(IFunction method, ITypeHierarchy hierarchy) throws JavaScriptModelException {
 		MethodOverrideTester tester= new MethodOverrideTester(method.getDeclaringType(), hierarchy);
@@ -153,17 +103,12 @@ public class MethodChecks {
 		if ((hierarchy == null) || !declaringType.equals(hierarchy.getType()))
 			hierarchy= declaringType.newTypeHierarchy(monitor);
 		
-		IFunction inInterface= isDeclaredInInterface(method, hierarchy, monitor);
-		if (inInterface != null && !inInterface.equals(method))
-			topmostMethod= inInterface;
+		if (hierarchy == null)
+			hierarchy= declaringType.newSupertypeHierarchy(monitor);
+		IFunction overrides= overridesAnotherMethod(method, hierarchy);
+		if (overrides != null && !overrides.equals(method))
+			topmostMethod= overrides;
 		
-		if (topmostMethod == null) {
-			if (hierarchy == null)
-				hierarchy= declaringType.newSupertypeHierarchy(monitor);
-			IFunction overrides= overridesAnotherMethod(method, hierarchy);
-			if (overrides != null && !overrides.equals(method))
-				topmostMethod= overrides;
-		}
 		return topmostMethod;
 	}
 

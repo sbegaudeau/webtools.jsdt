@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -462,7 +462,6 @@ public class ReplaceInvocationsRefactoring extends ScriptableRefactoring {
 		ITypeHierarchy hierarchy= type.newTypeHierarchy(new SubProgressMonitor(pm, 6));
 		checkSubTypes(status, method, hierarchy.getAllSubtypes(type), new SubProgressMonitor(pm, 1));
 		checkSuperClasses(status, method, hierarchy.getAllSuperclasses(type), new SubProgressMonitor(pm, 1));
-		checkSuperInterfaces(status, method, hierarchy.getAllSuperInterfaces(type), new SubProgressMonitor(pm, 1));
 		pm.setTaskName(""); //$NON-NLS-1$
 	}
 
@@ -480,12 +479,6 @@ public class ReplaceInvocationsRefactoring extends ScriptableRefactoring {
 			pm);
 	}
 
-	private void checkSuperInterfaces(RefactoringStatus result, IFunction method, IType[] types, IProgressMonitor pm) {
-		checkTypes(
-			result, method, types, 
-			RefactoringCoreMessages.InlineMethodRefactoring_checking_implements_error,
-			pm);
-	}
 	private void checkTypes(RefactoringStatus result, IFunction method, IType[] types, String key, IProgressMonitor pm) {
 		pm.beginTask("", types.length); //$NON-NLS-1$
 		for (int i= 0; i < types.length; i++) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -98,10 +97,7 @@ public class TypeEnvironment {
 	private Map/*<IJavaScriptElement, GenericType>*/   fGenericTypes= new HashMap();
 	private Map/*<ProjectKeyPair, ParameterizedType>*/ fParameterizedTypes= new HashMap();
 	private Map/*<IJavaScriptElement, RawType>*/       fRawTypes= new HashMap();
-	private Map/*<IJavaScriptElement, TypeVariable>*/  fTypeVariables= new HashMap();
 	private Map/*<ProjectKeyPair, CaptureType>*/ fCaptureTypes= new HashMap();
-	private Map/*<TType, ExtendsWildcardType>*/  fExtendsWildcardTypes= new HashMap();
-	private Map/*<TType, SuperWildcardType>*/    fSuperWildcardTypes= new HashMap();
 	private UnboundWildcardType fUnboundWildcardType= null;
 	
 	private static final int MAX_ENTRIES= 1024;
@@ -173,15 +169,9 @@ public class TypeEnvironment {
 			return createGenericType(binding);
 		} else if (binding.isParameterizedType()) {
 			return createParameterizedType(binding);
-		} else if (binding.isTypeVariable()) {
-			return createTypeVariable(binding);
 		} else if (binding.isWildcardType()) {
 			if (binding.getBound() == null) {
 				return createUnboundWildcardType(binding);
-			} else if (binding.isUpperbound()) {
-				return createExtendsWildCardType(binding);
-			} else {
-				return createSuperWildCardType(binding);
 			}
 		} else if (binding.isCapture()) {
 			return createCaptureType(binding);
@@ -387,40 +377,7 @@ public class TypeEnvironment {
 			fUnboundWildcardType.initialize(binding);
 		}
 		return fUnboundWildcardType;
-	}
-	
-	private TType createExtendsWildCardType(ITypeBinding binding) {
-		TType bound= create(binding.getBound());
-		ExtendsWildcardType result= (ExtendsWildcardType)fExtendsWildcardTypes.get(bound);
-		if (result != null)
-			return result;
-		result= new ExtendsWildcardType(this);
-		fExtendsWildcardTypes.put(bound, result);
-		result.initialize(binding);
-		return result;
 	}	
-	
-	private TType createSuperWildCardType(ITypeBinding binding) {
-		TType bound= create(binding.getBound());
-		SuperWildcardType result= (SuperWildcardType)fSuperWildcardTypes.get(bound);
-		if (result != null)
-			return result;
-		result= new SuperWildcardType(this);
-		fSuperWildcardTypes.put(bound, result);
-		result.initialize(binding);
-		return result;
-	}	
-	
-	private TypeVariable createTypeVariable(ITypeBinding binding) {
-		IJavaScriptElement javaElement= binding.getJavaElement();
-		TypeVariable result= (TypeVariable)fTypeVariables.get(javaElement);
-		if (result != null)
-			return result;
-		result= new TypeVariable(this);
-		fTypeVariables.put(javaElement, result);
-		result.initialize(binding, (ITypeParameter)javaElement);
-		return result;
-	}
 	
 	private CaptureType createCaptureType(ITypeBinding binding) {
 		IJavaScriptProject javaProject= binding.getDeclaringClass().getJavaElement().getJavaScriptProject();

@@ -417,15 +417,6 @@ public final class JavaModelUtil {
 				return res;
 			}
 		}
-		if (!isConstructor) {
-			IType[] superInterfaces= hierarchy.getSuperInterfaces(type);
-			for (int i= 0; i < superInterfaces.length; i++) {
-				IFunction res= findMethodInHierarchy(hierarchy, superInterfaces[i], name, paramTypes, false);
-				if (res != null) {
-					return res;
-				}
-			}
-		}
 		return method;		
 	}
 		

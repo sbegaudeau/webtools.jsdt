@@ -142,7 +142,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -1922,12 +1921,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 
 				if (reference instanceof IMember) {
 					range= ((IMember) reference).getNameRange();
-					if (range != null) {
-						offset= range.getOffset();
-						length= range.getLength();
-					}
-				} else if (reference instanceof ITypeParameter) {
-					range= ((ITypeParameter) reference).getNameRange();
 					if (range != null) {
 						offset= range.getOffset();
 						length= range.getLength();

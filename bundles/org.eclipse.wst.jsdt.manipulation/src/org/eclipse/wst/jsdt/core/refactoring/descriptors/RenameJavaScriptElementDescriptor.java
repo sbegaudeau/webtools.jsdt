@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.core.refactoring.descriptors;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.internal.core.refactoring.descriptors.DescriptorMessages;
 
@@ -180,9 +179,8 @@ public final class RenameJavaScriptElementDescriptor extends JavaScriptRefactori
 		super.populateArgumentMap();
 		fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_NAME, fName);
 		if (getID().equals(IJavaScriptRefactorings.RENAME_TYPE_PARAMETER)) {
-			final ITypeParameter parameter= (ITypeParameter) fJavaElement;
-			fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), parameter.getDeclaringMember()));
-			fArguments.put(ATTRIBUTE_PARAMETER, parameter.getElementName());
+			fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), null));
+			fArguments.put(ATTRIBUTE_PARAMETER, null);
 		} else
 			fArguments.put(JavaScriptRefactoringDescriptor.ATTRIBUTE_INPUT, elementToHandle(getProject(), fJavaElement));
 		final int type= fJavaElement.getElementType();

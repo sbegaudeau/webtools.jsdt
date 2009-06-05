@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,6 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 
 public final class GenericType extends HierarchyType {
 	
-	private TypeVariable[] fTypeParameters;
-	
 	protected GenericType(TypeEnvironment environment) {
 		super(environment);
 	}
@@ -26,20 +24,10 @@ public final class GenericType extends HierarchyType {
 	protected void initialize(ITypeBinding binding, IType javaElementType) {
 		Assert.isTrue(binding.isGenericType());
 		super.initialize(binding, javaElementType);
-		TypeEnvironment environment= getEnvironment();
-		ITypeBinding[] typeParameters= binding.getTypeParameters();
-		fTypeParameters= new TypeVariable[typeParameters.length];
-		for (int i= 0; i < typeParameters.length; i++) {
-			fTypeParameters[i]= (TypeVariable) environment.create(typeParameters[i]);
-		}
 	}
 	
 	public int getKind() {
 		return GENERIC_TYPE;
-	}
-	
-	public TypeVariable[] getTypeParameters() {
-		return (TypeVariable[]) fTypeParameters.clone();
 	}
 	
 	public boolean doEquals(TType type) {
@@ -68,11 +56,6 @@ public final class GenericType extends HierarchyType {
 	protected String getPlainPrettySignature() {
 		StringBuffer result= new StringBuffer(getJavaElementType().getFullyQualifiedName('.'));
 		result.append("<"); //$NON-NLS-1$
-		result.append(fTypeParameters[0].getPrettySignature());
-		for (int i= 1; i < fTypeParameters.length; i++) {
-			result.append(", "); //$NON-NLS-1$
-			result.append(fTypeParameters[i].getPrettySignature());
-		}
 		result.append(">"); //$NON-NLS-1$
 		return result.toString();
 	}

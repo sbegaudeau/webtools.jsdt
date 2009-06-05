@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.Stack;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.AbstractTypeVariable;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.HierarchyType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TypeVariable;
 
 public class TTypes {
 	
@@ -129,11 +128,6 @@ public class TTypes {
 		} else if (rhs.isTypeVariable()) {
 			if (rhs.canAssignTo(lhs))
 				return true;
-			TType[] bounds= ((TypeVariable) rhs).getBounds();
-			for (int i= 0; i < bounds.length; i++) {
-				if (canAssignTo(bounds[i], lhs))
-					return true;
-			}
 			return lhs.isJavaLangObject();
 			
 		} else {

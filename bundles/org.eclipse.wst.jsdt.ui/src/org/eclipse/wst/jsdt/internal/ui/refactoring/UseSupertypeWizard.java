@@ -83,10 +83,6 @@ public class UseSupertypeWizard extends RefactoringWizard{
 				if (superclass != null) {
 					result.add(superclass);
 				}	
-				IType[] superInterface= fHierarchy.getSuperInterfaces(type);
-				for (int i=0; i < superInterface.length; i++){
-					result.add(superInterface[i]);
-				}
 				return result;
 			}	
 

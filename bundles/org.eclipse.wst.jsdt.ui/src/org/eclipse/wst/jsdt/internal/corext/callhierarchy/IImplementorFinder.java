@@ -29,9 +29,4 @@ public interface IImplementorFinder {
      */
     public abstract Collection findImplementingTypes(IType type,
         IProgressMonitor progressMonitor);
-
-    /**
-     * Find interfaces which are implemented by the specified IType instance.
-     */
-    public abstract Collection findInterfaces(IType type, IProgressMonitor progressMonitor);
 }

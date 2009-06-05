@@ -43,7 +43,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -657,22 +656,6 @@ public class SourceMapper
 
 		IType currentType = this.types[typeDepth];
 
-		// type parameters
-		if (typeInfo.typeParameters != null) {
-			for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
-				TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-				ITypeParameter typeParameter = null;
-				setSourceRange(
-					typeParameter,
-					new SourceRange(
-						typeParameterInfo.declarationStart,
-						typeParameterInfo.declarationEnd - typeParameterInfo.declarationStart + 1),
-					new SourceRange(
-						typeParameterInfo.nameSourceStart,
-						typeParameterInfo.nameSourceEnd - typeParameterInfo.nameSourceStart + 1));
-			}
-		}
-
 		// type modifiers
 		this.typeModifiers[typeDepth] = typeInfo.modifiers;
 
@@ -763,22 +746,6 @@ public class SourceMapper
 			IFunction method = currentType.getFunction(
 					this.memberName[typeDepth],
 					convertTypeNamesToSigs(this.methodParameterTypes[typeDepth]));
-
-			// type parameters
-			if (methodInfo.typeParameters != null) {
-				for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
-					TypeParameterInfo typeParameterInfo = methodInfo.typeParameters[i];
-					ITypeParameter typeParameter = null;
-					setSourceRange(
-						typeParameter,
-						new SourceRange(
-							typeParameterInfo.declarationStart,
-							typeParameterInfo.declarationEnd - typeParameterInfo.declarationStart + 1),
-						new SourceRange(
-							typeParameterInfo.nameSourceStart,
-							typeParameterInfo.nameSourceEnd - typeParameterInfo.nameSourceStart + 1));
-				}
-			}
 
 			// categories
 			addCategories(method, methodInfo.categories);
