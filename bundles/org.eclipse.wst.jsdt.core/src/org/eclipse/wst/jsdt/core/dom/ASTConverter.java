@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1480,9 +1480,6 @@ class ASTConverter {
 			return null;
 		if ((expression.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.ParenthesizedMASK) != 0) {
 			return convertToParenthesizedExpression(expression);
-		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Annotation) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.Annotation) expression);
 		}
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression) expression);
@@ -4242,10 +4239,9 @@ class ASTConverter {
 	/**
 	 * @param bodyDeclaration
 	 */
-	protected void setModifiers(BodyDeclaration bodyDeclaration, org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations) {
+	protected void setModifiers(BodyDeclaration bodyDeclaration) {
 		try {
 			int token;
-			int indexInAnnotations = 0;
 			while ((token = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
 				IExtendedModifier modifier = null;
 				switch(token) {
@@ -4307,13 +4303,10 @@ class ASTConverter {
 		switch(this.ast.apiLevel) {
 			case AST.JLS2_INTERNAL :
 				fieldDeclaration.internalSetModifiers(fieldDecl.modifiers & ExtraCompilerModifiers.AccJustFlag);
-				if (fieldDecl.annotations != null) {
-					fieldDeclaration.setFlags(fieldDeclaration.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(fieldDecl.declarationSourceStart, fieldDecl.sourceStart);
-				this.setModifiers(fieldDeclaration, fieldDecl.annotations);
+				this.setModifiers(fieldDeclaration);
 		}
 	}
 
@@ -4325,13 +4318,10 @@ class ASTConverter {
 		switch(this.ast.apiLevel) {
 			case AST.JLS2_INTERNAL:
 				initializer.internalSetModifiers(oldInitializer.modifiers & ExtraCompilerModifiers.AccJustFlag);
-				if (oldInitializer.annotations != null) {
-					initializer.setFlags(initializer.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(oldInitializer.declarationSourceStart, oldInitializer.bodyStart);
-				this.setModifiers(initializer, oldInitializer.annotations);
+				this.setModifiers(initializer);
 		}
 	}
 	/**
@@ -4342,15 +4332,12 @@ class ASTConverter {
 		switch(this.ast.apiLevel) {
 			case AST.JLS2_INTERNAL :
 				methodDecl.internalSetModifiers(methodDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag);
-				if (methodDeclaration.annotations != null) {
-					methodDecl.setFlags(methodDecl.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				if (methodDeclaration.sourceStart>methodDeclaration.declarationSourceStart)
 				{
 				  this.scanner.resetTo(methodDeclaration.declarationSourceStart, methodDeclaration.sourceStart);
-				  this.setModifiers(methodDecl, methodDeclaration.annotations);
+				  this.setModifiers(methodDecl);
 				}
 		}
 	}
@@ -4363,14 +4350,9 @@ class ASTConverter {
 		switch(this.ast.apiLevel) {
 			case AST.JLS2_INTERNAL :
 				variableDecl.internalSetModifiers(argument.modifiers & ExtraCompilerModifiers.AccJustFlag);
-				if (argument.annotations != null) {
-					variableDecl.setFlags(variableDecl.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(argument.declarationSourceStart, argument.sourceStart);
-				org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations = argument.annotations;
-				int indexInAnnotations = 0;
 				try {
 					int token;
 					while ((token = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
@@ -4430,14 +4412,9 @@ class ASTConverter {
 		switch(this.ast.apiLevel) {
 		case AST.JLS2_INTERNAL :
 			variableDecl.internalSetModifiers(localDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag);
-			if (localDeclaration.annotations != null) {
-				variableDecl.setFlags(variableDecl.getFlags() | ASTNode.MALFORMED);
-			}
 			break;
 		case AST.JLS3 :
 			this.scanner.resetTo(localDeclaration.declarationSourceStart, localDeclaration.sourceStart);
-			org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations = localDeclaration.annotations;
-			int indexInAnnotations = 0;
 			try {
 				int token;
 				while ((token = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
@@ -4504,13 +4481,10 @@ class ASTConverter {
 				modifiers &= ~ClassFileConstants.AccInterface; // remove AccInterface flags
 				modifiers &= ExtraCompilerModifiers.AccJustFlag;
 				typeDecl.internalSetModifiers(modifiers);
-				if (typeDeclaration.annotations != null) {
-					typeDecl.setFlags(typeDecl.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(typeDeclaration.declarationSourceStart, typeDeclaration.sourceStart);
-				this.setModifiers(typeDecl, typeDeclaration.annotations);
+				this.setModifiers(typeDecl);
 		}
 	}
 
@@ -4524,14 +4498,9 @@ class ASTConverter {
 				int modifiers = localDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag;
 				modifiers &= ~ExtraCompilerModifiers.AccBlankFinal;
 				variableDeclarationExpression.internalSetModifiers(modifiers);
-				if (localDeclaration.annotations != null) {
-					variableDeclarationExpression.setFlags(variableDeclarationExpression.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(localDeclaration.declarationSourceStart, localDeclaration.sourceStart);
-				org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations = localDeclaration.annotations;
-				int indexInAnnotations = 0;
 				try {
 					int token;
 					while ((token = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
@@ -4597,14 +4566,9 @@ class ASTConverter {
 				int modifiers = localDeclaration.modifiers & ExtraCompilerModifiers.AccJustFlag;
 				modifiers &= ~ExtraCompilerModifiers.AccBlankFinal;
 				variableDeclarationStatement.internalSetModifiers(modifiers);
-				if (localDeclaration.annotations != null) {
-					variableDeclarationStatement.setFlags(variableDeclarationStatement.getFlags() | ASTNode.MALFORMED);
-				}
 				break;
 			case AST.JLS3 :
 				this.scanner.resetTo(localDeclaration.declarationSourceStart, localDeclaration.sourceStart);
-				org.eclipse.wst.jsdt.internal.compiler.ast.Annotation[] annotations = localDeclaration.annotations;
-				int indexInAnnotations = 0;
 				try {
 					int token;
 					while ((token = this.scanner.getNextToken()) != TerminalTokens.TokenNameEOF) {

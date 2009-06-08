@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
@@ -209,10 +208,6 @@ protected TypeBinding getTypeNameBinding(int index) {
  */
 public void initializePolymorphicSearch(MatchLocator locator) {
 	// default is to do nothing
-}
-public int match(Annotation node, MatchingNodeSet nodeSet) {
-	// each subtype should override if needed
-	return IMPOSSIBLE_MATCH;
 }
 /**
  * Check if the given ast node syntactically matches this pattern.

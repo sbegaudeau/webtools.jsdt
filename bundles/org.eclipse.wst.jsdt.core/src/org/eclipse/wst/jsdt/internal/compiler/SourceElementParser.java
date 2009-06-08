@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
@@ -59,7 +58,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReferen
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
@@ -378,23 +376,7 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 			alloc.sourceStart);
 	}
 }
-private long[] collectAnnotationPositions(Annotation[] annotations) {
-	if (annotations == null) return null;
-	int length = annotations.length;
-	long[] result = new long[length];
-	for (int i = 0; i < length; i++) {
-		Annotation annotation = annotations[i];
-		result[i] = (((long) annotation.sourceStart) << 32) + annotation.declarationSourceEnd;
-	}
-	return result;
-}
-protected void consumeAnnotationAsModifier() {
-	super.consumeAnnotationAsModifier();
-	Annotation annotation = (Annotation)expressionStack[expressionPtr];
-	if (reportReferenceInfo) { // accept annotation type reference
-		this.requestor.acceptTypeReference(annotation.type.getTypeName(), annotation.sourceStart, annotation.sourceEnd);
-	}
-}
+
 protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments() {
 	boolean previousFlag = reportReferenceInfo;
 	reportReferenceInfo = false; // not to see the type reference reported in super call to getTypeReference(...)
@@ -410,12 +392,6 @@ protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments(
 			alloc.arguments == null ? 0 : alloc.arguments.length,
 			alloc.sourceStart);
 	}
-}
-protected void consumeAnnotationTypeDeclarationHeaderName() {
-	int currentAstPtr = this.astPtr;
-	super.consumeAnnotationTypeDeclarationHeaderName();
-	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
-		rememberCategories();
 }
 protected void consumeClassHeaderName1() {
 	int currentAstPtr = this.astPtr;
@@ -547,13 +523,6 @@ protected void consumeMemberValuePair() {
 		requestor.acceptMethodReference(memberValuepair.name, 0, memberValuepair.sourceStart);
 	}
 }
-protected void consumeMarkerAnnotation() {
-	super.consumeMarkerAnnotation();
-	Annotation annotation = (Annotation)expressionStack[expressionPtr];
-	if (reportReferenceInfo) { // accept annotation type reference
-		this.requestor.acceptTypeReference(annotation.type.getTypeName(), annotation.sourceStart, annotation.sourceEnd);
-	}
-}
 protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
 	long selectorSourcePositions = (isAnonymousMethod) ? this.lParenPos
 			:this.identifierPositionStack[this.identifierPtr];
@@ -663,20 +632,6 @@ protected void consumeMethodInvocationSuperWithTypeArguments() {
 			messageSend.selector,
 			args == null ? 0 : args.length,
 			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
-protected void consumeNormalAnnotation() {
-	super.consumeNormalAnnotation();
-	Annotation annotation = (Annotation)expressionStack[expressionPtr];
-	if (reportReferenceInfo) { // accept annotation type reference
-		this.requestor.acceptTypeReference(annotation.type.getTypeName(), annotation.sourceStart, annotation.sourceEnd);
-	}
-}
-protected void consumeSingleMemberAnnotation() {
-	super.consumeSingleMemberAnnotation();
-	SingleMemberAnnotation member = (SingleMemberAnnotation) expressionStack[expressionPtr];
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(TypeConstants.VALUE, 0, member.sourceStart);
 	}
 }
 
@@ -988,22 +943,6 @@ public NameReference getUnspecifiedReferenceOptimized() {
 	return ref;
 }
 
-/*
- * Checks whether one of the annotations is the @Deprecated annotation
- * (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=89807)
- */
-private boolean hasDeprecatedAnnotation(Annotation[] annotations) {
-	if (annotations != null) {
-		for (int i = 0, length = annotations.length; i < length; i++) {
-			Annotation annotation = annotations[i];
-			if (CharOperation.equals(annotation.type.getLastToken(), TypeConstants.JAVA_LANG_DEPRECATED[2])) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
 protected ImportReference newImportReference(char[][] tokens, long[] positions, boolean onDemand) {
 	return new ImportReference(tokens, positions, onDemand);
 }
@@ -1245,7 +1184,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.exceptionTypes = null;
 		methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
-		methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 
@@ -1333,7 +1271,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 				currentModifiers |= ClassFileConstants.AccVarargs;
 
 			// remember deprecation so as to not lose it below
-			boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(methodDeclaration.annotations);
+			boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
 			ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 			methodInfo.isConstructor = true;
@@ -1346,7 +1284,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.parameterNames = argumentNames;
 			methodInfo.exceptionTypes = thrownExceptionTypes;
 			methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
-			methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
 			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 			requestor.enterConstructor(methodInfo);
 		}
@@ -1385,7 +1322,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			currentModifiers |= ClassFileConstants.AccVarargs;
 
 		// remember deprecation so as to not lose it below
-		boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(methodDeclaration.annotations);
+		boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
 		TypeReference returnType = methodDeclaration instanceof MethodDeclaration
 			? ((MethodDeclaration) methodDeclaration).returnType
@@ -1402,7 +1339,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.exceptionTypes = thrownExceptionTypes;
 		methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
-		methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 	}
@@ -1470,7 +1406,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				int currentModifiers = fieldDeclaration.modifiers;
 
 				// remember deprecation so as to not lose it below
-				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);
+				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
 				if (fieldDeclaration.initialization instanceof FunctionExpression) 
 					methodDeclaration=((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
@@ -1509,7 +1445,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					methodInfo.parameterNames = argumentNames;
 					methodInfo.exceptionTypes = getThrownExceptionTypes(methodDeclaration);
 					methodInfo.typeParameters =EMPTY_TYPEPARAMETERINFO;
-					methodInfo.annotationPositions = collectAnnotationPositions(methodDeclaration.annotations);
 					methodInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 					requestor.enterMethod(methodInfo);
 				}
@@ -1534,7 +1469,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 							: null;
 					fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
 					fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
-					fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
 					fieldInfo.categories = (char[][]) this.nodesToCategories
 							.get(fieldDeclaration);
 					requestor.enterField(fieldInfo);
@@ -1652,7 +1586,7 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			int currentModifiers = typeDeclaration.modifiers;
 
 			// remember deprecation so as to not lose it below
-			boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(typeDeclaration.annotations);
+			boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
 			boolean isEnumInit = typeDeclaration.allocation != null && typeDeclaration.allocation.enumConstant != null;
 			char[] superclassName;
@@ -1672,7 +1606,6 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			typeInfo.superclass = superclassName;
 			typeInfo.superinterfaces = interfaceNames;
 			typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
-			typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
 			typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 			typeInfo.secondary = typeDeclaration.isSecondary();
 			typeInfo.anonymousMember = typeDeclaration.allocation != null && typeDeclaration.allocation.enclosingInstance != null;

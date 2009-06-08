@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.compiler;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
@@ -241,16 +240,8 @@ protected void consumeClassHeaderName1() {
 	if (typeDecl.declarationSourceStart > declSourceStart) {
 		typeDecl.declarationSourceStart = declSourceStart;
 	}
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			typeDecl.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
 	pushOnAstStack(typeDecl);
 	// javadoc
@@ -370,16 +361,8 @@ protected void consumeConstructorHeaderName() {
 	cd.declarationSourceStart = intStack[intPtr--];
 	cd.modifiersSourceStart = intStack[intPtr--];
 	cd.modifiers = intStack[intPtr--];
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			cd.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	// javadoc
 	cd.javadoc = this.javadoc;
 	this.javadoc = null;
@@ -461,16 +444,7 @@ protected void consumeEnterVariable() {
 			declaration.modifiersSourceStart = intStack[intPtr--];
 			declaration.modifiers = intStack[intPtr--];
 		}
-		// consume annotations
-		int length;
-		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-			System.arraycopy(
-				this.expressionStack,
-				(this.expressionPtr -= length) + 1,
-				declaration.annotations = new Annotation[length],
-				0,
-				length);
-		}
+		this.expressionLengthPtr--;
 	} else {
 		type = (TypeReference) astStack[astPtr - variableIndex];
 		typeDim = type.dimensions();
@@ -479,11 +453,6 @@ protected void consumeEnterVariable() {
 		declaration.declarationSourceStart = previousVariable.declarationSourceStart;
 		declaration.modifiers = previousVariable.modifiers;
 		declaration.modifiersSourceStart = previousVariable.modifiersSourceStart;
-		final Annotation[] annotations = previousVariable.annotations;
-		if (annotations != null) {
-			final int annotationsLength = annotations.length;
-			System.arraycopy(annotations, 0, declaration.annotations = new Annotation[annotationsLength], 0, annotationsLength);
-		}
 	}
 
 	localIntPtr = intPtr;
@@ -699,16 +668,8 @@ protected void consumeInterfaceHeaderName1() {
 	if (typeDecl.declarationSourceStart > declSourceStart) {
 		typeDecl.declarationSourceStart = declSourceStart;
 	}
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			typeDecl.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
 	pushOnAstStack(typeDecl);
 	// javadoc
@@ -879,16 +840,7 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	md.declarationSourceStart = intStack[intPtr--];
 	md.modifiersSourceStart = intStack[intPtr--];
 	md.modifiers = intStack[intPtr--];
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			md.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
 	// javadoc
 	md.javadoc = this.javadoc;
 	this.javadoc = null;

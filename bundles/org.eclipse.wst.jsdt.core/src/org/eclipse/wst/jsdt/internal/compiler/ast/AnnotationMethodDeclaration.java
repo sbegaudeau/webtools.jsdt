@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,6 @@ public class AnnotationMethodDeclaration extends MethodDeclaration implements IA
 
 		printIndent(tab, output);
 		printModifiers(this.modifiers, output);
-		if (this.annotations != null) printAnnotations(this.annotations, output);
 
 		TypeParameter[] typeParams = typeParameters();
 		if (typeParams != null) {
@@ -134,11 +133,6 @@ public class AnnotationMethodDeclaration extends MethodDeclaration implements IA
 		ClassScope classScope) {
 
 		if (visitor.visit(this, classScope)) {
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, scope);
-			}
 			if (this.returnType != null) {
 				this.returnType.traverse(visitor, scope);
 			}

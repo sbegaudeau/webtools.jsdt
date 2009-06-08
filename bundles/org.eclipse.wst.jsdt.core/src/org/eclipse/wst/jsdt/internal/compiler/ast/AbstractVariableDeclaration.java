@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,14 +12,12 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.core.ast.IAnnotation;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -32,7 +30,6 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 	public Expression initialization;
 	public int modifiers;
 	public int modifiersSourceStart;
-	public Annotation[] annotations;
 	public Javadoc javadoc;
 
 
@@ -45,10 +42,6 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 
 	public InferredType getInferredType() {
 		return this.inferredType;
-	}
-
-	public IAnnotation[] getAnnotation() {
-		return this.annotations;
 	}
 	
 	public void setInferredType(InferredType type) {
@@ -110,7 +103,6 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 		printIndent(indent, output);
 		printModifiers(this.modifiers, output);
 		output.append("var "); //$NON-NLS-1$
-		if (this.annotations != null) printAnnotations(this.annotations, output);
 
 		printFragment(indent, output);
 		if (this.nextLocal!=null)

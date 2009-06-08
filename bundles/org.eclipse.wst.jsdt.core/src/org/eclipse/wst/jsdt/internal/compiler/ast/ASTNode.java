@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,23 +13,18 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.DelegateASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -472,15 +467,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 	public abstract StringBuffer print(int indent, StringBuffer output);
 
-	public static StringBuffer printAnnotations(Annotation[] annotations, StringBuffer output) {
-		int length = annotations.length;
-		for (int i = 0; i < length; i++) {
-			annotations[i].print(0, output);
-			output.append(" "); //$NON-NLS-1$
-		}
-		return output;
-	}
-
 	public static StringBuffer printIndent(int indent, StringBuffer output) {
 
 		for (int i = indent; i > 0; i--) output.append("  "); //$NON-NLS-1$
@@ -596,105 +582,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 //			}
 //		}
 //	}
-
-/**
- * Figures if @Deprecated annotation is specified, do not resolve entire annotations.
- */
-public static void resolveDeprecatedAnnotations(BlockScope scope, Annotation[] annotations, Binding recipient) {
-	if (recipient != null) {
-		int kind = recipient.kind();
-		if (annotations != null) {
-			int length;
-			if ((length = annotations.length) >= 0) {
-				switch (kind) {
-					case Binding.PACKAGE :
-						PackageBinding packageBinding = (PackageBinding) recipient;
-						if ((packageBinding.tagBits & TagBits.DeprecatedAnnotationResolved) != 0) return;
-						break;
-					case Binding.TYPE :
-					case Binding.GENERIC_TYPE :
-						ReferenceBinding type = (ReferenceBinding) recipient;
-						if ((type.tagBits & TagBits.DeprecatedAnnotationResolved) != 0) return;
-						break;
-					case Binding.METHOD :
-						MethodBinding method = (MethodBinding) recipient;
-						if ((method.tagBits & TagBits.DeprecatedAnnotationResolved) != 0) return;
-						break;
-					case Binding.FIELD :
-						FieldBinding field = (FieldBinding) recipient;
-						if ((field.tagBits & TagBits.DeprecatedAnnotationResolved) != 0) return;
-						break;
-					case Binding.LOCAL :
-						LocalVariableBinding local = (LocalVariableBinding) recipient;
-						if ((local.tagBits & TagBits.DeprecatedAnnotationResolved) != 0) return;
-						break;
-					default :
-						return;
-				}
-				for (int i = 0; i < length; i++) {
-					TypeReference annotationTypeRef = annotations[i].type;
-					// only resolve type name if 'Deprecated' last token
-					if (!CharOperation.equals(TypeConstants.JAVA_LANG_DEPRECATED[2], annotationTypeRef.getLastToken())) return;
-					TypeBinding annotationType = annotations[i].type.resolveType(scope);
-					if(annotationType != null && annotationType.isValidBinding() && annotationType.id == TypeIds.T_JavaLangDeprecated) {
-						switch (kind) {
-							case Binding.PACKAGE :
-								PackageBinding packageBinding = (PackageBinding) recipient;
-								packageBinding.tagBits |= (TagBits.AnnotationDeprecated | TagBits.DeprecatedAnnotationResolved);
-								return;
-							case Binding.TYPE :
-							case Binding.GENERIC_TYPE :
-							case Binding.TYPE_PARAMETER :
-								ReferenceBinding type = (ReferenceBinding) recipient;
-								type.tagBits |= (TagBits.AnnotationDeprecated | TagBits.DeprecatedAnnotationResolved);
-								return;
-							case Binding.METHOD :
-								MethodBinding method = (MethodBinding) recipient;
-								method.tagBits |= (TagBits.AnnotationDeprecated | TagBits.DeprecatedAnnotationResolved);
-								return;
-							case Binding.FIELD :
-								FieldBinding field = (FieldBinding) recipient;
-								field.tagBits |= (TagBits.AnnotationDeprecated | TagBits.DeprecatedAnnotationResolved);
-								return;
-							case Binding.LOCAL :
-								LocalVariableBinding local = (LocalVariableBinding) recipient;
-								local.tagBits |= (TagBits.AnnotationDeprecated | TagBits.DeprecatedAnnotationResolved);
-								return;
-							default:
-								return;
-						}
-					}
-				}
-			}
-		}
-		switch (kind) {
-			case Binding.PACKAGE :
-				PackageBinding packageBinding = (PackageBinding) recipient;
-				packageBinding.tagBits |= TagBits.DeprecatedAnnotationResolved;
-				return;
-			case Binding.TYPE :
-			case Binding.GENERIC_TYPE :
-			case Binding.TYPE_PARAMETER :
-				ReferenceBinding type = (ReferenceBinding) recipient;
-				type.tagBits |= TagBits.DeprecatedAnnotationResolved;
-				return;
-			case Binding.METHOD :
-				MethodBinding method = (MethodBinding) recipient;
-				method.tagBits |= TagBits.DeprecatedAnnotationResolved;
-				return;
-			case Binding.FIELD :
-				FieldBinding field = (FieldBinding) recipient;
-				field.tagBits |= TagBits.DeprecatedAnnotationResolved;
-				return;
-			case Binding.LOCAL :
-				LocalVariableBinding local = (LocalVariableBinding) recipient;
-				local.tagBits |= TagBits.DeprecatedAnnotationResolved;
-				return;
-			default:
-				return;
-		}
-	}
-}
 
 	public int sourceStart() {
 		return this.sourceStart;

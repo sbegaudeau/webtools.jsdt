@@ -64,7 +64,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
@@ -73,7 +72,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
@@ -81,7 +79,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
@@ -2198,14 +2195,6 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 		reportMatching(typeParameters, enclosingElement, parent, method.binding, nodeSet);
 	}
 
-	// report annotations
-	if (method.annotations != null) {
-		if (enclosingElement == null) {
-			enclosingElement = createHandle(method, parent);
-		}
-		reportMatching(method.annotations, enclosingElement, method.binding, nodeSet, true, true);
-	}
-
 	// references in this method
 	if (typeInHierarchy) {
 		ASTNode[] nodes = nodeSet.matchingNodes(method.declarationSourceStart, method.declarationSourceEnd);
@@ -2224,50 +2213,6 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 			}
 			for (int i = 0, l = nodes.length; i < l; i++)
 				nodeSet.matchingNodes.removeKey(nodes[i]);
-		}
-	}
-}
-/**
- * Report matching in annotations.
- */
-protected void reportMatching(Annotation[] annotations, IJavaScriptElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedContainer, boolean enclosesElement) throws CoreException {
-	for (int i=0, al=annotations.length; i<al; i++) {
-		Annotation annotationType = annotations[i];
-
-		// Look for annotation type ref
-		TypeReference typeRef = annotationType.type;
-		Integer level = (Integer) nodeSet.matchingNodes.removeKey(typeRef);
-		if (level != null && matchedContainer) {
-			this.patternLocator.matchReportReference(typeRef, enclosingElement, elementBinding, level.intValue(), this);
-		}
-
-		// Look for attribute ref
-		MemberValuePair[] pairs = annotationType.memberValuePairs();
-		for (int j = 0, pl = pairs.length; j < pl; j++) {
-			MemberValuePair pair = pairs[j];
-			level = (Integer) nodeSet.matchingNodes.removeKey(pair);
-			if (level != null && enclosesElement) {
-				ASTNode reference = (annotationType instanceof SingleMemberAnnotation) ? (ASTNode) annotationType: pair;
-				this.patternLocator.matchReportReference(reference, enclosingElement, pair.binding, level.intValue(), this);
-			}
-		}
-
-		// Look for reference inside annotation
-		ASTNode[] nodes = nodeSet.matchingNodes(annotationType.sourceStart, annotationType.declarationSourceEnd);
-		if (nodes != null) {
-			if (!matchedContainer) {
-				for (int j = 0, nl = nodes.length; j < nl; j++) {
-					nodeSet.matchingNodes.removeKey(nodes[j]);
-				}
-			} else {
-				for (int j = 0, nl = nodes.length; j < nl; j++) {
-					ASTNode node = nodes[j];
-					level = (Integer) nodeSet.matchingNodes.removeKey(node);
-					if (enclosesElement) {
-						this.patternLocator.matchReportReference(node, enclosingElement, elementBinding, level.intValue(), this);
-					}
-				}
-			}
 		}
 	}
 }
@@ -2470,14 +2415,6 @@ protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFi
 		} catch (WrappedCoreException e) {
 			throw e.coreException;
 		}
-	}
-
-	// report annotations
-	if (field.annotations != null) {
-		if (enclosingElement == null) {
-			enclosingElement = createHandle(field, type, parent);
-		}
-		reportMatching(field.annotations, enclosingElement, field.binding, nodeSet, true, true);
 	}
 
 	if (typeInHierarchy) {
@@ -2692,11 +2629,6 @@ protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, i
 	// report the type parameters
 	if (type.typeParameters != null) {
 		reportMatching(type.typeParameters, enclosingElement, parent, type.binding, nodeSet);
-	}
-
-	// report annotations
-	if (type.annotations != null) {
-		reportMatching(type.annotations, enclosingElement, type.binding, nodeSet, matchedClassContainer, enclosesElement);
 	}
 
 	// report references in javadoc

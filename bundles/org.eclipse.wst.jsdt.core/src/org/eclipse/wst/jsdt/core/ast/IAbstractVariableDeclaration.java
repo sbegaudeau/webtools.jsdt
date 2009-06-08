@@ -34,7 +34,6 @@ public interface IAbstractVariableDeclaration extends IStatement{
 	 * @return inferred type
 	 */
 	public InferredType getInferredType();
-	public IAnnotation[] getAnnotation();
 	/**
 	 * get the var name
 	 * @return name

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -322,11 +322,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 
 		if (visitor.visit(this, scope)) {
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, scope);
-			}
 			if (type!=null)
 				type.traverse(visitor, scope);
 			if (initialization != null)

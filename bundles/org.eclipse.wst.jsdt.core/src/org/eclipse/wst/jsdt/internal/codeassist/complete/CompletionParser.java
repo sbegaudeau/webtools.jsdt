@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -51,12 +50,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
@@ -330,38 +327,13 @@ protected void attachOrphanCompletionNode(){
 						new CompletionOnFieldType((TypeReference)orphan, true), 0);
 					return;
 				}
-				if(orphan instanceof Annotation) {
-					CompletionOnAnnotationOfType fakeType =
-						new CompletionOnAnnotationOfType(
-								FAKE_TYPE_NAME,
-								this.compilationUnit.compilationResult(),
-								(Annotation)orphan);
-					currentElement.parent.add(fakeType, 0);
-					this.pendingAnnotation = fakeType;
-					return;
-			}
 			}
 		}
 
 		if(orphan instanceof MemberValuePair) {
-			buildMoreAnnotationCompletionContext((MemberValuePair) orphan);
 			return;
 		}
 
-		if(orphan instanceof Annotation) {
-			popUntilCompletedAnnotationIfNecessary();
-
-			CompletionOnAnnotationOfType fakeType =
-					new CompletionOnAnnotationOfType(
-							FAKE_TYPE_NAME,
-							this.compilationUnit.compilationResult(),
-							(Annotation)orphan);
-				currentElement.add(fakeType, 0);
-				if (!isInsideAnnotation()) {
-					this.pendingAnnotation = fakeType;
-				}
-				return;
-		}
 		if ((topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_CATCH_AND_RIGHT_PAREN)) {
 			if (this.assistNode instanceof CompletionOnSingleTypeReference &&
 					((CompletionOnSingleTypeReference)this.assistNode).isException()) {
@@ -408,18 +380,14 @@ protected void attachOrphanCompletionNode(){
 
 					MemberValuePair valuePair =
 							new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, arrayInitializer);
-						buildMoreAnnotationCompletionContext(valuePair);
 				} else if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
 					if (expression instanceof SingleNameReference) {
 						SingleNameReference nameReference = (SingleNameReference) expression;
 						CompletionOnMemberValueName memberValueName = new CompletionOnMemberValueName(nameReference.token, nameReference.sourceStart, nameReference.sourceEnd);
-
-						buildMoreAnnotationCompletionContext(memberValueName);
 						return;
 					} else if (expression instanceof QualifiedNameReference) {
 						MemberValuePair valuePair =
 							new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, expression);
-						buildMoreAnnotationCompletionContext(valuePair);
 					}
 				} else {
 					int index;
@@ -443,7 +411,6 @@ protected void attachOrphanCompletionNode(){
 								expression.sourceEnd,
 								expression);
 
-						buildMoreAnnotationCompletionContext(memberValuePair);
 						return;
 					}
 				}
@@ -452,7 +419,6 @@ protected void attachOrphanCompletionNode(){
 				if(detector.containsCompletionNode()) {
 					MemberValuePair valuePair =
 						new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, expression);
-					buildMoreAnnotationCompletionContext(valuePair);
 				}
 			}
 		}
@@ -463,7 +429,6 @@ protected void attachOrphanCompletionNode(){
 				MemberValuePair memberValuePair = (MemberValuePair) node;
 				CompletionNodeDetector detector =  new CompletionNodeDetector(this.assistNode, memberValuePair);
 				if(detector.containsCompletionNode()) {
-					buildMoreAnnotationCompletionContext(memberValuePair);
 					this.assistNodeParent = detector.getCompletionNodeParent();
 					return;
 				}
@@ -605,77 +570,6 @@ protected void attachOrphanCompletionNode(){
 			}
 		}
 	}
-}
-private void buildMoreAnnotationCompletionContext(MemberValuePair memberValuePair) {
-	if(this.identifierPtr < 0 || this.identifierLengthPtr < 0 ) return;
-
-	TypeReference typeReference = this.getAnnotationType();
-
-	int nodesToRemove = this.astPtr > -1 && this.astStack[this.astPtr] == memberValuePair ? 1 : 0;
-
-	NormalAnnotation annotation;
-	if (memberValuePair instanceof CompletionOnMemberValueName) {
-		MemberValuePair[] memberValuePairs = null;
-		int length;
-		if (astLengthPtr > -1 && (length = this.astLengthStack[this.astLengthPtr--]) > nodesToRemove) {
-			if (this.astStack[this.astPtr] instanceof MemberValuePair) {
-				System.arraycopy(
-					this.astStack,
-					(this.astPtr -= length) + 1,
-					memberValuePairs = new MemberValuePair[length - nodesToRemove],
-					0,
-					length - nodesToRemove);
-			}
-		}
-		annotation =
-			new CompletionOnAnnotationMemberValuePair(
-					typeReference,
-					this.intStack[this.intPtr--],
-					memberValuePairs,
-					memberValuePair);
-
-		this.assistNode = memberValuePair;
-		this.assistNodeParent = annotation;
-
-		if (memberValuePair.sourceEnd >= this.lastCheckPoint) {
-			this.lastCheckPoint = memberValuePair.sourceEnd + 1;
-		}
-	} else {
-		MemberValuePair[] memberValuePairs = null;
-		int length = 0;
-		if (astLengthPtr > -1 && (length = this.astLengthStack[this.astLengthPtr--]) > nodesToRemove) {
-			if (this.astStack[this.astPtr] instanceof MemberValuePair) {
-				System.arraycopy(
-					this.astStack,
-					(this.astPtr -= length) + 1,
-					memberValuePairs = new MemberValuePair[length - nodesToRemove + 1],
-					0,
-					length - nodesToRemove);
-			}
-			if(memberValuePairs != null) {
-				memberValuePairs[length - nodesToRemove] = memberValuePair;
-			} else {
-				memberValuePairs = new MemberValuePair[]{memberValuePair};
-			}
-		} else {
-			memberValuePairs = new MemberValuePair[]{memberValuePair};
-		}
-
-		annotation =
-			new NormalAnnotation(
-					typeReference,
-					this.intStack[this.intPtr--]);
-		annotation.memberValuePairs = memberValuePairs;
-
-	}
-	CompletionOnAnnotationOfType fakeType =
-		new CompletionOnAnnotationOfType(
-				FAKE_TYPE_NAME,
-				this.compilationUnit.compilationResult(),
-				annotation);
-
-	currentElement.add(fakeType, 0);
-	this.pendingAnnotation = fakeType;
 }
 
 private void buildMoreCompletionContext(Expression expression) {
@@ -2540,16 +2434,7 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 		//modifiers
 		md.declarationSourceStart = intStack[intPtr--];
 		md.modifiers = intStack[intPtr--];
-		// consume annotations
-		int length;
-		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-			System.arraycopy(
-				this.expressionStack,
-				(this.expressionPtr -= length) + 1,
-				md.annotations = new Annotation[length],
-				0,
-				length);
-		}
+		this.expressionLengthPtr--;
 		// javadoc
 		md.javadoc = this.javadoc;
 		this.javadoc = null;
@@ -2651,80 +2536,10 @@ protected void consumeMethodHeaderExtendedDims() {
 		}
 	}
 }
-protected void consumeAnnotationName() {
-	int index;
-
-	if ((index = this.indexOfAssistIdentifier()) < 0) {
-		super.consumeAnnotationName();
-		this.pushOnElementStack(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN, LPAREN_NOT_CONSUMED);
-		return;
-	}
-
-	MarkerAnnotation markerAnnotation = null;
-	int length = this.identifierLengthStack[this.identifierLengthPtr];
-	TypeReference typeReference;
-
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-
-	char[][] subset = identifierSubSet(index);
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist on type reference */
-
-	if (index == 0) {
-		/* assist inside first identifier */
-		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(),
-						positions[0]);
-	} else {
-		/* assist inside subsequent identifier */
-		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,
-						assistIdentifier(),
-						positions);
-	}
-
-	markerAnnotation = new CompletionOnMarkerAnnotationName(typeReference, typeReference.sourceStart);
-	this.intPtr--;
-	markerAnnotation.declarationSourceEnd = markerAnnotation.sourceEnd;
-	pushOnExpressionStack(markerAnnotation);
-
-	assistNode = markerAnnotation;
-	this.isOrphanCompletionNode = true;
-	this.restartRecovery = AssistParser.STOP_AT_CURSOR;
-
-	this.lastCheckPoint = markerAnnotation.sourceEnd + 1;
-}
-protected void consumeAnnotationTypeDeclarationHeaderName() {
-	super.consumeAnnotationTypeDeclarationHeaderName();
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-		this.pendingAnnotation = null;
-	}
-}
 protected void consumeLabel() {
 	super.consumeLabel();
 	this.pushOnLabelStack(this.identifierStack[this.identifierPtr]);
 	this.pushOnElementStack(K_LABEL, this.labelPtr);
-}
-protected void consumeMarkerAnnotation() {
-	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
-			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
-	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-		this.restartRecovery = true;
-	} else {
-		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-	super.consumeMarkerAnnotation();
-	}
 }
 protected void consumeMemberValuePair() {
 	/* check if current awaiting identifier is the completion identifier */
@@ -2792,16 +2607,6 @@ protected void consumeRestoreDiet() {
 		popElement(K_LOCAL_INITIALIZER_DELIMITER);
 	}
 }
-protected void consumeSingleMemberAnnotation() {
-	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
-			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
-	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-		this.restartRecovery = true;
-	} else {
-		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-	super.consumeSingleMemberAnnotation();
-	}
-}
 protected void consumeSingleTypeImportDeclarationName() {
 	super.consumeSingleTypeImportDeclarationName();
 	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
@@ -2835,16 +2640,6 @@ protected void consumeStaticInitializer() {
 protected void consumeNestedMethod() {
 	super.consumeNestedMethod();
 	if(!(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BLOCK_DELIMITER)) pushOnElementStack(K_BLOCK_DELIMITER);
-}
-protected void consumeNormalAnnotation() {
-	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN &&
-			(this.topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) & ANNOTATION_NAME_COMPLETION) != 0 ) {
-	this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-		this.restartRecovery = true;
-	} else {
-		this.popElement(K_BETWEEN_ANNOTATION_NAME_AND_RPAREN);
-	super.consumeNormalAnnotation();
-	}
 }
 protected void consumePackageDeclarationName() {
 	super.consumePackageDeclarationName();

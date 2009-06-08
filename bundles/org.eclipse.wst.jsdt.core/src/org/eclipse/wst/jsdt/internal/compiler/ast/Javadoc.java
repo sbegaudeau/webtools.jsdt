@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
@@ -340,14 +339,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 						}
 					}
 				}
-			}
-		}
-
-		// Look at @Override annotations
-		if (!superRef && methDecl != null && methDecl.annotations != null) {
-			int length = methDecl.annotations.length;
-			for (int i=0; i<length && !superRef; i++) {
-				superRef = (methDecl.binding.tagBits & TagBits.AnnotationOverride) != 0;
 			}
 		}
 

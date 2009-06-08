@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -301,11 +301,6 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 	if (visitor.visit(this, classScope)) {
 		if (this.javadoc != null) {
 			this.javadoc.traverse(visitor, this.scope);
-		}
-		if (this.annotations != null) {
-			int annotationsLength = this.annotations.length;
-			for (int i = 0; i < annotationsLength; i++)
-				this.annotations[i].traverse(visitor, this.scope);
 		}
 		if (this.typeParameters != null) {
 			int typeParametersLength = this.typeParameters.length;

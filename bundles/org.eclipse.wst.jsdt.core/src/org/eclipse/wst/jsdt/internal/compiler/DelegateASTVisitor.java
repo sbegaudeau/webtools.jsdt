@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,11 +72,9 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
@@ -92,7 +90,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
@@ -379,10 +376,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public void endVisit(LongLiteral longLiteral, BlockScope scope) {
 		visitor.endVisit(longLiteral);
 	}
- 
-	public void endVisit(MarkerAnnotation annotation, BlockScope scope) {
-		visitor.endVisit(annotation);
-	}
 	/**
 	 * @param pair
 	 * @param scope
@@ -398,14 +391,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public void endVisit(StringLiteralConcatenation literal, BlockScope scope) {
 		visitor.endVisit(literal);
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public void endVisit(NormalAnnotation annotation, BlockScope scope) {
-		visitor.endVisit(annotation);
 	}
 	public void endVisit(NullLiteral nullLiteral, BlockScope scope) {
 		visitor.endVisit(nullLiteral);
@@ -484,14 +469,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 
 	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
 		visitor.endVisit(returnStatement);
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public void endVisit(SingleMemberAnnotation annotation, BlockScope scope) {
-		visitor.endVisit(annotation);
 	}
 	public void endVisit(
     		SingleNameReference singleNameReference,
@@ -834,14 +811,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 		return visitor.visit(longLiteral);
 	}
 	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(MarkerAnnotation annotation, BlockScope scope) {
-		return visitor.visit(annotation);
-	}
-	/**
 	 * @param pair
 	 * @param scope
 	 * @since 3.1
@@ -859,14 +828,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 			StringLiteralConcatenation literal,
 			BlockScope scope) {
 		return visitor.visit(literal);
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(NormalAnnotation annotation, BlockScope scope) {
-		return visitor.visit(annotation);
 	}
 	public boolean visit(NullLiteral nullLiteral, BlockScope scope) {
 		return visitor.visit(nullLiteral);
@@ -942,15 +903,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(ReturnStatement returnStatement, BlockScope scope) {
 		return visitor.visit(returnStatement);
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(SingleMemberAnnotation annotation, BlockScope scope) {
-		return visitor.visit(annotation);
-		
 	}
 	public boolean visit(
 		SingleNameReference singleNameReference,

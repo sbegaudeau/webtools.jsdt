@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,14 +35,11 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
@@ -640,53 +637,6 @@ protected void consumeLocalVariableDeclarationStatement() {
 		}
 	}
 }
-protected void consumeMarkerAnnotation() {
-	int index;
-
-	if ((index = this.indexOfAssistIdentifier()) < 0) {
-		super.consumeMarkerAnnotation();
-		return;
-	}
-
-	MarkerAnnotation markerAnnotation = null;
-	int length = this.identifierLengthStack[this.identifierLengthPtr];
-	TypeReference typeReference;
-
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-
-	char[][] subset = identifierSubSet(index);
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist on type reference */
-
-	if (index == 0) {
-		/* assist inside first identifier */
-		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(),
-						positions[0]);
-	} else {
-		/* assist inside subsequent identifier */
-		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,
-						assistIdentifier(),
-						positions);
-	}
-	assistNode = typeReference;
-	this.lastCheckPoint = typeReference.sourceEnd + 1;
-
-	markerAnnotation = new MarkerAnnotation(typeReference, this.intStack[this.intPtr--]);
-	markerAnnotation.declarationSourceEnd = markerAnnotation.sourceEnd;
-	pushOnExpressionStack(markerAnnotation);
-}
 protected void consumeMemberValuePair() {
 	if (this.indexOfAssistIdentifier() < 0) {
 		super.consumeMemberValuePair();
@@ -809,110 +759,6 @@ protected void consumeMethodInvocationName() {
 //	this.lastCheckPoint = constructorCall.sourceEnd + 1;
 //	this.isOrphanCompletionNode = true;
 //}
-protected void consumeNormalAnnotation() {
-	int index;
-
-	if ((index = this.indexOfAssistIdentifier()) < 0) {
-		super.consumeNormalAnnotation();
-		return;
-	}
-
-	NormalAnnotation normalAnnotation = null;
-	int length = this.identifierLengthStack[this.identifierLengthPtr];
-	TypeReference typeReference;
-
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-
-	char[][] subset = identifierSubSet(index);
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist on type reference */
-
-	if (index == 0) {
-		/* assist inside first identifier */
-		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(),
-						positions[0]);
-	} else {
-		/* assist inside subsequent identifier */
-		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,
-						assistIdentifier(),
-						positions);
-	}
-	assistNode = typeReference;
-	this.lastCheckPoint = typeReference.sourceEnd + 1;
-
-	normalAnnotation = new NormalAnnotation(typeReference, this.intStack[this.intPtr--]);
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.astStack,
-			(this.astPtr -= length) + 1,
-			normalAnnotation.memberValuePairs = new MemberValuePair[length],
-			0,
-			length);
-	}
-	normalAnnotation.declarationSourceEnd = this.rParenPos;
-	pushOnExpressionStack(normalAnnotation);
-}
-protected void consumeSingleMemberAnnotation() {
-	int index;
-
-	if ((index = this.indexOfAssistIdentifier()) < 0) {
-		super.consumeSingleMemberAnnotation();
-		return;
-	}
-
-	SingleMemberAnnotation singleMemberAnnotation = null;
-	int length = this.identifierLengthStack[this.identifierLengthPtr];
-	TypeReference typeReference;
-
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-
-	char[][] subset = identifierSubSet(index);
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist on type reference */
-
-	if (index == 0) {
-		/* assist inside first identifier */
-		typeReference = this.createSingleAssistTypeReference(
-						assistIdentifier(),
-						positions[0]);
-	} else {
-		/* assist inside subsequent identifier */
-		typeReference =	this.createQualifiedAssistTypeReference(
-						subset,
-						assistIdentifier(),
-						positions);
-	}
-	assistNode = typeReference;
-	this.lastCheckPoint = typeReference.sourceEnd + 1;
-
-	singleMemberAnnotation = new SingleMemberAnnotation(typeReference, this.intStack[this.intPtr--]);
-	singleMemberAnnotation.memberValue = this.expressionStack[this.expressionPtr--];
-	this.expressionLengthPtr--;
-	singleMemberAnnotation.declarationSourceEnd = this.rParenPos;
-	pushOnExpressionStack(singleMemberAnnotation);
-}
 protected void consumeToken(int token) {
 	super.consumeToken(token);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -27,13 +27,11 @@ import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -179,23 +177,6 @@ public int match(MessageSend node, MatchingNodeSet nodeSet) {
 	}
 
 	return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-}
-//public int match(Reference node, MatchingNodeSet nodeSet) - SKIP IT
-public int match(Annotation node, MatchingNodeSet nodeSet) {
-	if (!this.pattern.findReferences) return IMPOSSIBLE_MATCH;
-	MemberValuePair[] pairs = node.memberValuePairs();
-	if (pairs == null || pairs.length == 0) return IMPOSSIBLE_MATCH;
-
-	int length = pairs.length;
-	MemberValuePair pair = null;
-	for (int i=0; i<length; i++) {
-		pair = node.memberValuePairs()[i];
-		if (matchesName(this.pattern.selector, pair.name)) {
-			ASTNode possibleNode = (node instanceof SingleMemberAnnotation) ? (ASTNode) node : pair;
-			return nodeSet.addMatch(possibleNode, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-		}
-	}
-	return IMPOSSIBLE_MATCH;
 }
 //public int match(TypeDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeReference node, MatchingNodeSet nodeSet) - SKIP IT
@@ -351,10 +332,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 			}
 			matchReportReference((MessageSend)reference, locator, ((MessageSend)reference).binding);
 		} else {
-			if (reference instanceof SingleMemberAnnotation) {
-				reference = ((SingleMemberAnnotation)reference).memberValuePairs()[0];
-				match.setImplicit(true);
-			}
 			int offset = reference.sourceStart;
 			int length =  reference.sourceEnd - offset + 1;
 			match.setOffset(offset);
@@ -562,10 +539,6 @@ public int resolveLevel(ASTNode possibleMatchingNode) {
 	if (this.pattern.findReferences) {
 		if (possibleMatchingNode instanceof MessageSend) {
 			return resolveLevel((MessageSend) possibleMatchingNode);
-		}
-		if (possibleMatchingNode instanceof SingleMemberAnnotation) {
-			SingleMemberAnnotation annotation = (SingleMemberAnnotation) possibleMatchingNode;
-			return resolveLevel(annotation.memberValuePairs()[0].binding);
 		}
 		if (possibleMatchingNode instanceof MemberValuePair) {
 			MemberValuePair memberValuePair = (MemberValuePair) possibleMatchingNode;

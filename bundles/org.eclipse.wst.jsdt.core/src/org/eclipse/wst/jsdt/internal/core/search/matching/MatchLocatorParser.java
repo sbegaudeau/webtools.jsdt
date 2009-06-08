@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
@@ -274,12 +273,6 @@ protected void consumeLocalVariableDeclaration() {
 	// this is always a LocalDeclaration
 	this.patternLocator.match((LocalDeclaration) this.astStack[this.astPtr], this.nodeSet);
 }
-protected void consumeMarkerAnnotation() {
-	super.consumeMarkerAnnotation();
-	// this is always an Annotation
-	Annotation annotation = (Annotation) expressionStack[expressionPtr];
-	this.patternLocator.match(annotation, nodeSet);
-}
 protected void consumeMemberValuePair() {
 	super.consumeMemberValuePair();
 
@@ -322,12 +315,6 @@ protected void consumeMethodInvocationSuperWithTypeArguments() {
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
 }
-protected void consumeNormalAnnotation() {
-	super.consumeNormalAnnotation();
-	// this is always an Annotation
-	Annotation annotation = (Annotation) expressionStack[expressionPtr];
-	this.patternLocator.match(annotation, nodeSet);
-}
 protected void consumePrimaryNoNewArray() {
 	// pop parenthesis positions (and don't update expression positions
 	// (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=23329)
@@ -342,12 +329,6 @@ protected void consumePrimaryNoNewArrayWithName() {
 	// (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=23329)
 	intPtr--;
 	intPtr--;
-}
-protected void consumeSingleMemberAnnotation() {
-	super.consumeSingleMemberAnnotation();
-	// this is always an Annotation
-	Annotation annotation = (Annotation) expressionStack[expressionPtr];
-	this.patternLocator.match(annotation, nodeSet);
 }
 protected void consumeTypeArgument() {
 	super.consumeTypeArgument();

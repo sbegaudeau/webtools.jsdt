@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
@@ -33,8 +32,6 @@ public static Object getValue(Expression expression) {
 	if (constant != null && constant != Constant.NotAConstant)
 		return constant;
 
-	if (expression instanceof Annotation)
-		return ((Annotation) expression).getCompilerAnnotation();
 	if (expression instanceof ArrayInitializer) {
 		Expression[] exprs = ((ArrayInitializer) expression).expressions;
 		int length = exprs == null ? 0 : exprs.length;

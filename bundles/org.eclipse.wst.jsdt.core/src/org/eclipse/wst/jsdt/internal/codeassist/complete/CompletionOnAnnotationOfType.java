@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
 
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 
 public class CompletionOnAnnotationOfType extends TypeDeclaration {
@@ -20,15 +19,12 @@ public class CompletionOnAnnotationOfType extends TypeDeclaration {
 	// During recovery a parameter can be parsed as a FieldDeclaration instead of Argument.
 	// 'isParameter' is set to true in this case.
 	public boolean isParameter;
-		public CompletionOnAnnotationOfType(char[] typeName, CompilationResult compilationResult, Annotation annotation){
+		public CompletionOnAnnotationOfType(char[] typeName, CompilationResult compilationResult){
 		super(compilationResult);
-		this.sourceEnd = annotation.sourceEnd;
-		this.sourceStart = annotation.sourceEnd;
 		this.name = typeName;
-		this.annotations = new Annotation[]{annotation};
 	}
 
 	public StringBuffer print(int indent, StringBuffer output) {
-		return this.annotations[0].print(indent, output);
+		return new StringBuffer();
 	}
 }

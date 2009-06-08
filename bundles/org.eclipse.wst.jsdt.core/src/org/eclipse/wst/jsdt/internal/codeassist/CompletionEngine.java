@@ -100,7 +100,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
@@ -8486,30 +8485,6 @@ public final class CompletionEngine
 			MemberValuePair memberValuePair = (MemberValuePair) parent;
 			if(memberValuePair.binding != null) {
 				addExpectedType(memberValuePair.binding.returnType, scope);
-			}
-		} else if (parent instanceof NormalAnnotation) {
-			NormalAnnotation annotation = (NormalAnnotation) parent;
-			MemberValuePair[] memberValuePairs = annotation.memberValuePairs();
-			if(memberValuePairs == null || memberValuePairs.length == 0) {
-				if(annotation.resolvedType instanceof ReferenceBinding) {
-					MethodBinding[] methodBindings =
-						((ReferenceBinding)annotation.resolvedType).availableMethods();
-					if (methodBindings != null &&
-							methodBindings.length > 0 &&
-							CharOperation.equals(methodBindings[0].selector, VALUE)) {
-						boolean canBeSingleMemberAnnotation = true;
-						done : for (int i = 1; i < methodBindings.length; i++) {
-							if((methodBindings[i].modifiers & ClassFileConstants.AccAnnotationDefault) == 0) {
-								canBeSingleMemberAnnotation = false;
-								break done;
-							}
-						}
-						if (canBeSingleMemberAnnotation) {
-							this.assistNodeCanBeSingleMemberAnnotation = canBeSingleMemberAnnotation;
-							addExpectedType(methodBindings[0].returnType, scope);
-						}
-					}
-				}
 			}
 		} else if (parent instanceof TryStatement) {
 			boolean isException = false;

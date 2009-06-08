@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,6 @@ import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
@@ -1267,10 +1265,8 @@ public class Scribe {
 		}
 	}
 
-	public void printModifiers(Annotation[] annotations, ASTVisitor visitor) {
+	public void printModifiers(ASTVisitor visitor) {
 		try {
-			int annotationsLength = annotations != null ? annotations.length : 0;
-			int annotationsIndex = 0;
 			boolean isFirstModifier = true;
 			int currentTokenStartPosition = this.scanner.currentPosition;
 			int previousToken=this.scanner.currentToken;
@@ -1302,18 +1298,7 @@ public class Scribe {
 							this.space();
 						}
 						this.scanner.resetTo(this.scanner.getCurrentTokenStartPosition(), this.scannerEndPosition - 1);
-						if (annotationsIndex < annotationsLength) {
-							annotations[annotationsIndex++].traverse(visitor, (BlockScope) null);
-							if (this.formatter.preferences.insert_new_line_after_annotation) {
-								this.printNewLine();
-							}
-						} else {
-							return;
-						}
-						isFirstModifier = false;
-						currentTokenStartPosition = this.scanner.currentPosition;
-						previousToken=previousNonWSToken=this.scanner.currentToken;
-						break;
+						return;
 					case TerminalTokens.TokenNameCOMMENT_BLOCK :
 						this.printBlockComment(this.scanner.getRawTokenSource(), false);
 						currentTokenStartPosition = this.scanner.currentPosition;

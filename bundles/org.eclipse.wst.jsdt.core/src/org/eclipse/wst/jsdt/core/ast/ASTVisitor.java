@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -210,14 +210,6 @@ public abstract class ASTVisitor  {
 		// do nothing by default
 	}
 	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public void endVisit(IMarkerAnnotation annotation) {
-		// do nothing by default
-	}
-	/**
 	 * @param pair
 	 * @param scope
 	 */
@@ -231,14 +223,6 @@ public abstract class ASTVisitor  {
 		// do nothing by default
 	}
 	public void endVisit(IStringLiteralConcatenation literal) {
-		// do nothing by default
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public void endVisit(INormalAnnotation annotation) {
 		// do nothing by default
 	}
 	public void endVisit(INullLiteral nullLiteral) {
@@ -281,14 +265,6 @@ public abstract class ASTVisitor  {
 
 
 	public void endVisit(IReturnStatement returnStatement) {
-		// do nothing by default
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public void endVisit(ISingleMemberAnnotation annotation) {
 		// do nothing by default
 	}
 	public void endVisit(ISingleNameReference singleNameReference) {
@@ -544,14 +520,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(IMarkerAnnotation annotation) {
-		return true;
-	}
-	/**
 	 * @param pair
 	 * @param scope
 	 * @since 3.1
@@ -567,14 +535,6 @@ public abstract class ASTVisitor  {
 	}
 	public boolean visit(IStringLiteralConcatenation literal) {
 		return true; // do nothing by default, keep traversing
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(INormalAnnotation annotation) {
-		return true;
 	}
 	public boolean visit(INullLiteral nullLiteral) {
 		return true; // do nothing by default, keep traversing
@@ -620,14 +580,6 @@ public abstract class ASTVisitor  {
 	}
 	public boolean visit(IReturnStatement returnStatement) {
 		return true; // do nothing by default, keep traversing
-	}
-	/**
-	 * @param annotation
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(ISingleMemberAnnotation annotation) {
-		return true;
 	}
 	public boolean visit(ISingleNameReference singleNameReference) {
 		return true; // do nothing by default, keep traversing

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,6 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 
 	public int modifiers = ClassFileConstants.AccDefault;
 	public int modifiersSourceStart;
-	public Annotation[] annotations;
 	public char[] name;
 	public TypeReference superclass;
 	public TypeReference[] superInterfaces;
@@ -790,7 +789,6 @@ public StringBuffer printBody(int indent, StringBuffer output) {
 
 public StringBuffer printHeader(int indent, StringBuffer output) {
 	printModifiers(this.modifiers, output);
-	if (this.annotations != null) printAnnotations(this.annotations, output);
 
 	switch (kind(this.modifiers)) {
 		case TypeDeclaration.CLASS_DECL :
@@ -1083,11 +1081,6 @@ public void traverse(ASTVisitor visitor, CompilationUnitScope unitScope) {
 			if (this.javadoc != null) {
 				this.javadoc.traverse(visitor, this.scope);
 			}
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, this.staticInitializerScope);
-			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);
 			if (this.superInterfaces != null) {
@@ -1139,11 +1132,6 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 		if (visitor.visit(this, blockScope)) {
 			if (this.javadoc != null) {
 				this.javadoc.traverse(visitor, this.scope);
-			}
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, this.staticInitializerScope);
 			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);
@@ -1197,11 +1185,6 @@ public void traverse(ASTVisitor visitor, ClassScope classScope) {
 		if (visitor.visit(this, classScope)) {
 			if (this.javadoc != null) {
 				this.javadoc.traverse(visitor, scope);
-			}
-			if (this.annotations != null) {
-				int annotationsLength = this.annotations.length;
-				for (int i = 0; i < annotationsLength; i++)
-					this.annotations[i].traverse(visitor, this.staticInitializerScope);
 			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);

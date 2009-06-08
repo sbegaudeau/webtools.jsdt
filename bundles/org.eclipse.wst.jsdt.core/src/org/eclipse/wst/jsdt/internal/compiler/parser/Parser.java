@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
@@ -87,12 +86,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
@@ -111,7 +108,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
@@ -1558,77 +1554,6 @@ protected void consumeAnnotationTypeDeclarationHeader() {
 	// flush the comments related to the annotation type header
 	this.scanner.commentPtr = -1;
 }
-protected void consumeAnnotationTypeDeclarationHeaderName() {
-	// consumeAnnotationTypeDeclarationHeader ::= Modifiers '@' PushModifiers interface Identifier
-	// consumeAnnotationTypeDeclarationHeader ::= '@' PushModifiers interface Identifier
-	TypeDeclaration annotationTypeDeclaration = new TypeDeclaration(this.compilationUnit.compilationResult);
-	if (this.nestedMethod[this.nestedType] == 0) {
-		if (this.nestedType != 0) {
-			annotationTypeDeclaration.bits |= ASTNode.IsMemberType;
-		}
-	} else {
-		// Record that the block has a declaration for local types
-		annotationTypeDeclaration.bits |= ASTNode.IsLocalType;
-		markEnclosingMemberWithLocalType();
-		blockReal();
-	}
-
-	//highlight the name of the type
-	long pos = this.identifierPositionStack[this.identifierPtr];
-	annotationTypeDeclaration.sourceEnd = (int) pos;
-	annotationTypeDeclaration.sourceStart = (int) (pos >>> 32);
-	annotationTypeDeclaration.name = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	//compute the declaration source too
-	// 'interface' push two int positions: the beginning of the class token and its end.
-	// we want to keep the beginning position but get rid of the end position
-	// it is only used for the ClassLiteralAccess positions.
-	this.intPtr--; // remove the start position of the interface token
-	this.intPtr--; // remove the end position of the interface token
-
-	annotationTypeDeclaration.modifiersSourceStart = this.intStack[this.intPtr--];
-	annotationTypeDeclaration.modifiers = this.intStack[this.intPtr--] | ClassFileConstants.AccAnnotation | ClassFileConstants.AccInterface;
-	if (annotationTypeDeclaration.modifiersSourceStart >= 0) {
-		annotationTypeDeclaration.declarationSourceStart = annotationTypeDeclaration.modifiersSourceStart;
-		this.intPtr--; // remove the position of the '@' token as we have modifiers
-	} else {
-		int atPosition = this.intStack[this.intPtr--];
-		// remove the position of the '@' token as we don't have modifiers
-		annotationTypeDeclaration.declarationSourceStart = atPosition;
-	}
-
-	// Store secondary info
-	if ((annotationTypeDeclaration.bits & ASTNode.IsMemberType) == 0 && (annotationTypeDeclaration.bits & ASTNode.IsLocalType) == 0) {
-		if (this.compilationUnit != null && !CharOperation.equals(annotationTypeDeclaration.name, this.compilationUnit.getMainTypeName())) {
-			annotationTypeDeclaration.bits |= ASTNode.IsSecondaryType;
-		}
-	}
-
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			annotationTypeDeclaration.annotations = new Annotation[length],
-			0,
-			length);
-	}
-	annotationTypeDeclaration.bodyStart = annotationTypeDeclaration.sourceEnd + 1;
-
-	// javadoc
-	annotationTypeDeclaration.javadoc = this.javadoc;
-	this.javadoc = null;
-	pushOnAstStack(annotationTypeDeclaration);
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = annotationTypeDeclaration.bodyStart;
-		this.currentElement = this.currentElement.add(annotationTypeDeclaration, 0);
-		this.lastIgnoredToken = -1;
-	}
-}
 protected void consumeAnnotationTypeMemberDeclaration() {
 	// AnnotationTypeMemberDeclaration ::= AnnotationTypeMemberDeclarationHeader AnnotationTypeMemberHeaderExtendedDims DefaultValueopt ';'
 	AnnotationMethodDeclaration annotationTypeMemberDeclaration = (AnnotationMethodDeclaration) this.astStack[this.astPtr];
@@ -2442,17 +2367,8 @@ protected void consumeClassHeaderName1() {
 			typeDecl.bits |= ASTNode.IsSecondaryType;
 		}
 	}
+	this.expressionLengthPtr--;
 
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			typeDecl.annotations = new Annotation[length],
-			0,
-			length);
-	}
 	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
 	pushOnAstStack(typeDecl);
 
@@ -2822,16 +2738,8 @@ protected void consumeConstructorHeaderName() {
 	//modifiers
 	cd.declarationSourceStart = this.intStack[this.intPtr--];
 	cd.modifiers = this.intStack[this.intPtr--];
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			cd.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	// javadoc
 	cd.javadoc = this.javadoc;
 	this.javadoc = null;
@@ -2880,15 +2788,8 @@ protected void consumeConstructorHeaderNameWithTypeParameters() {
 	//modifiers
 	cd.declarationSourceStart = this.intStack[this.intPtr--];
 	cd.modifiers = this.intStack[this.intPtr--];
-	// consume annotations
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			cd.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	// javadoc
 	cd.javadoc = this.javadoc;
 	this.javadoc = null;
@@ -3100,17 +3001,8 @@ protected void consumeEnhancedForStatementHeaderInit(boolean hasModifiers) {
 	}
 
 	type = getTypeReference(this.intStack[this.intPtr--] + extraDims); // type dimension
-
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--])!= 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			localDeclaration.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	if (hasModifiers) {
 		localDeclaration.declarationSourceStart = declarationSourceStart;
 		localDeclaration.modifiers = modifiersValue;
@@ -3272,16 +3164,8 @@ protected void consumeEnterVariable() {
 			declaration.modifiers = this.intStack[this.intPtr--];
 			int varPosition = this.intStack[this.intPtr--];
 			declaration.declarationSourceStart=(modifiersStart>=0)?modifiersStart:varPosition;
-			// consume annotations
-			int length;
-			if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-				System.arraycopy(
-					this.expressionStack,
-					(this.expressionPtr -= length) + 1,
-					declaration.annotations = new Annotation[length],
-					0,
-					length);
-			}
+			this.expressionLengthPtr--;
+			
 			// Store javadoc only on first declaration as it is the same for all ones
 			LocalDeclaration fieldDeclaration = (LocalDeclaration) declaration;
 			fieldDeclaration.javadoc = this.javadoc;
@@ -3366,17 +3250,8 @@ protected void consumeEnumConstantHeaderName() {
 			enumConstant.bits |= ASTNode.IsSecondaryType;
 		}
 	}
-
-	// consume annotations
-   int length;
-   if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-      System.arraycopy(
-         this.expressionStack,
-         (this.expressionPtr -= length) + 1,
-         enumConstant.annotations = new Annotation[length],
-         0,
-         length);
-   }
+	this.expressionLengthPtr--;
+	
    pushOnAstStack(enumConstant);
 	if (this.currentElement != null){
 		this.lastCheckPoint = enumConstant.sourceEnd + 1;
@@ -3566,16 +3441,8 @@ protected void consumeEnumHeaderName() {
 	if (enumDeclaration.modifiersSourceStart >= 0) {
 		enumDeclaration.declarationSourceStart = enumDeclaration.modifiersSourceStart;
 	}
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			enumDeclaration.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 //	if (this.currentToken == TokenNameLBRACE) {
 //		enumDeclaration.bodyStart = this.scanner.currentPosition;
 //	}
@@ -4097,17 +3964,8 @@ protected void consumeInterfaceHeaderName1() {
 			typeDecl.bits |= ASTNode.IsSecondaryType;
 		}
 	}
-
-	// consume annotations
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			typeDecl.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
 	pushOnAstStack(typeDecl);
 	this.listLength = 0; // will be updated when reading super-interfaces
@@ -4312,15 +4170,6 @@ protected void consumeLocalVariableDeclarationStatement() {
 	this.astLengthStack[this.astLengthPtr]=1;
 	this.lastCheckPoint = endStatementPosition+1;
 
-}
-protected void consumeMarkerAnnotation() {
-	// MarkerAnnotation ::= '@' Name
-	MarkerAnnotation markerAnnotation = null;
-	TypeReference typeReference = this.getAnnotationType();
-	markerAnnotation = new MarkerAnnotation(typeReference, this.intStack[this.intPtr--]);
-	markerAnnotation.declarationSourceEnd = markerAnnotation.sourceEnd;
-	pushOnExpressionStack(markerAnnotation);
-	this.recordStringLiterals = true;
 }
 protected void consumeMemberValueArrayInitializer() {
 	// MemberValueArrayInitializer ::= '{' MemberValues ',' '}'
@@ -4599,15 +4448,8 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
 	//modifiers
 	md.declarationSourceStart = this.intStack[this.intPtr--];
 	md.modifiers = this.intStack[this.intPtr--];
-	// consume annotations
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.expressionStack,
-			(this.expressionPtr -= length) + 1,
-			md.annotations = new Annotation[length],
-			0,
-			length);
-	}
+	this.expressionLengthPtr--;
+	
 	// javadoc
 	md.javadoc = this.javadoc;
 	this.javadoc = null;
@@ -4859,29 +4701,6 @@ protected void incrementNestedType() {
 	}
 	this.nestedMethod[this.nestedType] = 0;
 	this.variablesCounter[this.nestedType] = 0;
-}
-protected void consumeNormalAnnotation() {
-	// NormalAnnotation ::= '@' Name '(' MemberValuePairsopt ')'
-	NormalAnnotation normalAnnotation = null;
-	TypeReference typeReference = this.getAnnotationType();
-	normalAnnotation = new NormalAnnotation(typeReference, this.intStack[this.intPtr--]);
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		System.arraycopy(
-			this.astStack,
-			(this.astPtr -= length) + 1,
-			normalAnnotation.memberValuePairs = new MemberValuePair[length],
-			0,
-			length);
-	}
-	normalAnnotation.declarationSourceEnd = this.rParenPos;
-	pushOnExpressionStack(normalAnnotation);
-
-	if(this.currentElement != null) {
-		annotationRecoveryCheckPoint(normalAnnotation.sourceStart, normalAnnotation.declarationSourceEnd);
-	}
-
-	this.recordStringLiterals = true;
 }
 protected void consumeOneDimLoop() {
 	// OneDimLoop ::= '[' ']'
@@ -6423,23 +6242,6 @@ private void comsumeDUMMY() {
 	//TODO: implement
 	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 }
-protected void consumeSingleMemberAnnotation() {
-	// SingleMemberAnnotation ::= '@' Name '(' MemberValue ')'
-	SingleMemberAnnotation singleMemberAnnotation = null;
-	TypeReference typeReference = this.getAnnotationType();
-	singleMemberAnnotation = new SingleMemberAnnotation(typeReference, this.intStack[this.intPtr--]);
-	singleMemberAnnotation.memberValue = this.expressionStack[this.expressionPtr--];
-	this.expressionLengthPtr--;
-	singleMemberAnnotation.declarationSourceEnd = this.rParenPos;
-	pushOnExpressionStack(singleMemberAnnotation);
-
-
-	if(this.currentElement != null) {
-		annotationRecoveryCheckPoint(singleMemberAnnotation.sourceStart, singleMemberAnnotation.declarationSourceEnd);
-	}
-
-	this.recordStringLiterals = true;
-}
 
 protected void consumeSingleTypeImportDeclarationName() {
 	// SingleTypeImportDeclarationName ::= 'import' Name
@@ -7563,7 +7365,6 @@ public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, Co
 	m.selector = c.selector;
 	m.statements = c.statements;
 	m.modifiers = c.modifiers;
-	m.annotations = c.annotations;
 	m.arguments = c.arguments;
 	m.thrownExceptions = c.thrownExceptions;
 	m.explicitDeclarations = c.explicitDeclarations;

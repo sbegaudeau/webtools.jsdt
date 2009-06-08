@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -277,12 +276,6 @@ public class SourceTypeConverter {
 			field.type = createTypeReference(fieldInfo.getTypeName(), start, end);
 		}
 
-		// convert 1.5 specific constructs only if compliance is 1.5 or above
-		if (this.has1_5Compliance) {
-			/* convert annotations */
-			field.annotations = convertAnnotations(fieldHandle);
-		}
-
 		/* conversion of field constant */
 		if ((this.flags & FIELD_INITIALIZATION) != 0) {
 			char[] initializationSource = fieldInfo.getInitializationSource();
@@ -385,12 +378,6 @@ public class SourceTypeConverter {
 		method.declarationSourceStart = methodInfo.getDeclarationSourceStart();
 		method.declarationSourceEnd = methodInfo.getDeclarationSourceEnd();
 
-		// convert 1.5 specific constructs only if compliance is 1.5 or above
-		if (this.has1_5Compliance) {
-			/* convert annotations */
-			method.annotations = convertAnnotations(methodHandle);
-		}
-
 		/* convert arguments */
 		String[] argumentTypeSignatures = methodHandle.getParameterTypes();
 		char[][] argumentNames = methodInfo.getArgumentNames();
@@ -483,12 +470,6 @@ public class SourceTypeConverter {
 		type.declarationSourceStart = typeInfo.getDeclarationSourceStart();
 		type.declarationSourceEnd = typeInfo.getDeclarationSourceEnd();
 		type.bodyEnd = type.declarationSourceEnd;
-
-		// convert 1.5 specific constructs only if compliance is 1.5 or above
-		if (this.has1_5Compliance) {
-			/* convert annotations */
-			type.annotations = convertAnnotations(typeHandle);
-		}
 
 		/* set superclass and superinterfaces */
 		if (typeInfo.getSuperclassName() != null) {
@@ -593,39 +574,6 @@ public class SourceTypeConverter {
 		}
 
 		return type;
-	}
-
-	private Annotation[] convertAnnotations(JavaElement element) {
-		if (this.annotationPositions == null) return null;
-		char[] cuSource = getSource();
-		long[] positions = (long[]) this.annotationPositions.get(element);
-		if (positions == null) return null;
-		int length = positions.length;
-		Annotation[] annotations = new Annotation[length];
-		int recordedAnnotations = 0;
-		for (int i = 0; i < length; i++) {
-			long position = positions[i];
-			int start = (int) (position >>> 32);
-			int end = (int) position;
-			char[] annotationSource = CharOperation.subarray(cuSource, start, end+1);
-			if (annotationSource != null) {
-    			Expression expression = parseMemberValue(annotationSource);
-    			/*
-    			 * expression can be null or not an annotation if the source has changed between
-    			 * the moment where the annotation source positions have been retrieved and the moment were
-    			 * this parsing occured.
-    			 * See https://bugs.eclipse.org/bugs/show_bug.cgi?id=90916
-    			 */
-    			if (expression instanceof Annotation) {
-    				annotations[recordedAnnotations++] = (Annotation) expression;
-    			}
-			}
-		}
-		if (length != recordedAnnotations) {
-			// resize to remove null annotations
-			System.arraycopy(annotations, 0, (annotations = new Annotation[recordedAnnotations]), 0, recordedAnnotations);
-		}
-		return annotations;
 	}
 
 	/*
