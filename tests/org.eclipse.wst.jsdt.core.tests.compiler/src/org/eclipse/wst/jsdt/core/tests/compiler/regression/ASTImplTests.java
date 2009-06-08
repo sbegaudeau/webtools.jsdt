@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,20 +19,16 @@ import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
-import org.eclipse.wst.jsdt.internal.compiler.ast.NormalAnnotation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -955,29 +951,6 @@ public boolean visit(StringLiteralConcatenation literal, BlockScope scope) {
 }
 }
 class AnnotationCollector extends ASTCollector {
-public boolean visit(MarkerAnnotation annotation, BlockScope scope) {
-	this.collector.append("marker annotation start visit\n");
-	return true;
-}
-public void endVisit(MarkerAnnotation annotation, BlockScope scope) {
-	this.collector.append("marker annotation end visit\n");
-}
-public boolean visit(NormalAnnotation annotation, BlockScope scope) {
-	this.collector.append("normal annotation start visit\n");
-	return true;
-}
-public void endVisit(NormalAnnotation annotation, BlockScope scope) {
-	this.collector.append("normal annotation end visit\n");
-}
-public boolean visit(SingleMemberAnnotation annotation, BlockScope scope) {
-	this.collector.append("single member annotation start visit\n");
-	this.collector.append(annotation.memberValue.toString());
-	this.collector.append("\n");
-	return true;
-}
-public void endVisit(SingleMemberAnnotation annotation, BlockScope scope) {
-	this.collector.append("single member annotation end visit\n");
-}
 public void endVisit(JavadocSingleTypeReference typeRef, BlockScope scope) {
 	this.collector.append("java doc single type reference end visit\n");
 }
