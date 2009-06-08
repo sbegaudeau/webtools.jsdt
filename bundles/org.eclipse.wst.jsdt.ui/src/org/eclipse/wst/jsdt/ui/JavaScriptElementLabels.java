@@ -478,17 +478,6 @@ public class JavaScriptElementLabels {
 			BindingKey resolvedKey= getFlag(flags, USE_RESOLVED) && method.isResolved() ? new BindingKey(method.getKey()) : null;
 			String resolvedSig= (resolvedKey != null) ? resolvedKey.toSignature() : null;
 			
-			// type parameters
-			if (getFlag(flags, M_PRE_TYPE_PARAMETERS)) {
-				if (resolvedKey != null) {
-					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-					if (typeParameterSigs.length > 0) {
-						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
-						buf.append(' ');
-					}
-				}
-			}
-			
 			// return type
 			if (getFlag(flags, M_PRE_RETURNTYPE) && method.exists() && !method.isConstructor()) {
 				String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
@@ -597,16 +586,6 @@ public class JavaScriptElementLabels {
 							buf.append(COMMA_STRING);
 						}
 						getTypeSignatureLabel(types[i], flags, buf);
-					}
-				}
-			}
-			
-			if (getFlag(flags, M_APP_TYPE_PARAMETERS)) {
-				if (resolvedKey != null) {
-					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-					if (typeParameterSigs.length > 0) {
-						buf.append(' ');
-						getTypeParameterSignaturesLabel(typeParameterSigs, flags, buf);
 					}
 				}
 			}
@@ -777,33 +756,15 @@ public class JavaScriptElementLabels {
 				}
 				break;
 			case Signature.CLASS_TYPE_SIGNATURE:
-				String baseType= Signature.toString(Signature.getTypeErasure(typeSig));
+				String baseType= Signature.toString(typeSig);
 				
 				//@GINO: Anonymous UI Label
 				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( Signature.getSimpleName(baseType), buf );		
 				
-				String[] typeArguments= Signature.getTypeArguments(typeSig);
-				getTypeArgumentSignaturesLabel(typeArguments, flags, buf);
+				getTypeArgumentSignaturesLabel(new String[0], flags, buf);
 				break;
 			case Signature.TYPE_VARIABLE_SIGNATURE:
 				buf.append(Signature.toString(typeSig));
-				break;
-			case Signature.WILDCARD_TYPE_SIGNATURE:
-				char ch= typeSig.charAt(0);
-				if (ch == Signature.C_STAR) { //workaround for bug 85713
-					buf.append('?');
-				} else {
-					if (ch == Signature.C_EXTENDS) {
-						buf.append("? extends "); //$NON-NLS-1$
-						getTypeSignatureLabel(typeSig.substring(1), flags, buf);
-					} else if (ch == Signature.C_SUPER) {
-						buf.append("? super "); //$NON-NLS-1$
-						getTypeSignatureLabel(typeSig.substring(1), flags, buf);
-					}
-				}
-				break;
-			case Signature.CAPTURE_TYPE_SIGNATURE:
-				getTypeSignatureLabel(typeSig.substring(1), flags, buf);
 				break;
 			default:
 				// unknown
@@ -885,9 +846,7 @@ public class JavaScriptElementLabels {
 		buf.append(typeName);
 		if (getFlag(flags, T_TYPE_PARAMETERS)) {
 			if (getFlag(flags, USE_RESOLVED) && type.isResolved()) {
-				BindingKey key= new BindingKey(type.getKey());
-				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
-				getTypeParameterSignaturesLabel(typeParameters, flags, buf);
+				getTypeParameterSignaturesLabel(new String[0], flags, buf);
 			}
 		}
 		

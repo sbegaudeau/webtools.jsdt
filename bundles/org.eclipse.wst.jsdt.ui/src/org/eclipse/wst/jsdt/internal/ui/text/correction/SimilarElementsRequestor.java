@@ -201,7 +201,7 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 		if (!isKind(kind)) {
 			return;
 		}
-		String fullName= new String(Signature.toCharArray(Signature.getTypeErasure(typeNameSig)));
+		String fullName= new String(Signature.toCharArray(typeNameSig));
 		if (TypeFilter.isFiltered(fullName)) {
 			return;
 		}

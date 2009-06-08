@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,15 +78,6 @@ public class KeyToSignature extends BindingKeyParser {
 				this.signature = new StringBuffer();
 				this.signature.append(methodSignature);
 				break;
-			case THROWN_EXCEPTIONS:
-				if (CharOperation.indexOf('^', methodSignature) > 0) {
-					char[][] types = Signature.getThrownExceptionTypes(methodSignature);
-					int length = types.length;
-					for (int i=0; i<length; i++) {
-						this.thrownExceptions.add(new String(types[i]));
-					}
-				}
-				break;
 		}
 	}
 
@@ -97,92 +88,6 @@ public class KeyToSignature extends BindingKeyParser {
 
 	public void consumePackage(char[] pkgName) {
 		this.signature.append(pkgName);
-	}
-
-	public void consumeParameterizedGenericMethod() {
-		int typeParametersSize = this.arguments.size();
-		if (typeParametersSize > 0) {
-			int sigLength = this.signature.length();
-			char[] methodSignature = new char[sigLength];
-			this.signature.getChars(0, sigLength, methodSignature, 0);
-			char[][] typeParameterSigs = Signature.getTypeParameters(methodSignature);
-			if (typeParameterSigs.length != typeParametersSize)
-				return;
-			this.signature = new StringBuffer();
-
-			// type parameters
-			for (int i = 0; i < typeParametersSize; i++)
-				typeParameterSigs[i] = CharOperation.concat(Signature.C_TYPE_VARIABLE,Signature.getTypeVariable(typeParameterSigs[i]), Signature.C_SEMICOLON);
-			int paramStart = CharOperation.indexOf(Signature.C_PARAM_START, methodSignature);
-			char[] typeParametersString = CharOperation.subarray(methodSignature, 0, paramStart);
-			this.signature.append(typeParametersString);
-
-			// substitute parameters
-			this.signature.append(Signature.C_PARAM_START);
-			char[][] parameters = Signature.getParameterTypes(methodSignature);
-			for (int i = 0, parametersLength = parameters.length; i < parametersLength; i++)
-				substitute(parameters[i], typeParameterSigs, typeParametersSize);
-			this.signature.append(Signature.C_PARAM_END);
-
-			// substitute return type
-			char[] returnType = Signature.getReturnType(methodSignature);
-			substitute(returnType, typeParameterSigs, typeParametersSize);
-
-			// substitute exceptions
-			char[][] exceptions = Signature.getThrownExceptionTypes(methodSignature);
-			for (int i = 0, exceptionsLength = exceptions.length; i < exceptionsLength; i++) {
-				this.signature.append(Signature.C_EXCEPTION_START);
-				substitute(exceptions[i], typeParameterSigs, typeParametersSize);
-			}
-
-		}
-	}
-
-	/*
-	 * Substitutes the type variables referenced in the given parameter (a parameterized type signature) with the corresponding
-	 * type argument.
-	 * Appends the given parameter if it is not a parameterized type signature.
-	 */
-	private void substitute(char[] parameter, char[][] typeParameterSigs, int typeParametersLength) {
-		for (int i = 0; i < typeParametersLength; i++) {
-			if (CharOperation.equals(parameter, typeParameterSigs[i])) {
-				String typeArgument = ((KeyToSignature) this.arguments.get(i)).signature.toString();
-				this.signature.append(typeArgument);
-				return;
-			}
-		}
-		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, parameter);
-		if (genericStart > -1) {
-			this.signature.append(CharOperation.subarray(parameter, 0, genericStart));
-			char[][] parameters = Signature.getTypeArguments(parameter);
-			this.signature.append(Signature.C_GENERIC_START);
-			for (int j = 0, paramsLength = parameters.length; j < paramsLength; j++)
-				substitute(parameters[j], typeParameterSigs, typeParametersLength);
-			this.signature.append(Signature.C_GENERIC_END);
-			this.signature.append(Signature.C_SEMICOLON);
-		} else {
-			// handle array, wildcard and capture
-			int index = 0;
-			int length = parameter.length;
-			loop: while (index < length) {
-				char current = parameter[index];
-				switch (current) {
-					case Signature.C_CAPTURE:
-					case Signature.C_EXTENDS:
-					case Signature.C_SUPER:
-					case Signature.C_ARRAY:
-						this.signature.append(current);
-						index++;
-						break;
-					default:
-						break loop;
-				}
-			}
-			if (index > 0)
-				substitute(CharOperation.subarray(parameter, index, length), typeParameterSigs, typeParametersLength);
-			else
-				this.signature.append(parameter);
-		}
 	}
 
 	public void consumeParameterizedType(char[] simpleTypeName, boolean isRaw) {

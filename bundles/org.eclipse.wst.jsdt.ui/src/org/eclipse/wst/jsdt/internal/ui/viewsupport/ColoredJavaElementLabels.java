@@ -171,17 +171,6 @@ public class ColoredJavaElementLabels {
 			BindingKey resolvedKey= getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && method.isResolved() ? new BindingKey(method.getKey()) : null;
 			String resolvedSig= (resolvedKey != null) ? resolvedKey.toSignature() : null;
 			
-			// type parameters
-			if (getFlag(flags, JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS)) {
-				if (resolvedKey != null) {
-					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-					if (typeParameterSigs.length > 0) {
-						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
-						result.append(' ');
-					}
-				}
-			}
-			
 			// return type
 			if (getFlag(flags, JavaScriptElementLabels.M_PRE_RETURNTYPE) && method.exists() && !method.isConstructor()) {
 				String returnTypeSig= resolvedSig != null ? Signature.getReturnType(resolvedSig) : method.getReturnType();
@@ -286,13 +275,6 @@ public class ColoredJavaElementLabels {
 			
 			if (getFlag(flags, JavaScriptElementLabels.M_APP_TYPE_PARAMETERS)) {
 				int offset= result.length();
-				if (resolvedKey != null) {
-					String[] typeParameterSigs= Signature.getTypeParameters(resolvedSig);
-					if (typeParameterSigs.length > 0) {
-						result.append(' ');
-						getTypeParameterSignaturesLabel(typeParameterSigs, flags, result);
-					}
-				}
 				if (getFlag(flags, COLORIZE)) {
 					result.colorize(offset, result.length() - offset, APPENDED_TYPE_STYLE);
 				}
@@ -472,31 +454,13 @@ public class ColoredJavaElementLabels {
 				}
 				break;
 			case Signature.CLASS_TYPE_SIGNATURE:
-				String baseType= Signature.toString(Signature.getTypeErasure(typeSig));
+				String baseType= Signature.toString(typeSig);
 				result.append(Signature.getSimpleName(baseType));
 				
-				String[] typeArguments= Signature.getTypeArguments(typeSig);
-				getTypeArgumentSignaturesLabel(typeArguments, flags, result);
+				getTypeArgumentSignaturesLabel(new String[0], flags, result);
 				break;
 			case Signature.TYPE_VARIABLE_SIGNATURE:
 				result.append(Signature.toString(typeSig));
-				break;
-			case Signature.WILDCARD_TYPE_SIGNATURE:
-				char ch= typeSig.charAt(0);
-				if (ch == Signature.C_STAR) { //workaround for bug 85713
-					result.append('?');
-				} else {
-					if (ch == Signature.C_EXTENDS) {
-						result.append("? extends "); //$NON-NLS-1$
-						getTypeSignatureLabel(typeSig.substring(1), flags, result);
-					} else if (ch == Signature.C_SUPER) {
-						result.append("? super "); //$NON-NLS-1$
-						getTypeSignatureLabel(typeSig.substring(1), flags, result);
-					}
-				}
-				break;
-			case Signature.CAPTURE_TYPE_SIGNATURE:
-				getTypeSignatureLabel(typeSig.substring(1), flags, result);
 				break;
 			default:
 				// unknown
@@ -579,8 +543,7 @@ public class ColoredJavaElementLabels {
 		if (getFlag(flags, JavaScriptElementLabels.T_TYPE_PARAMETERS)) {
 			if (getFlag(flags, JavaScriptElementLabels.USE_RESOLVED) && type.isResolved()) {
 				BindingKey key= new BindingKey(type.getKey());
-				String[] typeParameters= Signature.getTypeParameters(key.toSignature());
-				getTypeParameterSignaturesLabel(typeParameters, flags, result);
+				getTypeParameterSignaturesLabel(new String[0], flags, result);
 			}
 		}
 		

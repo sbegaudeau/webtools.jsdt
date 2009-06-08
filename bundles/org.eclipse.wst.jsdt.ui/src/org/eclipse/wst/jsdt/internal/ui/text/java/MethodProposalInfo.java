@@ -63,11 +63,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 					.valueOf(declarationSignature));
 			String name = String.valueOf(fProposal.getName());
 			String[] parameters = Signature.getParameterTypes(String
-					.valueOf(SignatureUtil.fix83600(fProposal
-							.getSignature())));
-			for (int i = 0; i < parameters.length; i++) {
-				parameters[i] = SignatureUtil.getLowerBound(parameters[i]);
-			}
+					.valueOf(fProposal.getSignature()));
 			IType type = fJavaProject.findType(typeName);
 			if (type != null) {
 				boolean isConstructor = fProposal.isConstructor();
@@ -125,7 +121,6 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 		char[] declarationSignature= fProposal.getDeclarationSignature();
 		if (declarationSignature == null) // array methods don't contain a declaration signature
 			return map;
-		char[][] concreteParameters= Signature.getTypeArguments(declarationSignature);
 
 		return map;
 	}
@@ -202,7 +197,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 */
 	private String computeSimpleTypeName(String signature, Map typeVariables) {
 		// method equality uses erased types
-		String erasure= Signature.getTypeErasure(signature);
+		String erasure=signature;
 		erasure= erasure.replaceAll("/", ".");  //$NON-NLS-1$//$NON-NLS-2$
 		String simpleName= Signature.getSimpleName(Signature.toString(erasure));
 		char[] typeVar= (char[]) typeVariables.get(simpleName);

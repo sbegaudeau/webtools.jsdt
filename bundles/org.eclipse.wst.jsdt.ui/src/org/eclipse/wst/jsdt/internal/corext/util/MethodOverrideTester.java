@@ -35,13 +35,6 @@ public class MethodOverrideTester {
 			fMap= null;
 		}
 		
-		public void addSubstitution(String typeVariable, String substitution, String erasure) {
-			if (fMap == null) {
-				fMap= new HashMap(3);
-			}
-			fMap.put(typeVariable, new String[] { substitution, erasure });
-		}
-		
 		private String[] getSubstArray(String typeVariable) {
 			if (fMap != null) {
 				return (String[]) fMap.get(typeVariable);
@@ -319,10 +312,9 @@ public class MethodOverrideTester {
 		
 		String superclassTypeSignature= instantiatedType.getSuperclassTypeSignature();
 		if (superclassTypeSignature != null) {
-			String[] superTypeArguments= Signature.getTypeArguments(superclassTypeSignature);
 			IType superclass= fHierarchy.getSuperclass(instantiatedType);
 			if (superclass != null && !fTypeVariableSubstitutions.containsKey(superclass)) {
-				computeSubstitutions(superclass, instantiatedType, superTypeArguments);
+				computeSubstitutions(superclass, instantiatedType, new String[0]);
 			}
 		}
 	}
@@ -355,7 +347,7 @@ public class MethodOverrideTester {
 				}
 				return buf;
 			case Signature.CLASS_TYPE_SIGNATURE: {
-				String erasureSig= Signature.getTypeErasure(typeSig);
+				String erasureSig= typeSig;
 				String erasureName= Signature.getSimpleName(Signature.toString(erasureSig));
 				
 				char ch= erasureSig.charAt(0);
@@ -370,19 +362,6 @@ public class MethodOverrideTester {
 				} else {
 					Assert.isTrue(false, "Unknown class type signature"); //$NON-NLS-1$
 				}
-				if (!erasure) {
-					String[] typeArguments= Signature.getTypeArguments(typeSig);
-					if (typeArguments.length > 0) {
-						buf.append('<');
-						for (int i= 0; i < typeArguments.length; i++) {
-							if (i > 0) {
-								buf.append(',');
-							}
-							internalGetSubstitutedTypeName(typeArguments[i], context, erasure, buf);
-						}
-						buf.append('>');
-					}
-				}
 				return buf;
 			}
 			case Signature.TYPE_VARIABLE_SIGNATURE:
@@ -392,20 +371,6 @@ public class MethodOverrideTester {
 				} else {
 					return buf.append(getVariableSubstitution(context, varName));
 				}
-			case Signature.WILDCARD_TYPE_SIGNATURE: {
-				buf.append('?');
-				char ch= typeSig.charAt(0);
-				if (ch == Signature.C_STAR) {
-					return buf;
-				} else if (ch == Signature.C_EXTENDS) {
-					buf.append(" extends "); //$NON-NLS-1$
-				} else {
-					buf.append(" super "); //$NON-NLS-1$
-				}
-				return internalGetSubstitutedTypeName(typeSig.substring(1), context, erasure, buf);
-			}
-			case Signature.CAPTURE_TYPE_SIGNATURE:
-				return internalGetSubstitutedTypeName(typeSig.substring(1), context, erasure, buf);
 			default:
 				Assert.isTrue(false, "Unhandled type signature kind"); //$NON-NLS-1$
 				return buf;

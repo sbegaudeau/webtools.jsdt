@@ -794,30 +794,9 @@ public class SourceTypeConverter {
 						nameStarted = true;
 					}
 					break;
-				case Signature.C_STAR:
-					this.namePos++;
-					Wildcard result = new Wildcard(Wildcard.UNBOUND);
-					result.sourceStart = start;
-					result.sourceEnd = end;
-					return result;
-				case Signature.C_EXTENDS:
-					this.namePos++;
-					result = new Wildcard(Wildcard.EXTENDS);
-					result.bound = decodeType(typeSignature, length, start, end);
-					result.sourceStart = start;
-					result.sourceEnd = end;
-					return result;
-				case Signature.C_SUPER:
-					this.namePos++;
-					result = new Wildcard(Wildcard.SUPER);
-					result.bound = decodeType(typeSignature, length, start, end);
-					result.sourceStart = start;
-					result.sourceEnd = end;
-					return result;
 				case Signature.C_ARRAY :
 					dim++;
 					break;
-				case Signature.C_GENERIC_END :
 				case Signature.C_SEMICOLON :
 					nameFragmentEnd = this.namePos-1;
 					this.namePos++;
@@ -829,20 +808,6 @@ public class SourceTypeConverter {
 						nameStarted = true;
 					} else if (this.namePos > nameFragmentStart) // handle name starting with a $ (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=91709)
 						identCount ++;
-					break;
-				case Signature.C_GENERIC_START :
-					nameFragmentEnd = this.namePos-1;
-					// convert 1.5 specific constructs only if compliance is 1.5 or above
-					if (!this.has1_5Compliance)
-						break typeLoop;
-					if (fragments == null) fragments = new ArrayList(2);
-					addIdentifiers(typeSignature, nameFragmentStart, nameFragmentEnd + 1, identCount, fragments);
-					this.namePos++; // skip '<'
-					TypeReference[] arguments = decodeTypeArguments(typeSignature, length, start, end); // positionned on '>' at end
-					fragments.add(arguments);
-					identCount = 1;
-					nameStarted = false;
-					// next increment will skip '>'
 					break;
 			}
 			this.namePos++;

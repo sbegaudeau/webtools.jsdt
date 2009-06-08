@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -455,40 +455,14 @@ public final class ImportRewrite {
 				Type elementType= addImportFromSignature(Signature.getElementType(typeSig), ast, context);
 				return ast.newArrayType(elementType, Signature.getArrayCount(typeSig));
 			case Signature.CLASS_TYPE_SIGNATURE:
-				String erasureSig= Signature.getTypeErasure(typeSig);
-
-				String erasureName= Signature.toString(erasureSig);
-				if (erasureSig.charAt(0) == Signature.C_RESOLVED) {
+				String erasureName= Signature.toString(typeSig);
+				if (typeSig.charAt(0) == Signature.C_RESOLVED) {
 					erasureName= internalAddImport(erasureName, erasureName, context);
 				}
 				Type baseType= ast.newSimpleType(ast.newName(erasureName));
-				String[] typeArguments= Signature.getTypeArguments(typeSig);
-				if (typeArguments.length > 0) {
-					ParameterizedType type= ast.newParameterizedType(baseType);
-					List argNodes= type.typeArguments();
-					for (int i= 0; i < typeArguments.length; i++) {
-						String curr= typeArguments[i];
-						if (containsNestedCapture(curr)) { // see bug 103044
-							argNodes.add(ast.newWildcardType());
-						} else {
-							argNodes.add(addImportFromSignature(curr, ast, context));
-						}
-					}
-					return type;
-				}
 				return baseType;
 			case Signature.TYPE_VARIABLE_SIGNATURE:
 				return ast.newSimpleType(ast.newSimpleName(Signature.toString(typeSig)));
-			case Signature.WILDCARD_TYPE_SIGNATURE:
-				WildcardType wildcardType= ast.newWildcardType();
-				char ch= typeSig.charAt(0);
-				if (ch != Signature.C_STAR) {
-					Type bound= addImportFromSignature(typeSig.substring(1), ast, context);
-					wildcardType.setBound(bound, ch == Signature.C_EXTENDS);
-				}
-				return wildcardType;
-			case Signature.CAPTURE_TYPE_SIGNATURE:
-				return addImportFromSignature(typeSig.substring(1), ast, context);
 			default:
 				throw new IllegalArgumentException("Unknown type signature kind: " + typeSig); //$NON-NLS-1$
 		}
@@ -617,10 +591,6 @@ public final class ImportRewrite {
 			}
 		}
 		return false;
-	}
-
-	private boolean containsNestedCapture(String signature) {
-		return signature.length() > 1 && signature.indexOf(Signature.C_CAPTURE, 1) != -1;
 	}
 
 	private static ITypeBinding normalizeTypeBinding(ITypeBinding binding) {

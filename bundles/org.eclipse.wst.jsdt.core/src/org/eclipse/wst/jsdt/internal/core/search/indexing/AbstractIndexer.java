@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -48,7 +47,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
 
 		if (superclass != null) {
-			superclass = erasure(superclass);
 			addTypeReference(superclass);
 		}
 		addIndexEntry(
@@ -57,7 +55,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 				modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
 		if (superinterfaces != null) {
 			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = erasure(superinterfaces[i]);
+				char[] superinterface = superinterfaces[i];
 				addTypeReference(superinterface);
 				addIndexEntry(
 					SUPER_REF,
@@ -65,12 +63,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 						modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superinterface, INTERFACE_SUFFIX));
 			}
 		}
-	}
-	private char[] erasure(char[] typeName) {
-		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, typeName);
-		if (genericStart > -1)
-			typeName = CharOperation.subarray(typeName, 0, genericStart);
-		return typeName;
 	}
 	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes, char[][] exceptionTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
@@ -101,7 +93,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 				modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
 		if (superinterfaces != null) {
 			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = erasure(superinterfaces[i]);
+				char[] superinterface = superinterfaces[i];
 				addTypeReference(superinterface);
 				addIndexEntry(
 					SUPER_REF,
@@ -127,7 +119,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 
 		if (superinterfaces != null) {
 			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = erasure(superinterfaces[i]);
+				char[] superinterface = superinterfaces[i];
 				addTypeReference(superinterface);
 				addIndexEntry(
 					SUPER_REF,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2312,12 +2312,6 @@ public class Util {
 			case Signature.C_VOID :
 			case Signature.C_ANY :
 				return scanBaseTypeSignature(string, start);
-			case Signature.C_CAPTURE :
-				return scanCaptureTypeSignature(string, start);
-			case Signature.C_EXTENDS:
-			case Signature.C_SUPER:
-			case Signature.C_STAR:
-				return scanTypeBoundSignature(string, start);
 			default :
 				throw new IllegalArgumentException();
 		}
@@ -2386,31 +2380,6 @@ public class Util {
 			c = string[++start];
 		}
 		return scanTypeSignature(string, start);
-	}
-
-	/**
-	 * Scans the given string for a capture of a wildcard type signature starting at the given
-	 * index and returns the index of the last character.
-	 * <pre>
-	 * CaptureTypeSignature:
-	 *     <b>!</b> TypeBoundSignature
-	 * </pre>
-	 *
-	 * @param string the signature string
-	 * @param start the 0-based character index of the first character
-	 * @return the 0-based character index of the last character
-	 * @exception IllegalArgumentException if this is not a capture type signature
-	 */
-	public static int scanCaptureTypeSignature(char[] string, int start) {
-		// need a minimum 2 char
-		if (start >= string.length - 1) {
-			throw new IllegalArgumentException();
-		}
-		char c = string[start];
-		if (c != Signature.C_CAPTURE) {
-			throw new IllegalArgumentException();
-		}
-		return scanTypeBoundSignature(string, start + 1);
 	}
 
 	/**
@@ -2510,110 +2479,11 @@ public class Util {
 			if (c == Signature.C_SEMICOLON) {
 				// all done
 				return p;
-			} else if (c == Signature.C_GENERIC_START) {
-				int e = scanTypeArgumentSignatures(string, p);
-				p = e;
 			} else if (c == Signature.C_DOT || c == '/') {
 				int id = scanIdentifier(string, p + 1);
 				p = id;
 			}
 			p++;
-		}
-	}
-
-	/**
-	 * Scans the given string for a type bound signature starting at the given
-	 * index and returns the index of the last character.
-	 * <pre>
-	 * TypeBoundSignature:
-	 *     <b>[-+]</b> TypeSignature <b>;</b>
-	 *     <b>*</b></b>
-	 * </pre>
-	 *
-	 * @param string the signature string
-	 * @param start the 0-based character index of the first character
-	 * @return the 0-based character index of the last character
-	 * @exception IllegalArgumentException if this is not a type variable signature
-	 */
-	public static int scanTypeBoundSignature(char[] string, int start) {
-		// need a minimum 1 char for wildcard
-		if (start >= string.length) {
-			throw new IllegalArgumentException();
-		}
-		char c = string[start];
-		switch (c) {
-			case Signature.C_STAR :
-				return start;
-			case Signature.C_SUPER :
-			case Signature.C_EXTENDS :
-				// need a minimum 3 chars "+[I"
-				if (start >= string.length - 2) {
-					throw new IllegalArgumentException();
-				}
-				break;
-			default :
-				// must start in "+/-"
-					throw new IllegalArgumentException();
-
-		}
-		c = string[++start];
-		switch (c) {
-			case Signature.C_CAPTURE :
-				return scanCaptureTypeSignature(string, start);
-			case Signature.C_SUPER :
-			case Signature.C_EXTENDS :
-				return scanTypeBoundSignature(string, start);
-			case Signature.C_RESOLVED :
-			case Signature.C_UNRESOLVED :
-				return scanClassTypeSignature(string, start);
-			case Signature.C_TYPE_VARIABLE :
-				return scanTypeVariableSignature(string, start);
-			case Signature.C_ARRAY :
-				return scanArrayTypeSignature(string, start);
-			case Signature.C_STAR:
-				return start;
-			default:
-				throw new IllegalArgumentException();
-		}
-	}
-
-	/**
-	 * Scans the given string for a list of type argument signatures starting at
-	 * the given index and returns the index of the last character.
-	 * <pre>
-	 * TypeArgumentSignatures:
-	 *     <b>&lt;</b> TypeArgumentSignature* <b>&gt;</b>
-	 * </pre>
-	 * Note that although there is supposed to be at least one type argument, there
-	 * is no syntactic ambiguity if there are none. This method will accept zero
-	 * type argument signatures without complaint.
-	 *
-	 * @param string the signature string
-	 * @param start the 0-based character index of the first character
-	 * @return the 0-based character index of the last character
-	 * @exception IllegalArgumentException if this is not a list of type arguments
-	 * signatures
-	 */
-	public static int scanTypeArgumentSignatures(char[] string, int start) {
-		// need a minimum 2 char "<>"
-		if (start >= string.length - 1) {
-			throw new IllegalArgumentException();
-		}
-		char c = string[start];
-		if (c != Signature.C_GENERIC_START) {
-			throw new IllegalArgumentException();
-		}
-		int p = start + 1;
-		while (true) {
-			if (p >= string.length) {
-				throw new IllegalArgumentException();
-			}
-			c = string[p];
-			if (c == Signature.C_GENERIC_END) {
-				return p;
-			}
-			int e = scanTypeArgumentSignature(string, p);
-			p = e + 1;
 		}
 	}
 
@@ -2640,16 +2510,9 @@ public class Util {
 		if (start >= string.length) {
 			throw new IllegalArgumentException();
 		}
-		char c = string[start];
-		switch (c) {
-			case Signature.C_STAR :
-				return start;
-			case Signature.C_EXTENDS :
-			case Signature.C_SUPER :
-				return scanTypeBoundSignature(string, start);
-			default :
-				return scanTypeSignature(string, start);
-		}
+
+		return scanTypeSignature(string, start);
+		
 	}
 
 	/**
@@ -2682,9 +2545,6 @@ public class Util {
 		if (typeSignatures == null) return null;
 		int length = typeSignatures.length;
 		char[][][] typeArguments = new char[length][][];
-		for (int i=0; i<length; i++){
-			typeArguments[i] = Signature.getTypeArguments(typeSignatures[i]);
-		}
 		return typeArguments;
 	}
 	/**
@@ -2704,7 +2564,7 @@ public class Util {
 	 */
 	public final static char[][] splitTypeLevelsSignature(String typeSignature) {
 		// In case of IJavaScriptElement signature, replace '$' by '.'
-		char[] source = Signature.removeCapture(typeSignature.toCharArray());
+		char[] source = typeSignature.toCharArray();
 		CharOperation.replace(source, '$', '.');
 
 		// Init counters and arrays
@@ -2826,10 +2686,6 @@ public class Util {
 				case Signature.C_LONG :
 				case Signature.C_SHORT :
 				case Signature.C_VOID :
-				case Signature.C_STAR:
-				case Signature.C_EXTENDS:
-				case Signature.C_SUPER:
-				case Signature.C_CAPTURE:
 				default:
 					throw new IllegalArgumentException(); // a var args is an array type
 			}
@@ -2870,45 +2726,12 @@ public class Util {
 				case Signature.C_VOID :
 					buffer.append(VOID);
 					return start;
-				case Signature.C_CAPTURE :
-					return appendCaptureTypeSignatureForAnchor(string, start, buffer);
-				case Signature.C_STAR:
-				case Signature.C_EXTENDS:
-				case Signature.C_SUPER:
-					return appendTypeArgumentSignatureForAnchor(string, start, buffer);
 				default :
 					throw new IllegalArgumentException();
 			}
 		}
 	}
-	private static int appendTypeArgumentSignatureForAnchor(char[] string, int start, StringBuffer buffer) {
-		// need a minimum 1 char
-		if (start >= string.length) {
-			throw new IllegalArgumentException();
-		}
-		char c = string[start];
-		switch(c) {
-			case Signature.C_STAR :
-				return start;
-			case Signature.C_EXTENDS :
-				return appendTypeSignatureForAnchor(string, start + 1, buffer, false);
-			case Signature.C_SUPER :
-				return appendTypeSignatureForAnchor(string, start + 1, buffer, false);
-			default :
-				return appendTypeSignatureForAnchor(string, start, buffer, false);
-		}
-	}
-	private static int appendCaptureTypeSignatureForAnchor(char[] string, int start, StringBuffer buffer) {
-		// need a minimum 2 char
-		if (start >= string.length - 1) {
-			throw new IllegalArgumentException();
-		}
-		char c = string[start];
-		if (c != Signature.C_CAPTURE) {
-			throw new IllegalArgumentException();
-		}
-		return appendTypeArgumentSignatureForAnchor(string, start + 1, buffer);
-	}
+	
 	private static int appendArrayTypeSignatureForAnchor(char[] string, int start, StringBuffer buffer, boolean isVarArgs) {
 		int length = string.length;
 		// need a minimum 2 char
@@ -2963,11 +2786,6 @@ public class Util {
 				case Signature.C_SEMICOLON :
 					// all done
 					return p;
-				case Signature.C_GENERIC_START :
-					int e = scanGenericEnd(string, p + 1);
-					// once we hit type arguments there are no more package prefixes
-					p = e;
-					break;
 				case Signature.C_DOT :
 					buffer.append('.');
 					break;
@@ -2990,30 +2808,6 @@ public class Util {
 			p++;
 		}
 	}
-	private static int scanGenericEnd(char[] string, int start) {
-		if (string[start] == Signature.C_GENERIC_END) {
-			return start;
-		}
-		int length = string.length;
-		int balance = 1;
-		start++;
-		while (start <= length) {
-			switch(string[start]) {
-				case Signature.C_GENERIC_END :
-					balance--;
-					if (balance == 0) {
-						return start;
-					}
-					break;
-				case Signature.C_GENERIC_START :
-					balance++;
-					break;
-			}
-			start++;
-		}
-		return start;
-	}
-
 
 	/*
 	 * @GINO: Anonymous UI Label

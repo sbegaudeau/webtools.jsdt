@@ -324,7 +324,6 @@ public class SourceMapper
 					case Signature.C_DOT:
 						dot = j;
 						break;
-					case Signature.C_GENERIC_START:
 					case Signature.C_NAME_END:
 						if (dot > start) {
 							if (simpleTypeSig == null)
@@ -1086,8 +1085,6 @@ public class SourceMapper
 			char current = qualifiedTypeSig.charAt(i);
 			switch (current) {
 				case Signature.C_ARRAY :
-				case Signature.C_SUPER:
-				case Signature.C_EXTENDS:
 					unqualifiedTypeSig.append(current);
 					start = i + 1;
 					end = start + 1;
@@ -1102,17 +1099,8 @@ public class SourceMapper
 					}
 					break;
 				case Signature.C_NAME_END:
-				case Signature.C_GENERIC_START :
 					end = i;
 					break firstPass;
-				case Signature.C_STAR :
-					unqualifiedTypeSig.append(current);
-					start = i + 1;
-					end = start + 1;
-					firstChar = qualifiedTypeSig.charAt(start);
-					break;
-				case Signature.C_GENERIC_END :
-					return i;
 				case Signature.C_DOT:
 					start = ++i;
 					break;
@@ -1131,14 +1119,6 @@ public class SourceMapper
 				for (int i = start; i < length; i++) {
 					char current = qualifiedTypeSig.charAt(i);
 					switch (current) {
-						case Signature.C_GENERIC_START:
-							unqualifiedTypeSig.append(current);
-							i++;
-							do {
-								i = getUnqualifiedTypeSignature(qualifiedTypeSig, i, length, unqualifiedTypeSig, noDollar);
-							} while (qualifiedTypeSig.charAt(i) != Signature.C_GENERIC_END);
-							unqualifiedTypeSig.append(Signature.C_GENERIC_END);
-							break;
 						case Signature.C_NAME_END:
 							unqualifiedTypeSig.append(current);
 							return i + 1;

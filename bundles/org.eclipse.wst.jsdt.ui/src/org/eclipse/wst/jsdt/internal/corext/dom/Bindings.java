@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -913,8 +913,6 @@ public class Bindings {
 		if (type.isPrimitive() || type.isTypeVariable()) {
 			return type.getName().equals(Signature.toString(candidate));
 		} else {
-			// normalize (quick hack until binding.getJavaElement works)
-			candidate= Signature.getTypeErasure(candidate);
 			type= type.getErasure();
 			
 			if (candidate.charAt(Signature.getArrayCount(candidate)) == Signature.C_RESOLVED) {

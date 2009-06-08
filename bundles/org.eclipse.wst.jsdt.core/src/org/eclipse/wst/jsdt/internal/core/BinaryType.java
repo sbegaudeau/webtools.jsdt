@@ -602,8 +602,7 @@ public String[] getTypeParameterSignatures() throws JavaScriptModelException {
 	if (genericSignature == null)
 		return CharOperation.NO_STRINGS;
 
-	char[] dotBaseSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
-	char[][] typeParams = Signature.getTypeParameters(dotBaseSignature);
+	char[][] typeParams = new char[0][0];
 	return CharOperation.toStrings(typeParams);
 }
 

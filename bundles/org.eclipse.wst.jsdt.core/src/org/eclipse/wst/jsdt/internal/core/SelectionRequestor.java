@@ -612,7 +612,7 @@ protected void acceptSourceMethod(
 		String[] signatures = method.getParameterTypes();
 		boolean match= true;
 		for (int p = 0; p < signatures.length; p++) {
-			String simpleName= Signature.getSimpleName(Signature.toString(Signature.getTypeErasure(signatures[p])));
+			String simpleName= Signature.getSimpleName(Signature.toString(signatures[p]));
 			char[] simpleParameterName = CharOperation.lastSegment(parameterTypeNames[p], '.');
 			if (!simpleName.equals(new String(simpleParameterName))) {
 				match = false;

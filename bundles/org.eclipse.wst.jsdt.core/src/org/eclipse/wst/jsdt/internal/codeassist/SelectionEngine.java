@@ -1247,7 +1247,6 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			// only the type erasure are returned by IType.resolvedType(...)
 			if (CharOperation.indexOf('<', typeName) != -1) {
 				char[] typeSig = Signature.createCharArrayTypeSignature(typeName, false/*not resolved*/);
-				typeSig = Signature.getTypeErasure(typeSig);
 				typeName = Signature.toCharArray(typeSig);
 			}
 

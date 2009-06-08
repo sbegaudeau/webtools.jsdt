@@ -338,7 +338,7 @@ public class StubUtility {
 		String[] paramTypes= overridden.getParameterTypes();
 		String[] paramTypeNames= new String[paramTypes.length];
 		for (int i= 0; i < paramTypes.length; i++) {
-			paramTypeNames[i]= Signature.toString(Signature.getTypeErasure(paramTypes[i]));
+			paramTypeNames[i]= Signature.toString(paramTypes[i]);
 		}
 		return paramTypeNames;
 	}

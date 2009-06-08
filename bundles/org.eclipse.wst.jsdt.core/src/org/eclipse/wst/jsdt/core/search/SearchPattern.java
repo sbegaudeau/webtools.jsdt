@@ -732,8 +732,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 					case TerminalTokens.TokenNameUNSIGNED_RIGHT_SHIFT:
 						argCount--;
 						if (argCount == 0) {
-							String pseudoType = "Type"+typeArgumentsString; //$NON-NLS-1$
-							typeArguments = Signature.getTypeArguments(Signature.createTypeSignature(pseudoType, false).toCharArray());
+							typeArguments = new char[0][0];
 							mode = InsideSelector;
 						}
 						break;
@@ -869,11 +868,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		char[] declaringTypePart = null;
 		try {
 			declaringTypeSignature = Signature.createTypeSignature(declaringType, false);
-			if (declaringTypeSignature.indexOf(Signature.C_GENERIC_START) < 0) {
-				declaringTypePart = declaringType.toCharArray();
-			} else {
-				declaringTypePart = Signature.toCharArray(Signature.getTypeErasure(declaringTypeSignature.toCharArray()));
-			}
+			declaringTypePart = declaringType.toCharArray();
 		}
 		catch (IllegalArgumentException iae) {
 			// declaring type is invalid
@@ -902,11 +897,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 			try {
 				if (parameterTypes != null) {
 					parameterTypeSignatures[i] = Signature.createTypeSignature(parameterTypes[i], false);
-					if (parameterTypeSignatures[i].indexOf(Signature.C_GENERIC_START) < 0) {
-						parameterTypePart = parameterTypes[i].toCharArray();
-					} else {
-						parameterTypePart = Signature.toCharArray(Signature.getTypeErasure(parameterTypeSignatures[i].toCharArray()));
-					}
+					parameterTypePart = parameterTypes[i].toCharArray();
 				}
 			}
 			catch (IllegalArgumentException iae) {
@@ -937,11 +928,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		char[] returnTypePart = null;
 		try {
 			returnTypeSignature = Signature.createTypeSignature(returnType, false);
-			if (returnTypeSignature.indexOf(Signature.C_GENERIC_START) < 0) {
-				returnTypePart = returnType.toCharArray();
-			} else {
-				returnTypePart = Signature.toCharArray(Signature.getTypeErasure(returnTypeSignature.toCharArray()));
-			}
+			returnTypePart = returnType.toCharArray();
 		}
 		catch (IllegalArgumentException iae) {
 			// declaring type is invalid
@@ -1283,7 +1270,7 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 				try {
 					typeSignature = field.getTypeSignature();
 					char[] signature = typeSignature.toCharArray();
-					char[] typeErasure = Signature.toCharArray(Signature.getTypeErasure(signature));
+					char[] typeErasure = Signature.toCharArray(signature);
 					CharOperation.replace(typeErasure, '$', '.');
 					if ((lastDot = CharOperation.lastIndexOf('.', typeErasure)) == -1) {
 						typeSimpleName = typeErasure;
@@ -1429,7 +1416,7 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 				try {
 					returnSignature = method.getReturnType();
 					char[] signature = returnSignature.toCharArray();
-					char[] returnErasure = Signature.toCharArray(Signature.getTypeErasure(signature));
+					char[] returnErasure = Signature.toCharArray(signature);
 					CharOperation.replace(returnErasure, '$', '.');
 					if ((lastDot = CharOperation.lastIndexOf('.', returnErasure)) == -1) {
 						returnSimpleName = returnErasure;
@@ -1453,7 +1440,7 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 			for (int i = 0; i < paramCount; i++) {
 				parameterSignatures[i] = parameterTypes[i];
 				char[] signature = parameterSignatures[i].toCharArray();
-				char[] paramErasure = Signature.toCharArray(Signature.getTypeErasure(signature));
+				char[] paramErasure = Signature.toCharArray(signature);
 				CharOperation.replace(paramErasure, '$', '.');
 				if ((lastDot = CharOperation.lastIndexOf('.', paramErasure)) == -1) {
 					parameterSimpleNames[i] = paramErasure;
@@ -1651,11 +1638,7 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 	char[] typePart = null;
 	try {
 		typeSignature = Signature.createTypeSignature(type, false);
-		if (typeSignature.indexOf(Signature.C_GENERIC_START) < 0) {
-			typePart = type.toCharArray();
-		} else {
-			typePart = Signature.toCharArray(Signature.getTypeErasure(typeSignature.toCharArray()));
-		}
+		typePart = type.toCharArray();
 	}
 	catch (IllegalArgumentException iae) {
 		// string is not a valid type syntax

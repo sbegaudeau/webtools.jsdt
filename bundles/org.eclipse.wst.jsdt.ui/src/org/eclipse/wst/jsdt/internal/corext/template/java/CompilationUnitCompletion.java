@@ -415,90 +415,6 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 			initBounds();
 			return (String[]) fBounds.toArray(new String[fBounds.size()]);
 		}
-
-		/**
-		 * Finds and returns the type argument with index <code>index</code>
-		 * in the given type super type signature. If <code>signature</code>
-		 * is a generic signature, the type parameter at <code>index</code> is
-		 * extracted. If the type parameter is an upper bound (<code>? super SomeType</code>),
-		 * the type signature of <code>java.lang.Object</code> is returned.
-		 * <p>
-		 * Also, if <code>signature</code> has no type parameters (i.e. is a
-		 * reference to the raw type), the type signature of
-		 * <code>java.lang.Object</code> is returned.
-		 * </p>
-		 * 
-		 * @param signature the super type signature from a type's
-		 *        <code>extends</code> or <code>implements</code> clause
-		 * @param index the index of the type parameter to extract from
-		 *        <code>signature</code>
-		 * @param context the type context inside which unqualified types should
-		 *        be resolved
-		 * @return the type argument signature of the type parameter at
-		 *         <code>index</code> in <code>signature</code>
-		 * @throws IndexOutOfBoundsException if the index is not valid
-		 */
-		private String findMatchingTypeArgument(String signature, int index, IType context) throws IndexOutOfBoundsException {
-			String[] typeArguments= Signature.getTypeArguments(signature);
-			if (typeArguments.length > 0 && typeArguments.length <= index)
-				throw new IndexOutOfBoundsException();
-			if (typeArguments.length == 0) {
-				// raw binding - bound to Object
-				return OBJECT_SIGNATURE;
-			} else {
-				String bound= SignatureUtil.getUpperBound(typeArguments[index]);
-				return SignatureUtil.qualifySignature(bound, context);
-			}
-		}
-
-		/**
-		 * Finds and returns the super type signature in the
-		 * <code>extends</code> or <code>implements</code> clause of
-		 * <code>subType</code> that corresponds to <code>superType</code>.
-		 * 
-		 * @param subType a direct and true sub type of <code>superType</code>
-		 * @param superType a direct super type (super class or interface) of
-		 *        <code>subType</code>
-		 * @return the super type signature of <code>subType</code> referring
-		 *         to <code>superType</code>
-		 * @throws JavaScriptModelException if extracting the super type signatures
-		 *         fails, or if <code>subType</code> contains no super type
-		 *         signature to <code>superType</code>
-		 */
-		private String findMatchingSuperTypeSignature(IType subType, IType superType) throws JavaScriptModelException {
-			String[] signatures= getSuperTypeSignatures(subType, superType);
-			for (int i= 0; i < signatures.length; i++) {
-				String signature= signatures[i];
-				String qualified= SignatureUtil.qualifySignature(signature, subType);
-				String subFQN= SignatureUtil.stripSignatureToFQN(qualified);
-				
-				String superFQN= superType.getFullyQualifiedName();
-				if (subFQN.equals(superFQN)) {
-					return signature;
-				}
-				
-				// handle local types
-				if (fLocalTypes.containsValue(subFQN)) {
-					return signature;
-				}
-			}
-			
-			throw new JavaScriptModelException(new CoreException(new Status(IStatus.ERROR, JavaScriptPlugin.getPluginId(), IStatus.OK, "Illegal hierarchy", null))); //$NON-NLS-1$
-		}
-		
-		/**
-		 * Returns the super interface signatures of <code>subType</code> if 
-		 * <code>superType</code> is an interface, otherwise returns the super
-		 * type signature.
-		 * 
-		 * @param subType the sub type signature
-		 * @param superType the super type signature
-		 * @return the super type signatures of <code>subType</code>
-		 * @throws JavaScriptModelException if any java model operation fails
-		 */
-		private String[] getSuperTypeSignatures(IType subType, IType superType) throws JavaScriptModelException {
-			return new String[] {subType.getSuperclassTypeSignature()};
-		}
 		
 		/**
 		 * Clears the collected type bounds and initializes it with
@@ -507,33 +423,6 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		private void initBounds() {
 			fBounds.clear();
 			fBounds.add(OBJECT_SIGNATURE); 
-		}
-
-		/**
-		 * Filters the current list of type bounds through the additional type
-		 * bound described by <code>boundSignature</code>.
-		 * 
-		 * @param boundSignature the additional bound to add to the list of
-		 *        collected bounds
-		 */
-		private void addBound(String boundSignature) {
-			if (SignatureUtil.isJavaLangObject(boundSignature))
-				return;
-			
-			boolean found= false;
-			for (ListIterator it= fBounds.listIterator(); it.hasNext();) {
-				String old= (String) it.next();
-				if (isTrueSubtypeOf(boundSignature, old)) {
-					if (!found) {
-						it.set(boundSignature);
-						found= true;
-					} else {
-						it.remove();
-					}
-				}
-			}
-			if (!found)
-				fBounds.add(boundSignature);
 		}
 
 		/**

@@ -78,8 +78,6 @@ public class CompletionProposalLabelProvider {
 		switch (kind) {
 			case CompletionProposal.METHOD_REF:
 				return appendUnboundedParameterList(new StringBuffer(), proposal).toString();
-			case CompletionProposal.TYPE_REF:
-				return appendTypeParameterList(new StringBuffer(), proposal).toString();
 			default:
 				Assert.isLegal(false);
 				return null; // dummy
@@ -96,38 +94,18 @@ public class CompletionProposalLabelProvider {
 	private StringBuffer appendUnboundedParameterList(StringBuffer buffer, CompletionProposal methodProposal) {
 		// TODO remove once https://bugs.eclipse.org/bugs/show_bug.cgi?id=85293
 		// gets fixed.
-		char[] signature= SignatureUtil.fix83600(methodProposal.getSignature());
+		char[] signature= methodProposal.getSignature();
 		char[][] parameterNames= methodProposal.findParameterNames(null);
 		char[][] parameterTypes= Signature.getParameterTypes(signature);
 
 		for (int i= 0; i < parameterTypes.length; i++)
-			parameterTypes[i]= createTypeDisplayName(SignatureUtil.getLowerBound(parameterTypes[i]));
+			parameterTypes[i]= createTypeDisplayName(parameterTypes[i]);
 
 		if (Flags.isVarargs(methodProposal.getFlags())) {
 			int index= parameterTypes.length - 1;
 			parameterTypes[index]= convertToVararg(parameterTypes[index]);
 		}
 		return appendParameterSignature(buffer, parameterTypes, parameterNames);
-	}
-
-	/**
-	 * Appends the type parameter list to <code>buffer</code>.
-	 *
-	 * @param buffer the buffer to append to
-	 * @param typeProposal the type proposal
-	 * @return the modified <code>buffer</code>
-	 * 
-	 */
-	private StringBuffer appendTypeParameterList(StringBuffer buffer, CompletionProposal typeProposal) {
-		// TODO remove once https://bugs.eclipse.org/bugs/show_bug.cgi?id=85293
-		// gets fixed.
-		char[] signature= SignatureUtil.fix83600(typeProposal.getSignature());
-		char[][] typeParameters= Signature.getTypeArguments(signature);
-		for (int i= 0; i < typeParameters.length; i++) {
-			char[] param= typeParameters[i];
-			typeParameters[i]= Signature.toCharArray(param);
-		}
-		return appendParameterSignature(buffer, typeParameters, null);
 	}
 	
 	/**
@@ -263,7 +241,7 @@ public class CompletionProposalLabelProvider {
 		// return type
 		if (!methodProposal.isConstructor()) {
 			// TODO remove SignatureUtil.fix83600 call when bugs are fixed
-			char[] returnType= createTypeDisplayName(SignatureUtil.getUpperBound(Signature.getReturnType(SignatureUtil.fix83600(methodProposal.getSignature()))));
+			char[] returnType= createTypeDisplayName(Signature.getReturnType(methodProposal.getSignature()));
 			if (!Arrays.equals(Signature.ANY,returnType))
 			{
 				nameBuffer.append("  "); //$NON-NLS-1$
@@ -330,7 +308,7 @@ public class CompletionProposalLabelProvider {
 
 		// return type
 		// TODO remove SignatureUtil.fix83600 call when bugs are fixed
-		char[] returnType= createTypeDisplayName(SignatureUtil.getUpperBound(Signature.getReturnType(SignatureUtil.fix83600(methodProposal.getSignature()))));
+		char[] returnType= createTypeDisplayName(Signature.getReturnType(methodProposal.getSignature()));
 		nameBuffer.append(returnType);
 
 		// declaring type

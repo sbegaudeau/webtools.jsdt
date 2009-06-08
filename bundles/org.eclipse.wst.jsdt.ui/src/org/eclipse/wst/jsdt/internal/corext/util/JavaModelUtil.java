@@ -485,16 +485,12 @@ public final class JavaModelUtil {
 		char type= refTypeSig.charAt(arrayCount);
 		if (type == Signature.C_UNRESOLVED) {
 			String name= ""; //$NON-NLS-1$
-			int bracket= refTypeSig.indexOf(Signature.C_GENERIC_START, arrayCount + 1);
-			if (bracket > 0)
-				name= refTypeSig.substring(arrayCount + 1, bracket);
-			else {
-				int semi= refTypeSig.indexOf(Signature.C_SEMICOLON, arrayCount + 1);
-				if (semi == -1) {
-					throw new IllegalArgumentException();
-				}
-				name= refTypeSig.substring(arrayCount + 1, semi);
+			int semi= refTypeSig.indexOf(Signature.C_SEMICOLON, arrayCount + 1);
+			if (semi == -1) {
+				throw new IllegalArgumentException();
 			}
+			name= refTypeSig.substring(arrayCount + 1, semi);
+			
 			String[][] resolvedNames= declaringType.resolveType(name);
 			if (resolvedNames != null && resolvedNames.length > 0) {
 				return JavaModelUtil.concatenateName(resolvedNames[0][0], resolvedNames[0][1]);

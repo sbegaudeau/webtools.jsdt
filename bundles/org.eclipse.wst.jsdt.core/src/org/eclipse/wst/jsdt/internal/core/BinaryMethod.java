@@ -69,7 +69,7 @@ public String[] getExceptionTypes() throws JavaScriptModelException {
 		char[] genericSignature = info.getGenericSignature();
 		if (genericSignature != null) {
 			char[] dotBasedSignature = CharOperation.replaceOnCopy(genericSignature, '/', '.');
-			this.exceptionTypes = Signature.getThrownExceptionTypes(new String(dotBasedSignature));
+			this.exceptionTypes = new String[0];
 		}
 		if (this.exceptionTypes == null || this.exceptionTypes.length == 0) {
 			char[][] eTypeNames = info.getExceptionTypeNames();

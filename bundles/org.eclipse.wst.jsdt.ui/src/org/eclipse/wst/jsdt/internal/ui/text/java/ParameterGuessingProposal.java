@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorHighlightingSynchronizer;
@@ -253,12 +252,12 @@ public final class ParameterGuessingProposal extends JavaMethodCompletionProposa
 	}
 
 	private String[][] getParameterSignatures() {
-		char[] signature= SignatureUtil.fix83600(fProposal.getSignature());
+		char[] signature= fProposal.getSignature();
 		char[][] types= Signature.getParameterTypes(signature);
 		String[][] ret= new String[types.length][2];
 
 		for (int i= 0; i < types.length; i++) {
-			char[] type= SignatureUtil.getLowerBound(types[i]);
+			char[] type= types[i];
 			ret[i][0]= String.valueOf(Signature.getSignatureQualifier(type));
 			ret[i][1]= String.valueOf(Signature.getSignatureSimpleName(type));
 		}

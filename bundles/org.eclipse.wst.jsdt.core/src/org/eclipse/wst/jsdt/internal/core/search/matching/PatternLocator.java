@@ -597,25 +597,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 			char[] patternTypeArgument = patternArguments[i];
 			char patternWildcard = patternTypeArgument[0];
 			char[] patternTypeName = patternTypeArgument;
-			int patternWildcardKind = -1;
-			switch (patternWildcard) {
-				case Signature.C_STAR:
-					if (argumentBinding.isWildcard()) {
-						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-						if (wildcardBinding.boundKind == Wildcard.UNBOUND) continue;
-					}
-					matchRule &= ~SearchPattern.R_FULL_MATCH;
-					continue; // unbound parameter always match
-				case Signature.C_EXTENDS :
-					patternWildcardKind = Wildcard.EXTENDS;
-					patternTypeName = CharOperation.subarray(patternTypeArgument, 1, patternTypeArgument.length);
-					break;
-				case Signature.C_SUPER :
-					patternWildcardKind = Wildcard.SUPER;
-					patternTypeName = CharOperation.subarray(patternTypeArgument, 1, patternTypeArgument.length);
-				default :
-					break;
-			}
+			
 			patternTypeName = Signature.toCharArray(patternTypeName);
 			TypeBinding patternBinding = locator.getType(patternTypeArgument, patternTypeName);
 
@@ -635,66 +617,6 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 
 			// Verify tha pattern binding is compatible with match type argument binding
 			switch (patternWildcard) {
-				case Signature.C_STAR : // UNBOUND pattern
-					// unbound always match => skip to next argument
-					matchRule &= ~SearchPattern.R_FULL_MATCH;
-					continue;
-				case Signature.C_EXTENDS : // EXTENDS pattern
-					if (argumentBinding.isWildcard()) { // argument is a wildcard
-						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-						// It's ok if wildcards are identical
-						if (wildcardBinding.boundKind == patternWildcardKind && wildcardBinding.bound == patternBinding) {
-							continue;
-						}
-						// Look for wildcard compatibility
-						switch (wildcardBinding.boundKind) {
-							case Wildcard.EXTENDS:
-								if (wildcardBinding.bound== null || wildcardBinding.bound.isCompatibleWith(patternBinding)) {
-									// valid when arg extends a subclass of pattern
-									matchRule &= ~SearchPattern.R_FULL_MATCH;
-									continue;
-								}
-								break;
-							case Wildcard.SUPER:
-								break;
-							case Wildcard.UNBOUND:
-								matchRule &= ~SearchPattern.R_FULL_MATCH;
-								continue;
-						}
-					} else if (argumentBinding.isCompatibleWith(patternBinding)) {
-						// valid when arg is a subclass of pattern
-						matchRule &= ~SearchPattern.R_FULL_MATCH;
-						continue;
-					}
-					break;
-				case Signature.C_SUPER : // SUPER pattern
-					if (argumentBinding.isWildcard()) { // argument is a wildcard
-						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-						// It's ok if wildcards are identical
-						if (wildcardBinding.boundKind == patternWildcardKind && wildcardBinding.bound == patternBinding) {
-							continue;
-						}
-						// Look for wildcard compatibility
-						switch (wildcardBinding.boundKind) {
-							case Wildcard.EXTENDS:
-								break;
-							case Wildcard.SUPER:
-								if (wildcardBinding.bound== null || patternBinding.isCompatibleWith(wildcardBinding.bound)) {
-									// valid only when arg super a superclass of pattern
-									matchRule &= ~SearchPattern.R_FULL_MATCH;
-									continue;
-								}
-								break;
-							case Wildcard.UNBOUND:
-								matchRule &= ~SearchPattern.R_FULL_MATCH;
-								continue;
-						}
-					} else if (patternBinding.isCompatibleWith(argumentBinding)) {
-						// valid only when arg is a superclass of pattern
-						matchRule &= ~SearchPattern.R_FULL_MATCH;
-						continue;
-					}
-					break;
 				default:
 					if (argumentBinding.isWildcard()) {
 						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
@@ -895,19 +817,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 			nextTypeArgument: for (int i= 0; i<length; i++) {
 				char[] patternTypeArgument = patternTypeArguments[depth][i];
 				TypeBinding argTypeBinding = paramTypeBinding.arguments[i];
-				// get corresponding pattern wildcard
-				switch (patternTypeArgument[0]) {
-					case Signature.C_STAR : // unbound parameter always match
-					case Signature.C_SUPER : // needs pattern type parameter binding
-						// skip to next type argument as it will be resolved later
-						continue nextTypeArgument;
-					case Signature.C_EXTENDS :
-						// remove wildcard from patter type argument
-						patternTypeArgument = CharOperation.subarray(patternTypeArgument, 1, patternTypeArgument.length);
-					default :
-						// no wildcard
-						break;
-				}
+
 				// get pattern type argument from its signature
 				patternTypeArgument = Signature.toCharArray(patternTypeArgument);
 				if (!this.isCaseSensitive) patternTypeArgument = CharOperation.toLowerCase(patternTypeArgument);
