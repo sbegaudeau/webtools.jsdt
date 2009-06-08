@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -350,72 +350,6 @@ public void testGetParameterTypes() {
 /**
  * @see Signature
  */
-public void testGetTypeParameters1() {
-	String sig = "<X:TF;Y::Ljava.lang.Cloneable;>";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"X:TF;\n" + 
-			"Y::Ljava.lang.Cloneable;\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- */
-public void testGetTypeParameters2() {
-	String sig = "<X:TF;Y::Ljava.lang.Cloneable;>()V";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"X:TF;\n" + 
-			"Y::Ljava.lang.Cloneable;\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- */
-public void testGetTypeParameters3() {
-	String sig = "<E:>Ljava.util.AbstractCollection;";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"E:\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- * (regression test for bug 93662 Singature#getTypeParameters returns strange signature string)
- */
-public void testGetTypeParameters4() {
-	String sig = "<K:V:>Ljava.util.AbstractMap;";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"K:\n" +
-			"V:\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- * (regression test for bug 93662 Singature#getTypeParameters returns strange signature string)
- */
-public void testGetTypeParameters5() {
-	String sig = "<L:T:>Ljava.util.AbstractMap;";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"L:\n" +
-			"T:\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- */
-public void testGetTypeParameters6() {
-	String sig = "<E::Lp/I;>Lp1/X;";
-	assertStringsEqual(
-			"Unexpected type parameters", 
-			"E::Lp/I;\n",
-			Signature.getTypeParameters(sig));
-}
-/**
- * @see Signature
- */
 public void testGetQualifier1() {
 	assertEquals(
 		"java.lang",
@@ -461,63 +395,6 @@ public void testGetReturnType2() {
 	String methodSig = "(LObject;)+[I";
 	assertEquals("Signature#getReturnType is not correct", "+[I",
 			Signature.getReturnType(methodSig));
-}
-/**
- * @see Signature
- */
-public void testGetThrownExceptionTypes() {
-	String methodSig = "(QString;QObject;I)I";
-	assertStringsEqual("Signature#getThrownExceptionTypes is not correct1", "",
-			Signature.getThrownExceptionTypes(methodSig));
-	try {
-		Signature.getThrownExceptionTypes("");
-		assertTrue("Signature#getThrownExceptionTypes is not correct: exception", false);
-	} catch (IllegalArgumentException iae) {
-		// do nothing
-	}
-	
-	// tests with 1.5-specific elements
-	methodSig = "<X:Qlist<Qstring;>;>(Qstring;Qobject;I)I^Qexception;^Qerror;";
-	assertStringsEqual("Signature#getThrownExceptionTypes is not correct2", "Qexception;\nQerror;\n",
-			Signature.getThrownExceptionTypes(methodSig));
-	methodSig = "<X:Qlist<Qstring;>;>(Qlist<Qstring;>;)Qlist<Qxxx;>;^Qexception<TT;>;^Qerror;";
-	assertStringsEqual("Signature#getThrownExceptionTypes is not correct3", "Qexception<TT;>;\nQerror;\n",
-			Signature.getThrownExceptionTypes(methodSig));
-	
-	methodSig = "<T:Ljava/lang/Exception;>()V^TT;";
-	assertStringsEqual("Signature#getThrownExceptionTypes is not correct3", "TT;\n",
-			Signature.getThrownExceptionTypes(methodSig));
-	methodSig = "<T:Ljava/lang/Exception;>()V^TT;^Ljava/lang/Exception;";
-	assertStringsEqual("Signature#getThrownExceptionTypes is not correct3", "TT;\nLjava/lang/Exception;\n",
-			Signature.getThrownExceptionTypes(methodSig));
-	
-	try {
-		Signature.getThrownExceptionTypes("<T:Ljava/lang/Exception;>()VTT;");
-		assertTrue("Signature#getThrownExceptionTypes is not correct: exception", false);
-	} catch (IllegalArgumentException iae) {
-		// do nothing
-	}
-	
-	try {
-		Signature.getThrownExceptionTypes("<T:Ljava/lang/Exception;>()V^TT;Ljava/lang/Exception;");
-		assertTrue("Signature#getThrownExceptionTypes is not correct: exception", false);
-	} catch (IllegalArgumentException iae) {}
-
-}
-/**
- * @bug 155003: [model] Missing exception types / wrong signature?
- * @test Ensure that thrown exceptions are well decoded when added at the end of the signature
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=155003"
- */
-public void testGetThrownExceptions_Bug155003() throws JavaScriptModelException {
-	String methodSig = "()Ljava.lang.Object;^Ljava.lang.InstantiationException;^Ljava.lang.IllegalAccessException;";
-	assertStringsEqual("Signature#Bug155003#1 is not correct",
-		"Ljava.lang.InstantiationException;\nLjava.lang.IllegalAccessException;\n",
-		Signature.getThrownExceptionTypes(methodSig));
-	methodSig = "()V"; // no change when no thrown exceptions
-	assertStringsEqual("Signature#Bug155003#2 is not correct",
-		"",
-		Signature.getThrownExceptionTypes(methodSig));
 }
 /**
  * @see Signature
@@ -578,164 +455,6 @@ public void testGetTypeParameterBounds() {
 	} catch (IllegalArgumentException iae) {
 		// do nothing
 	}
-}
-
-/**
- * @see Signature
- */
-public void testGetTypeArguments1() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QT;\n",
-		Signature.getTypeArguments("QList<QT;>;")
-	);
-}
-
-public void testGetTypeArguments2() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QT;\n" +
-		"QU;\n",
-		Signature.getTypeArguments("QX<QT;QU;>;")
-	);
-}
-
-public void testGetTypeArguments3() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"*\n",
-		Signature.getTypeArguments("QX<*>;")
-	);
-}
-
-public void testGetTypeArguments4() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"+QE;\n" +
-		"-QS;\n",
-		Signature.getTypeArguments("QX<+QE;-QS;>;")
-	);
-}
-
-public void testGetTypeArguments5() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QList<QT;>;\n" +
-		"QMap<QU;QABC<QT;>;>;\n",
-		Signature.getTypeArguments("QX<QList<QT;>;QMap<QU;QABC<QT;>;>;>;")
-	);
-}
-
-/*
- * getTypeArguments() on a raw type
- * (regression test for bug 73671 [1.5] Signature.getTypeArguments should also tolerate normal types)
- */
-public void testGetTypeArguments6() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"",
-		Signature.getTypeArguments("QList;")
-	);
-}
-
-public void testGetTypeArguments7() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"",
-		Signature.getTypeArguments("QX<QObject;>.Member;")
-	);
-}
-
-public void testGetTypeArguments8() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QObject;\n",
-		Signature.getTypeArguments("QX<QObject;>.Member<QObject;>;")
-	);
-}
-
-public void testGetTypeArguments9() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QObject;\n",
-		Signature.getTypeArguments("QX.Member<QObject;>;")
-	);
-}
-
-public void testGetTypeArguments10() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QList<QT;>;\n" +
-		"QMap<QU;QABC<QT;>;>;\n",
-		Signature.getTypeArguments("QX<QObject;>.Member<QList<QT;>;QMap<QU;QABC<QT;>;>;>;")
-	);
-}
-
-public void testGetTypeArguments11() {
-	assertStringsEqual(
-		"Unexpected type arguments",
-		"QObject;\n",
-		Signature.getTypeArguments("QX<QList<QT;>;QMap<QU;QABC<QT;>;>;>.Member<QObject;>;")
-	);
-}
-
-/**
- * @see Signature
- */
-public void testGetTypeErasure1() {
-	assertEquals(
-		"QList;",
-		Signature.getTypeErasure("QList<QT;>;")
-	);
-}
-
-public void testGetTypeErasure2() {
-	assertEquals(
-		"QList;",
-		Signature.getTypeErasure("QList;")
-	);
-}
-
-public void testGetTypeErasure3() {
-	assertEquals(
-		"QX;",
-		Signature.getTypeErasure("QX<QList<QT;>;QMap<QU;QABC<QT;>;>;>;")
-	);
-}
-
-public void testGetTypeErasure4() {
-	assertEquals(
-		"QX.Member;",
-		Signature.getTypeErasure("QX<QObject;>.Member;")
-	);
-}
-
-public void testGetTypeErasure5() {
-	assertEquals(
-		"QX.Member;",
-		Signature.getTypeErasure("QX<QObject;>.Member<QObject;>;")
-	);
-}
-
-public void testGetTypeErasure6() {
-	assertEquals(
-		"QX.Member;",
-		Signature.getTypeErasure("QX.Member<QObject;>;")
-	);
-}
-
-public void testGetTypeErasure7() {
-	assertEquals(
-		"QX.Member;",
-		Signature.getTypeErasure("QX<QObject;>.Member<QList<QT;>;QMap<QU;QABC<QT;>;>;>;")
-	);
-}
-
-public void testGetTypeErasure8() {
-	assertEquals(
-		"QX.Member;",
-		Signature.getTypeErasure("QX<QList<QT;>;QMap<QU;QABC<QT;>;>;>.Member<QObject;>;")
-	);
 }
 
 /**
@@ -1163,24 +882,6 @@ public void testGetTypeSignatureKind21() {
 		Signature.CLASS_TYPE_SIGNATURE,
 		Signature.getTypeSignatureKind("La<TV;>.b<QW;>.c<LX;>;"));
 }
-public void testGetTypeSignatureKind22() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(String) is not correct 22", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("*"));
-}
-public void testGetTypeSignatureKind23() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(String) is not correct 23", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("-Ljava.lang.Object;"));
-}
-public void testGetTypeSignatureKind24() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(String) is not correct 24", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("+Ljava.lang.Object;"));
-}
 
 /*
  * Generic type signature
@@ -1324,24 +1025,6 @@ public void testGetTypeSignatureKindCharArray21() {
 		"Signature#getTypeSignatureKind(char[]) is not correct 21", 
 		Signature.CLASS_TYPE_SIGNATURE,
 		Signature.getTypeSignatureKind("La<TV;>.b<QW;>.c<LX;>;".toCharArray()));
-}
-public void testGetTypeSignatureKindCharArray22() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(char[]) is not correct 22", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("*".toCharArray()));
-}
-public void testGetTypeSignatureKindCharArray23() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(char[]) is not correct 23", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("-Ljava.lang.Object;".toCharArray()));
-}
-public void testGetTypeSignatureKindCharArray24() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(char[]) is not correct 24", 
-		Signature.WILDCARD_TYPE_SIGNATURE,
-		Signature.getTypeSignatureKind("+Ljava.lang.Object;".toCharArray()));
 }
 /*
  * Generic type signature
