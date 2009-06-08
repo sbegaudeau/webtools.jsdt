@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.IWorkingCopy;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -226,7 +225,7 @@ class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvid
 		final IJavaScriptElement element= delta.getElement();
 		final boolean isElementValidForView= fBrowsingPart.isValidElement(element);
 
-		if (!getProvideWorkingCopy() && element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy())
+		if (!getProvideWorkingCopy() && element instanceof IJavaScriptUnit && ((IJavaScriptUnit)element).isWorkingCopy())
 			return;
 
 		if (element != null && element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT && !isOnClassPath((IJavaScriptUnit)element))
@@ -249,11 +248,11 @@ class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvid
 					if (getProvideWorkingCopy())
 						postRefresh(null);
 				} else if (parent instanceof IJavaScriptUnit && getProvideWorkingCopy() && !((IJavaScriptUnit)parent).isWorkingCopy()) {
-					if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
+					if (element instanceof IJavaScriptUnit&& ((IJavaScriptUnit)element).isWorkingCopy()) {
 						// working copy removed from system - refresh
 						postRefresh(null);
 					}
-				} else if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy() && parent != null && parent.equals(fInput))
+				} else if (element instanceof IJavaScriptUnit && ((IJavaScriptUnit)element).isWorkingCopy() && parent != null && parent.equals(fInput))
 					// closed editor - removing working copy
 					postRefresh(null);
 				else
@@ -261,7 +260,7 @@ class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvid
 			}
 
 			if (fBrowsingPart.isAncestorOf(element, fInput)) {
-				if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
+				if (element instanceof IJavaScriptUnit && ((IJavaScriptUnit)element).isWorkingCopy()) {
 					postAdjustInputAndSetSelection(((IJavaScriptElement) fInput).getPrimaryElement());
 				} else
 					postAdjustInputAndSetSelection(null);
@@ -290,7 +289,7 @@ class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvid
 						postAdd(parent, ((IJavaScriptUnit)element).getTypes());
 				} else if (parent instanceof IJavaScriptUnit && getProvideWorkingCopy() && !((IJavaScriptUnit)parent).isWorkingCopy()) {
 					//	do nothing
-				} else if (element instanceof IWorkingCopy && ((IWorkingCopy)element).isWorkingCopy()) {
+				} else if (element instanceof IJavaScriptUnit && ((IJavaScriptUnit)element).isWorkingCopy()) {
 					// new working copy comes to live
 					postRefresh(null);
 				} else

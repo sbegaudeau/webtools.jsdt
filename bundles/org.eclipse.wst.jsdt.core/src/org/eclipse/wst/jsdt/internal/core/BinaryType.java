@@ -30,7 +30,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
-import org.eclipse.wst.jsdt.core.IWorkingCopy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
@@ -804,7 +803,7 @@ public ITypeHierarchy newTypeHierarchy(IJavaScriptProject project, WorkingCopyOw
  * @deprecated
  */
 public ITypeHierarchy newTypeHierarchy(IProgressMonitor monitor) throws JavaScriptModelException {
-	return newTypeHierarchy((IWorkingCopy[])null, monitor);
+	return newTypeHierarchy((IJavaScriptUnit[])null, monitor);
 }
 /*
  * @see IType#newTypeHierarchy(IJavaScriptUnit[], IProgressMonitor)
@@ -817,24 +816,6 @@ public ITypeHierarchy newTypeHierarchy(
 	CreateTypeHierarchyOperation op= new CreateTypeHierarchyOperation(this, workingCopies, SearchEngine.createWorkspaceScope(), true);
 	op.runOperation(monitor);
 	return op.getResult();
-}
-/**
- * @see IType#newTypeHierarchy(IWorkingCopy[], IProgressMonitor)
- * @deprecated
- */
-public ITypeHierarchy newTypeHierarchy(
-	IWorkingCopy[] workingCopies,
-	IProgressMonitor monitor)
-	throws JavaScriptModelException {
-
-	IJavaScriptUnit[] copies;
-	if (workingCopies == null) {
-		copies = null;
-	} else {
-		int length = workingCopies.length;
-		System.arraycopy(workingCopies, 0, copies = new IJavaScriptUnit[length], 0, length);
-	}
-	return newTypeHierarchy(copies, monitor);
 }
 /*
  * @see IType#newTypeHierarchy(WorkingCopyOwner, IProgressMonitor)

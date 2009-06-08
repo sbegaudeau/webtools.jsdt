@@ -111,8 +111,6 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.BatchOperation;
-import org.eclipse.wst.jsdt.internal.core.BufferFactoryWrapper;
-import org.eclipse.wst.jsdt.internal.core.BufferManager;
 import org.eclipse.wst.jsdt.internal.core.ClasspathAccessRule;
 import org.eclipse.wst.jsdt.internal.core.ClasspathAttribute;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
@@ -1076,36 +1074,6 @@ public final class JavaScriptCore extends Plugin {
 		if (attributes != null && element != null)
 			attributes.put(ATT_HANDLE_ID, element.getHandleIdentifier());
 	}
-
-	private static void addNonJavaScriptResources(Object[] nonJavaResources,
-			IContainer container,
-			int rootPathSegmentCounts,
-			ArrayList collector) {
-		for (int i = 0, max = nonJavaResources.length; i < max; i++) {
-			Object nonJavaResource = nonJavaResources[i];
-			if (nonJavaResource instanceof IFile) {
-				IFile file = (IFile) nonJavaResource;
-				IPath path = file.getFullPath().removeFirstSegments(rootPathSegmentCounts);
-				IResource member = container.findMember(path);
-				if (member != null && member.exists()) {
-					collector.add(member);
-				}
-			} else if (nonJavaResource instanceof IFolder) {
-				IFolder folder = (IFolder) nonJavaResource;
-				IResource[] members = null;
-				try {
-					members = folder.members();
-				} catch (CoreException e) {
-					// ignore
-				}
-				if (members != null) {
-					addNonJavaScriptResources(members, container, rootPathSegmentCounts, collector);
-				}
-			}
-		}
-	}
-
-
 
 	/**
 	 * Adds the given listener for resource change events of the given types to the JavaScript core.
@@ -2431,20 +2399,12 @@ public final class JavaScriptCore extends Plugin {
 				}
 				continue;
 			}
-			String outputLocation = "";
 			
 			IJavaScriptElement root = element;
 			while (root != null && root.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 				root = root.getParent();
 			}
 			if (root == null) continue;
-			IPackageFragmentRoot packageFragmentRoot = (IPackageFragmentRoot) root;
-			int rootPathSegmentCounts = packageFragmentRoot.getPath().segmentCount();
-			try {
-				IIncludePathEntry entry = packageFragmentRoot.getRawIncludepathEntry();
-			} catch (JavaScriptModelException e) {
-				e.printStackTrace();
-			}
 		}
 		int size = collector.size();
 		if (size != 0) {
@@ -2557,32 +2517,19 @@ public final class JavaScriptCore extends Plugin {
 		// inside the workspace
 		if (target instanceof IResource) {
 			IResource resolvedResource = (IResource) target;
-			if (resolvedResource != null) {
-				switch (resolvedResource.getType()) {
+			switch (resolvedResource.getType()) {
 
-					case IResource.PROJECT :
-						// internal project
-						return JavaScriptCore.newProjectEntry(
-								resolvedPath,
-								entry.getAccessRules(),
-								entry.combineAccessRules(),
-								entry.getExtraAttributes(),
-								entry.isExported());
-					case IResource.FILE :
-						if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resolvedResource.getName())) {
-							// internal binary archive
-							return JavaScriptCore.newLibraryEntry(
-									resolvedPath,
-									getResolvedVariablePath(entry.getSourceAttachmentPath()),
-									getResolvedVariablePath(entry.getSourceAttachmentRootPath()),
-									entry.getAccessRules(),
-									entry.getExtraAttributes(),
-									entry.isExported());
-						}
-						break;
-
-					case IResource.FOLDER :
-						// internal binary folder
+				case IResource.PROJECT :
+					// internal project
+					return JavaScriptCore.newProjectEntry(
+							resolvedPath,
+							entry.getAccessRules(),
+							entry.combineAccessRules(),
+							entry.getExtraAttributes(),
+							entry.isExported());
+				case IResource.FILE :
+					if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resolvedResource.getName())) {
+						// internal binary archive
 						return JavaScriptCore.newLibraryEntry(
 								resolvedPath,
 								getResolvedVariablePath(entry.getSourceAttachmentPath()),
@@ -2590,7 +2537,18 @@ public final class JavaScriptCore extends Plugin {
 								entry.getAccessRules(),
 								entry.getExtraAttributes(),
 								entry.isExported());
-				}
+					}
+					break;
+
+				case IResource.FOLDER :
+					// internal binary folder
+					return JavaScriptCore.newLibraryEntry(
+							resolvedPath,
+							getResolvedVariablePath(entry.getSourceAttachmentPath()),
+							getResolvedVariablePath(entry.getSourceAttachmentRootPath()),
+							entry.getAccessRules(),
+							entry.getExtraAttributes(),
+							entry.isExported());
 			}
 		}
 		// outside the workspace
@@ -2652,23 +2610,6 @@ public final class JavaScriptCore extends Plugin {
 			resolvedPath = resolvedPath.append(variablePath.removeFirstSegments(1));
 		}
 		return resolvedPath;
-	}
-
-	/**
-	 * Answers the shared working copies currently registered for this buffer factory.
-	 * Working copies can be shared by several clients using the same buffer factory,see
-	 * <code>IWorkingCopy.getSharedWorkingCopy</code>.
-	 *
-	 * @param factory the given buffer factory
-	 * @return the list of shared working copies for a given buffer factory
-	 * @deprecated Use {@link #getWorkingCopies(WorkingCopyOwner)} instead
-	 */
-	public static IWorkingCopy[] getSharedWorkingCopies(IBufferFactory factory){
-
-		// if factory is null, default factory must be used
-		if (factory == null) factory = BufferManager.getDefaultBufferManager().getDefaultBufferFactory();
-
-		return getWorkingCopies(BufferFactoryWrapper.create(factory));
 	}
 
 	/**
