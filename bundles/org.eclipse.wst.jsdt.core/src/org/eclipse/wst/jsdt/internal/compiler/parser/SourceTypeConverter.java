@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
@@ -70,7 +69,6 @@ import org.eclipse.wst.jsdt.internal.core.ImportDeclaration;
 import org.eclipse.wst.jsdt.internal.core.InitializerElementInfo;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.PackageFragment;
-import org.eclipse.wst.jsdt.internal.core.SourceAnnotationMethodInfo;
 import org.eclipse.wst.jsdt.internal.core.SourceField;
 import org.eclipse.wst.jsdt.internal.core.SourceFieldElementInfo;
 import org.eclipse.wst.jsdt.internal.core.SourceMethod;
@@ -337,34 +335,8 @@ public class SourceTypeConverter {
 			decl.isDefaultConstructor = false;
 			method = decl;
 		} else {
-			MethodDeclaration decl;
-			if (methodInfo.isAnnotationMethod()) {
-				AnnotationMethodDeclaration annotationMethodDeclaration = new AnnotationMethodDeclaration(compilationResult);
-
-				/* conversion of default value */
-				SourceAnnotationMethodInfo annotationMethodInfo = (SourceAnnotationMethodInfo) methodInfo;
-				boolean hasDefaultValue = annotationMethodInfo.defaultValueStart != -1 || annotationMethodInfo.defaultValueEnd != -1;
-				if ((this.flags & FIELD_INITIALIZATION) != 0) {
-					if (hasDefaultValue) {
-						char[] defaultValueSource = CharOperation.subarray(getSource(), annotationMethodInfo.defaultValueStart, annotationMethodInfo.defaultValueEnd+1);
-						if (defaultValueSource != null) {
-    						Expression expression =  parseMemberValue(defaultValueSource);
-    						if (expression != null) {
-    							annotationMethodDeclaration.defaultValue = expression;
-    						}
-						} else {
-							// could not retrieve the default value
-							hasDefaultValue = false;
-						}
-					}
-				}
-				if (hasDefaultValue)
-					modifiers |= ClassFileConstants.AccAnnotationDefault;
-				decl = annotationMethodDeclaration;
-			} else {
-				decl = new MethodDeclaration(compilationResult);
-			}
-
+			MethodDeclaration decl = new MethodDeclaration(compilationResult);
+			
 			// convert return type
 			decl.returnType = createTypeReference(methodInfo.getReturnTypeName(), start, end);
 

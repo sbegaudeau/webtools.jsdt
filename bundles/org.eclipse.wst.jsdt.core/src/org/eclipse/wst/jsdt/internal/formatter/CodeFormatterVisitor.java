@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -2388,53 +2387,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 
 		return dumpBinaryExpression(and_and_Expression, TerminalTokens.TokenNameAND_AND, scope);
 	}
-	public boolean visit(
-			AnnotationMethodDeclaration annotationTypeMemberDeclaration,
-			ClassScope scope) {
-        /*
-         * Print comments to get proper line number
-         */
-        this.scribe.printComment();
-        this.scribe.printModifiers(this);
-		this.scribe.space();
-		/*
-		 * Print the method return type
-		 */
-		final TypeReference returnType = annotationTypeMemberDeclaration.returnType;
-		final MethodScope annotationTypeMemberDeclarationScope = annotationTypeMemberDeclaration.scope;
-
-		if (returnType != null) {
-			returnType.traverse(this, annotationTypeMemberDeclarationScope);
-		}
-		/*
-		 * Print the method name
-		 */
-		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
-		this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_annotation_type_member_declaration);
-		this.scribe.printNextToken(TerminalTokens.TokenNameRPAREN, this.preferences.insert_space_between_empty_parens_in_annotation_type_member_declaration);
-
-		/*
-		 * Check for extra dimensions
-		 */
-		int extraDimensions = annotationTypeMemberDeclaration.extendedDimensions;
-		if (extraDimensions != 0) {
-			 for (int i = 0; i < extraDimensions; i++) {
-			 	this.scribe.printNextToken(TerminalTokens.TokenNameLBRACKET);
-			 	this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET);
-			 }
-		}
-
-		Expression defaultValue = annotationTypeMemberDeclaration.defaultValue;
-		if (defaultValue != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNamedefault, true);
-			this.scribe.space();
-			defaultValue.traverse(this, (BlockScope) null);
-		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
-		this.scribe.printTrailingComment();
-		return false;
-	}
-
+	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.Argument, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */

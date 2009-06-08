@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -1328,7 +1327,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			? ((MethodDeclaration) methodDeclaration).returnType
 			: null;
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-		methodInfo.isAnnotation = methodDeclaration instanceof AnnotationMethodDeclaration;
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
 		methodInfo.returnType = returnType == null ? null : CharOperation.concatWith(returnType.getParameterizedTypeName(), '.');
@@ -1346,14 +1344,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 	this.visitIfNeeded(methodDeclaration);
 
 	if (isInRange) {
-		if (methodDeclaration instanceof AnnotationMethodDeclaration) {
-			AnnotationMethodDeclaration annotationMethodDeclaration = (AnnotationMethodDeclaration) methodDeclaration;
-			Expression expression = annotationMethodDeclaration.defaultValue;
-			if (expression != null) {
-				requestor.exitMethod(methodDeclaration.declarationSourceEnd, expression.sourceStart, expression.sourceEnd);
-				return;
-			}
-		}
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 	}
 	this.nestedMethodIndex--;

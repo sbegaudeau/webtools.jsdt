@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -1553,17 +1552,6 @@ protected void consumeAnnotationTypeDeclarationHeader() {
 	}
 	// flush the comments related to the annotation type header
 	this.scanner.commentPtr = -1;
-}
-protected void consumeAnnotationTypeMemberDeclaration() {
-	// AnnotationTypeMemberDeclaration ::= AnnotationTypeMemberDeclarationHeader AnnotationTypeMemberHeaderExtendedDims DefaultValueopt ';'
-	AnnotationMethodDeclaration annotationTypeMemberDeclaration = (AnnotationMethodDeclaration) this.astStack[this.astPtr];
-	annotationTypeMemberDeclaration.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
-	// store the this.endPosition (position just before the '}') in case there is
-	// a trailing comment behind the end of the method
-	int declarationEndPosition = flushCommentsDefinedPriorTo(this.endStatementPosition);
-	annotationTypeMemberDeclaration.bodyStart = this.endStatementPosition;
-	annotationTypeMemberDeclaration.bodyEnd = declarationEndPosition;
-	annotationTypeMemberDeclaration.declarationSourceEnd = declarationEndPosition;
 }
 protected void consumeAnnotationTypeMemberDeclarations() {
 	// AnnotationTypeMemberDeclarations ::= AnnotationTypeMemberDeclarations AnnotationTypeMemberDeclaration
@@ -4308,18 +4296,8 @@ protected void consumeMethodHeaderDefaultValue() {
 	if (length == 1) {
 		intPtr--; // we get rid of the position of the default keyword
 		intPtr--; // we get rid of the position of the default keyword
-		if(md.isAnnotationMethod()) {
-			((AnnotationMethodDeclaration)md).defaultValue = this.expressionStack[this.expressionPtr];
-			md.modifiers |=  ClassFileConstants.AccAnnotationDefault;
-		}
 		this.expressionPtr--;
 		this.recordStringLiterals = true;
-	}
-
-	if(this.currentElement != null) {
-		if(md.isAnnotationMethod()) {
-			this.currentElement.updateSourceEndIfNecessary(((AnnotationMethodDeclaration)md).defaultValue.sourceEnd);
-		}
 	}
 }
 protected void consumeMethodHeaderExtendedDims() {
@@ -4327,9 +4305,7 @@ protected void consumeMethodHeaderExtendedDims() {
 	// now we update the returnType of the method
 	MethodDeclaration md = (MethodDeclaration) this.astStack[this.astPtr];
 	int extendedDims = this.intStack[this.intPtr--];
-	if(md.isAnnotationMethod()) {
-		((AnnotationMethodDeclaration)md).extendedDimensions = extendedDims;
-	}
+	
 	if (extendedDims != 0) {
 		TypeReference returnType = md.returnType;
 		md.sourceEnd = this.endPosition;
@@ -4425,14 +4401,8 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
 	// MethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
 	// AnnotationMethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
 	// RecoveryMethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
-	MethodDeclaration md = null;
-	if(isAnnotationMethod) {
-		md = new AnnotationMethodDeclaration(this.compilationUnit.compilationResult);
-		this.recordStringLiterals = false;
-	} else {
-		md = new MethodDeclaration(this.compilationUnit.compilationResult);
-	}
-
+	MethodDeclaration md = new MethodDeclaration(this.compilationUnit.compilationResult);
+	
 	//name
 	md.selector = this.identifierStack[this.identifierPtr];
 	long selectorSource = this.identifierPositionStack[this.identifierPtr--];

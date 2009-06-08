@@ -342,9 +342,6 @@ class ASTConverter {
 
 	public ASTNode convert(org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration methodDeclaration) {
 		checkCanceled();
-		if (methodDeclaration instanceof org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration) methodDeclaration);
-		}
 		FunctionDeclaration methodDecl = new FunctionDeclaration(this.ast);
 		setModifiers(methodDecl, methodDeclaration);
 		boolean isConstructor = methodDeclaration.isConstructor();

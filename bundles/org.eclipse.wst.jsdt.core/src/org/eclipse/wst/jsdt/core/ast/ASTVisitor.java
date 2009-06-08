@@ -36,9 +36,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(IAND_AND_Expression and_and_Expression) {
 		// do nothing by default
 	}
-	public void endVisit(IAnnotationFunctionDeclaration annotationTypeDeclaration) {
-			// do nothing by default
-	}
 	public void endVisit(IArgument argument) {
 		// do nothing by default
 	}
@@ -323,9 +320,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IAND_AND_Expression and_and_Expression) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(IAnnotationFunctionDeclaration annotationTypeDeclaration) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IArgument argument) {

@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
@@ -135,11 +134,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public void endVisit(AND_AND_Expression and_and_Expression, BlockScope scope) {
 		visitor.endVisit(and_and_Expression);
-	}
-	public void endVisit(
-			AnnotationMethodDeclaration annotationTypeDeclaration,
-			ClassScope classScope) {
-		visitor.endVisit(annotationTypeDeclaration);
 	}
 	public void endVisit(Argument argument, BlockScope scope) {
 		visitor.endVisit(argument);
@@ -563,11 +557,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(AND_AND_Expression and_and_Expression, BlockScope scope) {
 		return visitor.visit(and_and_Expression);
-	}
-	public boolean visit(
-			AnnotationMethodDeclaration annotationTypeDeclaration,
-			ClassScope classScope) {
-		return visitor.visit(annotationTypeDeclaration);
 	}
 	public boolean visit(Argument argument, BlockScope scope) {
 		return visitor.visit(argument);

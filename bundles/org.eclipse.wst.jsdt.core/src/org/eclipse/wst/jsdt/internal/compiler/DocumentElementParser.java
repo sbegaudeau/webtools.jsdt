@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.compiler;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
@@ -823,12 +822,8 @@ protected void consumeMethodHeaderExtendedDims() {
 }
 protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	// MethodHeaderName ::= Modifiersopt Type 'Identifier' '('
-	MethodDeclaration md = null;
-	if(isAnnotationMethod) {
-		md = new AnnotationMethodDeclaration(this.compilationUnit.compilationResult);
-	} else {
-		md = new MethodDeclaration(this.compilationUnit.compilationResult);
-	}
+	MethodDeclaration md = new MethodDeclaration(this.compilationUnit.compilationResult);
+	
 	md.exprStackPtr=this.expressionPtr;
 	//name
 	md.selector = identifierStack[identifierPtr];

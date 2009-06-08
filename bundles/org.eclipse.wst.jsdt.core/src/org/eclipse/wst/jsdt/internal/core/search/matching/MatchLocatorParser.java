@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AnnotationMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
@@ -114,10 +113,6 @@ public class ClassButNoMethodDeclarationVisitor extends ASTVisitor {
 	public boolean visit(InferredMethod inferredMethod, BlockScope scope) {
 		patternLocator.match(inferredMethod, nodeSet);
 		return false;
-	}
-	public boolean visit(AnnotationMethodDeclaration methodDeclaration, Scope scope) {
-		patternLocator.match(methodDeclaration, nodeSet);
-		return false; // no local type for annotation type members
 	}
 }
 public class ClassAndMethodDeclarationVisitor extends ClassButNoMethodDeclarationVisitor {
