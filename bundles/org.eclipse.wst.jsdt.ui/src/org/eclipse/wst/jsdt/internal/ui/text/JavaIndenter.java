@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -891,6 +891,7 @@ public final class JavaIndenter {
 		nextToken();
 		switch (fToken) {
 			case Symbols.TokenGREATERTHAN:
+			case Symbols.TokenRBRACKET:
 			case Symbols.TokenRBRACE:
 				// skip the block and fall through
 				// if we can't complete the scope, reset the scan position
