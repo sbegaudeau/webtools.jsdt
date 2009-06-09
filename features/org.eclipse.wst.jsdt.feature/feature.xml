@@ -2,8 +2,9 @@
 <feature
       id="org.eclipse.wst.jsdt.feature"
       label="%featureName"
-      version="1.1.0.qualifier"
-      provider-name="%providerName">
+      version="1.1.1.qualifier"
+      provider-name="%providerName"
+      plugin="org.eclipse.wst.jsdt.ui">
 
    <description>
       %description
@@ -16,6 +17,10 @@
    <license url="%licenseURL">
       %license
    </license>
+
+   <url>
+      <update label="%updateSiteName" url="http://download.eclipse.org/webtools/updates/"/>
+   </url>
 
    <plugin
          id="org.eclipse.wst.jsdt.core"
