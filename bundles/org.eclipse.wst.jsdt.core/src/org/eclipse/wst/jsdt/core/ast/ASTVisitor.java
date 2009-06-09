@@ -215,12 +215,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(IOR_OR_Expression or_or_Expression) {
 		// do nothing by default
 	}
-	public void endVisit(IParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference) {
-		// do nothing by default
-	}
-	public void endVisit(IParameterizedSingleTypeReference parameterizedSingleTypeReference) {
-		// do nothing by default
-	}
 	public void endVisit(IPostfixExpression postfixExpression) {
 		// do nothing by default
 	}
@@ -501,14 +495,6 @@ public abstract class ASTVisitor  {
 	public boolean visit(IOR_OR_Expression or_or_Expression) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(IParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference) {
-		return true; // do nothing by default, keep traversing
-	}
-
-	public boolean visit(IParameterizedSingleTypeReference parameterizedSingleTypeReference) {
-		return true; // do nothing by default, keep traversing
-	}
-
 	public boolean visit(IPostfixExpression postfixExpression) {
 		return true; // do nothing by default, keep traversing
 	}

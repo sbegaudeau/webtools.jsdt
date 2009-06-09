@@ -46,8 +46,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
@@ -743,7 +741,7 @@ public class SourceTypeConverter {
 				Object firstFragment = fragments.get(0);
 				if (firstFragment instanceof char[]) {
 					// parameterized single type
-					return new ParameterizedSingleTypeReference((char[]) firstFragment, (TypeReference[]) fragments.get(1), dim, ((long) start << 32) + end);
+					return null;
 				}
 			}
 			// parameterized qualified type
@@ -776,7 +774,7 @@ public class SourceTypeConverter {
 			for (int i = 0; i < identCount; i++) {
 				positions[i] = pos;
 			}
-			return new ParameterizedQualifiedTypeReference(tokens, arguments, dim, positions);
+			return null;
 		}
 	}
 
@@ -890,7 +888,7 @@ public class SourceTypeConverter {
 				char[][] firstFragment = (char[][]) fragments.get(0);
 				if (firstFragment.length == 1) {
 					// parameterized single type
-					return new ParameterizedSingleTypeReference(firstFragment[0], (TypeReference[]) fragments.get(1), dim, ((long) start << 32) + end);
+					return null;
 				}
 			}
 			// parameterized qualified type
@@ -920,7 +918,7 @@ public class SourceTypeConverter {
 			for (int i = 0; i < identCount; i++) {
 				positions[i] = pos;
 			}
-			return new ParameterizedQualifiedTypeReference(tokens, arguments, dim, positions);
+			return null;
 		}
 	}
 

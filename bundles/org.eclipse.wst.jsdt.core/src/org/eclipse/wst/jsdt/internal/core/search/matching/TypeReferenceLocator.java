@@ -28,8 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
@@ -501,14 +499,6 @@ void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding
 		 if (refBinding.isParameterizedType() && this.pattern.hasTypeArguments())  {
 			TypeReference typeRef = null;
 			TypeReference[] typeArguments = null;
-			if (expr instanceof ParameterizedQualifiedTypeReference) {
-				typeRef = (ParameterizedQualifiedTypeReference) expr;
-				typeArguments = ((ParameterizedQualifiedTypeReference) expr).typeArguments[lastIndex];
-			}
-			else if (expr instanceof ParameterizedSingleTypeReference) {
-				typeRef = (ParameterizedSingleTypeReference) expr;
-				typeArguments = ((ParameterizedSingleTypeReference) expr).typeArguments;
-			}
 			if (typeRef != null) {
 				locator.reportAccurateParameterizedTypeReference(match, typeRef, lastIndex, typeArguments);
 				return;

@@ -837,19 +837,11 @@ public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentif
 					assistName,
 					positions);
 }
-public TypeReference createParameterizedQualifiedAssistTypeReference(
-		char[][] tokens, TypeReference[][] typeArguments, char[] assistname, TypeReference[] assistTypeArguments, long[] positions) {
-	return new SelectionOnParameterizedQualifiedTypeReference(tokens, assistname, typeArguments, assistTypeArguments, positions);
-
-}
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	return new SelectionOnSingleNameReference(assistName, position);
 }
 public TypeReference createSingleAssistTypeReference(char[] assistName, long position) {
 	return new SelectionOnSingleTypeReference(assistName, position);
-}
-public TypeReference createParameterizedSingleAssistTypeReference(TypeReference[] typeArguments, char[] assistName, long position) {
-	return new SelectionOnParameterizedSingleTypeReference(assistName, typeArguments, position);
 }
 public CompilationUnitDeclaration dietParse(ICompilationUnit sourceUnit, CompilationResult compilationResult, int start, int end) {
 

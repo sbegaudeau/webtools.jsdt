@@ -60,8 +60,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NumberLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
@@ -2056,20 +2054,7 @@ public void incompatibleReturnType(MethodBinding currentMethod, MethodBinding in
 	} else {
 		TypeReference returnType = ((MethodDeclaration) method).returnType;
 		sourceStart = returnType.sourceStart;
-		if (returnType instanceof ParameterizedSingleTypeReference) {
-			ParameterizedSingleTypeReference typeReference = (ParameterizedSingleTypeReference) returnType;
-			TypeReference[] typeArguments = typeReference.typeArguments;
-			if (typeArguments[typeArguments.length - 1].sourceEnd > typeReference.sourceEnd) {
-				sourceEnd = retrieveClosingAngleBracketPosition(typeReference.sourceEnd);
-			} else {
-				sourceEnd = returnType.sourceEnd;
-			}
-		} else if (returnType instanceof ParameterizedQualifiedTypeReference) {
-			ParameterizedQualifiedTypeReference typeReference = (ParameterizedQualifiedTypeReference) returnType;
-			sourceEnd = retrieveClosingAngleBracketPosition(typeReference.sourceEnd);
-		} else {
-			sourceEnd = returnType.sourceEnd;
-		}
+		sourceEnd = returnType.sourceEnd;
 	}
 	this.handle(
 		id,
@@ -2834,14 +2819,6 @@ public void invalidType(ASTNode location, TypeBinding type) {
 		if (isRecoveredName(ref.tokens)) return;
 		if (ref.indexOfFirstFieldBinding >= 1)
 			end = (int) ref.sourcePositions[ref.indexOfFirstFieldBinding - 1];
-	} else if (location instanceof ParameterizedQualifiedTypeReference) {
-		// must be before instanceof ArrayQualifiedTypeReference
-		ParameterizedQualifiedTypeReference ref = (ParameterizedQualifiedTypeReference) location;
-		if (isRecoveredName(ref.tokens)) return;
-		if (type instanceof ReferenceBinding) {
-			char[][] name = ((ReferenceBinding) type).compoundName;
-			end = (int) ref.sourcePositions[name.length - 1];
-		}
 	} else if (location instanceof ArrayQualifiedTypeReference) {
 		ArrayQualifiedTypeReference arrayQualifiedTypeReference = (ArrayQualifiedTypeReference) location;
 		if (isRecoveredName(arrayQualifiedTypeReference.tokens)) return;
@@ -3888,11 +3865,6 @@ private int nodeSourceEnd(Binding field, ASTNode node, int index) {
 					return (int) (ref.sourcePositions[i + offset]);
 			}
 		}
-	} else if (node instanceof ParameterizedQualifiedTypeReference) {
-		ParameterizedQualifiedTypeReference reference = (ParameterizedQualifiedTypeReference) node;
-		if (index < reference.sourcePositions.length) {
-			return (int) reference.sourcePositions[index];
-		}
 	} else if (node instanceof ArrayQualifiedTypeReference) {
 		ArrayQualifiedTypeReference arrayQualifiedTypeReference = (ArrayQualifiedTypeReference) node;
 		int length = arrayQualifiedTypeReference.sourcePositions.length;
@@ -3917,11 +3889,7 @@ private int nodeSourceStart(Binding field, ASTNode node) {
 					return (int) (ref.sourcePositions[i + offset] >> 32);
 			}
 		}
-	} else if (node instanceof ParameterizedQualifiedTypeReference) {
-		ParameterizedQualifiedTypeReference reference = (ParameterizedQualifiedTypeReference) node;
-		return (int) (reference.sourcePositions[0]>>>32);
 	}
-
 	return node.sourceStart;
 }
 public void noMoreAvailableSpaceForArgument(LocalVariableBinding local, ASTNode location) {

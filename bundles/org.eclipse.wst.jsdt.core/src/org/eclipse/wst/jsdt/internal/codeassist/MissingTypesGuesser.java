@@ -17,11 +17,8 @@ import java.util.Set;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
@@ -64,16 +61,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 			typeReference.resolvedType = null;
 		}
 
-		private void cleanUp(ParameterizedSingleTypeReference typeReference) {
-			this.cleanUp((TypeReference)typeReference);
-			typeReference.bits &= ~ASTNode.DidResolve;
-		}
-
-		private void cleanUp(ParameterizedQualifiedTypeReference typeReference) {
-			this.cleanUp((TypeReference)typeReference);
-			typeReference.bits &= ~ASTNode.DidResolve;
-		}
-
 		public void cleanUp(TypeReference convertedType, BlockScope scope) {
 			convertedType.traverse(this, scope);
 			this.firstCall = false;
@@ -104,16 +91,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 			return true;
 		}
 
-		public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, BlockScope scope) {
-			this.cleanUp(parameterizedSingleTypeReference);
-			return true;
-		}
-
-		public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, ClassScope scope) {
-			this.cleanUp(parameterizedSingleTypeReference);
-			return true;
-		}
-
 		public boolean visit(QualifiedTypeReference qualifiedTypeReference, BlockScope scope) {
 			this.cleanUp(qualifiedTypeReference);
 			return true;
@@ -133,17 +110,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 			this.cleanUp(arrayQualifiedTypeReference);
 			return true;
 		}
-
-		public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, BlockScope scope) {
-			this.cleanUp(parameterizedQualifiedTypeReference);
-			return true;
-		}
-
-		public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, ClassScope scope) {
-			this.cleanUp(parameterizedQualifiedTypeReference);
-			return true;
-		}
-
 	}
 
 	private CompletionEngine.CompletionProblemFactory problemFactory ;
@@ -268,108 +234,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 		return null;
 	}
 
-	private TypeReference convert(ParameterizedQualifiedTypeReference typeRef) {
-		if (typeRef.resolvedType != null) {
-			TypeReference[][] typeArguments = typeRef.typeArguments;
-			int length = typeArguments.length;
-			TypeReference[][] convertedTypeArguments = new TypeReference[length][];
-			next : for (int i = 0; i < length; i++) {
-				if (typeArguments[i] == null) continue next;
-				int length2 = typeArguments[i].length;
-				convertedTypeArguments[i] = new TypeReference[length2];
-				for (int j = 0; j < length2; j++) {
-					convertedTypeArguments[i][j] = convert(typeArguments[i][j]);
-					if (convertedTypeArguments[i][j] == null) return null;
-				}
-			}
-
-			if (typeRef.resolvedType.isValidBinding()) {
-				ParameterizedQualifiedTypeReference convertedType =
-					new ParameterizedQualifiedTypeReference(
-							typeRef.tokens,
-							convertedTypeArguments,
-							typeRef.dimensions(),
-							new long[typeRef.tokens.length]);
-				convertedType.sourceStart = typeRef.sourceStart;
-				convertedType.sourceEnd = typeRef.sourceEnd;
-				return convertedType;
-			} else if((typeRef.resolvedType.problemId() & ProblemReasons.NotFound) != 0) {
-				// only the first token must be resolved
-				if(((ReferenceBinding)typeRef.resolvedType.leafComponentType()).compoundName.length != 1) return null;
-
-				char[][] typeName = typeRef.getTypeName();
-				char[][][] typeNames = findTypeNames(typeName);
-				if(typeNames == null || typeNames.length == 0) return null;
-
-				TypeReference[][] newConvertedTypeArguments = new TypeReference[typeNames[0].length][];
-				for (int k = newConvertedTypeArguments.length - 1, l = convertedTypeArguments.length -1; k > -1 && l > -1;) {
-					newConvertedTypeArguments[k] = convertedTypeArguments[l];
-					k--;
-					l--;
-				}
-
-				ParameterizedQualifiedTypeReference convertedType =
-					new ParameterizedQualifiedTypeReference(
-							typeNames[0],
-							newConvertedTypeArguments,
-							typeRef.dimensions(),
-							new long[typeNames[0].length]);
-				convertedType.sourceStart = typeRef.sourceStart;
-				convertedType.sourceEnd = (int)(typeRef.sourcePositions[0] & 0x00000000FFFFFFFFL);
-				this.substituedTypes.put(convertedType, typeNames);
-				this.originalTypes.put(convertedType, typeName);
-				this.combinationsCount *= typeNames.length;
-				return convertedType;
-			}
-		}
-		return null;
-	}
-
-	private TypeReference convert(ParameterizedSingleTypeReference typeRef) {
-		if (typeRef.resolvedType != null) {
-			TypeReference[] typeArguments = typeRef.typeArguments;
-			int length = typeArguments.length;
-			TypeReference[] convertedTypeArguments = new TypeReference[length];
-			for (int i = 0; i < length; i++) {
-				convertedTypeArguments[i] = convert(typeArguments[i]);
-				if(convertedTypeArguments[i] == null) return null;
-			}
-
-			if (typeRef.resolvedType.isValidBinding()) {
-				ParameterizedSingleTypeReference convertedType =
-					new ParameterizedSingleTypeReference(
-							typeRef.token,
-							convertedTypeArguments,
-							typeRef.dimensions,
-							0);
-				convertedType.sourceStart = typeRef.sourceStart;
-				convertedType.sourceEnd = typeRef.sourceEnd;
-				return convertedType;
-			} else if((typeRef.resolvedType.problemId() & ProblemReasons.NotFound) != 0) {
-				char[][] typeName = typeRef.getTypeName();
-				char[][][] typeNames = findTypeNames(typeName);
-				if(typeNames == null || typeNames.length == 0) return null;
-
-				TypeReference[][] allConvertedTypeArguments = new TypeReference[typeNames[0].length][];
-				allConvertedTypeArguments[allConvertedTypeArguments.length - 1] = convertedTypeArguments;
-
-				ParameterizedQualifiedTypeReference convertedType =
-					new ParameterizedQualifiedTypeReference(
-							typeNames[0],
-							allConvertedTypeArguments,
-							typeRef.dimensions,
-							new long[typeNames[0].length]);
-				convertedType.sourceStart = typeRef.sourceStart;
-				convertedType.sourceEnd = typeRef.sourceEnd;
-				this.substituedTypes.put(convertedType, typeNames);
-				this.originalTypes.put(convertedType, typeName);
-				this.combinationsCount *= typeNames.length;
-				return convertedType;
-			}
-		}
-		return null;
-	}
-
 	private TypeReference convert(QualifiedTypeReference typeRef) {
 		if (typeRef.resolvedType != null) {
 			if (typeRef.resolvedType.isValidBinding()) {
@@ -420,11 +284,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 	}
 
 	private TypeReference convert(TypeReference typeRef) {
-		if (typeRef instanceof ParameterizedSingleTypeReference) {
-			return convert((ParameterizedSingleTypeReference)typeRef);
-		} else if(typeRef instanceof ParameterizedQualifiedTypeReference) {
-			return convert((ParameterizedQualifiedTypeReference)typeRef);
-		} else if (typeRef instanceof ArrayTypeReference) {
+		if (typeRef instanceof ArrayTypeReference) {
 			return convert((ArrayTypeReference)typeRef);
 		} else if(typeRef instanceof ArrayQualifiedTypeReference) {
 			return convert((ArrayQualifiedTypeReference)typeRef);
@@ -565,17 +425,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 			QualifiedTypeReference qualifiedTypeReference = substituedTypeNodes[i];
 			qualifiedTypeReference.tokens = subtitutions[i][substitutionsIndexes[i]];
 			qualifiedTypeReference.sourcePositions = new long[qualifiedTypeReference.tokens.length];
-			if(qualifiedTypeReference instanceof ParameterizedQualifiedTypeReference) {
-				ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference =
-					(ParameterizedQualifiedTypeReference)qualifiedTypeReference;
-				TypeReference[][] typeArguments = parameterizedQualifiedTypeReference.typeArguments;
-				TypeReference[][] newTypeArguments = new TypeReference[qualifiedTypeReference.tokens.length][];
-				for (int j = newTypeArguments.length - 1, k = typeArguments.length -1; j > -1 && k > -1;) {
-					newTypeArguments[j] = typeArguments[k];
-					j--;
-					k--;
-				}
-			}
 		}
 	}
 }

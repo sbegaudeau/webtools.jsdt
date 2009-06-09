@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -738,10 +738,8 @@ public abstract ImportReference createAssistImportReference(char[][] tokens, lon
 public abstract ImportReference createAssistPackageReference(char[][] tokens, long[] positions);
 public abstract NameReference createQualifiedAssistNameReference(char[][] previousIdentifiers, char[] assistName, long[] positions);
 public abstract TypeReference createQualifiedAssistTypeReference(char[][] previousIdentifiers, char[] assistName, long[] positions);
-public abstract TypeReference createParameterizedQualifiedAssistTypeReference(char[][] previousIdentifiers, TypeReference[][] typeArguments, char[] asistIdentifier, TypeReference[] assistTypeArguments, long[] positions);
 public abstract NameReference createSingleAssistNameReference(char[] assistName, long position);
 public abstract TypeReference createSingleAssistTypeReference(char[] assistName, long position);
-public abstract TypeReference createParameterizedSingleAssistTypeReference(TypeReference[] typeArguments, char[] assistName, long position);
 public abstract void createAssistTypeForAllocation(AllocationExpression expression);
 /*
  * Flush parser/scanner state regarding to code assist
@@ -779,7 +777,7 @@ protected TypeReference getTypeReference(int dim) {
 	if (length != numberOfIdentifiers || this.genericsLengthStack[this.genericsLengthPtr] != 0) {
 		identifierLengthPtr--;
 		// generic type
-		reference = getAssistTypeReferenceForGenericType(dim, length, numberOfIdentifiers);
+		reference = null;
 	} else {
 		/* retrieve identifiers subset and whole positions, the assist node positions
 			should include the entire replaced source. */
@@ -816,98 +814,6 @@ protected TypeReference getTypeReference(int dim) {
 		assistNode = reference;
 		this.lastCheckPoint = reference.sourceEnd + 1;
 	}
-	return reference;
-}
-protected TypeReference getAssistTypeReferenceForGenericType(int dim, int identifierLength, int numberOfIdentifiers) {
-	/* no need to take action if not inside completed identifiers */
-	if (/*(indexOfAssistIdentifier()) < 0 ||*/ (identifierLength == 1 && numberOfIdentifiers == 1)) {
-		int currentTypeArgumentsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-		TypeReference[] typeArguments = new TypeReference[currentTypeArgumentsLength];
-		this.genericsPtr -= currentTypeArgumentsLength;
-		System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeArguments, 0, currentTypeArgumentsLength);
-		long[] positions = new long[identifierLength];
-		System.arraycopy(
-			identifierPositionStack,
-			identifierPtr,
-			positions,
-			0,
-			identifierLength);
-
-		this.identifierPtr--;
-
-		TypeReference reference = this.createParameterizedSingleAssistTypeReference(
-				typeArguments,
-				assistIdentifier(),
-				positions[0]);
-
-		this.assistNode = reference;
-		this.lastCheckPoint = reference.sourceEnd + 1;
-		return reference;
-	}
-
-	TypeReference[][] typeArguments = new TypeReference[numberOfIdentifiers][];
-	char[][] tokens = new char[numberOfIdentifiers][];
-	long[] positions = new long[numberOfIdentifiers];
-	int index = numberOfIdentifiers;
-	int currentIdentifiersLength = identifierLength;
-	while (index > 0) {
-		int currentTypeArgumentsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-		if (currentTypeArgumentsLength != 0) {
-			this.genericsPtr -= currentTypeArgumentsLength;
-			System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeArguments[index - 1] = new TypeReference[currentTypeArgumentsLength], 0, currentTypeArgumentsLength);
-		}
-		switch(currentIdentifiersLength) {
-			case 1 :
-				// we are in a case A<B>.C<D> or A<B>.C<D>
-				tokens[index - 1] = this.identifierStack[this.identifierPtr];
-				positions[index - 1] = this.identifierPositionStack[this.identifierPtr--];
-				break;
-			default:
-				// we are in a case A.B.C<B>.C<D> or A.B.C<B>...
-				this.identifierPtr -= currentIdentifiersLength;
-				System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, index - currentIdentifiersLength, currentIdentifiersLength);
-				System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, index - currentIdentifiersLength, currentIdentifiersLength);
-		}
-		index -= currentIdentifiersLength;
-		if (index > 0) {
-			currentIdentifiersLength = this.identifierLengthStack[this.identifierLengthPtr--];
-		}
-	}
-
-	// remove completion token
-	int realLength = numberOfIdentifiers;
-	for (int i = 0; i < numberOfIdentifiers; i++) {
-		if(tokens[i] == assistIdentifier()) {
-			realLength = i;
-		}
-	}
-	TypeReference reference;
-	if(realLength == 0) {
-		if(typeArguments[0] != null && typeArguments[0].length > 0) {
-			reference = this.createParameterizedSingleAssistTypeReference(typeArguments[0], assistIdentifier(), positions[0]);
-		} else {
-			reference = this.createSingleAssistTypeReference(assistIdentifier(), positions[0]);
-		}
-	} else {
-		TypeReference[] assistTypeArguments = typeArguments[realLength];
-		System.arraycopy(tokens, 0, tokens = new char[realLength][], 0, realLength);
-		System.arraycopy(typeArguments, 0, typeArguments = new TypeReference[realLength][], 0, realLength);
-
-		boolean isParameterized = false;
-		for (int i = 0; i < typeArguments.length; i++) {
-			if(typeArguments[i] != null) {
-				isParameterized = true;
-			}
-		}
-		if(isParameterized || (assistTypeArguments != null && assistTypeArguments.length > 0)) {
-			reference = this.createParameterizedQualifiedAssistTypeReference(tokens, typeArguments, assistIdentifier(), assistTypeArguments, positions);
-		} else {
-			reference = this.createQualifiedAssistTypeReference(tokens, assistIdentifier(), positions);
-		}
-	}
-
-	assistNode = reference;
-	this.lastCheckPoint = reference.sourceEnd + 1;
 	return reference;
 }
 /*

@@ -53,8 +53,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
@@ -333,10 +331,6 @@ protected void attachOrphanCompletionNode(){
 				return;
 			} else if (this.assistNode instanceof CompletionOnQualifiedTypeReference &&
 					((CompletionOnQualifiedTypeReference)this.assistNode).isException()) {
-				buildMoreTryStatementCompletionContext((TypeReference)this.assistNode);
-				return;
-			} else if (this.assistNode instanceof CompletionOnParameterizedQualifiedTypeReference &&
-					((CompletionOnParameterizedQualifiedTypeReference)this.assistNode).isException()) {
 				buildMoreTryStatementCompletionContext((TypeReference)this.assistNode);
 				return;
 			}
@@ -869,9 +863,6 @@ private void buildMoreGenericsCompletionContext(ASTNode node, boolean consumeTyp
 						if (consumeTypeArguments)
 							this.consumeTypeArguments();
 						TypeReference ref = this.getTypeReference(0);
-						if(prevKind == K_PARAMETERIZED_CAST) {
-							ref = computeQualifiedGenericsFromRightSide(ref, 0);
-						}
 						if(currentElement instanceof RecoveredType) {
 							currentElement = currentElement.add(new CompletionOnFieldType(ref, false), 0);
 						} else {
@@ -1466,33 +1457,6 @@ private boolean checkParemeterizedMethodName() {
 	}
 	return false;
 }
-private boolean checkParemeterizedType() {
-	if(this.identifierLengthPtr > -1 && this.genericsLengthPtr > -1 && this.genericsIdentifiersLengthPtr > -1) {
-		int length = this.identifierLengthStack[this.identifierLengthPtr];
-		int numberOfIdentifiers = this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr];
-		if (length != numberOfIdentifiers || this.genericsLengthStack[this.genericsLengthPtr] != 0) {
-			this.genericsIdentifiersLengthPtr--;
-			this.identifierLengthPtr--;
-			// generic type
-			this.assistNode = getAssistTypeReferenceForGenericType(0, length, numberOfIdentifiers);
-			this.lastCheckPoint = this.assistNode.sourceEnd + 1;
-			this.isOrphanCompletionNode = true;
-			return true;
-		} else if(this.genericsPtr > -1 && this.genericsStack[this.genericsPtr] instanceof TypeReference) {
-			// type of a cast expression
-			numberOfIdentifiers++;
-
-			this.genericsIdentifiersLengthPtr--;
-			this.identifierLengthPtr--;
-			// generic type
-			this.assistNode = getAssistTypeReferenceForGenericType(0, length, numberOfIdentifiers);
-			this.lastCheckPoint = this.assistNode.sourceEnd + 1;
-			this.isOrphanCompletionNode = true;
-			return true;
-		}
-	}
-	return false;
-}
 /**
  * Checks if the completion is in the context of a method and on the type of one of its arguments
  * Returns whether we found a completion node.
@@ -1678,7 +1642,6 @@ public void completionIdentifierCheck(){
 	// (NB: Put this check before checkNameCompletion() because the selector of the invocation can be on the identifier stack)
 	if (checkInvocation()) return;
 
-	if (checkParemeterizedType()) return;
 	if (checkParemeterizedMethodName()) return;
 	if (checkLabelStatement()) return;
 	if (checkNameCompletion()) return;
@@ -2127,23 +2090,6 @@ protected void consumeInsideCastExpressionLL1() {
 				this.skipRecord = temp;
 			}
 		}
-	pushOnElementStack(K_CAST_STATEMENT);
-}
-protected void consumeInsideCastExpressionWithQualifiedGenerics() {
-	popElement(K_PARAMETERIZED_CAST);
-
-	Expression castType;
-	int end = this.intStack[this.intPtr--];
-
-	int dim = this.intStack[this.intPtr--];
-	TypeReference rightSide = getTypeReference(0);
-
-	castType = computeQualifiedGenericsFromRightSide(rightSide, dim);
-	this.intPtr--;
-	castType.sourceEnd = end - 1;
-	castType.sourceStart = this.intStack[this.intPtr--] + 1;
-	pushOnExpressionStack(castType);
-
 	pushOnElementStack(K_CAST_STATEMENT);
 }
 protected void consumeInstanceOfExpression() {
@@ -3080,47 +3026,6 @@ public TypeReference createQualifiedAssistTypeReference(char[][] previousIdentif
 					positions);
 	}
 }
-public TypeReference createParameterizedQualifiedAssistTypeReference(char[][] previousIdentifiers, TypeReference[][] typeArguments, char[] assistName, TypeReference[] assistTypeArguments, long[] positions) {
-	boolean isParameterized = false;
-	for (int i = 0; i < typeArguments.length; i++) {
-		if(typeArguments[i] != null) {
-			isParameterized = true;
-		}
-	}
-	if(!isParameterized) {
-		return this.createQualifiedAssistTypeReference(previousIdentifiers, assistName, positions);
-	} else {
-		switch (topKnownElementKind(COMPLETION_OR_ASSIST_PARSER)) {
-			case K_NEXT_TYPEREF_IS_EXCEPTION :
-				return new CompletionOnParameterizedQualifiedTypeReference(
-					previousIdentifiers,
-					typeArguments,
-					assistName,
-					positions,
-					CompletionOnParameterizedQualifiedTypeReference.K_EXCEPTION);
-			case K_NEXT_TYPEREF_IS_CLASS :
-				return new CompletionOnParameterizedQualifiedTypeReference(
-					previousIdentifiers,
-					typeArguments,
-					assistName,
-					positions,
-					CompletionOnParameterizedQualifiedTypeReference.K_CLASS);
-			case K_NEXT_TYPEREF_IS_INTERFACE :
-				return new CompletionOnParameterizedQualifiedTypeReference(
-					previousIdentifiers,
-					typeArguments,
-					assistName,
-					positions,
-					CompletionOnParameterizedQualifiedTypeReference.K_INTERFACE);
-			default :
-				return new CompletionOnParameterizedQualifiedTypeReference(
-					previousIdentifiers,
-					typeArguments,
-					assistName,
-					positions);
-		}
-	}
-}
 public NameReference createSingleAssistNameReference(char[] assistName, long position) {
 	int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
 	if(false){//!isInsideMethod()) {
@@ -3331,39 +3236,6 @@ public void flushAssistState() {
 	CompletionScanner completionScanner = (CompletionScanner)this.scanner;
 	completionScanner.completedIdentifierStart = 0;
 	completionScanner.completedIdentifierEnd = -1;
-}
-
-protected TypeReference getTypeReferenceForGenericType(int dim,	int identifierLength, int numberOfIdentifiers) {
-	TypeReference ref = super.getTypeReferenceForGenericType(dim, identifierLength, numberOfIdentifiers);
-
-	if(this.assistNode != null) {
-		if (identifierLength == 1 && numberOfIdentifiers == 1) {
-			ParameterizedSingleTypeReference singleRef = (ParameterizedSingleTypeReference) ref;
-			TypeReference[] typeArguments = singleRef.typeArguments;
-			for (int i = 0; i < typeArguments.length; i++) {
-				if(typeArguments[i] == this.assistNode) {
-					this.assistNodeParent = ref;
-					return ref;
-				}
-			}
-		} else {
-			ParameterizedQualifiedTypeReference qualifiedRef = (ParameterizedQualifiedTypeReference) ref;
-			TypeReference[][] typeArguments = qualifiedRef.typeArguments;
-			for (int i = 0; i < typeArguments.length; i++) {
-				if(typeArguments[i] != null) {
-					for (int j = 0; j < typeArguments[i].length; j++) {
-						if(typeArguments[i][j] == this.assistNode) {
-							this.assistNodeParent = ref;
-							return ref;
-						}
-					}
-				}
-			}
-
-		}
-	}
-
-	return ref;
 }
 protected NameReference getUnspecifiedReference() {
 	NameReference nameReference = super.getUnspecifiedReference();

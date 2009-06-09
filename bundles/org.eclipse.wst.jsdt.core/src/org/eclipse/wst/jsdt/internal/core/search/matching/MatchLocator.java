@@ -73,8 +73,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
@@ -824,22 +822,11 @@ private long findLastTypeArgumentInfo(TypeReference typeRef) {
 	int depth = 0;
 	while (true) {
 		TypeReference[] lastTypeArguments = null;
-		if (lastTypeArgument instanceof ParameterizedQualifiedTypeReference) {
-			ParameterizedQualifiedTypeReference pqtRef = (ParameterizedQualifiedTypeReference) lastTypeArgument;
-			for (int i=pqtRef.typeArguments.length-1; i>=0 && lastTypeArguments==null; i--) {
-				lastTypeArguments = pqtRef.typeArguments[i];
-			}
-		}
 		// Get last type argument for single type reference of last list of argument of parameterized qualified type reference
 		TypeReference last = null;
-		if (lastTypeArgument instanceof ParameterizedSingleTypeReference || lastTypeArguments != null) {
-			if (lastTypeArguments == null) {
-				lastTypeArguments = ((ParameterizedSingleTypeReference)lastTypeArgument).typeArguments;
-			}
-			if (lastTypeArguments != null) {
-				for (int i=lastTypeArguments.length-1; i>=0 && last==null; i++) {
-					last = lastTypeArguments[i];
-				}
+		if (lastTypeArguments != null) {
+			for (int i=lastTypeArguments.length-1; i>=0 && last==null; i++) {
+				last = lastTypeArguments[i];
 			}
 		}
 		if (last == null) break;
@@ -2729,10 +2716,6 @@ protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, i
 }
 protected void reportMatchingSuper(TypeReference superReference, IJavaScriptElement enclosingElement, Binding elementBinding, MatchingNodeSet nodeSet, boolean matchedClassContainer) throws CoreException {
 	ASTNode[] nodes = null;
-	if (superReference instanceof ParameterizedSingleTypeReference || superReference instanceof ParameterizedQualifiedTypeReference) {
-		long lastTypeArgumentInfo = findLastTypeArgumentInfo(superReference);
-		nodes = nodeSet.matchingNodes(superReference.sourceStart, (int)lastTypeArgumentInfo);
-	}
 	if (nodes != null) {
 		if ((this.matchContainer & PatternLocator.CLASS_CONTAINER) == 0) {
 			for (int i = 0, l = nodes.length; i < l; i++)

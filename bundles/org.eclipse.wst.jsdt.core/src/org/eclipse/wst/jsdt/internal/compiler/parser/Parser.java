@@ -91,8 +91,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
@@ -2008,64 +2006,6 @@ protected void consumeCaseLabel() {
 	this.expressionLengthPtr--;
 	Expression expression = this.expressionStack[this.expressionPtr--];
 	pushOnAstStack(new CaseStatement(expression, expression.sourceEnd, this.intStack[this.intPtr--]));
-}
-protected ParameterizedQualifiedTypeReference computeQualifiedGenericsFromRightSide(TypeReference rightSide, int dim) {
-	int nameSize = this.identifierLengthStack[this.identifierLengthPtr];
-	int tokensSize = nameSize;
-	if (rightSide instanceof ParameterizedSingleTypeReference) {
-		tokensSize ++;
-	} else if (rightSide instanceof SingleTypeReference) {
-		tokensSize ++;
-	} else if (rightSide instanceof ParameterizedQualifiedTypeReference) {
-		tokensSize += ((QualifiedTypeReference) rightSide).tokens.length;
-	} else if (rightSide instanceof QualifiedTypeReference) {
-		tokensSize += ((QualifiedTypeReference) rightSide).tokens.length;
-	}
-	TypeReference[][] typeArguments = new TypeReference[tokensSize][];
-	char[][] tokens = new char[tokensSize][];
-	long[] positions = new long[tokensSize];
-	if (rightSide instanceof ParameterizedSingleTypeReference) {
-		ParameterizedSingleTypeReference singleParameterizedTypeReference = (ParameterizedSingleTypeReference) rightSide;
-		tokens[nameSize] = singleParameterizedTypeReference.token;
-		positions[nameSize] = (((long) singleParameterizedTypeReference.sourceStart) << 32) + singleParameterizedTypeReference.sourceEnd;
-		typeArguments[nameSize] = singleParameterizedTypeReference.typeArguments;
-	} else if (rightSide instanceof SingleTypeReference) {
-		SingleTypeReference singleTypeReference = (SingleTypeReference) rightSide;
-		tokens[nameSize] = singleTypeReference.token;
-		positions[nameSize] = (((long) singleTypeReference.sourceStart) << 32) + singleTypeReference.sourceEnd;
-	} else if (rightSide instanceof ParameterizedQualifiedTypeReference) {
-		ParameterizedQualifiedTypeReference parameterizedTypeReference = (ParameterizedQualifiedTypeReference) rightSide;
-		TypeReference[][] rightSideTypeArguments = parameterizedTypeReference.typeArguments;
-		System.arraycopy(rightSideTypeArguments, 0, typeArguments, nameSize, rightSideTypeArguments.length);
-		char[][] rightSideTokens = parameterizedTypeReference.tokens;
-		System.arraycopy(rightSideTokens, 0, tokens, nameSize, rightSideTokens.length);
-		long[] rightSidePositions = parameterizedTypeReference.sourcePositions;
-		System.arraycopy(rightSidePositions, 0, positions, nameSize, rightSidePositions.length);
-	} else if (rightSide instanceof QualifiedTypeReference) {
-		QualifiedTypeReference qualifiedTypeReference = (QualifiedTypeReference) rightSide;
-		char[][] rightSideTokens = qualifiedTypeReference.tokens;
-		System.arraycopy(rightSideTokens, 0, tokens, nameSize, rightSideTokens.length);
-		long[] rightSidePositions = qualifiedTypeReference.sourcePositions;
-		System.arraycopy(rightSidePositions, 0, positions, nameSize, rightSidePositions.length);
-	}
-
-	int currentTypeArgumentsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-	TypeReference[] currentTypeArguments = new TypeReference[currentTypeArgumentsLength];
-	this.genericsPtr -= currentTypeArgumentsLength;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, currentTypeArguments, 0, currentTypeArgumentsLength);
-
-	if (nameSize == 1) {
-		tokens[0] = this.identifierStack[this.identifierPtr];
-		positions[0] = this.identifierPositionStack[this.identifierPtr--];
-		typeArguments[0] = currentTypeArguments;
-	} else {
-		this.identifierPtr -= nameSize;
-		System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, nameSize);
-		System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, nameSize);
-		typeArguments[nameSize - 1] = currentTypeArguments;
-	}
-	this.identifierLengthPtr--;
-	return new ParameterizedQualifiedTypeReference(tokens, typeArguments, dim, positions);
 }
 protected void consumeCatches() {
 	// Catches ::= Catches CatchClause
@@ -7503,8 +7443,7 @@ protected TypeReference getTypeReference(int dim) {
 	} else {
 		int numberOfIdentifiers = this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr--];
 		if (length != numberOfIdentifiers || this.genericsLengthStack[this.genericsLengthPtr] != 0) {
-			// generic type
-			ref = getTypeReferenceForGenericType(dim, length, numberOfIdentifiers);
+			ref = null;
 		} else if (length == 1) {
 			// single variable reference
 			this.genericsLengthPtr--; // pop the 0
@@ -7543,53 +7482,6 @@ protected TypeReference getTypeReference(int dim) {
 		}
 	}
 	return ref;
-}
-protected TypeReference getTypeReferenceForGenericType(int dim, int identifierLength, int numberOfIdentifiers) {
-	if (identifierLength == 1 && numberOfIdentifiers == 1) {
-		int currentTypeArgumentsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-		TypeReference[] typeArguments = new TypeReference[currentTypeArgumentsLength];
-		this.genericsPtr -= currentTypeArgumentsLength;
-		System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeArguments, 0, currentTypeArgumentsLength);
-		ParameterizedSingleTypeReference parameterizedSingleTypeReference = new ParameterizedSingleTypeReference(this.identifierStack[this.identifierPtr], typeArguments, dim, this.identifierPositionStack[this.identifierPtr--]);
-		if (dim != 0) {
-			parameterizedSingleTypeReference.sourceEnd = this.endStatementPosition;
-		}
-		return parameterizedSingleTypeReference;
-	} else {
-		TypeReference[][] typeArguments = new TypeReference[numberOfIdentifiers][];
-		char[][] tokens = new char[numberOfIdentifiers][];
-		long[] positions = new long[numberOfIdentifiers];
-		int index = numberOfIdentifiers;
-		int currentIdentifiersLength = identifierLength;
-		while (index > 0) {
-			int currentTypeArgumentsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-			if (currentTypeArgumentsLength != 0) {
-				this.genericsPtr -= currentTypeArgumentsLength;
-				System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeArguments[index - 1] = new TypeReference[currentTypeArgumentsLength], 0, currentTypeArgumentsLength);
-			}
-			switch(currentIdentifiersLength) {
-				case 1 :
-					// we are in a case A<B>.C<D> or A<B>.C<D>
-					tokens[index - 1] = this.identifierStack[this.identifierPtr];
-					positions[index - 1] = this.identifierPositionStack[this.identifierPtr--];
-					break;
-				default:
-					// we are in a case A.B.C<B>.C<D> or A.B.C<B>...
-					this.identifierPtr -= currentIdentifiersLength;
-					System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, index - currentIdentifiersLength, currentIdentifiersLength);
-					System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, index - currentIdentifiersLength, currentIdentifiersLength);
-			}
-			index -= currentIdentifiersLength;
-			if (index > 0) {
-				currentIdentifiersLength = this.identifierLengthStack[this.identifierLengthPtr--];
-			}
-		}
-		ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference = new ParameterizedQualifiedTypeReference(tokens, typeArguments, dim, positions);
-		if (dim != 0) {
-			parameterizedQualifiedTypeReference.sourceEnd = this.endStatementPosition;
-		}
-		return parameterizedQualifiedTypeReference;
-	}
 }
 protected NameReference getUnspecifiedReference() {
 	/* build a (unspecified) NameReference which may be qualified*/

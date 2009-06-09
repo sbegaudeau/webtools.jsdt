@@ -34,8 +34,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
@@ -2884,51 +2882,6 @@ class ASTConverter {
 				primitiveType.setPrimitiveTypeCode(getPrimitiveTypeCode(name));
 				primitiveType.setSourceRange(sourceStart, end - sourceStart + 1);
 				type = primitiveType;
-			} else if (typeReference instanceof ParameterizedSingleTypeReference) {
-				ParameterizedSingleTypeReference parameterizedSingleTypeReference = (ParameterizedSingleTypeReference) typeReference;
-				final SimpleName simpleName = new SimpleName(this.ast);
-				simpleName.internalSetIdentifier(new String(name));
-				int end = retrieveEndOfElementTypeNamePosition(sourceStart, sourceStart + length);
-				if (end == -1) {
-					end = sourceStart + length - 1;
-				}
-				simpleName.setSourceRange(sourceStart, end - sourceStart + 1);
-				switch(this.ast.apiLevel) {
-					case AST.JLS2_INTERNAL :
-						SimpleType simpleType = new SimpleType(this.ast);
-						simpleType.setName(simpleName);
-						simpleType.setFlags(simpleType.getFlags() | ASTNode.MALFORMED);
-						simpleType.setSourceRange(sourceStart, end - sourceStart + 1);
-						type = simpleType;
-						if (this.resolveBindings) {
-							this.recordNodes(simpleName, typeReference);
-						}
-						break;
-					case AST.JLS3 :
-						simpleType = new SimpleType(this.ast);
-						simpleType.setName(simpleName);
-						simpleType.setSourceRange(simpleName.getStartPosition(), simpleName.getLength());
-						final ParameterizedType parameterizedType = new ParameterizedType(this.ast);
-						parameterizedType.setType(simpleType);
-						type = parameterizedType;
-						TypeReference[] typeArguments = parameterizedSingleTypeReference.typeArguments;
-						if (typeArguments != null) {
-							Type type2 = null;
-							for (int i = 0, max = typeArguments.length; i < max; i++) {
-								type2 = convertType(typeArguments[i]);
-								((ParameterizedType) type).typeArguments().add(type2);
-								end = type2.getStartPosition() + type2.getLength() - 1;
-							}
-							end = retrieveClosingAngleBracketPosition(end + 1);
-							type.setSourceRange(sourceStart, end - sourceStart + 1);
-						} else {
-							type.setSourceRange(sourceStart, end - sourceStart + 1);
-						}
-						if (this.resolveBindings) {
-							this.recordNodes(simpleName, typeReference);
-							this.recordNodes(simpleType, typeReference);
-						}
-				}
 			} else {
 				final SimpleName simpleName = new SimpleName(this.ast);
 				simpleName.internalSetIdentifier(new String(name));
@@ -2965,140 +2918,17 @@ class ASTConverter {
 				}
 			}
 		} else {
-			if (typeReference instanceof ParameterizedQualifiedTypeReference) {
-				ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference = (ParameterizedQualifiedTypeReference) typeReference;
-				char[][] tokens = parameterizedQualifiedTypeReference.tokens;
-				TypeReference[][] typeArguments = parameterizedQualifiedTypeReference.typeArguments;
-				long[] positions = parameterizedQualifiedTypeReference.sourcePositions;
-				sourceStart = (int)(positions[0]>>>32);
-				switch(this.ast.apiLevel) {
-					case AST.JLS2_INTERNAL : {
-							char[][] name = ((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference) typeReference).getTypeName();
-							int nameLength = name.length;
-							sourceStart = (int)(positions[0]>>>32);
-							length = (int)(positions[nameLength - 1] & 0xFFFFFFFF) - sourceStart + 1;
-							Name qualifiedName = this.setQualifiedNameNameAndSourceRanges(name, positions, typeReference);
-							final SimpleType simpleType = new SimpleType(this.ast);
-							simpleType.setName(qualifiedName);
-							simpleType.setSourceRange(sourceStart, length);
-							type = simpleType;
-						}
-						break;
-					case AST.JLS3 :
-						if (typeArguments != null) {
-							int numberOfEnclosingType = 0;
-                            int startingIndex = 0;
-                            int endingIndex = 0;
-							for (int i = 0, max = typeArguments.length; i < max; i++) {
-								if (typeArguments[i] != null) {
-									numberOfEnclosingType++;
-								} else if (numberOfEnclosingType == 0) {
-                                    endingIndex++;
-                                }
-							}
-							Name name = null;
-							if (endingIndex - startingIndex == 0) {
-								final SimpleName simpleName = new SimpleName(this.ast);
-								simpleName.internalSetIdentifier(new String(tokens[startingIndex]));
-								recordPendingNameScopeResolution(simpleName);
-								int start = (int)(positions[startingIndex]>>>32);
-								int end = (int) positions[startingIndex];
-								simpleName.setSourceRange(start, end - start + 1);
-								simpleName.index = 1;
-								name = simpleName;
-								if (this.resolveBindings) {
-		 							recordNodes(simpleName, typeReference);
-								}
-							} else {
-								name = this.setQualifiedNameNameAndSourceRanges(tokens, positions, endingIndex, typeReference);
-							}
-							SimpleType simpleType = new SimpleType(this.ast);
-							simpleType.setName(name);
-							int start = (int)(positions[startingIndex]>>>32);
-							int end = (int) positions[endingIndex];
-							simpleType.setSourceRange(start, end - start + 1);
-							ParameterizedType parameterizedType = new ParameterizedType(this.ast);
-							parameterizedType.setType(simpleType);
-                            if (this.resolveBindings) {
-                                recordNodes(simpleType, typeReference);
-                                recordNodes(parameterizedType, typeReference);
-                            }
-							start = simpleType.getStartPosition();
-							end = start + simpleType.getLength() - 1;
-							for (int i = 0, max = typeArguments[endingIndex].length; i < max; i++) {
-								final Type type2 = convertType(typeArguments[endingIndex][i]);
-								parameterizedType.typeArguments().add(type2);
-								end = type2.getStartPosition() + type2.getLength() - 1;
-							}
-							int indexOfEnclosingType = 1;
-							parameterizedType.index = indexOfEnclosingType;
-							end = retrieveClosingAngleBracketPosition(end + 1);
-							length = end + 1;
-							parameterizedType.setSourceRange(start, end - start + 1);
-							startingIndex = endingIndex + 1;
-							Type currentType = parameterizedType;
-							while(startingIndex < typeArguments.length) {
-								SimpleName simpleName = new SimpleName(this.ast);
-								simpleName.internalSetIdentifier(new String(tokens[startingIndex]));
-								simpleName.index = startingIndex + 1;
-								start = (int)(positions[startingIndex]>>>32);
-								end = (int) positions[startingIndex];
-								simpleName.setSourceRange(start, end - start + 1);
-								recordPendingNameScopeResolution(simpleName);
-								QualifiedType qualifiedType = new QualifiedType(this.ast);
-								qualifiedType.setQualifier(currentType);
-								qualifiedType.setName(simpleName);
-                                if (this.resolveBindings) {
-                                    recordNodes(simpleName, typeReference);
-                                    recordNodes(qualifiedType, typeReference);
-                                }
-								start = currentType.getStartPosition();
-								end = simpleName.getStartPosition() + simpleName.getLength() - 1;
-								qualifiedType.setSourceRange(start, end - start + 1);
-								indexOfEnclosingType++;
-								if (typeArguments[startingIndex] != null) {
-	                               	qualifiedType.index = indexOfEnclosingType;
-									ParameterizedType parameterizedType2 = new ParameterizedType(this.ast);
-									parameterizedType2.setType(qualifiedType);
- 									parameterizedType2.index = indexOfEnclosingType;
-                                   if (this.resolveBindings) {
-                                        recordNodes(parameterizedType2, typeReference);
-                                    }
-									for (int i = 0, max = typeArguments[startingIndex].length; i < max; i++) {
-										final Type type2 = convertType(typeArguments[startingIndex][i]);
-										parameterizedType2.typeArguments().add(type2);
-										end = type2.getStartPosition() + type2.getLength() - 1;
-									}
-									end = retrieveClosingAngleBracketPosition(end + 1);
-									length = end + 1;
-									parameterizedType2.setSourceRange(start, end - start + 1);
-									currentType = parameterizedType2;
-								} else {
-									currentType = qualifiedType;
-                               		qualifiedType.index = indexOfEnclosingType;
-								}
-								startingIndex++;
-							}
-							if (this.resolveBindings) {
-								this.recordNodes(currentType, typeReference);
-							}
-							type = currentType;
-							length -= sourceStart;
-						}
-				}
-			} else {
-				char[][] name = ((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference) typeReference).getTypeName();
-				int nameLength = name.length;
-				long[] positions = ((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference) typeReference).sourcePositions;
-				sourceStart = (int)(positions[0]>>>32);
-				length = (int)(positions[nameLength - 1] & 0xFFFFFFFF) - sourceStart + 1;
-				final Name qualifiedName = this.setQualifiedNameNameAndSourceRanges(name, positions, typeReference);
-				final SimpleType simpleType = new SimpleType(this.ast);
-				simpleType.setName(qualifiedName);
-				type = simpleType;
-				type.setSourceRange(sourceStart, length);
-			}
-
+			char[][] name = ((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference) typeReference).getTypeName();
+			int nameLength = name.length;
+			long[] positions = ((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference) typeReference).sourcePositions;
+			sourceStart = (int)(positions[0]>>>32);
+			length = (int)(positions[nameLength - 1] & 0xFFFFFFFF) - sourceStart + 1;
+			final Name qualifiedName = this.setQualifiedNameNameAndSourceRanges(name, positions, typeReference);
+			final SimpleType simpleType = new SimpleType(this.ast);
+			simpleType.setName(qualifiedName);
+			type = simpleType;
+			type.setSourceRange(sourceStart, length);
+			
 			length = typeReference.sourceEnd - sourceStart + 1;
 			if (dimensions != 0) {
 				type = this.ast.newArrayType(type, dimensions);

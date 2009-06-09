@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Literal;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
@@ -246,16 +245,6 @@ class DefaultBindingResolver extends BindingResolver {
 		binding = new PackageBinding(packageBinding, this);
 		this.bindingTables.compilerBindingsToASTBindings.put(packageBinding, binding);
 		return binding;
-	}
-	private int getTypeArguments(ParameterizedQualifiedTypeReference typeReference) {
-		TypeReference[][] typeArguments = typeReference.typeArguments;
-		int value = 0;
-		for (int i = 0, max = typeArguments.length; i < max; i++) {
-			if ((typeArguments[i] != null) || (value != 0)) {
-				value++;
-			}
-		}
-		return value;
 	}
 
 	/**
@@ -1317,29 +1306,7 @@ class DefaultBindingResolver extends BindingResolver {
 		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(type);
 		org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding binding = null;
 		if (node != null) {
-            if (node instanceof ParameterizedQualifiedTypeReference) {
- 				ParameterizedQualifiedTypeReference typeReference = (ParameterizedQualifiedTypeReference) node;
- 				org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding typeBinding = typeReference.resolvedType;
- 				int index;
- 				if (type.isQualifiedType()) {
- 					index = ((QualifiedType) type).index;
- 				} else if (type.isParameterizedType()) {
- 					index = ((ParameterizedType) type).index;
- 				} else {
- 					index = 1;
- 				}
- 				final int numberOfTypeArgumentsNotNull = getTypeArguments(typeReference);
- 				if (index != numberOfTypeArgumentsNotNull) {
-	 				int  i = numberOfTypeArgumentsNotNull;
-	 				while (i != index) {
-	 					typeBinding = typeBinding.enclosingType();
-	 					i --;
-	 				}
-	 				binding = typeBinding;
- 				} else {
-					binding = typeBinding;
- 				}
-            } else if (node instanceof TypeReference) {
+            if (node instanceof TypeReference) {
 				TypeReference typeReference = (TypeReference) node;
 				binding = typeReference.resolvedType;
 			} else if (node instanceof SingleNameReference && ((SingleNameReference)node).isTypeReference()) {

@@ -30,8 +30,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
@@ -131,18 +129,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public void endVisit(OR_OR_Expression or_or_Expression, BlockScope scope) {
 		endVisit(or_or_Expression);
-	}
-	public void endVisit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, BlockScope scope) {
-		endVisit(parameterizedQualifiedTypeReference);
-	}
-	public void endVisit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, ClassScope scope) {
-		endVisit(parameterizedQualifiedTypeReference);
-	}
-	public void endVisit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, BlockScope scope) {
-		endVisit(parameterizedSingleTypeReference);
-	}
-	public void endVisit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, ClassScope scope) {
-		endVisit(parameterizedSingleTypeReference);
 	}
 	public void endVisit(PostfixExpression postfixExpression, BlockScope scope) {
 		endVisit(postfixExpression);
@@ -245,18 +231,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public boolean visit(OR_OR_Expression or_or_Expression, BlockScope scope) {
 		return this.visit(or_or_Expression);
-	}
-	public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, BlockScope scope) {
-		return this.visit(parameterizedQualifiedTypeReference);
-	}
-	public boolean visit(ParameterizedQualifiedTypeReference parameterizedQualifiedTypeReference, ClassScope scope) {
-		return this.visit(parameterizedQualifiedTypeReference);
-	}
-	public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, BlockScope scope) {
-		return this.visit(parameterizedSingleTypeReference);
-	}
-	public boolean visit(ParameterizedSingleTypeReference parameterizedSingleTypeReference, ClassScope scope) {
-		return this.visit(parameterizedSingleTypeReference);
 	}
 	public boolean visit(PostfixExpression postfixExpression, BlockScope scope) {
 		return this.visit(postfixExpression);
