@@ -360,6 +360,17 @@ public class JavaContext extends CompilationUnitContext {
 	}
 	
 	/**
+	 * Returns the names of all local variables.
+	 * 
+	 * @return the names of all local variables
+	 * 
+	 */
+	public String[] getLocalVariableNames() {
+		String[] localVariableNames = getCompletion().getLocalVariableNames();
+		return localVariableNames;
+	}
+	
+	/**
 	 * Returns the names of fields matching <code>type</code>.
 	 * 
 	 * @return the names of fields matching <code>type</code>
