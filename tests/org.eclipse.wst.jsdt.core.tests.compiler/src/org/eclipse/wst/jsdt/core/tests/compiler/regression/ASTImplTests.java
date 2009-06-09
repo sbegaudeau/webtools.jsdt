@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
@@ -964,17 +963,6 @@ public boolean visit(JavadocSingleTypeReference typeRef, BlockScope scope) {
 public boolean visit(JavadocSingleTypeReference typeRef, ClassScope scope) {
 	this.collector.append("java doc single type reference start visit\n");
 	return true;
-}
-public boolean visit(MemberValuePair pair, BlockScope scope) {
-	this.collector.append("member value pair start visit\n");
-	this.collector.append(pair.name);
-	this.collector.append(", ");
-	this.collector.append(pair.value.toString());
-	this.collector.append("\n");
-	return true;
-}
-public void endVisit(MemberValuePair pair, BlockScope scope) {
-	this.collector.append("member value pair end visit\n");
 }
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#endVisit(org.eclipse.wst.jsdt.internal.compiler.ast.Argument, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)

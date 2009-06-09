@@ -736,8 +736,6 @@ public class CodeCorrectionTests extends AbstractJavaModelTests {
 		assertEquals("wrong token", "unchecked", CorrectionEngine
 				.getWarningToken(IProblem.UnsafeTypeConversion));
 		assertEquals("wrong token", "unchecked", CorrectionEngine
-				.getWarningToken(IProblem.UnsafeGenericCast));
-		assertEquals("wrong token", "unchecked", CorrectionEngine
 				.getWarningToken(IProblem.UnsafeReturnTypeOverride));
 		assertEquals("wrong token", "serial", CorrectionEngine
 				.getWarningToken(IProblem.MissingSerialVersion));
