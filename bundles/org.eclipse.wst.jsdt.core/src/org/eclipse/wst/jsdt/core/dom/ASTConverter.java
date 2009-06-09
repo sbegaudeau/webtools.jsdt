@@ -481,19 +481,6 @@ class ASTConverter {
 			}
 		}
 
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter[] typeParameters = methodDeclaration.typeParameters();
-		if (typeParameters != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					methodDecl.setFlags(methodDecl.getFlags() | ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					for (int i = 0, max = typeParameters.length; i < max; i++) {
-						methodDecl.typeParameters().add(convert(typeParameters[i]));
-					}
-			}
-		}
-
 		// The jsdoc comment is now got from list store in javaScript unit declaration
 		convert(methodDeclaration.javadoc, methodDecl);
 		if (this.resolveBindings) {
@@ -2544,18 +2531,7 @@ class ASTConverter {
 					}
 			}
 		}
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter[] typeParameters = typeDeclaration.typeParameters;
-		if (typeParameters != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					typeDecl.setFlags(typeDecl.getFlags() | ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					for (int index = 0, length = typeParameters.length; index < length; index++) {
-						typeDecl.typeParameters().add(convert(typeParameters[index]));
-					}
-			}
-		}
+		
 		buildBodyDeclarations(typeDeclaration, typeDecl);
 		if (this.resolveBindings) {
 			recordNodes(typeDecl, typeDeclaration);
@@ -2563,41 +2539,6 @@ class ASTConverter {
 			typeDecl.resolveBinding();
 		}
 		return typeDecl;
-	}
-
-	public TypeParameter convert(org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter typeParameter) {
-		final TypeParameter typeParameter2 = new TypeParameter(this.ast);
-		final SimpleName simpleName = new SimpleName(this.ast);
-		simpleName.internalSetIdentifier(new String(typeParameter.name));
-		int start = typeParameter.sourceStart;
-		int end = typeParameter.sourceEnd;
-		simpleName.setSourceRange(start, end - start + 1);
-		typeParameter2.setName(simpleName);
-		final TypeReference superType = typeParameter.type;
-		end = typeParameter.declarationSourceEnd;
-		if (superType != null) {
-			Type type = convertType(superType);
-			typeParameter2.typeBounds().add(type);
-			end = type.getStartPosition() + type.getLength() - 1;
-		}
-		TypeReference[] bounds = typeParameter.bounds;
-		if (bounds != null) {
-			Type type = null;
-			for (int index = 0, length = bounds.length; index < length; index++) {
-				type = convertType(bounds[index]);
-				typeParameter2.typeBounds().add(type);
-				end = type.getStartPosition() + type.getLength() - 1;
-			}
-		}
-		start = typeParameter.declarationSourceStart;
-		end = retrieveClosingAngleBracketPosition(end);
-		typeParameter2.setSourceRange(start, end - start + 1);
-		if (this.resolveBindings) {
-			recordName(simpleName, typeParameter);
-			recordNodes(typeParameter2, typeParameter);
-			typeParameter2.resolveBinding();
-		}
-		return typeParameter2;
 	}
 
 	public Name convert(org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference typeReference) {

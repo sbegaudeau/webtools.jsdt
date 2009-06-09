@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,16 +19,13 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
  * Internal method structure for parsing recovery
@@ -479,27 +476,6 @@ public void updateSourceEndIfNecessary(int braceStart, int braceEnd){
 			this.methodDeclaration.declarationSourceEnd = braceEnd;
 			this.methodDeclaration.bodyEnd  = braceStart - 1;
 		}
-	}
-}
-void attach(TypeParameter[] parameters, int startPos) {
-	if(methodDeclaration.modifiers != ClassFileConstants.AccDefault) return;
-
-	int lastParameterEnd = parameters[parameters.length - 1].sourceEnd;
-
-	Parser parser = this.parser();
-	Scanner scanner = parser.scanner;
-	if(Util.getLineNumber(methodDeclaration.declarationSourceStart, scanner.lineEnds, 0, scanner.linePtr)
-			!= Util.getLineNumber(lastParameterEnd, scanner.lineEnds, 0, scanner.linePtr)) return;
-
-	if(parser.modifiersSourceStart > lastParameterEnd
-			&& parser.modifiersSourceStart < methodDeclaration.declarationSourceStart) return;
-
-	if (this.methodDeclaration instanceof MethodDeclaration) {
-		((MethodDeclaration)this.methodDeclaration).typeParameters = parameters;
-		this.methodDeclaration.declarationSourceStart = startPos;
-	} else if (this.methodDeclaration instanceof ConstructorDeclaration){
-		((ConstructorDeclaration)this.methodDeclaration).typeParameters = parameters;
-		this.methodDeclaration.declarationSourceStart = startPos;
 	}
 }
 public ProgramElement updatedASTNode() {

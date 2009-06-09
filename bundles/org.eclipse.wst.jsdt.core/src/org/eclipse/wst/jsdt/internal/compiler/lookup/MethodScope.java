@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
@@ -287,14 +286,8 @@ public class MethodScope extends BlockScope {
 			}
 		}
 
-		TypeParameter[] typeParameters = method.typeParameters();
-	    // do not construct type variables if source < 1.5
-		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) {
-			methodBinding.typeVariables = Binding.NO_TYPE_VARIABLES;
-		} else {
-			methodBinding.typeVariables = createTypeVariables(typeParameters, methodBinding);
-			methodBinding.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-		}
+	    methodBinding.typeVariables = Binding.NO_TYPE_VARIABLES;
+	
 		return methodBinding;
 	}
 

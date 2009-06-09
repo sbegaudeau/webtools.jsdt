@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
@@ -246,62 +245,20 @@ public class CompletionJavadoc extends Javadoc {
 		int paramTypeParamLength = this.paramTypeParameters == null ? 0 : this.paramTypeParameters.length;
 
 		// Verify if there's any type parameter to tag
-		TypeParameter[] parameters =  null;
 		TypeVariableBinding[] typeVariables = null;
 		switch (scope.kind) {
 			case Scope.METHOD_SCOPE:
 				AbstractMethodDeclaration methodDeclaration = ((MethodScope)scope).referenceMethod();
 				if (methodDeclaration == null) return null;
-				parameters = methodDeclaration.typeParameters();
 				typeVariables = methodDeclaration.binding.typeVariables;
 				break;
 			case Scope.CLASS_SCOPE:
 				TypeDeclaration typeDeclaration = ((ClassScope) scope).referenceContext;
-				parameters = typeDeclaration.typeParameters;
 				typeVariables = typeDeclaration.binding.typeVariables;
 				break;
 		}
 		if (typeVariables == null || typeVariables.length == 0) return null;
 
-		// Store all type parameters if there's no @param in javadoc
-		if (parameters != null) {
-			int typeParametersLength = parameters.length;
-			if (paramTypeParamLength == 0) {
-				char[][] missingParams = new char[typeParametersLength][];
-				for (int i = 0; i < typeParametersLength; i++) {
-					missingParams[i] = parameters[i].name;
-				}
-				return missingParams;
-			}
-
-			// Look for missing type parameter
-			char[][] missingParams = new char[typeParametersLength][];
-			int size = 0;
-			for (int i = 0; i < typeParametersLength; i++) {
-				TypeParameter parameter = parameters[i];
-				boolean found = false;
-				int paramNameRefCount = 0;
-				for (int j = 0; j < paramTypeParamLength && !found; j++) {
-					if (parameter.binding == this.paramTypeParameters[j].resolvedType) {
-						if (parameter.binding == paramNameRefBinding) { // do not count first occurence of param nmae reference
-							paramNameRefCount++;
-							found = paramNameRefCount > 1;
-						} else {
-							found = true;
-						}
-					}
-				}
-				if (!found) {
-					missingParams[size++] = parameter.name;
-				}
-			}
-			if (size > 0) {
-				if (size != typeParametersLength) {
-					System.arraycopy(missingParams, 0, missingParams = new char[size][], 0, size);
-				}
-				return missingParams;
-			}
-		}
 		return null;
 	}
 }

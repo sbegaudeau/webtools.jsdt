@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -1601,15 +1600,8 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 		methodDecl = method.sourceMethod();
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
 
-	TypeParameter[] typeParameters = methodDecl.typeParameters();
 	if (JavaScriptCore.IS_ECMASCRIPT4)
 	{
-		if (typeParameters != null) {
-			methodDecl.scope.connectTypeVariables(typeParameters, true);
-		// 	Perform deferred bound checks for type variables (only done after type variable hierarchy is connected)
-			for (int i = 0, paramLength = typeParameters.length; i < paramLength; i++)
-				typeParameters[i].checkBounds(methodDecl.scope);
-		}
 		TypeReference[] exceptionTypes = methodDecl.thrownExceptions;
 		if (exceptionTypes != null) {
 			int size = exceptionTypes.length;
@@ -1702,12 +1694,6 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 		method.parameters = Binding.NO_PARAMETERS; // see 107004
 		// nullify type parameter bindings as well as they have a backpointer to the method binding
 		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=81134)
-		if (JavaScriptCore.IS_ECMASCRIPT4)
-		{
-			if (typeParameters != null)
-				for (int i = 0, length = typeParameters.length; i < length; i++)
-					typeParameters[i].binding = null;
-		}
 		return null;
 	}
 	if (foundReturnTypeProblem)

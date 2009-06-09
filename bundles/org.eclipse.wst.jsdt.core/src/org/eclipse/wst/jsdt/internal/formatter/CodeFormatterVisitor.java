@@ -98,7 +98,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
@@ -942,28 +941,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
         }
 		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
 
-		TypeParameter[] typeParameters = typeDeclaration.typeParameters;
-		if (typeParameters != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_parameters);
-			if (this.preferences.insert_space_after_opening_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-			int length = typeParameters.length;
-			for (int i = 0; i < length - 1; i++) {
-				typeParameters[i].traverse(this, typeDeclaration.scope);
-				this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_parameters);
-				if (this.preferences.insert_space_after_comma_in_type_parameters) {
-					this.scribe.space();
-				}
-			}
-			typeParameters[length - 1].traverse(this, typeDeclaration.scope);
-			if (isClosingGenericToken()) {
-				this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_parameters);
-			}
-			if (this.preferences.insert_space_after_closing_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-		}
 		/*
 		 * Superclass
 		 */
@@ -3317,30 +3294,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			line = this.scribe.line;
 		}
 		this.scribe.space();
-
-		TypeParameter[] typeParameters = constructorDeclaration.typeParameters;
-		if (typeParameters != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_parameters);
-			if (this.preferences.insert_space_after_opening_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-			int length = typeParameters.length;
-			for (int i = 0; i < length - 1; i++) {
-				typeParameters[i].traverse(this, constructorDeclaration.scope);
-				this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_parameters);
-				if (this.preferences.insert_space_after_comma_in_type_parameters) {
-					this.scribe.space();
-				}
-			}
-			typeParameters[length - 1].traverse(this, constructorDeclaration.scope);
-			if (isClosingGenericToken()) {
-				this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_parameters);
-			}
-			if (this.preferences.insert_space_after_closing_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-		}
-
+		
 		/*
 		 * Print the method name
 		 */
@@ -4250,29 +4204,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		}
 		// fix for  258956
 		//this.scribe.space();
-
-		TypeParameter[] typeParameters = methodDeclaration.typeParameters;
-		if (typeParameters != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_parameters);
-			if (this.preferences.insert_space_after_opening_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-			int length = typeParameters.length;
-			for (int i = 0; i < length - 1; i++) {
-				typeParameters[i].traverse(this, methodDeclaration.scope);
-				this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_parameters);
-				if (this.preferences.insert_space_after_comma_in_type_parameters) {
-					this.scribe.space();
-				}
-			}
-			typeParameters[length - 1].traverse(this, methodDeclaration.scope);
-			if (isClosingGenericToken()) {
-				this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_parameters);
-			}
-			if (this.preferences.insert_space_after_closing_angle_bracket_in_type_parameters) {
-				this.scribe.space();
-			}
-		}
 
 		/*
 		 * Print the method return type
@@ -5268,58 +5199,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		CompilationUnitScope scope) {
 
 		format(typeDeclaration);
-		return false;
-	}
-	public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier);
-		if (typeParameter.type != null) {
-			this.scribe.space();
-			this.scribe.printNextToken(TerminalTokens.TokenNameextends, true);
-			this.scribe.space();
-			typeParameter.type.traverse(this, scope);
-		}
-		final TypeReference[] bounds = typeParameter.bounds;
-		if (bounds != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameAND, this.preferences.insert_space_before_and_in_type_parameter);
-			if (this.preferences.insert_space_after_and_in_type_parameter) {
-				this.scribe.space();
-			}
-			int boundsLength = bounds.length;
-			for (int i = 0; i < boundsLength - 1; i++) {
-				bounds[i].traverse(this, scope);
-				this.scribe.printNextToken(TerminalTokens.TokenNameAND, this.preferences.insert_space_before_and_in_type_parameter);
-				if (this.preferences.insert_space_after_and_in_type_parameter) {
-					this.scribe.space();
-				}
-			}
-			bounds[boundsLength - 1].traverse(this, scope);
-		}
-		return false;
-	}
-	public boolean visit(TypeParameter typeParameter, ClassScope scope) {
-		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier);
-		if (typeParameter.type != null) {
-			this.scribe.space();
-			this.scribe.printNextToken(TerminalTokens.TokenNameextends, true);
-			this.scribe.space();
-			typeParameter.type.traverse(this, scope);
-		}
-		final TypeReference[] bounds = typeParameter.bounds;
-		if (bounds != null) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameAND, this.preferences.insert_space_before_and_in_type_parameter);
-			if (this.preferences.insert_space_after_and_in_type_parameter) {
-				this.scribe.space();
-			}
-			int boundsLength = bounds.length;
-			for (int i = 0; i < boundsLength - 1; i++) {
-				bounds[i].traverse(this, scope);
-				this.scribe.printNextToken(TerminalTokens.TokenNameAND, this.preferences.insert_space_before_and_in_type_parameter);
-				if (this.preferences.insert_space_after_and_in_type_parameter) {
-					this.scribe.space();
-				}
-			}
-			bounds[boundsLength - 1].traverse(this, scope);
-		}
 		return false;
 	}
 

@@ -127,7 +127,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.ArgumentHidingField:
 			case IProblem.DuplicateField:
 			case IProblem.DuplicateMethod:
-			case IProblem.DuplicateTypeVariable:
 			case IProblem.DuplicateNestedType:
 			case IProblem.IllegalModifierForInterfaceMethod:
 			case IProblem.IllegalModifierForInterface:
@@ -155,7 +154,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.RedefinedLocal:
 			case IProblem.RedefinedArgument:
 			case IProblem.CodeCannotBeReached:
-			case IProblem.InvalidUsageOfTypeParameters:
 			case IProblem.InvalidUsageOfForeachStatements:
 			case IProblem.OverridingDeprecatedMethod:
 			case IProblem.IsClassPathCorrect:
@@ -441,7 +439,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.RedefinedArgument:
 			case IProblem.DuplicateField:
 			case IProblem.DuplicateMethod:
-			case IProblem.DuplicateTypeVariable:
 			case IProblem.DuplicateNestedType:
 				LocalCorrectionsSubProcessor.addInvalidVariableNameProposals(context, problem, proposals);
 				break;
@@ -463,7 +460,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.CodeCannotBeReached:
 				LocalCorrectionsSubProcessor.getUnreachableCodeProposals(context, problem, proposals);
 				break;
-			case IProblem.InvalidUsageOfTypeParameters:
 			case IProblem.InvalidUsageOfForeachStatements:
 				ReorgCorrectionsSubProcessor.getNeed50ComplianceProposals(context, problem, proposals);
 				break;

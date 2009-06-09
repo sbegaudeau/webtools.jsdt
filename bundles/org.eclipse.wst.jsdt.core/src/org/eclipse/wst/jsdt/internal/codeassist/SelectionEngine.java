@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -1202,18 +1201,6 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				}
 				return true;
 			}
-			public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-				if (typeParameter.name == assistIdentifier) {
-					throw new SelectionNodeFound(typeParameter.binding);
-				}
-				return true;
-			}
-			public boolean visit(TypeParameter typeParameter, ClassScope scope) {
-				if (typeParameter.name == assistIdentifier) {
-					throw new SelectionNodeFound(typeParameter.binding);
-				}
-				return true;
-			}
 		}
 
 		if (node instanceof AbstractMethodDeclaration) {
@@ -1510,61 +1497,6 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				return true;
 			}
 
-			TypeParameter[] methodTypeParameters = method.typeParameters();
-			for (int j = 0, length2 = methodTypeParameters == null ? 0 : methodTypeParameters.length; j < length2; j++){
-				TypeParameter methodTypeParameter = methodTypeParameters[j];
-
-				if(methodTypeParameter.name == assistIdentifier) {
-					char[] qualifiedSourceName = null;
-
-					TypeDeclaration enclosingType = typeDeclaration;
-					while(enclosingType != null) {
-						qualifiedSourceName = CharOperation.concat(enclosingType.name, qualifiedSourceName, '.');
-						enclosingType = enclosingType.enclosingType;
-					}
-
-					this.requestor.acceptMethodTypeParameter(
-						packageName,
-						null,
-						qualifiedSourceName,
-						method.selector,
-						method.sourceStart,
-						method.sourceEnd,
-						methodTypeParameter.name,
-						true,
-						this.actualSelectionStart,
-						this.actualSelectionEnd);
-
-					this.noProposal = false;
-					return true;
-				}
-			}
-		}
-
-		TypeParameter[] typeParameters = typeDeclaration.typeParameters;
-		for (int i = 0, length = typeParameters == null ? 0 : typeParameters.length; i < length; i++){
-			TypeParameter typeParameter = typeParameters[i];
-			if(typeParameter.name == assistIdentifier) {
-				char[] qualifiedSourceName = null;
-
-				TypeDeclaration enclosingType = typeDeclaration;
-				while(enclosingType != null) {
-					qualifiedSourceName = CharOperation.concat(enclosingType.name, qualifiedSourceName, '.');
-					enclosingType = enclosingType.enclosingType;
-				}
-
-				this.requestor.acceptTypeParameter(
-					packageName,
-					null,
-					qualifiedSourceName,
-					typeParameter.name,
-					true,
-					this.actualSelectionStart,
-					this.actualSelectionEnd);
-
-				this.noProposal = false;
-				return true;
-			}
 		}
 
 		return false;

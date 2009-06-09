@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -341,22 +340,8 @@ public class ClassScope extends Scope {
 	}
 
 	private void buildTypeVariables() {
-
 	    SourceTypeBinding sourceType = getReferenceBinding();
-		TypeParameter[] typeParameters = referenceContext.typeParameters;
-
-	    // do not construct type variables if source < 1.5
-		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) {
-		    sourceType.typeVariables = Binding.NO_TYPE_VARIABLES;
-		    return;
-		}
-		sourceType.typeVariables = Binding.NO_TYPE_VARIABLES; // safety
-
-		if (sourceType.id == T_JavaLangObject) { // handle the case of redefining java.lang.Object up front
-			return;
-		}
-		sourceType.typeVariables = createTypeVariables(typeParameters, sourceType);
-		sourceType.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
+	    sourceType.typeVariables = Binding.NO_TYPE_VARIABLES;
 	}
 
 	private void checkAndSetModifiers() {
@@ -659,32 +644,6 @@ public class ClassScope extends Scope {
 			}
 		}
 
-		TypeParameter[] typeParameters = this.referenceContext.typeParameters;
-		nextVariable : for (int i = 0, paramLength = typeParameters == null ? 0 : typeParameters.length; i < paramLength; i++) {
-			TypeParameter typeParameter = typeParameters[i];
-			TypeVariableBinding typeVariable = typeParameter.binding;
-			if (typeVariable == null || !typeVariable.isValidBinding()) continue nextVariable;
-
-			TypeReference[] boundRefs = typeParameter.bounds;
-			if (boundRefs != null) {
-				boolean checkSuperclass = typeVariable.firstBound == typeVariable.superclass;
-				for (int j = 0, boundLength = boundRefs.length; j < boundLength; j++) {
-					TypeReference typeRef = boundRefs[j];
-					TypeBinding superType = typeRef.resolvedType;
-					if (superType == null || !superType.isValidBinding()) continue;
-
-					// check against superclass
-					if (checkSuperclass)
-						if (hasErasedCandidatesCollisions(superType, typeVariable.superclass, invocations, typeVariable, typeRef))
-							continue nextVariable;
-					// check against superinterfaces
-					for (int index = typeVariable.superInterfaces.length; --index >= 0;)
-						if (hasErasedCandidatesCollisions(superType, typeVariable.superInterfaces[index], invocations, typeVariable, typeRef))
-							continue nextVariable;
-				}
-			}
-		}
-
 		ReferenceBinding[] memberTypes = getReferenceBinding().memberTypes;
 		if (memberTypes != null && memberTypes != Binding.NO_MEMBER_TYPES)
 			for (int i = 0, size = memberTypes.length; i < size; i++)
@@ -771,11 +730,6 @@ public class ClassScope extends Scope {
 		if (superinterfaces != null)
 			for (int i = 0, length = superinterfaces.length; i < length; i++)
 				superinterfaces[i].checkBounds(this);
-
-		TypeParameter[] typeParameters = referenceContext.typeParameters;
-		if (typeParameters != null)
-			for (int i = 0, paramLength = typeParameters.length; i < paramLength; i++)
-				typeParameters[i].checkBounds(this);
 
 		ReferenceBinding[] memberTypes = getReferenceBinding().memberTypes;
 		if (memberTypes != null && memberTypes != Binding.NO_MEMBER_TYPES)

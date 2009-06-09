@@ -283,9 +283,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(ITypeDeclaration memberTypeDeclaration) {
 		// do nothing by default
 	}
-	public void endVisit(ITypeParameter typeParameter) {
-		// do nothing by default
-	}
 	public void endVisit(IUnaryExpression unaryExpression) {
 		// do nothing by default
 	}
@@ -575,10 +572,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ITypeDeclaration localTypeDeclaration) {
-		return true; // do nothing by default, keep traversing
-	}
-
-	public boolean visit(ITypeParameter typeParameter) {
 		return true; // do nothing by default, keep traversing
 	}
 

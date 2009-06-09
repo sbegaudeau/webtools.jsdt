@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -728,7 +728,6 @@ void setSourceStart(int sourceStart);
 	/**
 	 * Generics
 	 */
-	int DuplicateTypeVariable = Internal + 520;
 	int IllegalTypeVariableSuperReference = Internal + 521;
 	int NonStaticTypeFromStaticInvocation = Internal + 522;
 	int NonGenericType = TypeRelated + 524;
@@ -753,7 +752,6 @@ void setSourceStart(int sourceStart);
 	int IllegalQualifiedParameterizedTypeAllocation = TypeRelated + 566;
 	int DuplicateBounds = TypeRelated + 567;
 	int BoundCannotBeArray = TypeRelated + 568;
-	int TypeParameterHidingType = TypeRelated + 571;
 	int NoAdditionalBoundAfterTypeVariable = TypeRelated + 573;
 	int IllegalAccessFromTypeVariable = TypeRelated + 575;
 
@@ -766,7 +764,6 @@ void setSourceStart(int sourceStart);
 	/**
 	 * 1.5 Syntax errors (when source level < 1.5)
 	 */
-    int InvalidUsageOfTypeParameters = Syntax + Internal + 590;
     int InvalidUsageOfForeachStatements = Syntax + Internal + 592;
 
 	/**

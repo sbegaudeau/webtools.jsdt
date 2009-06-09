@@ -151,7 +151,7 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 
 	// Verify type arguments (do not reject if pattern has no argument as it can be an erasure match)
 	if (this.pattern.hasMethodArguments()) {
-		if (node.typeParameters == null || node.typeParameters.length != this.pattern.methodArguments.length) return IMPOSSIBLE_MATCH;
+		return IMPOSSIBLE_MATCH;
 	}
 
 	// Method declaration may match pattern

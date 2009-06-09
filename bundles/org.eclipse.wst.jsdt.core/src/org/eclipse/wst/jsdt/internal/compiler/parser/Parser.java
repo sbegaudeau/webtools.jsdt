@@ -115,7 +115,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
@@ -2292,27 +2291,6 @@ protected void consumeClassHeaderName1() {
 	typeDecl.javadoc = this.javadoc;
 	this.javadoc = null;
 }
-protected void consumeTypeHeaderNameWithTypeParameters() {
-	// ClassHeaderName ::= ClassHeaderName1 TypeParameters
-	// InterfaceHeaderName ::= InterfaceHeaderName1 TypeParameters
-	TypeDeclaration typeDecl = (TypeDeclaration)this.astStack[this.astPtr];
-
-	// consume type parameters
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, typeDecl.typeParameters = new TypeParameter[length], 0, length);
-
-	typeDecl.bodyStart = typeDecl.typeParameters[length-1].declarationSourceEnd + 1;
-
-	this.listTypeParameterLength = 0;
-
-	if (this.currentElement != null) { // is recovering
-		RecoveredType recoveredType = (RecoveredType) this.currentElement;
-		recoveredType.pendingTypeParameters = null;
-
-		this.lastCheckPoint = typeDecl.bodyStart;
-	}
-}
 
 protected void consumeFullNewExpression() {
 	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
@@ -2692,7 +2670,6 @@ protected void consumeConstructorHeaderNameWithTypeParameters() {
 	// consume type parameters
 	int length = this.genericsLengthStack[this.genericsLengthPtr--];
 	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, cd.typeParameters = new TypeParameter[length], 0, length);
 
 	//modifiers
 	cd.declarationSourceStart = this.intStack[this.intPtr--];
@@ -4322,7 +4299,6 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
 	// consume type parameters
 	int length = this.genericsLengthStack[this.genericsLengthPtr--];
 	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, md.typeParameters = new TypeParameter[length], 0, length);
 
 	//modifiers
 	md.declarationSourceStart = this.intStack[this.intPtr--];
@@ -4348,9 +4324,7 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
 			|| true
 			|| (this.scanner.getLineNumber(md.returnType.sourceStart)
 					== this.scanner.getLineNumber(md.sourceStart))){
-			if(isType) {
-				((RecoveredType) this.currentElement).pendingTypeParameters = null;
-			}
+
 			this.lastCheckPoint = md.bodyStart;
 			this.currentElement = this.currentElement.add(md, 0);
 			this.lastIgnoredToken = -1;
@@ -6924,107 +6898,6 @@ protected void consumeTypeImportOnDemandDeclarationName() {
 		this.restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
-protected void consumeTypeParameterHeader() {
-	//TypeParameterHeader ::= Identifier
-	TypeParameter typeParameter = new TypeParameter();
-	long pos = this.identifierPositionStack[this.identifierPtr];
-	final int end = (int) pos;
-	typeParameter.declarationSourceEnd = end;
-	typeParameter.sourceEnd = end;
-	final int start = (int) (pos >>> 32);
-	typeParameter.declarationSourceStart = start;
-	typeParameter.sourceStart = start;
-	typeParameter.name = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	pushOnGenericsStack(typeParameter);
-
-	this.listTypeParameterLength++;
-}
-protected void consumeTypeParameter1() {
-	// nothing to do
-}
-protected void consumeTypeParameter1WithExtends() {
-	//TypeParameter1 ::= TypeParameterHeader 'extends' ReferenceType1
-	TypeReference superType = (TypeReference) this.genericsStack[this.genericsPtr--];
-	this.genericsLengthPtr--;
-	TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-	typeParameter.declarationSourceEnd = superType.sourceEnd;
-	typeParameter.type = superType;
-	superType.bits |= ASTNode.IsSuperType;
-	this.genericsStack[this.genericsPtr] = typeParameter;
-}
-protected void consumeTypeParameter1WithExtendsAndBounds() {
-	//TypeParameter1 ::= TypeParameterHeader 'extends' ReferenceType AdditionalBoundList1
-	int additionalBoundsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-	TypeReference[] bounds = new TypeReference[additionalBoundsLength];
-	this.genericsPtr -= additionalBoundsLength;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, bounds, 0, additionalBoundsLength);
-	TypeReference superType = getTypeReference(this.intStack[this.intPtr--]);
-	TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-	typeParameter.declarationSourceEnd = bounds[additionalBoundsLength - 1].sourceEnd;
-	typeParameter.type = superType;
-	superType.bits |= ASTNode.IsSuperType;
-	typeParameter.bounds = bounds;
-	for (int i = 0, max = bounds.length; i < max; i++) {
-		bounds[i].bits |= ASTNode.IsSuperType;
-	}
-}
-protected void consumeTypeParameterList() {
-	//TypeParameterList ::= TypeParameterList ',' TypeParameter
-	concatGenericsLists();
-}
-protected void consumeTypeParameterList1() {
-	//TypeParameterList1 ::= TypeParameterList ',' TypeParameter1
-	concatGenericsLists();
-}
-protected void consumeTypeParameters() {
-	int startPos = this.intStack[this.intPtr--];
-
-	if(this.currentElement != null) {
-		if(this.currentElement instanceof RecoveredType) {
-			RecoveredType recoveredType =(RecoveredType) this.currentElement;
-			int length = this.genericsLengthStack[this.genericsLengthPtr];
-			TypeParameter[] typeParameters = new TypeParameter[length];
-			System.arraycopy(this.genericsStack, genericsPtr - length + 1, typeParameters, 0, length);
-
-			recoveredType.add(typeParameters, startPos);
-		}
-	}
-
-
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5&&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		int length = this.genericsLengthStack[this.genericsLengthPtr];
-		this.problemReporter().invalidUsageOfTypeParameters(
-			(TypeParameter) this.genericsStack[genericsPtr - length + 1],
-			(TypeParameter) this.genericsStack[genericsPtr]);
-	}
-}
-protected void consumeTypeParameterWithExtends() {
-	//TypeParameter ::= TypeParameterHeader 'extends' ReferenceType
-	TypeReference superType = getTypeReference(this.intStack[this.intPtr--]);
-	TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-	typeParameter.declarationSourceEnd = superType.sourceEnd;
-	typeParameter.type = superType;
-	superType.bits |= ASTNode.IsSuperType;
-}
-protected void consumeTypeParameterWithExtendsAndBounds() {
-	//TypeParameter ::= TypeParameterHeader 'extends' ReferenceType AdditionalBoundList
-	int additionalBoundsLength = this.genericsLengthStack[this.genericsLengthPtr--];
-	TypeReference[] bounds = new TypeReference[additionalBoundsLength];
-	this.genericsPtr -= additionalBoundsLength;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, bounds, 0, additionalBoundsLength);
-	TypeReference superType = getTypeReference(this.intStack[this.intPtr--]);
-	TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-	typeParameter.type = superType;
-	superType.bits |= ASTNode.IsSuperType;
-	typeParameter.bounds = bounds;
-	typeParameter.declarationSourceEnd = bounds[additionalBoundsLength - 1].sourceEnd;
-	for (int i = 0, max = bounds.length; i < max; i++) {
-		bounds[i].bits |= ASTNode.IsSuperType;
-	}
-}
 protected void consumeUnaryExpression(int op) {
 	// UnaryExpression ::= '+' PushPosition UnaryExpression
 	// UnaryExpression ::= '-' PushPosition UnaryExpression
@@ -7121,7 +6994,6 @@ public boolean containsComment(int sourceStart, int sourceEnd) {
 }
 public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, CompilationResult compilationResult) {
 	MethodDeclaration m = new MethodDeclaration(compilationResult);
-	m.typeParameters = c.typeParameters;
 	m.sourceStart = c.sourceStart;
 	m.sourceEnd = c.sourceEnd;
 	m.bodyStart = c.bodyStart;

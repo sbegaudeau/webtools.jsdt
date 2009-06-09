@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 
@@ -430,43 +429,6 @@ void checkMethods() {
 		}
 	}
 }
-void checkTypeVariableMethods(TypeParameter typeParameter) {
-	char[][] methodSelectors = this.inheritedMethods.keyTable;
-	nextSelector : for (int s = methodSelectors.length; --s >= 0;) {
-		if (methodSelectors[s] == null) continue nextSelector;
-		MethodBinding[] inherited = (MethodBinding[]) this.inheritedMethods.valueTable[s];
-		if (inherited.length == 1) continue nextSelector;
-
-		int index = -1;
-		MethodBinding[] matchingInherited = new MethodBinding[inherited.length];
-		for (int i = 0, length = inherited.length; i < length; i++) {
-			while (index >= 0) matchingInherited[index--] = null; // clear the previous contents of the matching methods
-			MethodBinding inheritedMethod = inherited[i];
-			if (inheritedMethod != null) {
-				matchingInherited[++index] = inheritedMethod;
-				for (int j = i + 1; j < length; j++) {
-					MethodBinding otherInheritedMethod = inherited[j];
-					if (canSkipInheritedMethods(inheritedMethod, otherInheritedMethod))
-						continue;
-					otherInheritedMethod = computeSubstituteMethod(otherInheritedMethod, inheritedMethod);
-					if (otherInheritedMethod != null && doesSubstituteMethodOverride(inheritedMethod, otherInheritedMethod)) {
-						matchingInherited[++index] = otherInheritedMethod;
-						inherited[j] = null; // do not want to find it again
-					}
-				}
-			}
-			if (index > 0) {
-				MethodBinding first = matchingInherited[0];
-				int count = index + 1;
-				while (--count > 0 && areReturnTypesCompatible(first, matchingInherited[count])){/*empty*/}
-				if (count > 0) {  // All inherited methods do NOT have the same vmSignature
-					problemReporter().inheritedMethodsHaveIncompatibleReturnTypes(typeParameter, matchingInherited, index + 1);
-					continue nextSelector;
-				}
-			}
-		}
-	}
-}
 MethodBinding computeSubstituteMethod(MethodBinding inheritedMethod, MethodBinding currentMethod) {
 	if (inheritedMethod == null) return null;
 	if (currentMethod.parameters.length != inheritedMethod.parameters.length) return null; // no match
@@ -699,7 +661,6 @@ void verify(SourceTypeBinding someType) {
 				: itsInterfaces[j];
 		}
 		computeInheritedMethods(superclass, superInterfaces);
-		checkTypeVariableMethods(someType.classScope.referenceContext.typeParameters[i]);
 	}
 }
 }

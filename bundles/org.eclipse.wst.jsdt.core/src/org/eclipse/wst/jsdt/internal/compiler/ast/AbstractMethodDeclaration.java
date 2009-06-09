@@ -414,13 +414,6 @@ public abstract class AbstractMethodDeclaration
 		// default implementation: subclass will define it
 	}
 
-	public TypeParameter[] typeParameters() {
-	    return null;
-	}
-
-
-
-
 	public void resolve(BlockScope scope) {
 		this.resolve((Scope)scope);
 	}

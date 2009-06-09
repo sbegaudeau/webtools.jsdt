@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.ast.ITypeParameter;
 
 public abstract class NamedMember extends Member {
 
@@ -203,9 +202,5 @@ public abstract class NamedMember extends Member {
 		String simpleName = this.name.length() == 0 ? Integer.toString(this.occurrenceCount) : this.name;
 		buffer.append(simpleName);
 		return buffer.toString();
-	}
-
-	protected ITypeParameter[] getTypeParameters() throws JavaScriptModelException {
-		return null;
 	}
 }

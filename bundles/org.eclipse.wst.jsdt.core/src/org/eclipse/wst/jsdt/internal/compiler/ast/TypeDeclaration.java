@@ -83,9 +83,6 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 
 	public FieldBinding enumValuesSyntheticfield; 	// for enum
 
-	// 1.5 support
-	public TypeParameter[] typeParameters;
-
 public TypeDeclaration(CompilationResult compilationResult){
 	this.compilationResult = compilationResult;
 }
@@ -805,14 +802,7 @@ public StringBuffer printHeader(int indent, StringBuffer output) {
 			break;
 	}
 	output.append(this.name);
-	if (this.typeParameters != null) {
-		output.append("<");//$NON-NLS-1$
-		for (int i = 0; i < this.typeParameters.length; i++) {
-			if (i > 0) output.append( ", "); //$NON-NLS-1$
-			this.typeParameters[i].print(0, output);
-		}
-		output.append(">");//$NON-NLS-1$
-	}
+	
 	if (this.superclass != null) {
 		output.append(" extends ");  //$NON-NLS-1$
 		this.superclass.print(0, output);
@@ -927,11 +917,6 @@ public void resolve() {
 		boolean hasEnumConstants = false;
 		boolean hasEnumConstantsWithoutBody = false;
 
-		if (this.typeParameters != null) {
-			for (int i = 0, count = this.typeParameters.length; i < count; i++) {
-				this.typeParameters[i].resolve(this.scope);
-			}
-		}
 		if (this.memberTypes != null) {
 			for (int i = 0, count = this.memberTypes.length; i < count; i++) {
 				this.memberTypes[i].resolve(this.scope);
@@ -1088,12 +1073,6 @@ public void traverse(ASTVisitor visitor, CompilationUnitScope unitScope) {
 				for (int i = 0; i < length; i++)
 					this.superInterfaces[i].traverse(visitor, this.scope);
 			}
-			if (this.typeParameters != null) {
-				int length = this.typeParameters.length;
-				for (int i = 0; i < length; i++) {
-					this.typeParameters[i].traverse(visitor, this.scope);
-				}
-			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;
 				for (int i = 0; i < length; i++)
@@ -1139,12 +1118,6 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 				int length = this.superInterfaces.length;
 				for (int i = 0; i < length; i++)
 					this.superInterfaces[i].traverse(visitor, this.scope);
-			}
-			if (this.typeParameters != null) {
-				int length = this.typeParameters.length;
-				for (int i = 0; i < length; i++) {
-					this.typeParameters[i].traverse(visitor, this.scope);
-				}
 			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;
@@ -1192,12 +1165,6 @@ public void traverse(ASTVisitor visitor, ClassScope classScope) {
 				int length = this.superInterfaces.length;
 				for (int i = 0; i < length; i++)
 					this.superInterfaces[i].traverse(visitor, this.scope);
-			}
-			if (this.typeParameters != null) {
-				int length = this.typeParameters.length;
-				for (int i = 0; i < length; i++) {
-					this.typeParameters[i].traverse(visitor, this.scope);
-				}
 			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;

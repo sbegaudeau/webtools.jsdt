@@ -96,7 +96,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
@@ -506,12 +505,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 		CompilationUnitScope scope) {
 		visitor.endVisit(typeDeclaration);
 	}
-	public void endVisit(TypeParameter typeParameter, BlockScope scope) {
-		visitor.endVisit(typeParameter);
-	}
-	public void endVisit(TypeParameter typeParameter, ClassScope scope) {
-		visitor.endVisit(typeParameter);
-	}
 	public void endVisit(UnaryExpression unaryExpression, BlockScope scope) {
 		visitor.endVisit(unaryExpression);
 	}
@@ -913,12 +906,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 		TypeDeclaration typeDeclaration,
 		CompilationUnitScope scope) {
 		return visitor.visit(typeDeclaration);
-	}
-	public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-		return visitor.visit(typeParameter);
-	}
-	public boolean visit(TypeParameter typeParameter, ClassScope scope) {
-		return visitor.visit(typeParameter);
 	}
 	public boolean visit(UnaryExpression unaryExpression, BlockScope scope) {
 		return visitor.visit(unaryExpression);

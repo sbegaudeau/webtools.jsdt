@@ -98,7 +98,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
@@ -502,12 +501,6 @@ public abstract class ASTVisitor {
 	public void endVisit(
 		TypeDeclaration typeDeclaration,
 		CompilationUnitScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(TypeParameter typeParameter, BlockScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(TypeParameter typeParameter, ClassScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(UnaryExpression unaryExpression, BlockScope scope) {
@@ -915,12 +908,6 @@ public abstract class ASTVisitor {
 	public boolean visit(
 		TypeDeclaration typeDeclaration,
 		CompilationUnitScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(TypeParameter typeParameter, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(TypeParameter typeParameter, ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(UnaryExpression unaryExpression, BlockScope scope) {

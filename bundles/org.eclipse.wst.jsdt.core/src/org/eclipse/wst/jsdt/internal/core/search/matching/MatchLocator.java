@@ -80,7 +80,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -2186,15 +2185,6 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 		}
 	}
 
-	// report the type parameters
-	TypeParameter[] typeParameters = method.typeParameters();
-	if (typeParameters != null) {
-		if (enclosingElement == null) {
-			enclosingElement = createHandle(method, parent);
-		}
-		reportMatching(typeParameters, enclosingElement, parent, method.binding, nodeSet);
-	}
-
 	// references in this method
 	if (typeInHierarchy) {
 		ASTNode[] nodes = nodeSet.matchingNodes(method.declarationSourceStart, method.declarationSourceEnd);
@@ -2626,11 +2616,6 @@ protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, i
 
 	boolean matchedClassContainer = (this.matchContainer & PatternLocator.CLASS_CONTAINER) != 0;
 
-	// report the type parameters
-	if (type.typeParameters != null) {
-		reportMatching(type.typeParameters, enclosingElement, parent, type.binding, nodeSet);
-	}
-
 	// report references in javadoc
 	if (type.javadoc != null) {
 		ASTNode[] nodes = nodeSet.matchingNodes(type.declarationSourceStart, type.sourceStart);
@@ -2739,41 +2724,6 @@ protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, i
 			Integer level = (Integer) nodeSet.matchingNodes.removeKey(memberType);
 			int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
 			reportMatching(memberType, enclosingElement, value, nodeSet, 1);
-		}
-	}
-}
-/**
- * Report matches in type parameters.
- */
-protected void reportMatching(TypeParameter[] typeParameters, IJavaScriptElement enclosingElement, IJavaScriptElement parent, Binding binding, MatchingNodeSet nodeSet) throws CoreException {
-	if (typeParameters == null) return;
-	for (int i=0, l=typeParameters.length; i<l; i++) {
-		TypeParameter typeParameter = typeParameters[i];
-		if (typeParameter != null) {
-			Integer level = (Integer) nodeSet.matchingNodes.removeKey(typeParameter);
-			if (level != null) {
-				if (level.intValue() > -1 && encloses(enclosingElement)) {
-					int offset = typeParameter.sourceStart;
-					SearchMatch match = this.patternLocator.newDeclarationMatch(typeParameter, enclosingElement, binding, level.intValue(), typeParameter.sourceEnd-offset+1, this);
-					report(match);
-				}
-			}
-			if (typeParameter.type != null) {
-				level = (Integer) nodeSet.matchingNodes.removeKey(typeParameter.type);
-				if (level != null) {
-					IJavaScriptElement localElement = createHandle(typeParameter, enclosingElement);
-					this.patternLocator.matchReportReference(typeParameter.type, enclosingElement, localElement, null, binding, level.intValue(), this);
-				}
-			}
-			if (typeParameter.bounds != null) {
-				for (int j=0, b=typeParameter.bounds.length; j<b; j++) {
-					level = (Integer) nodeSet.matchingNodes.removeKey(typeParameter.bounds[j]);
-					if (level != null) {
-						IJavaScriptElement localElement = createHandle(typeParameter, enclosingElement);
-						this.patternLocator.matchReportReference(typeParameter.bounds[j], enclosingElement, localElement, null, binding, level.intValue(), this);
-					}
-				}
-			}
 		}
 	}
 }

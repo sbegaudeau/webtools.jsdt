@@ -38,7 +38,6 @@ public class ConstructorDeclaration extends AbstractMethodDeclaration implements
 	public ExplicitConstructorCall constructorCall;
 
 	public boolean isDefaultConstructor = false;
-	public TypeParameter[] typeParameters;
 
 public ConstructorDeclaration(CompilationResult compilationResult){
 	super(compilationResult);
@@ -270,11 +269,6 @@ public void resolveStatements() {
 	if (!CharOperation.equals(sourceType.sourceName, this.selector)){
 		this.scope.problemReporter().missingReturnType(this);
 	}
-	if (this.typeParameters != null) {
-		for (int i = 0, length = this.typeParameters.length; i < length; i++) {
-			this.typeParameters[i].resolve(this.scope);
-		}
-	}
 	if (this.binding != null && !this.binding.isPrivate()) {
 		sourceType.tagBits |= TagBits.HasNonPrivateConstructor;
 	}
@@ -302,12 +296,6 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 		if (this.javadoc != null) {
 			this.javadoc.traverse(visitor, this.scope);
 		}
-		if (this.typeParameters != null) {
-			int typeParametersLength = this.typeParameters.length;
-			for (int i = 0; i < typeParametersLength; i++) {
-				this.typeParameters[i].traverse(visitor, this.scope);
-			}
-		}
 		if (this.arguments != null) {
 			int argumentLength = this.arguments.length;
 			for (int i = 0; i < argumentLength; i++)
@@ -327,9 +315,6 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 		}
 	}
 	visitor.endVisit(this, classScope);
-}
-public TypeParameter[] typeParameters() {
-    return this.typeParameters;
 }
 public int getASTType() {
 	return IASTNode.CONSTRUCTOR_DECLARATION;

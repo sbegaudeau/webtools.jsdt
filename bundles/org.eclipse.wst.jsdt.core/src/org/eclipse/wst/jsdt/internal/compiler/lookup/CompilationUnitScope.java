@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -446,50 +445,7 @@ public void buildSuperType() {
 		superTypeName=null;
 	}
 }
-public TypeVariableBinding[] createTypeVariables(TypeParameter[] typeParameters, Binding declaringElement) {
-	// do not construct type variables if source < 1.5
-	if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5)
-		return Binding.NO_TYPE_VARIABLES;
 
-	PackageBinding unitPackage = compilationUnitScope().getDefaultPackage();
-	int length = typeParameters.length;
-	TypeVariableBinding[] typeVariableBindings = new TypeVariableBinding[length];
-	int count = 0;
-	for (int i = 0; i < length; i++) {
-		TypeParameter typeParameter = typeParameters[i];
-		TypeVariableBinding parameterBinding = new TypeVariableBinding(typeParameter.name, declaringElement, i);
-		parameterBinding.fPackage = unitPackage;
-		typeParameter.binding = parameterBinding;
-
-		// detect duplicates, but keep each variable to reduce secondary errors with instantiating this generic type (assume number of variables is correct)
-		for (int j = 0; j < count; j++) {
-			TypeVariableBinding knownVar = typeVariableBindings[j];
-			if (CharOperation.equals(knownVar.sourceName, typeParameter.name))
-				problemReporter().duplicateTypeParameterInType(typeParameter);
-		}
-		typeVariableBindings[count++] = parameterBinding;
-//			TODO should offer warnings to inform about hiding declaring, enclosing or member types
-//			ReferenceBinding type = sourceType;
-//			// check that the member does not conflict with an enclosing type
-//			do {
-//				if (CharOperation.equals(type.sourceName, memberContext.name)) {
-//					problemReporter().hidingEnclosingType(memberContext);
-//					continue nextParameter;
-//				}
-//				type = type.enclosingType();
-//			} while (type != null);
-//			// check that the member type does not conflict with another sibling member type
-//			for (int j = 0; j < i; j++) {
-//				if (CharOperation.equals(referenceContext.memberTypes[j].name, memberContext.name)) {
-//					problemReporter().duplicateNestedType(memberContext);
-//					continue nextParameter;
-//				}
-//			}
-	}
-	if (count != length)
-		System.arraycopy(typeVariableBindings, 0, typeVariableBindings = new TypeVariableBinding[count], 0, count);
-	return typeVariableBindings;
-}
 SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosingType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
 	// provide the typeDeclaration with needed scopes
 

@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
@@ -245,10 +244,6 @@ public int match(Reference node, MatchingNodeSet nodeSet) {
 	return IMPOSSIBLE_MATCH;
 }
 public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
-	// each subtype should override if needed
-	return IMPOSSIBLE_MATCH;
-}
-public int match(TypeParameter node, MatchingNodeSet nodeSet) {
 	// each subtype should override if needed
 	return IMPOSSIBLE_MATCH;
 }

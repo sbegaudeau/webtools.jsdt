@@ -31,7 +31,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 public class MethodDeclaration extends AbstractMethodDeclaration implements IFunctionDeclaration {
 
 	public TypeReference returnType;
-	public TypeParameter[] typeParameters;
 
 	/**
 	 * FunctionDeclaration constructor comment.
@@ -151,12 +150,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 //			this.scope.problemReporter().methodWithConstructorName(this);
 //		}
 
-		if (this.typeParameters != null) {
-			for (int i = 0, length = this.typeParameters.length; i < length; i++) {
-				this.typeParameters[i].resolve(this.scope);
-			}
-		}
-
 		final CompilerOptions compilerOptions = this.scope.compilerOptions();
 
 		// by grammatical construction, interface methods are always abstract
@@ -199,12 +192,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			if (this.javadoc != null) {
 				this.javadoc.traverse(visitor, scope);
 			}
-			if (this.typeParameters != null) {
-				int typeParametersLength = this.typeParameters.length;
-				for (int i = 0; i < typeParametersLength; i++) {
-					this.typeParameters[i].traverse(visitor, scope);
-				}
-			}
 			if (returnType != null)
 				returnType.traverse(visitor, scope);
 			if (arguments != null) {
@@ -230,12 +217,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			BlockScope blockScope) {
 
 			if (visitor.visit(this, blockScope)) {
-				if (this.typeParameters != null) {
-					int typeParametersLength = this.typeParameters.length;
-					for (int i = 0; i < typeParametersLength; i++) {
-						this.typeParameters[i].traverse(visitor, scope);
-					}
-				}
 				if (returnType != null)
 					returnType.traverse(visitor, scope);
 				if (arguments != null) {
@@ -257,10 +238,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			visitor.endVisit(this, blockScope);
 		}
 
-
-	public TypeParameter[] typeParameters() {
-	    return this.typeParameters;
-	}
 	public int getASTType() {
 		return IASTNode.FUNCTION_DECLARATION;
 	

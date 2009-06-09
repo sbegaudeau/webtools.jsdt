@@ -68,7 +68,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -408,16 +407,6 @@ protected void attachOrphanCompletionNode(){
 	if(this.currentElement instanceof RecoveredType || this.currentElement instanceof RecoveredMethod) {
 		if(this.currentElement instanceof RecoveredType) {
 			RecoveredType recoveredType = (RecoveredType)this.currentElement;
-			if(recoveredType.foundOpeningBrace && this.genericsPtr > -1) {
-				if(this.genericsStack[this.genericsPtr] instanceof TypeParameter) {
-					TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-					CompletionNodeDetector detector =  new CompletionNodeDetector(this.assistNode, typeParameter);
-					if(detector.containsCompletionNode()) {
-						this.currentElement.add(new CompletionOnMethodTypeParameter(new TypeParameter[]{typeParameter},this.compilationUnit.compilationResult()), 0);
-					}
-					return;
-				}
-			}
 		}
 
 		if ((!isInsideMethod() && !isInsideFieldInitialization())) {
@@ -3024,69 +3013,9 @@ protected void consumeTypeArguments() {
 	super.consumeTypeArguments();
 	popElement(K_BINARY_OPERATOR);
 }
-protected void consumeTypeHeaderNameWithTypeParameters() {
-	super.consumeTypeHeaderNameWithTypeParameters();
-
-	TypeDeclaration typeDecl = (TypeDeclaration)this.astStack[this.astPtr];
-	classHeaderExtendsOrImplements((typeDecl.modifiers & ClassFileConstants.AccInterface) != 0);
-}
-protected void consumeTypeParameters() {
-	super.consumeTypeParameters();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeParameterHeader() {
-	super.consumeTypeParameterHeader();
-	TypeParameter typeParameter = (TypeParameter) this.genericsStack[this.genericsPtr];
-	if(typeParameter.type != null || (typeParameter.bounds != null && typeParameter.bounds.length > 0)) return;
-
-	if (assistIdentifier() == null && this.currentToken == TokenNameIdentifier) { // Test below copied from CompletionScanner.getCurrentIdentifierSource()
-		if (cursorLocation < this.scanner.startPosition && this.scanner.currentPosition == this.scanner.startPosition){ // fake empty identifier got issued
-			this.pushIdentifier();
-		} else if (cursorLocation+1 >= this.scanner.startPosition && cursorLocation < this.scanner.currentPosition){
-			this.pushIdentifier();
-		} else {
-			return;
-		}
-	} else {
-		return;
-	}
-
-	CompletionOnKeyword1 keyword = new CompletionOnKeyword1(
-		identifierStack[this.identifierPtr],
-		identifierPositionStack[this.identifierPtr],
-		Keywords.EXTENDS);
-	keyword.canCompleteEmptyToken = true;
-	typeParameter.type = keyword;
-
-	this.identifierPtr--;
-	this.identifierLengthPtr--;
-
-	this.assistNode = typeParameter.type;
-	this.lastCheckPoint = typeParameter.type.sourceEnd + 1;
-}
 protected void consumeTypeImportOnDemandDeclarationName() {
 	super.consumeTypeImportOnDemandDeclarationName();
 	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
-}
-protected void consumeTypeParameter1() {
-	super.consumeTypeParameter1();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeParameterWithExtends() {
-	super.consumeTypeParameterWithExtends();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeTypeParameterWithExtendsAndBounds() {
-	super.consumeTypeParameterWithExtendsAndBounds();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeTypeParameter1WithExtends() {
-	super.consumeTypeParameter1WithExtends();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeTypeParameter1WithExtendsAndBounds() {
-	super.consumeTypeParameter1WithExtendsAndBounds();
-	popElement(K_EXTENDS_KEYWORD);
 }
 protected void consumeUnaryExpression(int op) {
 	super.consumeUnaryExpression(op);

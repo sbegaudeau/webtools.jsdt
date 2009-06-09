@@ -24,8 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
@@ -436,166 +434,13 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return null; // incompatible
 	}
 
-	protected boolean connectTypeVariables(TypeParameter[] typeParameters, boolean checkForErasedCandidateCollisions) {
-		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) return true;
-		boolean noProblems = true;
-		Map invocations = new HashMap(2);
-		nextVariable : for (int i = 0, paramLength = typeParameters.length; i < paramLength; i++) {
-			TypeParameter typeParameter = typeParameters[i];
-			TypeVariableBinding typeVariable = typeParameter.binding;
-			if (typeVariable == null) return false;
-
-			typeVariable.superclass = getJavaLangObject();
-			typeVariable.superInterfaces = Binding.NO_SUPERINTERFACES;
-			// set firstBound to the binding of the first explicit bound in parameter declaration
-			typeVariable.firstBound = null; // first bound used to compute erasure
-
-			TypeReference typeRef = typeParameter.type;
-			if (typeRef == null)
-				continue nextVariable;
-			TypeBinding superType = this.kind == METHOD_SCOPE
-				? typeRef.resolveType((BlockScope)this, false/*no bound check*/)
-				: typeRef.resolveType((ClassScope)this);
-			if (superType == null) {
-				typeVariable.tagBits |= TagBits.HierarchyHasProblems;
-				noProblems = false;
-				continue nextVariable;
-			}
-			typeRef.resolvedType = superType; // hold onto the problem type
-			if (superType.isArrayType()) {
-				problemReporter().boundCannotBeArray(typeRef, superType);
-				continue nextVariable;
-			}
-			boolean isTypeVariableFirstBound =  superType.isTypeVariable();
-			if (isTypeVariableFirstBound) {
-				TypeVariableBinding varSuperType = (TypeVariableBinding) superType;
-				if (varSuperType.rank >= typeVariable.rank && varSuperType.declaringElement == typeVariable.declaringElement) {
-					problemReporter().forwardTypeVariableReference(typeParameter, varSuperType);
-					typeVariable.tagBits |= TagBits.HierarchyHasProblems;
-					noProblems = false;
-					continue nextVariable;
-				}
-			}
-			ReferenceBinding superRefType = (ReferenceBinding) superType;
-			if (superRefType.isFinal())
-				problemReporter().finalVariableBound(typeVariable, typeRef);
-			if (!superType.isInterface()) {
-				typeVariable.superclass = superRefType;
-			} else {
-				typeVariable.superInterfaces = new ReferenceBinding[] {superRefType};
-			}
-			typeVariable.firstBound = superRefType; // first bound used to compute erasure
-			TypeReference[] boundRefs = typeParameter.bounds;
-			if (boundRefs != null) {
-				for (int j = 0, boundLength = boundRefs.length; j < boundLength; j++) {
-					typeRef = boundRefs[j];
-					superType = this.kind == METHOD_SCOPE
-						? typeRef.resolveType((BlockScope)this, false)
-						: typeRef.resolveType((ClassScope)this);
-					if (superType == null) {
-						typeVariable.tagBits |= TagBits.HierarchyHasProblems;
-						noProblems = false;
-						continue nextVariable;
-					}
-					typeRef.resolvedType = superType; // hold onto the problem type
-					if (isTypeVariableFirstBound && j == 0) {
-						problemReporter().noAdditionalBoundAfterTypeVariable(typeRef);
-					}
-					if (superType.isArrayType()) {
-						problemReporter().boundCannotBeArray(typeRef, superType);
-						continue nextVariable;
-					}
-					superRefType = (ReferenceBinding) superType;
-					if (!superType.isInterface()) {
-						problemReporter().boundMustBeAnInterface(typeRef, superType);
-						typeVariable.tagBits |= TagBits.HierarchyHasProblems;
-						noProblems = false;
-						continue nextVariable;
-					}
-					// check against superclass
-					if (checkForErasedCandidateCollisions && typeVariable.firstBound == typeVariable.superclass) {
-						if (hasErasedCandidatesCollisions(superType, typeVariable.superclass, invocations, typeVariable, typeRef)) {
-							noProblems = false;
-							continue nextVariable;
-						}
-					}
-					// check against superinterfaces
-					for (int index = typeVariable.superInterfaces.length; --index >= 0;) {
-						ReferenceBinding previousInterface = typeVariable.superInterfaces[index];
-						if (previousInterface == superRefType) {
-							problemReporter().duplicateBounds(typeRef, superType);
-							typeVariable.tagBits |= TagBits.HierarchyHasProblems;
-							noProblems = false;
-							continue nextVariable;
-						}
-						if (checkForErasedCandidateCollisions) {
-							if (hasErasedCandidatesCollisions(superType, previousInterface, invocations, typeVariable, typeRef)) {
-								noProblems = false;
-								continue nextVariable;
-							}
-						}
-					}
-					int size = typeVariable.superInterfaces.length;
-					System.arraycopy(typeVariable.superInterfaces, 0, typeVariable.superInterfaces = new ReferenceBinding[size + 1], 0, size);
-					typeVariable.superInterfaces[size] = superRefType;
-				}
-			}
-		}
-		return noProblems;
-	}
-
 	public ArrayBinding createArrayType(TypeBinding type, int dimension) {
 		if (type.isValidBinding())
 			return environment().createArrayType(type, dimension);
 		// do not cache obvious invalid types
 		return new ArrayBinding(type, dimension, environment());
 	}
-
-	public TypeVariableBinding[] createTypeVariables(TypeParameter[] typeParameters, Binding declaringElement) {
-		// do not construct type variables if source < 1.5
-		if (typeParameters == null || compilerOptions().sourceLevel < ClassFileConstants.JDK1_5)
-			return Binding.NO_TYPE_VARIABLES;
-
-		PackageBinding unitPackage = compilationUnitScope().getDefaultPackage();
-		int length = typeParameters.length;
-		TypeVariableBinding[] typeVariableBindings = new TypeVariableBinding[length];
-		int count = 0;
-		for (int i = 0; i < length; i++) {
-			TypeParameter typeParameter = typeParameters[i];
-			TypeVariableBinding parameterBinding = new TypeVariableBinding(typeParameter.name, declaringElement, i);
-			parameterBinding.fPackage = unitPackage;
-			typeParameter.binding = parameterBinding;
-
-			// detect duplicates, but keep each variable to reduce secondary errors with instantiating this generic type (assume number of variables is correct)
-			for (int j = 0; j < count; j++) {
-				TypeVariableBinding knownVar = typeVariableBindings[j];
-				if (CharOperation.equals(knownVar.sourceName, typeParameter.name))
-					problemReporter().duplicateTypeParameterInType(typeParameter);
-			}
-			typeVariableBindings[count++] = parameterBinding;
-//				TODO should offer warnings to inform about hiding declaring, enclosing or member types
-//				ReferenceBinding type = sourceType;
-//				// check that the member does not conflict with an enclosing type
-//				do {
-//					if (CharOperation.equals(type.sourceName, memberContext.name)) {
-//						problemReporter().hidingEnclosingType(memberContext);
-//						continue nextParameter;
-//					}
-//					type = type.enclosingType();
-//				} while (type != null);
-//				// check that the member type does not conflict with another sibling member type
-//				for (int j = 0; j < i; j++) {
-//					if (CharOperation.equals(referenceContext.memberTypes[j].name, memberContext.name)) {
-//						problemReporter().duplicateNestedType(memberContext);
-//						continue nextParameter;
-//					}
-//				}
-		}
-		if (count != length)
-			System.arraycopy(typeVariableBindings, 0, typeVariableBindings = new TypeVariableBinding[count], 0, count);
-		return typeVariableBindings;
-	}
-
+	
 	public final ClassScope enclosingClassScope() {
 		Scope scope = this;
 		while ((scope = scope.parent) != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
@@ -41,7 +40,6 @@ public class RecoveredType extends RecoveredStatement implements TerminalTokens 
 
 	public boolean insideEnumConstantPart = false;
 
-	public TypeParameter[] pendingTypeParameters;
 	public int pendingTypeParametersStart;
 
 public RecoveredType(TypeDeclaration typeDeclaration, RecoveredElement parent, int bracketBalance){
@@ -66,7 +64,6 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 		it must be belonging to an enclosing type */
 	if (typeDeclaration.declarationSourceEnd != 0
 		&& methodDeclaration.declarationSourceStart > typeDeclaration.declarationSourceEnd){
-		this.pendingTypeParameters = null;
 		return this.parent.add(methodDeclaration, bracketBalanceValue);
 	}
 
@@ -86,11 +83,6 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
 	methods[methodCount++] = element;
 
-	if(this.pendingTypeParameters != null) {
-		element.attach(this.pendingTypeParameters, this.pendingTypeParametersStart);
-		this.pendingTypeParameters = null;
-	}
-
 	this.insideEnumConstantPart = false;
 
 	/* consider that if the opening brace was not found, it is there */
@@ -103,7 +95,6 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	return this;
 }
 public RecoveredElement add(Block nestedBlockDeclaration,int bracketBalanceValue) {
-	this.pendingTypeParameters = null;
 
 	int modifiers = ClassFileConstants.AccDefault;
 	if(this.parser().recoveredStaticInitializerStart != 0) {
@@ -112,7 +103,6 @@ public RecoveredElement add(Block nestedBlockDeclaration,int bracketBalanceValue
 	return this.add(new Initializer(nestedBlockDeclaration, modifiers), bracketBalanceValue);
 }
 public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanceValue) {
-	this.pendingTypeParameters = null;
 
 	/* do not consider a field starting passed the type end (if set)
 	it must be belonging to an enclosing type */
@@ -158,7 +148,6 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 	return this;
 }
 public RecoveredElement add(TypeDeclaration memberTypeDeclaration, int bracketBalanceValue) {
-	this.pendingTypeParameters = null;
 
 	/* do not consider a type starting passed the type end (if set)
 		it must be belonging to an enclosing type */
@@ -208,10 +197,6 @@ public RecoveredElement add(TypeDeclaration memberTypeDeclaration, int bracketBa
 	if (memberTypeDeclaration.declarationSourceEnd == 0) return element;
 	return this;
 }
-public void add(TypeParameter[] parameters, int startPos) {
-	this.pendingTypeParameters = parameters;
-	this.pendingTypeParametersStart = startPos;
-}
 /*
  * Answer the body end of the corresponding parse node
  */
@@ -222,11 +207,7 @@ public int bodyEnd(){
 public boolean bodyStartsAtHeaderEnd(){
 	if (typeDeclaration.superInterfaces == null){
 		if (typeDeclaration.superclass == null){
-			if(typeDeclaration.typeParameters == null) {
-				return typeDeclaration.bodyStart == typeDeclaration.sourceEnd+1;
-			} else {
-				return typeDeclaration.bodyStart == typeDeclaration.typeParameters[typeDeclaration.typeParameters.length-1].sourceEnd+1;
-			}
+			return typeDeclaration.bodyStart == typeDeclaration.sourceEnd+1;
 		} else {
 			return typeDeclaration.bodyStart == typeDeclaration.superclass.sourceEnd+1;
 		}
@@ -474,30 +455,6 @@ public void updateFromParserState(){
 				parser.consumeClassHeaderImplements();
 				// will reset typeListLength to zero
 				// thus this check will only be performed on first errorCheck after class X implements Y,Z,
-			}
-		} else if (parser.listTypeParameterLength > 0) {
-			int length = parser.listTypeParameterLength;
-			int genericsPtr = parser.genericsPtr;
-			boolean canConsume = genericsPtr + 1 >= length && parser.astPtr > -1;
-			if(canConsume) {
-				if (!(parser.astStack[parser.astPtr] instanceof TypeDeclaration)) {
-					canConsume = false;
-				}
-				while(genericsPtr + 1 > length && !(parser.genericsStack[genericsPtr] instanceof TypeParameter)) {
-					genericsPtr--;
-				}
-				for (int i = 0; i < length; i++) {
-					if(!(parser.genericsStack[genericsPtr - i] instanceof TypeParameter)) {
-						canConsume = false;
-					}
-				}
-			}
-			if(canConsume) {
-				TypeDeclaration typeDecl = (TypeDeclaration)parser.astStack[parser.astPtr];
-				System.arraycopy(parser.genericsStack, genericsPtr - length + 1, typeDecl.typeParameters = new TypeParameter[length], 0, length);
-				typeDecl.bodyStart = typeDecl.typeParameters[length-1].declarationSourceEnd + 1;
-				parser.listTypeParameterLength = 0;
-				parser.lastCheckPoint = typeDecl.bodyStart;
 			}
 		}
 	}

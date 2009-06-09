@@ -110,7 +110,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -3336,32 +3335,8 @@ public final class CompletionEngine
 						System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount * 2][], 0, excludedNameCount);
 					}
 					excludedNames[excludedNameCount++] = typeDeclaration.name;
-
-					TypeParameter[] classTypeParameters = typeDeclaration.typeParameters;
-					if(classTypeParameters != null) {
-						for (int i = 0; i < classTypeParameters.length; i++) {
-							TypeParameter typeParameter = classTypeParameters[i];
-							if(excludedNameCount == excludedNames.length) {
-								System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount * 2][], 0, excludedNameCount);
-							}
-							excludedNames[excludedNameCount++] = typeParameter.name;
-						}
-					}
 					break;
 				case Scope.METHOD_SCOPE :
-					MethodScope methodScope = (MethodScope) currentScope;
-					if(methodScope.referenceContext instanceof AbstractMethodDeclaration) {
-						TypeParameter[] methodTypeParameters = ((AbstractMethodDeclaration)methodScope.referenceContext).typeParameters();
-						if(methodTypeParameters != null) {
-							for (int i = 0; i < methodTypeParameters.length; i++) {
-								TypeParameter typeParameter = methodTypeParameters[i];
-								if(excludedNameCount == excludedNames.length) {
-									System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount * 2][], 0, excludedNameCount);
-								}
-								excludedNames[excludedNameCount++] = typeParameter.name;
-							}
-						}
-					}
 					break;
 			}
 
@@ -6924,60 +6899,7 @@ public final class CompletionEngine
 			}
 		}
 	}
-	private void findTypeParameters(char[] token, Scope scope) {
-		if (this.compilerOptions.sourceLevel < ClassFileConstants.JDK1_5) return;
-
-		TypeParameter[] typeParameters = null;
-		while (scope != null) { // done when a COMPILATION_UNIT_SCOPE is found
-			typeParameters = null;
-			switch (scope.kind) {
-				case Scope.METHOD_SCOPE :
-					MethodScope methodScope = (MethodScope) scope;
-					if(methodScope.referenceContext instanceof MethodDeclaration) {
-						MethodDeclaration methodDeclaration = (MethodDeclaration) methodScope.referenceContext;
-						typeParameters = methodDeclaration.typeParameters;
-					} else if(methodScope.referenceContext instanceof ConstructorDeclaration) {
-						ConstructorDeclaration methodDeclaration = (ConstructorDeclaration) methodScope.referenceContext;
-						typeParameters = methodDeclaration.typeParameters;
-					}
-					break;
-				case Scope.CLASS_SCOPE :
-					ClassScope classScope = (ClassScope) scope;
-					typeParameters = classScope.referenceContext.typeParameters;
-					break;
-				case Scope.COMPILATION_UNIT_SCOPE :
-					return;
-			}
-			if(typeParameters != null) {
-				for (int i = 0; i < typeParameters.length; i++) {
-					int typeLength = token.length;
-					TypeParameter typeParameter = typeParameters[i];
-
-					if(typeParameter.binding == null) continue;
-
-					if (typeLength > typeParameter.name.length) continue;
-
-					if (!CharOperation.prefixEquals(token, typeParameter.name, false)
-							&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, typeParameter.name))) continue;
-
-					int relevance = computeBaseRelevance();
-					relevance += computeRelevanceForResolution();
-					relevance += computeRelevanceForInterestingProposal();
-					relevance += computeRelevanceForCaseMatching(token, typeParameter.name);
-					relevance += computeRelevanceForExpectingType(typeParameter.type == null ? null :typeParameter.type.resolvedType);
-					relevance += computeRelevanceForQualification(false);
-					relevance += computeRelevanceForException(typeParameter.name);
-					relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction fot type parameter
-
-					this.noProposal = false;
-					if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
-						createTypeParameterProposal(typeParameter, relevance);
-					}
-				}
-			}
-			scope = scope.parent;
-		}
-	}
+	
 	private void findTypesAndPackages(char[] token, Scope scope, ObjectVector typesFound) {
 
 		if (token == null)
@@ -6999,10 +6921,6 @@ public final class CompletionEngine
 
 		if (!skip && proposeType && scope.enclosingSourceType() != null) {
 			findNestedTypes(token, scope.enclosingSourceType(), scope, proposeAllMemberTypes, typesFound);
-			if((!assistNodeIsConstructor && !assistNodeIsAnnotation) && this.assistNodeInJavadoc == 0) {
-				// don't propose type parameters if the completion is a constructor ('new |')
-				findTypeParameters(token, scope);
-			}
 		}
 		boolean isEmptyPrefix = token.length == 0;
 
@@ -8969,48 +8887,6 @@ public final class CompletionEngine
 			proposal.setFlags(refBinding.modifiers);
 			int start = (this.assistNodeInJavadoc & CompletionOnJavadoc.REPLACE_TAG) != 0 ? this.javadocTagPosition : this.startPosition;
 			proposal.setReplaceRange(start - this.offset, this.endPosition - this.offset);
-			proposal.setRelevance(relevance+R_INLINE_TAG);
-			this.requestor.accept(proposal);
-			if(DEBUG) {
-				this.printDebug(proposal);
-			}
-		}
-	}
-
-	/*
-	 * Create a completion proposal for a member type.
-	 */
-	private void createTypeParameterProposal(TypeParameter typeParameter, int relevance) {
-		char[] completionName = typeParameter.name;
-
-		// Create standard type proposal
-		if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
-			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.TYPE_REF, this.actualCompletionPosition - this.offset);
-			proposal.nameLookup = this.nameEnvironment.nameLookup;
-			proposal.completionEngine = this;
-			proposal.setSignature(getSignature(typeParameter.binding));
-			proposal.setTypeName(completionName);
-			proposal.setCompletion(completionName);
-			proposal.setFlags(typeParameter.modifiers);
-			proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-			proposal.setRelevance(relevance);
-			this.requestor.accept(proposal);
-			if(DEBUG) {
-				this.printDebug(proposal);
-			}
-		}
-
-		// Create javadoc text proposal if necessary
-		if ((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF)) {
-			char[] javadocCompletion= inlineTagCompletion(completionName, JavadocTagConstants.TAG_LINK);
-			CompletionProposal proposal = CompletionProposal.create(CompletionProposal.JSDOC_TYPE_REF, this.actualCompletionPosition - this.offset);
-			proposal.nameLookup = this.nameEnvironment.nameLookup;
-			proposal.completionEngine = this;
-			proposal.setSignature(getSignature(typeParameter.binding));
-			proposal.setTypeName(javadocCompletion);
-			proposal.setCompletion(javadocCompletion);
-			proposal.setFlags(typeParameter.modifiers);
-			proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
 			proposal.setRelevance(relevance+R_INLINE_TAG);
 			this.requestor.accept(proposal);
 			if(DEBUG) {

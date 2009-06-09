@@ -60,7 +60,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -729,42 +728,6 @@ protected CompilationUnitDeclaration endParse(int act) {
 		return null;
 	}
 }
-private ISourceElementRequestor.TypeParameterInfo[] getTypeParameterInfos(TypeParameter[] typeParameters) {
-	if (typeParameters == null) return null;
-	int typeParametersLength = typeParameters.length;
-	ISourceElementRequestor.TypeParameterInfo[] result = new ISourceElementRequestor.TypeParameterInfo[typeParametersLength];
-	for (int i = 0; i < typeParametersLength; i++) {
-		TypeParameter typeParameter = typeParameters[i];
-		TypeReference firstBound = typeParameter.type;
-		TypeReference[] otherBounds = typeParameter.bounds;
-		char[][] typeParameterBounds = null;
-		if (firstBound != null) {
-			if (otherBounds != null) {
-				int otherBoundsLength = otherBounds.length;
-				char[][] boundNames = new char[otherBoundsLength+1][];
-				boundNames[0] = CharOperation.concatWith(firstBound.getParameterizedTypeName(), '.');
-				for (int j = 0; j < otherBoundsLength; j++) {
-					boundNames[j+1] =
-						CharOperation.concatWith(otherBounds[j].getParameterizedTypeName(), '.');
-				}
-				typeParameterBounds = boundNames;
-			} else {
-				typeParameterBounds = new char[][] { CharOperation.concatWith(firstBound.getParameterizedTypeName(), '.')};
-			}
-		} else {
-			typeParameterBounds = CharOperation.NO_CHAR_CHAR;
-		}
-		ISourceElementRequestor.TypeParameterInfo typeParameterInfo = new ISourceElementRequestor.TypeParameterInfo();
-		typeParameterInfo.declarationStart = typeParameter.declarationSourceStart;
-		typeParameterInfo.declarationEnd = typeParameter.declarationSourceEnd;
-		typeParameterInfo.name = typeParameter.name;
-		typeParameterInfo.nameSourceStart = typeParameter.sourceStart;
-		typeParameterInfo.nameSourceEnd = typeParameter.sourceEnd;
-		typeParameterInfo.bounds = typeParameterBounds;
-		result[i] = typeParameterInfo;
-	}
-	return result;
-}
 public TypeReference getTypeReference(int dim) {
 	/* build a Reference on a variable that may be qualified or not
 	 * This variable is a type reference and dim will be its dimensions
@@ -1174,7 +1137,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.exceptionTypes = null;
-		methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 
@@ -1274,7 +1236,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.parameterTypes = argumentTypes;
 			methodInfo.parameterNames = argumentNames;
 			methodInfo.exceptionTypes = thrownExceptionTypes;
-			methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
 			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 			requestor.enterConstructor(methodInfo);
 		}
@@ -1328,7 +1289,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.exceptionTypes = thrownExceptionTypes;
-		methodInfo.typeParameters = getTypeParameterInfos(methodDeclaration.typeParameters());
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 	}
@@ -1587,7 +1547,6 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			typeInfo.nameSourceEnd = sourceEnd(typeDeclaration);
 			typeInfo.superclass = superclassName;
 			typeInfo.superinterfaces = interfaceNames;
-			typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
 			typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 			typeInfo.secondary = typeDeclaration.isSecondary();
 			typeInfo.anonymousMember = typeDeclaration.allocation != null && typeDeclaration.allocation.enclosingInstance != null;

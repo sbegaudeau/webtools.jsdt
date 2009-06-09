@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -568,29 +567,6 @@ public class SourceTypeConverter {
 			qImportName,
 			positions,
 			onDemand);
-	}
-
-	private TypeParameter createTypeParameter(char[] typeParameterName, char[][] typeParameterBounds, int start, int end) {
-
-		TypeParameter parameter = new TypeParameter();
-		parameter.name = typeParameterName;
-		parameter.sourceStart = start;
-		parameter.sourceEnd = end;
-		if (typeParameterBounds != null) {
-			int length = typeParameterBounds.length;
-			if (length > 0) {
-				parameter.type = createTypeReference(typeParameterBounds[0], start, end);
-				if (length > 1) {
-					parameter.bounds = new TypeReference[length-1];
-					for (int i = 1; i < length; i++) {
-						TypeReference bound = createTypeReference(typeParameterBounds[i], start, end);
-						bound.bits |= ASTNode.IsSuperType;
-						parameter.bounds[i-1] = bound;
-					}
-				}
-			}
-		}
-		return parameter;
 	}
 
 	/*

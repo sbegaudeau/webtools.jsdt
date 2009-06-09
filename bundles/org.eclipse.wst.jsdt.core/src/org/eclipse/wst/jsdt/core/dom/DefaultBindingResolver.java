@@ -963,9 +963,6 @@ class DefaultBindingResolver extends BindingResolver {
 		} else if (node instanceof JavadocImplicitTypeReference) {
 			JavadocImplicitTypeReference implicitRef = (JavadocImplicitTypeReference) node;
 			return getTypeBinding(implicitRef.resolvedType);
-		} else if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter typeParameter = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) node;
-			return this.getTypeBinding(typeParameter.binding);
 		}
 		return null;
 	}
@@ -1222,9 +1219,6 @@ class DefaultBindingResolver extends BindingResolver {
 		} else if (node instanceof JavadocImplicitTypeReference) {
 			JavadocImplicitTypeReference implicitRef = (JavadocImplicitTypeReference) node;
 			return getTypeBinding(implicitRef.resolvedType);
-		} else if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter typeParameter = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) node;
-			return this.getTypeBinding(typeParameter.binding);
 		}
 		return null;
 	}
@@ -1426,20 +1420,6 @@ class DefaultBindingResolver extends BindingResolver {
 	}
 
 	synchronized ITypeBinding resolveTypeParameter(TypeParameter typeParameter) {
-		final Object node = this.newAstToOldAst.get(typeParameter);
-		if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter typeParameter2 = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter) node;
-			ITypeBinding typeBinding = this.getTypeBinding(typeParameter2.binding);
-			if (typeBinding == null) {
-				return null;
-			}
-			this.bindingsToAstNodes.put(typeBinding, typeParameter);
-			String key = typeBinding.getKey();
-			if (key != null) {
-				this.bindingTables.bindingKeysToBindings.put(key, typeBinding);
-			}
-			return typeBinding;
-		}
 		return null;
 	}
 

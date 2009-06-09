@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,7 +70,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -199,7 +198,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.FieldHidingField:
 			return CompilerOptions.FieldHiding;
 
-		case IProblem.TypeParameterHidingType:
 		case IProblem.TypeHidingType:
 			return CompilerOptions.TypeHiding;
 
@@ -1278,14 +1276,6 @@ public void duplicateSuperinterface(SourceTypeBinding type, TypeReference refere
 			new String(type.sourceName())},
 		reference.sourceStart,
 		reference.sourceEnd);
-}
-public void duplicateTypeParameterInType(TypeParameter typeParameter) {
-	this.handle(
-		IProblem.DuplicateTypeVariable,
-		new String[] { new String(typeParameter.name)},
-		new String[] { new String(typeParameter.name)},
-		typeParameter.sourceStart,
-		typeParameter.sourceEnd);
 }
 public void duplicateTypes(CompilationUnitDeclaration compUnitDecl, TypeDeclaration typeDecl) {
 	String[] arguments = new String[] {new String(compUnitDecl.getFileName()), new String(typeDecl.name)};
@@ -2931,14 +2921,6 @@ public void invalidUsageOfForeachStatements(LocalDeclaration elementVariable, Ex
 		NoArgument,
 		elementVariable.declarationSourceStart,
 		collection.sourceEnd);
-}
-public void invalidUsageOfTypeParameters(TypeParameter firstTypeParameter, TypeParameter lastTypeParameter) {
-	this.handle(
-		IProblem.InvalidUsageOfTypeParameters,
-		NoArgument,
-		NoArgument,
-		firstTypeParameter.declarationSourceStart,
-		lastTypeParameter.declarationSourceEnd);
 }
 public void isClassPathCorrect(char[][] wellKnownTypeName, CompilationUnitDeclaration compUnitDecl, Object location) {
 	this.referenceContext = compUnitDecl;
@@ -5032,18 +5014,6 @@ public void typeHiding(TypeDeclaration typeDecl, TypeBinding hiddenType) {
 		severity,
 		typeDecl.sourceStart,
 		typeDecl.sourceEnd);
-}
-public void typeHiding(TypeParameter typeParam, Binding hidden) {
-	int severity = computeSeverity(IProblem.TypeParameterHidingType);
-	if (severity == ProblemSeverities.Ignore) return;
-	TypeBinding hiddenType = (TypeBinding) hidden;
-	this.handle(
-		IProblem.TypeParameterHidingType,
-		new String[] { new String(typeParam.name) , new String(hiddenType.readableName())  },
-		new String[] { new String(typeParam.name) , new String(hiddenType.shortReadableName()) },
-		severity,
-		typeParam.sourceStart,
-		typeParam.sourceEnd);
 }
 public void typeMismatchError(TypeBinding actualType, TypeBinding expectedType, ASTNode location) {
 	this.handle(

@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -321,10 +320,6 @@ protected void consumePrimaryNoNewArrayWithName() {
 protected void consumeTypeArgument() {
 	super.consumeTypeArgument();
 	patternLocator.match((TypeReference)genericsStack[genericsPtr], nodeSet);
-}
-protected void consumeTypeParameterHeader() {
-	super.consumeTypeParameterHeader();
-	patternLocator.match((TypeParameter)genericsStack[genericsPtr], nodeSet);
 }
 protected void consumeUnaryExpression(int op, boolean post) {
 	super.consumeUnaryExpression(op, post);
