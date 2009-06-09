@@ -79,6 +79,8 @@ public class ObjectLiteral extends Expression implements IObjectLiteral {
 			for (int i = 0; i < this.fields.length; i++) {
 				this.fields[i].resolveType(scope);
 			}
+		if(inferredType != null && inferredType.binding != null)
+			return inferredType.binding;
 		return TypeBinding.ANY;
 	}
 

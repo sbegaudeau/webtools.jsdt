@@ -560,7 +560,7 @@ public class InferEngine extends ASTVisitor {
 	 * Creates an anonymous type based in the location in the document. This information is used
 	 * to avoid creating duplicates because of the 2-pass nature of this engine.
 	 */
-	private InferredType createAnonymousType( ObjectLiteral objLit, boolean asStatic ) {
+	private InferredType createAnonymousType( ObjectLiteral objLit ) {
 
 		if (objLit.inferredType!=null)
 			return objLit.inferredType;
@@ -575,9 +575,8 @@ public class InferEngine extends ASTVisitor {
 
 		anonType.sourceStart = objLit.sourceStart;
 		anonType.sourceEnd = objLit.sourceEnd;
-		anonType.allStatic=asStatic;
 
-		populateType( anonType, objLit ,asStatic);
+		populateType( anonType, objLit , false);
 
 		return anonType;
 	}
@@ -945,7 +944,7 @@ public class InferEngine extends ASTVisitor {
 		else if ( expression instanceof ObjectLiteral ){
 
 			//create an annonymous type based on the ObjectLiteral
-			InferredType type = createAnonymousType( (ObjectLiteral)expression,true );
+			InferredType type = createAnonymousType( (ObjectLiteral)expression);
 
 			//set the start and end
 			type.sourceStart = expression.sourceStart();
@@ -1091,7 +1090,7 @@ public class InferEngine extends ASTVisitor {
 					IExpression expression = returnStatement.getExpression();
 					if (expression instanceof IObjectLiteral)
 					{
-						type = createAnonymousType( (ObjectLiteral)expression,false );
+						type = createAnonymousType( (ObjectLiteral)expression);
 
 						//set the start and end
 						type.sourceStart = expression.sourceStart();
@@ -1680,7 +1679,7 @@ public class InferEngine extends ASTVisitor {
 
 	public boolean visit(IObjectLiteral literal) {
 		if (this.passNumber==1 && literal.getInferredType()==null)
-			createAnonymousType((ObjectLiteral)literal,true);
+			createAnonymousType((ObjectLiteral)literal);
 		pushContext();
 		this.currentContext.currentType=literal.getInferredType();
 		return true;
