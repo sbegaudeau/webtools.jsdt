@@ -689,8 +689,6 @@ public class CodeCorrectionTests extends AbstractJavaModelTests {
 				.getWarningToken(IProblem.ArgumentHidingField));
 		assertEquals("wrong token", "hiding", CorrectionEngine
 				.getWarningToken(IProblem.MaskedCatch));
-		assertEquals("wrong token", "hiding", CorrectionEngine
-				.getWarningToken(IProblem.TypeParameterHidingType));
 		assertEquals("wrong token", "nls", CorrectionEngine
 				.getWarningToken(IProblem.NonExternalizedStringLiteral));
 		assertEquals("wrong token", "unused", CorrectionEngine
