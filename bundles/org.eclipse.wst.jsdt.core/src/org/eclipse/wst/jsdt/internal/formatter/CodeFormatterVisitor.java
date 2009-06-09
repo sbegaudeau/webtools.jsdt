@@ -103,7 +103,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -5503,47 +5502,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			 * This is an empty statement
 			 */
 			formatNecessaryEmptyStatement();
-		}
-		return false;
-	}
-
-	public boolean visit(Wildcard wildcard, BlockScope scope) {
-		this.scribe.printNextToken(TerminalTokens.TokenNameQUESTION, this.preferences.insert_space_before_question_in_wilcard);
-		switch(wildcard.kind) {
-			case Wildcard.SUPER :
-				this.scribe.printNextToken(TerminalTokens.TokenNamesuper, true);
-				this.scribe.space();
-				wildcard.bound.traverse(this, scope);
-				break;
-			case Wildcard.EXTENDS :
-				this.scribe.printNextToken(TerminalTokens.TokenNameextends, true);
-				this.scribe.space();
-				wildcard.bound.traverse(this, scope);
-				break;
-			case Wildcard.UNBOUND :
-				if (this.preferences.insert_space_after_question_in_wilcard) {
-					this.scribe.space();
-				}
-		}
-		return false;
-	}
-	public boolean visit(Wildcard wildcard, ClassScope scope) {
-		this.scribe.printNextToken(TerminalTokens.TokenNameQUESTION, this.preferences.insert_space_before_question_in_wilcard);
-		switch(wildcard.kind) {
-			case Wildcard.SUPER :
-				this.scribe.printNextToken(TerminalTokens.TokenNamesuper, true);
-				this.scribe.space();
-				wildcard.bound.traverse(this, scope);
-				break;
-			case Wildcard.EXTENDS :
-				this.scribe.printNextToken(TerminalTokens.TokenNameextends, true);
-				this.scribe.space();
-				wildcard.bound.traverse(this, scope);
-				break;
-			case Wildcard.UNBOUND :
-				if (this.preferences.insert_space_after_question_in_wilcard) {
-					this.scribe.space();
-				}
 		}
 		return false;
 	}

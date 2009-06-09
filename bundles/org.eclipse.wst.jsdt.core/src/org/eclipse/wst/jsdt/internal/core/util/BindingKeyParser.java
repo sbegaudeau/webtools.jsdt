@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core.util;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 
 public class BindingKeyParser {
 
@@ -590,8 +589,6 @@ public class BindingKeyParser {
 				}
 			} else if (this.scanner.isAtTypeVariableStart()) {
 				parseTypeVariable();
-			} else if (this.scanner.isAtWildcardStart()) {
-				parseWildcard();
 			} else if (this.scanner.isAtTypeWithCaptureStart()) {
 				parseTypeWithCapture();
 			}
@@ -823,34 +820,6 @@ public class BindingKeyParser {
 		}
 		consumeTypeVariable(position, typeVariableName);
 		this.scanner.skipTypeEnd();
-	}
-
-	private void parseWildcard() {
-		if (this.scanner.nextToken() != Scanner.WILDCARD) return;
-	 	char[] source = this.scanner.getTokenSource();
-	 	if (source.length == 0) {
-	 		malformedKey();
-	 		return;
-	 	}
-	 	int kind = -1;
-	 	switch (source[0]) {
-		 	case '*':
-		 		kind = Wildcard.UNBOUND;
-		 		break;
-		 	case '+':
-		 		kind = Wildcard.EXTENDS;
-		 		break;
-		 	case '-':
-		 		kind = Wildcard.SUPER;
-		 		break;
-	 	}
-	 	if (kind == -1) {
-	 		malformedKey();
-	 		return;
-	 	}
-	 	if (kind != Wildcard.UNBOUND)
-	 		parseWildcardBound();
-	 	consumeWildCard(kind);
 	}
 
 	private void parseWildcardBound() {

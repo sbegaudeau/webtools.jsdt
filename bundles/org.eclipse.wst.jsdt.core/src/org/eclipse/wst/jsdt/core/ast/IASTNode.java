@@ -93,7 +93,6 @@ public interface IASTNode {
 	public static final int LONG_LITERAL=67;
 	public static final int LONG_LITERAL_MIN_VALUE=68;
 	public static final int MAGIC_LITERAL=69;
-	public static final int MEMBER_VALUEPAIR=71;
 	public static final int NAME_REFERENCE=72;
 	public static final int NULL_LITERAL=74;
 	public static final int NUMBER_LITERAL=75;
@@ -133,7 +132,6 @@ public interface IASTNode {
 	public static final int UNARY_EXPRESSION=110;
 	public static final int UNDEFINED_LITERAL=111;
 	public static final int WHILE_STATEMENT=112;
-	public static final int WILDCARD=113;
 	public static final int WITH_STATEMENT=114;
 	public static final int CLASS_LITERAL_ACCESS=115;
 	public static final int CL_INIT=116;

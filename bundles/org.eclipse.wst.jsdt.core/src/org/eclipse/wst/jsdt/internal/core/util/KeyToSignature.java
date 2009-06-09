@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 
 /*
  * Converts a binding key into a signature
@@ -183,27 +182,6 @@ public class KeyToSignature extends BindingKeyParser {
 		this.signature = keyToSignature.signature;
 		this.arguments = keyToSignature.arguments;
 		this.thrownExceptions = keyToSignature.thrownExceptions;
-	}
-
-	public void consumeWildCard(int wildCardKind) {
-		// don't put generic type in signature
-		this.signature = new StringBuffer();
-		switch (wildCardKind) {
-			case Wildcard.UNBOUND:
-				this.signature.append('*');
-				break;
-			case Wildcard.EXTENDS:
-				this.signature.append('+');
-				this.signature.append(((KeyToSignature) this.arguments.get(0)).signature);
-				break;
-			case Wildcard.SUPER:
-				this.signature.append('-');
-				this.signature.append(((KeyToSignature) this.arguments.get(0)).signature);
-				break;
-			default:
-				// malformed
-				return;
-		}
 	}
 
 	public String[] getThrownExceptions() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -337,11 +337,7 @@ public class BindingLabelProvider extends LabelProvider {
 			buffer.append('?');
 			ITypeBinding bound= binding.getBound();
 			if (bound != null) {
-				if (binding.isUpperbound()) {
-					buffer.append(" extends "); //$NON-NLS-1$
-				} else {
-					buffer.append(" super "); //$NON-NLS-1$
-				}
+				buffer.append(" super "); //$NON-NLS-1$
 				getTypeLabel(bound, flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
 			}
 		} else if (binding.isArray()) {

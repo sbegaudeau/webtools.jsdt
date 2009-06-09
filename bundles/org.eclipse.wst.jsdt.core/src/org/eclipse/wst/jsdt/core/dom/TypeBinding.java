@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
@@ -630,13 +629,6 @@ class TypeBinding implements ITypeBinding {
 				buffer = new StringBuffer();
 				buffer.append(TypeConstants.WILDCARD_NAME);
 				if (wildcardBinding.bound != null) {
-					switch(wildcardBinding.boundKind) {
-				        case Wildcard.SUPER :
-				        	buffer.append(TypeConstants.WILDCARD_SUPER);
-				            break;
-				        case Wildcard.EXTENDS :
-				        	buffer.append(TypeConstants.WILDCARD_EXTENDS);
-					}
 					buffer.append(getBound().getName());
 				}
 				return String.valueOf(buffer);
@@ -761,13 +753,6 @@ class TypeBinding implements ITypeBinding {
 				buffer.append(TypeConstants.WILDCARD_NAME);
 				final ITypeBinding bound = getBound();
 				if (bound != null) {
-					switch(wildcardBinding.boundKind) {
-				        case Wildcard.SUPER :
-				        	buffer.append(TypeConstants.WILDCARD_SUPER);
-				            break;
-				        case Wildcard.EXTENDS :
-				        	buffer.append(TypeConstants.WILDCARD_EXTENDS);
-					}
 					buffer.append(bound.getQualifiedName());
 				}
 				return String.valueOf(buffer);
@@ -1304,13 +1289,6 @@ class TypeBinding implements ITypeBinding {
 	 */
 	public boolean isTypeVariable() {
 		return this.binding.isTypeVariable() && !this.binding.isCapture();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isUpperbound()
-	 */
-	public boolean isUpperbound() {
-		return this.binding.isWildcard() && ((WildcardBinding) this.binding).boundKind == Wildcard.EXTENDS;
 	}
 
 	/* (non-Javadoc)

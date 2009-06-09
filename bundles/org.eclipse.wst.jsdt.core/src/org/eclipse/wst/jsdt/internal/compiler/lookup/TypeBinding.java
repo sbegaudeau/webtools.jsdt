@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 
 /*
  * Not all fields defined by this type (& its subclasses) are initialized when it is created.
@@ -612,21 +611,6 @@ public boolean isTypeArgumentContainedBy(TypeBinding otherType) {
 		switch (this.kind()) {
 		case Binding.WILDCARD_TYPE:
 			WildcardBinding wildcard = (WildcardBinding) this;
-			switch (wildcard.boundKind) {
-			case Wildcard.EXTENDS:
-				if (wildcard.otherBounds != null) // intersection type
-					break;
-				upperBound = wildcard.bound;
-				lowerBound = null;
-				break;
-			case Wildcard.SUPER:
-				upperBound = wildcard;
-				lowerBound = wildcard.bound;
-				break;
-			case Wildcard.UNBOUND:
-				upperBound = wildcard;
-				lowerBound = null;
-			}
 			break;
 		case Binding.TYPE_PARAMETER:
 			if (this.isCapture()) {
@@ -640,31 +624,6 @@ public boolean isTypeArgumentContainedBy(TypeBinding otherType) {
 			return false; // not a true wildcard (intersection type)
 		TypeBinding otherBound = otherWildcard.bound;
 		switch (otherWildcard.boundKind) {
-		case Wildcard.EXTENDS:
-			if (otherBound == this)
-				return true; // ? extends T  <=  ? extends ? extends T
-			if (upperBound == null)
-				return false;
-			TypeBinding match = upperBound.findSuperTypeWithSameErasure(otherBound);
-			if (match != null && (match = match.leafComponentType()).isRawType()) {
-				return match == otherBound.leafComponentType(); // forbide: Collection <=  ? extends Collection<?>
-																										// forbide: Collection[] <=  ? extends Collection<?>[]
-			}
-			return upperBound.isCompatibleWith(otherBound);
-
-		case Wildcard.SUPER:
-			if (otherBound == this)
-				return true; // ? super T  <=  ? super ? super T
-			if (lowerBound == null)
-				return false;
-			match = otherBound.findSuperTypeWithSameErasure(lowerBound);
-			if (match != null && (match = match.leafComponentType()).isRawType()) {
-				return match == lowerBound.leafComponentType(); // forbide: Collection <=  ? super Collection<?>
-																										// forbide: Collection[] <=  ? super Collection<?>[]
-			}
-			return otherBound.isCompatibleWith(lowerBound);
-
-		case Wildcard.UNBOUND:
 		default:
 			return true;
 		}
@@ -716,24 +675,6 @@ public boolean isTypeArgumentContainedBy(TypeBinding otherType) {
 			case Binding.WILDCARD_TYPE:
 				WildcardBinding wildcard = (WildcardBinding) argument;
 				otherWildcard = (WildcardBinding) otherArgument;
-				switch (wildcard.boundKind) {
-				case Wildcard.EXTENDS:
-					// match "? extends <upperBound>" with "?"
-					if (otherWildcard.boundKind == Wildcard.UNBOUND
-							&& wildcard.bound == wildcard.typeVariable()
-									.upperBound())
-						continue nextArgument;
-					break;
-				case Wildcard.SUPER:
-					break;
-				case Wildcard.UNBOUND:
-					// match "?" with "? extends <upperBound>"
-					if (otherWildcard.boundKind == Wildcard.EXTENDS
-							&& otherWildcard.bound == otherWildcard
-									.typeVariable().upperBound())
-						continue nextArgument;
-					break;
-				}
 				break;
 			}
 			return false;
@@ -770,28 +711,11 @@ public boolean isTypeArgumentIntersecting(TypeBinding otherArgument) {
 			TypeBinding lowerBound1 = null;
 			TypeBinding upperBound1 = null;
 			WildcardBinding wildcard = (WildcardBinding) this;
-			switch (wildcard.boundKind) {
-			case Wildcard.EXTENDS:
-				upperBound1 = wildcard.bound;
-				break;
-			case Wildcard.SUPER:
-				lowerBound1 = wildcard.bound;
-				break;
-			case Wildcard.UNBOUND:
-			}
 
 			TypeBinding lowerBound2 = null;
 			TypeBinding upperBound2 = null;
 			WildcardBinding otherWildcard = (WildcardBinding) otherArgument;
-			switch (otherWildcard.boundKind) {
-			case Wildcard.EXTENDS:
-				upperBound2 = otherWildcard.bound;
-				break;
-			case Wildcard.SUPER:
-				lowerBound2 = otherWildcard.bound;
-				break;
-			case Wildcard.UNBOUND:
-			}
+			
 			if (lowerBound1 != null) {
 				if (lowerBound2 != null) {
 					return true; // Object could always be a candidate
@@ -843,11 +767,6 @@ public boolean isTypeArgumentIntersecting(TypeBinding otherArgument) {
 		default:
 			wildcard = (WildcardBinding) this;
 			switch (wildcard.boundKind) {
-			case Wildcard.EXTENDS:
-				return otherArgument.isCompatibleWith(wildcard.bound);
-			case Wildcard.SUPER:
-				return wildcard.bound.isCompatibleWith(otherArgument);
-			case Wildcard.UNBOUND:
 			default:
 				return true;
 			}
@@ -864,11 +783,6 @@ public boolean isTypeArgumentIntersecting(TypeBinding otherArgument) {
 		case Binding.WILDCARD_TYPE:
 			WildcardBinding otherWildcard = (WildcardBinding) otherArgument;
 			switch (otherWildcard.boundKind) {
-			case Wildcard.EXTENDS:
-				return this.isCompatibleWith(otherWildcard.bound);
-			case Wildcard.SUPER:
-				return otherWildcard.bound.isCompatibleWith(this);
-			case Wildcard.UNBOUND:
 			default:
 				return true;
 			}

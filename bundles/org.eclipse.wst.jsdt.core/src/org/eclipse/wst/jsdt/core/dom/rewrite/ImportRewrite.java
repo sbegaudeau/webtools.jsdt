@@ -523,11 +523,7 @@ public final class ImportRewrite {
 			StringBuffer res= new StringBuffer("?"); //$NON-NLS-1$
 			ITypeBinding bound= normalizedBinding.getBound();
 			if (bound != null && !bound.isWildcardType() && !bound.isCapture()) { // bug 95942
-				if (normalizedBinding.isUpperbound()) {
-					res.append(" extends "); //$NON-NLS-1$
-				} else {
-					res.append(" super "); //$NON-NLS-1$
-				}
+				res.append(" super "); //$NON-NLS-1$
 				res.append(addImport(bound, context));
 			}
 			return res.toString();
@@ -671,7 +667,7 @@ public final class ImportRewrite {
 			ITypeBinding bound= normalizedBinding.getBound();
 			if (bound != null && !bound.isWildcardType() && !bound.isCapture()) { // bug 96942
 				Type boundType= addImport(bound, ast, context);
-				wcType.setBound(boundType, normalizedBinding.isUpperbound());
+				wcType.setBound(boundType, false);
 			}
 			return wcType;
 		}

@@ -113,7 +113,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -150,7 +149,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
@@ -6316,33 +6314,6 @@ public final class CompletionEngine
 			completion.append(type.sourceName());
 		} else if (type.isTypeVariable()) {
 			completion.append(type.sourceName());
-		} else if (type.isWildcard()) {
-			WildcardBinding wildcardBinding = (WildcardBinding) type;
-			completion.append('?');
-			switch (wildcardBinding.boundKind) {
-				case Wildcard.EXTENDS:
-					completion.append(' ');
-					completion.append(EXTENDS);
-					completion.append(' ');
-					createType(wildcardBinding.bound, completion);
-					if(wildcardBinding.otherBounds != null) {
-
-						int length = wildcardBinding.otherBounds.length;
-						for (int i = 0; i < length; i++) {
-							completion.append(' ');
-							completion.append('&');
-							completion.append(' ');
-							createType(wildcardBinding.otherBounds[i], completion);
-						}
-					}
-					break;
-				case Wildcard.SUPER:
-					completion.append(' ');
-					completion.append(SUPER);
-					completion.append(' ');
-					createType(wildcardBinding.bound, completion);
-					break;
-			}
 		} else if (type.isArrayType()) {
 			createType(type.leafComponentType(), completion);
 			int dim = type.dimensions();

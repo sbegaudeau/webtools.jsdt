@@ -893,20 +893,6 @@ public interface ITypeBinding extends IBinding {
 	public boolean isTypeVariable();
 
 	/**
-	 * Returns whether this wildcard type is an upper bound
-	 * ("extends") as opposed to a lower bound ("super").
-	 * Note that this property is only relevant for wildcards
-	 * that have a bound.
-	 *
-	 * @return <code>true</code> if this wildcard type has a bound that is
-	 * an upper bound, and <code>false</code> in all other cases
-	 * @see #isWildcardType()
-	 * @see #getBound()
-	 *  
-	 */
-	public boolean isUpperbound();
-
-	/**
 	 * Returns whether this type binding represents a wildcard type. A wildcard
 	 * type occus only as an argument to a parameterized type reference.
 	 * <p>

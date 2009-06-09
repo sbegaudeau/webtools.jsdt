@@ -71,7 +71,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser;
@@ -402,25 +401,6 @@ protected void attachOrphanCompletionNode(){
 				CompletionNodeDetector detector =  new CompletionNodeDetector(this.assistNode, expression);
 				if(detector.containsCompletionNode()) {
 				}
-			}
-		}
-	}
-
-	if(this.genericsPtr > -1) {
-		ASTNode node = this.genericsStack[this.genericsPtr];
-		if(node instanceof Wildcard && ((Wildcard)node).bound == this.assistNode){
-			int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
-			if (kind == K_BINARY_OPERATOR) {
-				int info = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER);
-				if (info == LESS) {
-					buildMoreGenericsCompletionContext(node, true);
-					return;
-				}
-			}
-			if(this.identifierLengthPtr > -1 && this.identifierLengthStack[this.identifierLengthPtr]!= 0) {
-				this.pushOnElementStack(K_BINARY_OPERATOR, LESS);
-				buildMoreGenericsCompletionContext(node, false);
-				return;
 			}
 		}
 	}
@@ -3106,62 +3086,6 @@ protected void consumeTypeParameter1WithExtends() {
 }
 protected void consumeTypeParameter1WithExtendsAndBounds() {
 	super.consumeTypeParameter1WithExtendsAndBounds();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeWildcard() {
-	super.consumeWildcard();
-	if (assistIdentifier() == null && this.currentToken == TokenNameIdentifier) { // Test below copied from CompletionScanner.getCurrentIdentifierSource()
-		if (cursorLocation < this.scanner.startPosition && this.scanner.currentPosition == this.scanner.startPosition){ // fake empty identifier got issued
-			this.pushIdentifier();
-		} else if (cursorLocation+1 >= this.scanner.startPosition && cursorLocation < this.scanner.currentPosition){
-			this.pushIdentifier();
-		} else {
-			return;
-		}
-	} else {
-		return;
-	}
-	Wildcard wildcard = (Wildcard) this.genericsStack[this.genericsPtr];
-	CompletionOnKeyword1 keyword = new CompletionOnKeyword1(
-		identifierStack[this.identifierPtr],
-		identifierPositionStack[this.identifierPtr],
-		new char[][]{Keywords.EXTENDS, Keywords.SUPER} );
-	keyword.canCompleteEmptyToken = true;
-	wildcard.kind = Wildcard.EXTENDS;
-	wildcard.bound = keyword;
-
-	this.identifierPtr--;
-	this.identifierLengthPtr--;
-
-	this.assistNode = wildcard.bound;
-	this.lastCheckPoint = wildcard.bound.sourceEnd + 1;
-}
-protected void consumeWildcard1() {
-	super.consumeWildcard1();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeWildcard2() {
-	super.consumeWildcard2();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeWildcard3() {
-	super.consumeWildcard3();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeWildcardBoundsExtends() {
-	super.consumeWildcardBoundsExtends();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeWildcardBounds1Extends() {
-	super.consumeWildcardBounds1Extends();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeWildcardBounds2Extends() {
-	super.consumeWildcardBounds2Extends();
-	popElement(K_EXTENDS_KEYWORD);
-}
-protected void consumeWildcardBounds3Extends() {
-	super.consumeWildcardBounds3Extends();
 	popElement(K_EXTENDS_KEYWORD);
 }
 protected void consumeUnaryExpression(int op) {

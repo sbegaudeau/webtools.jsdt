@@ -979,11 +979,9 @@ public class Bindings {
 		binding= normalizeTypeBinding(binding);
 		if (binding == null || !binding.isWildcardType())
 			return binding;
-		if (binding.isUpperbound()) {
-			return binding.getBound();
-		} else {
-			return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
-		}
+		
+		return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
+		
 	}
 
 	/**

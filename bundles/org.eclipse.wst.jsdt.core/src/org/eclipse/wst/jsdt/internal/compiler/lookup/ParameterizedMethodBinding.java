@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 
 /**
  * Binding denoting a method after type parameter substitutions got performed.
@@ -219,7 +218,7 @@ public class ParameterizedMethodBinding extends MethodBinding {
 		TypeBinding rawType = environment.convertToRawType(receiverType.erasure());
 		method.returnType = environment.createParameterizedType(
 			genericClassType,
-			new TypeBinding[] {  environment.createWildcard(genericClassType, 0, rawType, null /*no extra bound*/, Wildcard.EXTENDS) },
+			new TypeBinding[] {  environment.createWildcard(genericClassType, 0, rawType, null /*no extra bound*/, 0) },
 			null);
 		return method;
 	}

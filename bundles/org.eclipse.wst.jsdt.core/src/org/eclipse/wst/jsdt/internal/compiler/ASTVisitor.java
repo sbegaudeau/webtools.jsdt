@@ -102,7 +102,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -524,13 +523,6 @@ public abstract class ASTVisitor {
 	public void endVisit(WithStatement whileStatement, BlockScope scope) {
 		// do nothing by default
 	}
-
-	public void endVisit(Wildcard wildcard, BlockScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(Wildcard wildcard, ClassScope scope) {
-		// do nothing by default
-	}
 	public boolean visit(
     		AllocationExpression allocationExpression,
     		BlockScope scope) {
@@ -941,12 +933,6 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(WithStatement whileStatement, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(Wildcard wildcard, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(Wildcard wildcard, ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ObjectLiteral literal, BlockScope scope) {

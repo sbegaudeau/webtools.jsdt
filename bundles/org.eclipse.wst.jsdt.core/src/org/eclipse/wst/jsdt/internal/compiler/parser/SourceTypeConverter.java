@@ -55,7 +55,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
@@ -825,12 +824,6 @@ public class SourceTypeConverter {
 										break checkSuper;
 									}
 								}
-								this.namePos += max;
-								Wildcard result = new Wildcard(Wildcard.SUPER);
-								result.bound = decodeType(typeName, length, start, end);
-								result.sourceStart = start;
-								result.sourceEnd = end;
-								return result;
 							}
 							break;
 						case 'e' :
@@ -842,18 +835,9 @@ public class SourceTypeConverter {
 									}
 								}
 								this.namePos += max;
-								Wildcard result = new Wildcard(Wildcard.EXTENDS);
-								result.bound = decodeType(typeName, length, start, end);
-								result.sourceStart = start;
-								result.sourceEnd = end;
-								return result;
 							}
 							break;
 					}
-					Wildcard result = new Wildcard(Wildcard.UNBOUND);
-					result.sourceStart = start;
-					result.sourceEnd = end;
-					return result;
 				case '[' :
 					if (dim == 0) nameFragmentEnd = this.namePos-1;
 					dim++;

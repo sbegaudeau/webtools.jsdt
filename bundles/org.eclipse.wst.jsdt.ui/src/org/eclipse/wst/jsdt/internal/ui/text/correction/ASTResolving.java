@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -405,10 +405,6 @@ public class ASTResolving {
 				ITypeBinding parentBinding= getPossibleTypeBinding(parent);
 				if (parentBinding == null || !parentBinding.isWildcardType()) {
 					return null;
-				}
-				WildcardType wildcardType= (WildcardType) parent;
-				if (parentBinding.isUpperbound() == wildcardType.isUpperBound()) {
-					return parentBinding.getBound();
 				}
 				return null;
 			}
@@ -1042,11 +1038,9 @@ public class ASTResolving {
 	public static ITypeBinding normalizeWildcardType(ITypeBinding wildcardType, boolean isBindingToAssign, AST ast) {
 		ITypeBinding bound= wildcardType.getBound();
 		if (isBindingToAssign) {
-			if (bound == null || !wildcardType.isUpperbound()) {
-				return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
-			}
+			return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 		} else {
-			if (bound == null || wildcardType.isUpperbound()) {
+			if (bound == null) {
 				return null;
 			}
 		}			

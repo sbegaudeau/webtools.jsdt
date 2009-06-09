@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 public class CaptureBinding extends TypeVariableBinding {
@@ -94,49 +93,6 @@ public class CaptureBinding extends TypeVariableBinding {
 			for (int i = 0, length = substitutedVariableInterfaces.length; i < length; i++) {
 				if (substitutedVariableInterfaces[i] == this) substitutedVariableInterfaces[i] = originalVariableInterfaces[i];
 			}
-		}
-		// no substitution for wildcard bound (only formal bounds from type variables are to be substituted: 104082)
-		TypeBinding originalWildcardBound = wildcard.bound;
-
-		switch (wildcard.boundKind) {
-			case Wildcard.EXTENDS :
-				// still need to capture bound supertype as well so as not to expose wildcards to the outside (111208)
-				TypeBinding substitutedWildcardBound = originalWildcardBound.capture(scope, this.position);
-				if (wildcard.bound.isInterface()) {
-					this.superclass = substitutedVariableSuperclass;
-					// merge wildcard bound into variable superinterfaces using glb
-					if (substitutedVariableInterfaces == Binding.NO_SUPERINTERFACES) {
-						this.superInterfaces = new ReferenceBinding[] { (ReferenceBinding) substitutedWildcardBound };
-					} else {
-						int length = substitutedVariableInterfaces.length;
-						System.arraycopy(substitutedVariableInterfaces, 0, substitutedVariableInterfaces = new ReferenceBinding[length+1], 1, length);
-						substitutedVariableInterfaces[0] =  (ReferenceBinding) substitutedWildcardBound;
-						this.superInterfaces = Scope.greaterLowerBound(substitutedVariableInterfaces);
-					}
-				} else {
-					// per construction the wildcard bound is a subtype of variable superclass
-					this.superclass = wildcard.bound.isArrayType() ? substitutedVariableSuperclass : (ReferenceBinding) substitutedWildcardBound;
-					this.superInterfaces = substitutedVariableInterfaces;
-				}
-				this.firstBound =  substitutedWildcardBound;
-				if ((substitutedWildcardBound.tagBits & TagBits.HasTypeVariable) == 0)
-					this.tagBits &= ~TagBits.HasTypeVariable;
-				break;
-			case Wildcard.UNBOUND :
-				this.superclass = substitutedVariableSuperclass;
-				this.superInterfaces = substitutedVariableInterfaces;
-				this.tagBits &= ~TagBits.HasTypeVariable;
-				break;
-			case Wildcard.SUPER :
-				this.superclass = substitutedVariableSuperclass;
-				if (wildcardVariable.firstBound == substitutedVariableSuperclass || originalWildcardBound == substitutedVariableSuperclass) {
-					this.firstBound = substitutedVariableSuperclass;
-				}
-				this.superInterfaces = substitutedVariableInterfaces;
-				this.lowerBound = originalWildcardBound;
-				if ((originalWildcardBound.tagBits & TagBits.HasTypeVariable) == 0)
-					this.tagBits &= ~TagBits.HasTypeVariable;
-				break;
 		}
 	}
 

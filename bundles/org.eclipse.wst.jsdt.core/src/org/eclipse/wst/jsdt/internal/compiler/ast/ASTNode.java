@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
 public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
@@ -246,11 +245,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	private static int checkInvocationArgument(BlockScope scope, Expression argument, TypeBinding parameterType, TypeBinding argumentType, TypeBinding originalParameterType) {
 		argument.computeConversion(scope, parameterType, argumentType);
 
-		if (argumentType != TypeBinding.NULL && parameterType.isWildcard()) {
-			WildcardBinding wildcard = (WildcardBinding) parameterType;
-			if (wildcard.boundKind != Wildcard.SUPER && wildcard.otherBounds == null) // lub wildcards are tolerated
-		    	return INVOCATION_ARGUMENT_WILDCARD;
-		}
 		TypeBinding checkedParameterType = originalParameterType == null ? parameterType : originalParameterType;
 		if (argumentType != checkedParameterType && argumentType.needsUncheckedConversion(checkedParameterType)) {
 			scope.problemReporter().unsafeTypeConversion(argument, argumentType, checkedParameterType);

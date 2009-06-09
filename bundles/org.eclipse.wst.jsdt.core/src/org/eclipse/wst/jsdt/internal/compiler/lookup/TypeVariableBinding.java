@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
 /**
@@ -62,58 +61,6 @@ public class TypeVariableBinding extends ReferenceBinding {
 
 		if (argumentType.isWildcard() && !argumentType.isIntersectionType()) {
 			WildcardBinding wildcard = (WildcardBinding) argumentType;
-			switch(wildcard.boundKind) {
-				case Wildcard.EXTENDS :
-					TypeBinding wildcardBound = wildcard.bound;
-					if (wildcardBound == this)
-						return TypeConstants.OK;
-					ReferenceBinding superclassBound = hasSubstitution ? (ReferenceBinding)Scope.substitute(substitution, this.superclass) : this.superclass;
-					boolean isArrayBound = wildcardBound.isArrayType();
-					if (!wildcardBound.isInterface()) {
-						if (superclassBound.id != TypeIds.T_JavaLangObject) {
-							if (isArrayBound) {
-								if (!wildcardBound.isCompatibleWith(superclassBound))
-									return TypeConstants.MISMATCH;
-							} else {
-								TypeBinding match = ((ReferenceBinding)wildcardBound).findSuperTypeWithSameErasure(superclassBound);
-								if (match != null) {
-									if (!match.isIntersectingWith(superclassBound)) {
-										return TypeConstants.MISMATCH;
-									}
-								} else {
-									return TypeConstants.MISMATCH;
-								}
-							}
-						}
-					}
-					ReferenceBinding[] superInterfaceBounds = hasSubstitution ? Scope.substitute(substitution, this.superInterfaces) : this.superInterfaces;
-					int length = superInterfaceBounds.length;
-					boolean mustImplement = isArrayBound || ((ReferenceBinding)wildcardBound).isFinal();
-					for (int i = 0; i < length; i++) {
-						TypeBinding superInterfaceBound = superInterfaceBounds[i];
-						if (isArrayBound) {
-							if (!wildcardBound.isCompatibleWith(superInterfaceBound))
-									return TypeConstants.MISMATCH;
-						} else {
-							TypeBinding match = wildcardBound.findSuperTypeWithSameErasure(superInterfaceBound);
-							if (match != null) {
-								if (!match.isIntersectingWith(superInterfaceBound)) {
-									return TypeConstants.MISMATCH;
-								}
-							} else if (mustImplement) {
-									return TypeConstants.MISMATCH; // cannot be extended further to satisfy missing bounds
-							}
-						}
-
-					}
-					break;
-
-				case Wildcard.SUPER :
-					return boundCheck(substitution, wildcard.bound);
-
-				case Wildcard.UNBOUND :
-					break;
-			}
 			return TypeConstants.OK;
 		}
 		boolean unchecked = false;

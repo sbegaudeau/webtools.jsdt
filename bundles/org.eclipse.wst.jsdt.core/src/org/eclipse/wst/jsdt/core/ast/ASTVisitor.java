@@ -299,10 +299,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(IWithStatement whileStatement) {
 		// do nothing by default
 	}
-
-	public void endVisit(IWildcard wildcard) {
-		// do nothing by default
-	}
 	public boolean visit(IAllocationExpression allocationExpression) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -596,9 +592,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IWithStatement whileStatement) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(IWildcard wildcard) {
 		return true; // do nothing by default, keep traversing
 	}
 

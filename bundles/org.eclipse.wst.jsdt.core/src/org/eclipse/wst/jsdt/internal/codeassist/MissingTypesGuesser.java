@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReferen
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -92,16 +91,6 @@ public class MissingTypesGuesser extends ASTVisitor {
 
 		public boolean visit(SingleTypeReference singleTypeReference, ClassScope scope) {
 			this.cleanUp(singleTypeReference);
-			return true;
-		}
-
-		public boolean visit(Wildcard wildcard, BlockScope scope) {
-			this.cleanUp(wildcard);
-			return true;
-		}
-
-		public boolean visit(Wildcard wildcard, ClassScope scope) {
-			this.cleanUp(wildcard);
 			return true;
 		}
 
@@ -439,28 +428,12 @@ public class MissingTypesGuesser extends ASTVisitor {
 			return convert((ArrayTypeReference)typeRef);
 		} else if(typeRef instanceof ArrayQualifiedTypeReference) {
 			return convert((ArrayQualifiedTypeReference)typeRef);
-		} else if(typeRef instanceof Wildcard) {
-			return convert((Wildcard)typeRef);
 		} else if (typeRef instanceof SingleTypeReference) {
 			return convert((SingleTypeReference)typeRef);
 		} else if (typeRef instanceof QualifiedTypeReference) {
 			return convert((QualifiedTypeReference)typeRef);
 		}
 		return null;
-	}
-
-	private TypeReference convert(Wildcard typeRef) {
-		TypeReference bound = typeRef.bound;
-		TypeReference convertedBound = null;
-		if (bound != null) {
-			convertedBound = convert(bound);
-			if (convertedBound == null) return null;
-		}
-		Wildcard convertedType = new Wildcard(typeRef.kind);
-		convertedType.bound = convertedBound;
-		convertedType.sourceStart = typeRef.sourceStart;
-		convertedType.sourceEnd = typeRef.sourceEnd;
-		return convertedType;
 	}
 
 	private char[][][] findTypeNames(char[][] missingTypeName) {

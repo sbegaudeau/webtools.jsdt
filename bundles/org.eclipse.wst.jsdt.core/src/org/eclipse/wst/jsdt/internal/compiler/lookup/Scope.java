@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
@@ -284,19 +283,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				if (substitute != originalLeafComponentType) {
 					return originalArrayType.environment.createArrayType(substitute.leafComponentType(), substitute.dimensions() + originalType.dimensions());
 				}
-				break;
-
-			case Binding.WILDCARD_TYPE:
-		        WildcardBinding wildcard = (WildcardBinding) originalType;
-		        if (wildcard.boundKind != Wildcard.UNBOUND) {
-			        TypeBinding originalBound = wildcard.bound;
-			        TypeBinding substitutedBound = substitute(substitution, originalBound);
-			        TypeBinding[] originalOtherBounds = wildcard.otherBounds;
-			        TypeBinding[] substitutedOtherBounds = substitute(substitution, originalOtherBounds);
-			        if (substitutedBound != originalBound || originalOtherBounds != substitutedOtherBounds) {
-		        		return wildcard.environment.createWildcard(wildcard.genericType, wildcard.rank, substitutedBound, substitutedOtherBounds, wildcard.boundKind);
-			        }
-		        }
 				break;
 
 			case Binding.TYPE:
@@ -3256,76 +3242,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 	private TypeBinding leastContainingTypeArgument(TypeBinding u, TypeBinding v, ReferenceBinding genericType, int rank, List lubStack) {
 		if (u == null) return v;
 		if (u == v) return u;
-		if (v.isWildcard()) {
-			WildcardBinding wildV = (WildcardBinding) v;
-			if (u.isWildcard()) {
-				WildcardBinding wildU = (WildcardBinding) u;
-				switch (wildU.boundKind) {
-					// ? extends U
-					case Wildcard.EXTENDS :
-						switch(wildV.boundKind) {
-							// ? extends U, ? extends V
-							case Wildcard.EXTENDS :
-								TypeBinding lub = lowerUpperBound(new TypeBinding[]{wildU.bound,wildV.bound}, lubStack);
-								if (lub == null) return null;
-								// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-								if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, Wildcard.UNBOUND);
-								return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, Wildcard.EXTENDS);
-							// ? extends U, ? SUPER V
-							case Wildcard.SUPER :
-								if (wildU.bound == wildV.bound) return wildU.bound;
-								return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, Wildcard.UNBOUND);
-						}
-						break;
-						// ? super U
-					case Wildcard.SUPER :
-						// ? super U, ? super V
-						if (wildU.boundKind == Wildcard.SUPER) {
-							TypeBinding[] glb = greaterLowerBound(new TypeBinding[]{wildU.bound,wildV.bound});
-							if (glb == null) return null;
-							return environment().createWildcard(genericType, rank, glb[0], null /*no extra bound*/, Wildcard.SUPER);	// TODO (philippe) need to capture entire bounds
-						}
-				}
-			} else {
-				switch (wildV.boundKind) {
-					// U, ? extends V
-					case Wildcard.EXTENDS :
-						TypeBinding lub = lowerUpperBound(new TypeBinding[]{u,wildV.bound}, lubStack);
-						if (lub == null) return null;
-						// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-						if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, Wildcard.UNBOUND);
-						return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, Wildcard.EXTENDS);
-					// U, ? super V
-					case Wildcard.SUPER :
-						TypeBinding[] glb = greaterLowerBound(new TypeBinding[]{u,wildV.bound});
-						if (glb == null) return null;
-						return environment().createWildcard(genericType, rank, glb[0], null /*no extra bound*/, Wildcard.SUPER);	// TODO (philippe) need to capture entire bounds
-					case Wildcard.UNBOUND :
-				}
-			}
-		} else if (u.isWildcard()) {
-			WildcardBinding wildU = (WildcardBinding) u;
-			switch (wildU.boundKind) {
-				// U, ? extends V
-				case Wildcard.EXTENDS :
-					TypeBinding lub = lowerUpperBound(new TypeBinding[]{wildU.bound, v}, lubStack);
-					if (lub == null) return null;
-					// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-					if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, Wildcard.UNBOUND);
-					return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, Wildcard.EXTENDS);
-				// U, ? super V
-				case Wildcard.SUPER :
-					TypeBinding[] glb = greaterLowerBound(new TypeBinding[]{wildU.bound, v});
-					if (glb == null) return null;
-					return environment().createWildcard(genericType, rank, glb[0], null /*no extra bound*/, Wildcard.SUPER); // TODO (philippe) need to capture entire bounds
-				case Wildcard.UNBOUND :
-			}
-		}
+
 		TypeBinding lub = lowerUpperBound(new TypeBinding[]{u,v}, lubStack);
 		if (lub == null) return null;
 		// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-		if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, Wildcard.UNBOUND);
-		return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, Wildcard.EXTENDS);
+		if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, 0);
+		return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, 0);
 	}
 
 	// 15.12.2
@@ -3408,7 +3330,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				otherBounds[rank++] = mec;
 			}
 		}
-		TypeBinding intersectionType = environment().createWildcard(null, 0, firstBound, otherBounds, Wildcard.EXTENDS);
+		TypeBinding intersectionType = environment().createWildcard(null, 0, firstBound, otherBounds, 0);
 		return commonDim == 0 ? intersectionType : environment().createArrayType(intersectionType, commonDim);
 	}
 

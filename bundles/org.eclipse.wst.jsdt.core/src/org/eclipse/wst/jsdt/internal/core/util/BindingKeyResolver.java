@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -351,19 +350,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 	public void consumeTypeWithCapture() {
 		BindingKeyResolver resolver = (BindingKeyResolver) this.types.get(0);
 		this.typeBinding =(TypeBinding) resolver.compilerBinding;
-	}
-
-	public void consumeWildCard(int kind) {
-		switch (kind) {
-			case Wildcard.EXTENDS:
-			case Wildcard.SUPER:
-				BindingKeyResolver boundResolver = (BindingKeyResolver) this.types.get(0);
-				this.typeBinding = this.environment.createWildcard((ReferenceBinding) this.typeBinding, this.wildcardRank, (TypeBinding) boundResolver.compilerBinding, null /*no extra bound*/, kind);
-				break;
-			case Wildcard.UNBOUND:
-				this.typeBinding = this.environment.createWildcard((ReferenceBinding) this.typeBinding, rank++, null/*no bound*/, null /*no extra bound*/, kind);
-				break;
-		}
 	}
 
 	/*

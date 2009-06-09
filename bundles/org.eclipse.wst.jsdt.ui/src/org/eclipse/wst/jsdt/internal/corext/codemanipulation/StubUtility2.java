@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -276,7 +276,7 @@ public final class StubUtility2 {
 		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaScriptProject(), methodBinding);
 		for (int i= 0; i < params.length; i++) {
 			SingleVariableDeclaration varDecl= ast.newSingleVariableDeclaration();
-			if (params[i].isWildcardType() && !params[i].isUpperbound())
+			if (params[i].isWildcardType())
 				varDecl.setType(imports.addImport(params[i].getBound(), ast));
 			else {
 				if (methodBinding.isVarargs() && params[i].isArray() && i == params.length - 1) {
@@ -595,7 +595,7 @@ public final class StubUtility2 {
 			WildcardType type= ast.newWildcardType();
 			ITypeBinding bound= normalized.getBound();
 			if (bound != null)
-				type.setBound(createTypeNode(bound, ast), normalized.isUpperbound());
+				type.setBound(createTypeNode(bound, ast), false);
 			return type;
 		} else if (normalized.isArray())
 			return ast.newArrayType(createTypeNode(normalized.getElementType(), ast), normalized.getDimensions());
@@ -730,10 +730,6 @@ public final class StubUtility2 {
 					continue;
 				ITypeBinding[] parameterBindings= typeMethods[index].getParameterTypes();
 				boolean upper= false;
-				for (int offset= 0; offset < parameterBindings.length; offset++) {
-					if (parameterBindings[offset].isWildcardType() && parameterBindings[offset].isUpperbound())
-						upper= true;
-				}
 				if (!upper)
 					allMethods.add(typeMethods[index]);
 			}

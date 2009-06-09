@@ -120,7 +120,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
@@ -7100,114 +7099,6 @@ protected void consumeVariableDeclarators() {
 protected void consumeVariableInitializers() {
 	// VariableInitializers ::= VariableInitializers ',' VariableInitializer
 	concatExpressionLists();
-}
-protected void consumeWildcard() {
-	final Wildcard wildcard = new Wildcard(Wildcard.UNBOUND);
-	wildcard.sourceEnd = this.intStack[this.intPtr--];
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcard1() {
-	final Wildcard wildcard = new Wildcard(Wildcard.UNBOUND);
-	wildcard.sourceEnd = this.intStack[this.intPtr--];
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcard1WithBounds() {
-	// Nothing to do
-	// The wildcard is created by the consumeWildcardBounds1Extends or by consumeWildcardBounds1Super
-}
-protected void consumeWildcard2() {
-	final Wildcard wildcard = new Wildcard(Wildcard.UNBOUND);
-	wildcard.sourceEnd = this.intStack[this.intPtr--];
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcard2WithBounds() {
-	// Nothing to do
-	// The wildcard is created by the consumeWildcardBounds2Extends or by consumeWildcardBounds2Super
-}
-protected void consumeWildcard3() {
-	final Wildcard wildcard = new Wildcard(Wildcard.UNBOUND);
-	wildcard.sourceEnd = this.intStack[this.intPtr--];
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcard3WithBounds() {
-	// Nothing to do
-	// The wildcard is created by the consumeWildcardBounds3Extends or by consumeWildcardBounds3Super
-}
-protected void consumeWildcardBounds1Extends() {
-	Wildcard wildcard = new Wildcard(Wildcard.EXTENDS);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBounds1Super() {
-	Wildcard wildcard = new Wildcard(Wildcard.SUPER);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	this.intPtr--; // remove the starting position of the super keyword
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBounds2Extends() {
-	Wildcard wildcard = new Wildcard(Wildcard.EXTENDS);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBounds2Super() {
-	Wildcard wildcard = new Wildcard(Wildcard.SUPER);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	this.intPtr--; // remove the starting position of the super keyword
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBounds3Extends() {
-	Wildcard wildcard = new Wildcard(Wildcard.EXTENDS);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBounds3Super() {
-	Wildcard wildcard = new Wildcard(Wildcard.SUPER);
-	wildcard.bound = (TypeReference) this.genericsStack[this.genericsPtr];
-	this.intPtr--; // remove the starting position of the super keyword
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	this.genericsStack[this.genericsPtr] = wildcard;
-}
-protected void consumeWildcardBoundsExtends() {
-	Wildcard wildcard = new Wildcard(Wildcard.EXTENDS);
-	wildcard.bound = getTypeReference(this.intStack[this.intPtr--]);
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcardBoundsSuper() {
-	Wildcard wildcard = new Wildcard(Wildcard.SUPER);
-	wildcard.bound = getTypeReference(this.intStack[this.intPtr--]);
-	this.intPtr--; // remove the starting position of the super keyword
-	wildcard.sourceEnd = wildcard.bound.sourceEnd;
-	this.intPtr--; // remove end position of the '?'
-	wildcard.sourceStart = this.intStack[this.intPtr--];
-	pushOnGenericsStack(wildcard);
-}
-protected void consumeWildcardWithBounds() {
-	// Nothing to do
-	// The wildcard is created by the consumeWildcardBoundsExtends or by consumeWildcardBoundsSuper
 }
 /**
  * Given the current comment stack, answer whether some comment is available in a certain exclusive range

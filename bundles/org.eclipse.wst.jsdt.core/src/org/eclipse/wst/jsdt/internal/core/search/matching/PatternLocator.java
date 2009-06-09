@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -593,15 +592,6 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 
 			// If have no binding for pattern arg, then we won't be able to refine accuracy
 			if (patternBinding == null) {
-				if (argumentBinding.isWildcard()) {
-					WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-					if (wildcardBinding.boundKind == Wildcard.UNBOUND) {
-						matchRule &= ~SearchPattern.R_FULL_MATCH;
-					} else {
-						match.setRule(SearchPattern.R_ERASURE_MATCH);
-						return;
-					}
-				}
 				continue;
 			}
 
@@ -610,25 +600,6 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 				default:
 					if (argumentBinding.isWildcard()) {
 						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-						switch (wildcardBinding.boundKind) {
-							case Wildcard.EXTENDS:
-								if (wildcardBinding.bound== null || patternBinding.isCompatibleWith(wildcardBinding.bound)) {
-									// valid only when arg extends a superclass of pattern
-									matchRule &= ~SearchPattern.R_FULL_MATCH;
-									continue;
-								}
-								break;
-							case Wildcard.SUPER:
-								if (wildcardBinding.bound== null || wildcardBinding.bound.isCompatibleWith(patternBinding)) {
-									// valid only when arg super a subclass of pattern
-									matchRule &= ~SearchPattern.R_FULL_MATCH;
-									continue;
-								}
-								break;
-							case Wildcard.UNBOUND:
-								matchRule &= ~SearchPattern.R_FULL_MATCH;
-								continue;
-						}
 					} else if (argumentBinding == patternBinding)
 						// valid only when arg is equals to pattern
 						continue;
@@ -821,14 +792,6 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 				}
 				if (argTypeBinding.isWildcard()) {
 					WildcardBinding wildcardBinding = (WildcardBinding) argTypeBinding;
-					switch (wildcardBinding.boundKind) {
-						case Wildcard.EXTENDS:
-							// Invalid if type argument is not exact
-							if (patternTypeArgHasAnyChars) return impossible;
-						case Wildcard.UNBOUND:
-							// there's no bound name to match => valid
-							continue nextTypeArgument;
-					}
 					// Look if bound name match pattern type argument
 					ReferenceBinding boundBinding = (ReferenceBinding) wildcardBinding.bound;
 					if (CharOperation.match(patternTypeArgument, boundBinding.shortReadableName(), this.isCaseSensitive) ||

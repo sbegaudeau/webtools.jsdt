@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler;
 
-import org.eclipse.wst.jsdt.core.ast.IWildcard;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -101,7 +100,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UndefinedLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.ast.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -527,13 +525,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public void endVisit(WithStatement whileStatement, BlockScope scope) {
 		visitor.endVisit(whileStatement);
 	}
-
-	public void endVisit(Wildcard wildcard, BlockScope scope) {
-		visitor.endVisit((IWildcard)wildcard);
-	}
-	public void endVisit(Wildcard wildcard, ClassScope scope) {
-		visitor.endVisit((IWildcard)wildcard);
-	}
 	public boolean visit(
     		AllocationExpression allocationExpression,
     		BlockScope scope) {
@@ -940,12 +931,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(WithStatement whileStatement, BlockScope scope) {
 		return visitor.visit(whileStatement);
-	}
-	public boolean visit(Wildcard wildcard, BlockScope scope) {
-		return visitor.visit((IWildcard)wildcard);
-	}
-	public boolean visit(Wildcard wildcard, ClassScope scope) {
-		return visitor.visit((IWildcard)wildcard);
 	}
 	public boolean visit(ObjectLiteral literal, BlockScope scope) {
 		return visitor.visit(literal);

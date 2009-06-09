@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedSingleTypeReferen
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
@@ -2924,24 +2923,6 @@ class ASTConverter {
 					recordNodes(newType, inferredType);
 			}
 			return newType;
-		}
-		if (typeReference instanceof Wildcard) {
-			final Wildcard wildcard = (Wildcard) typeReference;
-			final WildcardType wildcardType = new WildcardType(this.ast);
-			if (wildcard.bound != null) {
-				final Type bound = convertType(wildcard.bound,null);
-				wildcardType.setBound(bound, wildcard.kind == Wildcard.EXTENDS);
-				int start = wildcard.sourceStart;
-				wildcardType.setSourceRange(start, bound.getStartPosition() + bound.getLength() - start);
-			} else {
-				final int start = wildcard.sourceStart;
-				final int end = wildcard.sourceEnd;
-				wildcardType.setSourceRange(start, end - start + 1);
-			}
-			if (this.resolveBindings) {
-				recordNodes(wildcardType, typeReference);
-			}
-			return wildcardType;
 		}
 		Type type = null;
 		int sourceStart = -1;

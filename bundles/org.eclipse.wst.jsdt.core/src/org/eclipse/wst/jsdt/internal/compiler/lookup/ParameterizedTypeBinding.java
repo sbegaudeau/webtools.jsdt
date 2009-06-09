@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 
 /**
  * A parameterized type encapsulates a type with type arguments,
@@ -189,24 +188,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
         	if (formalArgument.isWildcard()) {
                 formalArgument.collectSubstitutes(scope, actualArgument, inferenceContext, constraint);
                 continue;
-        	} else if (actualArgument.isWildcard()){
-    			WildcardBinding actualWildcardArgument = (WildcardBinding) actualArgument;
-    			if (actualWildcardArgument.otherBounds == null) {
-    				if (constraint == TypeConstants.CONSTRAINT_SUPER) { // JLS 15.12.7, p.459
-						switch(actualWildcardArgument.boundKind) {
-		    				case Wildcard.EXTENDS :
-		    					formalArgument.collectSubstitutes(scope, actualWildcardArgument.bound, inferenceContext, TypeConstants.CONSTRAINT_SUPER);
-		    					continue;
-		    				case Wildcard.SUPER :
-		    					formalArgument.collectSubstitutes(scope, actualWildcardArgument.bound, inferenceContext, TypeConstants.CONSTRAINT_EXTENDS);
-		    					continue;
-		    				default :
-		    					continue; // cannot infer anything further from unbound wildcard
-		    			}
-    				} else {
-    					continue; // cannot infer anything further from wildcard
-    				}
-    			}
         	}
         	// by default, use EQUAL constraint
             formalArgument.collectSubstitutes(scope, actualArgument, inferenceContext, TypeConstants.CONSTRAINT_EQUAL);
@@ -607,9 +588,8 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 				if (isWildcardArgument) {
 					this.tagBits |= TagBits.HasDirectWildcard;
 				}
-				if (!isWildcardArgument || ((WildcardBinding) someArgument).boundKind != Wildcard.UNBOUND) {
-					this.tagBits |= TagBits.IsBoundParameterizedType;
-				}
+				
+				this.tagBits |= TagBits.IsBoundParameterizedType;
 			    this.tagBits |= someArgument.tagBits & TagBits.HasTypeVariable;
 			}
 		}
