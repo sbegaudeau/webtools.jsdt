@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
@@ -281,11 +280,6 @@ class BinaryExpressionFragmentBuilder
 		}
 		this.operatorsList.add(new Integer(TerminalTokens.TokenNamePLUS));
 		this.addRealFragment(combinedBinaryExpression.right);
-		return false;
-	}
-
-	public boolean visit(CastExpression castExpression, BlockScope scope) {
-		this.addRealFragment(castExpression);
 		return false;
 	}
 

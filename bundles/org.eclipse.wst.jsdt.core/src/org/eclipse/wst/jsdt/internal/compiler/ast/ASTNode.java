@@ -316,9 +316,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 					invocationStatus |= checkInvocationArgument(scope, arguments[i], params[i], argumentTypes[i], originalRawParam);
 				}
 			}
-			if (argsContainCast) {
-				CastExpression.checkNeedForArgumentCasts(scope, receiver, receiverType, method, arguments, argumentTypes, invocationSite);
-			}
 		}
 //		if ((invocationStatus & INVOCATION_ARGUMENT_WILDCARD) != 0) {
 //		    scope.problemReporter().wildcardInvocation((ASTNode)invocationSite, receiverType, method, argumentTypes);

@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
@@ -235,10 +234,6 @@ public int match(LocalDeclaration node, MatchingNodeSet nodeSet) {
 	return IMPOSSIBLE_MATCH;
 }
 public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
-	// each subtype should override if needed
-	return IMPOSSIBLE_MATCH;
-}
-public int match(MemberValuePair node, MatchingNodeSet nodeSet) {
 	// each subtype should override if needed
 	return IMPOSSIBLE_MATCH;
 }

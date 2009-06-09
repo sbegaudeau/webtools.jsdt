@@ -22,13 +22,11 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Clinit;
@@ -72,7 +70,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -161,9 +158,6 @@ public abstract class ASTVisitor {
 	public void endVisit(ArrayTypeReference arrayTypeReference, ClassScope scope) {
 		// do nothing by default
 	}
-	public void endVisit(AssertStatement assertStatement, BlockScope scope) {
-		// do nothing by default
-	}
 	public void endVisit(Assignment assignment, BlockScope scope) {
 		// do nothing by default
 	}
@@ -177,9 +171,6 @@ public abstract class ASTVisitor {
 		// do nothing by default
 	}
 	public void endVisit(CaseStatement caseStatement, BlockScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(CastExpression castExpression, BlockScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(CharLiteral charLiteral, BlockScope scope) {
@@ -365,13 +356,6 @@ public abstract class ASTVisitor {
 		// do nothing by default
 	}
 	public void endVisit(LongLiteral longLiteral, BlockScope scope) {
-		// do nothing by default
-	}
-	/**
-	 * @param pair
-	 * @param scope
-	 */
-	public void endVisit(MemberValuePair pair, BlockScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
@@ -588,9 +572,6 @@ public abstract class ASTVisitor {
 	public boolean visit(ArrayTypeReference arrayTypeReference, ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(AssertStatement assertStatement, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
 	public boolean visit(Assignment assignment, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -604,9 +585,6 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(CaseStatement caseStatement, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(CastExpression castExpression, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
@@ -800,14 +778,6 @@ public abstract class ASTVisitor {
 	}
 	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
-	}
-	/**
-	 * @param pair
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(MemberValuePair pair, BlockScope scope) {
-		return true;
 	}
 	public boolean visit(MessageSend messageSend, BlockScope scope) {
 		return true; // do nothing by default, keep traversing

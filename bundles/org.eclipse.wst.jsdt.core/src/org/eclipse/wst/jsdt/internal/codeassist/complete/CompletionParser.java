@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
@@ -50,7 +49,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -330,10 +328,6 @@ protected void attachOrphanCompletionNode(){
 			}
 		}
 
-		if(orphan instanceof MemberValuePair) {
-			return;
-		}
-
 		if ((topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_CATCH_AND_RIGHT_PAREN)) {
 			if (this.assistNode instanceof CompletionOnSingleTypeReference &&
 					((CompletionOnSingleTypeReference)this.assistNode).isException()) {
@@ -377,17 +371,11 @@ protected void attachOrphanCompletionNode(){
 				if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_MEMBER_VALUE_ARRAY_INITIALIZER ) {
 					ArrayInitializer arrayInitializer = new ArrayInitializer();
 					arrayInitializer.expressions = new Expression[]{expression};
-
-					MemberValuePair valuePair =
-							new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, arrayInitializer);
 				} else if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
 					if (expression instanceof SingleNameReference) {
 						SingleNameReference nameReference = (SingleNameReference) expression;
-						CompletionOnMemberValueName memberValueName = new CompletionOnMemberValueName(nameReference.token, nameReference.sourceStart, nameReference.sourceEnd);
 						return;
 					} else if (expression instanceof QualifiedNameReference) {
-						MemberValuePair valuePair =
-							new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, expression);
 					}
 				} else {
 					int index;
@@ -405,11 +393,7 @@ protected void attachOrphanCompletionNode(){
 						this.identifierPtr = identPtr;
 
 						this.identifierLengthPtr--;
-						MemberValuePair memberValuePair = new MemberValuePair(
-								this.identifierStack[this.identifierPtr--],
-								expression.sourceStart,
-								expression.sourceEnd,
-								expression);
+						this.identifierPtr--;
 
 						return;
 					}
@@ -417,20 +401,6 @@ protected void attachOrphanCompletionNode(){
 			} else {
 				CompletionNodeDetector detector =  new CompletionNodeDetector(this.assistNode, expression);
 				if(detector.containsCompletionNode()) {
-					MemberValuePair valuePair =
-						new MemberValuePair(VALUE, expression.sourceStart, expression.sourceEnd, expression);
-				}
-			}
-		}
-
-		if (this.astPtr > -1) {
-			ASTNode node = this.astStack[this.astPtr];
-			if(node instanceof MemberValuePair) {
-				MemberValuePair memberValuePair = (MemberValuePair) node;
-				CompletionNodeDetector detector =  new CompletionNodeDetector(this.assistNode, memberValuePair);
-				if(detector.containsCompletionNode()) {
-					this.assistNodeParent = detector.getCompletionNodeParent();
-					return;
 				}
 			}
 		}
@@ -688,17 +658,6 @@ private void buildMoreCompletionContext(Expression expression) {
 				if(info == bracketDepth) {
 					ReturnStatement returnStatement = new ReturnStatement(expression, expression.sourceStart, expression.sourceEnd);
 					assistNodeParent = returnStatement;
-				}
-				break nextElement;
-			case K_CAST_STATEMENT :
-				Expression castType;
-				if(this.expressionPtr > 0
-					&& ((castType = this.expressionStack[this.expressionPtr-1]) instanceof TypeReference
-						|| castType instanceof NameReference)) {
-					CastExpression cast = new CastExpression(expression, getTypeReference(castType));
-					cast.sourceStart = castType.sourceStart;
-					cast.sourceEnd= expression.sourceEnd;
-					assistNodeParent = cast;
 				}
 				break nextElement;
 			case K_UNARY_OPERATOR :
@@ -1594,29 +1553,6 @@ private boolean checkRecoveredMethod() {
 	}
 	return false;
 }
-private boolean checkMemberValueName() {
-	/* check if current awaiting identifier is the completion identifier */
-	if (this.indexOfAssistIdentifier() < 0) return false;
-
-	if (this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) != K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) return false;
-
-	if(this.identifierPtr > -1 && this.identifierLengthPtr > -1 && this.identifierLengthStack[this.identifierLengthPtr] == 1) {
-		char[] simpleName = this.identifierStack[this.identifierPtr];
-		long position = this.identifierPositionStack[this.identifierPtr--];
-		this.identifierLengthPtr--;
-		int end = (int) position;
-		int start = (int) (position >>> 32);
-
-
-		CompletionOnMemberValueName memberValueName = new CompletionOnMemberValueName(simpleName,start, end);
-		this.assistNode = memberValueName;
-		this.lastCheckPoint = this.assistNode.sourceEnd + 1;
-		this.isOrphanCompletionNode = true;
-
-		return true;
-	}
-	return false;
-}
 /**
  * Checks if the completion is in the context of a type and on a type reference in this type.
  * Persists the identifier into a fake field return type
@@ -1727,7 +1663,6 @@ private void classHeaderExtendsOrImplements(boolean isInterface) {
 public void completionIdentifierCheck(){
 	//if (assistNode != null) return;
 
-	if (checkMemberValueName()) return;
 	if (checkKeyword()) return;
 	if (checkRecoveredType()) return;
 	if (checkRecoveredMethod()) return;
@@ -1825,53 +1760,6 @@ protected void consumeCaseLabel() {
 	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) != K_SWITCH_LABEL) {
 		pushOnElementStack(K_SWITCH_LABEL);
 	}
-}
-protected void consumeCastExpressionWithPrimitiveType() {
-	popElement(K_CAST_STATEMENT);
-
-	Expression exp, cast, castType;
-	expressionPtr--;
-	expressionLengthPtr--;
-	expressionStack[expressionPtr] = cast = new CastExpression(exp = expressionStack[expressionPtr+1], castType = expressionStack[expressionPtr]);
-	cast.sourceStart = castType.sourceStart - 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-protected void consumeCastExpressionWithGenericsArray() {
-	popElement(K_CAST_STATEMENT);
-
-	Expression exp, cast, castType;
-	expressionPtr--;
-	expressionLengthPtr--;
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr + 1], castType = this.expressionStack[this.expressionPtr]);
-	cast.sourceStart = castType.sourceStart - 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-
-protected void consumeCastExpressionWithQualifiedGenericsArray() {
-	popElement(K_CAST_STATEMENT);
-
-	Expression exp, cast, castType;
-	expressionPtr--;
-	expressionLengthPtr--;
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr + 1], castType = this.expressionStack[this.expressionPtr]);
-	cast.sourceStart = castType.sourceStart - 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-protected void consumeCastExpressionWithNameArray() {
-	// CastExpression ::= PushLPAREN Name Dims PushRPAREN InsideCastExpression UnaryExpressionNotPlusMinus
-	popElement(K_CAST_STATEMENT);
-
-	Expression exp, cast, castType;
-
-	expressionPtr--;
-	expressionLengthPtr--;
-	expressionStack[expressionPtr] = cast = new CastExpression(exp = expressionStack[expressionPtr+1], castType = this.expressionStack[this.expressionPtr]);
-	cast.sourceStart = castType.sourceStart - 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-protected void consumeCastExpressionLL1() {
-	popElement(K_CAST_STATEMENT);
-	super.consumeCastExpressionLL1();
 }
 protected void consumeClassBodyDeclaration() {
 	popElement(K_BLOCK_DELIMITER);
@@ -2540,34 +2428,6 @@ protected void consumeLabel() {
 	super.consumeLabel();
 	this.pushOnLabelStack(this.identifierStack[this.identifierPtr]);
 	this.pushOnElementStack(K_LABEL, this.labelPtr);
-}
-protected void consumeMemberValuePair() {
-	/* check if current awaiting identifier is the completion identifier */
-	if (this.indexOfAssistIdentifier() < 0){
-		super.consumeMemberValuePair();
-		MemberValuePair memberValuePair = (MemberValuePair) this.astStack[this.astPtr];
-		if(this.assistNode != null && memberValuePair.value == this.assistNode) {
-			this.assistNodeParent = memberValuePair;
-		}
-		return;
-	}
-
-	char[] simpleName = this.identifierStack[this.identifierPtr];
-	long position = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	int end = (int) position;
-	int start = (int) (position >>> 32);
-
-	this.expressionPtr--;
-	this.expressionLengthPtr--;
-
-	CompletionOnMemberValueName memberValueName = new CompletionOnMemberValueName(simpleName,start, end);
-	this.pushOnAstStack(memberValueName);
-	this.assistNode = memberValueName;
-	this.lastCheckPoint = this.assistNode.sourceEnd + 1;
-	this.isOrphanCompletionNode = true;
-
-	this.restartRecovery = true;
 }
 protected void consumeMemberValueAsName() {
 	if ((indexOfAssistIdentifier()) < 0) {

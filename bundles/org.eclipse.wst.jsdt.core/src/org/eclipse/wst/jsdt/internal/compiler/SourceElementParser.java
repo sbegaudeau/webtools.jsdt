@@ -47,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -514,13 +513,6 @@ protected void consumeInterfaceHeaderName1() {
 	super.consumeInterfaceHeaderName1();
 	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
 		rememberCategories();
-}
-protected void consumeMemberValuePair() {
-	super.consumeMemberValuePair();
-	MemberValuePair memberValuepair = (MemberValuePair) this.astStack[this.astPtr];
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(memberValuepair.name, 0, memberValuepair.sourceStart);
-	}
 }
 protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
 	long selectorSourcePositions = (isAnonymousMethod) ? this.lParenPos

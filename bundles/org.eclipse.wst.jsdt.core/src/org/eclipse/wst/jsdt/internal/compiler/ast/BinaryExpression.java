@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -124,9 +124,6 @@ void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 	boolean leftIsCast, rightIsCast;
 	TypeBinding leftType = this.left.resolvedType;
 
-	if ((rightIsCast = this.right instanceof CastExpression) == true) {
-		this.right.bits |= ASTNode.DisableUnnecessaryCastCheck; // will check later on
-	}
 	TypeBinding rightType = this.right.resolveType(scope);
 
 	// use the id of the type to navigate into the table
@@ -220,11 +217,6 @@ void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 			return;
 	}
 
-	// check need for operand cast
-	if ((leftIsCast = (this.left instanceof CastExpression)) == true ||
-			rightIsCast) {
-		CastExpression.checkNeedForArgumentCasts(scope, operator, operatorSignature, this.left, leftTypeID, leftIsCast, this.right, rightTypeID, rightIsCast);
-	}
 	// compute the constant when valid
 	computeConstant(scope, leftTypeID, rightTypeID);
 }
@@ -288,10 +280,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	// keep implementation in sync with CombinedBinaryExpression#resolveType
 	// and nonRecursiveResolveTypeUpwards
 	boolean leftIsCast, rightIsCast;
-	if ((leftIsCast = this.left instanceof CastExpression) == true) this.left.bits |= ASTNode.DisableUnnecessaryCastCheck; // will check later on
 	TypeBinding leftType = this.left.resolveType(scope);
-
-	if ((rightIsCast = this.right instanceof CastExpression) == true) this.right.bits |= ASTNode.DisableUnnecessaryCastCheck; // will check later on
 	TypeBinding rightType = this.right.resolveType(scope);
 
 	// use the id of the type to navigate into the table
@@ -405,11 +394,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			scope.problemReporter().invalidOperator(this, leftType, rightType);
 			return null;
 	}
-
-	// check need for operand cast
-	if (leftIsCast || rightIsCast) {
-		CastExpression.checkNeedForArgumentCasts(scope, operator, operatorSignature, this.left, leftTypeID, leftIsCast, this.right, rightTypeID, rightIsCast);
-	}
+	
 	// compute the constant when valid
 	computeConstant(scope, leftTypeID, rightTypeID);
 	return this.resolvedType;

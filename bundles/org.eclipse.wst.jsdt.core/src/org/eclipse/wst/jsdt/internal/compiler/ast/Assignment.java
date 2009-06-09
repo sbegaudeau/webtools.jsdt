@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -188,10 +188,6 @@ public TypeBinding resolveType(BlockScope scope) {
 			|| rhsType.isCompatibleWith(lhsType)) {
 //		this.expression.computeConversion(scope, lhsType, rhsType);
 		checkAssignment(scope, lhsType, rhsType);
-		if (this.expression instanceof CastExpression
-				&& (this.expression.bits & ASTNode.UnnecessaryCast) == 0) {
-			CastExpression.checkNeedForAssignedCast(scope, lhsType, (CastExpression) this.expression);
-		}
 		return this.resolvedType;
 	} else if (scope.isBoxingCompatibleWith(rhsType, lhsType)
 						|| (rhsType.isBaseType()  // narrowing then boxing ?
@@ -199,10 +195,6 @@ public TypeBinding resolveType(BlockScope scope) {
 								&& !lhsType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(rhsType, scope.environment().computeBoxingType(lhsType)))) {
 		this.expression.computeConversion(scope, lhsType, rhsType);
-		if (this.expression instanceof CastExpression
-				&& (this.expression.bits & ASTNode.UnnecessaryCast) == 0) {
-			CastExpression.checkNeedForAssignedCast(scope, lhsType, (CastExpression) this.expression);
-		}
 		return this.resolvedType;
 	}
 	if (rhsType.isFunctionType() && this.lhs.isTypeReference())

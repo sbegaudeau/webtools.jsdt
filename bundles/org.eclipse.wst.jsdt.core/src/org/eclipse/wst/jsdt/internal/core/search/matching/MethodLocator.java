@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -157,13 +156,6 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 
 	// Method declaration may match pattern
 	return nodeSet.addMatch(node, resolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-}
-public int match(MemberValuePair node, MatchingNodeSet nodeSet) {
-	if (!this.pattern.findReferences) return IMPOSSIBLE_MATCH;
-
-	if (!matchesName(this.pattern.selector, node.name)) return IMPOSSIBLE_MATCH;
-
-	return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 }
 public int match(MessageSend node, MatchingNodeSet nodeSet) {
 	if (!this.pattern.findReferences) return IMPOSSIBLE_MATCH;
@@ -539,10 +531,6 @@ public int resolveLevel(ASTNode possibleMatchingNode) {
 	if (this.pattern.findReferences) {
 		if (possibleMatchingNode instanceof MessageSend) {
 			return resolveLevel((MessageSend) possibleMatchingNode);
-		}
-		if (possibleMatchingNode instanceof MemberValuePair) {
-			MemberValuePair memberValuePair = (MemberValuePair) possibleMatchingNode;
-			return resolveLevel(memberValuePair.binding);
 		}
 	}
 	if (this.pattern.findDeclarations) {

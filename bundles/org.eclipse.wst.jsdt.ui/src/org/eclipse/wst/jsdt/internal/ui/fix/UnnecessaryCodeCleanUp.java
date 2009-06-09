@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
@@ -112,11 +111,6 @@ public class UnnecessaryCodeCleanUp extends AbstractCleanUp {
 	 * {@inheritDoc}
 	 */
 	public boolean canFix(JavaScriptUnit compilationUnit, IProblemLocation problem) throws CoreException {
-		if (isEnabled(CleanUpConstants.REMOVE_UNNECESSARY_CASTS)) {
-			IFix fix= UnusedCodeFix.createRemoveUnusedCastFix(compilationUnit, problem);
-			if (fix != null)
-				return true;
-		}
 		return false;
 	}
 
@@ -125,9 +119,6 @@ public class UnnecessaryCodeCleanUp extends AbstractCleanUp {
 	 */
 	public int maximalNumberOfFixes(JavaScriptUnit compilationUnit) {
 		int result= 0;
-		IProblem[] problems= compilationUnit.getProblems();
-		if (isEnabled(CleanUpConstants.REMOVE_UNNECESSARY_CASTS))
-			result+= getNumberOfProblems(problems, IProblem.UnnecessaryCast);
 		return result;
 	}
 }

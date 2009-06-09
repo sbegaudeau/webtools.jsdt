@@ -83,7 +83,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
@@ -97,7 +96,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocImplicitTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorExpression;
@@ -8319,13 +8317,6 @@ public final class CompletionEngine
 					addExpectedType(binding, scope);
 				}
 			}
-		} else if(parent instanceof CastExpression) {
-			Expression e = ((CastExpression)parent).type;
-			TypeBinding binding = e.resolvedType;
-			if(binding != null){
-				addExpectedType(binding, scope);
-				this.expectedTypesFilter = SUBTYPE | SUPERTYPE;
-			}
 		} else if(parent instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) parent;
 
@@ -8480,11 +8471,6 @@ public final class CompletionEngine
 						}
 					}
 				}
-			}
-		} else if(parent instanceof MemberValuePair) {
-			MemberValuePair memberValuePair = (MemberValuePair) parent;
-			if(memberValuePair.binding != null) {
-				addExpectedType(memberValuePair.binding.returnType, scope);
 			}
 		} else if (parent instanceof TryStatement) {
 			boolean isException = false;

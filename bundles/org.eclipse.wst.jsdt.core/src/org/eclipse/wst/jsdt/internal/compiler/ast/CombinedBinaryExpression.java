@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -184,11 +184,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	if (this.referencesTable == null) {
 		return super.resolveType(scope);
 	}
-	BinaryExpression cursor;
-	if ((cursor = this.referencesTable[0]).left instanceof CastExpression) {
-		cursor.left.bits |= ASTNode.DisableUnnecessaryCastCheck;
-			// will check later on
-	}
+	BinaryExpression cursor = this.referencesTable[0];
 	cursor.left.resolveType(scope);
 	for (int i = 0, end = this.arity; i < end; i ++) {
 		this.referencesTable[i].nonRecursiveResolveTypeUpwards(scope);

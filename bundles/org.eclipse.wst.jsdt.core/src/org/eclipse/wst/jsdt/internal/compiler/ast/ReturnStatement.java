@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -174,10 +174,6 @@ public void resolve(BlockScope scope) {
 		if (expressionType.needsUncheckedConversion(methodType)) {
 		    scope.problemReporter().unsafeTypeConversion(this.expression, expressionType, methodType);
 		}
-		if (this.expression instanceof CastExpression
-				&& (this.expression.bits & (ASTNode.UnnecessaryCast|ASTNode.DisableUnnecessaryCastCheck)) == 0) {
-			CastExpression.checkNeedForAssignedCast(scope, methodType, (CastExpression) this.expression);
-		}
 		return;
 	} else if (scope.isBoxingCompatibleWith(expressionType, methodType)
 						|| (expressionType.isBaseType()  // narrowing then boxing ?
@@ -185,10 +181,6 @@ public void resolve(BlockScope scope) {
 								&& !methodType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(expressionType, scope.environment().computeBoxingType(methodType)))) {
 		this.expression.computeConversion(scope, methodType, expressionType);
-		if (this.expression instanceof CastExpression
-				&& (this.expression.bits & (ASTNode.UnnecessaryCast|ASTNode.DisableUnnecessaryCastCheck)) == 0) {
-			CastExpression.checkNeedForAssignedCast(scope, methodType, (CastExpression) this.expression);
-		}			return;
 	}
 	scope.problemReporter().typeMismatchError(expressionType, methodType, this.expression);
 }

@@ -758,28 +758,6 @@ class ASTConverter {
 		return arrayAccess;
 	}
 
-	public AssertStatement convert(org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement statement) {
-		AssertStatement assertStatement = new AssertStatement(this.ast);
-		final Expression assertExpression = convert(statement.assertExpression);
-		Expression searchingNode = assertExpression;
-		assertStatement.setExpression(assertExpression);
-		org.eclipse.wst.jsdt.internal.compiler.ast.Expression exceptionArgument = statement.exceptionArgument;
-		if (exceptionArgument != null) {
-			final Expression exceptionMessage = convert(exceptionArgument);
-			assertStatement.setMessage(exceptionMessage);
-			searchingNode = exceptionMessage;
-		}
-		int start = statement.sourceStart;
-		int sourceEnd = retrieveSemiColonPosition(searchingNode);
-		if (sourceEnd == -1) {
-			sourceEnd = searchingNode.getStartPosition() + searchingNode.getLength() - 1;
-			assertStatement.setSourceRange(start, sourceEnd - start + 1);
-		} else {
-			assertStatement.setSourceRange(start, sourceEnd - start + 1);
-		}
-		return assertStatement;
-	}
-
 	public Assignment convert(org.eclipse.wst.jsdt.internal.compiler.ast.Assignment expression) {
 		Assignment assignment = new Assignment(this.ast);
 		if (this.resolveBindings) {
@@ -1063,23 +1041,6 @@ class ASTConverter {
 		switchCase.setSourceRange(statement.sourceStart, statement.sourceEnd - statement.sourceStart + 1);
 		retrieveColonPosition(switchCase);
 		return switchCase;
-	}
-
-	public CastExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression expression) {
-		CastExpression castExpression = new CastExpression(this.ast);
-		castExpression.setSourceRange(expression.sourceStart, expression.sourceEnd - expression.sourceStart + 1);
-		org.eclipse.wst.jsdt.internal.compiler.ast.Expression type = expression.type;
-		trimWhiteSpacesAndComments(type);
-		if (type instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference ) {
-			castExpression.setType(convertType((org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference)type));
-		} else if (type instanceof org.eclipse.wst.jsdt.internal.compiler.ast.NameReference) {
-			castExpression.setType(convertToType((org.eclipse.wst.jsdt.internal.compiler.ast.NameReference)type));
-		}
-		castExpression.setExpression(convert(expression.expression));
-		if (this.resolveBindings) {
-			recordNodes(castExpression, expression);
-		}
-		return castExpression;
 	}
 
 	public FunctionExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression expression) {
@@ -1477,9 +1438,6 @@ class ASTConverter {
 			return null;
 		if ((expression.bits & org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.ParenthesizedMASK) != 0) {
 			return convertToParenthesizedExpression(expression);
-		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression) expression);
 		}
 		// switch between all types of expression
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression) {
@@ -2359,9 +2317,6 @@ class ASTConverter {
 		}
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) {
 			return convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)statement);
-		}
-		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement) statement);
 		}
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Block) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.Block) statement);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -159,14 +159,9 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		TypeBinding enclosingInstanceType = null;
 		TypeBinding receiverType = null;
 		boolean hasError = false;
-		boolean enclosingInstanceContainsCast = false;
 		boolean argsContainCast = false;
 
 		if (this.enclosingInstance != null) {
-			if (this.enclosingInstance instanceof CastExpression) {
-				this.enclosingInstance.bits |= ASTNode.DisableUnnecessaryCastCheck; // will check later on
-				enclosingInstanceContainsCast = true;
-			}
 			if ((enclosingInstanceType = this.enclosingInstance.resolveType(scope)) == null){
 				hasError = true;
 			} else if (enclosingInstanceType.isBaseType() || enclosingInstanceType.isArrayType()) {
@@ -179,9 +174,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 				hasError = true;
 			} else {
 				receiverType = ((SingleTypeReference) this.type).resolveTypeEnclosing(scope, (ReferenceBinding) enclosingInstanceType);
-				if (receiverType != null && enclosingInstanceContainsCast) {
-					CastExpression.checkNeedForEnclosingInstanceCast(scope, this.enclosingInstance, enclosingInstanceType, receiverType);
-				}
 			}
 		} else {
 			if (this.type == null) {
@@ -243,10 +235,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			argumentTypes = new TypeBinding[length];
 			for (int i = 0; i < length; i++) {
 				Expression argument = this.arguments[i];
-				if (argument instanceof CastExpression) {
-					argument.bits |= ASTNode.DisableUnnecessaryCastCheck; // will check later on
-					argsContainCast = true;
-				}
 				if ((argumentTypes[i] = argument.resolveType(scope)) == null){
 					hasError = true;
 				}

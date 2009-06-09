@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
@@ -165,11 +164,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 				if (checkType(conditionalExpression.resolvedType))
 					return false;
 				return super.visit(conditionalExpression, blockScope);
-			}
-			public boolean visit(CastExpression castExpression, BlockScope blockScope) {
-				if (checkType(castExpression.resolvedType))
-					return false;
-				return super.visit(castExpression, blockScope);
 			}
 			public boolean visit(Assignment assignment, BlockScope blockScope) {
 				if (checkType(assignment.resolvedType))

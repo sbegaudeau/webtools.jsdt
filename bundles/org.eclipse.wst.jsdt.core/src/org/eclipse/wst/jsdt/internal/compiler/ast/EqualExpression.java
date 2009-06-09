@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,10 +154,8 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 
 		constant = Constant.NotAConstant;
 			boolean leftIsCast, rightIsCast;
-			if ((leftIsCast = left instanceof CastExpression) == true) left.bits |= DisableUnnecessaryCastCheck; // will check later on
 			TypeBinding originalLeftType = left.resolveType(scope);
 
-			if ((rightIsCast = right instanceof CastExpression) == true) right.bits |= DisableUnnecessaryCastCheck; // will check later on
 			TypeBinding originalRightType = right.resolveType(scope);
 
 		// always return BooleanBinding
@@ -202,10 +200,7 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 				scope.problemReporter().invalidOperator(this, leftType, rightType);
 				return null;
 			}
-			// check need for operand cast
-			if (leftIsCast || rightIsCast) {
-				CastExpression.checkNeedForArgumentCasts(scope, EQUAL_EQUAL, operatorSignature, left, leftType.id, leftIsCast, right, rightType.id, rightIsCast);
-			}
+
 			computeConstant(leftType, rightType);
 			return this.resolvedType = TypeBinding.BOOLEAN;
 		}
@@ -226,18 +221,6 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 			TypeBinding objectType = scope.getJavaLangObject();
 			left.computeConversion(scope, objectType, leftType);
 			right.computeConversion(scope, objectType, rightType);
-			// check need for operand cast
-			boolean unnecessaryLeftCast = (left.bits & UnnecessaryCast) != 0;
-			boolean unnecessaryRightCast = (right.bits & UnnecessaryCast) != 0;
-			if (unnecessaryLeftCast || unnecessaryRightCast) {
-				TypeBinding alternateLeftType = unnecessaryLeftCast ? ((CastExpression)left).expression.resolvedType : leftType;
-				TypeBinding alternateRightType = unnecessaryRightCast ? ((CastExpression)right).expression.resolvedType : rightType;
-				if (this.checkCastTypesCompatibility(scope, alternateLeftType, alternateRightType, null)
-						|| this.checkCastTypesCompatibility(scope, alternateRightType, alternateLeftType, null)) {
-					if (unnecessaryLeftCast) scope.problemReporter().unnecessaryCast((CastExpression)left);
-					if (unnecessaryRightCast) scope.problemReporter().unnecessaryCast((CastExpression)right);
-				}
-			}
 			return this.resolvedType = TypeBinding.BOOLEAN;
 		}
 		constant = Constant.NotAConstant;

@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BranchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
@@ -214,7 +213,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.UndocumentedEmptyBlock:
 			return CompilerOptions.UndocumentedEmptyBlock;
 
-		case IProblem.UnnecessaryCast:
 		case IProblem.UnnecessaryInstanceof:
 			return CompilerOptions.UnnecessaryTypeCheck;
 
@@ -232,7 +230,6 @@ public static long getIrritant(int problemID) {
 			return CompilerOptions.UnnecessaryElse;
 
 		case IProblem.UnsafeTypeConversion:
-		case IProblem.UnsafeGenericCast:
 		case IProblem.UnsafeReturnTypeOverride:
 			return CompilerOptions.UncheckedTypeOperation;
 
@@ -5005,22 +5002,6 @@ public void tooManyMethods(TypeDeclaration typeDeclaration) {
 		typeDeclaration.sourceStart,
 		typeDeclaration.sourceEnd);
 }
-public void typeCastError(CastExpression expression, TypeBinding leftType, TypeBinding rightType) {
-	String leftName = new String(leftType.readableName());
-	String rightName = new String(rightType.readableName());
-	String leftShortName = new String(leftType.shortReadableName());
-	String rightShortName = new String(rightType.shortReadableName());
-	if (leftShortName.equals(rightShortName)){
-		leftShortName = leftName;
-		rightShortName = rightName;
-	}
-	this.handle(
-		IProblem.IllegalCast,
-		new String[] { rightName, leftName },
-		new String[] { rightShortName, leftShortName },
-		expression.sourceStart,
-		expression.sourceEnd);
-}
 public void typeCollidesWithEnclosingType(TypeDeclaration typeDecl) {
 	String[] arguments = new String[] {new String(typeDecl.name)};
 	this.handle(
@@ -5179,18 +5160,6 @@ public void unmatchedBracket(int position, ReferenceContext context, Compilation
 		context,
 		compilationResult);
 }
-public void unnecessaryCast(CastExpression castExpression) {
-	int severity = computeSeverity(IProblem.UnnecessaryCast);
-	if (severity == ProblemSeverities.Ignore) return;
-	TypeBinding castedExpressionType = castExpression.expression.resolvedType;
-	this.handle(
-		IProblem.UnnecessaryCast,
-		new String[]{ new String(castedExpressionType.readableName()), new String(castExpression.type.resolvedType.readableName())},
-		new String[]{ new String(castedExpressionType.shortReadableName()), new String(castExpression.type.resolvedType.shortReadableName())},
-		severity,
-		castExpression.sourceStart,
-		castExpression.sourceEnd);
-}
 public void unnecessaryElse(ASTNode location) {
 	this.handle(
 		IProblem.UnnecessaryElse,
@@ -5305,25 +5274,6 @@ public void unresolvableReference(NameReference nameRef, Binding binding) {
 		arguments,
 		nameRef.sourceStart,
 		end);
-}
-public void unsafeCast(CastExpression castExpression, Scope scope) {
-	int severity = computeSeverity(IProblem.UnsafeGenericCast);
-	if (severity == ProblemSeverities.Ignore) return;
-	TypeBinding castedExpressionType = castExpression.expression.resolvedType;
-	TypeBinding castExpressionResolvedType = castExpression.resolvedType;
-	this.handle(
-		IProblem.UnsafeGenericCast,
-		new String[]{
-			new String(castedExpressionType.readableName()),
-			new String(castExpressionResolvedType.readableName())
-		},
-		new String[]{
-			new String(castedExpressionType.shortReadableName()),
-			new String(castExpressionResolvedType.shortReadableName())
-		},
-		severity,
-		castExpression.sourceStart,
-		castExpression.sourceEnd);
 }
 public void unsafeReturnTypeOverride(MethodBinding currentMethod, MethodBinding inheritedMethod, SourceTypeBinding type) {
 	int severity = computeSeverity(IProblem.UnsafeReturnTypeOverride);

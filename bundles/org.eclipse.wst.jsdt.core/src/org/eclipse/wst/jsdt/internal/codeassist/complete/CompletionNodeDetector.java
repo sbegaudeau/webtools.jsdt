@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression;
@@ -29,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
@@ -49,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 
 /**
  * Detect the presence of a node in expression
@@ -107,9 +104,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
 		endVisit(binaryExpression);
-	}
-	public void endVisit(CastExpression castExpression, BlockScope scope) {
-		endVisit(castExpression);
 	}
 	public void endVisit(CompoundAssignment compoundAssignment, BlockScope scope) {
 		endVisit(compoundAssignment);
@@ -192,12 +186,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	public void endVisit(UnaryExpression unaryExpression, BlockScope scope) {
 		endVisit(unaryExpression);
 	}
-	public void endVisit(MemberValuePair pair, BlockScope scope) {
-		endVisit(pair);
-	}
-	public void endVisit(MemberValuePair pair, CompilationUnitScope scope) {
-		endVisit(pair);
-	}
 	public boolean visit(AllocationExpression allocationExpression, BlockScope scope) {
 		return this.visit(allocationExpression);
 	}
@@ -230,9 +218,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public boolean visit(BinaryExpression binaryExpression, BlockScope scope) {
 		return this.visit(binaryExpression);
-	}
-	public boolean visit(CastExpression castExpression, BlockScope scope) {
-		return this.visit(castExpression);
 	}
 	public boolean visit(CompoundAssignment compoundAssignment, BlockScope scope) {
 		return this.visit(compoundAssignment);
@@ -317,12 +302,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public boolean visit(UnaryExpression unaryExpression, BlockScope scope) {
 		return this.visit(unaryExpression);
-	}
-	public boolean visit(MemberValuePair pair, BlockScope scope) {
-		return this.visit(pair);
-	}
-	public boolean visit(MemberValuePair pair, CompilationUnitScope scope) {
-		return this.visit(pair);
 	}
 	private void endVisit(ASTNode astNode) {
 		if(this.result && this.parent == null && astNode != this.searchedNode) {

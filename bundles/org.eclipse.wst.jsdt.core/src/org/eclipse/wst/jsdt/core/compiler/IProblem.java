@@ -399,8 +399,6 @@ void setSourceStart(int sourceStart);
 	// constant expressions
 	int StringConstantIsExceedingUtf8Limit = Internal + 152;
 	int NumericValueOutOfRange = Internal + 154;
-	// cast expressions
-	int IllegalCast = TypeRelated + 156;
 	// allocations
 	int InvalidClassInstantiation = TypeRelated + 157;
 	int CannotDefineDimensionExpressionsWithInit = Internal + 158;
@@ -436,7 +434,6 @@ void setSourceStart(int sourceStart);
 	int AssignmentHasNoEffect = Internal + 178;
 	int PossibleAccidentalBooleanAssignment = Internal + 179;
 	int SuperfluousSemicolon = Internal + 180;
-	int UnnecessaryCast = Internal + TypeRelated + 181;
 	int UnnecessaryArgumentCast = Internal + TypeRelated + 182;
 	int UnnecessaryInstanceof = Internal + TypeRelated + 183;
 	int FinallyMustCompleteNormally = Internal + 184;
@@ -746,7 +743,6 @@ void setSourceStart(int sourceStart);
 	int FinalBoundForTypeVariable = TypeRelated + 537;
 	int UndefinedTypeVariable = Internal + 538;
 	int SuperInterfacesCollide = TypeRelated + 539;
-	int UnsafeGenericCast = TypeRelated + 545;
 	int GenericTypeCannotExtendThrowable = TypeRelated + 557;
 	int IllegalClassLiteralForTypeVariable = TypeRelated + 558;
 	int UnsafeReturnTypeOverride = MethodRelated + 559;

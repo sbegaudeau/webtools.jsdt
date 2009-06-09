@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,21 +27,20 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
-import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -484,23 +483,6 @@ public class UnusedCodeFix extends AbstractFix {
 		return null;
 	}
 	
-	public static IFix createRemoveUnusedCastFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
-		if (problem.getProblemId() != IProblem.UnnecessaryCast)
-			return null;
-		
-		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-
-		ASTNode curr= selectedNode;
-		while (curr instanceof ParenthesizedExpression) {
-			curr= ((ParenthesizedExpression) curr).getExpression();
-		}
-
-		if (!(curr instanceof CastExpression))
-			return null;
-		
-		return new UnusedCodeFix(FixMessages.UnusedCodeFix_RemoveCast_description, compilationUnit, new IFixRewriteOperation[] {new RemoveCastOperation((CastExpression)curr, selectedNode)});
-	}
-	
 	public static IFix createCleanUp(JavaScriptUnit compilationUnit, 
 			boolean removeUnusedPrivateMethods, 
 			boolean removeUnusedPrivateConstructors, 
@@ -579,19 +561,6 @@ public class UnusedCodeFix extends AbstractFix {
 							result.add(new RemoveUnusedMemberOperation(new SimpleName[] {name}, false));
 						}
 					}
-				}
-			}
-			
-			if (removeUnusedCast && id == IProblem.UnnecessaryCast) {
-				ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-
-				ASTNode curr= selectedNode;
-				while (curr instanceof ParenthesizedExpression) {
-					curr= ((ParenthesizedExpression) curr).getExpression();
-				}
-
-				if (curr instanceof CastExpression) {
-					unnecessaryCasts.add(curr);
 				}
 			}
 		}

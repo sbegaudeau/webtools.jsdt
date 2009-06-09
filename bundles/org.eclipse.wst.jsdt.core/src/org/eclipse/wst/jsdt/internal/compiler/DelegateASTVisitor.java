@@ -23,13 +23,11 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
@@ -71,7 +69,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -168,9 +165,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public void endVisit(ArrayTypeReference arrayTypeReference, ClassScope scope) {
 		visitor.endVisit(arrayTypeReference);
 	}
-	public void endVisit(AssertStatement assertStatement, BlockScope scope) {
-		visitor.endVisit(assertStatement);
-	}
 	public void endVisit(Assignment assignment, BlockScope scope) {
 		visitor.endVisit(assignment);
 	}
@@ -185,9 +179,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public void endVisit(CaseStatement caseStatement, BlockScope scope) {
 		visitor.endVisit(caseStatement);
-	}
-	public void endVisit(CastExpression castExpression, BlockScope scope) {
-		visitor.endVisit(castExpression);
 	}
 	public void endVisit(CharLiteral charLiteral, BlockScope scope) {
 		visitor.endVisit(charLiteral);
@@ -369,13 +360,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public void endVisit(LongLiteral longLiteral, BlockScope scope) {
 		visitor.endVisit(longLiteral);
-	}
-	/**
-	 * @param pair
-	 * @param scope
-	 */
-	public void endVisit(MemberValuePair pair, BlockScope scope) {
-		visitor.endVisit(pair);
 	}
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
 		visitor.endVisit(messageSend);
@@ -591,9 +575,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	public boolean visit(ArrayTypeReference arrayTypeReference, ClassScope scope) {
 		return visitor.visit(arrayTypeReference);
 	}
-	public boolean visit(AssertStatement assertStatement, BlockScope scope) {
-		return visitor.visit(assertStatement);
-	}
 	public boolean visit(Assignment assignment, BlockScope scope) {
 		return visitor.visit(assignment);
 	}
@@ -608,9 +589,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(CaseStatement caseStatement, BlockScope scope) {
 		return visitor.visit(caseStatement);
-	}
-	public boolean visit(CastExpression castExpression, BlockScope scope) {
-		return visitor.visit(castExpression);
 	}
 	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
 		return visitor.visit(charLiteral);
@@ -798,14 +776,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 	}
 	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
 		return visitor.visit(longLiteral);
-	}
-	/**
-	 * @param pair
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(MemberValuePair pair, BlockScope scope) {
-		return visitor.visit(pair);
 	}
 	public boolean visit(MessageSend messageSend, BlockScope scope) {
 		return visitor.visit(messageSend);

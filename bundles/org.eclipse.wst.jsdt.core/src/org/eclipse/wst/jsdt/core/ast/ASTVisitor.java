@@ -55,9 +55,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(IArrayTypeReference arrayTypeReference) {
 		// do nothing by default
 	}
-	public void endVisit(IAssertStatement assertStatement) {
-		// do nothing by default
-	}
 	public void endVisit(IAssignment assignment) {
 		// do nothing by default
 	}
@@ -71,9 +68,6 @@ public abstract class ASTVisitor  {
 		// do nothing by default
 	}
 	public void endVisit(ICaseStatement caseStatement) {
-		// do nothing by default
-	}
-	public void endVisit(ICastExpression castExpression) {
 		// do nothing by default
 	}
 	public void endVisit(ICharLiteral charLiteral) {
@@ -206,13 +200,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(ILongLiteral longLiteral) {
 		// do nothing by default
 	}
-	/**
-	 * @param pair
-	 * @param scope
-	 */
-	public void endVisit(IMemberValuePair pair) {
-		// do nothing by default
-	}
 	public void endVisit(IFunctionCall messageSend) {
 		// do nothing by default
 	}
@@ -342,10 +329,6 @@ public abstract class ASTVisitor  {
 	public boolean visit(IArrayTypeReference arrayTypeReference) {
 		return true; // do nothing by default, keep traversing
 	}
-
-	public boolean visit(IAssertStatement assertStatement) {
-		return true; // do nothing by default, keep traversing
-	}
 	public boolean visit(IAssignment assignment) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -359,9 +342,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ICaseStatement caseStatement) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(ICastExpression castExpression) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ICharLiteral charLiteral) {
@@ -512,14 +492,6 @@ public abstract class ASTVisitor  {
 	}
 	public boolean visit(ILongLiteral longLiteral) {
 		return true; // do nothing by default, keep traversing
-	}
-	/**
-	 * @param pair
-	 * @param scope
-	 * @since 3.1
-	 */
-	public boolean visit(IMemberValuePair pair) {
-		return true;
 	}
 	public boolean visit(IFunctionCall functionCall) {
 		return true; // do nothing by default, keep traversing

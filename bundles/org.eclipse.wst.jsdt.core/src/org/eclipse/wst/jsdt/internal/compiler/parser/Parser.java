@@ -43,13 +43,11 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AssertStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
@@ -85,7 +83,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -2014,66 +2011,6 @@ protected void consumeCaseLabel() {
 	Expression expression = this.expressionStack[this.expressionPtr--];
 	pushOnAstStack(new CaseStatement(expression, expression.sourceEnd, this.intStack[this.intPtr--]));
 }
-protected void consumeCastExpressionLL1() {
-	//CastExpression ::= '(' Expression ')' InsideCastExpressionLL1 UnaryExpressionNotPlusMinus
-	// Expression is used in order to make the grammar LL1
-
-	//optimize push/pop
-
-	Expression cast,exp;
-	this.expressionPtr--;
-	this.expressionStack[this.expressionPtr] =
-		cast = new CastExpression(
-			exp=this.expressionStack[this.expressionPtr+1] ,
-			getTypeReference(this.expressionStack[this.expressionPtr]));
-	this.expressionLengthPtr -- ;
-	updateSourcePosition(cast);
-	cast.sourceEnd=exp.sourceEnd;
-}
-protected void consumeCastExpressionWithGenericsArray() {
-	// CastExpression ::= PushLPAREN Name TypeArguments Dims PushRPAREN InsideCastExpression UnaryExpressionNotPlusMinus
-
-	Expression exp, cast, castType;
-	int end = this.intStack[this.intPtr--];
-
-	int dim = this.intStack[this.intPtr--];
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr], castType = getTypeReference(dim));
-	intPtr--;
-	castType.sourceEnd = end - 1;
-	castType.sourceStart = (cast.sourceStart = this.intStack[this.intPtr--]) + 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-protected void consumeCastExpressionWithNameArray() {
-	// CastExpression ::= PushLPAREN Name Dims PushRPAREN InsideCastExpression UnaryExpressionNotPlusMinus
-
-	Expression exp, cast, castType;
-	int end = this.intStack[this.intPtr--];
-
-	// handle type arguments
-	pushOnGenericsLengthStack(0);
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr], castType = getTypeReference(this.intStack[this.intPtr--]));
-	castType.sourceEnd = end - 1;
-	castType.sourceStart = (cast.sourceStart = this.intStack[this.intPtr--]) + 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
-protected void consumeCastExpressionWithPrimitiveType() {
-	// CastExpression ::= PushLPAREN PrimitiveType Dimsopt PushRPAREN InsideCastExpression UnaryExpression
-
-	//this.intStack : posOfLeftParen dim posOfRightParen
-
-	//optimize the push/pop
-
-	Expression exp, cast, castType;
-	int end = this.intStack[this.intPtr--];
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr], castType = getTypeReference(this.intStack[this.intPtr--]));
-	castType.sourceEnd = end - 1;
-	castType.sourceStart = (cast.sourceStart = this.intStack[this.intPtr--]) + 1;
-	cast.sourceEnd = exp.sourceEnd;
-}
 protected ParameterizedQualifiedTypeReference computeQualifiedGenericsFromRightSide(TypeReference rightSide, int dim) {
 	int nameSize = this.identifierLengthStack[this.identifierLengthPtr];
 	int tokensSize = nameSize;
@@ -2131,21 +2068,6 @@ protected ParameterizedQualifiedTypeReference computeQualifiedGenericsFromRightS
 	}
 	this.identifierLengthPtr--;
 	return new ParameterizedQualifiedTypeReference(tokens, typeArguments, dim, positions);
-}
-protected void consumeCastExpressionWithQualifiedGenericsArray() {
-	// CastExpression ::= PushLPAREN Name OnlyTypeArguments '.' ClassOrInterfaceType Dims PushRPAREN InsideCastExpression UnaryExpressionNotPlusMinus
-	Expression exp, cast, castType;
-	int end = this.intStack[this.intPtr--];
-
-	int dim = this.intStack[this.intPtr--];
-	TypeReference rightSide = getTypeReference(0);
-
-	ParameterizedQualifiedTypeReference qualifiedParameterizedTypeReference = computeQualifiedGenericsFromRightSide(rightSide, dim);
-	intPtr--;
-	this.expressionStack[this.expressionPtr] = cast = new CastExpression(exp = this.expressionStack[this.expressionPtr], castType = qualifiedParameterizedTypeReference);
-	castType.sourceEnd = end - 1;
-	castType.sourceStart = (cast.sourceStart = this.intStack[this.intPtr--]) + 1;
-	cast.sourceEnd = exp.sourceEnd;
 }
 protected void consumeCatches() {
 	// Catches ::= Catches CatchClause
@@ -4167,18 +4089,6 @@ protected void consumeMemberValueArrayInitializer() {
 protected void consumeMemberValueAsName() {
 	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
 }
-protected void consumeMemberValuePair() {
-	// MemberValuePair ::= SimpleName '=' MemberValue
-	char[] simpleName = this.identifierStack[this.identifierPtr];
-	long position = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	int end = (int) position;
-	int start = (int) (position >>> 32);
-	Expression value = this.expressionStack[this.expressionPtr--];
-	this.expressionLengthPtr--;
-	MemberValuePair memberValuePair = new MemberValuePair(simpleName, start, end, value);
-	pushOnAstStack(memberValuePair);
-}
 protected void consumeMemberValuePairs() {
 	// MemberValuePairs ::= MemberValuePairs ',' MemberValuePair
 	concatNodeLists();
@@ -5001,11 +4911,6 @@ protected void consumeRestoreDiet() {
 protected void consumeRightParen() {
 	// PushRPAREN ::= ')'
 	pushOnIntStack(this.rParenPos);
-}
-protected void consumeSimpleAssertStatement() {
-	// AssertStatement ::= 'assert' Expression ';'
-	this.expressionLengthPtr--;
-	pushOnAstStack(new AssertStatement(this.expressionStack[this.expressionPtr--], this.intStack[this.intPtr--]));
 }
 private void consumeListExpressionBrackets() {
 		this.expressionPtr--;

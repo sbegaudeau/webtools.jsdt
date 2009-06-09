@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
@@ -636,27 +635,6 @@ protected void consumeLocalVariableDeclarationStatement() {
 			this.lastIgnoredToken = -1;
 		}
 	}
-}
-protected void consumeMemberValuePair() {
-	if (this.indexOfAssistIdentifier() < 0) {
-		super.consumeMemberValuePair();
-		return;
-	}
-
-	char[] simpleName = this.identifierStack[this.identifierPtr];
-	long position = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	int end = (int) position;
-	int start = (int) (position >>> 32);
-	Expression value = this.expressionStack[this.expressionPtr--];
-	this.expressionLengthPtr--;
-	MemberValuePair memberValuePair = new SelectionOnNameOfMemberValuePair(simpleName, start, end, value);
-	pushOnAstStack(memberValuePair);
-
-	assistNode = memberValuePair;
-	this.lastCheckPoint = memberValuePair.sourceEnd + 1;
-
-
 }
 protected void consumeMethodInvocationName() {
 	// FunctionInvocation ::= Name '(' ArgumentListopt ')'

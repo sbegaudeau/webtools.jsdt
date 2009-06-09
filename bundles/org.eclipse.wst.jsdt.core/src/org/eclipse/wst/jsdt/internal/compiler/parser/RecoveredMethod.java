@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
@@ -365,18 +364,6 @@ public void updateFromParserState(){
 				int argStart = parser.astPtr - argLength + 1;
 				boolean needUpdateRParenPos = parser.rParenPos < parser.lParenPos; // 12387 : rParenPos will be used
 
-				// remove unfinished annotation nodes
-				MemberValuePair[] memberValuePairs = null;
-				if (argLength > 0 && parser.astStack[parser.astPtr] instanceof MemberValuePair) {
-					System.arraycopy(parser.astStack, argStart, memberValuePairs = new MemberValuePair[argLength], 0, argLength);
-					parser.astLengthPtr--;
-					parser.astPtr -= argLength;
-
-					argLength = parser.astLengthStack[parser.astLengthPtr];
-					argStart = parser.astPtr - argLength + 1;
-					needUpdateRParenPos = true;
-				}
-
 				// to compute bodyStart, and thus used to set next checkpoint.
 				int count;
 				for (count = 0; count < argLength; count++){
@@ -428,12 +415,6 @@ public void updateFromParserState(){
 							parser.lastCheckPoint = methodDeclaration.bodyStart;
 						}
 					}
-				}
-
-				if(memberValuePairs != null) {
-					System.arraycopy(memberValuePairs, 0, parser.astStack, parser.astPtr + 1, memberValuePairs.length);
-					parser.astPtr += memberValuePairs.length;
-					parser.astLengthStack[++parser.astLengthPtr] = memberValuePairs.length;
 				}
 			}
 		}

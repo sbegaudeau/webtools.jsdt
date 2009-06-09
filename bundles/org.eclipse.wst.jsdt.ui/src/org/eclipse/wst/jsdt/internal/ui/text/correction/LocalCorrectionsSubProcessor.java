@@ -88,7 +88,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.fix.CodeStyleCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.fix.StringCleanUp;
-import org.eclipse.wst.jsdt.internal.ui.fix.UnnecessaryCodeCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.actions.RefactoringStarter;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.nls.ExternalizeWizard;
@@ -473,18 +472,6 @@ public class LocalCorrectionsSubProcessor {
 		String label= CorrectionMessages.LocalCorrectionsSubProcessor_removesemicolon_description;
 		ReplaceCorrectionProposal proposal= new ReplaceCorrectionProposal(label, context.getCompilationUnit(), problem.getOffset(), problem.getLength(), "", 6); //$NON-NLS-1$
 		proposals.add(proposal);
-	}
-
-	public static void addUnnecessaryCastProposal(IInvocationContext context, IProblemLocation problem,  Collection proposals) {
-		
-		IFix fix= UnusedCodeFix.createRemoveUnusedCastFix(context.getASTRoot(), problem);
-		if (fix != null) {
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			Map options= new Hashtable();
-			options.put(CleanUpConstants.REMOVE_UNNECESSARY_CASTS, CleanUpConstants.TRUE);
-			FixCorrectionProposal proposal= new FixCorrectionProposal(fix, new UnnecessaryCodeCleanUp(options), 5, image, context);
-			proposals.add(proposal);
-		}
 	}
 
 	public static void addUnnecessaryInstanceofProposal(IInvocationContext context, IProblemLocation problem, Collection proposals) {

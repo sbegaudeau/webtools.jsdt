@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -267,12 +266,6 @@ protected void consumeLocalVariableDeclaration() {
 
 	// this is always a LocalDeclaration
 	this.patternLocator.match((LocalDeclaration) this.astStack[this.astPtr], this.nodeSet);
-}
-protected void consumeMemberValuePair() {
-	super.consumeMemberValuePair();
-
-	// this is always a MemberValuePair
-	this.patternLocator.match((MemberValuePair) this.astStack[this.astPtr], this.nodeSet);
 }
 protected void consumeMethodInvocationName() {
 	super.consumeMethodInvocationName();

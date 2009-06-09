@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,10 +142,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		TypeBinding conditionType = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 		condition.computeConversion(scope, TypeBinding.BOOLEAN, conditionType);
 
-		if (valueIfTrue instanceof CastExpression) valueIfTrue.bits |= DisableUnnecessaryCastCheck; // will check later on
 		TypeBinding originalValueIfTrueType = valueIfTrue.resolveType(scope);
-
-		if (valueIfFalse instanceof CastExpression) valueIfFalse.bits |= DisableUnnecessaryCastCheck; // will check later on
 		TypeBinding originalValueIfFalseType = valueIfFalse.resolveType(scope);
 
 		if (conditionType == null || originalValueIfTrueType == null || originalValueIfFalseType == null)
