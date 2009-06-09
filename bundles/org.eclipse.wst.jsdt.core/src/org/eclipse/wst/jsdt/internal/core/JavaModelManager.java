@@ -473,41 +473,6 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 
 	public final validationParticipants validationParticipants = new validationParticipants();
 
-	/**
-	 * Returns whether the given full path (for a package) conflicts with the output location
-	 * of the given project.
-	 */
-	public static boolean conflictsWithOutputLocation(IPath folderPath, JavaProject project) {
-		try {
-			IPath outputLocation = project.getOutputLocation();
-			if (outputLocation == null) {
-				// in doubt, there is a conflict
-				return true;
-			}
-			if (outputLocation.isPrefixOf(folderPath)) {
-				// only allow nesting in project's output if there is a corresponding source folder
-				// or if the project's output is not used (in other words, if all source folders have their custom output)
-				IIncludePathEntry[] classpath = project.getResolvedClasspath();
-				boolean isOutputUsed = false;
-				for (int i = 0, length = classpath.length; i < length; i++) {
-					IIncludePathEntry entry = classpath[i];
-					if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
-						if (entry.getPath().equals(outputLocation)) {
-							return false;
-						}
-						isOutputUsed = true;
-						
-					}
-				}
-				return isOutputUsed;
-			}
-			return false;
-		} catch (JavaScriptModelException e) {
-			// in doubt, there is a conflict
-			return true;
-		}
-	}
-
 	public synchronized IJsGlobalScopeContainer containerGet(IJavaScriptProject project, IPath containerPath) {
 		// check initialization in progress first
 		if (containerIsInitializationInProgress(project, containerPath)) {
@@ -3494,6 +3459,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 				savePaths(entry.getExclusionPatterns());
 				savePath(entry.getSourceAttachmentPath());
 				savePath(entry.getSourceAttachmentRootPath());
+				savePath(new Path(""));
 				this.out.writeBoolean(entry.isExported());
 				saveAccessRules(entry.getAccessRules());
 				this.out.writeBoolean(entry.combineAccessRules());
