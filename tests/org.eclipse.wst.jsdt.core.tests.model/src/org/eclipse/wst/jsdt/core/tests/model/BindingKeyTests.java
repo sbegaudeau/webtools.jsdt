@@ -201,66 +201,6 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 			"[[I",
 			key);
 	}
-
-	/*
-	 * Wildcard binding (no bounds)
-	 */
-	public void test028() {
-		assertBindingKeySignatureEquals(
-			"*",
-			"Lp1/X;*"
-		);
-	}
-
-	/*
-	 * Wildcard binding (super bounds)
-	 */
-	public void test029() {
-		assertBindingKeySignatureEquals(
-			"-<E:Ljava/lang/Object;>Ljava.util.List;",
-			"Lp1/X;-Ljava/util/List<TE;>;"
-		);
-	}
-
-	/*
-	 * Wildcard binding (extends bounds)
-	 */
-	public void test030() {
-		assertBindingKeySignatureEquals(
-			"+Ljava.util.ArrayList;",
-			"Lp1/X;+Ljava/util/ArrayList;"
-		);
-	}
-
-	/*
-	 * Capture binding (no bounds)
-	 */
-	public void test031() {
-		assertBindingKeySignatureEquals(
-			"*",
-			"Ljava/util/List;&!Lp1/X;*123;"
-		);
-	}
-
-	/*
-	 * Capture binding (super bounds)
-	 */
-	public void test032() {
-		assertBindingKeySignatureEquals(
-			"-<E:Ljava/lang/Object;>Ljava.util.List;",
-			"Ljava/util/List;&!Lp1/X;-Ljava/util/List<TE;>;123;"
-		);
-	}
-
-	/*
-	 * Capture binding (extends bounds)
-	 */
-	public void test033() {
-		assertBindingKeySignatureEquals(
-			"+Ljava.util.ArrayList;",
-			"Ljava/util/List;&!Lp1/X;+Ljava/util/ArrayList;123;"
-		);
-	}
 	
 	/*
 	 * Method starting with an upper case corresponding to a primitive type

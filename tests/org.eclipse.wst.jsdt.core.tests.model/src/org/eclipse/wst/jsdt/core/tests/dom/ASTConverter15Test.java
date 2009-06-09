@@ -947,7 +947,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertEquals("Wrong isPrimitive", false, typeBinding.isPrimitive());
 		assertEquals("Wrong isRawType", false, typeBinding.isRawType());
 		assertEquals("Wrong isTopLevel", false, typeBinding.isTopLevel());
-		assertEquals("Wrong isUpperbound", false, typeBinding.isUpperbound());
 		assertEquals("Wrong isTypeVariable", true, typeBinding.isTypeVariable());
 		assertTrue("Not from source", typeBinding.isFromSource());
 		assertEquals("Wrong isWildcardType", false, typeBinding.isWildcardType());
@@ -968,7 +967,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertEquals("Wrong isPrimitive", false, typeBinding2.isPrimitive());
 		assertEquals("Wrong isRawType", false, typeBinding2.isRawType());
 		assertEquals("Wrong isTopLevel", true, typeBinding2.isTopLevel());
-		assertEquals("Wrong isUpperbound", false, typeBinding2.isUpperbound());
 		assertEquals("Wrong isTypeVariable", false, typeBinding2.isTypeVariable());
 		assertEquals("Wrong isWildcardType", false, typeBinding2.isWildcardType());
 		typeParameters = typeBinding2.getTypeParameters();
@@ -1505,8 +1503,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertTrue("Not a wildcard type", type2.isWildcardType());
 		WildcardType wildcardType = (WildcardType) type2;
 		assertTrue("Not an upperbound type", wildcardType.isUpperBound());
-		ITypeBinding typeBinding = wildcardType.resolveBinding();
-		assertTrue("Not an upperbound type binding", typeBinding.isUpperbound());
 	}
 	
 	/**
@@ -1534,8 +1530,6 @@ public class ASTConverter15Test extends ConverterTestSetup {
 		assertTrue("Not a wildcard type", type2.isWildcardType());
 		WildcardType wildcardType = (WildcardType) type2;
 		assertFalse("An upperbound type", wildcardType.isUpperBound());
-		ITypeBinding typeBinding = wildcardType.resolveBinding();
-		assertFalse("An upperbound type binding", typeBinding.isUpperbound());
 	}
 
 	/**
