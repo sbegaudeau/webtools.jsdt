@@ -1,3 +1,3 @@
-	function main(args) {
-		System.out.println("Hello" + " world");
-	}
+function main(args) {
+	print("Hello" + " world");
+}

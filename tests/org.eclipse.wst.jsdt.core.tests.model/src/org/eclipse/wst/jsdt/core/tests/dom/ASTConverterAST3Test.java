@@ -106,8 +106,8 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 	}
 
 	static {
-//		TESTS_NUMBERS = new int[] { 356 };
 	}
+	
 	public static Test suite() {
 		return buildModelTestSuite(ASTConverterAST3Test.class);
 	}
@@ -119,39 +119,15 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		
 		// check that we have the right tree
 		JavaScriptUnit unit = this.ast.newJavaScriptUnit();
-		PackageDeclaration packageDeclaration = this.ast.newPackageDeclaration();
-		packageDeclaration.setName(this.ast.newSimpleName("test0001"));//$NON-NLS-1$
-		unit.setPackage(packageDeclaration);
-		ImportDeclaration importDeclaration = this.ast.newImportDeclaration();
-		QualifiedName name = 
-			this.ast.newQualifiedName(
-				this.ast.newSimpleName("java"),//$NON-NLS-1$
-				this.ast.newSimpleName("util"));//$NON-NLS-1$
-		importDeclaration.setName(name);
-		importDeclaration.setOnDemand(true);
-		unit.imports().add(importDeclaration);
-		TypeDeclaration type = this.ast.newTypeDeclaration();
-		type.setInterface(false);
-		type.modifiers().add(this.ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
-		type.setName(this.ast.newSimpleName("Test"));//$NON-NLS-1$
 		FunctionDeclaration methodDeclaration = this.ast.newFunctionDeclaration();
 		methodDeclaration.setConstructor(false);
-		methodDeclaration.modifiers().add(this.ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
-		methodDeclaration.modifiers().add(this.ast.newModifier(Modifier.ModifierKeyword.STATIC_KEYWORD));
 		methodDeclaration.setName(this.ast.newSimpleName("main"));//$NON-NLS-1$
-		methodDeclaration.setReturnType2(this.ast.newPrimitiveType(PrimitiveType.VOID));
 		SingleVariableDeclaration variableDeclaration = this.ast.newSingleVariableDeclaration();
-		variableDeclaration.setType(this.ast.newArrayType(this.ast.newSimpleType(this.ast.newSimpleName("String"))));//$NON-NLS-1$
 		variableDeclaration.setName(this.ast.newSimpleName("args"));//$NON-NLS-1$
 		methodDeclaration.parameters().add(variableDeclaration);
 		org.eclipse.wst.jsdt.core.dom.Block block = this.ast.newBlock();
 		FunctionInvocation methodInvocation = this.ast.newFunctionInvocation();
-		name = 
-			this.ast.newQualifiedName(
-				this.ast.newSimpleName("System"),//$NON-NLS-1$
-				this.ast.newSimpleName("out"));//$NON-NLS-1$
-		methodInvocation.setExpression(name);
-		methodInvocation.setName(this.ast.newSimpleName("println")); //$NON-NLS-1$
+		methodInvocation.setName(this.ast.newSimpleName("print")); //$NON-NLS-1$
 		InfixExpression infixExpression = this.ast.newInfixExpression();
 		infixExpression.setOperator(InfixExpression.Operator.PLUS);
 		StringLiteral literal = this.ast.newStringLiteral();
@@ -164,16 +140,10 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = this.ast.newExpressionStatement(methodInvocation);
 		block.statements().add(expressionStatement);
 		methodDeclaration.setBody(block);
-		type.bodyDeclarations().add(methodDeclaration);
-		unit.types().add(type);
 		assertTrue("Both AST trees should be identical", result.subtreeMatch(new ASTMatcher(), unit));//$NON-NLS-1$
 		String expected =
-			"package test0001;\n" + 
-			"import java.util.*;\n" + 
-			"public class Test {\n" + 
-			"	public static void main(String[] args) {\n" + 
-			"		System.out.println(\"Hello\" + \" world\");\n" + 
-			"	}\n" + 
+			"function main(args) {\n" + 
+			"	print(\"Hello\" + \" world\");\n" + 
 			"}";
 		checkSourceRange(result, expected, source);
 	}

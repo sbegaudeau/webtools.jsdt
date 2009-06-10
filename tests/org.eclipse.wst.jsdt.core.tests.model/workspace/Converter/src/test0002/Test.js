@@ -1,3 +1,3 @@
-	function main(args) {
-		System.out.println(new Object());
-	}
+function main(args) {
+	print(new Object());
+}

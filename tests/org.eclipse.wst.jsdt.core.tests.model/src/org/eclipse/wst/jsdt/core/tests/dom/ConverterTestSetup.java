@@ -95,16 +95,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 	}
 
 	protected IPath getConverterJCLPath(String compliance) {
-//		return new Path(getExternalPath() + "converterJclMin" + compliance + ".jar"); //$NON-NLS-1$
 		return new Path(new SystemLibraryLocation().getLibraryPath("system.js"));
-	}
-
-	protected IPath getConverterJCLSourcePath() {
-		return getConverterJCLSourcePath(""); //$NON-NLS-1$
-	}
-
-	protected IPath getConverterJCLSourcePath(String compliance) {
-		return new Path(getExternalPath() + "converterJclMin" + compliance + "src.zip"); //$NON-NLS-1$
 	}
 
 	protected IPath getConverterJCLRootSourcePath() {
@@ -118,36 +109,22 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		ast = null;
 		if (TEST_SUITES == null) {
 			this.deleteProject("Converter"); //$NON-NLS-1$
-			this.deleteProject("Converter15"); //$NON-NLS-1$
 		} else {
 			TEST_SUITES.remove(getClass());
 			if (TEST_SUITES.size() == 0) {
 				this.deleteProject("Converter"); //$NON-NLS-1$
-				this.deleteProject("Converter15"); //$NON-NLS-1$
 			}
 		}
-		
 		super.tearDown();
 	}	
 
-	public void setUpJCLClasspathVariables(String compliance) throws JavaScriptModelException, IOException {
-		if ("1.5".equals(compliance)) {
-			if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL15_LIB") == null) {
-//				setupExternalJCL("converterJclMin1.5");
-				JavaScriptCore.setIncludepathVariables(
-					new String[] {"CONVERTER_JCL15_LIB", "CONVERTER_JCL15_SRC", "CONVERTER_JCL15_SRCROOT"},
-					new IPath[] {getConverterJCLPath(compliance), getConverterJCLSourcePath(compliance), getConverterJCLRootSourcePath()},
-					null);
-			} 
-		} else {
-			if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL_LIB") == null) {
-//				setupExternalJCL("converterJclMin");
-				JavaScriptCore.setIncludepathVariables(
-					new String[] {"CONVERTER_JCL_LIB", "CONVERTER_JCL_SRC", "CONVERTER_JCL_SRCROOT"},
-					new IPath[] {getConverterJCLPath(), getConverterJCLSourcePath(), getConverterJCLRootSourcePath()},
-					null);
-			} 
-		}	
+	public void setUpJCLClasspathVariables() throws JavaScriptModelException, IOException {
+		if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL_LIB") == null) {
+			JavaScriptCore.setIncludepathVariables(
+				new String[] {"CONVERTER_JCL_LIB", "CONVERTER_JCL_SRCROOT"},
+				new IPath[] {getConverterJCLPath(), getConverterJCLRootSourcePath()},
+				null);
+		} 		
 	}
 	
 	/**
@@ -158,7 +135,6 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 
 		if (!PROJECT_SETUP) {
 			setUpJavaProject("Converter"); //$NON-NLS-1$
-			setUpJavaProject("Converter15", "1.5"); //$NON-NLS-1$ //$NON-NLS-2$
 			waitUntilIndexesReady(); // needed to find secondary types
 			PROJECT_SETUP = true;
 		}
