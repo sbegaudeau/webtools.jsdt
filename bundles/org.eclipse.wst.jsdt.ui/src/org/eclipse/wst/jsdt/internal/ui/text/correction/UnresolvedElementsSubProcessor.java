@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -573,10 +572,6 @@ public class UnresolvedElementsSubProcessor {
 			proposals.add(proposal);
 			if (proposal instanceof AddImportCorrectionProposal)
 				proposal.setRelevance(relevance + elements.length + 2);
-
-			if (binding.isParameterizedType() && node.getParent() instanceof SimpleType && !(node.getParent().getParent() instanceof Type)) {
-				proposals.add(createTypeRefChangeFullProposal(cu, binding, node, relevance + 2));
-			}
 		} else {
 			ASTNode normalizedNode= ASTNodes.getNormalizedNode(node);
 			if (!(normalizedNode.getParent() instanceof Type) && node.getParent() != normalizedNode) {
@@ -754,10 +749,6 @@ public class UnresolvedElementsSubProcessor {
 					binding= ((TypeDeclaration) declaration).resolveBinding();
 					rel++;
 				}
-				if (binding != null) {
-					AddTypeParameterProposal proposal= new AddTypeParameterProposal(cu, binding, root, name, null, rel);
-					proposals.add(proposal);
-				}
 				if (!Modifier.isStatic(declaration.getModifiers())) {
 					declaration= ASTResolving.findParentBodyDeclaration(declaration.getParent());
 				} else {
@@ -829,10 +820,6 @@ public class UnresolvedElementsSubProcessor {
 		// new method
 		addNewMethodProposals(cu, astRoot, sender, arguments, isSuperInvocation, invocationNode, methodName, proposals);
 
-		if (!isOnlyParameterMismatch && !isSuperInvocation && sender != null) {
-			addMissingCastParentsProposal(cu, (FunctionInvocation) invocationNode, proposals);
-		}
-
 		if (!isSuperInvocation && sender == null && invocationNode.getParent() instanceof ThrowStatement) {
 			String str= "new ";   //$NON-NLS-1$ // do it the manual way, copting all the arguments is nasty
 			String label= CorrectionMessages.UnresolvedElementsSubProcessor_addnewkeyword_description;
@@ -890,104 +877,6 @@ public class UnresolvedElementsSubProcessor {
 				}
 			}
 		}
-	}
-
-	private static void addMissingCastParentsProposal(IJavaScriptUnit cu, FunctionInvocation invocationNode, Collection proposals) {
-		Expression sender= invocationNode.getExpression();
-		if (sender instanceof ThisExpression) {
-			return;
-		}
-
-		ITypeBinding senderBinding= sender.resolveTypeBinding();
-		if (senderBinding == null || Modifier.isFinal(senderBinding.getModifiers())) {
-			return;
-		}
-
-		if (sender instanceof Name && ((Name) sender).resolveBinding() instanceof ITypeBinding) {
-			return; // static access
-		}
-
-		ASTNode parent= invocationNode.getParent();
-		while (parent instanceof Expression && parent.getNodeType() != ASTNode.CAST_EXPRESSION) {
-			parent= parent.getParent();
-		}
-		boolean hasCastProposal= false;
-		if (parent instanceof CastExpression) {
-			//	(TestCase) x.getName() -> ((TestCase) x).getName
-			hasCastProposal= useExistingParentCastProposal(cu, (CastExpression) parent, sender, invocationNode.getName(), getArgumentTypes(invocationNode.arguments()), proposals);
-		}
-		if (!hasCastProposal) {
-			// x.getName() -> ((TestCase) x).getName
-
-			Expression target= sender;
-			while (target instanceof ParenthesizedExpression) {
-				target= ((ParenthesizedExpression) target).getExpression();
-			}
-
-			String label;
-			if (target.getNodeType() != ASTNode.CAST_EXPRESSION) {
-				String targetName= null;
-				if (target.getLength() <= 18) {
-					targetName= ASTNodes.asString(target);
-				}
-				if (targetName == null) {
-					label= CorrectionMessages.UnresolvedElementsSubProcessor_methodtargetcast_description;
-				} else {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_methodtargetcast2_description, targetName);
-				}
-			} else {
-				String targetName= null;
-				if (target.getLength() <= 18) {
-					targetName= ASTNodes.asString(((CastExpression)target).getExpression());
-				}
-				if (targetName == null) {
-					label= CorrectionMessages.UnresolvedElementsSubProcessor_changemethodtargetcast_description;
-				} else {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_changemethodtargetcast2_description, targetName);
-				}
-			}
-			proposals.add(new CastCompletionProposal(label, cu, target, (ITypeBinding) null, 3));
-		}
-	}
-
-	private static boolean useExistingParentCastProposal(IJavaScriptUnit cu, CastExpression expression, Expression accessExpression, SimpleName accessSelector, ITypeBinding[] paramTypes, Collection proposals) {
-		ITypeBinding castType= expression.getType().resolveBinding();
-		if (castType == null) {
-			return false;
-		}
-		if (paramTypes != null) {
-			if (Bindings.findMethodInHierarchy(castType, accessSelector.getIdentifier(), paramTypes) == null) {
-				return false;
-			}
-		} else if (Bindings.findFieldInHierarchy(castType, accessSelector.getIdentifier()) == null) {
-			return false;
-		}
-		ITypeBinding bindingToCast= accessExpression.resolveTypeBinding();
-		if (bindingToCast != null && !bindingToCast.isCastCompatible(castType)) {
-			return false;
-		}
-
-		IFunctionBinding res= Bindings.findMethodInHierarchy(castType, accessSelector.getIdentifier(), paramTypes);
-		if (res != null) {
-			AST ast= expression.getAST();
-			ASTRewrite rewrite= ASTRewrite.create(ast);
-			CastExpression newCast= ast.newCastExpression();
-			newCast.setType((Type) ASTNode.copySubtree(ast, expression.getType()));
-			newCast.setExpression((Expression) rewrite.createCopyTarget(accessExpression));
-			ParenthesizedExpression parents= ast.newParenthesizedExpression();
-			parents.setExpression(newCast);
-
-			ASTNode node= rewrite.createCopyTarget(expression.getExpression());
-			rewrite.replace(expression, node, null);
-			rewrite.replace(accessExpression, parents, null);
-
-			String label= CorrectionMessages.UnresolvedElementsSubProcessor_missingcastbrackets_description;
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CAST);
-			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, cu, rewrite, 8, image);
-			proposals.add(proposal);
-			return true;
-		}
-		return false;
 	}
 
 	private static void addParameterMissmatchProposals(IInvocationContext context, IProblemLocation problem, List similarElements, ASTNode invocationNode, List arguments, Collection proposals) throws CoreException {
@@ -1268,14 +1157,6 @@ public class UnresolvedElementsSubProcessor {
 				castType= ASTResolving.normalizeWildcardType(castType, false, nodeToCast.getAST());
 			}
 			if (castType != null) {
-				ITypeBinding binding= nodeToCast.resolveTypeBinding();
-				if (binding == null || binding.isCastCompatible(castType)) {
-					ASTRewriteCorrectionProposal proposal= TypeMismatchSubProcessor.createCastProposal(context, castType, nodeToCast, 6);
-					String castTypeName= BindingLabelProvider.getBindingLabel(castType, JavaScriptElementLabels.ALL_DEFAULT);
-					String[] arg= new String[] { getArgumentName(cu, arguments, idx), castTypeName};
-					proposal.setDisplayName(Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_addargumentcast_description, arg));
-					proposals.add(proposal);
-				}
 				TypeMismatchSubProcessor.addChangeSenderTypeProposals(context, nodeToCast, castType, false, 5, proposals);
 			}
 		}

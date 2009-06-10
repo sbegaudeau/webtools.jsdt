@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ class ASTRecoveryPropagator extends DefaultASTVisitor {
 		this.endingTokens.put(ArrayCreation.class, new int[]{NOTHING, TerminalTokens.TokenNameRBRACKET});
 		this.endingTokens.put(ArrayInitializer.class, new int[]{TerminalTokens.TokenNameRBRACKET});
 		this.endingTokens.put(ArrayType.class, new int[]{TerminalTokens.TokenNameRBRACKET});
-		this.endingTokens.put(AssertStatement.class, new int[]{TerminalTokens.TokenNameSEMICOLON});
 		this.endingTokens.put(Block.class, new int[]{TerminalTokens.TokenNameRBRACE});
 		this.endingTokens.put(BooleanLiteral.class, new int[]{TerminalTokens.TokenNamefalse, TerminalTokens.TokenNametrue});
 		this.endingTokens.put(BreakStatement.class, new int[]{TerminalTokens.TokenNameSEMICOLON});

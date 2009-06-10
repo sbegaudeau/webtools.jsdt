@@ -29,10 +29,8 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
@@ -51,7 +49,6 @@ import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -70,12 +67,10 @@ import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType.Code;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -248,8 +243,6 @@ public class ASTResolving {
 				return decl.getReturnType2().resolveBinding();
 			}
 			break;
-		case ASTNode.CAST_EXPRESSION:
-			return ((CastExpression) parent).getType().resolveBinding();
 		case ASTNode.THROW_STATEMENT:
 		case ASTNode.CATCH_CLAUSE:
             return parent.getAST().resolveWellKnownType("java.lang.Exception"); //$NON-NLS-1$
@@ -271,9 +264,6 @@ public class ASTResolving {
 			}
 			break;
 		case ASTNode.ASSERT_STATEMENT:
-			if (node.getLocationInParent() == AssertStatement.EXPRESSION_PROPERTY) {
-				return parent.getAST().resolveWellKnownType("boolean"); //$NON-NLS-1$
-			}
 			return parent.getAST().resolveWellKnownType("java.lang.String"); //$NON-NLS-1$			
 		default:
 			// do nothing
@@ -381,23 +371,6 @@ public class ASTResolving {
 				ITypeBinding parentBinding= getPossibleTypeBinding(parent);
 				if (parentBinding != null && parentBinding.getDimensions() == dim) {
 					return parentBinding.getElementType();
-				}
-				return null;
-			}
-			case ASTNode.PARAMETERIZED_TYPE: {
-				ITypeBinding parentBinding= getPossibleTypeBinding(parent);
-				if (parentBinding == null || !parentBinding.isParameterizedType()) {
-					return null;
-				}
-				if (node.getLocationInParent() == ParameterizedType.TYPE_PROPERTY) {
-					return parentBinding;
-				}
-
-				ITypeBinding[] typeArguments= parentBinding.getTypeArguments();
-				List argumentNodes= ((ParameterizedType) parent).typeArguments();
-				int index= argumentNodes.indexOf(node);
-				if (index != -1 && typeArguments.length == argumentNodes.size()) {
-					return typeArguments[index];
 				}
 				return null;
 			}
@@ -790,15 +763,6 @@ public class ASTResolving {
 					return mask & (SimilarElementsRequestor.REF_TYPES);
 				}
 				mask&= SimilarElementsRequestor.REF_TYPES;
-			} else if (parent instanceof ParameterizedType) {
-				if (node.getLocationInParent() == ParameterizedType.TYPE_ARGUMENTS_PROPERTY) {
-					return mask & SimilarElementsRequestor.REF_TYPES_AND_VAR;
-				}
-				mask&= SimilarElementsRequestor.CLASSES | SimilarElementsRequestor.INTERFACES;
-			} else if (parent instanceof WildcardType) {
-				if (node.getLocationInParent() == WildcardType.BOUND_PROPERTY) {
-					return mask & SimilarElementsRequestor.REF_TYPES_AND_VAR;
-				}
 			}
 			node= parent;
 			parent= parent.getParent();
@@ -840,13 +804,6 @@ public class ASTResolving {
 				break;
 			case ASTNode.TAG_ELEMENT:
 				kind= SimilarElementsRequestor.REF_TYPES;
-				break;
-			case ASTNode.TYPE_PARAMETER:
-				if (((TypeParameter) parent).typeBounds().indexOf(node) > 0) {
-					kind= SimilarElementsRequestor.INTERFACES;
-				} else {
-					kind= SimilarElementsRequestor.REF_TYPES_AND_VAR;
-				}
 				break;
 			case ASTNode.TYPE_LITERAL:
 				kind= SimilarElementsRequestor.REF_TYPES;
@@ -998,15 +955,6 @@ public class ASTResolving {
 			ITypeBinding[] typeParameters= type.getTypeParameters();
 			for (int i= 0; i < typeParameters.length; i++) {
 				if (!isUseableTypeInContext(typeParameters[i], context, noWildcards)) {
-					return false;
-				}
-			}
-			return true;
-		}
-		if (type.isParameterizedType()) {
-			ITypeBinding[] typeArguments= type.getTypeArguments();
-			for (int i= 0; i < typeArguments.length; i++) {
-				if (!isUseableTypeInContext(typeArguments[i], context, noWildcards)) {
 					return false;
 				}
 			}

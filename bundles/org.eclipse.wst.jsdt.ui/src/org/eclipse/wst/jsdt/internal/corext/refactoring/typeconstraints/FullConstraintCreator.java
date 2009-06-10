@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
@@ -31,13 +30,13 @@ import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -122,31 +121,6 @@ public class FullConstraintCreator extends ConstraintCreator{
 		return fTypeConstraintFactory.createSubtypeConstraint(
 				fConstraintVariableFactory.makeExpressionOrTypeVariable(assignment.getRightHandSide(), getContext()), 
 				fConstraintVariableFactory.makeExpressionOrTypeVariable(assignment.getLeftHandSide(), getContext()));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.CastExpression)
-	 */
-	public ITypeConstraint[] create(CastExpression castExpression){
-		Expression expression= castExpression.getExpression();
-		Type type= castExpression.getType();
-		ITypeConstraint[] definesConstraint= fTypeConstraintFactory.createDefinesConstraint(fConstraintVariableFactory.makeExpressionOrTypeVariable(castExpression, getContext()), 
-				                                                                        fConstraintVariableFactory.makeTypeVariable(castExpression.getType()));
-		if (isClassBinding(expression.resolveTypeBinding()) && isClassBinding(type.resolveBinding())){
-			ConstraintVariable expressionVariable= fConstraintVariableFactory.makeExpressionOrTypeVariable(expression, getContext());
-			ConstraintVariable castExpressionVariable= fConstraintVariableFactory.makeExpressionOrTypeVariable(castExpression, getContext());
-			ITypeConstraint[] c2 = createOrOrSubtypeConstraint(expressionVariable, castExpressionVariable);
-			if (definesConstraint.length == 0){
-				return c2;
-			} else {
-				ITypeConstraint c1 = definesConstraint[0];
-				Collection/*<ITypeConstraint>*/ constraints= new ArrayList();
-				constraints.add(c1);
-				constraints.addAll(Arrays.asList(c2));
-				return (ITypeConstraint[])constraints.toArray(new ITypeConstraint[constraints.size()]);
-			}
-		} else 
-			return definesConstraint;
 	}
 	
 	public ITypeConstraint[] create(CatchClause node) {

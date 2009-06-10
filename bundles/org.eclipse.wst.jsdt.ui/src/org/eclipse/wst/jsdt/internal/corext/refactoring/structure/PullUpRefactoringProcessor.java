@@ -1209,7 +1209,6 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 		copyReturnType(rewrite, getDeclaringType().getJavaScriptUnit(), oldMethod, newMethod, mapping);
 		copyParameters(rewrite, getDeclaringType().getJavaScriptUnit(), oldMethod, newMethod, mapping);
 		copyThrownExceptions(oldMethod, newMethod);
-		copyTypeParameters(oldMethod, newMethod);
 		return newMethod;
 	}
 

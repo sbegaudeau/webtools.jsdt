@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,21 +212,6 @@ class NaiveASTFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(AssertStatement)
-	 */
-	public boolean visit(AssertStatement node) {
-		printIndent();
-		this.buffer.append("assert ");//$NON-NLS-1$
-		node.getExpression().accept(this);
-		if (node.getMessage() != null) {
-			this.buffer.append(" : ");//$NON-NLS-1$
-			node.getMessage().accept(this);
-		}
-		this.buffer.append(";\n");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(Assignment)
 	 */
 	public boolean visit(Assignment node) {
@@ -288,18 +273,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(";\n");//$NON-NLS-1$
 		return false;
 	}
-
-	/*
-	 * @see ASTVisitor#visit(CastExpression)
-	 */
-	public boolean visit(CastExpression node) {
-		this.buffer.append("(");//$NON-NLS-1$
-		node.getType().accept(this);
-		this.buffer.append(")");//$NON-NLS-1$
-		node.getExpression().accept(this);
-		return false;
-	}
-
 
 	public boolean visit(FunctionExpression node) {
 		node.getMethod().accept(this);
@@ -777,8 +750,6 @@ class NaiveASTFlattener extends ASTVisitor {
 			if (!node.typeParameters().isEmpty()) {
 				this.buffer.append("<");//$NON-NLS-1$
 				for (Iterator it = node.typeParameters().iterator(); it.hasNext(); ) {
-					TypeParameter t = (TypeParameter) it.next();
-					t.accept(this);
 					if (it.hasNext()) {
 						this.buffer.append(",");//$NON-NLS-1$
 					}
@@ -943,24 +914,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append("package ");//$NON-NLS-1$
 		node.getName().accept(this);
 		this.buffer.append(";\n");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(ParameterizedType)
-	 *  
-	 */
-	public boolean visit(ParameterizedType node) {
-		node.getType().accept(this);
-		this.buffer.append("<");//$NON-NLS-1$
-		for (Iterator it = node.typeArguments().iterator(); it.hasNext(); ) {
-			Type t = (Type) it.next();
-			t.accept(this);
-			if (it.hasNext()) {
-				this.buffer.append(",");//$NON-NLS-1$
-			}
-		}
-		this.buffer.append(">");//$NON-NLS-1$
 		return false;
 	}
 
@@ -1316,8 +1269,6 @@ class NaiveASTFlattener extends ASTVisitor {
 			if (!node.typeParameters().isEmpty()) {
 				this.buffer.append("<");//$NON-NLS-1$
 				for (Iterator it = node.typeParameters().iterator(); it.hasNext(); ) {
-					TypeParameter t = (TypeParameter) it.next();
-					t.accept(this);
 					if (it.hasNext()) {
 						this.buffer.append(",");//$NON-NLS-1$
 					}
@@ -1395,26 +1346,7 @@ class NaiveASTFlattener extends ASTVisitor {
 		this.buffer.append(".class");//$NON-NLS-1$
 		return false;
 	}
-
-	/*
-	 * @see ASTVisitor#visit(TypeParameter)
-	 *  
-	 */
-	public boolean visit(TypeParameter node) {
-		node.getName().accept(this);
-		if (!node.typeBounds().isEmpty()) {
-			this.buffer.append(" extends ");//$NON-NLS-1$
-			for (Iterator it = node.typeBounds().iterator(); it.hasNext(); ) {
-				Type t = (Type) it.next();
-				t.accept(this);
-				if (it.hasNext()) {
-					this.buffer.append(" & ");//$NON-NLS-1$
-				}
-			}
-		}
-		return false;
-	}
-
+	
 	/*
 	 * @see ASTVisitor#visit(VariableDeclarationExpression)
 	 */
@@ -1475,24 +1407,6 @@ class NaiveASTFlattener extends ASTVisitor {
 			}
 		}
 		this.buffer.append(";\n");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(WildcardType)
-	 *  
-	 */
-	public boolean visit(WildcardType node) {
-		this.buffer.append("?");//$NON-NLS-1$
-		Type bound = node.getBound();
-		if (bound != null) {
-			if (node.isUpperBound()) {
-				this.buffer.append(" extends ");//$NON-NLS-1$
-			} else {
-				this.buffer.append(" super ");//$NON-NLS-1$
-			}
-			bound.accept(this);
-		}
 		return false;
 	}
 

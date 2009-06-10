@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,11 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -64,7 +62,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -90,13 +87,11 @@ import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.JdtASTMatcher;
 
@@ -162,12 +157,6 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(AssertStatement node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(Assignment node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -187,12 +176,6 @@ class AstMatchingNodeFinder {
 		}
 
 		public boolean visit(BreakStatement node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(CastExpression node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);
@@ -590,12 +573,6 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(ParameterizedType node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
 		public boolean visit(QualifiedType node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
@@ -609,18 +586,6 @@ class AstMatchingNodeFinder {
 		}
 
 		public boolean visit(TextElement node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(TypeParameter node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
-
-		public boolean visit(WildcardType node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))
 				return matches(node);
 			return super.visit(node);

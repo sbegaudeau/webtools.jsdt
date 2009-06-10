@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Message;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
@@ -445,10 +444,6 @@ public class ASTNodes {
 		// normalize type
 		if (QualifiedType.NAME_PROPERTY.equals(current.getLocationInParent()) || 
 			SimpleType.NAME_PROPERTY.equals(current.getLocationInParent())) {
-			current= current.getParent();
-		}
-		// normalize parameterized types
-		if (ParameterizedType.TYPE_PROPERTY.equals(current.getLocationInParent())) {
 			current= current.getParent();
 		}
 		return current;

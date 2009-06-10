@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -778,31 +778,6 @@ public interface ITypeBinding extends IBinding {
 	 *   and <code>false</code> otherwise
 	 */
 	public boolean isNullType();
-
-	/**
-	 * Returns whether this type binding represents an instance of
-	 * a generic type corresponding to a parameterized type reference.
-	 * <p>
-	 * For example, an AST type like
-	 * <code>Collection&lt;String&gt;</code> typically resolves to a
-	 * type binding whose type argument is the type binding for the
-	 * class <code>java.lang.String</code> and whose erasure is the type
-	 * binding for the generic type <code>java.util.Collection</code>.
-	 * </p>
-	 * <p>
-	 * Note that {@link #isGenericType()},
-	 * {@link #isParameterizedType()},
-	 * and {@link #isRawType()} are mutually exclusive.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this type binding represents a
-	 * an instance of a generic type corresponding to a parameterized
-	 * type reference, and <code>false</code> otherwise
-	 * @see #getTypeArguments()
-	 * @see #getTypeDeclaration()
-	 *  
-	 */
-	public boolean isParameterizedType();
 
 	/**
 	 * Returns whether this type binding represents a primitive type.

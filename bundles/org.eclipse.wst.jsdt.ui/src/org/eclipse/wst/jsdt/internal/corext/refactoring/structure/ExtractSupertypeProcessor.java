@@ -52,7 +52,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
@@ -64,7 +63,6 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
@@ -572,7 +570,6 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			final IDocument document= new Document(string);
 			final CompilationUnitRewrite targetRewrite= new CompilationUnitRewrite(fOwner, extractedWorkingCopy);
 			final AbstractTypeDeclaration targetDeclaration= (AbstractTypeDeclaration) targetRewrite.getRoot().types().get(0);
-			createTypeParameters(targetRewrite, superType, declaringDeclaration, targetDeclaration);
 			createTypeSignature(targetRewrite, superType, declaringDeclaration, targetDeclaration);
 			createNecessaryConstructors(targetRewrite, superType, targetDeclaration, status);
 			final TextEdit edit= targetRewrite.createChange().getEdit();
@@ -589,33 +586,6 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			buffer.append(document.get());
 		} finally {
 			monitor.done();
-		}
-	}
-
-	/**
-	 * Creates the type parameters of the new supertype.
-	 * 
-	 * @param targetRewrite
-	 *            the target compilation unit rewrite
-	 * @param subType
-	 *            the subtype
-	 * @param sourceDeclaration
-	 *            the type declaration of the source type
-	 * @param targetDeclaration
-	 *            the type declaration of the target type
-	 */
-	protected final void createTypeParameters(final CompilationUnitRewrite targetRewrite, final IType subType, final AbstractTypeDeclaration sourceDeclaration, final AbstractTypeDeclaration targetDeclaration) {
-		Assert.isNotNull(targetRewrite);
-		Assert.isNotNull(sourceDeclaration);
-		Assert.isNotNull(targetDeclaration);
-		if (sourceDeclaration instanceof TypeDeclaration) {
-			TypeParameter parameter= null;
-			final ListRewrite rewrite= targetRewrite.getASTRewrite().getListRewrite(targetDeclaration, TypeDeclaration.TYPE_PARAMETERS_PROPERTY);
-			for (final Iterator iterator= ((TypeDeclaration) sourceDeclaration).typeParameters().iterator(); iterator.hasNext();) {
-				parameter= (TypeParameter) iterator.next();
-				final ASTNode node= ASTNode.copySubtree(targetRewrite.getAST(), parameter);
-				rewrite.insertLast(node, null);
-			}
 		}
 	}
 

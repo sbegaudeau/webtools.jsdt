@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,13 +125,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 		new SimplePropertyDescriptor(FunctionDeclaration.class, "extraDimensions", int.class, MANDATORY); //$NON-NLS-1$
 
 	/**
-	 * The "typeParameters" structural property of this node type (added in JLS3 API).
-	 *  
-	 */
-	public static final ChildListPropertyDescriptor TYPE_PARAMETERS_PROPERTY =
-		new ChildListPropertyDescriptor(FunctionDeclaration.class, "typeParameters", TypeParameter.class, NO_CYCLE_RISK); //$NON-NLS-1$
-
-	/**
 	 * The "parameters" structural property of this node type).
 	 *  
 	 */
@@ -187,7 +180,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 		addProperty(JAVADOC_PROPERTY, propertyList);
 		addProperty(MODIFIERS2_PROPERTY, propertyList);
 		addProperty(CONSTRUCTOR_PROPERTY, propertyList);
-		addProperty(TYPE_PARAMETERS_PROPERTY, propertyList);
 		addProperty(RETURN_TYPE2_PROPERTY, propertyList);
 		addProperty(NAME_PROPERTY, propertyList);
 		addProperty(PARAMETERS_PROPERTY, propertyList);
@@ -294,9 +286,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 	 */
 	FunctionDeclaration(AST ast) {
 		super(ast);
-		if (ast.apiLevel >= AST.JLS3) {
-			this.typeParameters = new ASTNode.NodeList(TYPE_PARAMETERS_PROPERTY);
-		}
 	}
 
 	/* (omit javadoc for this method)
@@ -401,9 +390,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
 		if (property == MODIFIERS2_PROPERTY) {
 			return modifiers();
-		}
-		if (property == TYPE_PARAMETERS_PROPERTY) {
-			return typeParameters();
 		}
 		if (property == PARAMETERS_PROPERTY) {
 			return parameters();

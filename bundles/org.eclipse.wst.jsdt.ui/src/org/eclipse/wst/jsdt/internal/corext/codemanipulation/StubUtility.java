@@ -66,7 +66,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -80,7 +79,6 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
@@ -88,7 +86,6 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -634,10 +631,6 @@ public class StubUtility {
 		IDocument textBuffer= new Document(str);
 		List typeParams= decl.typeParameters();
 		String[] typeParamNames= new String[typeParams.size()];
-		for (int i= 0; i < typeParamNames.length; i++) {
-			TypeParameter elem= (TypeParameter) typeParams.get(i);
-			typeParamNames[i]= elem.getName().getIdentifier();
-		}
 		List params= decl.parameters();
 		String[] paramNames= new String[params.size()];
 		for (int i= 0; i < paramNames.length; i++) {
@@ -891,9 +884,6 @@ public class StubUtility {
 					dim= expectedType.getDimensions();
 					expectedType= expectedType.getElementType();
 				}
-				if (expectedType.isParameterizedType()) {
-					expectedType= expectedType.getTypeDeclaration();
-				}
 				String typeName= expectedType.getQualifiedName();
 				if (typeName.length() > 0) {
 					String[] names= getVariableNameSuggestions(variableKind, project, typeName, dim, excluded, false);
@@ -932,9 +922,7 @@ public class StubUtility {
 				dim= arrayType.getDimensions();
 				expectedType= arrayType.getElementType();
 			}
-			if (expectedType.isParameterizedType()) {
-				expectedType= ((ParameterizedType) expectedType).getType();
-			}
+
 			String typeName= ASTNodes.asString(expectedType);
 			
 			if (typeName.length() > 0) {
@@ -1038,9 +1026,7 @@ public class StubUtility {
 	
 	private static String getBaseNameFromExpression(IJavaScriptProject project, Expression assignedExpression, int variableKind) {
 		String name= null;
-		if (assignedExpression instanceof CastExpression) {
-			assignedExpression= ((CastExpression) assignedExpression).getExpression();
-		}
+
 		if (assignedExpression instanceof Name) {
 			Name simpleNode= (Name) assignedExpression;
 			IBinding binding= simpleNode.resolveBinding();
@@ -1166,9 +1152,7 @@ public class StubUtility {
 			dim= arrayType.getDimensions();
 			type= arrayType.getElementType();
 		}
-		if (type.isParameterizedType()) {
-			type= ((ParameterizedType) type).getType();
-		}
+
 		return getVariableNameSuggestions(PARAMETER, project, ASTNodes.asString(type), dim, new ExcludedCollection(excluded), true);
 	}
 	

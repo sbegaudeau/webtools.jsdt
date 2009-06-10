@@ -93,7 +93,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -352,14 +351,6 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 		 */
 		public GenericReferenceFinder(final FunctionDeclaration declaration) {
 			Assert.isNotNull(declaration);
-			ITypeBinding binding= null;
-			TypeParameter parameter= null;
-			for (final Iterator iterator= declaration.typeParameters().iterator(); iterator.hasNext();) {
-				parameter= (TypeParameter) iterator.next();
-				binding= parameter.resolveBinding();
-				if (binding != null)
-					fBindings.add(binding.getKey());
-			}
 		}
 
 		/*
@@ -2155,7 +2146,6 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 				}
 			}
 			target= createMethodArguments(rewrites, rewrite, declaration, adjustments, status);
-			createMethodTypeParameters(rewrite, declaration, status);
 			createMethodComment(rewrite, declaration);
 			createMethodBody(rewriter, rewrite, declaration);
 		} finally {
@@ -2488,45 +2478,6 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 			rewriter.getASTRewrite().getListRewrite(type, type.getBodyDeclarationsProperty()).insertAt(stub, ASTNodes.getInsertionIndex(stub, type.bodyDeclarations()), rewriter.createGroupDescription(RefactoringCoreMessages.MoveInstanceMethodProcessor_add_moved_method));
 		} catch (BadLocationException exception) {
 			JavaScriptPlugin.log(exception);
-		}
-	}
-
-	/**
-	 * Creates the necessary changes to remove method type parameters if they
-	 * match with enclosing type parameters.
-	 * 
-	 * @param rewrite
-	 *            the ast rewrite to use
-	 * @param declaration
-	 *            the method declaration to remove type parameters
-	 * @param status
-	 *            the refactoring status
-	 */
-	protected void createMethodTypeParameters(final ASTRewrite rewrite, final FunctionDeclaration declaration, final RefactoringStatus status) {
-		ITypeBinding binding= fTarget.getType();
-		if (binding != null && binding.isParameterizedType()) {
-			final IFunctionBinding method= declaration.resolveBinding();
-			if (method != null) {
-				final ITypeBinding[] parameters= method.getTypeParameters();
-				if (parameters.length > 0) {
-					final ListRewrite rewriter= rewrite.getListRewrite(declaration, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY);
-					boolean foundStatic= false;
-					while (binding != null && !foundStatic) {
-						if (Flags.isStatic(binding.getModifiers()))
-							foundStatic= true;
-						final ITypeBinding[] bindings= binding.getTypeArguments();
-						for (int index= 0; index < bindings.length; index++) {
-							for (int offset= 0; offset < parameters.length; offset++) {
-								if (parameters[offset].getName().equals(bindings[index].getName())) {
-									rewriter.remove((ASTNode) rewriter.getOriginalList().get(offset), null);
-									status.addWarning(Messages.format(RefactoringCoreMessages.MoveInstanceMethodProcessor_present_type_parameter_warning, new Object[] { parameters[offset].getName(), BindingLabelProvider.getBindingLabel(binding, JavaScriptElementLabels.ALL_FULLY_QUALIFIED) }), JavaStatusContext.create(fMethod));
-								}
-							}
-						}
-						binding= binding.getDeclaringClass();
-					}
-				}
-			}
 		}
 	}
 

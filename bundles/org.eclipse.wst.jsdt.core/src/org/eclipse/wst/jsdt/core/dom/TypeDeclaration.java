@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,13 +137,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		new ChildListPropertyDescriptor(TypeDeclaration.class, "superInterfaceTypes", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * The "typeParameters" structural property of this node type (added in JLS3 API).
-	 *  
-	 */
-	public static final ChildListPropertyDescriptor TYPE_PARAMETERS_PROPERTY =
-		new ChildListPropertyDescriptor(TypeDeclaration.class, "typeParameters", TypeParameter.class, NO_CYCLE_RISK); //$NON-NLS-1$
-
-	/**
 	 * The "bodyDeclarations" structural property of this node type (added in JLS3 API).
 	 *  
 	 */
@@ -184,7 +177,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		addProperty(MODIFIERS2_PROPERTY, propertyList);
 		addProperty(INTERFACE_PROPERTY, propertyList);
 		addProperty(NAME_PROPERTY, propertyList);
-		addProperty(TYPE_PARAMETERS_PROPERTY, propertyList);
 		addProperty(SUPERCLASS_TYPE_PROPERTY, propertyList);
 		addProperty(SUPER_INTERFACE_TYPES_PROPERTY, propertyList);
 		addProperty(BODY_DECLARATIONS_PROPERTY, propertyList);
@@ -275,7 +267,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 			this.superInterfaceNames = new ASTNode.NodeList(SUPER_INTERFACES_PROPERTY);
 		}
 		if (ast.apiLevel >= AST.JLS3) {
-			this.typeParameters = new ASTNode.NodeList(TYPE_PARAMETERS_PROPERTY);
 			this.superInterfaceTypes = new ASTNode.NodeList(SUPER_INTERFACE_TYPES_PROPERTY);
 		}
 	}
@@ -366,9 +357,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
 		if (property == MODIFIERS2_PROPERTY) {
 			return modifiers();
-		}
-		if (property == TYPE_PARAMETERS_PROPERTY) {
-			return typeParameters();
 		}
 		if (property == SUPER_INTERFACES_PROPERTY) {
 			return superInterfaces();

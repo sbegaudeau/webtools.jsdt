@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -143,18 +143,7 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		String[] variableNames= getUsedVariableNames();
 		String[] elementSuggestions= StubUtility.getLocalNameSuggestions(getJavaProject(), FOR_LOOP_ELEMENT_IDENTIFIER, 0, variableNames);
 		
-		final ITypeBinding binding= fIterator.getType();
-		if (binding != null && binding.isParameterizedType()) {
-			String type= binding.getTypeArguments()[0].getName();
-			String[] typeSuggestions= StubUtility.getLocalNameSuggestions(getJavaProject(), type, 0, variableNames);
-			
-			String[] result= new String[elementSuggestions.length + typeSuggestions.length];
-			System.arraycopy(typeSuggestions, 0, result, 0, typeSuggestions.length);
-			System.arraycopy(elementSuggestions, 0, result, typeSuggestions.length, elementSuggestions.length);
-			return result;
-		} else {
-			return elementSuggestions;
-		}
+		return elementSuggestions;
 	}
 	
 	private IJavaScriptProject getJavaProject() {

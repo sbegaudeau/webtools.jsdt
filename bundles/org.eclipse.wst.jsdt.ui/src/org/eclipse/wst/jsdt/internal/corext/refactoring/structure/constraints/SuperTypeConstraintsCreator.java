@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.Comment;
@@ -203,19 +202,6 @@ public final class SuperTypeConstraintsCreator extends HierarchicalASTVisitor {
 		node.setProperty(PROPERTY_CONSTRAINT_VARIABLE, ancestor);
 		if (ancestor != null && descendant != null)
 			fModel.createSubtypeConstraint(descendant, ancestor);
-	}
-
-	/*
-	 * @see org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.CastExpression)
-	 */
-	public final void endVisit(final CastExpression node) {
-		final ConstraintVariable2 first= (ConstraintVariable2) node.getType().getProperty(PROPERTY_CONSTRAINT_VARIABLE);
-		if (first != null) {
-			node.setProperty(PROPERTY_CONSTRAINT_VARIABLE, first);
-			final ConstraintVariable2 second= (ConstraintVariable2) node.getExpression().getProperty(PROPERTY_CONSTRAINT_VARIABLE);
-			if (second != null)
-				fModel.createCastVariable(node, second);
-		}
 	}
 
 	/*

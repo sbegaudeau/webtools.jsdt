@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,9 @@ import org.eclipse.ltk.core.refactoring.RefactoringChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -46,20 +46,19 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -68,7 +67,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -427,9 +425,8 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
     
     public CompilationUnitChange createCompilationUnitChange(IProgressMonitor pm) throws CoreException {
 		final CompilationUnitRewrite rewrite= new CompilationUnitRewrite(fCu, fCompilationUnitNode);
-		final ITypeBinding[] typeParameters= getTypeParameters();
-		addNestedClass(rewrite, typeParameters);
-		modifyConstructorCall(rewrite, typeParameters);
+		addNestedClass(rewrite, null);
+		modifyConstructorCall(rewrite, null);
 		return rewrite.createChange(RefactoringCoreMessages.ConvertAnonymousToNestedRefactoring_name, false, pm); 
     }
     
@@ -441,62 +438,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		final CompilationUnitChange result= createCompilationUnitChange(pm);
 		result.setDescriptor(createRefactoringDescriptor());
 		return result;
-	}
-
-	private ITypeBinding[] getTypeParameters() {
-		final List parameters= new ArrayList(4);
-		final ClassInstanceCreation creation= (ClassInstanceCreation) fAnonymousInnerClassNode.getParent();
-		if (fDeclareStatic) {
-			final TypeVariableFinder finder= new TypeVariableFinder();
-			creation.accept(finder);
-			return finder.getResult();
-		} else {
-			final FunctionDeclaration declaration= getEnclosingMethodDeclaration(creation);
-			if (declaration != null) {
-				ITypeBinding binding= null;
-				TypeParameter parameter= null;
-				for (final Iterator iterator= declaration.typeParameters().iterator(); iterator.hasNext();) {
-					parameter= (TypeParameter) iterator.next();
-					binding= parameter.resolveBinding();
-					if (binding != null)
-						parameters.add(binding);
-				}
-			}
-		}
-		final TypeVariableFinder finder= new TypeVariableFinder();
-		creation.accept(finder);
-		final ITypeBinding[] variables= finder.getResult();
-		final List remove= new ArrayList(4);
-		boolean match= false;
-		ITypeBinding binding= null;
-		ITypeBinding variable= null;
-		for (final Iterator iterator= parameters.iterator(); iterator.hasNext();) {
-			match= false;
-			binding= (ITypeBinding) iterator.next();
-			for (int index= 0; index < variables.length; index++) {
-				variable= variables[index];
-				if (variable.equals(binding))
-					match= true;
-			}
-			if (!match)
-				remove.add(binding);
-		}
-		parameters.removeAll(remove);
-		final ITypeBinding[] result= new ITypeBinding[parameters.size()];
-		parameters.toArray(result);
-		return result;
-	}
-
-	private FunctionDeclaration getEnclosingMethodDeclaration(ASTNode node) {
-		ASTNode parent= node.getParent();
-		if (parent != null) {
-			if (parent instanceof AbstractTypeDeclaration)
-				return null;
-			else if (parent instanceof FunctionDeclaration)
-				return (FunctionDeclaration) parent;
-			return getEnclosingMethodDeclaration(parent);
-		}
-		return null;
 	}
 
 	private RefactoringChangeDescriptor createRefactoringDescriptor() {
@@ -541,10 +482,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		Type type= null;
 		SimpleName newNameNode= ast.newSimpleName(fClassName);
 		if (parameters.length > 0) {
-			final ParameterizedType parameterized= ast.newParameterizedType(ast.newSimpleType(newNameNode));
-			for (int index= 0; index < parameters.length; index++)
-				parameterized.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getName())));
-			type= parameterized;
 		} else
 			type= ast.newSimpleType(newNameNode);
 		newClassCreation.setType(type);
@@ -580,7 +517,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
         int index= findIndexOfFistNestedClass(declarations.bodyDeclarations());
         if (index == -1)
             index= 0;
-        rewrite.getASTRewrite().getListRewrite(declarations, declarations.getBodyDeclarationsProperty()).insertAt(createNewNestedClass(rewrite, typeParameters), index, null);
+        rewrite.getASTRewrite().getListRewrite(declarations, declarations.getBodyDeclarationsProperty()).insertAt(createNewNestedClass(rewrite), index, null);
     }
 
     private static int findIndexOfFistNestedClass(List bodyDeclarations) {
@@ -598,7 +535,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
         return (each.getParent() instanceof AbstractTypeDeclaration);
     }
 
-    private AbstractTypeDeclaration createNewNestedClass(CompilationUnitRewrite rewrite, ITypeBinding[] typeParameters) throws CoreException {
+    private AbstractTypeDeclaration createNewNestedClass(CompilationUnitRewrite rewrite) throws CoreException {
 		final AST ast= fAnonymousInnerClassNode.getAST();
 		
 		final TypeDeclaration newDeclaration= ast.newTypeDeclaration();
@@ -607,12 +544,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		newDeclaration.modifiers().addAll(ASTNodeFactory.newModifiers(ast, createModifiersForNestedClass()));
 		newDeclaration.setName(ast.newSimpleName(fClassName));
 		
-		TypeParameter parameter= null;
-		for (int index= 0; index < typeParameters.length; index++) {
-			parameter= ast.newTypeParameter();
-			parameter.setName(ast.newSimpleName(typeParameters[index].getName()));
-			newDeclaration.typeParameters().add(parameter);
-		}
 		setSuperType(newDeclaration);
 		
 		IJavaScriptProject project= fCu.getJavaScriptProject();
@@ -646,11 +577,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		updateAndMoveBodyDeclarations(rewrite, bindings, allFieldNames, newBodyDeclarations, newConstructorDecl);
 		
 		if (doAddComments()) {
-			String[] parameterNames= new String[typeParameters.length];
-			for (int index= 0; index < parameterNames.length; index++) {
-				parameterNames[index]= typeParameters[index].getName();
-			}
-			String string= CodeGeneration.getTypeComment(rewrite.getCu(), fClassName, parameterNames, StubUtility.getLineDelimiterUsed(fCu));
+			String string= CodeGeneration.getTypeComment(rewrite.getCu(), fClassName, new String[0], StubUtility.getLineDelimiterUsed(fCu));
 			if (string != null) {
 				JSdoc javadoc= (JSdoc) rewrite.getASTRewrite().createStringPlaceholder(string, ASTNode.JSDOC);
 				newDeclaration.setJavadoc(javadoc);

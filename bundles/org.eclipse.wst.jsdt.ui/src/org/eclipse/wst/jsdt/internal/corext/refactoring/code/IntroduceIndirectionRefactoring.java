@@ -31,11 +31,11 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
@@ -47,17 +47,16 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -65,7 +64,6 @@ import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
@@ -785,26 +783,12 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			// Add first param
 			SingleVariableDeclaration parameter= imRewrite.getAST().newSingleVariableDeclaration();
 			Type t= imRewrite.getImportRewrite().addImport(fIntermediaryFirstParameterType, imRewrite.getAST());
-			if (fIntermediaryFirstParameterType.isGenericType()) {
-				ParameterizedType parameterized= imRewrite.getAST().newParameterizedType(t);
-				ITypeBinding[] typeParameters= fIntermediaryFirstParameterType.getTypeParameters();
-				for (int i= 0; i < typeParameters.length; i++)
-					parameterized.typeArguments().add(imRewrite.getImportRewrite().addImport(typeParameters[i], imRewrite.getAST()));
-				t= parameterized;
-			}
 			parameter.setType(t);
 			parameter.setName(imRewrite.getAST().newSimpleName(targetParameterName));
 			intermediary.parameters().add(parameter);
 		}
 		// Add other params
 		copyArguments(intermediary, imRewrite);
-
-		// Add type parameters of declaring class (and enclosing classes)
-		if (!isStaticTarget() && fIntermediaryFirstParameterType.isGenericType())
-			addTypeParameters(imRewrite, intermediary.typeParameters(), fIntermediaryFirstParameterType);
-
-		// Add type params of method
-		copyTypeParameters(intermediary, imRewrite);
 
 		// Return type
 		intermediary.setReturnType2(imRewrite.getImportRewrite().addImport(fTargetMethodBinding.getReturnType(), ast));
@@ -849,24 +833,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 				.createGroupDescription(RefactoringCoreMessages.IntroduceIndirectionRefactoring_group_description_create_new_method));
 	}
 
-	private void addTypeParameters(CompilationUnitRewrite imRewrite, List newTypeParameters, ITypeBinding parent) {
-
-		ITypeBinding enclosing= parent.getDeclaringClass();
-		if (enclosing != null)
-			addTypeParameters(imRewrite, newTypeParameters, enclosing);
-
-		ITypeBinding[] typeParameters= parent.getTypeParameters();
-		for (int i= 0; i < typeParameters.length; i++) {
-			TypeParameter ntp= imRewrite.getAST().newTypeParameter();
-			ntp.setName(imRewrite.getAST().newSimpleName(typeParameters[i].getName()));
-			ITypeBinding[] bounds= typeParameters[i].getTypeBounds();
-			for (int j= 0; j < bounds.length; j++)
-				if (!"java.lang.Object".equals(bounds[j].getQualifiedName())) //$NON-NLS-1$
-					ntp.typeBounds().add(imRewrite.getImportRewrite().addImport(bounds[j], imRewrite.getAST()));
-			newTypeParameters.add(ntp);
-		}
-	}
-
 	private Statement encapsulateInvocation(FunctionDeclaration declaration, FunctionInvocation invocation) {
 		final Type type= declaration.getReturnType2();
 
@@ -900,22 +866,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 
 			newElement.setType(rew.getImportRewrite().addImport(typeBinding, rew.getAST()));
 			intermediary.parameters().add(newElement);
-		}
-	}
-
-	private void copyTypeParameters(FunctionDeclaration intermediary, CompilationUnitRewrite rew) {
-		ITypeBinding[] typeParameters= fTargetMethodBinding.getTypeParameters();
-		for (int i= 0; i < typeParameters.length; i++) {
-			ITypeBinding current= typeParameters[i];
-
-			TypeParameter parameter= rew.getAST().newTypeParameter();
-			parameter.setName(rew.getAST().newSimpleName(current.getName()));
-			ITypeBinding[] bounds= current.getTypeBounds();
-			for (int j= 0; j < bounds.length; j++)
-				if (!"java.lang.Object".equals(bounds[j].getQualifiedName())) //$NON-NLS-1$
-					parameter.typeBounds().add(rew.getImportRewrite().addImport(bounds[j], rew.getAST()));
-
-			intermediary.typeParameters().add(parameter);
 		}
 	}
 

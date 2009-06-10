@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,10 +53,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 
-	public void endVisit(AssertStatement node) {
-		endVisitNode(node);
-	}
-
 	public void endVisit(Assignment node) {
 		endVisitNode(node);
 	}
@@ -75,9 +71,6 @@ class DefaultASTVisitor extends ASTVisitor {
 	}
 
 	public void endVisit(BreakStatement node) {
-		endVisitNode(node);
-	}
-	public void endVisit(CastExpression node) {
 		endVisitNode(node);
 	}
 	public void endVisit(CatchClause node) {
@@ -282,9 +275,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 
-	public void endVisit(WildcardType node) {
-		endVisitNode(node);
-	}
 	public void endVisit(WithStatement node) {
 		endVisitNode(node);
 	}
@@ -308,9 +298,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		visitNode(node);
 		return false;
 	}
-	public boolean visit(AssertStatement node) {
-		return visitNode(node);
-	}
 	public boolean visit(Assignment node) {
 		return visitNode(node);
 	}
@@ -325,9 +312,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(BreakStatement node) {
-		return visitNode(node);
-	}
-	public boolean visit(CastExpression node) {
 		return visitNode(node);
 	}
 	public boolean visit(CatchClause node) {
@@ -535,9 +519,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(WhileStatement node) {
-		return visitNode(node);
-	}
-	public boolean visit(WildcardType node) {
 		return visitNode(node);
 	}
 

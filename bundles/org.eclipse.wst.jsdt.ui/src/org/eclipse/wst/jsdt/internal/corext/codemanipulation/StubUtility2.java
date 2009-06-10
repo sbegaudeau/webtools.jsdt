@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -46,8 +45,6 @@ import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite.ImportRewriteContext;
@@ -76,22 +73,6 @@ public final class StubUtility2 {
 		decl.modifiers().addAll(ASTNodeFactory.newModifiers(ast, modifiers & ~Modifier.ABSTRACT & ~Modifier.NATIVE));
 		decl.setName(ast.newSimpleName(type));
 		decl.setConstructor(true);
-
-		ITypeBinding[] typeParams= binding.getTypeParameters();
-		List typeParameters= decl.typeParameters();
-		for (int i= 0; i < typeParams.length; i++) {
-			ITypeBinding curr= typeParams[i];
-			TypeParameter newTypeParam= ast.newTypeParameter();
-			newTypeParam.setName(ast.newSimpleName(curr.getName()));
-			ITypeBinding[] typeBounds= curr.getTypeBounds();
-			if (typeBounds.length != 1 || !"java.lang.Object".equals(typeBounds[0].getQualifiedName())) {//$NON-NLS-1$
-				List newTypeBounds= newTypeParam.typeBounds();
-				for (int k= 0; k < typeBounds.length; k++) {
-					newTypeBounds.add(imports.addImport(typeBounds[k], ast));
-				}
-			}
-			typeParameters.add(newTypeParam);
-		}
 
 		List parameters= createParameters(unit, imports, ast, binding, decl, null);
 
@@ -147,21 +128,6 @@ public final class StubUtility2 {
 
 		List parameters= decl.parameters();
 		if (superConstructor != null) {
-			ITypeBinding[] typeParams= superConstructor.getTypeParameters();
-			List typeParameters= decl.typeParameters();
-			for (int i= 0; i < typeParams.length; i++) {
-				ITypeBinding curr= typeParams[i];
-				TypeParameter newTypeParam= ast.newTypeParameter();
-				newTypeParam.setName(ast.newSimpleName(curr.getName()));
-				ITypeBinding[] typeBounds= curr.getTypeBounds();
-				if (typeBounds.length != 1 || !"java.lang.Object".equals(typeBounds[0].getQualifiedName())) {//$NON-NLS-1$
-					List newTypeBounds= newTypeParam.typeBounds();
-					for (int k= 0; k < typeBounds.length; k++) {
-						newTypeBounds.add(imports.addImport(typeBounds[k], ast));
-					}
-				}
-				typeParameters.add(newTypeParam);
-			}
 
 			createParameters(unit, imports, ast, superConstructor, decl, null);
 
@@ -252,22 +218,6 @@ public final class StubUtility2 {
 
 		decl.setName(ast.newSimpleName(methodBinding.getName()));
 		decl.setConstructor(false);
-
-		ITypeBinding[] typeParams= methodBinding.getTypeParameters();
-		List typeParameters= decl.typeParameters();
-		for (int i= 0; i < typeParams.length; i++) {
-			ITypeBinding curr= typeParams[i];
-			TypeParameter newTypeParam= ast.newTypeParameter();
-			newTypeParam.setName(ast.newSimpleName(curr.getName()));
-			ITypeBinding[] typeBounds= curr.getTypeBounds();
-			if (typeBounds.length != 1 || !"java.lang.Object".equals(typeBounds[0].getQualifiedName())) {//$NON-NLS-1$
-				List newTypeBounds= newTypeParam.typeBounds();
-				for (int k= 0; k < typeBounds.length; k++) {
-					newTypeBounds.add(imports.addImport(typeBounds[k], ast));
-				}
-			}
-			typeParameters.add(newTypeParam);
-		}
 
 		decl.setReturnType2(imports.addImport(methodBinding.getReturnType(), ast));
 
@@ -365,22 +315,6 @@ public final class StubUtility2 {
 		decl.setName(ast.newSimpleName(binding.getName()));
 		decl.setConstructor(false);
 
-		ITypeBinding[] typeParams= binding.getTypeParameters();
-		List typeParameters= decl.typeParameters();
-		for (int i= 0; i < typeParams.length; i++) {
-			ITypeBinding curr= typeParams[i];
-			TypeParameter newTypeParam= ast.newTypeParameter();
-			newTypeParam.setName(ast.newSimpleName(curr.getName()));
-			ITypeBinding[] typeBounds= curr.getTypeBounds();
-			if (typeBounds.length != 1 || !"java.lang.Object".equals(typeBounds[0].getQualifiedName())) {//$NON-NLS-1$
-				List newTypeBounds= newTypeParam.typeBounds();
-				for (int k= 0; k < typeBounds.length; k++) {
-					newTypeBounds.add(imports.addImport(typeBounds[k], ast, context));
-				}
-			}
-			typeParameters.add(newTypeParam);
-		}
-
 		decl.setReturnType2(imports.addImport(binding.getReturnType(), ast, context));
 
 		List parameters= createParameters(unit, imports, ast, binding, decl, context);
@@ -458,19 +392,6 @@ public final class StubUtility2 {
 
 		ITypeBinding[] typeParams= binding.getTypeParameters();
 		List typeParameters= decl.typeParameters();
-		for (int index= 0; index < typeParams.length; index++) {
-			ITypeBinding curr= typeParams[index];
-			TypeParameter newTypeParam= ast.newTypeParameter();
-			newTypeParam.setName(ast.newSimpleName(curr.getName()));
-			ITypeBinding[] typeBounds= curr.getTypeBounds();
-			if (typeBounds.length != 1 || !"java.lang.Object".equals(typeBounds[0].getQualifiedName())) {//$NON-NLS-1$
-				List newTypeBounds= newTypeParam.typeBounds();
-				for (int offset= 0; offset < typeBounds.length; offset++) {
-					newTypeBounds.add(createTypeNode(importRewrite, typeBounds[offset], ast));
-				}
-			}
-			typeParameters.add(newTypeParam);
-		}
 
 		decl.setReturnType2(createTypeNode(importRewrite, binding.getReturnType(), ast));
 
@@ -591,24 +512,10 @@ public final class StubUtility2 {
 			return ast.newSimpleType(ast.newSimpleName("invalid")); //$NON-NLS-1$
 		else if (normalized.isTypeVariable())
 			return ast.newSimpleType(ast.newSimpleName(binding.getName()));
-		else if (normalized.isWildcardType()) {
-			WildcardType type= ast.newWildcardType();
-			ITypeBinding bound= normalized.getBound();
-			if (bound != null)
-				type.setBound(createTypeNode(bound, ast), false);
-			return type;
-		} else if (normalized.isArray())
+		else if (normalized.isArray())
 			return ast.newArrayType(createTypeNode(normalized.getElementType(), ast), normalized.getDimensions());
 		String qualified= Bindings.getRawQualifiedName(normalized);
 		if (qualified.length() > 0) {
-			ITypeBinding[] typeArguments= normalized.getTypeArguments();
-			if (typeArguments.length > 0) {
-				ParameterizedType type= ast.newParameterizedType(ast.newSimpleType(ASTNodeFactory.newName(ast, qualified)));
-				List arguments= type.typeArguments();
-				for (int index= 0; index < typeArguments.length; index++)
-					arguments.add(createTypeNode(typeArguments[index], ast));
-				return type;
-			}
 			return ast.newSimpleType(ASTNodeFactory.newName(ast, qualified));
 		}
 		return ast.newSimpleType(ASTNodeFactory.newName(ast, Bindings.getRawName(normalized)));

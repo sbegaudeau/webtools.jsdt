@@ -31,10 +31,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -43,24 +43,22 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
@@ -603,18 +601,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	private void setCtorTypeArguments(ClassInstanceCreation newCtorCall, String ctorTypeName, ITypeBinding[] ctorOwnerTypeParameters, AST ast) {
         if (ctorOwnerTypeParameters.length == 0) // easy, just a simple type
             newCtorCall.setType(ASTNodeFactory.newType(ast, ctorTypeName));
-        else {
-            Type baseType= ast.newSimpleType(ast.newSimpleName(ctorTypeName));
-            ParameterizedType newInstantiatedType= ast.newParameterizedType(baseType);
-            List/*<Type>*/ newInstTypeArgs= newInstantiatedType.typeArguments();
-
-            for(int i= 0; i < ctorOwnerTypeParameters.length; i++) {
-                Type typeArg= ASTNodeFactory.newType(ast, ctorOwnerTypeParameters[i].getName());
-
-                newInstTypeArgs.add(typeArg);
-            }
-            newCtorCall.setType(newInstantiatedType);
-        }
 	}
 
 	/**
@@ -631,18 +617,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 	private void setMethodReturnType(FunctionDeclaration newMethod, String retTypeName, ITypeBinding[] ctorOwnerTypeParameters, AST ast) {
         if (ctorOwnerTypeParameters.length == 0)
             newMethod.setReturnType2(ast.newSimpleType(ast.newSimpleName(retTypeName)));
-        else {
-            Type baseType= ast.newSimpleType(ast.newSimpleName(retTypeName));
-            ParameterizedType newRetType= ast.newParameterizedType(baseType);
-            List/*<Type>*/ newRetTypeArgs= newRetType.typeArguments();
-
-            for(int i= 0; i < ctorOwnerTypeParameters.length; i++) {
-                Type retTypeArg= ASTNodeFactory.newType(ast, ctorOwnerTypeParameters[i].getName());
-
-                newRetTypeArgs.add(retTypeArg);
-            }
-            newMethod.setReturnType2(newRetType);
-        }
 	}
 
 	/**
@@ -684,46 +658,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			String excName= fImportRewriter.addImport(ctorExcepts[i]);
 
 			exceptions.add(ASTNodeFactory.newName(ast, excName));
-		}
-
-        copyTypeParameters(ast, newMethod);
-	}
-
-	/**
-	 * Copies the constructor's parent type's type parameters, if any, as
-	 * method type parameters of the new static factory method. (Recall
-	 * that static methods can't refer to type arguments of the enclosing
-	 * class, since they have no instance to serve as a context.)<br>
-	 * Makes sure to copy the bounds from the owning type, to ensure that the
-	 * return type of the factory method satisfies the bounds of the type
-	 * being instantiated.<br>
-	 * E.g., for ctor Foo() in the type Foo<T extends Number>, be sure that
-	 * the factory method is declared as<br>
-	 * <code>static <T extends Number> Foo<T> createFoo()</code><br>
-	 * and not simply<br>
-	 * <code>static <T> Foo<T> createFoo()</code><br>
-	 * or the compiler will bark.
-	 * @param ast utility object needed to create ASTNode's for the new method
-	 * @param newMethod the method onto which to copy the type parameters
-	 */
-	private void copyTypeParameters(AST ast, FunctionDeclaration newMethod) {
-		ITypeBinding[] ctorOwnerTypeParms= fCtorBinding.getDeclaringClass().getTypeParameters();
-		List/*<TypeParameter>*/ factoryMethodTypeParms= newMethod.typeParameters();
-		for(int i= 0; i < ctorOwnerTypeParms.length; i++) {
-            TypeParameter newParm= ast.newTypeParameter();
-            ITypeBinding[] parmTypeBounds= ctorOwnerTypeParms[i].getTypeBounds();
-            List/*<Type>*/ newParmBounds= newParm.typeBounds();
-
-            newParm.setName(ast.newSimpleName(ctorOwnerTypeParms[i].getName()));
-            for(int b=0; b < parmTypeBounds.length; b++) {
-            	if (parmTypeBounds[b].isClass() && parmTypeBounds[b].getSuperclass() == null)
-            		continue;
-
-            	Type newBound= fImportRewriter.addImport(parmTypeBounds[b], ast);
-
-                newParmBounds.add(newBound);
-            }
-			factoryMethodTypeParms.add(newParm);
 		}
 	}
 

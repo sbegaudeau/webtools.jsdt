@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,12 +41,8 @@ package org.eclipse.wst.jsdt.core.dom;
  *    Type <b>[</b> <b>]</b>
  * SimpleType:
  *    TypeName
- * ParameterizedType:
- *    Type <b>&lt;</b> Type { <b>,</b> Type } <b>&gt;</b>
  * QualifiedType:
  *    Type <b>.</b> SimpleName
- * WildcardType:
- *    <b>?</b> [ ( <b>extends</b> | <b>super</b>) Type ]
  * </pre>
  * </p>
  * 
@@ -103,18 +99,6 @@ public abstract class Type extends ASTNode {
 	}
 
 	/**
-	 * Returns whether this type is a parameterized type
-	 * (<code>ParameterizedType</code>).
-	 *
-	 * @return <code>true</code> if this is a parameterized type, and
-	 *    <code>false</code> otherwise
-	 *  
-	 */
-	public final boolean isParameterizedType() {
-		return (this instanceof ParameterizedType);
-	}
-
-	/**
 	 * Returns whether this type is a qualified type
 	 * (<code>QualifiedType</code>).
 	 * <p>
@@ -140,22 +124,6 @@ public abstract class Type extends ASTNode {
 	 */
 	public final boolean isQualifiedType() {
 		return (this instanceof QualifiedType);
-	}
-
-	/**
-	 * Returns whether this type is a wildcard type
-	 * (<code>WildcardType</code>).
-	 * <p>
-	 * Note that a wildcard type is only meaningful as a
-	 * type argument of a <code>ParameterizedType</code> node.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this is a wildcard type, and
-	 *    <code>false</code> otherwise
-	 *  
-	 */
-	public final boolean isWildcardType() {
-		return (this instanceof WildcardType);
 	}
 
 	/**

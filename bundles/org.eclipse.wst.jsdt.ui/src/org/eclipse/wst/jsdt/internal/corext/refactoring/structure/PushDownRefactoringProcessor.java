@@ -796,7 +796,6 @@ public final class PushDownRefactoringProcessor extends HierarchyProcessor {
 		copyReturnType(rewrite, method.getJavaScriptUnit(), oldMethod, newMethod, mapping);
 		copyParameters(rewrite, method.getJavaScriptUnit(), oldMethod, newMethod, mapping);
 		copyThrownExceptions(oldMethod, newMethod);
-		copyTypeParameters(oldMethod, newMethod);
 		return newMethod;
 	}
 

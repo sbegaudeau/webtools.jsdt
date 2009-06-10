@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,6 @@ import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
@@ -139,29 +138,7 @@ public class JavadocTagsSubProcessor {
 
 				Set sameKindLeadingNames= getPreviousParamNames(params, decl);
 
-				List typeParams= methodDeclaration.typeParameters();
-				for (int i= 0; i < typeParams.size(); i++) {
-					String curr= '<' + ((TypeParameter) typeParams.get(i)).getName().getIdentifier() + '>';
-					sameKindLeadingNames.add(curr);
-				}
 				insertTag(tagsRewriter, newTag, sameKindLeadingNames);
-		 	} else if (location == TypeParameter.NAME_PROPERTY) {
-		 		// type parameter
-		 		TypeParameter typeParam= (TypeParameter) missingNode.getParent();
-
-				String name= '<' + ((SimpleName) missingNode).getIdentifier() + '>';
-				newTag= ast.newTagElement();
-				newTag.setTagName(TagElement.TAG_PARAM);
-				TextElement text= ast.newTextElement();
-				text.setText(name);
-				newTag.fragments().add(text);
-				List params;
-				if (bodyDecl instanceof TypeDeclaration) {
-					params= ((TypeDeclaration) bodyDecl).typeParameters();
-				} else {
-					params= ((FunctionDeclaration) bodyDecl).typeParameters();
-				}
-				insertTag(tagsRewriter, newTag, getPreviousTypeParamNames(params, typeParam));
 		 	} else if (location == FunctionDeclaration.RETURN_TYPE2_PROPERTY) {
 				newTag= ast.newTagElement();
 				newTag.setTagName(TagElement.TAG_RETURN);
@@ -210,22 +187,7 @@ public class JavadocTagsSubProcessor {
 		 	JSdoc javadoc= methodDecl.getJavadoc();
 		 	ListRewrite tagsRewriter= rewriter.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
 
-		 	List typeParams= methodDecl.typeParameters();
 		 	List typeParamNames= new ArrayList();
-		 	for (int i= typeParams.size() - 1; i >= 0 ; i--) {
-		 		TypeParameter decl= (TypeParameter) typeParams.get(i);
-		 		String name= '<' + decl.getName().getIdentifier() + '>';
-		 		if (findTag(javadoc, TagElement.TAG_PARAM, name) == null) {
-		 			TagElement newTag= ast.newTagElement();
-		 			newTag.setTagName(TagElement.TAG_PARAM);
-		 			TextElement text= ast.newTextElement();
-		 			text.setText(name);
-		 			newTag.fragments().add(text);
-					insertTabStop(rewriter, newTag.fragments(), "typeParam" + i); //$NON-NLS-1$
-		 			insertTag(tagsRewriter, newTag, getPreviousTypeParamNames(typeParams, decl));
-		 		}
-				typeParamNames.add(name);
-		 	}
 		 	List params= methodDecl.parameters();
 		 	for (int i= params.size() - 1; i >= 0 ; i--) {
 		 		SingleVariableDeclaration decl= (SingleVariableDeclaration) params.get(i);
@@ -274,21 +236,6 @@ public class JavadocTagsSubProcessor {
 			AST ast= typeDecl.getAST();
 			JSdoc javadoc= typeDecl.getJavadoc();
 			ListRewrite tagsRewriter= rewriter.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
-
-			List typeParams= typeDecl.typeParameters();
-			for (int i= typeParams.size() - 1; i >= 0; i--) {
-				TypeParameter decl= (TypeParameter) typeParams.get(i);
-				String name= '<' + decl.getName().getIdentifier() + '>';
-				if (findTag(javadoc, TagElement.TAG_PARAM, name) == null) {
-					TagElement newTag= ast.newTagElement();
-					newTag.setTagName(TagElement.TAG_PARAM);
-					TextElement text= ast.newTextElement();
-					text.setText(name);
-					newTag.fragments().add(text);
-					insertTabStop(rewriter, newTag.fragments(), "typeParam" + i); //$NON-NLS-1$
-					insertTag(tagsRewriter, newTag, getPreviousTypeParamNames(typeParams, decl));
-				}
-			}
 		}
 
 		private void insertTabStop(ASTRewrite rewriter, List fragments, String linkedName) {
@@ -321,12 +268,6 @@ public class JavadocTagsSubProcessor {
 	 	if (location == SingleVariableDeclaration.NAME_PROPERTY) {
 	 		label= CorrectionMessages.JavadocTagsSubProcessor_addjavadoc_paramtag_description;
 	 		if (node.getParent().getLocationInParent() != FunctionDeclaration.PARAMETERS_PROPERTY) {
-	 			return; // paranoia checks
-	 		}
-	 	} else if (location == TypeParameter.NAME_PROPERTY) {
-	 		label= CorrectionMessages.JavadocTagsSubProcessor_addjavadoc_paramtag_description;
-	 		StructuralPropertyDescriptor parentLocation= node.getParent().getLocationInParent();
-	 		if (parentLocation != FunctionDeclaration.TYPE_PARAMETERS_PROPERTY && parentLocation != TypeDeclaration.TYPE_PARAMETERS_PROPERTY) {
 	 			return; // paranoia checks
 	 		}
 	 	} else if (location == FunctionDeclaration.RETURN_TYPE2_PROPERTY) {
@@ -378,9 +319,6 @@ public class JavadocTagsSubProcessor {
 			if (declaration instanceof TypeDeclaration) {
 				List typeParams= ((TypeDeclaration) declaration).typeParameters();
 				typeParamNames= new String[typeParams.size()];
-				for (int i= 0; i < typeParamNames.length; i++) {
-					typeParamNames[i]= ((TypeParameter) typeParams.get(i)).getName().getIdentifier();
-				}
 			} else {
 				typeParamNames= new String[0];
 			}
@@ -403,18 +341,6 @@ public class JavadocTagsSubProcessor {
 				proposals.add(new AddJavadocCommentProposal(label, cu, 1, declaration.getStartPosition(), comment));
 			}
 		}
-	}
-
-	public static Set getPreviousTypeParamNames(List typeParams, ASTNode missingNode) {
-		Set previousNames=  new HashSet();
-		for (int i = 0; i < typeParams.size(); i++) {
-			TypeParameter curr= (TypeParameter) typeParams.get(i);
-			if (curr == missingNode) {
-				return previousNames;
-			}
-			previousNames.add('<' + curr.getName().getIdentifier() + '>');
-		}
-		return previousNames;
 	}
 
 	private static Set getPreviousParamNames(List params, ASTNode missingNode) {

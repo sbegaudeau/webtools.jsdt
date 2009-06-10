@@ -373,8 +373,6 @@ public class BindingLabelProvider extends LabelProvider {
 			if ((flags & JavaScriptElementLabels.T_TYPE_PARAMETERS) != 0) {
 				if (binding.isGenericType()) {
 					getTypeParametersLabel(binding.getTypeParameters(), flags, buffer);
-				} else if (binding.isParameterizedType()) {
-					getTypeArgumentsLabel(binding.getTypeArguments(), flags, buffer);
 				}
 			}
 		}

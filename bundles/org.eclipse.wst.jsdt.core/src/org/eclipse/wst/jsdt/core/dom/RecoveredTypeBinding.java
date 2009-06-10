@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 
 package org.eclipse.wst.jsdt.core.dom;
-
-import java.util.List;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -264,20 +262,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 			return this.innerTypeBinding.getTypeArguments();
 		}
 
-		if (this.currentType.isParameterizedType()) {
-			ParameterizedType parameterizedType = (ParameterizedType) this.currentType;
-			List typeArgumentsList = parameterizedType.typeArguments();
-			int size = typeArgumentsList.size();
-			ITypeBinding[] temp = new ITypeBinding[size];
-			for (int i = 0; i < size; i++) {
-				ITypeBinding currentTypeBinding = ((Type) typeArgumentsList.get(i)).resolveBinding();
-				if (currentTypeBinding == null) {
-					return this.typeArguments = TypeBinding.NO_TYPE_BINDINGS;
-				}
-				temp[i] = currentTypeBinding;
-			}
-			return this.typeArguments = temp;
-		}
 		return this.typeArguments = TypeBinding.NO_TYPE_BINDINGS;
 	}
 
@@ -419,19 +403,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isNullType()
 	 */
 	public boolean isNullType() {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isParameterizedType()
-	 */
-	public boolean isParameterizedType() {
-		if (this.innerTypeBinding != null) {
-			return this.innerTypeBinding.isParameterizedType();
-		}
-		if (this.currentType != null) {
-			return this.currentType.isParameterizedType();
-		}
 		return false;
 	}
 
@@ -580,22 +551,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 				ArrayType arrayType = (ArrayType) type;
 				type = arrayType.getElementType();
 				return getTypeNameFrom(type);
-			case ASTNode.PARAMETERIZED_TYPE :
-				ParameterizedType parameterizedType = (ParameterizedType) type;
-				StringBuffer buffer = new StringBuffer(getTypeNameFrom(parameterizedType.getType()));
-				ITypeBinding[] tArguments = getTypeArguments();
-				final int typeArgumentsLength = tArguments.length;
-				if (typeArgumentsLength != 0) {
-					buffer.append('<');
-					for (int i = 0; i < typeArgumentsLength; i++) {
-						if (i > 0) {
-							buffer.append(',');
-						}
-						buffer.append(tArguments[i].getName());
-					}
-					buffer.append('>');
-				}
-				return String.valueOf(buffer);
 			case ASTNode.PRIMITIVE_TYPE :
 				PrimitiveType primitiveType = (PrimitiveType) type;
 				return primitiveType.getPrimitiveTypeCode().toString();

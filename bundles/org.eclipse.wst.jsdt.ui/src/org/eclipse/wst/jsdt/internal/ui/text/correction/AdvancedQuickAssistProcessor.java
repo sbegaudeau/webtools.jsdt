@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
@@ -115,7 +114,6 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 					|| getInverseConditionalExpressionProposals(context, coveringNode, null)
 					|| getExchangeInnerAndOuterIfConditionsProposals(context, coveringNode, null)
 					|| getExchangeOperandsProposals(context, coveringNode, null)
-					|| getCastAndAssignIfStatementProposals(context, coveringNode, null)
 					|| getPickOutStringProposals(context, coveringNode, null)
 					|| getReplaceIfElseWithConditionalProposals(context, coveringNode, null)
 					|| getReplaceConditionalWithIfElseProposals(context, coveringNode, null)
@@ -151,7 +149,6 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 				getInverseConditionalExpressionProposals(context, coveringNode, resultingCollections);
 				getExchangeInnerAndOuterIfConditionsProposals(context, coveringNode, resultingCollections);
 				getExchangeOperandsProposals(context, coveringNode, resultingCollections);
-				getCastAndAssignIfStatementProposals(context, coveringNode, resultingCollections);
 				getPickOutStringProposals(context, coveringNode, resultingCollections);
 				getReplaceIfElseWithConditionalProposals(context, coveringNode, resultingCollections);
 				getReplaceConditionalWithIfElseProposals(context, coveringNode, resultingCollections);
@@ -621,7 +618,7 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 		if (expression instanceof PrefixExpression) {
 			return 1;
 		}
-		if ((expression instanceof ClassInstanceCreation) || (expression instanceof CastExpression)) {
+		if (expression instanceof ClassInstanceCreation) {
 			return 2;
 		}
 		if (expression instanceof InfixExpression) {
@@ -1347,106 +1344,6 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 		return infix;
 	}
 
-	private static boolean getCastAndAssignIfStatementProposals(IInvocationContext context, ASTNode node, Collection resultingCollections) {
-		if (!(node instanceof InstanceofExpression)) {
-			return false;
-		}
-		InstanceofExpression expression= (InstanceofExpression) node;
-		// test that we are the expression of a 'while' or 'if'
-		while (node.getParent() instanceof Expression) {
-			node= node.getParent();
-		}
-		StructuralPropertyDescriptor locationInParent= node.getLocationInParent();
-
-		boolean negated= isNegated(expression);
-		
-		Statement body= null;
-		ASTNode insertionPosition= null;
-		if (negated) {
-			insertionPosition= node.getParent();
-			if (locationInParent == IfStatement.EXPRESSION_PROPERTY) {
-				body= ((IfStatement) node.getParent()).getElseStatement();
-				if (body != null) {
-					negated= false;
-				}
-			}
-			if (body == null && insertionPosition.getParent() instanceof Block) {
-				body= (Statement)insertionPosition.getParent();
-			}
-		} else {
-			if (locationInParent == IfStatement.EXPRESSION_PROPERTY) {
-				body= ((IfStatement) node.getParent()).getThenStatement();
-			} else if (locationInParent == WhileStatement.EXPRESSION_PROPERTY) {
-				body= ((WhileStatement) node.getParent()).getBody();
-			}
-		}
-		if (body == null) {
-			return false;
-		}
-
-		Type originalType= expression.getRightOperand();
-		if (originalType.resolveBinding() == null) {
-			return false;
-		}
-
-		//  we could produce quick assist
-		if (resultingCollections == null) {
-			return true;
-		}
-
-		final String KEY_NAME= "name"; //$NON-NLS-1$
-		final String KEY_TYPE= "type"; //$NON-NLS-1$
-		//
-		AST ast= expression.getAST();
-		ASTRewrite rewrite= ASTRewrite.create(ast);
-		IJavaScriptUnit cu= context.getCompilationUnit();
-		// prepare correction proposal
-		String label= CorrectionMessages.AdvancedQuickAssistProcessor_castAndAssign;
-		Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
-		LinkedCorrectionProposal proposal= new LinkedCorrectionProposal(label, cu, rewrite, 7, image);
-		// prepare possible variable names
-		String[] varNames= suggestLocalVariableNames(cu, originalType.resolveBinding());
-		for (int i= 0; i < varNames.length; i++) {
-			proposal.addLinkedPositionProposal(KEY_NAME, varNames[i], null);
-		}
-		CastExpression castExpression= ast.newCastExpression();
-		castExpression.setExpression((Expression) rewrite.createCopyTarget(expression.getLeftOperand()));
-		castExpression.setType((Type) ASTNode.copySubtree(ast, originalType));
-		// prepare new variable declaration
-		VariableDeclarationFragment vdf= ast.newVariableDeclarationFragment();
-		vdf.setName(ast.newSimpleName(varNames[0]));
-		vdf.setInitializer(castExpression);
-		// prepare new variable declaration statement
-		VariableDeclarationStatement vds= ast.newVariableDeclarationStatement(vdf);
-		vds.setType((Type) ASTNode.copySubtree(ast, originalType));
-		
-		// add new variable declaration statement		
-		if (negated) {
-			ListRewrite listRewriter= rewrite.getListRewrite(body, Block.STATEMENTS_PROPERTY);
-			listRewriter.insertAfter(vds, insertionPosition, null);
-		} else {
-			if (body instanceof Block) {
-				ListRewrite listRewriter= rewrite.getListRewrite(body, Block.STATEMENTS_PROPERTY);
-				listRewriter.insertAt(vds, 0, null);
-			} else {
-				Block newBlock= ast.newBlock();
-				List statements= newBlock.statements();
-				statements.add(vds);
-				statements.add(rewrite.createMoveTarget(body));
-				rewrite.replace(body, newBlock, null);
-			}
-		}
-
-		// setup linked positions
-		proposal.addLinkedPosition(rewrite.track(vdf.getName()), true, KEY_NAME);
-		proposal.addLinkedPosition(rewrite.track(vds.getType()), false, KEY_TYPE);
-		proposal.addLinkedPosition(rewrite.track(castExpression.getType()), false, KEY_TYPE);
-		proposal.setEndPosition(rewrite.track(vds)); // set cursor after expression statement
-		// add correction proposal
-		resultingCollections.add(proposal);
-		return true;
-	}
-
 	private static boolean isNegated(Expression expression) {
 		if (!(expression.getParent() instanceof ParenthesizedExpression))
 			return false;
@@ -1626,11 +1523,7 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 			ITypeBinding thenBinding= thenExpression.resolveTypeBinding();
 			ITypeBinding elseBinding= elseExpression.resolveTypeBinding();
 			if (thenBinding != null && elseBinding != null && exprBinding != null && !elseBinding.isAssignmentCompatible(thenBinding)) {
-				CastExpression castException= ast.newCastExpression();
 				proposal.createImportRewrite(context.getASTRoot());
-				castException.setType(proposal.getImportRewrite().addImport(exprBinding, ast));
-				castException.setExpression(elseCopy);
-				elseCopy= castException;
 			}
 		}
 		conditionalExpression.setThenExpression(thenCopy);

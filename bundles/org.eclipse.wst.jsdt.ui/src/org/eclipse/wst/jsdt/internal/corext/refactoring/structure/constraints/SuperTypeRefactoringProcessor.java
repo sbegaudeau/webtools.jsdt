@@ -54,7 +54,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
@@ -66,14 +65,11 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -89,7 +85,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringSearchEngine2
 import org.eclipse.wst.jsdt.internal.corext.refactoring.SearchResultGroup;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ASTNodeSearchUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ImportRewriteUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.ICommentProvider;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.CompilationUnitRange;
@@ -288,7 +283,6 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			final JavaScriptUnit unit= (JavaScriptUnit) parser.createAST(new SubProgressMonitor(monitor, 100));
 			final ASTRewrite targetRewrite= ASTRewrite.create(unit.getAST());
 			final AbstractTypeDeclaration targetDeclaration= (AbstractTypeDeclaration) unit.types().get(0);
-			createTypeParameters(targetRewrite, subType, sourceDeclaration, targetDeclaration);
 			createMemberDeclarations(sourceRewrite, targetRewrite, targetDeclaration);
 			final TextEdit edit= targetRewrite.rewriteAST(document, subType.getJavaScriptProject().getOptions(true));
 			try {
@@ -353,33 +347,6 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			return document.get();
 		} finally {
 			monitor.done();
-		}
-	}
-
-	/**
-	 * Creates the type parameters of the new supertype.
-	 * 
-	 * @param targetRewrite
-	 *            the target compilation unit rewrite
-	 * @param subType
-	 *            the subtype
-	 * @param sourceDeclaration
-	 *            the type declaration of the source type
-	 * @param targetDeclaration
-	 *            the type declaration of the target type
-	 */
-	protected final void createTypeParameters(final ASTRewrite targetRewrite, final IType subType, final AbstractTypeDeclaration sourceDeclaration, final AbstractTypeDeclaration targetDeclaration) {
-		Assert.isNotNull(targetRewrite);
-		Assert.isNotNull(sourceDeclaration);
-		Assert.isNotNull(targetDeclaration);
-		if (sourceDeclaration instanceof TypeDeclaration) {
-			TypeParameter parameter= null;
-			final ListRewrite rewrite= targetRewrite.getListRewrite(targetDeclaration, TypeDeclaration.TYPE_PARAMETERS_PROPERTY);
-			for (final Iterator iterator= ((TypeDeclaration) sourceDeclaration).typeParameters().iterator(); iterator.hasNext();) {
-				parameter= (TypeParameter) iterator.next();
-				rewrite.insertLast(ASTNode.copySubtree(targetRewrite.getAST(), parameter), null);
-				ImportRewriteUtil.collectImports(subType.getJavaScriptProject(), sourceDeclaration, fTypeBindings, fStaticBindings, false);
-			}
 		}
 	}
 
@@ -914,20 +881,6 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 							if (node instanceof SimpleName)
 								rewriteTypeOccurrence(estimate, rewrite, node, group);
 						}
-					}
-				}
-			} else if (node instanceof CastExpression) {
-				final ASTNode expression= node;
-				while (node != null && !(node instanceof FunctionDeclaration))
-					node= node.getParent();
-				if (node != null) {
-					final int delta= node.getStartPosition() + node.getLength() - expression.getStartPosition();
-					binding= ((FunctionDeclaration) node).resolveBinding();
-					node= target.findDeclaringNode(binding.getKey());
-					if (node instanceof FunctionDeclaration) {
-						node= NodeFinder.perform(target, node.getStartPosition() + node.getLength() - delta, 0);
-						if (node instanceof CastExpression)
-							rewriteTypeOccurrence(estimate, rewrite, ((CastExpression) node).getType(), group);
 					}
 				}
 			}

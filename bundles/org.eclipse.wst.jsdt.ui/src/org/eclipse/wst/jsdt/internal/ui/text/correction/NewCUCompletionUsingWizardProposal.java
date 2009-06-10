@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -44,6 +43,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.wizards.NewTypeWizardPage;
@@ -160,28 +160,6 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 	
 	private static String getTypeName(int typeKind, Name node) {
 		String name= ASTNodes.getSimpleNameIdentifier(node);
-		
-		if (typeKind == K_CLASS || typeKind == K_INTERFACE) {
-			ASTNode parent= node.getParent();
-			if (parent.getLocationInParent() == ParameterizedType.TYPE_PROPERTY) {
-				String typeArgBaseName= name.startsWith(String.valueOf('T')) ? String.valueOf('S') : String.valueOf('T'); // use 'S' or 'T'
-				
-				int nTypeArgs= ((ParameterizedType) parent.getParent()).typeArguments().size();
-				StringBuffer buf= new StringBuffer(name);
-				buf.append('<');
-				if (nTypeArgs == 1) {
-					buf.append(typeArgBaseName);
-				} else {
-					for (int i= 0; i < nTypeArgs; i++) {
-						if (i != 0)
-							buf.append(", "); //$NON-NLS-1$
-						buf.append(typeArgBaseName).append(i + 1);
-					}
-				}
-				buf.append('>');
-				return buf.toString();
-			}
-		}
 		return name;
 	}
 	

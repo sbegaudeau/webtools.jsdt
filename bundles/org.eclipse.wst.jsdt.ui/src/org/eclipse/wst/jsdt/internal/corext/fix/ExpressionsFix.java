@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,15 +21,14 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -99,13 +98,6 @@ public class ExpressionsFix extends AbstractFix {
 			Expression expression= parenthesizedExpression.getExpression();
 			while (expression instanceof ParenthesizedExpression) {
 				expression= ((ParenthesizedExpression) expression).getExpression();
-			}
-			// check case when this expression is cast expression and parent is method invocation with this expression as expression
-			if ((parenthesizedExpression.getExpression() instanceof CastExpression)
-				&& (parenthesizedExpression.getParent() instanceof FunctionInvocation)) {
-				FunctionInvocation parentMethodInvocation = (FunctionInvocation) parenthesizedExpression.getParent();
-				if (parentMethodInvocation.getExpression() == parenthesizedExpression)
-					return;
 			}
 			// if this is part of another expression, check for this and parent precedences
 			if (parenthesizedExpression.getParent() instanceof Expression) {
@@ -180,7 +172,7 @@ public class ExpressionsFix extends AbstractFix {
 			if (expression instanceof PrefixExpression) {
 				return 1;
 			}
-			if ((expression instanceof ClassInstanceCreation) || (expression instanceof CastExpression)) {
+			if (expression instanceof ClassInstanceCreation) {
 				return 2;
 			}
 			if (expression instanceof InfixExpression) {

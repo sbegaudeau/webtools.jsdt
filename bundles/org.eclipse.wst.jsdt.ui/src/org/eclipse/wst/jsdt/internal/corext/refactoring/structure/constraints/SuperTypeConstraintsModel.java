@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
@@ -30,7 +29,6 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.CompilationUnitRange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TypeEnvironment;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.CastVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ConstraintVariable2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ITypeConstraint2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints2.ImmutableTypeVariable2;
@@ -223,25 +221,6 @@ public final class SuperTypeConstraintsModel {
 	 */
 	public final void beginCreation() {
 		// Do nothing right now
-	}
-
-	/**
-	 * Creates a cast variable.
-	 * 
-	 * @param expression the cast expression
-	 * @param variable the associated constraint variable
-	 * @return the created cast variable
-	 */
-	public final ConstraintVariable2 createCastVariable(final CastExpression expression, final ConstraintVariable2 variable) {
-		ITypeBinding binding= expression.resolveTypeBinding();
-		if (binding.isArray())
-			binding= binding.getElementType();
-		if (isConstrainedType(binding)) {
-			final CastVariable2 result= new CastVariable2(createTType(binding), new CompilationUnitRange(RefactoringASTParser.getCompilationUnit(expression), expression), variable);
-			fCastVariables.add(result);
-			return result;
-		}
-		return null;
 	}
 
 	/**

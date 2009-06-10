@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -727,8 +727,6 @@ public abstract class ASTNode {
 				return ArrayInitializer.class;
 			case ARRAY_TYPE :
 				return ArrayType.class;
-			case ASSERT_STATEMENT :
-				return AssertStatement.class;
 			case ASSIGNMENT :
 				return Assignment.class;
 			case BLOCK :
@@ -739,8 +737,6 @@ public abstract class ASTNode {
 				return BooleanLiteral.class;
 			case BREAK_STATEMENT :
 				return BreakStatement.class;
-			case CAST_EXPRESSION :
-				return CastExpression.class;
 			case CATCH_CLAUSE :
 				return CatchClause.class;
 			case CHARACTER_LITERAL :
@@ -807,8 +803,6 @@ public abstract class ASTNode {
 				return NumberLiteral.class;
 			case PACKAGE_DECLARATION :
 				return PackageDeclaration.class;
-			case PARAMETERIZED_TYPE :
-				return ParameterizedType.class;
 			case PARENTHESIZED_EXPRESSION :
 				return ParenthesizedExpression.class;
 			case POSTFIX_EXPRESSION :
@@ -857,8 +851,6 @@ public abstract class ASTNode {
 				return TypeDeclarationStatement.class;
 			case TYPE_LITERAL :
 				return TypeLiteral.class;
-			case TYPE_PARAMETER :
-				return TypeParameter.class;
 			case VARIABLE_DECLARATION_EXPRESSION :
 				return VariableDeclarationExpression.class;
 			case VARIABLE_DECLARATION_FRAGMENT :
@@ -869,8 +861,6 @@ public abstract class ASTNode {
 				return WhileStatement.class;
 			case WITH_STATEMENT :
 				return WithStatement.class;
-			case WILDCARD_TYPE :
-				return WildcardType.class;
 			case OBJECT_LITERAL :
 				return ObjectLiteral.class;
 			case OBJECT_LITERAL_FIELD :

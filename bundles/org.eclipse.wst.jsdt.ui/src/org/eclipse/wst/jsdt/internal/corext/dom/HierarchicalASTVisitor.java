@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,14 +18,12 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -65,7 +63,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -93,14 +90,12 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 /**
@@ -338,13 +333,6 @@ public void endVisit(Expression node) {
 		endVisit((Expression) node);
 	}
 	
-	public boolean visit(CastExpression node) {
-		return visit((Expression) node);
-	}
-	public void endVisit(CastExpression node) {
-		endVisit((Expression) node);
-	}
-	
 	public boolean visit(CharacterLiteral node) {
 		return visit((Expression) node);
 	}
@@ -564,14 +552,6 @@ public boolean visit(Statement node) {
 public void endVisit(Statement node) {
 	endVisit((ASTNode) node);
 }
-
-
-	public boolean visit(AssertStatement node) {
-		return visit((Statement) node);
-	}
-	public void endVisit(AssertStatement node) {
-		endVisit((Statement) node);
-	}
 	
 	public boolean visit(Block node) {
 		return visit((Statement) node);
@@ -761,13 +741,6 @@ public void endVisit(Type node) {
 		endVisit((Type) node);
 	}
 	
-	public boolean visit(ParameterizedType node) {
-		return visit((Type) node);
-	}
-	public void endVisit(ParameterizedType node) {
-		endVisit((Type) node);
-	}
-	
 	public boolean visit(PrimitiveType node) {
 		return visit((Type) node);
 	}
@@ -788,23 +761,6 @@ public void endVisit(Type node) {
 	public void endVisit(SimpleType node) {
 		endVisit((Type) node);
 	}
-	
-	public boolean visit(WildcardType node) {
-		return visit((Type) node);
-	}
-	public void endVisit(WildcardType node) {
-		endVisit((Type) node);
-	}
-	
-//---- End Type Hierarchy ----------------------------------------
-
-public boolean visit(TypeParameter node) {
-	return visit((ASTNode) node);
-}
-public void endVisit(TypeParameter node) {
-	endVisit((ASTNode) node);
-}
-
 
 //---- Begin VariableDeclaration Hierarchy ---------------------------  
 public boolean visit(VariableDeclaration node) {

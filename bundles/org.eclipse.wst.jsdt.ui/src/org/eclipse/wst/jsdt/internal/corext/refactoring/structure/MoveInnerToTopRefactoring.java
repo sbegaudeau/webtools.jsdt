@@ -35,7 +35,6 @@ import org.eclipse.ltk.core.refactoring.TextChange;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
@@ -68,7 +67,6 @@ import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -80,12 +78,10 @@ import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
@@ -292,27 +288,7 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 			return super.visit(node);
 		}
 	}
-
-	private static void addTypeParameters(final JavaScriptUnit unit, final IType type, final Map map) throws JavaScriptModelException {
-		Assert.isNotNull(unit);
-		Assert.isNotNull(type);
-		Assert.isNotNull(map);
-		final AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(type, unit);
-		if (declaration instanceof TypeDeclaration) {
-			ITypeBinding binding= null;
-			TypeParameter parameter= null;
-			for (final Iterator iterator= ((TypeDeclaration) declaration).typeParameters().iterator(); iterator.hasNext();) {
-				parameter= (TypeParameter) iterator.next();
-				binding= parameter.resolveBinding();
-				if (binding != null && !map.containsKey(binding.getKey()))
-					map.put(binding.getKey(), binding);
-			}
-			final IType declaring= type.getDeclaringType();
-			if (declaring != null && !Flags.isStatic(type.getFlags()))
-				addTypeParameters(unit, declaring, map);
-		}
-	}
-
+	
 	private static boolean containsNonStatic(FieldAccess[] accesses) {
 		for (int i= 0; i < accesses.length; i++) {
 			if (!isStatic(accesses[i]))
@@ -547,32 +523,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		rewrite.getListRewrite(declaration, declaration.getBodyDeclarationsProperty()).insertFirst(newField, null);
 	}
 
-	private void addEnclosingInstanceTypeParameters(final ITypeBinding[] parameters, final AbstractTypeDeclaration declaration, final ASTRewrite rewrite) {
-		Assert.isNotNull(parameters);
-		Assert.isNotNull(declaration);
-		Assert.isNotNull(rewrite);
-		if (declaration instanceof TypeDeclaration) {
-			final TypeDeclaration type= (TypeDeclaration) declaration;
-			final List existing= type.typeParameters();
-			final Set names= new HashSet();
-			TypeParameter parameter= null;
-			for (final Iterator iterator= existing.iterator(); iterator.hasNext();) {
-				parameter= (TypeParameter) iterator.next();
-				names.add(parameter.getName().getIdentifier());
-			}
-			final ListRewrite rewriter= rewrite.getListRewrite(type, TypeDeclaration.TYPE_PARAMETERS_PROPERTY);
-			String name= null;
-			for (int index= 0; index < parameters.length; index++) {
-				name= parameters[index].getName();
-				if (!names.contains(name)) {
-					parameter= type.getAST().newTypeParameter();
-					parameter.setName(type.getAST().newSimpleName(name));
-					rewriter.insertLast(parameter, null);
-				}
-			}
-		}
-	}
-
 	private void addImportsToTargetUnit(final IJavaScriptUnit targetUnit, final IProgressMonitor monitor) throws CoreException, JavaScriptModelException {
 		monitor.beginTask("", 2); //$NON-NLS-1$
 		try {
@@ -658,11 +608,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 				if (type instanceof SimpleType) {
 					final SimpleType simpleType= (SimpleType) type;
 					addSimpleTypeQualification(targetRewrite, declaring, simpleType, group);
-				} else if (type instanceof ParameterizedType) {
-					final ParameterizedType parameterizedType= (ParameterizedType) type;
-					final Type rawType= parameterizedType.getType();
-					if (rawType instanceof SimpleType)
-						addSimpleTypeQualification(targetRewrite, declaring, (SimpleType) rawType, group);
 				}
 			}
 		}
@@ -795,7 +740,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 			adjustor.setStatus(status);
 			adjustor.adjustVisibility(new SubProgressMonitor(monitor, 1));
 			final Map parameters= new LinkedHashMap();
-			addTypeParameters(fSourceRewrite.getRoot(), fType, parameters);
 			final ITypeBinding[] bindings= new ITypeBinding[parameters.values().size()];
 			parameters.values().toArray(bindings);
 			final Map typeReferences= createTypeReferencesMapping(new SubProgressMonitor(monitor, 1), status);
@@ -879,7 +823,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 				if (binding != null)
 					fTypeImports.remove(binding);
 			}
-			addEnclosingInstanceTypeParameters(parameters, declaration, rewrite);
 			modifyAccessToEnclosingInstance(targetRewrite, declaration, status, monitor);
 			if (binding != null) {
 				modifyInterfaceMemberModifiers(binding);
@@ -1174,12 +1117,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		final ITypeBinding binding= name.resolveTypeBinding();
 		if (binding != null && binding.isRawType())
 			raw= true;
-		if (parameters != null && parameters.length > 0 && !raw) {
-			final ParameterizedType type= ast.newParameterizedType(ast.newSimpleType(ast.newName(fQualifiedTypeName)));
-			for (int index= 0; index < parameters.length; index++)
-				type.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getName())));
-			return type;
-		}
 		return ast.newName(fQualifiedTypeName);
 	}
 
@@ -1189,12 +1126,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		final ITypeBinding binding= name.resolveTypeBinding();
 		if (binding != null && binding.isRawType())
 			raw= true;
-		if (parameters != null && parameters.length > 0 && !raw) {
-			final ParameterizedType type= ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName(fType.getElementName())));
-			for (int index= 0; index < parameters.length; index++)
-				type.typeArguments().add(ast.newSimpleType(ast.newSimpleName(parameters[index].getName())));
-			return type;
-		}
 		return ast.newSimpleType(ast.newSimpleName(fType.getElementName()));
 	}
 
@@ -1439,20 +1370,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 			updateConstructorReference((ClassInstanceCreation) reference, targetRewrite, cu, group);
 		else if (reference.getParent() instanceof ClassInstanceCreation)
 			updateConstructorReference((ClassInstanceCreation) reference.getParent(), targetRewrite, cu, group);
-		else if (reference.getParent() instanceof ParameterizedType && reference.getParent().getParent() instanceof ClassInstanceCreation)
-			updateConstructorReference(parameters, (ParameterizedType) reference.getParent(), targetRewrite, cu, group);
-	}
-
-	private void updateConstructorReference(ITypeBinding[] parameters, ParameterizedType type, CompilationUnitRewrite targetRewrite, IJavaScriptUnit cu, TextEditGroup group) throws CoreException {
-		final ListRewrite rewrite= targetRewrite.getASTRewrite().getListRewrite(type, ParameterizedType.TYPE_ARGUMENTS_PROPERTY);
-		TypeParameter parameter= null;
-		for (int index= type.typeArguments().size(); index < parameters.length; index++) {
-			parameter= targetRewrite.getRoot().getAST().newTypeParameter();
-			parameter.setName(targetRewrite.getRoot().getAST().newSimpleName(parameters[index].getName()));
-			rewrite.insertLast(parameter, group);
-		}
-		if (type.getParent() instanceof ClassInstanceCreation)
-			updateConstructorReference((ClassInstanceCreation) type.getParent(), targetRewrite, cu, group);
 	}
 
 	private void updateConstructorReference(final SuperConstructorInvocation invocation, final CompilationUnitRewrite targetRewrite, final IJavaScriptUnit unit, TextEditGroup group) throws CoreException {
@@ -1480,24 +1397,8 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		return true;
 	}
 
-	private boolean updateParameterizedTypeReference(ITypeBinding[] parameters, ParameterizedType type, CompilationUnitRewrite targetRewrite, TextEditGroup group) {
-		if (!(type.getParent() instanceof ClassInstanceCreation)) {
-			final ListRewrite rewrite= targetRewrite.getASTRewrite().getListRewrite(type, ParameterizedType.TYPE_ARGUMENTS_PROPERTY);
-			final AST ast= targetRewrite.getRoot().getAST();
-			Type simpleType= null;
-			for (int index= type.typeArguments().size(); index < parameters.length; index++) {
-				simpleType= ast.newSimpleType(ast.newSimpleName(parameters[index].getName()));
-				rewrite.insertLast(simpleType, group);
-			}
-		}
-		return true;
-	}
-
 	private boolean updateReference(ITypeBinding[] parameters, ASTNode node, CompilationUnitRewrite rewrite, TextEditGroup group) {
-		if (node.getLocationInParent() == ParameterizedType.TYPE_PROPERTY) {
-			updateParameterizedTypeReference(parameters, (ParameterizedType) node.getParent(), rewrite, group);
-			return updateNameReference(new ITypeBinding[] {}, ((SimpleType) node).getName(), rewrite, group);
-		} else if (node instanceof QualifiedName)
+		if (node instanceof QualifiedName)
 			return updateNameReference(parameters, (QualifiedName) node, rewrite, group);
 		else if (node instanceof SimpleType)
 			return updateNameReference(parameters, ((SimpleType) node).getName(), rewrite, group);

@@ -88,7 +88,6 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
@@ -1628,10 +1627,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				status.setError(NewWizardMessages.NewTypeWizardPage_error_InvalidSuperClassName); 
 				return status;
 			}
-			if (type instanceof ParameterizedType && ! JavaModelUtil.is50OrHigher(root.getJavaScriptProject())) {
-				status.setError(NewWizardMessages.NewTypeWizardPage_error_SuperClassNotParameterized); 
-				return status;
-			}
 		} else {
 			status.setError(""); //$NON-NLS-1$
 		}
@@ -1674,10 +1669,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				Type type= TypeContextChecker.parseSuperInterface(intfname);
 				if (type == null) {
 					status.setError(Messages.format(NewWizardMessages.NewTypeWizardPage_error_InvalidSuperInterfaceName, intfname)); 
-					return status;
-				}
-				if (type instanceof ParameterizedType && ! JavaModelUtil.is50OrHigher(root.getJavaScriptProject())) {
-					status.setError(Messages.format(NewWizardMessages.NewTypeWizardPage_error_SuperInterfaceNotParameterized, intfname)); 
 					return status;
 				}
 			}				

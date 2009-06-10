@@ -1386,10 +1386,6 @@ class DefaultBindingResolver extends BindingResolver {
 		return null;
 	}
 
-	synchronized ITypeBinding resolveTypeParameter(TypeParameter typeParameter) {
-		return null;
-	}
-
 	/*
 	 * Method declared on BindingResolver.
 	 */

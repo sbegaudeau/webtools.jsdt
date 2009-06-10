@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -30,17 +30,15 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.infer.ImportRewriteSupport;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
@@ -662,15 +660,6 @@ public final class ImportRewrite {
 			// no import
 			return ast.newSimpleType(ast.newSimpleName(binding.getName()));
 		}
-		if (normalizedBinding.isWildcardType()) {
-			WildcardType wcType= ast.newWildcardType();
-			ITypeBinding bound= normalizedBinding.getBound();
-			if (bound != null && !bound.isWildcardType() && !bound.isCapture()) { // bug 96942
-				Type boundType= addImport(bound, ast, context);
-				wcType.setBound(boundType, false);
-			}
-			return wcType;
-		}
 
 		if (normalizedBinding.isArray()) {
 			Type elementType= addImport(normalizedBinding.getElementType(), ast, context);
@@ -681,21 +670,6 @@ public final class ImportRewrite {
 		if (qualifiedName.length() > 0) {
 			String res= internalAddImport(qualifiedName, qualifiedName, context);
 
-			ITypeBinding[] typeArguments= normalizedBinding.getTypeArguments();
-			if (typeArguments.length > 0) {
-				Type erasureType= ast.newSimpleType(ast.newName(res));
-				ParameterizedType paramType= ast.newParameterizedType(erasureType);
-				List arguments= paramType.typeArguments();
-				for (int i= 0; i < typeArguments.length; i++) {
-					ITypeBinding curr= typeArguments[i];
-					if (containsNestedCapture(curr, false)) { // see bug 103044
-						arguments.add(ast.newWildcardType());
-					} else {
-						arguments.add(addImport(curr, ast, context));
-					}
-				}
-				return paramType;
-			}
 			return ast.newSimpleType(ast.newName(res));
 		}
 		return ast.newSimpleType(ast.newName(getRawName(normalizedBinding)));

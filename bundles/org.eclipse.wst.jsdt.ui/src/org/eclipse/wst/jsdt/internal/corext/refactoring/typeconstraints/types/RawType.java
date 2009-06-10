@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,6 @@ public final class RawType extends HierarchyType {
 			
 			case STANDARD_TYPE: return canAssignToStandardType((StandardType)lhs); 
 			case GENERIC_TYPE: return false;
-			case PARAMETERIZED_TYPE: return isSubType((ParameterizedType)lhs);
 			case RAW_TYPE: return isSubType((HierarchyType)lhs);
 			
 			case UNBOUND_WILDCARD_TYPE:

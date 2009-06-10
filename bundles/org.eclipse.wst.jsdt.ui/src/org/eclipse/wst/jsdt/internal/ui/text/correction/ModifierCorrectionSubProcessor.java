@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
@@ -56,7 +55,6 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
-import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
@@ -1088,17 +1086,6 @@ public class ModifierCorrectionSubProcessor {
 			castTo= ast.newPrimitiveType(PrimitiveType.BYTE);
 		if (ast.resolveWellKnownType("short").isEqualTo(type)) //$NON-NLS-1$
 			castTo= ast.newPrimitiveType(PrimitiveType.SHORT);
-		if (castTo != null) {
-			CastExpression cast= ast.newCastExpression();
-			if (parenthesize) {
-				ParenthesizedExpression parenthesized= ast.newParenthesizedExpression();
-				parenthesized.setExpression(expression);
-				cast.setExpression(parenthesized);
-			} else
-				cast.setExpression(expression);
-			cast.setType(castTo);
-			return cast;
-		}
 		return expression;
 	}
 

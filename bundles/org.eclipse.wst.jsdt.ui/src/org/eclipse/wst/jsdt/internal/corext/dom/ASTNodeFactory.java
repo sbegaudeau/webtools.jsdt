@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression.Operator;
 /**
@@ -77,24 +76,7 @@ public class ASTNodeFactory {
 	
 	public static Name newName(AST ast, String qualifiedName) {
 		return ast.newName(qualifiedName);
-	}
-	
-	public static TypeParameter newTypeParameter(AST ast, String content) {
-		StringBuffer buffer= new StringBuffer(TYPEPARAM_HEADER);
-		buffer.append(content);
-		buffer.append(TYPEPARAM_FOOTER);
-		ASTParser p= ASTParser.newParser(ast.apiLevel());
-		p.setSource(buffer.toString().toCharArray());
-		JavaScriptUnit root= (JavaScriptUnit) p.createAST(null);
-		List list= root.types();
-		TypeDeclaration typeDecl= (TypeDeclaration) list.get(0);
-		FunctionDeclaration methodDecl= typeDecl.getMethods()[0];
-		TypeParameter tp= (TypeParameter) methodDecl.typeParameters().get(0);
-		ASTNode result= ASTNode.copySubtree(ast, tp);
-		result.accept(new PositionClearer());
-		return (TypeParameter) result;
-	}
-	
+	}	
 		
 	public static Type newType(AST ast, String content) {
 		StringBuffer buffer= new StringBuffer(TYPE_HEADER);

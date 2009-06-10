@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -441,9 +441,6 @@ public class SourceProvider {
 				// the declaration type if we reference a parameterized type
 				// since we have an entry for every name node (e.g. one for
 				// Vector and one for Integer in Vector<Integer>.
-				if (binding.isParameterizedType()) {
-					binding= binding.getTypeDeclaration();
-				}
 				String s= importer.addImport(binding);
 				if (!ASTNodes.asString(element).equals(s)) {
 					rewriter.replace(element, rewriter.createStringPlaceholder(s, ASTNode.SIMPLE_NAME), null);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
@@ -758,7 +757,7 @@ public class SemanticHighlightings {
 		private boolean isTypePath(ASTNode child, ASTNode parent) {
 			if (parent instanceof Type) {
 				StructuralPropertyDescriptor location= child.getLocationInParent();
-				return location == ParameterizedType.TYPE_PROPERTY || location == SimpleType.NAME_PROPERTY;
+				return location == SimpleType.NAME_PROPERTY;
 			} else if (parent instanceof QualifiedName) {
 				StructuralPropertyDescriptor location= child.getLocationInParent();
 				return location == QualifiedName.NAME_PROPERTY;
@@ -1051,7 +1050,7 @@ public class SemanticHighlightings {
 		private boolean isTypePath(ASTNode child, ASTNode parent) {
 			if (parent instanceof Type) {
 				StructuralPropertyDescriptor location= child.getLocationInParent();
-				return location == ParameterizedType.TYPE_PROPERTY || location == SimpleType.NAME_PROPERTY;
+				return location == SimpleType.NAME_PROPERTY;
 			} else if (parent instanceof QualifiedName) {
 				StructuralPropertyDescriptor location= child.getLocationInParent();
 				return location == QualifiedName.NAME_PROPERTY;

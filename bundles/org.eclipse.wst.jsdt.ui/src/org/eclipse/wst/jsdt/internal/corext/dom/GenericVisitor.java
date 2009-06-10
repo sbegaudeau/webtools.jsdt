@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,13 +17,11 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -60,7 +58,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -86,13 +83,11 @@ import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 /**
 *
@@ -143,9 +138,6 @@ public class GenericVisitor extends ASTVisitor {
 	public boolean visit(ArrayType node) {
 		return visitNode(node);
 	}
-	public boolean visit(AssertStatement node) {
-		return visitNode(node);
-	}
 	public boolean visit(Assignment node) {
 		return visitNode(node);
 	}
@@ -156,9 +148,6 @@ public class GenericVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(BreakStatement node) {
-		return visitNode(node);
-	}
-	public boolean visit(CastExpression node) {
 		return visitNode(node);
 	}
 	public boolean visit(FunctionExpression node) {
@@ -383,12 +372,6 @@ public class GenericVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.ParameterizedType)
-	 */
-	public boolean visit(ParameterizedType node) {
-		return visitNode(node);
-	}
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.QualifiedType)
 	 */
 	public boolean visit(QualifiedType node) {
@@ -404,18 +387,6 @@ public class GenericVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.TextElement)
 	 */
 	public boolean visit(TextElement node) {
-		return visitNode(node);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.TypeParameter)
-	 */
-	public boolean visit(TypeParameter node) {
-		return visitNode(node);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.WildcardType)
-	 */
-	public boolean visit(WildcardType node) {
 		return visitNode(node);
 	}
 	
@@ -434,9 +405,6 @@ public class GenericVisitor extends ASTVisitor {
 	public void endVisit(ArrayType node) {
 		endVisitNode(node);
 	}
-	public void endVisit(AssertStatement node) {
-		endVisitNode(node);
-	}
 	public void endVisit(Assignment node) {
 		endVisitNode(node);
 	}
@@ -447,9 +415,6 @@ public class GenericVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	public void endVisit(BreakStatement node) {
-		endVisitNode(node);
-	}
-	public void endVisit(CastExpression node) {
 		endVisitNode(node);
 	}
 	public void endVisit(FunctionExpression node) {
@@ -674,12 +639,6 @@ public class GenericVisitor extends ASTVisitor {
 		endVisitNode(node);
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.ParameterizedType)
-	 */
-	public void endVisit(ParameterizedType node) {
-		endVisitNode(node);
-	}
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.QualifiedType)
 	 */
 	public void endVisit(QualifiedType node) {
@@ -697,17 +656,4 @@ public class GenericVisitor extends ASTVisitor {
 	public void endVisit(TextElement node) {
 		endVisitNode(node);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.TypeParameter)
-	 */
-	public void endVisit(TypeParameter node) {
-		endVisitNode(node);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.WildcardType)
-	 */
-	public void endVisit(WildcardType node) {
-		endVisitNode(node);
-	}
-
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,12 +40,10 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
@@ -83,7 +81,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -111,13 +108,11 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.TargetSourceRangeComputer;
 import org.eclipse.wst.jsdt.core.dom.rewrite.TargetSourceRangeComputer.SourceRange;
@@ -1451,10 +1446,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		// name
 		pos= rewriteRequiredNode(node, TypeDeclaration.NAME_PROPERTY);
 
-		if (apiLevel >= AST.JLS3) {
-			pos= rewriteOptionalTypeParameters(node, TypeDeclaration.TYPE_PARAMETERS_PROPERTY, pos, "", false, true); //$NON-NLS-1$
-		}
-
 		// superclass
 		if (!isInterface || invertType) {
 			ChildPropertyDescriptor superClassProperty= (apiLevel == JLS2_INTERNAL) ? TypeDeclaration.SUPERCLASS_PROPERTY : TypeDeclaration.SUPERCLASS_TYPE_PROPERTY;
@@ -1882,20 +1873,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(AssertStatement)
-	 */
-	public boolean visit(AssertStatement node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-
-		ensureSpaceBeforeReplace(node, AssertStatement.EXPRESSION_PROPERTY, node.getStartPosition(), 1);
-		int offset= rewriteRequiredNode(node, AssertStatement.EXPRESSION_PROPERTY);
-		rewriteNode(node, AssertStatement.MESSAGE_PROPERTY, offset, ASTRewriteFormatter.ASSERT_COMMENT);
-		return false;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(Assignment)
 	 */
 	public boolean visit(Assignment node) {
@@ -1937,19 +1914,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		} catch (CoreException e) {
 			handleException(e);
 		}
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(CastExpression)
-	 */
-	public boolean visit(CastExpression node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-
-		rewriteRequiredNode(node, CastExpression.TYPE_PROPERTY);
-		rewriteRequiredNode(node, CastExpression.EXPRESSION_PROPERTY);
 		return false;
 	}
 
@@ -3219,27 +3183,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		doTextReplace(node.getStartPosition(), node.getLength(), newText, group);
 		return false;
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.ParameterizedType)
-	 */
-	public boolean visit(ParameterizedType node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteRequiredNode(node, ParameterizedType.TYPE_PROPERTY);
-		if (isChanged(node, ParameterizedType.TYPE_ARGUMENTS_PROPERTY)) {
-			// eval position after opening parent
-			try {
-				int startOffset= getScanner().getTokenEndOffset(ITerminalSymbols.TokenNameLESS, pos);
-				rewriteNodeList(node, ParameterizedType.TYPE_ARGUMENTS_PROPERTY, startOffset, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
-			} catch (CoreException e) {
-				handleException(e);
-			}
-		} else {
-			voidVisit(node, ParameterizedType.TYPE_ARGUMENTS_PROPERTY);
-		}
-		return false;
-	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.QualifiedType)
 	 */
@@ -3257,55 +3201,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		}
 
 		changeNotSupported(node); // no modification possible
-		return false;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.TypeParameter)
-	 */
-	public boolean visit(TypeParameter node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		int pos= rewriteRequiredNode(node, TypeParameter.NAME_PROPERTY);
-		if (isChanged(node, TypeParameter.TYPE_BOUNDS_PROPERTY)) {
-			rewriteNodeList(node, TypeParameter.TYPE_BOUNDS_PROPERTY, pos, " extends ", " & "); //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
-			voidVisit(node, TypeParameter.TYPE_BOUNDS_PROPERTY);
-		}
-		return false;
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.WildcardType)
-	 */
-	public boolean visit(WildcardType node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-		try {
-			int pos= getScanner().getNextEndOffset(node.getStartPosition(), true); // pos after question mark
-
-			Prefix prefix;
-			if (Boolean.TRUE.equals(getNewValue(node, WildcardType.UPPER_BOUND_PROPERTY))) {
-				prefix= this.formatter.WILDCARD_EXTENDS;
-			} else {
-				prefix= this.formatter.WILDCARD_SUPER;
-			}
-
-			int boundKindChange= getChangeKind(node, WildcardType.UPPER_BOUND_PROPERTY);
-			if (boundKindChange != RewriteEvent.UNCHANGED) {
-				int boundTypeChange= getChangeKind(node, WildcardType.BOUND_PROPERTY);
-				if (boundTypeChange != RewriteEvent.INSERTED && boundTypeChange != RewriteEvent.REMOVED) {
-					ASTNode type= (ASTNode) getOriginalValue(node, WildcardType.BOUND_PROPERTY);
-					String str= prefix.getPrefix(0);
-					doTextReplace(pos, type.getStartPosition() - pos, str, getEditGroup(node, WildcardType.BOUND_PROPERTY));
-				}
-			}
-			rewriteNode(node, WildcardType.BOUND_PROPERTY, pos, prefix);
-		} catch (CoreException e) {
-			handleException(e);
-		}
 		return false;
 	}
 

@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
@@ -374,77 +373,6 @@ public class UnusedCodeFix extends AbstractFix {
 		}
 	}
 	
-	private static class RemoveCastOperation extends AbstractFixRewriteOperation {
-
-		private final CastExpression fCast;
-		private final ASTNode fSelectedNode;
-
-		public RemoveCastOperation(CastExpression cast, ASTNode selectedNode) {
-			fCast= cast;
-			fSelectedNode= selectedNode;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-			
-			TextEditGroup group= createTextEditGroup(FixMessages.UnusedCodeFix_RemoveCast_description);
-			textEditGroups.add(group);
-			
-			ASTRewrite rewrite= cuRewrite.getASTRewrite();
-
-			CastExpression cast= fCast;
-			Expression expression= cast.getExpression();
-			ASTNode placeholder= rewrite.createCopyTarget(expression);
-
-			if (ASTNodes.needsParentheses(expression)) {
-				rewrite.replace(fCast, placeholder, group);
-			} else {
-				rewrite.replace(fSelectedNode, placeholder, group);
-			}
-		}
-	}
-	
-	private static class RemoveAllCastOperation extends AbstractFixRewriteOperation {
-
-		private final HashSet fUnnecessaryCasts;
-
-		public RemoveAllCastOperation(HashSet unnecessaryCasts) {
-			fUnnecessaryCasts= unnecessaryCasts;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void rewriteAST(CompilationUnitRewrite cuRewrite, List textEditGroups) throws CoreException {
-			ASTRewrite rewrite= cuRewrite.getASTRewrite();
-			
-			TextEditGroup group= createTextEditGroup(FixMessages.UnusedCodeFix_RemoveCast_description);
-			textEditGroups.add(group);
-			
-			while (fUnnecessaryCasts.size() > 0) {
-				CastExpression castExpression= (CastExpression)fUnnecessaryCasts.iterator().next();
-				fUnnecessaryCasts.remove(castExpression);
-				CastExpression down= castExpression;
-				while (fUnnecessaryCasts.contains(down.getExpression())) {
-					down= (CastExpression)down.getExpression();
-					fUnnecessaryCasts.remove(down);
-				}
-				
-				ASTNode move= rewrite.createMoveTarget(down.getExpression());
-				
-				CastExpression top= castExpression;
-				while (fUnnecessaryCasts.contains(top.getParent())) {
-					top= (CastExpression)top.getParent();
-					fUnnecessaryCasts.remove(top);
-				}
-				
-				rewrite.replace(top, move, group);
-			}
-		}
-	}
-	
 	public static UnusedCodeFix createRemoveUnusedImportFix(JavaScriptUnit compilationUnit, IProblemLocation problem) {
 		int id= problem.getProblemId();
 		if (id == IProblem.DuplicateImport || id == IProblem.ConflictingImport ||
@@ -569,8 +497,6 @@ public class UnusedCodeFix extends AbstractFix {
 			List names= (List)variableDeclarations.get(node);
 			result.add(new RemoveUnusedMemberOperation((SimpleName[])names.toArray(new SimpleName[names.size()]), false));
 		}
-		if (unnecessaryCasts.size() > 0)
-			result.add(new RemoveAllCastOperation(unnecessaryCasts));
 		
 		if (result.size() == 0)
 			return null;

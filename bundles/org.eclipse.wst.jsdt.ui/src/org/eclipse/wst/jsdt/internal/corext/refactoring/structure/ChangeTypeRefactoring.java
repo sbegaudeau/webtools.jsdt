@@ -49,7 +49,6 @@ import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -530,8 +529,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				updateType(unit, getType(gp), unitChange, unitRewriter, typeName);   // local variable or parameter
 			} else if (decl instanceof FunctionDeclaration || decl instanceof FieldDeclaration) {
 				updateType(unit, getType(decl), unitChange, unitRewriter, typeName); // method return or field type
-			} else if (decl instanceof ParameterizedType){
-				updateType(unit, getType(decl), unitChange, unitRewriter, typeName);
 			}
 		}	
 	}
@@ -544,51 +541,16 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		TextEditGroup gd= new TextEditGroup(description); 
 		AST	ast= cu.getAST();
 		
-		ASTNode nodeToReplace= oldType;
-		if (fSelectionTypeBinding.isParameterizedType() && !fSelectionTypeBinding.isRawType()){
-			if (oldType.isSimpleType()){
-				nodeToReplace= oldType.getParent();
-			}
-		}               
+		ASTNode nodeToReplace= oldType;    
 			                   				                   
 	    //TODO handle types other than simple & parameterized (e.g., arrays)
 		Assert.isTrue(fSelectedType.isClass() || fSelectedType.isInterface());
 		
-		Type newType= null;
-		if (!fSelectedType.isParameterizedType()){
-			newType= ast.newSimpleType(ASTNodeFactory.newName(ast, typeName));
-		} else {
-			newType= createParameterizedType(ast, fSelectedType);
-		} 
+		Type newType= ast.newSimpleType(ASTNodeFactory.newName(ast, typeName));
 		
 		unitRewriter.replace(nodeToReplace, newType, gd);
 		unitChange.addTextEditGroup(gd);
-	}	
-	
-	/**
-	 * Creates the appropriate ParameterizedType node. Recursion is needed to
-	 * handle the nested case (e.g., Vector<Vector<String>>).
-	 */
-	private Type createParameterizedType(AST ast, ITypeBinding typeBinding){
-		if (typeBinding.isParameterizedType() && !typeBinding.isRawType()){
-			Type baseType= ast.newSimpleType(ASTNodeFactory.newName(ast, typeBinding.getErasure().getName()));
-			ParameterizedType newType= ast.newParameterizedType(baseType);
-			for (int i=0; i < typeBinding.getTypeArguments().length; i++){
-				ITypeBinding typeArg= typeBinding.getTypeArguments()[i];
-				Type argType= createParameterizedType(ast, typeArg); // recursive call
-				newType.typeArguments().add(argType);
-			}
-			return newType;
-		} else {
-			if (!typeBinding.isTypeVariable()){
-				return ast.newSimpleType(ASTNodeFactory.newName(ast, typeBinding.getErasure().getName()));
-			} else {
-				return ast.newSimpleType(ast.newSimpleName(typeBinding.getName()));
-			}
-		}
-	}
-	
-	
+	}		
 	
 	private void groupChangesByCompilationUnit(Map relevantVarsByUnit) throws JavaScriptModelException {
 		for (Iterator it= fRelevantVars.iterator(); it.hasNext();) {
@@ -652,8 +614,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				return ((VariableDeclarationStatement) node).getType();
 			case ASTNode.FUNCTION_DECLARATION:
 				return ((FunctionDeclaration)node).getReturnType2();
-			case ASTNode.PARAMETERIZED_TYPE:
-				return ((ParameterizedType)node).getType();
 			default:
 				Assert.isTrue(false);
 				return null;
@@ -727,8 +687,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 					return fieldDeclarationSelected((FieldDeclaration) node);
 				case ASTNode.SINGLE_VARIABLE_DECLARATION :
 					return singleVariableDeclarationSelected((SingleVariableDeclaration) node);
-				case ASTNode.PARAMETERIZED_TYPE:
-					return parameterizedTypeSelected((ParameterizedType) node);
 				default :
 					return nodeTypeNotSupported();
 			}
@@ -748,29 +706,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		SimpleName name = svd.getName();
 		setSelectionRanges(name);
 		return simpleNameSelected(name);
-	}
-
-	/**
-	  * The selection corresponds to a ParameterizedType (return type of method)
-	  */
-	private String parameterizedTypeSelected(ParameterizedType pt) {
-		ASTNode parent= pt.getParent();
-		if (parent.getNodeType() == ASTNode.FUNCTION_DECLARATION){
-			fMethodBinding= ((FunctionDeclaration)parent).resolveBinding();
-			fParamIndex= -1;
-			fEffectiveSelectionStart= pt.getStartPosition();
-			fEffectiveSelectionLength= pt.getLength();
-			setOriginalType(pt.resolveBinding());
-		} else if (parent.getNodeType() == ASTNode.SINGLE_VARIABLE_DECLARATION){
-			return singleVariableDeclarationSelected((SingleVariableDeclaration)parent);
-		} else if (parent.getNodeType() == ASTNode.VARIABLE_DECLARATION_STATEMENT){
-			return variableDeclarationStatementSelected((VariableDeclarationStatement)parent);
-		} else if (parent.getNodeType() == ASTNode.FIELD_DECLARATION){
-			return fieldDeclarationSelected((FieldDeclaration)parent);
-		} else {
-			return nodeTypeNotSupported();
-		}
-		return null;
 	}
 	
 	/**
@@ -1451,10 +1386,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 	
 	public boolean isSubTypeOf(ITypeBinding type1, ITypeBinding type2){
 		
-		// to ensure that, e.g., Comparable<String> is considered a subtype of raw Comparable
-		if (type1.isParameterizedType() && type1.getTypeDeclaration().isEqualTo(type2.getTypeDeclaration())){
-			return true; 
-		}
 		Set superTypes= getAllSuperTypes(type1);
 		return contains(superTypes, type2);
 	}

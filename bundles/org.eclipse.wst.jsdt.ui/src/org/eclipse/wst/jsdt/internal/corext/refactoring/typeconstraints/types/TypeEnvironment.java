@@ -167,9 +167,7 @@ public class TypeEnvironment {
 			return createRawType(binding);
 		} else if (binding.isGenericType()) {
 			return createGenericType(binding);
-		} else if (binding.isParameterizedType()) {
-			return createParameterizedType(binding);
-		} else if (binding.isWildcardType()) {
+		}else if (binding.isWildcardType()) {
 			if (binding.getBound() == null) {
 				return createUnboundWildcardType(binding);
 			}
@@ -338,21 +336,6 @@ public class TypeEnvironment {
 		result= new GenericType(this);
 		fGenericTypes.put(javaElement, result);
 		result.initialize(binding, (IType)javaElement);
-		cacheSubType(result.getSuperclass(), result);
-		cacheSubTypes(result.getInterfaces(), result);
-		return result;
-	}
-	
-	private ParameterizedType createParameterizedType(ITypeBinding binding) {
-		IJavaScriptProject javaProject= binding.getJavaElement().getJavaScriptProject();
-		String bindingKey= binding.getKey();
-		ProjectKeyPair pair= new ProjectKeyPair(javaProject, bindingKey);
-		ParameterizedType result= (ParameterizedType)fParameterizedTypes.get(pair);
-		if (result != null)
-			return result;
-		result= new ParameterizedType(this);
-		fParameterizedTypes.put(pair, result);
-		result.initialize(binding, (IType)binding.getJavaElement());
 		cacheSubType(result.getSuperclass(), result);
 		cacheSubTypes(result.getInterfaces(), result);
 		return result;

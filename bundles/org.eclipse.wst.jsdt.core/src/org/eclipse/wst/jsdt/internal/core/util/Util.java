@@ -53,12 +53,10 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.InferredType;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
@@ -1097,22 +1095,6 @@ public class Util {
 					buffer.append(']');
 				}
 				break;
-			case ASTNode.PARAMETERIZED_TYPE:
-				ParameterizedType parameterizedType = (ParameterizedType) type;
-				getFullyQualifiedName(parameterizedType.getType(), buffer);
-				buffer.append('<');
-				Iterator iterator = parameterizedType.typeArguments().iterator();
-				boolean isFirst = true;
-				while (iterator.hasNext()) {
-					if (!isFirst)
-						buffer.append(',');
-					else
-						isFirst = false;
-					Type typeArgument = (Type) iterator.next();
-					getFullyQualifiedName(typeArgument, buffer);
-				}
-				buffer.append('>');
-				break;
 			case ASTNode.PRIMITIVE_TYPE:
 				buffer.append(((PrimitiveType) type).getPrimitiveTypeCode().toString());
 				break;
@@ -1124,18 +1106,6 @@ public class Util {
 				break;
 			case ASTNode.INFERRED_TYPE:
 				buffer.append(((InferredType) type).getType());
-				break;
-			case ASTNode.WILDCARD_TYPE:
-				buffer.append('?');
-				WildcardType wildcardType = (WildcardType) type;
-				Type bound = wildcardType.getBound();
-				if (bound == null) return;
-				if (wildcardType.isUpperBound()) {
-					buffer.append(" extends "); //$NON-NLS-1$
-				} else {
-					buffer.append(" super "); //$NON-NLS-1$
-				}
-				getFullyQualifiedName(bound, buffer);
 				break;
 		}
 	}

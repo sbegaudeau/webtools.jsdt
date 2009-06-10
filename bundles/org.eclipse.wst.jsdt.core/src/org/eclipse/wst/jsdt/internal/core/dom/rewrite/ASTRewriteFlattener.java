@@ -20,13 +20,11 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
@@ -65,7 +63,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -93,13 +90,11 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -308,22 +303,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(AssertStatement)
-	 */
-	public boolean visit(AssertStatement node) {
-		this.result.append("assert "); //$NON-NLS-1$
-		getChildNode(node, AssertStatement.EXPRESSION_PROPERTY).accept(this);
-
-		ASTNode message= getChildNode(node, AssertStatement.MESSAGE_PROPERTY);
-		if (message != null) {
-			this.result.append(':');
-			message.accept(this);
-		}
-		this.result.append(';');
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(Assignment)
 	 */
 	public boolean visit(Assignment node) {
@@ -368,17 +347,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 			label.accept(this);
 		}
 		this.result.append(';');
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(CastExpression)
-	 */
-	public boolean visit(CastExpression node) {
-		this.result.append('(');
-		getChildNode(node, CastExpression.TYPE_PROPERTY).accept(this);
-		this.result.append(')');
-		getChildNode(node, CastExpression.EXPRESSION_PROPERTY).accept(this);
 		return false;
 	}
 
@@ -1073,9 +1041,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		boolean isInterface= getBooleanAttribute(node, TypeDeclaration.INTERFACE_PROPERTY);
 		this.result.append(isInterface ? "interface " : "class "); //$NON-NLS-1$ //$NON-NLS-2$
 		getChildNode(node, TypeDeclaration.NAME_PROPERTY).accept(this);
-		if (apiLevel >= AST.JLS3) {
-			visitList(node, TypeDeclaration.TYPE_PARAMETERS_PROPERTY, String.valueOf(','), String.valueOf('<'), String.valueOf('>'));
-		}
 
 		this.result.append(' ');
 
@@ -1305,18 +1270,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(ParameterizedType)
-	 * @since 3.0
-	 */
-	public boolean visit(ParameterizedType node) {
-		getChildNode(node, ParameterizedType.TYPE_PROPERTY).accept(this);
-		this.result.append('<');
-		visitList(node, ParameterizedType.TYPE_ARGUMENTS_PROPERTY, ", "); //$NON-NLS-1$
-		this.result.append('>');
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(QualifiedType)
 	 * @since 3.0
 	 */
@@ -1324,33 +1277,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		getChildNode(node, QualifiedType.QUALIFIER_PROPERTY).accept(this);
 		this.result.append('.');
 		getChildNode(node, QualifiedType.NAME_PROPERTY).accept(this);
-		return false;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.TypeParameter)
-	 */
-	public boolean visit(TypeParameter node) {
-		getChildNode(node, TypeParameter.NAME_PROPERTY).accept(this);
-		visitList(node, TypeParameter.TYPE_BOUNDS_PROPERTY, " & ", " extends ", Util.EMPTY_STRING); //$NON-NLS-1$ //$NON-NLS-2$
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.WildcardType)
-	 */
-	public boolean visit(WildcardType node) {
-		this.result.append('?');
-		ASTNode bound = getChildNode(node, WildcardType.BOUND_PROPERTY);
-		if (bound != null) {
-			if (getBooleanAttribute(node, WildcardType.UPPER_BOUND_PROPERTY)) {
-				this.result.append(" extends ");//$NON-NLS-1$
-			} else {
-				this.result.append(" super ");//$NON-NLS-1$
-			}
-			bound.accept(this);
-		}
 		return false;
 	}
 }

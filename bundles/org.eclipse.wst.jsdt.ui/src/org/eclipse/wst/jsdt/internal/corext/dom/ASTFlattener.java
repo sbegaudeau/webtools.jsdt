@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,14 +22,12 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -68,7 +66,6 @@ import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
 import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -96,13 +93,11 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.UndefinedLiteral;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
 
 /**
@@ -288,20 +283,6 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(AssertStatement)
-	 */
-	public boolean visit(AssertStatement node) {
-		this.fBuffer.append("assert ");//$NON-NLS-1$
-		node.getExpression().accept(this);
-		if (node.getMessage() != null) {
-			this.fBuffer.append(" : ");//$NON-NLS-1$
-			node.getMessage().accept(this);
-		}
-		this.fBuffer.append(";");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(Assignment)
 	 */
 	public boolean visit(Assignment node) {
@@ -355,17 +336,6 @@ public class ASTFlattener extends GenericVisitor {
 			node.getLabel().accept(this);
 		}
 		this.fBuffer.append(";");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(CastExpression)
-	 */
-	public boolean visit(CastExpression node) {
-		this.fBuffer.append("(");//$NON-NLS-1$
-		node.getType().accept(this);
-		this.fBuffer.append(")");//$NON-NLS-1$
-		node.getExpression().accept(this);
 		return false;
 	}
 
@@ -846,8 +816,6 @@ public class ASTFlattener extends GenericVisitor {
 			if (!node.typeParameters().isEmpty()) {
 				this.fBuffer.append("<");//$NON-NLS-1$
 				for (Iterator it= node.typeParameters().iterator(); it.hasNext();) {
-					TypeParameter t= (TypeParameter) it.next();
-					t.accept(this);
 					if (it.hasNext()) {
 						this.fBuffer.append(",");//$NON-NLS-1$
 					}
@@ -980,24 +948,6 @@ public class ASTFlattener extends GenericVisitor {
 		this.fBuffer.append("package ");//$NON-NLS-1$
 		node.getName().accept(this);
 		this.fBuffer.append(";");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(ParameterizedType)
-	
-	 */
-	public boolean visit(ParameterizedType node) {
-		node.getType().accept(this);
-		this.fBuffer.append("<");//$NON-NLS-1$
-		for (Iterator it= node.typeArguments().iterator(); it.hasNext();) {
-			Type t= (Type) it.next();
-			t.accept(this);
-			if (it.hasNext()) {
-				this.fBuffer.append(",");//$NON-NLS-1$
-			}
-		}
-		this.fBuffer.append(">");//$NON-NLS-1$
 		return false;
 	}
 
@@ -1342,8 +1292,6 @@ public class ASTFlattener extends GenericVisitor {
 			if (!node.typeParameters().isEmpty()) {
 				this.fBuffer.append("<");//$NON-NLS-1$
 				for (Iterator it= node.typeParameters().iterator(); it.hasNext();) {
-					TypeParameter t= (TypeParameter) it.next();
-					t.accept(this);
 					if (it.hasNext()) {
 						this.fBuffer.append(",");//$NON-NLS-1$
 					}
@@ -1421,25 +1369,6 @@ public class ASTFlattener extends GenericVisitor {
 	}
 
 	/*
-	 * @see ASTVisitor#visit(TypeParameter)
-	
-	 */
-	public boolean visit(TypeParameter node) {
-		node.getName().accept(this);
-		if (!node.typeBounds().isEmpty()) {
-			this.fBuffer.append(" extends ");//$NON-NLS-1$
-			for (Iterator it= node.typeBounds().iterator(); it.hasNext();) {
-				Type t= (Type) it.next();
-				t.accept(this);
-				if (it.hasNext()) {
-					this.fBuffer.append(" & ");//$NON-NLS-1$
-				}
-			}
-		}
-		return false;
-	}
-
-	/*
 	 * @see ASTVisitor#visit(VariableDeclarationExpression)
 	 */
 	public boolean visit(VariableDeclarationExpression node) {
@@ -1496,24 +1425,6 @@ public class ASTFlattener extends GenericVisitor {
 			}
 		}
 		this.fBuffer.append(";");//$NON-NLS-1$
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(WildcardType)
-	
-	 */
-	public boolean visit(WildcardType node) {
-		this.fBuffer.append("?");//$NON-NLS-1$
-		Type bound= node.getBound();
-		if (bound != null) {
-			if (node.isUpperBound()) {
-				this.fBuffer.append(" extends ");//$NON-NLS-1$
-			} else {
-				this.fBuffer.append(" super ");//$NON-NLS-1$
-			}
-			bound.accept(this);
-		}
 		return false;
 	}
 

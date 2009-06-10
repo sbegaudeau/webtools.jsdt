@@ -63,7 +63,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ITrackedNodePosition;
@@ -235,12 +234,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 		final AST ast= newMethod.getAST();
 		for (int index= 0, n= oldMethod.thrownExceptions().size(); index < n; index++)
 			newMethod.thrownExceptions().add(index, ASTNode.copySubtree(ast, (Name) oldMethod.thrownExceptions().get(index)));
-	}
-
-	protected static void copyTypeParameters(final FunctionDeclaration oldMethod, final FunctionDeclaration newMethod) {
-		final AST ast= newMethod.getAST();
-		for (int index= 0, n= oldMethod.typeParameters().size(); index < n; index++)
-			newMethod.typeParameters().add(index, ASTNode.copySubtree(ast, (TypeParameter) oldMethod.typeParameters().get(index)));
 	}
 
 	protected static String createLabel(final IMember member) {

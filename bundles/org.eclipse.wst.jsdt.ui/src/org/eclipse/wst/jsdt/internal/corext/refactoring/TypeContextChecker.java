@@ -60,7 +60,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
@@ -438,7 +437,7 @@ public class TypeContextChecker {
 	private static ITypeBinding handleBug84585(ITypeBinding typeBinding) {
 		if (typeBinding == null)
 			return null;
-		else if (typeBinding.isGenericType() && ! typeBinding.isRawType() && ! typeBinding.isParameterizedType())
+		else if (typeBinding.isGenericType() && ! typeBinding.isRawType())
 			return null; //see bug 84585
 		else
 			return typeBinding;
@@ -533,7 +532,6 @@ public class TypeContextChecker {
 				FunctionDeclaration methodDeclaration= (FunctionDeclaration) bodyDeclaration;
 				buf= bufBefore;
 				appendModifiers(buf, methodDeclaration.modifiers());
-				appendTypeParameters(buf, methodDeclaration.typeParameters());
 				buf.append(" void "); //$NON-NLS-1$
 				buf.append(methodDeclaration.getName().getIdentifier());
 				buf.append("(){\n"); //$NON-NLS-1$
@@ -572,7 +570,6 @@ public class TypeContextChecker {
 				TypeDeclaration type= (TypeDeclaration) decl;
 				buf.append(type.isInterface() ? "interface " : "class "); //$NON-NLS-1$//$NON-NLS-2$
 				buf.append(type.getName().getIdentifier());
-				appendTypeParameters(buf, type.typeParameters());
 				if (type.getSuperclassType() != null) {
 					buf.append(" extends "); //$NON-NLS-1$
 					buf.append(ASTNodes.asString(type.getSuperclassType()));
@@ -586,19 +583,6 @@ public class TypeContextChecker {
 			fillWithTypeStubs(bufBefore, bufAfter, focalPosition, decl.bodyDeclarations());
 			buf= decl.getStartPosition() + decl.getLength() < focalPosition ? bufBefore : bufAfter;
 			buf.append("}\n"); //$NON-NLS-1$
-		}
-	}
-
-	private static void appendTypeParameters(StringBuffer buf, List typeParameters) {
-		int typeParametersCount= typeParameters.size();
-		if (typeParametersCount > 0) {
-			buf.append('<');
-			for (int i= 0; i < typeParametersCount; i++) {
-				TypeParameter typeParameter= (TypeParameter) typeParameters.get(i);
-				buf.append(ASTNodes.asString(typeParameter));
-				if (i < typeParametersCount - 1)
-					buf.append(',');
-			}
 		}
 	}
 

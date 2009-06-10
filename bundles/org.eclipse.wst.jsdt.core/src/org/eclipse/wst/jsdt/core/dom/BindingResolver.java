@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.core.dom;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 
 /**
@@ -118,20 +117,6 @@ class BindingResolver {
 	 * @return the new method binding
 	 */
 	IFunctionBinding getMethodBinding(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {
-		return null;
-	}
-
-	/**
-	 * Returns the new member value pair binding corresponding to the given old value pair binding.
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param valuePair the old value pair binding
-	 * @return the new member value pair binding
-	 */
-	IMemberValuePairBinding getMemberValuePairBinding(ElementValuePair valuePair) {
 		return null;
 	}
 
@@ -686,30 +671,6 @@ class BindingResolver {
 	ITypeBinding resolveType(JavaScriptUnit compilationUnit) {
 		return null;
 	}
-
-
-	/**
-	 * Resolves the given type parameter and returns the type binding for the
-	 * type parameter.
-	 * <p>
-	 * The implementation of <code>TypeParameter.resolveBinding</code>
-	 * forwards to this method. How the declaration resolves is often a
-	 * function of the context in which the declaration node is embedded as well
-	 * as the declaration subtree itself.
-	 * </p>
-	 * <p>
-	 * The default implementation of this method returns <code>null</code>.
-	 * Subclasses may reimplement.
-	 * </p>
-	 *
-	 * @param typeParameter the type paramter of interest
-	 * @return the binding for the given type parameter, or <code>null</code>
-	 *    if no binding is available
-	 */
-	ITypeBinding resolveTypeParameter(TypeParameter typeParameter) {
-		return null;
-	}
-
 
 	/**
 	 * Resolves the given variable declaration and returns the binding for it.

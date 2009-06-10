@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1150,29 +1150,6 @@ public final class AST {
 		return result;
 	}
 
-
-	/**
-	 * Creates and returns a new unparented parameterized type node with the
-	 * given type and an empty list of type arguments.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @param type the type that is parameterized
-	 * @return a new unparented parameterized type node
-	 * @exception IllegalArgumentException if:
-	 * <ul>
-	 * <li>the node belongs to a different AST</li>
-	 * <li>the node already has a parent</li>
-	 * </ul>
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 */
-	public ParameterizedType newParameterizedType(Type type) {
-		ParameterizedType result = new ParameterizedType(this);
-		result.setType(type);
-		return result;
-	}
-
 	/**
 	 * Creates and returns a new unparented qualified type node with
 	 * the given qualifier type and name.
@@ -1194,21 +1171,6 @@ public final class AST {
 		QualifiedType result = new QualifiedType(this);
 		result.setQualifier(qualifier);
 		result.setName(name);
-		return result;
-	}
-
-	/**
-	 * Creates and returns a new unparented wildcard type node with no
-	 * type bound.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @return a new unparented wildcard type node
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 */
-	public WildcardType newWildcardType() {
-		WildcardType result = new WildcardType(this);
 		return result;
 	}
 
@@ -1364,22 +1326,6 @@ public final class AST {
 		Initializer result = new Initializer(this);
 		return result;
 	}
-
-	/**
-	 * Creates and returns a new unparented type parameter type node with an
-	 * unspecified type variable name and an empty list of type bounds.
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @return a new unparented type parameter node
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 */
-	public TypeParameter newTypeParameter() {
-		TypeParameter result = new TypeParameter(this);
-		return result;
-	}
-
 
 	/**
 	 * Creates and returns a new unparented modifier node for the given
@@ -1866,17 +1812,6 @@ public final class AST {
 		return new ThrowStatement(this);
 	}
 
-	/*
-	 * Creates a new unparented assert statement node owned by this AST.
-	 * By default, the first expression is unspecified, but legal, and has no
-	 * message expression.
-	 *
-	 * @return a new unparented assert statement node
-	 */
-	public AssertStatement newAssertStatement() {
-		return new AssertStatement(this);
-	}
-
 	/**
 	 * Creates a new unparented empty statement node owned by this AST.
 	 *
@@ -2263,18 +2198,6 @@ public final class AST {
 	 */
 	public TypeLiteral newTypeLiteral() {
 		TypeLiteral result = new TypeLiteral(this);
-		return result;
-	}
-
-	/**
-	 * Creates and returns a new unparented cast expression node
-	 * owned by this AST. By default, the type and expression are unspecified
-	 * (but legal).
-	 *
-	 * @return a new unparented cast expression node
-	 */
-	public CastExpression newCastExpression() {
-		CastExpression result = new CastExpression(this);
 		return result;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,8 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
@@ -46,8 +44,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.RemoveDescription;
-import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
-import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -102,13 +98,6 @@ public class TypeMismatchSubProcessor {
 		}
 		if (castTypeBinding == null) {
 			return;
-		}
-
-		if (!(nodeToCast instanceof ArrayInitializer)) {
-			ITypeBinding binding= nodeToCast.resolveTypeBinding();
-			if (binding == null || binding.isCastCompatible(castTypeBinding) || nodeToCast instanceof CastExpression) {
-				proposals.add(createCastProposal(context, castTypeBinding, nodeToCast, 7));
-			}
 		}
 
 		ITypeBinding currBinding= nodeToCast.resolveTypeBinding();
@@ -234,19 +223,6 @@ public class TypeMismatchSubProcessor {
 				}
 			}
 		}
-	}
-
-	public static ASTRewriteCorrectionProposal createCastProposal(IInvocationContext context, ITypeBinding castTypeBinding, Expression nodeToCast, int relevance) {
-		IJavaScriptUnit cu= context.getCompilationUnit();
-
-		String label;
-		String castType= BindingLabelProvider.getBindingLabel(castTypeBinding, JavaScriptElementLabels.ALL_DEFAULT);
-		if (nodeToCast.getNodeType() == ASTNode.CAST_EXPRESSION) {
-			label= Messages.format(CorrectionMessages.TypeMismatchSubProcessor_changecast_description, castType);
-		} else {
-			label= Messages.format(CorrectionMessages.TypeMismatchSubProcessor_addcast_description, castType);
-		}
-		return new CastCompletionProposal(label, cu, nodeToCast, castTypeBinding, relevance);
 	}
 
 	public static void addIncompatibleReturnTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaScriptModelException {

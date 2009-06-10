@@ -599,11 +599,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		} else if (typeBinding.isArray()) {
 			collectTypeVariables(typeBinding.getElementType(), typeVariablesCollector);
 			
-		} else if (typeBinding.isParameterizedType()) {
-			ITypeBinding[] typeArguments= typeBinding.getTypeArguments();
-			for (int i= 0; i < typeArguments.length; i++)
-				collectTypeVariables(typeArguments[i], typeVariablesCollector);
-		
 		} else if (typeBinding.isWildcardType()) {
 			ITypeBinding bound= typeBinding.getBound();
 			if (bound != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -88,9 +87,6 @@ public final class NodeInfoStore {
 			    	break;
 				case ASTNode.VARIABLE_DECLARATION_STATEMENT :
 				    ((VariableDeclarationStatement) node).fragments().add(this.ast.newVariableDeclarationFragment());
-		    		break;
-				case ASTNode.PARAMETERIZED_TYPE :
-				    ((ParameterizedType) node).typeArguments().add(this.ast.newWildcardType());
 		    		break;
 			}
 		    return node;

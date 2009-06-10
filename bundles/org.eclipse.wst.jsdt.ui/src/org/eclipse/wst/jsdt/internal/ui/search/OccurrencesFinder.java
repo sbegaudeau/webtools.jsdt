@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -188,9 +187,6 @@ public class OccurrencesFinder extends ASTVisitor implements IOccurrencesFinder 
 		Type type= node.getType();
 		if (type!=null)
 		{
-			if (type instanceof ParameterizedType) {
-				type= ((ParameterizedType) type).getType();
-			}
 			if (type instanceof SimpleType) {
 				Name name= ((SimpleType) type).getName();
 				if (name instanceof QualifiedName)

@@ -687,8 +687,6 @@ public class Bindings {
 			return containsTypeVariables(type.getElementType());
 		if (type.isCapture())
 			return containsTypeVariables(type.getWildcard());
-		if (type.isParameterizedType())
-			return containsTypeVariables(type.getTypeArguments());
 		if (type.isTypeVariable())
 			return containsTypeVariables(type.getTypeBounds());
 		if (type.isWildcardType() && type.getBound() != null)
@@ -1030,7 +1028,7 @@ public class Bindings {
 	
 	public static String getRawName(ITypeBinding binding) {
 		String name= binding.getName();
-		if (binding.isParameterizedType() || binding.isGenericType()) {
+		if (binding.isGenericType()) {
 			int idx= name.indexOf('<');
 			if (idx != -1) {
 				return name.substring(0, idx);

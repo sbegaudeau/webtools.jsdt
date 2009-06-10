@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -776,13 +775,6 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		if (Modifier.isStatic(fAnalyzer.getEnclosingBodyDeclaration().getModifiers()) || fAnalyzer.getForceStatic()) {
 			modifiers|= Modifier.STATIC;
 		}
-		ITypeBinding[] typeVariables= computeLocalTypeVariables();
-		List typeParameters= result.typeParameters();
-		for (int i= 0; i < typeVariables.length; i++) {
-			TypeParameter parameter= fAST.newTypeParameter();
-			parameter.setName(fAST.newSimpleName(typeVariables[i].getName()));
-			typeParameters.add(parameter);
-		}
 		
 		result.modifiers().addAll(ASTNodeFactory.newModifiers(fAST, modifiers));
 		result.setReturnType2((Type)ASTNode.copySubtree(fAST, fAnalyzer.getReturnType()));
@@ -826,33 +818,7 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 	
 	private ITypeBinding[] computeLocalTypeVariables() {
 		List result= new ArrayList(Arrays.asList(fAnalyzer.getTypeVariables()));
-		for (int i= 0; i < fParameterInfos.size(); i++) {
-			ParameterInfo info= (ParameterInfo)fParameterInfos.get(i);
-			processVariable(result, info.getOldBinding());
-		}
-		IVariableBinding[] methodLocals= fAnalyzer.getMethodLocals();
-		for (int i= 0; i < methodLocals.length; i++) {
-			processVariable(result, methodLocals[i]);
-		}
 		return (ITypeBinding[])result.toArray(new ITypeBinding[result.size()]);
-	}
-
-	private void processVariable(List result, IVariableBinding variable) {
-		if (variable == null)
-			return;
-		ITypeBinding binding= variable.getType();
-		if (binding != null && binding.isParameterizedType()) {
-			ITypeBinding[] typeArgs= binding.getTypeArguments();
-			for (int args= 0; args < typeArgs.length; args++) {
-				ITypeBinding arg= typeArgs[args];
-				if (arg.isTypeVariable() && !result.contains(arg)) {
-					ASTNode decl= fRoot.findDeclaringNode(arg);
-					if (decl != null && decl.getParent() instanceof FunctionDeclaration) {
-						result.add(arg);
-					}
-				}
-			}
-		}
 	}
 	
 	private Block createMethodBody(FunctionDeclaration method, ASTNode[] selectedNodes, TextEditGroup substitute) throws BadLocationException, CoreException {

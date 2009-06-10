@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.internal.core.SourceRefElement;
 
@@ -105,12 +104,6 @@ public class DOMFinder extends ASTVisitor {
 	}
 
 	public boolean visit(TypeDeclaration node) {
-		if (found(node, node.getName()) && this.resolveBinding)
-			this.foundBinding = node.resolveBinding();
-		return true;
-	}
-
-	public boolean visit(TypeParameter node) {
 		if (found(node, node.getName()) && this.resolveBinding)
 			this.foundBinding = node.resolveBinding();
 		return true;
