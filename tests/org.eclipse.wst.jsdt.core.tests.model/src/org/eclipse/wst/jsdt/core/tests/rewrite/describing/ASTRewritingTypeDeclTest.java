@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,16 +32,13 @@ import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 
@@ -575,51 +572,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		assertEqualString(preview, buf.toString());
 
 	}	
-	
-	
-	public void testTypeParameters() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("class E extends A {}\n");
-		buf.append("class F {}\n");
-		buf.append("class G <T> extends A {}\n");
-		buf.append("class H <T> {}\n");
-		buf.append("class I<T> extends A {}\n");
-		buf.append("class J<T>extends A {}\n");
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		AST ast= astRoot.getAST();
-		List types= astRoot.types();
-
-		for (int i= 0; i < 2; i++) {
-			// add type parameter
-			TypeDeclaration typeDecl= (TypeDeclaration) types.get(i);
-			ListRewrite listRewrite= rewrite.getListRewrite(typeDecl, TypeDeclaration.TYPE_PARAMETERS_PROPERTY);
-			TypeParameter typeParameter= ast.newTypeParameter();
-			typeParameter.setName(ast.newSimpleName("X"));
-			listRewrite.insertFirst(typeParameter, null);
-		}
-		for (int i= 2; i < 6; i++) {
-			// remove type parameter
-			TypeDeclaration typeDecl= (TypeDeclaration) types.get(i);
-			rewrite.remove((ASTNode) typeDecl.typeParameters().get(0), null);
-		}	
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("class E<X> extends A {}\n");
-		buf.append("class F<X> {}\n");
-		buf.append("class G extends A {}\n");
-		buf.append("class H {}\n");	
-		buf.append("class I extends A {}\n");
-		buf.append("class J extends A {}\n");
-		assertEqualString(preview, buf.toString());
-	}
-	
 	
 	public void testBug22161() throws Exception {
 	//	System.out.println(getClass().getName()+"::" + getName() +" disabled (bug 22161)");
@@ -1176,66 +1128,4 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		assertEqualString(preview, buf.toString());
 
 	}
-
-	
-	public void testWildcardType() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    X<?, ?, ? extends A, ? super B, ? extends A, ? super B> x;\n");
-		buf.append("}\n");
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
-
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		AST ast= astRoot.getAST();
-		
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FieldDeclaration field= type.getFields()[0];
-		ParameterizedType fieldType= (ParameterizedType) field.getType();
-		List args= fieldType.typeArguments();
-		{
-			WildcardType wildcardType= (WildcardType) args.get(0);
-			rewrite.set(wildcardType, WildcardType.UPPER_BOUND_PROPERTY, Boolean.TRUE, null);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, ast.newSimpleType(ast.newSimpleName("A")), null);
-		}
-		{
-			WildcardType wildcardType= (WildcardType) args.get(1);
-			rewrite.set(wildcardType, WildcardType.UPPER_BOUND_PROPERTY, Boolean.FALSE, null);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, ast.newSimpleType(ast.newSimpleName("B")), null);
-		}
-		{
-			WildcardType wildcardType= (WildcardType) args.get(2);
-			rewrite.set(wildcardType, WildcardType.UPPER_BOUND_PROPERTY, Boolean.FALSE, null);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, ast.newSimpleType(ast.newSimpleName("B")), null);
-		}
-		{
-			WildcardType wildcardType= (WildcardType) args.get(3);
-			rewrite.set(wildcardType, WildcardType.UPPER_BOUND_PROPERTY, Boolean.TRUE, null);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, ast.newSimpleType(ast.newSimpleName("A")), null);
-		}
-		{
-			WildcardType wildcardType= (WildcardType) args.get(4);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, null, null);
-		}
-		{
-			WildcardType wildcardType= (WildcardType) args.get(5);
-			rewrite.set(wildcardType, WildcardType.BOUND_PROPERTY, null, null);
-		}
-
-
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    X<? extends A, ? super B, ? super B, ? extends A, ?, ?> x;\n");
-		buf.append("}\n");
-		assertEqualString(preview, buf.toString());
-
-	}
-
-
-	
 }

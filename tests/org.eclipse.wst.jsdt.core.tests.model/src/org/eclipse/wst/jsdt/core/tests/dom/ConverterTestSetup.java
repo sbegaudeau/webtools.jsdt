@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
@@ -54,7 +53,6 @@ import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -71,10 +69,8 @@ import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public abstract class ConverterTestSetup extends AbstractASTTests {
@@ -195,11 +191,6 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		}
 
 		public void endVisit(BooleanLiteral node) {
-			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(CastExpression node) {
 			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
 			super.endVisit(node);
 		}
@@ -329,11 +320,6 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(ParameterizedType node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
 		public void endVisit(PrimitiveType node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
@@ -374,17 +360,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(TypeParameter node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
 		public void endVisit(VariableDeclarationFragment node) {
-			assertNotNull(node+" should have a binding", node.resolveBinding());
-			super.endVisit(node);
-		}
-
-		public void endVisit(WildcardType node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@ import java.util.List;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -32,11 +32,9 @@ import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
 import org.eclipse.wst.jsdt.core.dom.DoStatement;
@@ -46,6 +44,8 @@ import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
@@ -57,9 +57,8 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -702,163 +701,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
 		checkSourceRange(node, "i++;", source); //$NON-NLS-1$
 	}
-
-	/**
-	 * (String) o; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0031() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0031", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("s")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("o"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newSimpleType(this.ast.newSimpleName("String")));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newSimpleType(this.ast.newSimpleName("String")));//$NON-NLS-1$
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "String s = (String) o;", source); //$NON-NLS-1$
-	}						
-
-	/**
-	 * (int) d; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0032() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0032", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("i")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("d"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.INT));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.INT));//$NON-NLS-1$
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "int i = (int) d;", source); //$NON-NLS-1$
-	}	
-	
-	/**
-	 * (float) d; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0033() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0033", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("f")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("d"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.FLOAT));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.FLOAT));//$NON-NLS-1$
-
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "float f = (float) d;", source); //$NON-NLS-1$
-	}	
-
-	/**
-	 * (byte) d; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0034() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0034", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("b")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("d"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.BYTE));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.BYTE));//$NON-NLS-1$
-
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "byte b = (byte) d;", source); //$NON-NLS-1$
-	}	
-
-	/**
-	 * (short) d; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0035() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0035", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("s")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("d"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.SHORT));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.SHORT));//$NON-NLS-1$
-
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "short s = (short) d;", source); //$NON-NLS-1$
-	}
-
-	/**
-	 * (long) d; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0036() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0036", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("l")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("d"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.LONG));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.LONG));//$NON-NLS-1$
-
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "long l = (long) d;", source); //$NON-NLS-1$
-	}
-
-	/**
-	 * (char) i; ==> ExpressionStatement(CastExpression)
-	 */
-	public void test0037() throws JavaScriptModelException {
-		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0037", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0, 1);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-
-		VariableDeclarationFragment variableDeclarationFragment = this.ast.newVariableDeclarationFragment();
-		variableDeclarationFragment.setName(this.ast.newSimpleName("c")); //$NON-NLS-1$
-		CastExpression castExpression = this.ast.newCastExpression();
-		castExpression.setExpression(this.ast.newSimpleName("i"));//$NON-NLS-1$
-		castExpression.setType(this.ast.newPrimitiveType(PrimitiveType.CHAR));//$NON-NLS-1$
-		variableDeclarationFragment.setInitializer(castExpression);
-		VariableDeclarationStatement statement = this.ast.newVariableDeclarationStatement(variableDeclarationFragment);
-		statement.setType(this.ast.newPrimitiveType(PrimitiveType.CHAR));//$NON-NLS-1$
-
-		assertTrue("Both AST trees should be identical", statement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		checkSourceRange(node, "char c = (char) i;", source); //$NON-NLS-1$
-	}	
 
 	/**
 	 * int.class; ==> ExpressionStatement(TypeLiteral)
@@ -5967,13 +5809,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		FunctionInvocation methodInvocation = (FunctionInvocation) expression;
 		List arguments = methodInvocation.arguments();
 		assertEquals("wrong size", 1, arguments.size()); //$NON-NLS-1$
-		Expression expression2 = (Expression) arguments.get(0);
-		assertTrue("Not a CastExpression", expression2 instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression2;
-		Type type = castExpression.getType();
-		ITypeBinding binding = type.resolveBinding();
-		assertNotNull("No binding", binding); //$NON-NLS-1$
-		assertTrue("Not an array type", binding.isArray()); //$NON-NLS-1$
 	}
 
 	/**
@@ -5992,19 +5827,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		FunctionInvocation methodInvocation = (FunctionInvocation) expression;
 		List arguments = methodInvocation.arguments();
 		assertEquals("wrong size", 1, arguments.size()); //$NON-NLS-1$
-		Expression expression2 = (Expression) arguments.get(0);
-		assertTrue("Not a CastExpression", expression2 instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression2;
-		Type type = castExpression.getType();
-		assertTrue("Not a simple type", type.isSimpleType()); //$NON-NLS-1$
-		SimpleType simpleType = (SimpleType) type;
-		ITypeBinding binding = type.resolveBinding();
-		assertNotNull("No binding", binding); //$NON-NLS-1$
-		assertTrue("Not a class", binding.isClass()); //$NON-NLS-1$
-		Name name = simpleType.getName();
-		IBinding binding2 = name.resolveBinding();
-		assertNotNull("No binding2", binding2); //$NON-NLS-1$
-		assertEquals("Wrong type", "Object", binding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -6023,13 +5845,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		FunctionInvocation methodInvocation = (FunctionInvocation) expression;
 		List arguments = methodInvocation.arguments();
 		assertEquals("wrong size", 1, arguments.size()); //$NON-NLS-1$
-		Expression expression2 = (Expression) arguments.get(0);
-		assertTrue("Not a CastExpression", expression2 instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression2;
-		Type type = castExpression.getType();
-		assertTrue("Not a primitive type", type.isPrimitiveType()); //$NON-NLS-1$
-		PrimitiveType primitiveType = (PrimitiveType) type;
-		assertEquals("Not int", PrimitiveType.INT, primitiveType.getPrimitiveTypeCode()); //$NON-NLS-1$
 	}
 
 	/**
@@ -6048,19 +5863,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		FunctionInvocation methodInvocation = (FunctionInvocation) expression;
 		List arguments = methodInvocation.arguments();
 		assertEquals("wrong size", 1, arguments.size()); //$NON-NLS-1$
-		Expression expression2 = (Expression) arguments.get(0);
-		assertTrue("Not a CastExpression", expression2 instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression2;
-		Type type = castExpression.getType();
-		assertTrue("Not a simple type", type.isSimpleType()); //$NON-NLS-1$
-		SimpleType simpleType = (SimpleType) type;
-		ITypeBinding binding = type.resolveBinding();
-		assertNotNull("No binding", binding); //$NON-NLS-1$
-		assertTrue("Not a class", binding.isClass()); //$NON-NLS-1$
-		Name name = simpleType.getName();
-		IBinding binding2 = name.resolveBinding();
-		assertNotNull("No binding2", binding2); //$NON-NLS-1$
-		assertEquals("Wrong type", "Object", binding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -7146,17 +6948,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = (ExpressionStatement) node;
 		Expression expression2 = expressionStatement.getExpression();
 		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-		Assignment assignment = (Assignment) expression2;
-		Expression expression = assignment.getRightHandSide();
-		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression;
-		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-		assertEquals("Wrong name", "char", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		Type type = castExpression.getType();
-		ITypeBinding typeBinding2 = type.resolveBinding();
-		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-		assertEquals("Wrong name", "char", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	/**
@@ -7694,17 +7485,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = (ExpressionStatement) node;
 		Expression expression2 = expressionStatement.getExpression();
 		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-		Assignment assignment = (Assignment) expression2;
-		Expression expression = assignment.getRightHandSide();
-		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression;
-		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-		assertEquals("Wrong name", "Object", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		Type type = castExpression.getType();
-		ITypeBinding typeBinding2 = type.resolveBinding();
-		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-		assertEquals("Wrong name", "Object", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
 
 	/**
@@ -7721,17 +7501,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = (ExpressionStatement) node;
 		Expression expression2 = expressionStatement.getExpression();
 		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-		Assignment assignment = (Assignment) expression2;
-		Expression expression = assignment.getRightHandSide();
-		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression;
-		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-		assertEquals("Wrong name", "Object[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		Type type = castExpression.getType();
-		ITypeBinding typeBinding2 = type.resolveBinding();
-		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-		assertEquals("Wrong name", "Object[]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
 
 	/**
@@ -7748,17 +7517,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = (ExpressionStatement) node;
 		Expression expression2 = expressionStatement.getExpression();
 		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-		Assignment assignment = (Assignment) expression2;
-		Expression expression = assignment.getRightHandSide();
-		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression;
-		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-		assertEquals("Wrong name", "int[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-		Type type = castExpression.getType();
-		ITypeBinding typeBinding2 = type.resolveBinding();
-		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-		assertEquals("Wrong name", "int[]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
 
 	/**
@@ -7793,17 +7551,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-		Expression expression = variableDeclarationFragment.getInitializer();
-		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-		CastExpression castExpression = (CastExpression) expression;
-		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-		assertNotNull("No typebinding", typeBinding); //$NON-NLS-1$
-		assertEquals("Wrong name", "String", typeBinding.getName());
-		Type type = castExpression.getType();
-		ITypeBinding typeBinding2 = type.resolveBinding();
-		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-		assertEquals("Wrong name", "String", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
 
 	/**
@@ -9236,8 +8983,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 		Expression expression = variableDeclarationFragment.getInitializer();
 		assertTrue("Not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
-		Type type = ((CastExpression) expression).getType();
-		checkSourceRange(type, "A", source); //$NON-NLS-1$
 	}
 
 	/**
@@ -9453,8 +9198,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 		Expression expression = variableDeclarationFragment.getInitializer();
 		assertTrue("Not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
-		Type type = ((CastExpression) expression).getType();
-		checkSourceRange(type, "A", source); //$NON-NLS-1$
 	}
 	
 	/**

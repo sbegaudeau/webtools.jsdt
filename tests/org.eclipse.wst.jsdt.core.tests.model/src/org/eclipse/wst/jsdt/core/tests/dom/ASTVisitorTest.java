@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,13 +23,11 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -63,7 +61,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -90,12 +87,10 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase { 
 
@@ -132,7 +127,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String T1S;
 	Type T2;
 	String T2S;
-	ParameterizedType PT1;
 	String PT1S;
 	Statement S1;
 	String S1S;
@@ -180,9 +174,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String BC1S;
 	AnonymousClassDeclaration ACD1;
 	String ACD1S;
-	TypeParameter TP1;
 	String TP1S;
-	TypeParameter TP2;
 	String TP2S;
 	String MVP1S;
 	String MVP2S;
@@ -312,15 +304,10 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		MPARM1S = "[(MPARM[(tPcharchartP)]MPARM)]";  //$NON-NLS-1$
 
 		if (ast.apiLevel() >= AST.JLS3) {
-			PT1 = ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName("Z"))); //$NON-NLS-1$
 			PT1S = "[(tM[(tS[(nSZZnS)]tS)]tM)]"; //$NON-NLS-1$
 
-			TP1 = ast.newTypeParameter();
-			TP1.setName(ast.newSimpleName("x")); //$NON-NLS-1$
 			TP1S = "[(tTP[(nSxxnS)]tTP)]"; //$NON-NLS-1$
 
-			TP2 = ast.newTypeParameter();
-			TP2.setName(ast.newSimpleName("y")); //$NON-NLS-1$
 			TP2S = "[(tTP[(nSyynS)]tTP)]"; //$NON-NLS-1$
 
 		
@@ -419,26 +406,12 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append(node.getPrimitiveTypeCode().toString());
 			b.append("tP)"); //$NON-NLS-1$
 		}
-		public boolean visit(ParameterizedType node) {
-			b.append("(tM"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(ParameterizedType node) {
-			b.append("tM)"); //$NON-NLS-1$
-		}
 		public boolean visit(QualifiedType node) {
 			b.append("(tQ"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
 		public void endVisit(QualifiedType node) {
 			b.append("tQ)"); //$NON-NLS-1$
-		}
-		public boolean visit(WildcardType node) {
-			b.append("(tW"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(WildcardType node) {
-			b.append("tW)"); //$NON-NLS-1$
 		}
 		
 		// EXPRESSIONS and STATEMENTS
@@ -466,14 +439,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		}
 		public void endVisit(ArrayInitializer node) {
 			b.append("eAI)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(AssertStatement node) {
-			b.append("(sAS"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(AssertStatement node) {
-			b.append("sAS)"); //$NON-NLS-1$
 		}
 
 		public boolean visit(Assignment node) {
@@ -510,14 +475,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		}
 		public void endVisit(BreakStatement node) {
 			b.append("sBR)"); //$NON-NLS-1$
-		}
-
-		public boolean visit(CastExpression node) {
-			b.append("(eCS"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(CastExpression node) {
-			b.append("eCS)"); //$NON-NLS-1$
 		}
 
 		public boolean visit(CatchClause node) {
@@ -962,14 +919,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("eTL)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(TypeParameter node) {
-			b.append("(tTP"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(TypeParameter node) {
-			b.append("tTP)"); //$NON-NLS-1$
-		}
-
 		public boolean visit(VariableDeclarationExpression node) {
 			b.append("(eVD"); //$NON-NLS-1$
 			return isVisitingChildren();
@@ -1072,21 +1021,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 
 	/** @deprecated using deprecated code */
-	public void testParameterizedType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		ParameterizedType x1 = ast.newParameterizedType(T1);
-		x1.typeArguments().add(T2);
-		x1.typeArguments().add(PT1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(tM"+T1S+T2S+PT1S+"tM)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
 	public void testQualifiedType() {
 		if (ast.apiLevel() == AST.JLS2) {
 			return;
@@ -1097,20 +1031,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.accept(v1);
 		String result = b.toString();
 		assertTrue(result.equals("[(tQ"+T1S+N1S+"tQ)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	/** @deprecated using deprecated code */
-	public void testWildcardType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		WildcardType x1 = ast.newWildcardType();
-		x1.setBound(T1, true);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(tW"+T1S+"tW)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	// EXPRESSIONS and STATEMENTS
@@ -1147,16 +1067,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.accept(v1);
 		String result = b.toString();
 		assertTrue(result.equals("[(eAI"+E1S+E2S+"eAI)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-	public void testAssertStatement() {
-		AssertStatement x1 = ast.newAssertStatement();
-		x1.setExpression(E1);
-		x1.setMessage(E2);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(sAS"+E1S+E2S+"sAS)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	public void testAssignment() {
 		Assignment x1 = ast.newAssignment();
@@ -1212,16 +1122,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		String result = b.toString();
 		assertTrue(result.equals("[(sBR"+N1S+"sBR)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	public void testCastExpression() {
-		CastExpression x1 = ast.newCastExpression();
-		x1.setType(T1);
-		x1.setExpression(E1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(eCS"+T1S+E1S+"eCS)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
 	public void testCatchClause() {
 		CatchClause x1 = ast.newCatchClause();
 		x1.setException(V1);
@@ -1248,7 +1148,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setName(N1);
 		} else {
-			x1.typeArguments().add(PT1);
 			x1.setType(T1);
 		}
 		x1.setAnonymousClassDeclaration(ACD1);
@@ -1306,9 +1205,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	/** @deprecated using deprecated code */
 	public void testConstructorInvocation() {
 		ConstructorInvocation x1 = ast.newConstructorInvocation();
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
 		TestVisitor v1 = new TestVisitor();
@@ -1555,7 +1451,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.typeParameters().add(TP1);
 			x1.setReturnType2(T1);
 		}
 		x1.setName(N1);
@@ -1578,9 +1473,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testMethodInvocation() {
 		FunctionInvocation x1 = ast.newFunctionInvocation();
 		x1.setExpression(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
 		x1.setName(N2);
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
@@ -1698,9 +1590,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testSuperConstructorInvocation() {
 		SuperConstructorInvocation x1 = ast.newSuperConstructorInvocation();
 		x1.setExpression(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
 		TestVisitor v1 = new TestVisitor();
@@ -1727,9 +1616,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testSuperMethodInvocation() {
 		SuperMethodInvocation x1 = ast.newSuperMethodInvocation();
 		x1.setQualifier(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
 		x1.setName(N2);
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
@@ -1833,8 +1719,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.typeParameters().add(TP1);
-			x1.setSuperclassType(PT1);
 			x1.superInterfaceTypes().add(T1);
 			x1.superInterfaceTypes().add(T2); //$NON-NLS-1$
 		}

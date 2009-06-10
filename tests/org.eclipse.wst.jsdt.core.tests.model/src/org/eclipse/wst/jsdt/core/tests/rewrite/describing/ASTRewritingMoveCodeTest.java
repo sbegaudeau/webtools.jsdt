@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1872,23 +1872,7 @@ public class ASTRewritingMoveCodeTest extends ASTRewritingTest {
 		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		TypeDeclaration typeDecl= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methDecl= findMethodDeclaration(typeDecl, "foo");
-		VariableDeclarationStatement varStat= (VariableDeclarationStatement) methDecl.getBody().statements().get(0);
-		
-		CastExpression expression= (CastExpression) ((VariableDeclarationFragment) varStat.fragments().get(0)).getInitializer();
-		FunctionInvocation invocation= (FunctionInvocation) expression.getExpression();
-		
-		CastExpression newCast= ast.newCastExpression();
-		newCast.setType((Type) rewrite.createCopyTarget(expression.getType()));
-		newCast.setExpression((Expression) rewrite.createCopyTarget(invocation.getExpression()));
-		ParenthesizedExpression parents= ast.newParenthesizedExpression();
-		parents.setExpression(newCast);
-		
-		ASTNode node= rewrite.createCopyTarget(invocation);
-		rewrite.replace(expression, node, null);
-		rewrite.replace(invocation.getExpression(), parents, null);
+
 				
 		String preview= evaluateRewrite(cu, rewrite);
 		

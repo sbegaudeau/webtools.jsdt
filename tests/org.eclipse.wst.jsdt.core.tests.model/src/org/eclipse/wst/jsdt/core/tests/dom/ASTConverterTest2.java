@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1480,11 +1480,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		Expression expression = fragment.getInitializer();
 		assertTrue("not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
 		checkSourceRange(expression, "(int) (3.14f * a)", source);
-		CastExpression castExpression = (CastExpression) expression;
-		checkSourceRange(castExpression.getType(), "int", source);
-		Expression expression2 = castExpression.getExpression();
-		checkSourceRange(expression2, "(3.14f * a)", source);	
-		assertTrue("not a parenthesized expression", expression2.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION); //$NON-NLS-1$
 	}
 	/**
 	 * http://bugs.eclipse.org/bugs/show_bug.cgi?id=28682
@@ -1776,9 +1771,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message;", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
-			checkSourceRange(statement.getMessage(), "message", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -1800,15 +1792,10 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message\\u003B", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
-			checkSourceRange(statement.getMessage(), "message", source);
 			
 			node = getASTNode(compilationUnit, 0, 0, 1);
 			checkSourceRange(node, "assert ref != null\\u003B", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -1952,10 +1939,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			assertNotNull("No node", node);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			checkSourceRange(assertStatement, "assert(true);", source);
-			Expression expression = assertStatement.getExpression();
-			checkSourceRange(expression, "(true)", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2574,10 +2557,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
 			ASTNode node = getASTNode(unit, 0, 0, 0);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			Expression expression = assertStatement.getExpression();
-			assertTrue("not a parenthesized expression", expression.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION); //$NON-NLS-1$
-			checkSourceRange(expression, "(loginName != null)", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2600,9 +2579,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
 			ASTNode node = getASTNode(unit, 0, 0, 0);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			Expression expression = assertStatement.getExpression();
-			checkSourceRange(expression, "loginName != null", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -180,62 +179,6 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void lee(float m1, float m2, float m3) throws IllegalArgumentException, ArrayStoreException, SecurityException;\n");
 		buf.append("}\n");	
 			
-		assertEqualString(preview, buf.toString());
-	}
-
-	public void testMethodTypeParameterAdds() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public abstract class E {\n");
-		buf.append("    /**\n");
-		buf.append("     *\n");
-		buf.append("     */\n");
-		buf.append("    E(int p1) {}\n");
-		buf.append("    E(int p1, int p2) {}\n");
-		buf.append("    public E(int p1, byte p2) {}\n");
-		buf.append("    /**\n");
-		buf.append("     *\n");
-		buf.append("     */\n");
-		buf.append("    void gee(int p1) {}\n");
-		buf.append("    void hee(int p1, int p2) {}\n");
-		buf.append("    public void hee(int p1, byte p2) {}\n");
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		AST ast= astRoot.getAST();
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		
-		FunctionDeclaration[] methods= type.getMethods();
-		for (int i= 0; i < methods.length; i++) {
-			
-			// add type parameter
-			FunctionDeclaration methodDecl= methods[i];
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY);
-			TypeParameter typeParameter= ast.newTypeParameter();
-			typeParameter.setName(ast.newSimpleName("X"));
-			listRewrite.insertFirst(typeParameter, null);
-		}					
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public abstract class E {\n");
-		buf.append("    /**\n");
-		buf.append("     *\n");
-		buf.append("     */\n");
-		buf.append("    <X> E(int p1) {}\n");
-		buf.append("    <X> E(int p1, int p2) {}\n");
-		buf.append("    public <X> E(int p1, byte p2) {}\n");
-		buf.append("    /**\n");
-		buf.append("     *\n");
-		buf.append("     */\n");
-		buf.append("    <X> void gee(int p1) {}\n");
-		buf.append("    <X> void hee(int p1, int p2) {}\n");
-		buf.append("    public <X> void hee(int p1, byte p2) {}\n");
-		buf.append("}\n");		
 		assertEqualString(preview, buf.toString());
 	}
 	

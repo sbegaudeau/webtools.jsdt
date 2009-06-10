@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,11 +22,11 @@ import junit.framework.Test;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -43,21 +43,20 @@ import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -67,8 +66,7 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -1550,11 +1548,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		Expression expression = fragment.getInitializer();
 		assertTrue("not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
 		checkSourceRange(expression, "(int) (3.14f * a)", source);
-		CastExpression castExpression = (CastExpression) expression;
-		checkSourceRange(castExpression.getType(), "int", source);
-		Expression expression2 = castExpression.getExpression();
-		checkSourceRange(expression2, "(3.14f * a)", source);	
-		assertTrue("not a parenthesized expression", expression2.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION); //$NON-NLS-1$
 	}
 	/**
 	 * http://bugs.eclipse.org/bugs/show_bug.cgi?id=28682
@@ -1846,9 +1839,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message;", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
-			checkSourceRange(statement.getMessage(), "message", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -1870,15 +1860,10 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message\\u003B", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
-			checkSourceRange(statement.getMessage(), "message", source);
 			
 			node = getASTNode(compilationUnit, 0, 0, 1);
 			checkSourceRange(node, "assert ref != null\\u003B", source);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			statement = (AssertStatement) node;
-			checkSourceRange(statement.getExpression(), "ref != null", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2022,10 +2007,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			assertNotNull("No node", node);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			checkSourceRange(assertStatement, "assert(true);", source);
-			Expression expression = assertStatement.getExpression();
-			checkSourceRange(expression, "(true)", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2644,10 +2625,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
 			ASTNode node = getASTNode(unit, 0, 0, 0);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			Expression expression = assertStatement.getExpression();
-			assertTrue("not a parenthesized expression", expression.getNodeType() == ASTNode.PARENTHESIZED_EXPRESSION); //$NON-NLS-1$
-			checkSourceRange(expression, "(loginName != null)", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2670,9 +2647,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
 			ASTNode node = getASTNode(unit, 0, 0, 0);
 			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-			AssertStatement assertStatement = (AssertStatement) node;
-			Expression expression = assertStatement.getExpression();
-			checkSourceRange(expression, "loginName != null", source);
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}

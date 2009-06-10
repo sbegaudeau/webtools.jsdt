@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.core.dom.MemberRef;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -145,14 +143,6 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(BooleanLiteral)
 	 */
 	public void endVisit(BooleanLiteral node) {
-		ITypeBinding typeBinding = node.resolveTypeBinding();
-		collectBindings(node, typeBinding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(CastExpression)
-	 */
-	public void endVisit(CastExpression node) {
 		ITypeBinding typeBinding = node.resolveTypeBinding();
 		collectBindings(node, typeBinding);
 	}
@@ -282,15 +272,6 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	public void endVisit(PackageDeclaration node) {
 		IPackageBinding packageBinding = node.resolveBinding();
 		collectBindings(node, packageBinding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(ParameterizedType)
-	 * @since 3.0
-	 */
-	public void endVisit(ParameterizedType node) {
-		ITypeBinding typeBinding = node.resolveBinding();
-		collectBindings(node, typeBinding);
 	}
 
 	/**

@@ -1888,35 +1888,7 @@ public void test080() throws CoreException, IOException {
 		deleteProject(projectName);
 	}
 }
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=111529
-public void test081() throws CoreException, IOException {
-	final String projectName = "P081";
-	try {
-		IJavaScriptProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
-		String typeName = "java.util.List<java.lang.Integer>";
-		class BindingRequestor extends ASTRequestor {
-			ITypeBinding _result = null;
-			public void acceptBinding(String bindingKey, IBinding binding) {
-				if (_result == null && binding != null && binding.getKind() == IBinding.TYPE)
-					_result = (ITypeBinding) binding;
-			}
-		}
-		String[] keys = new String[] {
-			BindingKey.createTypeBindingKey(typeName)
-		};
-		final BindingRequestor requestor = new BindingRequestor();
-		final ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(javaProject);
-		// this doesn’t really do a parse; it’s a type lookup
-		parser.createASTs(new IJavaScriptUnit[] {}, keys, requestor, null);
-		ITypeBinding typeBinding = requestor._result;
-		assertNotNull("No binding", typeBinding);
-		assertTrue("Not a parameterized type binding", typeBinding.isParameterizedType());
-	} finally {
-		deleteProject(projectName);
-	}
-}
+
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=111529
 public void test082() throws CoreException, IOException {
 	final String projectName = "P082";

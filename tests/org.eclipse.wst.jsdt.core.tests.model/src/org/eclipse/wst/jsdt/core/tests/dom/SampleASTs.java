@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,12 +20,10 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -54,7 +52,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -82,7 +79,6 @@ import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 public class SampleASTs {
 	/**
@@ -136,19 +132,12 @@ public class SampleASTs {
 		if (target.apiLevel() >= AST.JLS3) {
 			SimpleType st = target.newSimpleType(qn);
 			QualifiedType qt = target.newQualifiedType(st, target.newSimpleName("x")); //$NON-NLS-1$
-			WildcardType wt = target.newWildcardType();
-			ParameterizedType pmt = target.newParameterizedType(target.newSimpleType(target.newSimpleName("y"))); //$NON-NLS-1$
-			pmt.typeArguments().add(wt);
-			pmt.typeArguments().add(qt);
-			md.setReturnType2(pmt);
 		}
 		
 		Block b = target.newBlock();
 		md.setBody(b);
 		
 		// all statements (in alphabetic order of statement type)
-		AssertStatement assertStatement = target.newAssertStatement();
-		b.statements().add(assertStatement);
 		Block block = target.newBlock();
 		b.statements().add(block);
 		BreakStatement breakStatement = target.newBreakStatement();
@@ -217,8 +206,6 @@ public class SampleASTs {
 		z.add(assignment);
 		BooleanLiteral booleanLiteral = target.newBooleanLiteral(true);
 		z.add(booleanLiteral);
-		CastExpression castExpression = target.newCastExpression();
-		z.add(castExpression);
 		CharacterLiteral characterLiteral = target.newCharacterLiteral();
 		z.add(characterLiteral);
 		ClassInstanceCreation cic = target.newClassInstanceCreation();

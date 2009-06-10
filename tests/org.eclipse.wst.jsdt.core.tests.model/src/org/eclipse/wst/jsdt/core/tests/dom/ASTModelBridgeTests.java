@@ -1383,46 +1383,6 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 	}
 
 	/*
-	 * Ensures that the IJavaScriptElement of an IBinding representing a parameter type is correct.
-	 * (regression test for bug 78930 ITypeBinding#getJavaElement() throws NPE for type variable)
-	 */
-	public void testTypeParameter() throws JavaScriptModelException {
-		ASTNode node = buildAST(
-			"public class X</*start*/T/*end*/> {\n" +
-			"}"
-		);
-		IBinding binding = ((TypeParameter) node).resolveBinding();
-		assertNotNull("No binding", binding);
-		IJavaScriptElement element = binding.getJavaElement();
-		assertElementEquals(
-			"Unexpected Java element",
-			"<T> [in X [in [Working copy] X.java [in <default> [in src [in P]]]]]",
-			element
-		);
-		assertTrue("Element should exist", element.exists());
-	}
-
-	/*
-	 * Ensures that the IJavaScriptElement of an IBinding representing a wild card is correct.
-	 * (regression test for bug 81417 [dom] getJavaElement() throws a NPE for WildcardBinding)
-	 */
-	public void testWildCard() throws JavaScriptModelException {
-		ASTNode node = buildAST(
-			"public class X<T> {\n" + 
-			"	X</*start*/? extends Exception/*end*/> field;\n" + 
-			"}"
-		);
-		IBinding binding = ((WildcardType) node).resolveBinding();
-		assertNotNull("No binding", binding);
-		IJavaScriptElement element = binding.getJavaElement();
-		assertElementEquals(
-			"Unexpected Java element",
-			"<null>",
-			element
-		);
-	}
-
-	/*
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=160637
 	 */
 	public void testCreateBindings19() throws CoreException {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,14 +32,12 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -74,7 +72,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -101,12 +98,10 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 // testing
 
@@ -174,14 +169,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(AssertStatement, Object)
-		 */
-		public boolean match(AssertStatement node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(Assignment, Object)
 		 */
 		public boolean match(Assignment node, Object other) {
@@ -218,14 +205,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(BreakStatement, Object)
 		 */
 		public boolean match(BreakStatement node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(CastExpression, Object)
-		 */
-		public boolean match(CastExpression node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
@@ -489,15 +468,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(ParameterizedType, Object)
-		 * @since 3.0
-		 */
-		public boolean match(ParameterizedType node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(ParenthesizedExpression, Object)
 		 */
 		public boolean match(ParenthesizedExpression node, Object other) {
@@ -695,15 +665,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(TypeParameter, Object)
-		 * @since 3.0
-		 */
-		public boolean match(TypeParameter node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-	
-		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(VariableDeclarationExpression, Object)
 		 */
 		public boolean match(VariableDeclarationExpression node, Object other) {
@@ -734,16 +695,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
-	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(WildcardType, Object)
-		 * @since 3.0
-		 */
-		public boolean match(WildcardType node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
-		
 	}
 	
 	/** @deprecated using deprecated code */
@@ -1901,9 +1852,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.isSimpleType());
 		assertTrue(!x.isArrayType());
 		assertTrue(!x.isPrimitiveType());
-		assertTrue(!x.isParameterizedType());
 		assertTrue(!x.isQualifiedType());
-		assertTrue(!x.isWildcardType());
 		assertTrue(x.getNodeType() == ASTNode.SIMPLE_TYPE);
 		assertTrue(x.structuralPropertiesForType() == SimpleType.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
@@ -1937,9 +1886,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(!x.isSimpleType());
 		assertTrue(!x.isArrayType());
 		assertTrue(x.isPrimitiveType());
-		assertTrue(!x.isParameterizedType());
 		assertTrue(!x.isQualifiedType());
-		assertTrue(!x.isWildcardType());
 		assertTrue(x.getNodeType() == ASTNode.PRIMITIVE_TYPE);
 		assertTrue(x.structuralPropertiesForType() == PrimitiveType.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
@@ -2014,9 +1961,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(!x.isSimpleType());
 		assertTrue(x.isArrayType());
 		assertTrue(!x.isPrimitiveType());
-		assertTrue(!x.isParameterizedType());
 		assertTrue(!x.isQualifiedType());
-		assertTrue(!x.isWildcardType());
 		assertTrue(x.getNodeType() == ASTNode.ARRAY_TYPE);
 		assertTrue(x.structuralPropertiesForType() == ArrayType.propertyDescriptors(ast.apiLevel()));
 
@@ -2054,86 +1999,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.getDimensions() == 5);
 		assertTrue(x.getElementType().isPrimitiveType());
 	}		
-
-	/** @deprecated using deprecated code */
-	public void testParameterizedType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName("String"))); //$NON-NLS-1$
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		Type t = ast.newSimpleType(ast.newSimpleName("String")); //$NON-NLS-1$
-		final ParameterizedType x = ast.newParameterizedType(t); 
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getType() == t);
-		assertTrue(x.getType().getParent() == x);
-		assertTrue(!x.isSimpleType());
-		assertTrue(!x.isArrayType());
-		assertTrue(!x.isPrimitiveType());
-		assertTrue(x.isParameterizedType());
-		assertTrue(!x.isQualifiedType());
-		assertTrue(!x.isWildcardType());
-		assertTrue(x.getNodeType() == ASTNode.PARAMETERIZED_TYPE);
-		assertTrue(x.typeArguments().size() == 0);
-		assertTrue(x.structuralPropertiesForType() == ParameterizedType.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleType result = 
-				targetAst.newSimpleType(
-						targetAst.newSimpleName("a")); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				ParameterizedType s1 = ast.newParameterizedType(x); //$NON-NLS-1$
-				return s1;
-			}
-			public void unwrap() {
-				ParameterizedType s1 = (ParameterizedType) x.getParent();
-				s1.setType(ast.newSimpleType(ast.newSimpleName("z"))); //$NON-NLS-1$
-			}
-			public ASTNode get() {
-				return x.getType();
-			}
-			public void set(ASTNode value) {
-				x.setType((Type) value);
-			}
-		});
-		genericPropertyListTest(x, x.typeArguments(),
-		  new Property("Arguments", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				PrimitiveType result = targetAst.newPrimitiveType(PrimitiveType.INT);
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Type that embeds x
-				ParameterizedType s1 = ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName("foo"))); //$NON-NLS-1$
-				s1.typeArguments().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				ParameterizedType s1 = (ParameterizedType) x.getParent();
-				s1.typeArguments().remove(x);
-			}
-		});
-	}		
 	
 	/** @deprecated using deprecated code */
 	public void testQualifiedType() {
@@ -2164,9 +2029,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(!x.isSimpleType());
 		assertTrue(!x.isArrayType());
 		assertTrue(!x.isPrimitiveType());
-		assertTrue(!x.isParameterizedType());
 		assertTrue(x.isQualifiedType());
-		assertTrue(!x.isWildcardType());
 		assertTrue(x.structuralPropertiesForType() == QualifiedType.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
@@ -2212,94 +2075,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				x.setName((SimpleName) value);
 			}
 		});
-	}		
-
-	/** @deprecated using deprecated code */
-	public void testWildcardType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newWildcardType();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final WildcardType x = ast.newWildcardType();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getBound() == null);
-		assertTrue(x.isUpperBound() == true);
-		assertTrue(x.getNodeType() == ASTNode.WILDCARD_TYPE);
-		assertTrue(!x.isSimpleType());
-		assertTrue(!x.isArrayType());
-		assertTrue(!x.isPrimitiveType());
-		assertTrue(!x.isParameterizedType());
-		assertTrue(!x.isQualifiedType());
-		assertTrue(x.isWildcardType());
-		assertTrue(x.structuralPropertiesForType() == WildcardType.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		// make sure that isUpperBound works
-		Type b = ast.newPrimitiveType(PrimitiveType.BYTE);
-		x.setBound(b);
-		x.setUpperBound(false);
-		assertTrue(x.isUpperBound() == false);
-		x.setUpperBound(true);
-		assertTrue(x.isUpperBound() == true);
-		x.setBound(null);
-		x.setUpperBound(false);
-		assertTrue(x.isUpperBound() == false);
-		x.setUpperBound(true);
-		assertTrue(x.isUpperBound() == true);
-		
-		// make sure that setBound(Type,boolean) works
-		x.setBound(b, false);
-		assertTrue(x.getBound() == b);
-		assertTrue(x.isUpperBound() == false);
-		x.setBound(null, true);
-		assertTrue(x.getBound() == null);
-		assertTrue(x.isUpperBound() == true);
-		x.setBound(b, true);
-		assertTrue(x.getBound() == b);
-		assertTrue(x.isUpperBound() == true);
-		x.setBound(null, false);
-		assertTrue(x.getBound() == null);
-		assertTrue(x.isUpperBound() == false);
-		
-		genericPropertyTest(x, new Property("Bound", false, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleType result = 
-				targetAst.newSimpleType(
-						targetAst.newSimpleName("a")); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				WildcardType s1 = ast.newWildcardType();
-				s1.setBound(x);
-				return s1;
-			}
-			public void unwrap() {
-				WildcardType s1 = (WildcardType) x.getParent();
-				s1.setBound(null);
-			}
-			public ASTNode get() {
-				return x.getBound();
-			}
-			public void set(ASTNode value) {
-				x.setBound((Type) value);
-			}
-		});
-		
-	}		
+	}				
 
 	public void testPackageDeclaration() {
 		long previousCount = ast.modificationCount();
@@ -2592,19 +2368,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			}
 		});
 		
-		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.typeParameters(),
-			  new Property("TypeParameters", true, TypeParameter.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					TypeParameter result = targetAst.newTypeParameter();
-					if (parented) {
-						targetAst.newFunctionDeclaration().typeParameters().add(result);
-					}
-					return result;
-				}
-			});
-		}
-		
 		if (ast.apiLevel() == AST.JLS2) {
 			genericPropertyTest(x, new Property("Superclass", false, Name.class) { //$NON-NLS-1$
 				public ASTNode sample(AST targetAst, boolean parented) {
@@ -2734,59 +2497,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(t1.isPackageMemberTypeDeclaration() == false);
 	
 	}	
-	
-	
-	/** @deprecated using deprecated code */
-	public void testTypeParameter() {
-		if (ast.apiLevel() == AST.JLS2) {
-			// node type introduced in 3.0 API
-			try {
-				ast.newTypeParameter();
-				assertTrue(false);
-			} catch (UnsupportedOperationException e) {
-				// pass
-			}
-			return;
-		}
-		long previousCount = ast.modificationCount();
-		final TypeParameter x = ast.newTypeParameter();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getName().getParent() == x);
-		assertTrue(x.getNodeType() == ASTNode.TYPE_PARAMETER);
-		assertTrue(x.typeBounds().size() == 0);
-		assertTrue(x.structuralPropertiesForType() == TypeParameter.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleName result = targetAst.newSimpleName("a"); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getName();
-			}
-			public void set(ASTNode value) {
-				x.setName((SimpleName) value);
-			}
-		});
-		genericPropertyListTest(x, x.typeBounds(),
-		  new Property("TypeBounds", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				Type result = targetAst.newSimpleType(targetAst.newSimpleName("foo"));
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-		});
-	}		
 	
 	/** @deprecated using deprecated code */
 	public void testSingleVariableDeclaration() {
@@ -3062,19 +2772,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 
 		tJavadocComment(x);
 						
-		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.typeParameters(),
-			  new Property("TypeParameters", true, TypeParameter.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					TypeParameter result = targetAst.newTypeParameter();
-					if (parented) {
-						targetAst.newFunctionDeclaration().typeParameters().add(result);
-					}
-					return result;
-				}
-			});
-		}
-		
 		genericPropertyTest(x, new Property("Name", true, SimpleName.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
 				SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
@@ -5282,92 +4979,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	/**
 	 * @deprecated (Uses getLeadingComment() which is deprecated)
 	 */
-	public void testAssertStatement() {
-		long previousCount = ast.modificationCount();
-		final AssertStatement x = ast.newAssertStatement();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getExpression().getParent() == x);
-		assertTrue(x.getMessage() == null);
-		assertTrue(x.getLeadingComment() == null);
-		assertTrue(x.getNodeType() == ASTNode.ASSERT_STATEMENT);
-		assertTrue(x.structuralPropertiesForType() == 
-			AssertStatement.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		tLeadingComment(x);
-
-		genericPropertyTest(x, new Property("Expression", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
-				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
-				s1.setAnonymousClassDeclaration(a1);
-				FunctionDeclaration s2 = ast.newFunctionDeclaration();
-				a1.bodyDeclarations().add(s2);
-				Block s3 = ast.newBlock();
-				s2.setBody(s3);
-				s3.statements().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				Block s3 = (Block) x.getParent();
-				s3.statements().remove(x);
-			}
-			public ASTNode get() {
-				return x.getExpression();
-			}
-			public void set(ASTNode value) {
-				x.setExpression((Expression) value);
-			}
-		});
-
-		genericPropertyTest(x, new Property("Message", false, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
-				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
-				s1.setAnonymousClassDeclaration(a1);
-				FunctionDeclaration s2 = ast.newFunctionDeclaration();
-				a1.bodyDeclarations().add(s2);
-				Block s3 = ast.newBlock();
-				s2.setBody(s3);
-				s3.statements().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				Block s3 = (Block) x.getParent();
-				s3.statements().remove(x);
-			}
-			public ASTNode get() {
-				return x.getMessage();
-			}
-			public void set(ASTNode value) {
-				x.setMessage((Expression) value);
-			}
-		});
-	}
-
-	/**
-	 * @deprecated (Uses getLeadingComment() which is deprecated)
-	 */
 	public void testSwitchStatement() {
 		long previousCount = ast.modificationCount();
 		final SwitchStatement x = ast.newSwitchStatement();
@@ -5633,19 +5244,11 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				assertTrue(node.resolveBinding() == null);
 				return true;
 			}
-			public boolean visit(ParameterizedType node) {
-				assertTrue(node.resolveBinding() == null);
-				return true;
-			}
 			public boolean visit(PrimitiveType node) {
 				assertTrue(node.resolveBinding() == null);
 				return true;
 			}
 			public boolean visit(QualifiedType node) {
-				assertTrue(node.resolveBinding() == null);
-				return true;
-			}
-			public boolean visit(WildcardType node) {
 				assertTrue(node.resolveBinding() == null);
 				return true;
 			}
@@ -6338,64 +5941,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			}
 			public void set(ASTNode value) {
 				x.setType((Type) value);
-			}
-		});
-	}
-
-	public void testCastExpression() {
-		long previousCount = ast.modificationCount();
-		final CastExpression x = ast.newCastExpression();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getType().getParent() == x);
-		assertTrue(x.getExpression().getParent() == x);
-		assertTrue(x.getNodeType() == ASTNode.CAST_EXPRESSION);
-		assertTrue(x.structuralPropertiesForType() == 
-			CastExpression.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		genericPropertyTest(x, new Property("Type", true, Type.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				SimpleType result = targetAst.newSimpleType(
-					targetAst.newSimpleName("a")); //$NON-NLS-1$
-				if (parented) {
-					targetAst.newArrayType(result);
-				}
-				return result;
-			}
-			public ASTNode get() {
-				return x.getType();
-			}
-			public void set(ASTNode value) {
-				x.setType((Type) value);
-			}
-		});
-		
-		genericPropertyTest(x, new Property("Expression", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				ParenthesizedExpression s1 = ast.newParenthesizedExpression();
-				s1.setExpression(x);
-				return s1;
-			}
-			public void unwrap() {
-				ParenthesizedExpression s1 = (ParenthesizedExpression) x.getParent();
-				s1.setExpression(ast.newSimpleName("fie")); //$NON-NLS-1$
-			}
-			public ASTNode get() {
-				return x.getExpression();
-			}
-			public void set(ASTNode value) {
-				x.setExpression((Expression) value);
 			}
 		});
 	}

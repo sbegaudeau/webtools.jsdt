@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,24 +19,23 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
-import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 
 public class ASTConverterRecoveryTest extends ConverterTestSetup {
 	public ASTConverterRecoveryTest(String name) {
@@ -854,13 +853,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
 		Statement statement = (Statement) statements.get(0);
 		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-		AssertStatement assertStatement = (AssertStatement) statement;
-		checkSourceRange(assertStatement, "assert 0 == 0 : a[0;", source); //$NON-NLS-1$
-		assertTrue("Flag as RECOVERED", (assertStatement.getFlags() & ASTNode.RECOVERED) == 0);
-		Expression message = assertStatement.getMessage();
-		assertTrue("No message expression", message != null); //$NON-NLS-1$
-		checkSourceRange(message, "a[0", source); //$NON-NLS-1$
-		assertTrue("Not flag as RECOVERED", (message.getFlags() & ASTNode.RECOVERED) != 0);
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=143212
@@ -899,13 +891,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
 		Statement statement = (Statement) statements.get(0);
 		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-		AssertStatement assertStatement = (AssertStatement) statement;
-		checkSourceRange(assertStatement, "assert 0 == 0 : foo(;", source); //$NON-NLS-1$
-		assertTrue("Flag as RECOVERED", (assertStatement.getFlags() & ASTNode.RECOVERED) == 0);
-		Expression message = assertStatement.getMessage();
-		assertTrue("No message expression", message != null); //$NON-NLS-1$
-		checkSourceRange(message, "foo(", source); //$NON-NLS-1$
-		assertTrue("Not flag as RECOVERED", (message.getFlags() & ASTNode.RECOVERED) != 0);
 	}
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=143212
 	public void test0017() throws JavaScriptModelException {
@@ -943,12 +928,5 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
 		Statement statement = (Statement) statements.get(0);
 		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
-		AssertStatement assertStatement = (AssertStatement) statement;
-		checkSourceRange(assertStatement, "assert 0 == 0 : (\"aa\";", source); //$NON-NLS-1$
-		assertTrue("Flag as RECOVERED", (assertStatement.getFlags() & ASTNode.RECOVERED) == 0);
-		Expression message = assertStatement.getMessage();
-		assertTrue("No message expression", message != null); //$NON-NLS-1$
-		checkSourceRange(message, "(\"aa\"", source); //$NON-NLS-1$
-		assertTrue("Not flag as RECOVERED", (message.getFlags() & ASTNode.RECOVERED) != 0);
 	}
 }

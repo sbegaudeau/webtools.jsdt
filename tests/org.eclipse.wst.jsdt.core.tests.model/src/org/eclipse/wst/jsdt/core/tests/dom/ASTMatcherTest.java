@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,13 +24,11 @@ import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
 import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
 import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
-import org.eclipse.wst.jsdt.core.dom.AssertStatement;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BlockComment;
 import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
-import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
@@ -63,7 +61,6 @@ import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
-import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -90,12 +87,10 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.TypeLiteral;
-import org.eclipse.wst.jsdt.core.dom.TypeParameter;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
-import org.eclipse.wst.jsdt.core.dom.WildcardType;
 
 /**
  * Test suite for <code>ASTMatcher</code> and <code>ASTNode.subtreeMatch</code>.
@@ -129,7 +124,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String T1S;
 	Type T2;
 	String T2S;
-	ParameterizedType PT1;
 	String PT1S;
 	Statement S1;
 	Statement S2;
@@ -149,9 +143,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	JSdoc JD1;
 	JSdoc JD2;
 	String JD2S;
-	TypeParameter TP1;
 	String TP1S;
-	TypeParameter TP2;
 	String TP2S;
 	TagElement TAG1;
 	TagElement TAG2;
@@ -258,15 +250,10 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		MPARM1.setType(ast.newPrimitiveType(PrimitiveType.CHAR));
 
 		if (ast.apiLevel() >= AST.JLS3) {
-			PT1 = ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName("Z"))); //$NON-NLS-1$
 			PT1S = "[(tM[(tS[(nSZZnS)]tS)]tM)]"; //$NON-NLS-1$
 
-			TP1 = ast.newTypeParameter();
-			TP1.setName(ast.newSimpleName("x")); //$NON-NLS-1$
 			TP1S = "[(tTP[(nSxxnS)]tTP)]"; //$NON-NLS-1$
-	
-			TP2 = ast.newTypeParameter();
-			TP2.setName(ast.newSimpleName("y")); //$NON-NLS-1$
+
 			TP2S = "[(tTP[(nSyynS)]tTP)]"; //$NON-NLS-1$
 			LC1 = ast.newLineComment();
 
@@ -345,9 +332,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(ArrayType node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(AssertStatement node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
 		public boolean match(Assignment node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
@@ -361,9 +345,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(BreakStatement node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
-		public boolean match(CastExpression node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(CatchClause node, Object other) {
@@ -456,9 +437,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(PackageDeclaration node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(ParameterizedType node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
 		public boolean match(ParenthesizedExpression node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
@@ -532,9 +510,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(TypeLiteral node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(TypeParameter node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
 		public boolean match(VariableDeclarationExpression node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
@@ -545,9 +520,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(WhileStatement node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
-		public boolean match(WildcardType node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 	}
@@ -685,32 +657,11 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 
 	/** @deprecated using deprecated code */
-	public void testParameterizedType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		ParameterizedType x1 = ast.newParameterizedType(ast.newSimpleType(ast.newSimpleName("X"))); //$NON-NLS-1$
-		x1.typeArguments().add(T1);
-		x1.typeArguments().add(T2);
-		basicMatch(x1);
-	}
-
-	/** @deprecated using deprecated code */
 	public void testQualifiedType() {
 		if (ast.apiLevel() == AST.JLS2) {
 			return;
 		}
 		Type x1 = ast.newQualifiedType(T1, N1);
-		basicMatch(x1);
-	}
-
-	/** @deprecated using deprecated code */
-	public void testWildcardType() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		WildcardType x1 = ast.newWildcardType();
-		x1.setBound(T1, true);
 		basicMatch(x1);
 	}
 
@@ -742,12 +693,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.expressions().add(E2);
 		basicMatch(x1);
 	}
-	public void testAssertStatement() {
-		AssertStatement x1 = ast.newAssertStatement();
-		x1.setExpression(E1);
-		x1.setMessage(E2);
-		basicMatch(x1);
-	}
 	public void testAssignment() {
 		Assignment x1 = ast.newAssignment();
 		x1.setLeftHandSide(E1);
@@ -775,12 +720,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.setLabel(N1);
 		basicMatch(x1);
 	}
-	public void testCastExpression() {
-		CastExpression x1 = ast.newCastExpression();
-		x1.setType(T1);
-		x1.setExpression(E1);
-		basicMatch(x1);
-	}
 	public void testCatchClause() {
 		CatchClause x1 = ast.newCatchClause();
 		x1.setException(V1);
@@ -799,7 +738,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setName(N1);
 		} else {
-			x1.typeArguments().add(PT1);
 			x1.setType(T1);
 		}
 		x1.setAnonymousClassDeclaration(ACD1);
@@ -823,9 +761,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 	public void testConstructorInvocation() {
 		ConstructorInvocation x1 = ast.newConstructorInvocation();
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
+		
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
 		basicMatch(x1);
@@ -961,8 +897,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.typeParameters().add(TP1);
-			x1.typeParameters().add(TP2);
 			x1.setReturnType2(T1);
 		}
 		x1.setName(N1);
@@ -976,9 +910,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testMethodInvocation() {
 		FunctionInvocation x1 = ast.newFunctionInvocation();
 		x1.setExpression(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
+		
 		x1.setName(N2);
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
@@ -1047,9 +979,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testSuperConstructorInvocation() {
 		SuperConstructorInvocation x1 = ast.newSuperConstructorInvocation();
 		x1.setExpression(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
+
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
 		basicMatch(x1);
@@ -1063,9 +993,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testSuperMethodInvocation() {
 		SuperMethodInvocation x1 = ast.newSuperMethodInvocation();
 		x1.setQualifier(N1);
-		if (ast.apiLevel() >= AST.JLS3) {
-			x1.typeArguments().add(PT1);
-		}
+
 		x1.setName(N2);
 		x1.arguments().add(E1);
 		x1.arguments().add(E2);
@@ -1135,9 +1063,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.typeParameters().add(TP1);
-			x1.typeParameters().add(TP2);
-			x1.setSuperclassType(PT1);
 			x1.superInterfaceTypes().add(T1);
 			x1.superInterfaceTypes().add(T2);
 		}
@@ -1152,17 +1077,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testTypeLiteral() {
 		TypeLiteral x1 = ast.newTypeLiteral();
 		x1.setType(T1);
-		basicMatch(x1);
-	}
-	/** @deprecated using deprecated code */
-	public void testTypeParameter() {
-		if (ast.apiLevel() == AST.JLS2) {
-			return;
-		}
-		TypeParameter x1 = ast.newTypeParameter();
-		x1.setName(N1);
-		x1.typeBounds().add(T1);
-		x1.typeBounds().add(T2);
 		basicMatch(x1);
 	}
 	public void testVariableDeclarationFragment() {
