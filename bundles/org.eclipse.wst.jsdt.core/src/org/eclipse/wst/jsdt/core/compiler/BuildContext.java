@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,7 @@ import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 
 /**
  * The context of a validation event that is notified to interested validation
- * participants when {@link ValidationParticipant#buildStarting(BuildContext[], boolean) a build is starting},
- * or to annotations processors when {@link ValidationParticipant#processAnnotations(BuildContext[]) a source file has annotations}.
+ * participants when {@link ValidationParticipant#buildStarting(BuildContext[], boolean) a build is starting.
  * <p>
  * This class is not intended to be instanciated or subclassed by clients.
  * </p>
@@ -59,17 +58,6 @@ public char[] getContents() {
  */
 public IFile getFile() {
 	return this.sourceFile.resource;
-}
-
-/**
- * Returns whether the javaScript unit contained any annotations when it was compiled.
- *
- * NOTE: This is only valid during {@link ValidationParticipant#processAnnotations(BuildContext[])}.
- *
- * @return whether the javaScript unit contained any annotations when it was compiled
- */
-public boolean hasAnnotations() {
-	return this.hasAnnotations; // only set during processAnnotations
 }
 
 /**

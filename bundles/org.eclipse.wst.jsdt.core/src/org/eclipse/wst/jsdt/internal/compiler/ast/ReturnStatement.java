@@ -171,9 +171,6 @@ public void resolve(BlockScope scope) {
 			|| expressionType.isCompatibleWith(methodType)) {
 
 		this.expression.computeConversion(scope, methodType, expressionType);
-		if (expressionType.needsUncheckedConversion(methodType)) {
-		    scope.problemReporter().unsafeTypeConversion(this.expression, expressionType, methodType);
-		}
 		return;
 	} else if (scope.isBoxingCompatibleWith(expressionType, methodType)
 						|| (expressionType.isBaseType()  // narrowing then boxing ?

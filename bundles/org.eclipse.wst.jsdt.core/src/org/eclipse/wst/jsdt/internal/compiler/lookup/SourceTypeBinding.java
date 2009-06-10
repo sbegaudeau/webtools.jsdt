@@ -1612,10 +1612,6 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 				resolvedExceptionType = (ReferenceBinding) exceptionTypes[i].resolveType(methodDecl.scope, true /* check bounds*/);
 				if (resolvedExceptionType == null)
 					continue;
-				if (resolvedExceptionType.isBoundParameterizedType()) {
-					methodDecl.scope.problemReporter().invalidParameterizedExceptionType(resolvedExceptionType, exceptionTypes[i]);
-					continue;
-				}
 				if (resolvedExceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
 					methodDecl.scope.problemReporter().cannotThrowType(exceptionTypes[i], resolvedExceptionType);
 					continue;

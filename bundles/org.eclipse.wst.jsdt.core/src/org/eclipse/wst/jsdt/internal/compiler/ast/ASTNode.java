@@ -247,7 +247,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 		TypeBinding checkedParameterType = originalParameterType == null ? parameterType : originalParameterType;
 		if (argumentType != checkedParameterType && argumentType.needsUncheckedConversion(checkedParameterType)) {
-			scope.problemReporter().unsafeTypeConversion(argument, argumentType, checkedParameterType);
 			return INVOCATION_ARGUMENT_UNCHECKED;
 		}
 		return INVOCATION_ARGUMENT_OK;

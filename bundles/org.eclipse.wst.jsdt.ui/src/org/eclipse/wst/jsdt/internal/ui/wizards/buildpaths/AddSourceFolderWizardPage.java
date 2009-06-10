@@ -70,7 +70,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDial
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 
@@ -189,8 +188,6 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	private final IPath fOrginalPath;
 	private final boolean fLinkedMode;
 	
-	private IPath fOutputLocation;
-	private IPath fNewOutputLocation;
 	private CPListElement fOldProjectSourceFolder;
 
 	private List fModifiedElements;
@@ -476,24 +473,9 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 		if ((!fAllowConflict && fCanCommitConflictingBuildpath) || createFolderForExisting)
 			return new StatusInfo();
 		
-		fNewOutputLocation= null;
-		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fOutputLocation);
+		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), null);
 		if (!status.isOK()) {
-			if (fOutputLocation.equals(projPath)) {
-				//Try to change the output folder
-				fNewOutputLocation= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-				IStatus status2= JavaScriptConventions.validateClasspath(javaProject, CPListElement.convertToClasspathEntries(fExistingEntries), fNewOutputLocation);
-				if (status2.isOK()) {
-					if (isProjectSourceFolderReplaced) {
-						result.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceSFandOL, fNewOutputLocation.makeRelative().toString())); 
-					} else {
-						result.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceOL, fNewOutputLocation.makeRelative().toString())); 
-					}
-					return result;
-				}
-			}
 			//Don't know what the problem is, report to user
-			fNewOutputLocation= null;
 			if (fCanCommitConflictingBuildpath) {
 				result.setInfo(NewWizardMessages.AddSourceFolderWizardPage_conflictWarning + status.getMessage());
 			} else {
@@ -698,14 +680,6 @@ public class AddSourceFolderWizardPage extends NewElementWizardPage {
 	
 	public IResource getCorrespondingResource() {
 		return fParent.getFolder(new Path(fRootDialogField.getText()));
-	}
-	
-	public IPath getOutputLocation() {
-		if (fNewOutputLocation != null) {
-			return fNewOutputLocation;
-		}
-		
-		return fOutputLocation;
 	}
 	
 	// ------------- choose dialogs

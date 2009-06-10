@@ -902,7 +902,6 @@ public void resolve() {
 			ReferenceBinding current = sourceType;
 			checkEnclosedInGeneric : do {
 				if (current.isGenericType()) {
-					this.scope.problemReporter().genericTypeCannotExtendThrowable(this);
 					break checkEnclosedInGeneric;
 				}
 				if (current.isStatic()) break checkEnclosedInGeneric;

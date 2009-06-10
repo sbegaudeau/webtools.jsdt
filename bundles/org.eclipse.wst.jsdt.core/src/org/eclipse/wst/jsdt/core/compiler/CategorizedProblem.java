@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -86,14 +86,8 @@ public abstract class CategorizedProblem implements IProblem {
 	public static final int CAT_POTENTIAL_PROGRAMMING_PROBLEM = 90;
 	/** Category for optional problems related to naming conflicts */
 	public static final int CAT_NAME_SHADOWING_CONFLICT = 100;
-	/** Category for optional problems related to deprecation */
-	public static final int CAT_DEPRECATION = 110;
 	/** Category for optional problems related to unnecessary code */
 	public static final int CAT_UNNECESSARY_CODE = 120;
-	/** Category for optional problems related to type safety in generics */
-	public static final int CAT_UNCHECKED_RAW = 130;
-	/** Category for optional problems related to internationalization of String literals */
-	public static final int CAT_NLS = 140;
 	/** Category for optional problems related to access restrictions */
 	public static final int CAT_RESTRICTION = 150;
 

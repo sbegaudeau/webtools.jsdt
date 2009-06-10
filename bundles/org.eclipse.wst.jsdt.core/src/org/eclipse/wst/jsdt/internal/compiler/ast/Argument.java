@@ -119,13 +119,7 @@ public class Argument extends LocalDeclaration implements IArgument {
 			this.type.resolveType(scope, true /* check bounds*/) : javaLangError;
 		if (exceptionType == null) return null;
 		boolean hasError = false;
-		if (exceptionType.isBoundParameterizedType()) {
-			scope.problemReporter().invalidParameterizedExceptionType(exceptionType, this);
-			hasError = true;
-			// fall thru to create the variable - avoids additional errors because the variable is missing
-		}
 		if (exceptionType.isTypeVariable()) {
-			scope.problemReporter().invalidTypeVariableAsException(exceptionType, this);
 			hasError = true;
 			// fall thru to create the variable - avoids additional errors because the variable is missing
 		}

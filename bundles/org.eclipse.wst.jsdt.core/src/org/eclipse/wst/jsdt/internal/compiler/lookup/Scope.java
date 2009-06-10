@@ -2827,7 +2827,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				Object value = invocations.get(mec);
 				if (value instanceof TypeBinding[]) {
 					TypeBinding[] invalidInvocations = (TypeBinding[]) value;
-					problemReporter().superinterfacesCollide(invalidInvocations[0].erasure(), typeRef, invalidInvocations[0], invalidInvocations[1]);
 					type.tagBits |= TagBits.HierarchyHasProblems;
 					return true;
 				}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,28 +89,6 @@ public void cleanStarting(IJavaScriptProject project) {
  */
 public boolean isActive(IJavaScriptProject project) {
 	return false;
-}
-
-/*
- * Returns whether this participant is interested in only Annotations.
- * <p>
- * Default is to return <code>false</code>.
- * </p>
- * @return whether this participant is interested in only Annotations.
- */
-public boolean isAnnotationProcessor() {
-	return false;
-}
-
-/*
- * Notifies this participant that a validation operation has found source files using Annotations.
- * Only sent to participants interested in the current build project that answer true to isAnnotationProcessor().
- * Each BuildContext was informed whether its source file currently hasAnnotations().
- *
- * @param files is an array of BuildContext
-  */
-public void processAnnotations(BuildContext[] files) {
-	// do nothing by default
 }
 
 /**

@@ -162,9 +162,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.DiscouragedReference:
 			case IProblem.UnnecessaryNLSTag:
 			case IProblem.AssignmentHasNoEffect:
-			case IProblem.UnsafeTypeConversion:
 			case IProblem.FallthroughCase:
-			case IProblem.NonGenericType:
 				return true;
 			default:
 //				if (JavaModelUtil.is50OrHigher(cu.getJavaScriptProject())) {
@@ -463,9 +461,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.InvalidUsageOfForeachStatements:
 				ReorgCorrectionsSubProcessor.getNeed50ComplianceProposals(context, problem, proposals);
 				break;
-			case IProblem.NonGenericType:
-				TypeParameterMismatchSubProcessor.removeMismatchedParameters(context, problem, proposals);
-				break;
 			case IProblem.OverridingDeprecatedMethod:
 				ModifierCorrectionSubProcessor.addOverridingDeprecatedMethodProposal(context, problem, proposals);
 				break;
@@ -478,9 +473,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				break;
 			case IProblem.AssignmentHasNoEffect:
 				LocalCorrectionsSubProcessor.getAssignmentHasNoEffectProposals(context, problem, proposals);
-				break;
-			case IProblem.UnsafeTypeConversion:
-				LocalCorrectionsSubProcessor.addDeprecatedFieldsToMethodsProposals(context, problem, proposals);
 				break;
 			case IProblem.FallthroughCase:
 				LocalCorrectionsSubProcessor.addFallThroughProposals(context, problem, proposals);

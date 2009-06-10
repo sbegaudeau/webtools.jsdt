@@ -768,8 +768,6 @@ public class ClassScope extends Scope {
 			return true; // do not propagate Object's hierarchy problems down to every subtype
 		}
 		if ( (referenceContext!=null && referenceContext.superclass == null) || (inferredType!=null && inferredType.superClass==null)) {
-			if (sourceType.isEnum() && compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) // do not connect if source < 1.5 as enum already got flagged as syntax error
-				return connectEnumSuperclass();
 			sourceType.superclass = getJavaLangObject();
 			return !detectHierarchyCycle(sourceType, sourceType.superclass, null);
 		}
@@ -815,28 +813,6 @@ public class ClassScope extends Scope {
 		if ((sourceType.superclass.tagBits & TagBits.BeginHierarchyCheck) == 0)
 			detectHierarchyCycle(sourceType, sourceType.superclass, null);
 		return false; // reported some error against the source type
-	}
-
-	/**
-	 *  enum X (implicitly) extends Enum<X>
-	 */
-	private boolean connectEnumSuperclass() {
-		SourceTypeBinding sourceType = getReferenceBinding();
-		ReferenceBinding rootEnumType = getJavaLangEnum();
-		boolean foundCycle = detectHierarchyCycle(sourceType, rootEnumType, null);
-		// arity check for well-known Enum<E>
-		TypeVariableBinding[] refTypeVariables = rootEnumType.typeVariables();
-		if (refTypeVariables == Binding.NO_TYPE_VARIABLES) { // check generic
-			problemReporter().nonGenericTypeCannotBeParameterized(null, rootEnumType, new TypeBinding[]{ sourceType });
-			return false; // cannot reach here as AbortCompilation is thrown
-		} else if (1 != refTypeVariables.length) { // check arity
-			problemReporter().incorrectArityForParameterizedType(null, rootEnumType, new TypeBinding[]{ sourceType });
-			return false; // cannot reach here as AbortCompilation is thrown
-		}
-		// check argument type compatibility
-		ParameterizedTypeBinding  superType = environment().createParameterizedType(rootEnumType, new TypeBinding[]{ environment().convertToRawType(sourceType) } , null);
-		sourceType.superclass = superType;
-		return !foundCycle;
 	}
 
 	/*

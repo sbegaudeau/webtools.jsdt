@@ -92,9 +92,6 @@ void checkAssignment(BlockScope scope, TypeBinding lhsType, TypeBinding rhsType)
 //	} else if (leftField != null && !leftField.isStatic() && leftField.declaringClass != null /*length pseudo field*/&& leftField.declaringClass.isRawType()) {
 //	    scope.problemReporter().unsafeRawFieldAssignment(leftField, rhsType, this.lhs);
 //	} else
-	if (rhsType != null && rhsType.needsUncheckedConversion(lhsType)) {
-	    scope.problemReporter().unsafeTypeConversion(this.expression, rhsType, lhsType);
-	}
 }
 
 public static Binding getDirectBinding(Expression someExpression) {

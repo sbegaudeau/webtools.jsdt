@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,18 +112,6 @@ protected AbstractImageBuilder(JavaBuilder javaBuilder, boolean buildStarting, S
 		this.compiler = newCompiler();
 		this.workQueue = new WorkQueue();
 		this.problemSourceFiles = new ArrayList(3);
-
-		if (this.javaBuilder.participants != null) {
-			for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++) {
-				if (this.javaBuilder.participants[i].isAnnotationProcessor()) {
-					// initialize this set so the builder knows to gather CUs that define Annotation types
-					// each Annotation processor participant is then asked to process these files AFTER
-					// the compile loop. The normal dependency loop will then recompile all affected types
-					this.filesWithAnnotations = new SimpleSet(1);
-					break;
-				}
-			}
-		}
 	}
 }
 
@@ -281,8 +269,6 @@ protected void compile(SourceFile[] units) {
 		for (int i = participantResults.length; --i >= 0;)
 			if (participantResults[i] != null)
 				recordParticipantResult(participantResults[i]);
-
-		processAnnotations(participantResults);
 	}
 }
 
@@ -517,25 +503,6 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 		System.arraycopy(toAdd, 0, results, length, added);
 	}
 	return results;
-}
-
-protected abstract void processAnnotationResults(ValidationParticipantResult[] results);
-
-protected void processAnnotations(BuildContext[] results) {
-	boolean hasAnnotationProcessor = false;
-	for (int i = 0, l = this.javaBuilder.participants.length; !hasAnnotationProcessor && i < l; i++)
-		hasAnnotationProcessor = this.javaBuilder.participants[i].isAnnotationProcessor();
-	if (!hasAnnotationProcessor) return;
-
-	boolean foundAnnotations = this.filesWithAnnotations != null && this.filesWithAnnotations.elementSize > 0;
-	for (int i = results.length; --i >= 0;)
-		((ValidationParticipantResult) results[i]).reset(foundAnnotations && this.filesWithAnnotations.includes(results[i].sourceFile));
-
-	// even if no files have annotations, must still tell every annotation processor in case the file used to have them
-	for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++)
-		if (this.javaBuilder.participants[i].isAnnotationProcessor())
-			this.javaBuilder.participants[i].processAnnotations(results);
-	processAnnotationResults(results);
 }
 
 protected void recordParticipantResult(ValidationParticipantResult result) {

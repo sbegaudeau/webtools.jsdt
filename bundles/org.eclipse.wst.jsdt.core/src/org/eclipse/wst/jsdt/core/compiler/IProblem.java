@@ -726,36 +726,6 @@ void setSourceStart(int sourceStart);
 	int JavadocInvalidParamTagName = Javadoc + Internal + 519;
 
 	/**
-	 * Generics
-	 */
-	int IllegalTypeVariableSuperReference = Internal + 521;
-	int NonStaticTypeFromStaticInvocation = Internal + 522;
-	int NonGenericType = TypeRelated + 524;
-	int IncorrectArityForParameterizedType = TypeRelated + 525;
-	int DuplicateMethodErasure = TypeRelated + 527;
-	int ReferenceToForwardTypeVariable = TypeRelated + 528;
-	int BoundMustBeAnInterface = TypeRelated + 529;
-	int UnsafeTypeConversion = TypeRelated + 532;
-	int InvalidTypeVariableExceptionType = TypeRelated + 533;
-	int InvalidParameterizedExceptionType = TypeRelated + 534;
-	int IllegalGenericArray = TypeRelated + 535;
-	int FinalBoundForTypeVariable = TypeRelated + 537;
-	int UndefinedTypeVariable = Internal + 538;
-	int SuperInterfacesCollide = TypeRelated + 539;
-	int GenericTypeCannotExtendThrowable = TypeRelated + 557;
-	int IllegalClassLiteralForTypeVariable = TypeRelated + 558;
-	int UnsafeReturnTypeOverride = MethodRelated + 559;
-	int MethodNameClash = MethodRelated + 560;
-	int MissingArgumentsForParameterizedMemberType = TypeRelated + 562;
-	int StaticMemberOfParameterizedType = TypeRelated + 563;
-	int DuplicateParameterizedMethods = MethodRelated + 565;
-	int IllegalQualifiedParameterizedTypeAllocation = TypeRelated + 566;
-	int DuplicateBounds = TypeRelated + 567;
-	int BoundCannotBeArray = TypeRelated + 568;
-	int NoAdditionalBoundAfterTypeVariable = TypeRelated + 573;
-	int IllegalAccessFromTypeVariable = TypeRelated + 575;
-
-	/**
 	 * Foreach
 	 */
 	int IncompatibleTypesInForeach = TypeRelated + 580;

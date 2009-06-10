@@ -192,9 +192,6 @@ public void resolve(MethodScope initializationScope) {
 						|| (fieldType.isBaseType() && BaseTypeBinding.isWidening(fieldType.id, initializationType.id))
 						|| initializationType.isCompatibleWith(fieldType)) {
 					this.initialization.computeConversion(initializationScope, fieldType, initializationType);
-					if (initializationType.needsUncheckedConversion(fieldType)) {
-						    initializationScope.problemReporter().unsafeTypeConversion(this.initialization, initializationType, fieldType);
-					}
 				} else if (initializationScope.isBoxingCompatibleWith(initializationType, fieldType)
 									|| (initializationType.isBaseType()  // narrowing then boxing ?
 											&& initializationScope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
