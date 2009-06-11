@@ -201,7 +201,7 @@ public class ScopeAnalyzer {
 			IFunctionBinding[] methodBindings= binding.getDeclaredMethods();
 			for (int i= 0; i < methodBindings.length; i++) {
 				IFunctionBinding curr= methodBindings[i];
-				if (!curr.isSynthetic() && !curr.isConstructor()) {
+				if (!curr.isConstructor()) {
 					if (requestor.acceptBinding(curr))
 						return true;
 				}
@@ -496,12 +496,6 @@ public class ScopeAnalyzer {
 	private IVariableBinding[] getEnumContants(ITypeBinding binding) {
 		IVariableBinding[] declaredFields= binding.getDeclaredFields();
 		ArrayList res= new ArrayList(declaredFields.length);
-		for (int i= 0; i < declaredFields.length; i++) {
-			IVariableBinding curr= declaredFields[i];
-			if (curr.isEnumConstant()) {
-				res.add(curr);
-			}
-		}
 		return (IVariableBinding[]) res.toArray(new IVariableBinding[res.size()]);
 	}
 	
@@ -664,18 +658,7 @@ public class ScopeAnalyzer {
 			// switch on enum allows to use enum constants without qualification
 			if (hasFlag(VARIABLES, fFlags) && !node.isDefault() && isInside(node.getExpression())) {
 				SwitchStatement switchStatement= (SwitchStatement) node.getParent();
-				ITypeBinding binding= switchStatement.getExpression().resolveTypeBinding();
-				if (binding != null && binding.isEnum()) {
-					IVariableBinding[] declaredFields= binding.getDeclaredFields();
-					for (int i= 0; i < declaredFields.length; i++) {
-						IVariableBinding curr= declaredFields[i];
-						if (curr.isEnumConstant()) {
-							fBreak= fRequestor.acceptBinding(curr);
-							if (fBreak)
-								return false;
-						}
-					}
-				}
+				switchStatement.getExpression().resolveTypeBinding();
 			}
 			return false;
 		}

@@ -1337,7 +1337,6 @@ public class ASTFlattener extends GenericVisitor {
 			}
 		}
 		this.fBuffer.append("{");//$NON-NLS-1$
-		BodyDeclaration prev= null;
 		for (Iterator it= node.bodyDeclarations().iterator(); it.hasNext();) {
 			BodyDeclaration d= (BodyDeclaration) it.next();
 			d.accept(this);

@@ -776,19 +776,6 @@ protected IJavaScriptElement createImportHandle(ImportReference importRef) {
 	return createTypeHandle(typeName.substring(0, lastDollar));
 }
 /**
- * Creates an IImportDeclaration from the given import statement
- */
-protected IJavaScriptElement createPackageDeclarationHandle(CompilationUnitDeclaration unit) {
-	if (unit.isPackageInfo()) {
-		char[] packName = CharOperation.concatWith(unit.currentPackage.getImportName(), '.');
-		Openable openable = this.currentPossibleMatch.openable;
-		if (openable instanceof CompilationUnit) {
-			return ((CompilationUnit) openable).getPackageDeclaration(new String(packName));
-		}
-	}
-	return createTypeHandle(new String(unit.getMainTypeName()));
-}
-/**
  * Creates an IType from the given simple top level type name.
  */
 protected IType createTypeHandle(String simpleTypeName) {
@@ -2254,7 +2241,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 				for (int i = 0, l = nodes.length; i < l; i++)
 					nodeSet.matchingNodes.removeKey(nodes[i]);
 			} else {
-				IJavaScriptElement element = createPackageDeclarationHandle(unit);
+				IJavaScriptElement element = null;
 				for (int i = 0, l = nodes.length; i < l; i++) {
 					ASTNode node = nodes[i];
 					Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);

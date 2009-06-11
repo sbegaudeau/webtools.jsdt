@@ -801,24 +801,19 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 	
 	if (this.openable instanceof CompilationUnit && ((CompilationUnit)this.openable).isWorkingCopy()) {
 		CompilationUnit wc = (CompilationUnit) this.openable;
-		try {
-			if(((packageName == null || packageName.length == 0) && wc.getPackageDeclarations().length == 0) ||
-				(!(packageName == null || packageName.length == 0) && wc.getPackageDeclaration(new String(packageName)).exists())) {
+		if(((packageName == null || packageName.length == 0))) {
 
-				char[][] compoundName = CharOperation.splitOn('.', typeName);
-				if(compoundName.length > 0) {
-					type = wc.getType(new String(compoundName[0]));
-					for (int i = 1, length = compoundName.length; i < length; i++) {
-						type = type.getType(new String(compoundName[i]));
-					}
-				}
-
-				if(type != null && !type.exists()) {
-					type = null;
+			char[][] compoundName = CharOperation.splitOn('.', typeName);
+			if(compoundName.length > 0) {
+				type = wc.getType(new String(compoundName[0]));
+				for (int i = 1, length = compoundName.length; i < length; i++) {
+					type = type.getType(new String(compoundName[i]));
 				}
 			}
-		}catch (JavaScriptModelException e) {
-			// type is null
+
+			if(type != null && !type.exists()) {
+				type = null;
+			}
 		}
 	}
 
@@ -938,8 +933,7 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 	if (this.openable instanceof CompilationUnit && ((CompilationUnit)this.openable).isOpen()) {
 		CompilationUnit wc = (CompilationUnit) this.openable;
 		try {
-			if(((packageName == null || packageName.length == 0) && wc.getPackageDeclarations().length == 0) ||
-				(!(packageName == null || packageName.length == 0) && wc.getPackageDeclaration(new String(packageName)).exists())) {
+			if(((packageName == null || packageName.length == 0))) {
 
 				char[][] compoundName = CharOperation.splitOn('.', typeName);
 				if(compoundName.length > 0) {

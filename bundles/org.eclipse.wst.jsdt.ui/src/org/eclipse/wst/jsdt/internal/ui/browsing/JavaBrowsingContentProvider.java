@@ -27,13 +27,12 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
 import org.eclipse.wst.jsdt.core.IImportContainer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IParent;
@@ -128,7 +127,7 @@ class JavaBrowsingContentProvider extends StandardJavaScriptElementContentProvid
 	private Object[] removeImportAndPackageDeclarations(Object[] members) {
 		ArrayList tempResult= new ArrayList(members.length);
 		for (int i= 0; i < members.length; i++)
-			if (!(members[i] instanceof IImportContainer) && !(members[i] instanceof IPackageDeclaration))
+			if (!(members[i] instanceof IImportContainer))
 				tempResult.add(members[i]);
 		return tempResult.toArray();
 	}

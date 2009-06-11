@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -117,9 +116,6 @@ public class CopyQualifiedNameAction extends SelectionDispatchAction {
 			return true;
 		
 		if (element instanceof IJavaScriptUnit)
-			return true;
-		
-		if (element instanceof IPackageDeclaration)
 			return true;
 		
 		if (element instanceof IImportDeclaration)

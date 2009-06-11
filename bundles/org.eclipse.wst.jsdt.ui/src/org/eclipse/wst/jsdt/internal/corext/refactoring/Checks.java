@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,6 @@ import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
@@ -344,27 +343,9 @@ public class Checks {
 
 	public static boolean isExtractableExpression(ASTNode[] selectedNodes, ASTNode coveringNode) {
 		ASTNode node= coveringNode;
-		if (isEnumCase(node))
-			return false;
 		if (selectedNodes != null && selectedNodes.length == 1)
 			node= selectedNodes[0];
 		return isExtractableExpression(node);
-	}
-
-	public static boolean isEnumCase(ASTNode node) {
-		if (node instanceof SwitchCase) {
-			final SwitchCase caze= (SwitchCase) node;
-			final Expression expression= caze.getExpression();
-			if (expression instanceof Name) {
-				final Name name= (Name) expression;
-				final IBinding binding= name.resolveBinding();
-				if (binding instanceof IVariableBinding) {
-					IVariableBinding variableBinding= (IVariableBinding) binding;
-					return variableBinding.isEnumConstant();
-				}
-			}
-		}
-		return false;
 	}
 
 	public static boolean isExtractableExpression(ASTNode node) {

@@ -184,9 +184,6 @@ public class TypeMismatchSubProcessor {
 		if (callerBinding instanceof IVariableBinding) {
 			IVariableBinding variableBinding= (IVariableBinding) callerBinding;
 
-			if (variableBinding.isEnumConstant()) {
-				return;
-			}
 			if (!variableBinding.isField()) {
 				targetCu= cu;
 			} else {

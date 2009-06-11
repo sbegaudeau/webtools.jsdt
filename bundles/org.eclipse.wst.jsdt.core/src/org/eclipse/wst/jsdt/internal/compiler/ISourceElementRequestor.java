@@ -120,8 +120,6 @@ public interface ISourceElementRequestor {
 
 	void acceptMethodReference(char[] methodName, int argCount, int sourcePosition);
 
-	void acceptPackage(int declarationStart, int declarationEnd, char[] name);
-
 	void acceptProblem(CategorizedProblem problem);
 
 	void acceptTypeReference(char[][] typeName, int sourceStart, int sourceEnd);

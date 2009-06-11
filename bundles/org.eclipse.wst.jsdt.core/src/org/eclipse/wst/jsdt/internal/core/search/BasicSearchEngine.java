@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -776,8 +775,7 @@ public class BasicSearchEngine {
 						if (!scope.encloses(workingCopy)) continue;
 						final String path = workingCopy.getPath().toString();
 						if (workingCopy.isConsistent()) {
-							IPackageDeclaration[] packageDeclarations = workingCopy.getPackageDeclarations();
-							char[] packageDeclaration = packageDeclarations.length == 0 ? CharOperation.NO_CHAR : packageDeclarations[0].getElementName().toCharArray();
+							char[] packageDeclaration = CharOperation.NO_CHAR;
 							switch (bindingType)
 							{
 							case Binding.TYPE:
@@ -1205,8 +1203,7 @@ public class BasicSearchEngine {
 					if (!scope.encloses(workingCopy)) continue;
 					final String path = workingCopy.getPath().toString();
 					if (workingCopy.isConsistent()) {
-						IPackageDeclaration[] packageDeclarations = workingCopy.getPackageDeclarations();
-						char[] packageDeclaration = packageDeclarations.length == 0 ? CharOperation.NO_CHAR : packageDeclarations[0].getElementName().toCharArray();
+						char[] packageDeclaration = CharOperation.NO_CHAR;
 						IType[] allTypes = workingCopy.getAllTypes();
 						for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
 							IType type = allTypes[j];
@@ -1438,8 +1435,7 @@ public class BasicSearchEngine {
 					IJavaScriptUnit workingCopy = copies[i];
 					final String path = workingCopy.getPath().toString();
 					if (workingCopy.isConsistent()) {
-						IPackageDeclaration[] packageDeclarations = workingCopy.getPackageDeclarations();
-						char[] packageDeclaration = packageDeclarations.length == 0 ? CharOperation.NO_CHAR : packageDeclarations[0].getElementName().toCharArray();
+						char[] packageDeclaration = CharOperation.NO_CHAR;
 						IType[] allTypes = workingCopy.getAllTypes();
 						for (int j = 0, allTypesLength = allTypes.length; j < allTypesLength; j++) {
 							IType type = allTypes[j];

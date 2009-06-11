@@ -139,7 +139,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -1949,18 +1948,6 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 						// fallback
 						offset= range.getOffset();
 						length= range.getLength();
-					}
-				} else if (reference instanceof IPackageDeclaration) {
-					String name= ((IPackageDeclaration) reference).getElementName();
-					if (name != null && name.length() > 0) {
-						String content= reference.getSource();
-						if (content != null) {
-							int packageKeyWordIndex = content.lastIndexOf("package"); //$NON-NLS-1$
-							if (packageKeyWordIndex != -1) {
-								offset= range.getOffset() + content.indexOf(name, packageKeyWordIndex + 7);
-								length= name.length();
-							}
-						}
 					}
 				}
 

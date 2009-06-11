@@ -820,10 +820,6 @@ public class ExtractTempRefactoring extends ScriptableRefactoring {
 				fSelectedExpression= (IExpressionFragment) ASTFragmentFactory.createFragmentForFullSubtree(assignment);
 			}
 		}
-
-		if (fSelectedExpression != null && Checks.isEnumCase(fSelectedExpression.getAssociatedExpression().getParent())) {
-			fSelectedExpression= null;
-		}
 		
 		return fSelectedExpression;
 	}

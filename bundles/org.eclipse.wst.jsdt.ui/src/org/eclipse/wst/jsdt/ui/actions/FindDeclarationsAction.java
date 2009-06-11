@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
@@ -69,7 +68,7 @@ public class FindDeclarationsAction extends FindAction {
 	}
 	
 	Class[] getValidTypes() {
-		return new Class[] { IField.class, IFunction.class, IType.class, IJavaScriptUnit.class, IPackageDeclaration.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class };
+		return new Class[] { IField.class, IFunction.class, IType.class, IJavaScriptUnit.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class };
 	}
 	
 	int getLimitTo() {

@@ -148,34 +148,6 @@ public void acceptImport(int declarationStart, int declarationEnd, char[][] toke
 public void acceptLineSeparatorPositions(int[] positions) {
 	// ignore line separator positions
 }
-/**
- * @see ISourceElementRequestor
- */
-public void acceptPackage(int declarationStart, int declarationEnd, char[] name) {
-
-		JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
-		JavaElement parentHandle= (JavaElement) this.handleStack.peek();
-		PackageDeclaration handle = null;
-
-		if (parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
-			handle = new PackageDeclaration((CompilationUnit) parentHandle, new String(name));
-		}
-		else if (parentHandle.getElementType() == IJavaScriptElement.CLASS_FILE) {
-			handle = new PackageDeclaration((ClassFile) parentHandle, new String(name));
-		}
-		else {
-			Assert.isTrue(false); // Should not happen
-		}
-		resolveDuplicates(handle);
-
-		SourceRefElementInfo info = new SourceRefElementInfo();
-		info.setSourceRangeStart(declarationStart);
-		info.setSourceRangeEnd(declarationEnd);
-
-		addToChildren(parentInfo, handle);
-		this.newElements.put(handle, info);
-
-}
 public void acceptProblem(CategorizedProblem problem) {
 	if ((problem.getID() & IProblem.Syntax) != 0){
 		this.hasSyntaxErrors = true;

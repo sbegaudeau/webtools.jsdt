@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -36,7 +35,6 @@ import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -174,8 +172,6 @@ public class ASTNodeSearchUtil {
 				return new ASTNode[]{getInitializerNode((IInitializer)element, cuNode)};
 			case IJavaScriptElement.METHOD:
 				return new ASTNode[]{getMethodOrAnnotationTypeMemberDeclarationNode((IFunction) element, cuNode)};
-			case IJavaScriptElement.PACKAGE_DECLARATION:
-				return new ASTNode[]{getPackageDeclarationNode((IPackageDeclaration)element, cuNode)};
 			case IJavaScriptElement.TYPE:
 				return new ASTNode[]{getAbstractTypeDeclarationNode((IType) element, cuNode)};
 			default:
@@ -186,10 +182,6 @@ public class ASTNodeSearchUtil {
 
 	private static ASTNode getNameNode(IMember iMember, JavaScriptUnit cuNode) throws JavaScriptModelException {
 		return NodeFinder.perform(cuNode, iMember.getNameRange());
-	}
-
-	public static PackageDeclaration getPackageDeclarationNode(IPackageDeclaration reference, JavaScriptUnit cuNode) throws JavaScriptModelException {
-		return (PackageDeclaration) findNode(reference.getSourceRange(), cuNode);
 	}
 
 	public static ImportDeclaration getImportDeclarationNode(IImportDeclaration reference, JavaScriptUnit cuNode) throws JavaScriptModelException {

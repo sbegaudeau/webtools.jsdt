@@ -89,7 +89,7 @@ public class BindingLabelProvider extends LabelProvider {
 
 	private static ImageDescriptor getFieldImageDescriptor(IVariableBinding binding) {
 		final int modifiers= binding.getModifiers();
-		if (Modifier.isPublic(modifiers) || binding.isEnumConstant())
+		if (Modifier.isPublic(modifiers))
 			return JavaPluginImages.DESC_FIELD_PUBLIC;
 		if (Modifier.isProtected(modifiers))
 			return JavaPluginImages.DESC_FIELD_PROTECTED;
@@ -100,7 +100,7 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 
 	private static void getFieldLabel(IVariableBinding binding, long flags, StringBuffer buffer) {
-		if (((flags & JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
+		if (((flags & JavaScriptElementLabels.F_PRE_TYPE_SIGNATURE) != 0)) {
 			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 			buffer.append(' ');
 		}
@@ -114,7 +114,7 @@ public class BindingLabelProvider extends LabelProvider {
 			}
 		}
 		buffer.append(binding.getName());
-		if (((flags & JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) != 0) && !binding.isEnumConstant()) {
+		if (((flags & JavaScriptElementLabels.F_APP_TYPE_SIGNATURE) != 0)) {
 			buffer.append(JavaScriptElementLabels.DECL_STRING);
 			getTypeLabel(binding.getType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 		}

@@ -200,28 +200,6 @@ IImportDeclaration createImport(String name, IJavaScriptElement sibling, IProgre
 IImportDeclaration createImport(String name, IJavaScriptElement sibling, int flags, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
- * Creates and returns a package declaration in this javaScript file
- * with the given package name.
- *
- * <p>If the javaScript file already includes the specified package declaration,
- * it is not generated (it does not generate duplicates).
- *
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @param name the name of the package declaration to add 
- * @param monitor the progress monitor to notify
- * @return the newly inserted package declaration (or the previously existing one in case attempting to create a duplicate)
- *
- * @throws JavaScriptModelException if the element could not be created. Reasons include:
- * <ul>
- * <li>This JavaScript element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
- * <li> A {@link org.eclipse.core.runtime.CoreException} occurred while updating an underlying resource
- * <li> The name is not a valid package name (INVALID_NAME)
- * </ul>
- */
- IPackageDeclaration createPackageDeclaration(String name, IProgressMonitor monitor) throws JavaScriptModelException;
-/**
  * Creates and returns a type in this javaScript file with the
  * given contents. If this javaScript file does not exist, one
  * will be created with an appropriate package declaration.
@@ -443,30 +421,6 @@ IJavaScriptUnit getPrimary();
  * @return WorkingCopyOwner the owner of this working copy or <code>null</code>
  */
 WorkingCopyOwner getOwner();
-/**
- * Returns the first package declaration in this javaScript file with the given package name
- * (there normally is at most one package declaration).
- * This is a handle-only method. The package declaration may or may not exist.
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @param name the name of the package declaration
- * @return the first package declaration in this javaScript file with the given package name
- */
-IPackageDeclaration getPackageDeclaration(String name);
-/**
- * Returns the package declarations in this javaScript file
- * in the order in which they appear in the source.
- * There normally is at most one package declaration.
- *
- * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
- *
- * @return an array of package declaration (normally of size one)
- *
- * @throws JavaScriptModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource
- */
-IPackageDeclaration[] getPackageDeclarations() throws JavaScriptModelException;
 /**
  * Returns the top-level types declared in this javaScript file
  * in the order in which they appear in the source.

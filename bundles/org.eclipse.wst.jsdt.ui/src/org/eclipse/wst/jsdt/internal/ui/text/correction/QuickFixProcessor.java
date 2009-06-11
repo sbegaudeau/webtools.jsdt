@@ -251,9 +251,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.JavadocAmbiguousType:
 				UnresolvedElementsSubProcessor.getAmbiguosTypeReferenceProposals(context, problem, proposals);
 				break;
-			case IProblem.PackageIsNotExpectedPackage:
-				ReorgCorrectionsSubProcessor.getWrongPackageDeclNameProposals(context, problem, proposals);
-				break;
 			case IProblem.UndefinedType:
 			case IProblem.JavadocUndefinedType:
 				UnresolvedElementsSubProcessor.getTypeProposals(context, problem, proposals);

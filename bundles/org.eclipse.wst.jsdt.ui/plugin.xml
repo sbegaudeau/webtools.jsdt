@@ -4830,14 +4830,6 @@
 <!-- Quick Outline -->
       <filter
             targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
-            name="%HidePackageDeclaration.label"
-            enabled="false"
-            description="%HidePackageDeclaration.description"
-            class="org.eclipse.wst.jsdt.internal.ui.filters.PackageDeclarationFilter"
-            id="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline.PackageDeclarationFilter">
-      </filter>
-      <filter
-            targetId="org.eclipse.wst.jsdt.internal.ui.text.QuickOutline"
             name="%HideImportDeclaration.label"
             enabled="true"
             description="%HideImportDeclaration.description"
@@ -5050,9 +5042,6 @@
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameSourceFolderRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.rename.source.folder"/>
       <contribution
-            class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameTypeParameterRefactoringContribution"
-            id="org.eclipse.wst.jsdt.ui.rename.type.parameter"/>
-      <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.RenameTypeRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.rename.type"/>
       <contribution
@@ -5115,9 +5104,6 @@
       <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.SelfEncapsulateRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.self.encapsulate"/>
-      <contribution
-            class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.InferTypeArgumentsRefactoringContribution"
-            id="org.eclipse.wst.jsdt.ui.infer.typearguments"/>
       <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.ChangeTypeRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.change.type"/>

@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.core.dom;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
@@ -244,14 +243,6 @@ class VariableBinding implements IVariableBinding {
 	}
 
 	/*
-	 * @see IVariableBinding#isEnumConstant()
-	 *  
-	 */
-	public boolean isEnumConstant() {
-		return (this.binding.modifiers & ClassFileConstants.AccEnum) != 0;
-	}
-
-	/*
 	 * @see IBinding#isEqualTo(Binding)
 	 *  
 	 */
@@ -300,15 +291,6 @@ class VariableBinding implements IVariableBinding {
 	public boolean isGlobal()
 	{
 		return this.binding instanceof LocalVariableBinding && ((LocalVariableBinding)this.binding).declaringScope instanceof CompilationUnitScope;
-	}
-	/*
-	 * @see IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
-		if (isField()) {
-			return ((FieldBinding) this.binding).isSynthetic();
-		}
-		return false;
 	}
 
 	/*

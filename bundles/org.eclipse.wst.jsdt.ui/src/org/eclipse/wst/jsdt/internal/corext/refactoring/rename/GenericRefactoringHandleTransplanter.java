@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -63,9 +62,6 @@ public class GenericRefactoringHandleTransplanter {
 				
 			case IJavaScriptElement.INITIALIZER:
 				return transplantHandle((IType) parent, (IInitializer) element);
-				
-			case IJavaScriptElement.PACKAGE_DECLARATION:
-				return transplantHandle((IJavaScriptUnit) parent, (IPackageDeclaration) element);
 				
 			case IJavaScriptElement.IMPORT_CONTAINER:
 				return transplantHandle((IJavaScriptUnit) parent, (IImportContainer) element);
@@ -135,10 +131,6 @@ public class GenericRefactoringHandleTransplanter {
 	
 	protected IInitializer transplantHandle(IType parent, IInitializer element) {
 		return parent.getInitializer(element.getOccurrenceCount());
-	}
-	
-	protected IPackageDeclaration transplantHandle(IJavaScriptUnit parent, IPackageDeclaration element) {
-		return parent.getPackageDeclaration(element.getElementName());
 	}
 	
 	protected IImportContainer transplantHandle(IJavaScriptUnit parent, IImportContainer element) {

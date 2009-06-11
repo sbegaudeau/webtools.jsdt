@@ -1455,18 +1455,13 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 public void notifySourceElementRequestor(
 	ImportReference importReference,
 	boolean isPackage) {
-	if (isPackage) {
-		requestor.acceptPackage(
-			importReference.declarationSourceStart,
-			importReference.declarationSourceEnd,
-			CharOperation.concatWith(importReference.getImportName(), '.'));
-	} else {
-		requestor.acceptImport(
-			importReference.declarationSourceStart,
-			importReference.declarationSourceEnd,
-			importReference.tokens,
-			(importReference.bits & ASTNode.OnDemand) != 0);
-	}
+	
+	requestor.acceptImport(
+		importReference.declarationSourceStart,
+		importReference.declarationSourceEnd,
+		importReference.tokens,
+		(importReference.bits & ASTNode.OnDemand) != 0);
+	
 }
 public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolean notifyTypePresence, TypeDeclaration declaringType) {
 

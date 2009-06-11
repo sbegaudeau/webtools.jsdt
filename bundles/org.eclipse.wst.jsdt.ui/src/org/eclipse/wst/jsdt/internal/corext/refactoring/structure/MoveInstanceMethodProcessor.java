@@ -690,7 +690,7 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 			IVariableBinding variable= null;
 			for (int index= 0; index < bindings.length; index++) {
 				variable= bindings[index];
-				if (!variable.isSynthetic() && !fFound.contains(variable.getKey())) {
+				if (!fFound.contains(variable.getKey())) {
 					fFound.add(variable.getKey());
 					fBindings.add(variable);
 				}

@@ -763,10 +763,6 @@ public class ExtractConstantRefactoring extends ScriptableRefactoring {
 			fSelectedExpression= (IExpressionFragment) selectedFragment;
 		}
 		
-		if (fSelectedExpression != null && Checks.isEnumCase(fSelectedExpression.getAssociatedExpression().getParent())) {
-			fSelectedExpression= null;
-		}
-		
 		return fSelectedExpression;
 	}
 

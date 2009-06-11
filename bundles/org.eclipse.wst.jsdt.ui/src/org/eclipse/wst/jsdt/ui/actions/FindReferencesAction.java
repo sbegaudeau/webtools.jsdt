@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -69,7 +68,7 @@ public class FindReferencesAction extends FindAction {
 	}
 	
 	Class[] getValidTypes() {
-		return new Class[] { IJavaScriptUnit.class, IType.class, IFunction.class, IField.class, IPackageDeclaration.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class };
+		return new Class[] { IJavaScriptUnit.class, IType.class, IFunction.class, IField.class, IImportDeclaration.class, IPackageFragment.class, ILocalVariable.class };
 	}
 	
 	void init() {

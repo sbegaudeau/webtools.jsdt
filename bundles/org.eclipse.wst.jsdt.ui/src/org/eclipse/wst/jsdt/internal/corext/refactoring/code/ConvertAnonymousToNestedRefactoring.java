@@ -344,7 +344,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 
 			public boolean visit(FieldAccess node) {
 				final IVariableBinding binding= node.resolveFieldBinding();
-				if (binding != null && !binding.isEnumConstant())
+				if (binding != null)
 					accessedFields.add(binding);
 				return super.visit(node);
 			}
@@ -353,7 +353,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 				final IBinding binding= node.resolveBinding();
 				if (binding != null && binding instanceof IVariableBinding) {
 					IVariableBinding variable= (IVariableBinding) binding;
-					if (!variable.isEnumConstant() && variable.isField())
+					if (variable.isField())
 						accessedFields.add(binding);
 				}
 				return super.visit(node);
@@ -363,7 +363,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 				final IBinding binding= node.resolveBinding();
 				if (binding != null && binding instanceof IVariableBinding) {
 					IVariableBinding variable= (IVariableBinding) binding;
-					if (!variable.isEnumConstant() && variable.isField())
+					if (variable.isField())
 						accessedFields.add(binding);
 				}
 				return super.visit(node);
@@ -371,7 +371,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 
 			public boolean visit(SuperFieldAccess node) {
 				final IVariableBinding binding= node.resolveFieldBinding();
-				if (binding != null && !binding.isEnumConstant())
+				if (binding != null)
 					accessedFields.add(binding);
 				return super.visit(node);
 			}
@@ -498,11 +498,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
         for (int i= 0; i < usedLocals.length; i++) {
             final AST ast= fAnonymousInnerClassNode.getAST();
 			final IVariableBinding binding= usedLocals[i];
-			Name name= null;
-			if (binding.isEnumConstant())
-				name= ast.newQualifiedName(ast.newSimpleName(binding.getDeclaringClass().getName()), ast.newSimpleName(binding.getName()));
-			else
-				name= ast.newSimpleName(binding.getName());
+			Name name= ast.newSimpleName(binding.getName());
 			newClassCreation.arguments().add(name);
         }
     }

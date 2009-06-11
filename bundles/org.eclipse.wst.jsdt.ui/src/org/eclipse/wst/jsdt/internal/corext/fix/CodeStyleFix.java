@@ -160,9 +160,6 @@ public class CodeStyleFix extends AbstractFix {
 		private void handleVariable(SimpleName node, IVariableBinding varbinding) {
 			if (!varbinding.isField())
 				return;
-			
-			if (varbinding.isEnumConstant())
-				return;
 
 			ITypeBinding declaringClass= varbinding.getDeclaringClass();
 			if (Modifier.isStatic(varbinding.getModifiers())) {

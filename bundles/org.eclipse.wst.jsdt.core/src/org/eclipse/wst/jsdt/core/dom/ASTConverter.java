@@ -314,7 +314,6 @@ class ASTConverter {
 //			// we can create a new FieldDeclaration
 //			blockStatements.add(convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]));
 //		}
-    	org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration local = (org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration) stmts[index];
 		VariableDeclarationStatement variableDeclarationStatement = convertToVariableDeclarationStatement((org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration)stmts[index]);
 		blockStatements.add(variableDeclarationStatement);
 	}

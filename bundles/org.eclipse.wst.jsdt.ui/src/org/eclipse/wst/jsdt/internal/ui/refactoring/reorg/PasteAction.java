@@ -39,7 +39,6 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.Refactoring;
@@ -66,10 +65,8 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -576,11 +573,6 @@ public class PasteAction extends SelectionDispatchAction{
 							editorPart[0]= openCu(cu);
 						}
 						if (fDestinationPack != null && ! fDestinationPack.getElementName().equals(parsedCu.getPackageName())) {
-							if (fDestinationPack.getElementName().length() == 0) {
-								removePackageDeclaration(cu);
-							} else {
-								cu.createPackageDeclaration(fDestinationPack.getElementName(), new SubProgressMonitor(pm, 1));
-							}
 							if (! alreadyExists && editorPart[0] != null)
 								editorPart[0].doSave(new SubProgressMonitor(pm, 1)); //avoid showing error marker due to missing/wrong package declaration
 							else
@@ -621,7 +613,6 @@ public class PasteAction extends SelectionDispatchAction{
 						srcFolder= project;
 					}
 					
-					computeLatestVM();
 					if (fCompilerCompliance != null) {
 						Map options= javaProject.getOptions(false);
 						JavaModelUtil.setCompilanceOptions(options, fCompilerCompliance);
@@ -636,74 +627,6 @@ public class PasteAction extends SelectionDispatchAction{
 					return javaProject.getPackageFragmentRoot(srcFolder);
 				}
 
-				private void computeLatestVM() {
-//					IVMInstall bestVM= JavaRuntime.getDefaultVMInstall();
-//					String bestVersion= getVMVersion(bestVM);
-//					
-//					IExecutionEnvironmentsManager eeManager= JavaRuntime.getExecutionEnvironmentsManager();
-//					IExecutionEnvironment bestEE= null;
-//					
-//					IExecutionEnvironment[] ees= eeManager.getExecutionEnvironments();
-//					for (int j= 0; j < ees.length; j++) {
-//						IExecutionEnvironment ee= ees[j];
-//						IVMInstall vm= ee.getDefaultVM();
-//						String ver= getVMVersion(vm);
-//						if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
-//							bestVersion= ver;
-//							bestEE= ee;
-//						}
-//					}
-//					
-//					IVMInstallType[] vmTypes= JavaRuntime.getVMInstallTypes();
-//					for (int i= 0; i < vmTypes.length; i++) {
-//						IVMInstall[] vms= vmTypes[i].getVMInstalls();
-//						for (int j= 0; j < vms.length; j++) {
-//							IVMInstall vm= vms[j];
-//							String ver= getVMVersion(vm);
-//							if (ver != null && (bestVersion == null || JavaModelUtil.isVersionLessThan(bestVersion, ver))) {
-//								bestVersion= ver;
-//								bestVM= vm;
-//								bestEE= null;
-//							}
-//						}
-//					}
-//					
-//					if (bestEE != null) {
-//						fVMPath= JavaRuntime.newJREContainerPath(bestEE);
-//						fCompilerCompliance= bestVersion;
-//					} else if (bestVM != null) {
-//						fVMPath= JavaRuntime.newJREContainerPath(bestVM);
-//						fCompilerCompliance= bestVersion;
-//					} else {
-//						fVMPath= JavaRuntime.newDefaultJREContainerPath();
-//					}
-				}
-
-//				private String getVMVersion(IVMInstall vm) {
-//					if (vm instanceof IVMInstall2) {
-//						IVMInstall2 vm2= (IVMInstall2) vm;
-//						return JavaModelUtil.getCompilerCompliance(vm2, null);
-//					} else {
-//						return null;
-//					}
-//				}
-
-				private void removePackageDeclaration(final IJavaScriptUnit cu) throws JavaScriptModelException, CoreException {
-					IPackageDeclaration[] packageDeclarations= cu.getPackageDeclarations();
-					if (packageDeclarations.length != 0) {
-						ITextFileBuffer buffer= null;
-						try {
-							buffer= RefactoringFileBuffers.acquire(cu);
-							ISourceRange sourceRange= packageDeclarations[0].getSourceRange();
-							buffer.getDocument().replace(sourceRange.getOffset(), sourceRange.getLength(), ""); //$NON-NLS-1$
-						} catch (BadLocationException e) {
-							JavaScriptPlugin.log(e);
-						} finally {
-							if (buffer != null)
-								RefactoringFileBuffers.release(cu);
-						}
-					}
-				}
 			};
 			
 			IRunnableContext context= JavaScriptPlugin.getActiveWorkbenchWindow();

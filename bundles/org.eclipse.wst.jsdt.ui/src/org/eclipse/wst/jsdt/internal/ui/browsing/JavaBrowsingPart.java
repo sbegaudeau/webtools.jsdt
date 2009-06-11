@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,6 @@ import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -1022,10 +1021,7 @@ abstract class JavaBrowsingPart extends ViewPart implements IMenuListener, ISele
 	private boolean mustSetNewInput(IJavaScriptElement elementToSelect, IJavaScriptElement oldInput, IJavaScriptElement newInput) {
 		return (newInput == null || !newInput.equals(oldInput))
 			&& (elementToSelect == null
-				|| oldInput == null
-				|| (!((elementToSelect instanceof IPackageDeclaration)
-					&& (elementToSelect.getParent().equals(oldInput.getParent()))
-					&& (!isAncestorOf(getViewPartInput(), elementToSelect)))));
+				|| oldInput == null);
 	}
 
 	/**

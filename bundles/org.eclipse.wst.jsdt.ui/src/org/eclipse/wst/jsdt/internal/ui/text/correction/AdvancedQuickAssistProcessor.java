@@ -2137,14 +2137,7 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 		Expression rightExpression= null;
 		Expression expression= switchCase.getExpression();
 		if (expression instanceof SimpleName && ((SimpleName) expression).resolveBinding() instanceof IVariableBinding) {
-			IVariableBinding binding= (IVariableBinding) ((SimpleName) expression).resolveBinding();
-			if (binding.isEnumConstant()) {
-				String qualifiedName= importRewrite.addImport(binding.getDeclaringClass()) + '.' + binding.getName();
-				rightExpression= ast.newName(qualifiedName);
-			}
-		}
-		if (rightExpression == null) {
-			rightExpression= (Expression) rewrite.createCopyTarget(expression);
+			((SimpleName) expression).resolveBinding();
 		}
 		condition.setRightOperand(rightExpression);
 		//

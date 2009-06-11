@@ -568,7 +568,7 @@ public final class StubUtility2 {
 		IVariableBinding[] typeFields= binding.getDeclaredFields();
 		for (int index= 0; index < typeFields.length; index++) {
 			IVariableBinding fieldBinding= typeFields[index];
-			if (fieldBinding.isField() && !fieldBinding.isEnumConstant() && !fieldBinding.isSynthetic())
+			if (fieldBinding.isField())
 				getDelegatableMethods(ast, tuples, new ArrayList(declared), fieldBinding, fieldBinding.getType(), binding);
 		}
 		// list of tuple<IVariableBinding, IFunctionBinding>

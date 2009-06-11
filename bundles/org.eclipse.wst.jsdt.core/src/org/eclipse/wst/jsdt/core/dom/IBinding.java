@@ -132,23 +132,6 @@ public interface IBinding {
 	public boolean isRecovered();
 
 	/**
-	 * Returns whether this binding is synthetic. A synthetic binding is one that
-	 * was made up by the compiler, rather than something declared in the
-	 * source code. Note that default constructors (the 0-argument constructor that
-	 * the validator generates for class declarations with no explicit constructors
-	 * declarations) are not generally considered synthetic (although they
-	 * may be if the class itself is synthetic).
-	 * But see {@link IFunctionBinding#isDefaultConstructor() IFunctionBinding.isDefaultConstructor}
-	 * for cases where the compiled-generated default constructor can be recognized
-	 * instead.
-	 *
-	 * @return <code>true</code> if this binding is synthetic, and
-	 *    <code>false</code> otherwise
-	 * @see IFunctionBinding#isDefaultConstructor()
-	 */
-	public boolean isSynthetic();
-
-	/**
 	 * Returns the JavaScript element that corresponds to this binding.
 	 * Returns <code>null</code> if this binding has no corresponding
 	 * JavaScript element.

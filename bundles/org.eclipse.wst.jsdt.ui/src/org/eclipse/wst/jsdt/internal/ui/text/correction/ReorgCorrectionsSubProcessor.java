@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -43,10 +42,9 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -56,9 +54,9 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
@@ -73,14 +71,12 @@ import org.eclipse.wst.jsdt.internal.corext.fix.CleanUpConstants;
 import org.eclipse.wst.jsdt.internal.corext.fix.IFix;
 import org.eclipse.wst.jsdt.internal.corext.fix.UnusedCodeFix;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.AddToClasspathChange;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.CreatePackageChange;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.MoveCompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.RenameCompilationUnitChange;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.TypeNameMatchCollector;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.fix.UnusedCodeCleanUp;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
@@ -150,37 +146,6 @@ public class ReorgCorrectionsSubProcessor {
 				String label= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_renamecu_description, newCUName);
 				proposals.add(new ChangeCorrectionProposal(label, change, 6, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_RENAME)));
 			}
-		}
-	}
-
-	public static void getWrongPackageDeclNameProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws CoreException {
-		IJavaScriptUnit cu= context.getCompilationUnit();
-		boolean isLinked= cu.getResource().isLinked();
-
-		// correct package declaration
-		int relevance= cu.getPackageDeclarations().length == 0 ? 7 : 5; // bug 38357
-		proposals.add(new CorrectPackageDeclarationProposal(cu, problem, relevance));
-
-		// move to package
-		IPackageDeclaration[] packDecls= cu.getPackageDeclarations();
-		String newPackName= packDecls.length > 0 ? packDecls[0].getElementName() : ""; //$NON-NLS-1$
-
-		IPackageFragmentRoot root= JavaModelUtil.getPackageFragmentRoot(cu);
-		IPackageFragment newPack= root.getPackageFragment(newPackName);
-
-		IJavaScriptUnit newCU= newPack.getJavaScriptUnit(cu.getElementName());
-		if (!newCU.exists() && !isLinked) {
-			String label;
-			if (newPack.isDefaultPackage()) {
-				label= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_movecu_default_description, cu.getElementName());
-			} else {
-				label= Messages.format(CorrectionMessages.ReorgCorrectionsSubProcessor_movecu_description, new Object[] { cu.getElementName(), newPack.getElementName() });
-			}
-			CompositeChange composite= new CompositeChange(label);
-			composite.add(new CreatePackageChange(newPack));
-			composite.add(new MoveCompilationUnitChange(cu, newPack));
-
-			proposals.add(new ChangeCorrectionProposal(label, composite, 6, JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_MOVE)));
 		}
 	}
 

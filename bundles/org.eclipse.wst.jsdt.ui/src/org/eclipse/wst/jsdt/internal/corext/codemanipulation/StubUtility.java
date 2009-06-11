@@ -1346,9 +1346,7 @@ public class StubUtility {
 	}
 	
 	public static String removePrefixAndSuffixForVariable(IJavaScriptProject project, IVariableBinding binding) {
-		if (binding.isEnumConstant()) {
-			return binding.getName();
-		} else if (binding.isField()) {
+		if (binding.isField()) {
 			if (Modifier.isStatic(binding.getModifiers()) && Modifier.isFinal(binding.getModifiers())) {
 				return getCamelCaseFromUpper(binding.getName());
 			} else {

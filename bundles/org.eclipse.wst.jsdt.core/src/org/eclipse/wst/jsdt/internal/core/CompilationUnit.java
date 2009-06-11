@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
@@ -374,15 +373,6 @@ public IImportDeclaration createImport(String importName, IJavaScriptElement sib
 }
 
 /**
- * @see IJavaScriptUnit#createPackageDeclaration(String, IProgressMonitor)
- */
-public IPackageDeclaration createPackageDeclaration(String pkg, IProgressMonitor monitor) throws JavaScriptModelException {
-
-	CreatePackageDeclarationOperation op= new CreatePackageDeclarationOperation(pkg, this);
-	op.runOperation(monitor);
-	return getPackageDeclaration(pkg);
-}
-/**
  * @see IJavaScriptUnit#createType(String, IJavaScriptElement, boolean, IProgressMonitor)
  */
 public IType createType(String content, IJavaScriptElement sibling, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
@@ -464,9 +454,6 @@ public IJavaScriptElement[] findElements(IJavaScriptElement element) {
 	for (int i = children.size()-1; i >= 0; i--) {
 		SourceRefElement child = (SourceRefElement)children.get(i);
 		switch (child.getElementType()) {
-			case IJavaScriptElement.PACKAGE_DECLARATION:
-				currentElement = ((IJavaScriptUnit)currentElement).getPackageDeclaration(child.getElementName());
-				break;
 			case IJavaScriptElement.IMPORT_CONTAINER:
 				currentElement = ((IJavaScriptUnit)currentElement).getImportContainer();
 				break;
@@ -665,11 +652,6 @@ public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer me
 		case JEM_IMPORTDECLARATION:
 			JavaElement container = (JavaElement)getImportContainer();
 			return container.getHandleFromMemento(token, memento, workingCopyOwner);
-		case JEM_PACKAGEDECLARATION:
-			if (!memento.hasMoreTokens()) return this;
-			String pkgName = memento.nextToken();
-			JavaElement pkgDecl = (JavaElement)getPackageDeclaration(pkgName);
-			return pkgDecl.getHandleFromMemento(memento, workingCopyOwner);
 		case JEM_TYPE:
 			if (!memento.hasMoreTokens()) return this;
 			String typeName = memento.nextToken();
@@ -811,21 +793,7 @@ public IJavaScriptElement getOriginalElement() {
 public WorkingCopyOwner getOwner() {
 	return isPrimary() || !isWorkingCopy() ? null : this.owner;
 }
-/**
- * @see IJavaScriptUnit#getPackageDeclaration(String)
- */
-public IPackageDeclaration getPackageDeclaration(String pkg) {
-	return new PackageDeclaration(this, pkg);
-}
-/**
- * @see IJavaScriptUnit#getPackageDeclarations()
- */
-public IPackageDeclaration[] getPackageDeclarations() throws JavaScriptModelException {
-	ArrayList list = getChildrenOfType(PACKAGE_DECLARATION);
-	IPackageDeclaration[] array= new IPackageDeclaration[list.size()];
-	list.toArray(array);
-	return array;
-}
+
 /**
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getPackageName()
  */

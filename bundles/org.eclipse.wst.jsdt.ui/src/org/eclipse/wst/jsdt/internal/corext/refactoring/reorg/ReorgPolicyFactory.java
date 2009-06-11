@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceReference;
@@ -85,7 +84,6 @@ import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -2920,14 +2918,6 @@ public final class ReorgPolicyFactory {
 			copyMemberToDestination(method, targetRewriter, sourceCuNode, targetCuNode, newMethod);
 		}
 
-		private void copyPackageDeclarationToDestination(IPackageDeclaration declaration, ASTRewrite targetRewrite, JavaScriptUnit sourceCuNode, JavaScriptUnit destinationCuNode) throws JavaScriptModelException {
-			if (destinationCuNode.getPackage() != null)
-				return;
-			PackageDeclaration sourceNode= ASTNodeSearchUtil.getPackageDeclarationNode(declaration, sourceCuNode);
-			PackageDeclaration copiedNode= (PackageDeclaration) ASTNode.copySubtree(targetRewrite.getAST(), sourceNode);
-			targetRewrite.set(destinationCuNode, JavaScriptUnit.PACKAGE_PROPERTY, copiedNode, null);
-		}
-
 		protected void copyToDestination(IJavaScriptElement element, CompilationUnitRewrite targetRewriter, JavaScriptUnit sourceCuNode, JavaScriptUnit targetCuNode) throws CoreException {
 			final ASTRewrite rewrite= targetRewriter.getASTRewrite();
 			switch (element.getElementType()) {
@@ -2945,9 +2935,6 @@ public final class ReorgPolicyFactory {
 					break;
 				case IJavaScriptElement.METHOD:
 					copyMethodToDestination((IFunction) element, targetRewriter, sourceCuNode, targetCuNode);
-					break;
-				case IJavaScriptElement.PACKAGE_DECLARATION:
-					copyPackageDeclarationToDestination((IPackageDeclaration) element, rewrite, sourceCuNode, targetCuNode);
 					break;
 				case IJavaScriptElement.TYPE:
 					copyTypeToDestination((IType) element, targetRewriter, sourceCuNode, targetCuNode);

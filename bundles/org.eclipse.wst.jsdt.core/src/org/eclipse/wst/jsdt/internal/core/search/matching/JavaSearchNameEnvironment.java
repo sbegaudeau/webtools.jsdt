@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -47,22 +46,18 @@ public class JavaSearchNameEnvironment implements INameEnvironment, SuffixConsta
 
 public JavaSearchNameEnvironment(IJavaScriptProject javaProject, org.eclipse.wst.jsdt.core.IJavaScriptUnit[] copies) {
 	computeClasspathLocations(javaProject.getProject().getWorkspace().getRoot(), (JavaProject) javaProject);
-	try {
-		int length = copies == null ? 0 : copies.length;
-		this.workingCopies = new HashMap(length);
-		if (copies != null) {
-			for (int i = 0; i < length; i++) {
-				org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = copies[i];
-				IPackageDeclaration[] pkgs = workingCopy.getPackageDeclarations();
-				String pkg = pkgs.length > 0 ? pkgs[0].getElementName() : ""; //$NON-NLS-1$
-				String cuName = workingCopy.getElementName();
-				String mainTypeName = Util.getNameWithoutJavaLikeExtension(cuName);
-				String qualifiedMainTypeName = pkg.length() == 0 ? mainTypeName : pkg.replace('.', '/') + '/' + mainTypeName;
-				this.workingCopies.put(qualifiedMainTypeName, workingCopy);
-			}
+
+	int length = copies == null ? 0 : copies.length;
+	this.workingCopies = new HashMap(length);
+	if (copies != null) {
+		for (int i = 0; i < length; i++) {
+			org.eclipse.wst.jsdt.core.IJavaScriptUnit workingCopy = copies[i];
+			String pkg = ""; //$NON-NLS-1$
+			String cuName = workingCopy.getElementName();
+			String mainTypeName = Util.getNameWithoutJavaLikeExtension(cuName);
+			String qualifiedMainTypeName = pkg.length() == 0 ? mainTypeName : pkg.replace('.', '/') + '/' + mainTypeName;
+			this.workingCopies.put(qualifiedMainTypeName, workingCopy);
 		}
-	} catch (JavaScriptModelException e) {
-		// working copy doesn't exist: cannot happen
 	}
 }
 

@@ -147,7 +147,7 @@ public final class SuperTypeConstraintsModel {
 	 * @return <code>true</code> if it is constrained, <code>false</code> otherwise
 	 */
 	public static boolean isConstrainedType(final ITypeBinding binding) {
-		return binding != null && !binding.isSynthetic() && !binding.isPrimitive();
+		return binding != null && !binding.isPrimitive();
 	}
 
 	/**
