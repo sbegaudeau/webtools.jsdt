@@ -27,7 +27,7 @@ public class RunFormatterTests extends TestCase {
 	
 	public static Class[] getAllTestClasses() {
 		return new Class[] {
-			FormatterRegressionTests.class,
+			//FormatterRegressionTests.class,
 			CommentsTestSuite.class,
 		};
 	}

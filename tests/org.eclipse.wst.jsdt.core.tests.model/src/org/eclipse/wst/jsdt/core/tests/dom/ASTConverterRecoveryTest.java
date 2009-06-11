@@ -851,8 +851,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertTrue("Flag as RECOVERED", (block.getFlags() & ASTNode.RECOVERED) == 0);
 		List statements = block.statements();
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
-		Statement statement = (Statement) statements.get(0);
-		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=143212
@@ -889,8 +887,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertTrue("Flag as RECOVERED", (block.getFlags() & ASTNode.RECOVERED) == 0);
 		List statements = block.statements();
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
-		Statement statement = (Statement) statements.get(0);
-		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 	}
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=143212
 	public void test0017() throws JavaScriptModelException {
@@ -926,7 +922,5 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 		assertTrue("Flag as RECOVERED", (block.getFlags() & ASTNode.RECOVERED) == 0);
 		List statements = block.statements();
 		assertEquals("wrong size", 1, statements.size()); //$NON-NLS-1$
-		Statement statement = (Statement) statements.get(0);
-		assertTrue("Not an assert statement", statement.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 	}
 }

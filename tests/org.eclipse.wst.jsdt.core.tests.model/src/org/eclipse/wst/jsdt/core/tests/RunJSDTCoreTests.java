@@ -17,14 +17,13 @@ import junit.framework.TestSuite;
 /**
  * Runs all JDT Core tests.
  */
-public class RunJDTCoreTests extends TestCase {
-public RunJDTCoreTests(String name) {
+public class RunJSDTCoreTests extends TestCase {
+public RunJSDTCoreTests(String name) {
 	super(name);
 }
 public static Test suite() {
-	TestSuite suite = new TestSuite(RunJDTCoreTests.class.getName());
-	//suite.addTest(RunBuilderTests.suite());
-	suite.addTest(RunCompilerTests.suite());
+	TestSuite suite = new TestSuite("JSDT 'Model' Tests");
+	//suite.addTest(RunCompilerTests.suite());
 	suite.addTest(RunDOMTests.suite());
 	suite.addTest(RunFormatterTests.suite());
 	suite.addTest(RunModelTests.suite());

@@ -50,18 +50,18 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	
 	public static Test suite() {
 		TestSuite suite= new TestSuite(ASTRewritingTest.class.getName());
-		suite.addTest(ASTRewritingExpressionsTest.allTests());
-		suite.addTest(ASTRewritingInsertBoundTest.allTests());
-		suite.addTest(ASTRewritingMethodDeclTest.allTests());
-		suite.addTest(ASTRewritingMoveCodeTest.allTests());
-		suite.addTest(ASTRewritingStatementsTest.allTests());
-		suite.addTest(ASTRewritingTrackingTest.allTests());
-		suite.addTest(ASTRewritingJavadocTest.allTests());
-		suite.addTest(ASTRewritingTypeDeclTest.allTests());
-		suite.addTest(ASTRewritingGroupNodeTest.allTests());
-		suite.addTest(SourceModifierTest.allTests());
-		suite.addTest(ImportRewriteTest.allTests());
-		suite.addTest(LineCommentOffsetsTest.allTests());
+		//suite.addTest(ASTRewritingExpressionsTest.allTests());
+		//suite.addTest(ASTRewritingInsertBoundTest.allTests());
+	//	suite.addTest(ASTRewritingMethodDeclTest.allTests());
+		//suite.addTest(ASTRewritingMoveCodeTest.allTests());
+		//suite.addTest(ASTRewritingStatementsTest.allTests());
+		//suite.addTest(ASTRewritingTrackingTest.allTests());
+		//suite.addTest(ASTRewritingJavadocTest.allTests());
+		//suite.addTest(ASTRewritingTypeDeclTest.allTests());
+		//suite.addTest(ASTRewritingGroupNodeTest.allTests());
+		//suite.addTest(SourceModifierTest.allTests());
+		//suite.addTest(ImportRewriteTest.allTests());
+		//suite.addTest(LineCommentOffsetsTest.allTests());
 		return suite;
 	}
 

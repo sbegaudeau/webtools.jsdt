@@ -52,12 +52,12 @@ public abstract class ASTRewritingModifyingTest extends AbstractJavaModelTests {
 	
 	public static Test suite() {
 		TestSuite suite =  new TestSuite(ASTRewritingModifyingTest.class.getName());
-		suite.addTest(ASTRewritingModifyingOtherTest.suite());
-		suite.addTest(ASTRewritingModifyingInsertTest.suite());
-		suite.addTest(ASTRewritingModifyingReplaceTest.suite());
-		suite.addTest(ASTRewritingModifyingRemoveTest.suite());
-		suite.addTest(ASTRewritingModifyingMoveTest.suite());
-		suite.addTest(ASTRewritingModifyingCopyTest.suite());
+		//suite.addTest(ASTRewritingModifyingOtherTest.suite());
+		//suite.addTest(ASTRewritingModifyingInsertTest.suite());
+		//suite.addTest(ASTRewritingModifyingReplaceTest.suite());
+		//suite.addTest(ASTRewritingModifyingRemoveTest.suite());
+		//suite.addTest(ASTRewritingModifyingMoveTest.suite());
+		//suite.addTest(ASTRewritingModifyingCopyTest.suite());
 		return suite;
 	}
 	

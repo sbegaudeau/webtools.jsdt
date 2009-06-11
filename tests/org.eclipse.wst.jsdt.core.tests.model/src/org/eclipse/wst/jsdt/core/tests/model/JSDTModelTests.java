@@ -202,28 +202,11 @@ private static Class[] getAllTestClasses() {
 		CodeSnippetParsingUtilTests.class
 	};
 	
-	Class[] deprecatedClasses = getDeprecatedJDOMTestClasses();
-	
 	int classesLength = classes.length;
-	int deprecatedClassesLength = deprecatedClasses.length;
-	Class[] result = new Class[classesLength + deprecatedClassesLength];
+	Class[] result = new Class[classesLength];
 	System.arraycopy(classes, 0, result, 0, classesLength);
-	System.arraycopy(deprecatedClasses, 0, result, classesLength, deprecatedClassesLength);
 	
 	return result;
-}
-
-/**
- * @deprecated JDOM is obsolete
- */
-private static Class[] getDeprecatedJDOMTestClasses() {
-	return new Class[] {
-//		//Create type source tests
-//		CreateTypeSourceExamplesTests.class,
-//	
-//		//Create method source tests
-//		CreateMethodSourceExamplesTests.class,
-	};
 }
 
 public static Test suite() {

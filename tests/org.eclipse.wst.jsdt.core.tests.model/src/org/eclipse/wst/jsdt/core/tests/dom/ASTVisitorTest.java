@@ -104,7 +104,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		for (int i = 0, max = methods.length; i < max; i++) {
 			if (methods[i].getName().startsWith("test")) { //$NON-NLS-1$
 				suite.addTest(new ASTVisitorTest(methods[i].getName(), AST.JLS2));
-				suite.addTest(new ASTVisitorTest(methods[i].getName(), AST.JLS3));
+				//suite.addTest(new ASTVisitorTest(methods[i].getName(), AST.JLS3));
 			}
 		}
 		return suite;

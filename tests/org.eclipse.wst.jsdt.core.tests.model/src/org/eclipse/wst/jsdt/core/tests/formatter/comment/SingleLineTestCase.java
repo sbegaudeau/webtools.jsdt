@@ -20,10 +20,6 @@ import org.eclipse.wst.jsdt.internal.formatter.comment.SingleCommentLine;
 
 public class SingleLineTestCase extends CommentTestCase {
 	protected static final String PREFIX= SingleCommentLine.SINGLE_COMMENT_PREFIX;
-
-	static {
-//		TESTS_NAMES = new String[] { "test109581" } ;
-	}
 	
 	public static Test suite() {
 		return buildTestSuite(SingleLineTestCase.class);
@@ -76,30 +72,6 @@ public class SingleLineTestCase extends CommentTestCase {
 
 	public void testCommentDelimiter2() {
 		assertEquals(PREFIX + "test" + DELIMITER, testFormat(PREFIX + "test " + DELIMITER + DELIMITER + DELIMITER)); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public void testCommentNls1() {
-		assertEquals("//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$", testFormat("//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public void testCommentNls2() {
-		setUserOption(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "1"); //$NON-NLS-1$
-		assertEquals("//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$", testFormat("//$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public void testCommentNls3() {
-		setUserOption(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "5"); //$NON-NLS-1$
-		assertEquals("//$NON-NLS-1", testFormat("//$NON-NLS-1")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public void testCommentNls4() {
-		setUserOption(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "5"); //$NON-NLS-1$
-		assertEquals("//$NON-NLS-4", testFormat("//$NON-NLS-4")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public void testCommentNls5() {
-		setUserOption(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "-2"); //$NON-NLS-1$
-		assertEquals("//$NON-NLS-15$", testFormat("//$NON-NLS-15$")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void testCommentSpace1() {

@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public class BatchASTCreationTests extends AbstractASTTests {
 	
@@ -106,7 +105,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 //		TESTS_PREFIX =  "testBug86380";
 //		TESTS_NAMES = new String[] { "test056" };
 //		TESTS_NUMBERS = new int[] { 78, 79, 80 };
-//		TESTS_RANGE = new int[] { 83304, -1 };
+		TESTS_RANGE = new int[] { 0, 2 };
 		}
 
 	public void setUpSuite() throws Exception {
@@ -251,25 +250,19 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test001() throws CoreException {
 		this.workingCopies = createWorkingCopies(new String[] {
-			"/P/p1/X.js",
-			"package p1;\n" +
-			"public class X extends Y {\n" +
-			"}",
-			"/P/p1/Y.js",
-			"package p1;\n" +
-			"public class Y {\n" +
-			"}",
+			"/P/X.js",
+			"function X(){}\n" +
+			"X.prototype = new Y();",
+			"/P/Y.js",
+			"function Y() {}"
 		});
 		TestASTRequestor requestor = new TestASTRequestor();
 		createASTs(this.workingCopies, requestor);
 		assertASTNodesEqual(
-			"package p1;\n" + 
-			"public class X extends Y {\n" + 
-			"}\n" + 
+			"function X(){\n}\n" +
+			"X.prototype=new Y();\n" +
 			"\n" + 
-			"package p1;\n" + 
-			"public class Y {\n" + 
-			"}\n" + 
+			"function Y(){\n}\n" + 
 			"\n",
 			requestor.asts
 		);
@@ -280,27 +273,21 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test002() throws CoreException {
 		MarkerInfo[] markerInfos = createMarkerInfos(new String[] {
-			"/P/p1/X.js",
-			"package p1;\n" +
-			"public class X extends /*start*/Y/*end*/ {\n" +
-			"}",
-			"/P/p1/Y.js",
-			"package p1;\n" +
-			"/*start*/public class Y {\n" +
+			"/P/X.js",
+			"function X/*start*/()/*end*/ {\n}\n" +
+			"X.prototype = new Y();",
+			"/P/Y.js",
+			"/*start*/function Y() {\n" +
 			"}/*end*/",
 		});
 		this.workingCopies = createWorkingCopies(markerInfos, this.owner);
 		TestASTRequestor requestor = new TestASTRequestor();
 		resolveASTs(this.workingCopies, requestor);
-		
 		assertASTNodesEqual(
-			"package p1;\n" + 
-			"public class X extends Y {\n" + 
-			"}\n" + 
+			"function X(){\n}\n" + 
+			"X.prototype=new Y();\n" +
 			"\n" + 
-			"package p1;\n" + 
-			"public class Y {\n" + 
-			"}\n" + 
+			"function Y(){\n}\n" + 
 			"\n",
 			requestor.asts
 		);
@@ -1680,241 +1667,4 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			"LX;.m()V",
 			bindings[0].getDeclaringMethod());
 	}
-	
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=159631
-public void test073() throws CoreException, IOException {
-	try {
-		IJavaScriptProject project = createJavaProject("P072", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
-		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[3]; 
-		compilationUnits[0] = getWorkingCopy(
-			"P072/X.js",
-			"public class X {\n" +
-			"  @Override" +
-			"  public boolean equals(Object o) {\n" +
-			"    return true;\n" +
-			"  }\n" +
-			"}");
-		compilationUnits[1] = getWorkingCopy(
-			"P072/Y.js",
-			"public class Y extends X {\n" +
-			"}");
-		compilationUnits[2] = getWorkingCopy(
-			"P072/Z.js",
-			"public class Z {\n" +
-			"  Y m;\n" +
-			"  boolean foo(Object p) {\n" +
-			"    return this.m.equals(p);\n" +
-			"  }\n" +
-			"}");
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(project);
-		class Requestor extends ASTRequestor {			
-		}
-		parser.createASTs(compilationUnits, new String[0], new Requestor(), null);
-		// will throw an unexpected NPE, until the bug is fixed 
-	} finally {
-		deleteProject("P072");
-	}
-}
-
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
-public void test078() throws CoreException, IOException {
-	try {
-		IJavaScriptProject project = createJavaProject("P078", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
-		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
-		compilationUnits[0] = getWorkingCopy(
-			"P078/Test.js",
-			"import java.util.*;\n" + 
-			"public class Test {\n" + 
-			"        public interface ExtraIterator<T> extends Iterator {\n" + 
-			"                public void extra();\n" + 
-			"        }\n" + 
-			"        public class Test2<T> implements ExtraIterator<T> {\n" + 
-			"            public boolean hasNext() {\n" + 
-			"                return false;\n" + 
-			"            }\n" +
-			"            public T next() {\n" + 
-			"                return null;\n" + 
-			"            }\n" +
-			"            public void remove() {\n" + 
-			"            }\n" +
-			"            public void extra() {\n" + 
-			"            }\n" + 
-			"        }\n" + 
-			"}");
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(project);
-       	final IBinding[] bindings = new IBinding[1];
-		final String key = "LTest$ExtraIterator<>;";
-		parser.createASTs(
-			compilationUnits,
-			new String[] {
-				key
-			},
-			new ASTRequestor() {
-                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
-                	// do nothing
-                }
-                public void acceptBinding(String bindingKey, IBinding binding) {
-                	if (key.equals(bindingKey)) {
-                		bindings[0] = binding;
-                 	}
-                }
-			},
-			null);
-		IBinding binding = bindings[0];
-		assertNotNull("Should not be null", binding);
-		assertEquals("Not a type binding", IBinding.TYPE, binding.getKind());
-		ITypeBinding typeBinding = (ITypeBinding) binding;
-		assertEquals("Wrong name", "Test.ExtraIterator", typeBinding.getQualifiedName());
-		assertTrue("Not a raw type", typeBinding.isRawType());
-	} finally {
-		deleteProject("P078");
-	}
-}
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
-public void test079() throws CoreException, IOException {
-	try {
-		IJavaScriptProject project = createJavaProject("P079", new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
-		createFolder("/P079/src/test");
-		createFile("/P079/src/test/Test.js",
-				"package test;\n" +
-				"import java.util.*;\n" +
-				"interface ExtraIterator<T> extends Iterator {\n" + 
-				"        public void extra();\n" + 
-				"}\n" + 
-				"public class Test<T> implements ExtraIterator<T> {\n" + 
-				"    public boolean hasNext() {\n" + 
-				"        return false;\n" + 
-				"    }\n" +
-				"    public T next() {\n" + 
-				"        return null;\n" + 
-				"    }\n" +
-				"    public void remove() {\n" + 
-				"    }\n" +
-				"    public void extra() {\n" + 
-				"    }\n" + 
-				"}");
-		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
-		compilationUnits[0] = getCompilationUnit("P079", "src", "test", "Test.js");
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(project);
-       	final IBinding[] bindings = new IBinding[1];
-		final String key = "Ltest/Test~ExtraIterator<>;";
-		parser.createASTs(
-			compilationUnits,
-			new String[] {
-				key
-			},
-			new ASTRequestor() {
-                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
-                	// do nothing
-                }
-                public void acceptBinding(String bindingKey, IBinding binding) {
-                	if (key.equals(bindingKey)) {
-                		bindings[0] = binding;
-                 	}
-                }
-			},
-			null);
-		IBinding binding = bindings[0];
-		assertNotNull("Should not be null", binding);
-		assertEquals("Not a type binding", IBinding.TYPE, binding.getKind());
-		ITypeBinding typeBinding = (ITypeBinding) binding;
-		assertEquals("Wrong type", "test.ExtraIterator", typeBinding.getQualifiedName());
-	} finally {
-		deleteProject("P079");
-	}
-}
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
-public void test080() throws CoreException, IOException {
-	final String projectName = "P080";
-	try {
-		IJavaScriptProject project = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
-		createFolder("/" + projectName + "/src/test");
-		createFile("/" + projectName + "/src/test/Test.js",
-				"package test;\n" +
-				"import java.util.*;\n" + 
-				"public class Test {\n" + 
-				"        public interface ExtraIterator<T> extends Iterator {\n" + 
-				"                public void extra();\n" + 
-				"        }\n" + 
-				"        public class Test2<T> implements ExtraIterator<T> {\n" + 
-				"            public boolean hasNext() {\n" + 
-				"                return false;\n" + 
-				"            }\n" +
-				"            public T next() {\n" + 
-				"                return null;\n" + 
-				"            }\n" +
-				"            public void remove() {\n" + 
-				"            }\n" +
-				"            public void extra() {\n" + 
-				"            }\n" + 
-				"        }\n" + 
-				"}");
-		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
-		compilationUnits[0] = getCompilationUnit(projectName, "src", "test", "Test.js");
-		ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(project);
-       	final IBinding[] bindings = new IBinding[1];
-		final String key = "Ltest/Test$ExtraIterator<>;";
-		parser.createASTs(
-			compilationUnits,
-			new String[] {
-				key
-			},
-			new ASTRequestor() {
-                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
-                	// do nothing
-                }
-                public void acceptBinding(String bindingKey, IBinding binding) {
-                	if (key.equals(bindingKey)) {
-                		bindings[0] = binding;
-                 	}
-                }
-			},
-			null);
-		IBinding binding = bindings[0];
-		assertNotNull("Should not be null", binding);
-		assertEquals("Not a type binding", IBinding.TYPE, binding.getKind());
-		ITypeBinding typeBinding = (ITypeBinding) binding;
-		assertEquals("Wrong name", "test.Test.ExtraIterator", typeBinding.getQualifiedName());
-		assertTrue("Not a raw type", typeBinding.isRawType());
-	} finally {
-		deleteProject(projectName);
-	}
-}
-
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=111529
-public void test082() throws CoreException, IOException {
-	final String projectName = "P082";
-	try {
-		IJavaScriptProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
-		String typeName = "java.util.List<Integer>";
-		class BindingRequestor extends ASTRequestor {
-			ITypeBinding _result = null;
-			public void acceptBinding(String bindingKey, IBinding binding) {
-				if (_result == null && binding != null && binding.getKind() == IBinding.TYPE)
-					_result = (ITypeBinding) binding;
-			}
-		}
-		String[] keys = new String[] {
-			BindingKey.createTypeBindingKey(typeName)
-		};
-		final BindingRequestor requestor = new BindingRequestor();
-		final ASTParser parser = ASTParser.newParser(AST.JLS3);
-		parser.setResolveBindings(true);
-		parser.setProject(javaProject);
-		// this doesn’t really do a parse; it’s a type lookup
-		parser.createASTs(new IJavaScriptUnit[] {}, keys, requestor, null);
-		ITypeBinding typeBinding = requestor._result;
-		assertNull("Got a binding", typeBinding);
-	} finally {
-		deleteProject(projectName);
-	}
-}
 }

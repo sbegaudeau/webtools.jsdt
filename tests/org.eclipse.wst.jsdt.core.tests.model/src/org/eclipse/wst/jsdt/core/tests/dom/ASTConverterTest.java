@@ -9420,8 +9420,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
 		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-		Expression expression = variableDeclarationFragment.getInitializer();
-		assertTrue("Not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
 	}
 
 	/**
@@ -9636,8 +9634,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
 		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-		Expression expression = variableDeclarationFragment.getInitializer();
-		assertTrue("Not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
 	}
 	
 	/**

@@ -312,7 +312,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 					case ASTNode.ARRAY_INITIALIZER :
 					case ASTNode.ASSIGNMENT :
 					case ASTNode.BOOLEAN_LITERAL :
-					case ASTNode.CAST_EXPRESSION :
 					case ASTNode.CHARACTER_LITERAL :
 					case ASTNode.CLASS_INSTANCE_CREATION :
 					case ASTNode.CONDITIONAL_EXPRESSION :
@@ -1478,7 +1477,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		assertEquals("wrong size", 1, fragments.size());
 		VariableDeclarationFragment fragment = (VariableDeclarationFragment) fragments.get(0);
 		Expression expression = fragment.getInitializer();
-		assertTrue("not a cast expression", expression.getNodeType() == ASTNode.CAST_EXPRESSION); //$NON-NLS-1$
 		checkSourceRange(expression, "(int) (3.14f * a)", source);
 	}
 	/**
@@ -1770,7 +1768,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			char[] source = sourceUnit.getSource().toCharArray();
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message;", source);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -1791,11 +1788,9 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			char[] source = sourceUnit.getSource().toCharArray();
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			checkSourceRange(node, "assert ref != null : message\\u003B", source);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 			
 			node = getASTNode(compilationUnit, 0, 0, 1);
 			checkSourceRange(node, "assert ref != null\\u003B", source);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -1938,7 +1933,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			assertEquals("No error", 2, compilationUnit.getProblems().length); //$NON-NLS-1$
 			ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
 			assertNotNull("No node", node);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2555,8 +2549,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			assertTrue("not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT); //$NON-NLS-1$
 			JavaScriptUnit unit = (JavaScriptUnit) result;
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
-			ASTNode node = getASTNode(unit, 0, 0, 0);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}
@@ -2577,8 +2569,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 			assertTrue("not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT); //$NON-NLS-1$
 			JavaScriptUnit unit = (JavaScriptUnit) result;
 			assertEquals("Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$<
-			ASTNode node = getASTNode(unit, 0, 0, 0);
-			assertTrue("not an assert statement", node.getNodeType() == ASTNode.ASSERT_STATEMENT); //$NON-NLS-1$
 		} finally {
 			JavaScriptCore.setOptions(options);
 		}

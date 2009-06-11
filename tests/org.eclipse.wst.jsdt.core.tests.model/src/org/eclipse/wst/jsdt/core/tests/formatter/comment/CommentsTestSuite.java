@@ -24,8 +24,8 @@ public class CommentsTestSuite extends TestSuite {
 	}
 	
 	public CommentsTestSuite() {
-		addTest(MultiLineTestCase.suite());
+		//addTest(MultiLineTestCase.suite());
 		addTest(SingleLineTestCase.suite());
-		addTest(JavaDocTestCase.suite());
+		//addTest(JavaDocTestCase.suite());
 	}
 }
