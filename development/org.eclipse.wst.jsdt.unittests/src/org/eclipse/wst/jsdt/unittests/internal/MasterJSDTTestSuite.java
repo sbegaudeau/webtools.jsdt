@@ -18,6 +18,8 @@ import junit.framework.TestSuite;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.jsdt.core.tests.RunDOMTests;
+import org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
 import org.eclipse.wst.jsdt.core.tests.model.JSDTModelTests;
 import org.eclipse.wst.jsdt.web.core.tests.translation.AllWebCoreTests;
@@ -35,8 +37,7 @@ public class MasterJSDTTestSuite extends TestSuite {
 		System.setProperty("wtp.autotest.noninteractive", "true");
 
 		addTest(JSDTCompilerTests.suite());
-		addTest(JSDTModelTests.suite());
-
+		addTest(RunJSDTCoreTests.suite());
 		addTest(AllWebCoreTests.suite());
 		addTest(AllWebUITests.suite());
 
