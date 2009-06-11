@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,9 +20,6 @@ import junit.framework.Test;
 import org.eclipse.wst.jsdt.internal.formatter.comment.MultiCommentLine;
 
 public class MultiLineTestCase extends CommentTestCase {
-	static {
-//		TESTS_NAMES = new String[] { "test49412_3" } ;
-	}
 	protected static final String INFIX= MultiCommentLine.MULTI_COMMENT_CONTENT_PREFIX;
 
 	protected static final String POSTFIX= MultiCommentLine.MULTI_COMMENT_END_PREFIX;
@@ -130,15 +127,14 @@ public class MultiLineTestCase extends CommentTestCase {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT, DefaultCodeFormatterConstants.FALSE);
 
 		String input = "/*" + DELIMITER +
-				"            Object[] objects = new Object[3];" + DELIMITER +
+				"            var objects = new Array(3);" + DELIMITER +
 				"            objects[0] = new String(\"Hallo Welt !!!\");" + DELIMITER +
 				"            objects[1] = new String(\"Test !!!\");" + DELIMITER +
-				"            objects[2] = new Integer(\"1980\");" + DELIMITER +
-				"            ObjectFile.write(pathname, objects);" + DELIMITER +
-				"            Object[] objs = ObjectFile.read(pathname);" + DELIMITER +
+				"            objects[2] = new Number(\"1980\");" + DELIMITER +
+				"            var objs = ObjectFile.read(pathname);" + DELIMITER +
 				"            for(int i = 0; i < objs.length; i++)" + DELIMITER +
 				"            {" + DELIMITER +
-				"              System.out.println(objs[i].toString());" + DELIMITER +
+				"              alert(objs[i].toString());" + DELIMITER +
 				"            }" + DELIMITER +
 				"*/";
 		
@@ -149,14 +145,11 @@ public class MultiLineTestCase extends CommentTestCase {
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=49412
 	// check backward compatibility
-	/**
-	 * @deprecated
-	 */
 	public void test49412() {
 		Map options = DefaultCodeFormatterConstants.getEclipseDefaultSettings();
 		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "200");
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT, DefaultCodeFormatterConstants.TRUE);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES, DefaultCodeFormatterConstants.TRUE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT, DefaultCodeFormatterConstants.TRUE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT, DefaultCodeFormatterConstants.TRUE);
 
 		String input = "/*" + DELIMITER + DELIMITER +
 				" test block comment with a blank line" + DELIMITER +
@@ -172,14 +165,11 @@ public class MultiLineTestCase extends CommentTestCase {
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=49412
 	// check backward compatibility
-	/**
-	 * @deprecated
-	 */
 	public void test49412_2() {
 		Map options = DefaultCodeFormatterConstants.getEclipseDefaultSettings();
 		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "200");
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT, DefaultCodeFormatterConstants.FALSE);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES, DefaultCodeFormatterConstants.TRUE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT, DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT, DefaultCodeFormatterConstants.TRUE);
 
 		String input = "/*" + DELIMITER + DELIMITER +
 				" test block comment with a blank line" + DELIMITER +
@@ -193,14 +183,11 @@ public class MultiLineTestCase extends CommentTestCase {
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=49412
 	// check backward compatibility
-	/**
-	 * @deprecated
-	 */
 	public void test49412_3() {
 		Map options = DefaultCodeFormatterConstants.getEclipseDefaultSettings();
 		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_LINE_LENGTH, "200");
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT, DefaultCodeFormatterConstants.TRUE);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES, DefaultCodeFormatterConstants.FALSE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_FORMAT_BLOCK_COMMENT, DefaultCodeFormatterConstants.TRUE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_COMMENT_CLEAR_BLANK_LINES_IN_BLOCK_COMMENT, DefaultCodeFormatterConstants.FALSE);
 
 		String input = "/*" + DELIMITER + DELIMITER +
 				" test block comment with a blank line" + DELIMITER +
