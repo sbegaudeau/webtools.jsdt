@@ -1995,7 +1995,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			JavaScriptCore.setOptions(newOptions);
 				
 			IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0473", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			char[] source = sourceUnit.getSource().toCharArray();
 			ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
 			JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 			assertEquals("No error", 2, compilationUnit.getProblems().length); //$NON-NLS-1$
@@ -2612,7 +2611,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			newOptions.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
 			JavaScriptCore.setOptions(newOptions);
 			IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0491", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			char[] source = sourceUnit.getSource().toCharArray();
 			ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
 			assertTrue("not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT); //$NON-NLS-1$
 			JavaScriptUnit unit = (JavaScriptUnit) result;
@@ -2632,7 +2630,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 			newOptions.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
 			JavaScriptCore.setOptions(newOptions);
 			IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0492", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			char[] source = sourceUnit.getSource().toCharArray();
 			ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
 			assertTrue("not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT); //$NON-NLS-1$
 			JavaScriptUnit unit = (JavaScriptUnit) result;
@@ -3195,7 +3192,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertTrue("is default constructor", binding.isDefaultConstructor());
 		assertNull("Has a declaring node", unit.findDeclaringNode(binding));
 	}
@@ -3215,7 +3211,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertTrue("is default constructor", binding.isDefaultConstructor());
 		assertNull("Has a declaring node", unit.findDeclaringNode(binding));
 	}
@@ -3235,7 +3230,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertTrue("not a default constructor", !binding.isDefaultConstructor());
 		assertNotNull("Has no declaring node", unit.findDeclaringNode(binding));
 	}
@@ -3255,7 +3249,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertTrue("not a default constructor", !binding.isDefaultConstructor());
 		assertNull("Has a declaring node", unit.findDeclaringNode(binding));
 	}
@@ -3275,7 +3268,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertFalse("is default constructor", binding.isDefaultConstructor());
 		assertNull("Has a declaring node", unit.findDeclaringNode(binding));
 	}
@@ -3295,7 +3287,6 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertTrue("Not a class instance creation", expressionStatement.getExpression().getNodeType() == ASTNode.CLASS_INSTANCE_CREATION); //$NON-NLS-1$
 		ClassInstanceCreation classInstanceCreation = (ClassInstanceCreation) expressionStatement.getExpression();
 		IFunctionBinding binding = classInstanceCreation.resolveConstructorBinding();
-		assertFalse("is synthetic", binding.isSynthetic());
 		assertFalse("is default constructor", binding.isDefaultConstructor());
 		assertNull("Has a declaring node", unit.findDeclaringNode(binding));
 	}
@@ -4198,12 +4189,11 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 	}
 	/**
 	 * Ensures that no AST is created during reconcile if consistent.
-	 * @deprecated using deprecated code
 	 */
 	public void test0538c() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
-			sourceUnit.becomeWorkingCopy(null, null);
+			sourceUnit.becomeWorkingCopy(null);
 			JavaScriptUnit unit = sourceUnit.reconcile(AST.JLS2, false, null, null);
 			assertNull("Unexpected compilation unit", unit);
 			// TODO improve test for AST.JLS3
@@ -4213,13 +4203,11 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 	}
 	/**
 	 * Ensures that bindings are created during reconcile if the problem requestor is active.
-	 * @deprecated using deprecated code
 	 */
 	public void test0538d() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
-			ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			sourceUnit.getBuffer().setContents(
 				"package test0538;\n" +
 				"public class A {\n" +

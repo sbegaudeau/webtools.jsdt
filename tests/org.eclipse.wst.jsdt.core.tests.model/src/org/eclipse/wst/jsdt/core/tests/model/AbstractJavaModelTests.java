@@ -1284,8 +1284,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			return ((IMember)element).getJavaScriptUnit();
 		}
 	
-		if (element instanceof IPackageDeclaration ||
-			element instanceof IImportDeclaration) {
+		if (element instanceof IImportDeclaration) {
 				return (IJavaScriptUnit)element.getParent();
 			}
 	

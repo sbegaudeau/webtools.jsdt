@@ -453,20 +453,6 @@ public void testLocalVariableMemento2() throws JavaScriptModelException {
 		localVar);
 }
 /**
- * Tests that a package declaration can be persisted and restored using its memento.
- */
-public void testPackageDeclarationMemento() {
-	IPackageDeclaration declaration = getCompilationUnit("/P/src/p/X.js").getPackageDeclaration("p");
-	assertMemento(
-		"=P/src<p{X.java%p",
-		declaration);
-		
-	declaration = getCompilationUnit("/P/src/p1/p2/X.js").getPackageDeclaration("p1.p2");
-	assertMemento(
-		"=P/src<p1.p2{X.java%p1.p2",
-		declaration);
-}
-/**
  * Tests that a package fragment can be persisted and restored using its memento.
  */
 public void testPackageFragmentMemento() {

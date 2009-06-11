@@ -792,20 +792,6 @@ public void testSearchPatternCreation22() {
 /**
  * Test pattern creation
  */
-public void testSearchPatternCreation23() {
-	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
-	SearchPattern searchPattern = createPattern(
-			pkg, 
-			IJavaScriptSearchConstants.REFERENCES);
-	
-	assertPattern(
-		"PackageReferencePattern: <x.y.z>, exact match, case sensitive, erasure only",
-		searchPattern);
-}
-
-/**
- * Test pattern creation
- */
 public void testSearchPatternCreation24() {
 	IPackageFragment pkg = getPackage("/P/x/y/z");
 	SearchPattern searchPattern = createPattern(
@@ -836,20 +822,6 @@ public void testSearchPatternCreation25() {
  */
 public void testSearchPatternCreation26() {
 	IPackageFragment pkg = getPackage("/P/x/y/z");
-	SearchPattern searchPattern = createPattern(
-			pkg, 
-			IJavaScriptSearchConstants.DECLARATIONS);
-	
-	assertPattern(
-		"PackageDeclarationPattern: <x.y.z>, exact match, case sensitive, erasure only",
-		searchPattern);
-}
-
-/**
- * Test pattern creation
- */
-public void testSearchPatternCreation27() {
-	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
 			IJavaScriptSearchConstants.DECLARATIONS);

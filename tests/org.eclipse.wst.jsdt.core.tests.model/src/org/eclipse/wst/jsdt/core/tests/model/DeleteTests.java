@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,13 +22,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IFunction;
-import org.eclipse.wst.jsdt.core.IPackageDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -640,36 +639,6 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 			"				X[*]: {CHILDREN | FINE GRAINED}\n" + 
 			"					Bar[-]: {}\n" + 
 			"					main(String[])[-]: {}"
-		);
-	} finally {
-		stopDeltas();
-		deleteFolder("P/a");
-	}
-}
-/**
- * Ensures that a package declaration can be deleted from a compilation unit.
- */
-public void testDeletePackageDeclaration() throws CoreException {
-	try {
-		createFolder("P/a/b/c");
-		createFile(
-			"P/a/b/c/X.js",
-			"package a.b.c;\n" +
-			"public class X {\n" +
-			"}"
-		);
-		IJavaScriptUnit cu = getCompilationUnit("P/a/b/c/X.js");
-		IPackageDeclaration packageDeclaration = cu.getPackageDeclaration("a.b.c");
-
-		startDeltas();
-		assertDeletion(packageDeclaration);
-		assertDeltas(
-			"Unexpected delta",
-			"P[*]: {CHILDREN}\n" + 
-			"	<project root>[*]: {CHILDREN}\n" + 
-			"		a.b.c[*]: {CHILDREN}\n" + 
-			"			X.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
-			"				package a.b.c[-]: {}"
 		);
 	} finally {
 		stopDeltas();

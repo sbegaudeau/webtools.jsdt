@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,32 +77,6 @@ public IJavaScriptElement copyPositive(IJavaScriptElement element, IJavaScriptEl
 		//ensure correct position
 		if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 			ensureCorrectPositioning((IParent) container, sibling, copy);
-		} else {
-			if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
-			} else {
-				// ensure package name is correct
-				if (container.getElementName().equals("")) {
-					// default package - should be no package decl
-					IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
-					boolean found = false;
-					for (int i = 0; i < children.length; i++) {
-						if (children[i] instanceof IPackageDeclaration) {
-							found = true;
-						}
-					}
-					assertTrue("Should not find package decl", !found);
-				} else {
-					IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
-					boolean found = false;
-					for (int i = 0; i < children.length; i++) {
-						if (children[i] instanceof IPackageDeclaration) {
-							assertTrue("package declaration incorrect", ((IPackageDeclaration) children[i]).getElementName().equals(container.getElementName()));
-							found = true;
-						}
-					}
-					assertTrue("Did not find package decl", found);
-				}
-			}
 		}
 		if (copy.getElementType() == IJavaScriptElement.IMPORT_DECLARATION)
 			container = ((IJavaScriptUnit) container).getImportContainer();
@@ -147,8 +121,6 @@ public IJavaScriptElement generateHandle(IJavaScriptElement original, String ren
 			switch (original.getElementType()) {
 				case IJavaScriptElement.IMPORT_DECLARATION :
 					return ((IJavaScriptUnit) container).getImport(name);
-				case IJavaScriptElement.PACKAGE_DECLARATION :
-					return ((IJavaScriptUnit) container).getPackageDeclaration(name);
 				case IJavaScriptElement.TYPE :
 					if (isMainType(original, container)) {
 						//the cu has been renamed as well
@@ -310,35 +282,6 @@ public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] des
 			if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 				if (siblings != null && siblings.length > 0) {
 					ensureCorrectPositioning((IParent) moved.getParent(), siblings[i], moved);
-				}
-			} else {
-				IJavaScriptElement container = destinations[i];
-				if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
-				} else { // ensure package name is correct
-	
-					if (container.getElementName().equals("")) {
-						// default package - should be no package decl
-						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
-						boolean found = false;
-						for (int j = 0; j < children.length; j++) {
-							if (children[j] instanceof IPackageDeclaration) {
-								found = true;
-								break;
-							}
-						}
-						assertTrue("Should not find package decl", !found);
-					} else {
-						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
-						boolean found = false;
-						for (int j = 0; j < children.length; j++) {
-							if (children[j] instanceof IPackageDeclaration) {
-								assertTrue("package declaration incorrect", ((IPackageDeclaration) children[j]).getElementName().equals(container.getElementName()));
-								found = true;
-								break;
-							}
-						}
-						assertTrue("Did not find package decl", found);
-					}
 				}
 			}
 			IJavaScriptElementDelta destDelta = null;

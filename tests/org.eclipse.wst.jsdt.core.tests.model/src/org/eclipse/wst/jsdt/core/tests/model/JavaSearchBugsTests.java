@@ -2069,15 +2069,12 @@ public void testBug83388b() throws CoreException {
 		"import b83388.*;\n" + 
 		"public class R {}\n"
 	);
-	IPackageDeclaration packageDeclaration = workingCopies[0].getPackageDeclaration("pack");
-	assertNotNull("Cannot find \"pack\" import declaration for "+workingCopies[0].getElementName(), packageDeclaration);
 	SearchPattern pattern = SearchPattern.createPattern(
 		"pack", 
 		PACKAGE,
 		DECLARATIONS, 
 		EXACT_RULE);
 	assertNotNull("Pattern should not be null", pattern);
-	MatchLocator.setFocus(pattern, packageDeclaration);
 	new SearchEngine(workingCopies).search(
 		pattern,
 		new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
@@ -3683,33 +3680,6 @@ public void testBug97322() throws CoreException {
 	IFunction method= type.getFunctions()[0];
 	search(method, REFERENCES);
 	assertSearchResults(""); // Expect no result
-}
-
-/**
- * Bug 97547: [search] Package search does not find references in member types import clause
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=97547"
- */
-public void testBug97547() throws CoreException {
-	workingCopies = new IJavaScriptUnit[2];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97547/IX.js",
-		"package b97547;\n" + 
-		"public interface IX {\n" + 
-		"	public interface IX1 {}\n" + 
-		"}"
-	);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97547/X.js",
-		"package b97547;\n" + 
-		"import b97547.IX.*;\n" + 
-		"class X {\n" + 
-		"	IX x;\n" + 
-		"}"
-	);
-	IPackageDeclaration[] packages = workingCopies[0].getPackageDeclarations();
-	assertTrue("Invalid number of packages declaration!", packages!=null && packages.length==1);
-	search(packages[0], REFERENCES);
-	assertSearchResults(
-		"src/b97547/X.java [b97547] EXACT_MATCH"
-	);
 }
 
 /**

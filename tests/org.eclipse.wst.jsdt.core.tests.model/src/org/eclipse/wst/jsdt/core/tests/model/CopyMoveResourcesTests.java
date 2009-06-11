@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,29 +52,6 @@ public IJavaScriptElement copyPositive(IJavaScriptElement element, IJavaScriptEl
 		//ensure correct position
 		if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 			ensureCorrectPositioning((IParent) container, sibling, copy);
-		} else if (container.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
-			// ensure package name is correct
-			if (container.getElementName().equals("")) {
-				// default package - should be no package decl
-				IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
-				boolean found = false;
-				for (int i = 0; i < children.length; i++) {
-					if (children[i] instanceof IPackageDeclaration) {
-						found = true;
-					}
-				}
-				assertTrue("Should not find package decl", !found);
-			} else {
-				IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
-				boolean found = false;
-				for (int i = 0; i < children.length; i++) {
-					if (children[i] instanceof IPackageDeclaration) {
-						assertTrue("package declaration incorrect", ((IPackageDeclaration) children[i]).getElementName().equals(container.getElementName()));
-						found = true;
-					}
-				}
-				assertTrue("Did not find package decl", found);
-			}
 		}
 		IJavaScriptElementDelta destDelta = getDeltaFor(container, true);
 		assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.CHANGED);
@@ -146,17 +123,6 @@ public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] des
 							}
 						}
 					}
-				} else {
-					IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
-					boolean found = false;
-					for (int j = 0; j < children.length; j++) {
-						if (children[j] instanceof IPackageDeclaration) {
-							assertTrue("package declaration incorrect", ((IPackageDeclaration) children[j]).getElementName().equals(container.getElementName()));
-							found = true;
-							break;
-						}
-					}
-					assertTrue("Did not find package decl", found);
 				}
 			}
 			IJavaScriptElementDelta destDelta = null;
@@ -212,27 +178,6 @@ public void tearDown() throws Exception {
 	super.tearDown();
 }
 /**
- * Ensures that a CU can be copied to a different package.
- */
-public void testCopyCU() throws CoreException {
-	this.createFolder("/P/src/p1");
-	this.createFile(
-		"/P/src/p1/X.js",
-		"package p1;\n" +
-		"public class X {\n" +
-		"}"
-	);
-	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
-
-	this.createFolder("/P/src/p2");
-	IPackageFragment pkgDest = getPackage("/P/src/p2");
-
-	copyPositive(cuSource, pkgDest, null, null, false);
-	
-	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
-	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
-}
-/**
  * This operation should fail as copying a CU and a CU member at the
  * same time is not supported.
  */
@@ -277,25 +222,6 @@ public void testCopyCUForce() throws CoreException {
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	copyPositive(cuSource, pkgDest, null, null, true);
-}
-/**
- * Ensures that a CU can be copied from a default package to a non-default package.
- */
-public void testCopyCUFromDefaultToNonDefault() throws CoreException {
-	createFile(
-		"/P/src/X.js",
-		"public class X {\n" +
-		"}"
-	);
-	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/X.js");
-
-	createFolder("/P/src/p");
-	IPackageFragment pkgDest = getPackage("/P/src/p");
-
-	copyPositive(cuSource, pkgDest, null, null, false);
-	
-	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
-	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p").exists());
 }
 /**
  * Ensures that a CU can be copied to a different package,
@@ -739,27 +665,6 @@ public void testCopyWorkingCopyWithInvalidDestination() throws CoreException {
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
-}
-/**
- * Ensures that a CU can be moved to a different package.
- */
-public void testMoveCU() throws CoreException {
-	this.createFolder("/P/src/p1");
-	this.createFile(
-		"/P/src/p1/X.js",
-		"package p1;\n" +
-		"public class X {\n" +
-		"}"
-	);
-	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
-
-	this.createFolder("/P/src/p2");
-	IPackageFragment pkgDest = getPackage("/P/src/p2");
-
-	movePositive(cuSource, pkgDest, null, null, false);
-	
-	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
-	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
 }
 /**
  * This operation should fail as moving a CU and a CU member at the

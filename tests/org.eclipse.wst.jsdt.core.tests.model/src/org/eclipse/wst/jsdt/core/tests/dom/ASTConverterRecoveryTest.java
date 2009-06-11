@@ -830,7 +830,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 			"	}\n"+
 			"}\n");
 		
-		char[] source = this.workingCopies[0].getSource().toCharArray();
 		ASTNode result = runConversion(AST.JLS3, this.workingCopies[0], true, true);
 		
 		assertASTNodeEquals(
@@ -866,7 +865,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 			"	}\n"+
 			"}\n");
 		
-		char[] source = this.workingCopies[0].getSource().toCharArray();
 		ASTNode result = runConversion(AST.JLS3, this.workingCopies[0], true, true);
 		
 		assertASTNodeEquals(
@@ -901,7 +899,6 @@ public class ASTConverterRecoveryTest extends ConverterTestSetup {
 			"	}\n"+
 			"}\n");
 		
-		char[] source = this.workingCopies[0].getSource().toCharArray();
 		ASTNode result = runConversion(AST.JLS3, this.workingCopies[0], true, true);
 		
 		assertASTNodeEquals(

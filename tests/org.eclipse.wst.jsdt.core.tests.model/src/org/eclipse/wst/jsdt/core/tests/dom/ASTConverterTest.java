@@ -15,10 +15,8 @@ import java.util.List;
 
 import junit.framework.Test;
 
-import org.eclipse.core.runtime.Preferences;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
@@ -4315,7 +4313,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		List fragments = fieldDeclaration.fragments();
 		assertTrue("No fragment", fragments.size() == 1); //$NON-NLS-1$
 		VariableDeclarationFragment fragment = (VariableDeclarationFragment) fragments.get(0);
-		IVariableBinding variableBinding = fragment.resolveBinding();
 		ITypeBinding typeBinding = fragment.getInitializer().resolveTypeBinding();
 		assertNotNull("No type binding", typeBinding); //$NON-NLS-1$
 //		assertTrue("Not a primitive type", typeBinding.isPrimitive()); //$NON-NLS-1$
@@ -7835,7 +7832,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 	 */
 	public void test0320() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0320", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(sourceUnit, true);
 		assertNotNull("No compilation unit", result); //$NON-NLS-1$
 		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
@@ -7937,73 +7933,8 @@ public class ASTConverterTest extends ConverterTestSetup {
 		ExpressionStatement expressionStatement = (ExpressionStatement) node;
 		Expression expression2 = expressionStatement.getExpression();
 		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-		Assignment assignment = (Assignment) expression2;
-		Expression expression = assignment.getRightHandSide();
-//		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-//		CastExpression castExpression = (CastExpression) expression;
-//		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-//		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("Wrong name", "any", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type type = castExpression.getType();
-//		ITypeBinding typeBinding2 = type.resolveBinding();
-//		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("Wrong name", "any", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
-
-////	/**
-////	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14198
-////	 */
-////	public void test0324() throws JavaScriptModelException {
-////		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0324", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-////		ASTNode result = runConversion(sourceUnit, true);
-////		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-////		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-////		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-////		ASTNode node = getASTNode(compilationUnit, 0, 0, 1);
-////		assertTrue("Not an ExpressionStatement", node instanceof ExpressionStatement); //$NON-NLS-1$
-////		ExpressionStatement expressionStatement = (ExpressionStatement) node;
-////		Expression expression2 = expressionStatement.getExpression();
-////		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-////		Assignment assignment = (Assignment) expression2;
-////		Expression expression = assignment.getRightHandSide();
-////		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-////		CastExpression castExpression = (CastExpression) expression;
-////		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-////		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-////		assertEquals("Wrong name", "Object[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-////		Type type = castExpression.getType();
-////		ITypeBinding typeBinding2 = type.resolveBinding();
-////		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-////		assertEquals("Wrong name", "Object[]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-////	}					
-//
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14198
-//	 */
-//	public void test0325() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0325", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 1);
-//		assertTrue("Not an ExpressionStatement", node instanceof ExpressionStatement); //$NON-NLS-1$
-//		ExpressionStatement expressionStatement = (ExpressionStatement) node;
-//		Expression expression2 = expressionStatement.getExpression();
-//		assertTrue("Not an Assignement", expression2 instanceof Assignment); //$NON-NLS-1$
-//		Assignment assignment = (Assignment) expression2;
-//		Expression expression = assignment.getRightHandSide();
-//		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-//		CastExpression castExpression = (CastExpression) expression;
-//		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-//		assertNotNull("No binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("Wrong name", "int[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type type = castExpression.getType();
-//		ITypeBinding typeBinding2 = type.resolveBinding();
-//		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("Wrong name", "int[]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}					
-//
+	
 	/**
 	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14217
 	 */
@@ -8020,149 +7951,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		checkSourceRange(expressionStatement.getExpression(), "a().f= a()", source); //$NON-NLS-1$
 		checkSourceRange(expressionStatement, "a().f= a();", source); //$NON-NLS-1$
 	}					
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14198
-//	 */
-//	public void test0327() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0327", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		assertEquals("Wrong number of errors", 2, compilationUnit.getProblems().length); //$NON-NLS-1$<
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not an VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-//		List fragments = variableDeclarationStatement.fragments();
-//		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		Expression expression = variableDeclarationFragment.getInitializer();
-//		assertTrue("Not a CastExpression", expression instanceof CastExpression); //$NON-NLS-1$
-//		CastExpression castExpression = (CastExpression) expression;
-//		ITypeBinding typeBinding = castExpression.resolveTypeBinding();
-//		assertNotNull("No typebinding", typeBinding); //$NON-NLS-1$
-//		assertEquals("Wrong name", "String", typeBinding.getName());
-//		Type type = castExpression.getType();
-//		ITypeBinding typeBinding2 = type.resolveBinding();
-//		assertNotNull("No binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("Wrong name", "String", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}					
-//
-	/**
-	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=13807
-	 */
-//	public void test0328() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0328", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		char[] source = sourceUnit.getSource().toCharArray();
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not a VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-//		Type type = variableDeclarationStatement.getType();
-//		checkSourceRange(type, "java.lang.Object[]", source); //$NON-NLS-1$
-//		assertTrue("Not an array type", type.isArrayType()); //$NON-NLS-1$
-//		ArrayType arrayType = (ArrayType) type;
-//		ITypeBinding typeBinding = arrayType.resolveBinding();
-//		assertNotNull("No type binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type elementType = arrayType.getElementType();
-//		assertTrue("Not a simple type", elementType.isSimpleType()); //$NON-NLS-1$
-//		ITypeBinding typeBinding2 = elementType.resolveBinding();
-//		assertNotNull("No type binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		List fragments = variableDeclarationStatement.fragments();
-//		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		Expression expression = variableDeclarationFragment.getInitializer();
-//		assertTrue("Not a array creation", expression instanceof ArrayCreation); //$NON-NLS-1$
-//		ITypeBinding typeBinding3 = expression.resolveTypeBinding();
-//		assertNotNull("No typeBinding3", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		ArrayCreation arrayCreation = (ArrayCreation) expression;
-//		ArrayInitializer arrayInitializer = arrayCreation.getInitializer();
-//		assertNotNull("not array initializer", arrayInitializer); //$NON-NLS-1$
-//		ITypeBinding typeBinding4 = arrayInitializer.resolveTypeBinding();
-//		assertNotNull("No typeBinding4", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=13807
-//	 */
-//	public void test0329() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0329", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		char[] source = sourceUnit.getSource().toCharArray();
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not a VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-//		Type type = variableDeclarationStatement.getType();
-//		checkSourceRange(type, "java.lang.Object[]", source); //$NON-NLS-1$
-//		assertTrue("Not an array type", type.isArrayType()); //$NON-NLS-1$
-//		ArrayType arrayType = (ArrayType) type;
-//		ITypeBinding typeBinding = arrayType.resolveBinding();
-//		assertNotNull("No type binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type elementType = arrayType.getElementType();
-//		assertTrue("Not a simple type", elementType.isSimpleType()); //$NON-NLS-1$
-//		ITypeBinding typeBinding2 = elementType.resolveBinding();
-//		assertNotNull("No type binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		List fragments = variableDeclarationStatement.fragments();
-//		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		Expression expression = variableDeclarationFragment.getInitializer();
-//		assertTrue("Not a array creation", expression instanceof ArrayCreation); //$NON-NLS-1$
-//		ITypeBinding typeBinding3 = expression.resolveTypeBinding();
-//		assertNotNull("No typeBinding3", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		ArrayCreation arrayCreation = (ArrayCreation) expression;
-//		ArrayInitializer arrayInitializer = arrayCreation.getInitializer();
-//		assertNotNull("not array initializer", arrayInitializer); //$NON-NLS-1$
-//		ITypeBinding typeBinding4 = arrayInitializer.resolveTypeBinding();
-//		assertNotNull("No typeBinding4", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14313
-//	 */
-//	public void test0330() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0330", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		assertEquals("wrong size", 2, compilationUnit.getMessages().length); //$NON-NLS-1$
-//		assertEquals("wrong size", 2, compilationUnit.getProblems().length); //$NON-NLS-1$
-//		ASTNode node = getASTNode(compilationUnit, 0);
-//		assertTrue("Not a type declaration", node.getNodeType() == ASTNode.TYPE_DECLARATION); //$NON-NLS-1$
-//		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-//		ITypeBinding typeBinding = typeDeclaration.resolveBinding();
-//		assertNotNull("no type binding", typeBinding); //$NON-NLS-1$
-//		IFunctionBinding[] methods = typeBinding.getDeclaredMethods();
-//		assertEquals("wrong size", 1, methods.length); //$NON-NLS-1$
-//		assertTrue("not a constructor", methods[0].isConstructor()); //$NON-NLS-1$
-//		assertTrue("wrong name", !methods[0].getName().equals("foo")); //$NON-NLS-1$ //$NON-NLS-2$
-//		node = getASTNode(compilationUnit, 0, 0);
-//		assertTrue("Not a methodDeclaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
-//		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-//		IFunctionBinding methodBinding = methodDeclaration.resolveBinding();
-//		assertNull("method binding not null", methodBinding); //$NON-NLS-1$
-//		node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not a return statement", node.getNodeType() == ASTNode.RETURN_STATEMENT); //$NON-NLS-1$
-//		ReturnStatement returnStatement = (ReturnStatement) node;
-//		Expression expression = returnStatement.getExpression();
-//		ITypeBinding typeBinding2 = expression.resolveTypeBinding();
-//		assertNotNull("no type binding2", typeBinding2); //$NON-NLS-1$
-//	}
 
 	/**
 	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14322
@@ -8190,212 +7978,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		assertNull("Got a declaring class", variableBinding.getDeclaringClass()); //$NON-NLS-1$
 		assertEquals("wrong name", "length", variableBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}					
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14403
-//	 */
-//	public void test0332() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0332", "LocalSelectionTransfer.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//	}
-//
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=13807
-//	 */
-//	public void test0333() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0333", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not a VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-//		List fragments = variableDeclarationStatement.fragments();
-//		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		Expression expression = variableDeclarationFragment.getInitializer();
-//		assertTrue("Not an array creation", expression instanceof ArrayCreation); //$NON-NLS-1$
-//		ArrayCreation arrayCreation = (ArrayCreation) expression;
-//		ITypeBinding typeBinding = arrayCreation.resolveTypeBinding();
-//		assertNotNull("no type binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[][]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		ArrayType arrayType = arrayCreation.getType();
-//		ITypeBinding typeBinding2 = arrayType.resolveBinding();
-//		assertNotNull("no type binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[][]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type type = arrayType.getElementType();
-//		assertTrue("Not a simple type", type instanceof SimpleType); //$NON-NLS-1$
-//		SimpleType simpleType = (SimpleType) type;
-//		ITypeBinding typeBinding3 = simpleType.resolveBinding();
-//		assertNotNull("no type binding3", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object", typeBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		type = arrayType.getComponentType();
-//		assertTrue("Not an array type", type instanceof ArrayType); //$NON-NLS-1$
-//		ArrayType arrayType2 = (ArrayType) type;
-//		ITypeBinding typeBinding4 = arrayType2.resolveBinding();
-//		assertNotNull("no type binding4", typeBinding4); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=13807
-//	 */
-//	public void test0334() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0334", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		char[] source = sourceUnit.getSource().toCharArray();
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0, 0);
-//		assertTrue("Not a VariableDeclarationStatement", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
-//		List fragments = variableDeclarationStatement.fragments();
-//		assertEquals("wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		Expression expression = variableDeclarationFragment.getInitializer();
-//		assertTrue("Not an array creation", expression instanceof ArrayCreation); //$NON-NLS-1$
-//		ArrayCreation arrayCreation = (ArrayCreation) expression;
-//		ITypeBinding typeBinding = arrayCreation.resolveTypeBinding();
-//		assertNotNull("no type binding", typeBinding); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[][][]", typeBinding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		ArrayType arrayType = arrayCreation.getType();
-//		checkSourceRange(arrayType, "Object[10][][]", source); //$NON-NLS-1$
-//		ITypeBinding typeBinding2 = arrayType.resolveBinding();
-//		assertNotNull("no type binding2", typeBinding2); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[][][]", typeBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		Type type = arrayType.getElementType();
-//		assertTrue("Not a simple type", type instanceof SimpleType); //$NON-NLS-1$
-//		SimpleType simpleType = (SimpleType) type;
-//		checkSourceRange(simpleType, "Object", source); //$NON-NLS-1$
-//		ITypeBinding typeBinding3 = simpleType.resolveBinding();
-//		assertNotNull("no type binding3", typeBinding3); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object", typeBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		type = arrayType.getComponentType();
-//		assertTrue("Not an array type", type instanceof ArrayType); //$NON-NLS-1$
-//		ArrayType arrayType2 = (ArrayType) type;
-//		checkSourceRange(arrayType2, "Object[10][]", source); //$NON-NLS-1$
-//		ITypeBinding typeBinding4 = arrayType2.resolveBinding();
-//		assertNotNull("no type binding4", typeBinding4); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[][]", typeBinding4.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		type = arrayType2.getComponentType();
-//		assertTrue("Not an array type", type instanceof ArrayType); //$NON-NLS-1$
-//		ArrayType arrayType3 = (ArrayType) type;
-//		ITypeBinding typeBinding5 = arrayType3.resolveBinding();
-//		assertNotNull("no type binding5", typeBinding5); //$NON-NLS-1$
-//		assertEquals("wrong name", "Object[]", typeBinding5.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//		checkSourceRange(arrayType3, "Object[10]", source); //$NON-NLS-1$
-//	}
-	
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14526
-//	 * @deprecated using deprecated code
-//	 */
-//	public void test0335() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0335", "ExceptionTestCaseTest.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0);
-//		assertEquals("errors found", 0, compilationUnit.getMessages().length); //$NON-NLS-1$
-//		assertEquals("errors found", 0, compilationUnit.getProblems().length); //$NON-NLS-1$
-//		assertNotNull("not null", node); //$NON-NLS-1$
-//		assertTrue("not a type declaration", node instanceof TypeDeclaration); //$NON-NLS-1$
-//		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-//		Name name = typeDeclaration.getSuperclass();
-//		assertNotNull("no super class", name); //$NON-NLS-1$
-//		assertTrue("not a qualified name", name.isQualifiedName()); //$NON-NLS-1$
-//		QualifiedName qualifiedName = (QualifiedName) name;
-//		name = qualifiedName.getQualifier();
-//		assertTrue("not a qualified name", name.isQualifiedName()); //$NON-NLS-1$
-//		qualifiedName = (QualifiedName) name;
-//		name = qualifiedName.getQualifier();
-//		assertTrue("not a simple name", name.isSimpleName()); //$NON-NLS-1$
-//		SimpleName simpleName = (SimpleName) name;
-//		IBinding binding = simpleName.resolveBinding();
-//		assertNotNull("no binding", binding); //$NON-NLS-1$
-//		assertEquals("wrong type", IBinding.PACKAGE, binding.getKind()); //$NON-NLS-1$
-//		assertEquals("wrong name", "junit", binding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}	
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14526
-//	 * @deprecated using deprecated code
-//	 */
-//	public void test0336() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0336", "SorterTest.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0);
-//		assertEquals("errors found", 0, compilationUnit.getMessages().length); //$NON-NLS-1$
-//		assertEquals("errors found", 0, compilationUnit.getProblems().length); //$NON-NLS-1$
-//		assertNotNull("not null", node); //$NON-NLS-1$
-//		assertTrue("not a type declaration", node instanceof TypeDeclaration); //$NON-NLS-1$
-//		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-//		List superInterfaces = typeDeclaration.superInterfaces();
-//		assertEquals("wrong size", 1, superInterfaces.size()); //$NON-NLS-1$
-//		Name name = (Name) superInterfaces.get(0);
-//		assertTrue("not a qualified name", name.isQualifiedName()); //$NON-NLS-1$
-//		QualifiedName qualifiedName = (QualifiedName) name;
-//		name = qualifiedName.getQualifier();
-//		assertTrue("not a simple name", name.isSimpleName()); //$NON-NLS-1$
-//		SimpleName simpleName = (SimpleName) name;
-//		IBinding binding = simpleName.resolveBinding();
-//		assertNotNull("no binding", binding); //$NON-NLS-1$
-//		assertEquals("wrong type", IBinding.TYPE, binding.getKind()); //$NON-NLS-1$
-//		assertEquals("wrong name", "Sorter", binding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}	
-	
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14602
-//	 */
-//	public void test0337() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0337", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		char[] source = sourceUnit.getSource().toCharArray();
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0);
-//		assertEquals("errors found", 0, compilationUnit.getMessages().length); //$NON-NLS-1$
-//		assertNotNull("not null", node); //$NON-NLS-1$
-//		assertTrue("not a field declaration", node instanceof VariableDeclarationStatement); //$NON-NLS-1$
-//		VariableDeclarationStatement fieldDeclaration = (VariableDeclarationStatement) node;
-//		List fragments = fieldDeclaration.fragments();
-//		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
-//		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
-//		checkSourceRange(variableDeclarationFragment, "message= Test.m(\"s\", new String[]{\"g\"})", source); //$NON-NLS-1$
-//		checkSourceRange(fieldDeclaration, "String message= Test.m(\"s\", new String[]{\"g\"});", source); //$NON-NLS-1$
-//	}	
-
-//	/**
-//	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=14852
-//	 */
-//	public void test0338() throws JavaScriptModelException {
-//		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0338", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-//		ASTNode result = runConversion(sourceUnit, true);
-//		assertNotNull("No compilation unit", result); //$NON-NLS-1$
-//		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-//		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-//		ASTNode node = getASTNode(compilationUnit, 0, 0);
-//		assertEquals("errors found", 0, compilationUnit.getMessages().length); //$NON-NLS-1$
-//		assertNotNull("not null", node); //$NON-NLS-1$
-//		assertTrue("not a FunctionDeclaration", node instanceof FunctionDeclaration); //$NON-NLS-1$
-//		FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
-//		List thrownExceptions = methodDeclaration.thrownExceptions();
-//		assertEquals("Wrong size", 1, thrownExceptions.size()); //$NON-NLS-1$
-//		Name name = (Name) thrownExceptions.get(0);
-//		IBinding binding = name.resolveBinding();
-//		assertEquals("wrong type", IBinding.TYPE, binding.getKind()); //$NON-NLS-1$
-//		assertEquals("wrong name", "IOException", binding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
-//	}	
 
 	/**
 	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=15061
@@ -8580,39 +8162,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 				"if (flag)\n" + //$NON-NLS-1$
 				"			i= 10;"; //$NON-NLS-1$
 		checkSourceRange(node, expectedSource, source);
-	}
-	
-	/**
-	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=16132
-	 */
-	public void test0344() throws JavaScriptModelException {
-		Preferences preferences = null;
-		String pb_assert = null;
-		String compiler_source = null;
-		String compiler_compliance = null;
-		try {
-			IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0344", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			preferences = JavaScriptCore.getPlugin().getPluginPreferences();
-			pb_assert = preferences.getString(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER);
-			compiler_source = preferences.getString(JavaScriptCore.COMPILER_SOURCE);
-			compiler_compliance = preferences.getString(JavaScriptCore.COMPILER_COMPLIANCE);
-			
-			preferences.setValue(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR); 
-			preferences.setValue(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
-			preferences.setValue(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_4); 
-			
-			ASTNode result = runConversion(sourceUnit, true);
-			assertNotNull("No compilation unit", result); //$NON-NLS-1$
-			assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
-			JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
-			assertEquals("errors found", 0, compilationUnit.getMessages().length); //$NON-NLS-1$
-		} finally {
-			if (preferences != null) {
-				preferences.setValue(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, pb_assert); 
-				preferences.setValue(JavaScriptCore.COMPILER_SOURCE, compiler_source); 
-				preferences.setValue(JavaScriptCore.COMPILER_COMPLIANCE, compiler_compliance); 
-			}
-		}
 	}
 	
 	/**
@@ -9407,7 +8956,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 	 */
 	public void test0376() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0376", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(sourceUnit, true);
 		assertNotNull("No compilation unit", result); //$NON-NLS-1$
 		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
@@ -9419,7 +8967,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 	}
 
 	/**
@@ -9621,7 +9168,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 	 */
 	public void test0387() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0387", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(sourceUnit, true);
 		assertNotNull("No compilation unit", result); //$NON-NLS-1$
 		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
@@ -9633,7 +9179,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 	}
 	
 	/**

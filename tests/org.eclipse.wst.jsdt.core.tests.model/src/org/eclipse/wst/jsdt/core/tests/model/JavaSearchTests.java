@@ -1760,19 +1760,6 @@ public void testPackageDeclaration4() throws CoreException {
 	}
 }
 /**
- * Bug 73551: NPE while searching package declaration
- * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=73551"
- */
-public void testPackageDeclarationBug73551() throws CoreException {
-	JavaSearchResultCollector result = new JavaSearchResultCollector();
-	result.showAccuracy = true;
-	IPackageDeclaration packDecl = getCompilationUnit("JSSearch", "src", "p71267", "Test.js").getPackageDeclaration("p71267");
-	search(packDecl, DECLARATIONS, getJavaSearchScope(),  result);
-	assertSearchResults(
-		"src/p71267/Test.java p71267 [No source] EXACT_MATCH",
-		result);
-}
-/**
  * Bug 117020: [search] Search for '*' does not report empty packages
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=117020"
  */

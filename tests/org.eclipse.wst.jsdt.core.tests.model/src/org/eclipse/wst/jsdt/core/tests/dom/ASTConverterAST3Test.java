@@ -8968,7 +8968,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 	 */
 	public void test0376() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0376", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
 		assertNotNull("No compilation unit", result); //$NON-NLS-1$
 		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
@@ -8980,7 +8979,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 	}
 
 	/**
@@ -9181,7 +9179,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 	 */
 	public void test0387() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0387", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
 		ASTNode result = runConversion(AST.JLS3, sourceUnit, true);
 		assertNotNull("No compilation unit", result); //$NON-NLS-1$
 		assertTrue("result is not a compilation unit", result instanceof JavaScriptUnit); //$NON-NLS-1$
@@ -9193,7 +9190,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		VariableDeclarationStatement variableDeclarationStatement = (VariableDeclarationStatement) node;
 		List fragments = variableDeclarationStatement.fragments();
 		assertEquals("Wrong size", 1, fragments.size()); //$NON-NLS-1$
-		VariableDeclarationFragment variableDeclarationFragment = (VariableDeclarationFragment) fragments.get(0);
 	}
 	
 	/**

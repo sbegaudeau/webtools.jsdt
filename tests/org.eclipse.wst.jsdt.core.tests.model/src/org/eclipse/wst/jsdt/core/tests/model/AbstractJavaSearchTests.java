@@ -126,9 +126,6 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 				} else if (element instanceof IImportDeclaration) {
 					IImportDeclaration importDeclaration = (IImportDeclaration)element;
 					unit = (IJavaScriptUnit)importDeclaration.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
-				} else if (element instanceof IPackageDeclaration) {
-					IPackageDeclaration packageDeclaration = (IPackageDeclaration)element;
-					unit = (IJavaScriptUnit)packageDeclaration.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				}
 				if (resource instanceof IFile) {
 					char[] contents = getSource(resource, element, unit);

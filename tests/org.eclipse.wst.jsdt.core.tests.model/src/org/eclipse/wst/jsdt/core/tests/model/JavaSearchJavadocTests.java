@@ -831,66 +831,6 @@ public class JavaSearchJavadocTests extends JavaSearchTests {
 	}
 
 	/**
-	 * Test fix for bug 54962.
-	 * @see <a href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=54962">54962</a>
-	 * @throws CoreException
-	 */
-	public void testBug54962() throws CoreException {
-		setJavadocOptions();
-		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j6", "Bug54962.js").getPackageDeclaration("j6");
-		search(packDecl, REFERENCES, getJavaSearchScope());
-		assertSearchResults(
-			"src/j6/Bug54962.java j6.Bug54962 [j6] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/j6/Bug54962.java j6.Bug54962 [j6] POTENTIAL_MATCH INSIDE_JAVADOC\n" + 
-			"src/j6/Bug54962.java j6.Bug54962 [j6] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/j7/qua/li/fied/Bug54962a.java [j6] EXACT_MATCH OUTSIDE_JAVADOC",
-			this.resultCollector);
-	}
-	public void testBug54962qualified() throws CoreException {
-		setJavadocOptions();
-		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "j7.qua.li.fied", "Bug54962a.js").getPackageDeclaration("j7.qua.li.fied");
-		search(packDecl, REFERENCES, getJavaSearchScope());
-		assertSearchResults(
-			"src/j7/qua/li/fied/Bug54962a.java j7.qua.li.fied.Bug54962a [j7.qua.li.fied] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/j7/qua/li/fied/Bug54962a.java j7.qua.li.fied.Bug54962a [j7.qua.li.fied] POTENTIAL_MATCH INSIDE_JAVADOC\n" + 
-			"src/j7/qua/li/fied/Bug54962a.java j7.qua.li.fied.Bug54962a [j7.qua.li.fied] EXACT_MATCH INSIDE_JAVADOC",
-			this.resultCollector);
-	}
-
-	/**
-	 * Test fix for bug 71267: [Search][Javadoc] SearchMatch in class javadoc reported with element of type IImportDeclaration
-	 * @see <a href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=71267">71267</a>
-	 * @throws CoreException
-	 */
-	public void testBug71267() throws CoreException {
-		setJavadocOptions();
-		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267", "Test.js").getPackageDeclaration("p71267");
-		search(packDecl, REFERENCES, getJavaSearchScope());
-		assertSearchResults(
-			"src/p71267/Test.java p71267.Test [p71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/Test.java p71267.Test [p71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java p71267.q71267.Test [p71267] EXACT_MATCH INSIDE_JAVADOC",
-			this.resultCollector);
-	}
-	public void testBug71267qualified() throws CoreException {
-		setJavadocOptions();
-		this.resultCollector.showInsideDoc = true;
-		IPackageDeclaration packDecl = getCompilationUnit("JavaSearch", "src", "p71267.q71267", "Test.js").getPackageDeclaration("p71267.q71267");
-		search(packDecl, REFERENCES, getJavaSearchScope());
-		assertSearchResults(
-			"src/p71267/q71267/Test.java p71267.q71267.Test [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java p71267.q71267.Test [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java p71267.q71267.Test.field [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java p71267.q71267.Test.field [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java void p71267.q71267.Test.method() [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC\n" + 
-			"src/p71267/q71267/Test.java void p71267.q71267.Test.method() [p71267.q71267] EXACT_MATCH INSIDE_JAVADOC",
-			this.resultCollector);
-	}
-
-	/**
 	 * Bug 83285: [javadoc] Javadoc reference to constructor of secondary type has no binding / not found by search
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=83285"
 	 */
