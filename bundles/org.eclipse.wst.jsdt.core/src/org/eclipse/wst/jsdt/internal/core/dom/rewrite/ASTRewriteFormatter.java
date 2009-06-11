@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -270,16 +270,10 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 		} else {
 			switch (node.getNodeType()) {
 				case ASTNode.ARRAY_TYPE:
-				case ASTNode.PARAMETERIZED_TYPE:
 				case ASTNode.PRIMITIVE_TYPE:
 				case ASTNode.QUALIFIED_TYPE:
 				case ASTNode.SIMPLE_TYPE:
 					suffix= " x;"; //$NON-NLS-1$
-					code= CodeFormatter.K_CLASS_BODY_DECLARATIONS;
-					break;
-				case ASTNode.WILDCARD_TYPE:
-					prefix= "A<"; //$NON-NLS-1$
-					suffix= "> x;"; //$NON-NLS-1$
 					code= CodeFormatter.K_CLASS_BODY_DECLARATIONS;
 					break;
 				case ASTNode.JAVASCRIPT_UNIT:
@@ -315,11 +309,6 @@ import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
 					break;
 				case ASTNode.MODIFIER:
 					suffix= " function x() {}"; //$NON-NLS-1$
-					code= CodeFormatter.K_JAVASCRIPT_UNIT;
-					break;
-				case ASTNode.TYPE_PARAMETER:
-					prefix= "class X<"; //$NON-NLS-1$
-					suffix= "> {}"; //$NON-NLS-1$
 					code= CodeFormatter.K_JAVASCRIPT_UNIT;
 					break;
 				case ASTNode.MEMBER_REF:

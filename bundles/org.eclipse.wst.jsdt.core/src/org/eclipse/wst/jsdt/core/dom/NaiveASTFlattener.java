@@ -747,15 +747,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			printModifiers(node.modifiers());
-			if (!node.typeParameters().isEmpty()) {
-				this.buffer.append("<");//$NON-NLS-1$
-				for (Iterator it = node.typeParameters().iterator(); it.hasNext(); ) {
-					if (it.hasNext()) {
-						this.buffer.append(",");//$NON-NLS-1$
-					}
-				}
-				this.buffer.append(">");//$NON-NLS-1$
-			}
 		}
 		this.buffer.append("function ");//$NON-NLS-1$
 //		if (!node.isConstructor()) {

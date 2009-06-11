@@ -596,7 +596,6 @@ class DefaultBindingResolver extends BindingResolver {
 				case ASTNode.ASSIGNMENT :
 				case ASTNode.POSTFIX_EXPRESSION :
 				case ASTNode.PREFIX_EXPRESSION :
-				case ASTNode.CAST_EXPRESSION :
 				case ASTNode.TYPE_LITERAL :
 				case ASTNode.INFIX_EXPRESSION :
 				case ASTNode.INSTANCEOF_EXPRESSION :

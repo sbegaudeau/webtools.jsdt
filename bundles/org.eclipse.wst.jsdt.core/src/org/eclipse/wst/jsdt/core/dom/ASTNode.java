@@ -194,13 +194,6 @@ public abstract class ASTNode {
 	 */
 	public static final int ARRAY_TYPE = 5;
 
-	/*
-	 * Node type constant indicating a node of type
-	 * <code>AssertStatement</code>.
-	 * @see AssertStatement
-	 */
-	public static final int ASSERT_STATEMENT = 6;
-
 	/**
 	 * Node type constant indicating a node of type
 	 * <code>Assignment</code>.
@@ -228,13 +221,6 @@ public abstract class ASTNode {
 	 * @see BreakStatement
 	 */
 	public static final int BREAK_STATEMENT = 10;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>CastExpression</code>.
-	 * @see CastExpression
-	 */
-	public static final int CAST_EXPRESSION = 11;
 
 	/**
 	 * Node type constant indicating a node of type
@@ -649,23 +635,6 @@ public abstract class ASTNode {
 	 */
 	public static final int ENHANCED_FOR_STATEMENT = 70;
 
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>TypeParameter</code>.
-	 * @see TypeParameter
-	 *  
-	 */
-	public static final int TYPE_PARAMETER = 73;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>ParameterizedType</code>.
-	 * @see ParameterizedType
-	 *  
-	 */
-	public static final int PARAMETERIZED_TYPE = 74;
-
 	/**
 	 * Node type constant indicating a node of type
 	 * <code>QualifiedType</code>.
@@ -673,15 +642,6 @@ public abstract class ASTNode {
 	 *  
 	 */
 	public static final int QUALIFIED_TYPE = 75;
-
-	/**
-	 * Node type constant indicating a node of type
-	 * <code>WildcardType</code>.
-	 * @see WildcardType
-	 *  
-	 */
-	public static final int WILDCARD_TYPE = 76;
-
 
 
 	public static final int FOR_IN_STATEMENT = 83;
@@ -2551,6 +2511,7 @@ public abstract class ASTNode {
 		try {
 			appendDebugString(buffer);
 		} catch (RuntimeException e) {
+			e.printStackTrace();
 			// since debugger sometimes call toString methods, problems can easily happen when
 			// toString is called on an instance that is being initialized
 			buffer.setLength(p);

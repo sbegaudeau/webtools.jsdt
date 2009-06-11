@@ -534,18 +534,6 @@ void checkAndSetImports() {
 	imports = resolvedImports;
 }
 
-/**
- * Perform deferred check specific to parameterized types: bound checks, supertype collisions
- */
-void checkParameterizedTypes() {
-	if (compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) return;
-
-	for (int i = 0, length = topLevelTypes.length; i < length; i++) {
-		ClassScope scope = topLevelTypes[i].classScope;
-		scope.checkParameterizedTypeBounds();
-		scope.checkParameterizedSuperTypeCollisions();
-	}
-}
 /*
  * INTERNAL USE-ONLY
  * Innerclasses get their name computed as they are generated, since some may not

@@ -381,7 +381,7 @@ public class ASTNodes {
 		int type= expression.getNodeType();
 		return type == ASTNode.INFIX_EXPRESSION || type == ASTNode.CONDITIONAL_EXPRESSION ||
 			type == ASTNode.PREFIX_EXPRESSION || type == ASTNode.POSTFIX_EXPRESSION ||
-			type == ASTNode.CAST_EXPRESSION || type == ASTNode.INSTANCEOF_EXPRESSION;
+			type == ASTNode.INSTANCEOF_EXPRESSION;
 	}
 	
 	

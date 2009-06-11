@@ -1181,19 +1181,6 @@ public final class AST {
 	 * import declarations, and no type declarations.
 	 *
 	 * @return the new unparented javaScript unit node
-	 * @deprecated Use {@link #newJavaScriptUnit()} instead
-	 */
-	public JavaScriptUnit newCompilationUnit() {
-		return newJavaScriptUnit();
-	}
-
-	//=============================== DECLARATIONS ===========================
-	/**
-	 * Creates an unparented javaScript unit node owned by this AST.
-	 * The javaScript unit initially has no package declaration, no
-	 * import declarations, and no type declarations.
-	 *
-	 * @return the new unparented javaScript unit node
 	 */
 	public JavaScriptUnit newJavaScriptUnit() {
 		return new JavaScriptUnit(this);
@@ -1249,25 +1236,6 @@ public final class AST {
 		TypeDeclaration result = new TypeDeclaration(this);
 		result.setInterface(false);
 		return result;
-	}
-
-	/**
-	 * Creates an unparented method declaration node owned by this AST.
-	 * By default, the declaration is for a method of an unspecified, but
-	 * legal, name; no modifiers; no doc comment; no parameters; return
-	 * type void; no extra array dimensions; no thrown exceptions; and no
-	 * body (as opposed to an empty body).
-	 * <p>
-	 * To create a constructor, use this method and then call
-	 * <code>FunctionDeclaration.setConstructor(true)</code> and
-	 * <code>FunctionDeclaration.setName(className)</code>.
-	 * </p>
-	 *
-	 * @return a new unparented method declaration node
-	 * @deprecated Use {@link #newFunctionDeclaration()} instead
-	 */
-	public FunctionDeclaration newMethodDeclaration() {
-		return newFunctionDeclaration();
 	}
 
 	/**
@@ -1446,19 +1414,6 @@ public final class AST {
 	 * doc comment string)
 	 *
 	 * @return a new unparented doc comment node
-	 * @deprecated Use {@link #newJSdoc()} instead
-	 */
-	public JSdoc newJavadoc() {
-		return newJSdoc();
-	}
-
-	/**
-	 * Creates and returns a new doc comment node.
-	 * Initially the new node has an empty list of tag elements
-	 * (and, for backwards compatability, an unspecified, but legal,
-	 * doc comment string)
-	 *
-	 * @return a new unparented doc comment node
 	 */
 	public JSdoc newJSdoc() {
 		JSdoc result = new JSdoc(this);
@@ -1522,43 +1477,10 @@ public final class AST {
 	 * </p>
 	 *
 	 * @return a new unparented method reference node
-	 * @deprecated Use {@link #newFunctionRef()} instead
-	 */
-	public FunctionRef newMethodRef() {
-		return newFunctionRef();
-	}
-
-	/**
-	 * Creates and returns a new method reference node.
-	 * Initially the new node has no qualifier name,
-	 * an unspecified, but legal, method name, and an
-	 * empty parameter list.
-	 * <p>
-	 * Note that this node type is used only inside doc comments
-	 * ({@link JSdoc Javadoc}).
-	 * </p>
-	 *
-	 * @return a new unparented method reference node
 	 */
 	public FunctionRef newFunctionRef() {
 		FunctionRef result = new FunctionRef(this);
 		return result;
-	}
-
-	/**
-	 * Creates and returns a new method reference node.
-	 * Initially the new node has an unspecified, but legal,
-	 * type, not variable arity, and no parameter name.
-	 * <p>
-	 * Note that this node type is used only inside doc comments
-	 * ({@link JSdoc}).
-	 * </p>
-	 *
-	 * @return a new unparented method reference parameter node
-	 * @deprecated Use {@link #newFunctionRefParameter()} instead
-	 */
-	public FunctionRefParameter newMethodRefParameter() {
-		return newFunctionRefParameter();
 	}
 
 	/**
@@ -2001,19 +1923,6 @@ public final class AST {
 	public Assignment newAssignment() {
 		Assignment result = new Assignment(this);
 		return result;
-	}
-
-	/**
-	 * Creates an unparented method invocation expression node owned by this
-	 * AST. By default, the name of the method is unspecified (but legal)
-	 * there is no receiver expression, no type arguments, and the list of
-	 * arguments is empty.
-	 *
-	 * @return a new unparented method invocation expression node
-	 * @deprecated Use {@link #newFunctionInvocation()} instead
-	 */
-	public FunctionInvocation newMethodInvocation() {
-		return newFunctionInvocation();
 	}
 
 	/**

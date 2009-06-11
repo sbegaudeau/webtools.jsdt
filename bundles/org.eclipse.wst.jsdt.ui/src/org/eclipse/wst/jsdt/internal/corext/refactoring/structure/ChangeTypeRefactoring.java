@@ -650,11 +650,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 			if (grandParent == null)
 				return nodeTypeNotSupported();
 			
-			// adjustment needed if part of a parameterized type is selected
-			if (grandParent.getNodeType() == ASTNode.PARAMETERIZED_TYPE){
-				node= grandParent;
-			}
-			
 			// adjustment needed if part of a qualified name is selected
 			ASTNode current= null;
 			if (node.getNodeType() == ASTNode.QUALIFIED_NAME){
@@ -812,11 +807,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		} else if (
 				parent.getNodeType() == ASTNode.SIMPLE_TYPE && (grandParent.getNodeType() == ASTNode.VARIABLE_DECLARATION_STATEMENT)) {
 			return variableDeclarationStatementSelected((VariableDeclarationStatement) grandParent);
-		} else if (parent.getNodeType() == ASTNode.CAST_EXPRESSION) {
-			ASTNode decl= findDeclaration(parent.getRoot(), fSelectionStart, fSelectionLength+1);
-			VariableDeclarationFragment fragment= (VariableDeclarationFragment)decl;
-			SimpleName name = fragment.getName();
-			setSelectionRanges(name);
 		} else if (parent.getNodeType() == ASTNode.SIMPLE_TYPE && 
 				grandParent.getNodeType() == ASTNode.FIELD_DECLARATION) {
 			return fieldDeclarationSelected((FieldDeclaration) grandParent);

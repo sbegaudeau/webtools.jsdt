@@ -287,8 +287,6 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 			case ASTNode.VARIABLE_DECLARATION_STATEMENT:
 			case ASTNode.FIELD_DECLARATION:
 				return null; // no guessing for LHS types, cannot be a supertype of a known type
-			case ASTNode.PARAMETERIZED_TYPE:
-				return null; // Inheritance doesn't help: A<X> z= new A<String>(); -> 
 		}
 		return ASTResolving.guessBindingForTypeReference(node);
 	}

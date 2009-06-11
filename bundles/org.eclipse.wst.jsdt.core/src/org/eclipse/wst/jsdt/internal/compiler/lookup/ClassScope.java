@@ -720,23 +720,6 @@ public class ClassScope extends Scope {
 		} while ((currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
 	}
 
-	// Perform deferred bound checks for parameterized type references (only done after hierarchy is connected)
-	public void  checkParameterizedTypeBounds() {
-		TypeReference superclass = referenceContext.superclass;
-		if (superclass != null)
-			superclass.checkBounds(this);
-
-		TypeReference[] superinterfaces = referenceContext.superInterfaces;
-		if (superinterfaces != null)
-			for (int i = 0, length = superinterfaces.length; i < length; i++)
-				superinterfaces[i].checkBounds(this);
-
-		ReferenceBinding[] memberTypes = getReferenceBinding().memberTypes;
-		if (memberTypes != null && memberTypes != Binding.NO_MEMBER_TYPES)
-			for (int i = 0, size = memberTypes.length; i < size; i++)
-				 ((SourceTypeBinding) memberTypes[i]).classScope.checkParameterizedTypeBounds();
-	}
-
 	private void connectMemberTypes() {
 		SourceTypeBinding sourceType = getReferenceBinding();
 		ReferenceBinding[] memberTypes = sourceType.memberTypes;

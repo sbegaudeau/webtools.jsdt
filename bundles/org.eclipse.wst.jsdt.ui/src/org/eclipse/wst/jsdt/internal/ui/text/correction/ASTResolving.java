@@ -263,8 +263,6 @@ public class ASTResolving {
 				return ((SwitchStatement) parent.getParent()).getExpression().resolveTypeBinding();
 			}
 			break;
-		case ASTNode.ASSERT_STATEMENT:
-			return parent.getAST().resolveWellKnownType("java.lang.String"); //$NON-NLS-1$			
 		default:
 			// do nothing
 		}
@@ -322,14 +320,6 @@ public class ASTResolving {
 		return null;
 	}
 
-	private static ITypeBinding getReducedDimensionBinding(ITypeBinding arrayBinding, int dimsToReduce) {
-		while (dimsToReduce > 0) {
-			arrayBinding= arrayBinding.getComponentType();
-			dimsToReduce--;
-		}
-		return arrayBinding;
-	}
-
 	private static ITypeBinding getParameterTypeBinding(ASTNode node, List args, IFunctionBinding binding) {
 		ITypeBinding[] paramTypes= binding.getParameterTypes();
 		int index= args.indexOf(node);
@@ -374,13 +364,6 @@ public class ASTResolving {
 				}
 				return null;
 			}
-			case ASTNode.WILDCARD_TYPE: {
-				ITypeBinding parentBinding= getPossibleTypeBinding(parent);
-				if (parentBinding == null || !parentBinding.isWildcardType()) {
-					return null;
-				}
-				return null;
-			}
 			case ASTNode.QUALIFIED_TYPE: {
 				ITypeBinding parentBinding= getPossibleTypeBinding(parent);
 				if (parentBinding == null || !parentBinding.isMember()) {
@@ -412,8 +395,6 @@ public class ASTResolving {
 			case ASTNode.TYPE_LITERAL:
 				return ((TypeLiteral) parent).getType().resolveBinding();
 			case ASTNode.CLASS_INSTANCE_CREATION:
-				return getPossibleReferenceBinding(parent);
-			case ASTNode.CAST_EXPRESSION:
 				return getPossibleReferenceBinding(parent);
 			case ASTNode.TAG_ELEMENT:
 				TagElement tagElement= (TagElement) parent;

@@ -169,7 +169,7 @@ public final class TagElement extends ASTNode implements IDocElement {
 	/**
 	 * Standard doc tag name (value {@value}).
 	 */
-	public static final String TAG_SINCE = " "; //$NON-NLS-1$
+	public static final String TAG_SINCE = "@since"; //$NON-NLS-1$
 
 	/**
 	 * Standard doc tag name (value {@value}).
