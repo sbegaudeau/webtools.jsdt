@@ -32,10 +32,6 @@ public class ASTPositionsTest extends ConverterTestSetup {
 		super(name);
 	}
 
-	static {
-//		TESTS_NUMBERS = new int[] { 182, 183 };
-//		TESTS_NAMES = new String[] {"test0177"};
-	}
 	public static Test suite() {
 		return buildModelTestSuite(ASTPositionsTest.class);
 	}
@@ -64,7 +60,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 		
 	public void test001() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter/src/X.js", true/*resolve*/);
     	final String contents =
 			"var d = new Date();\r\n" +
 			"function X() {\r\n" +
@@ -89,11 +85,10 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 
 	public void test002() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter/src/X.js", true/*resolve*/);
     	final String contents =
-			"import java.util.Map;\n" +
-			"public class X {\n" +
-			"	Map<String, Number> map= null;\n" +
+			"function X() {\n" +
+			"	var map= null;\n" +
 			"}\n";
     	ASTNode node = buildAST(
     			contents,
@@ -105,11 +100,10 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test003() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter/src/X.js", true/*resolve*/);
     	final String contents =
-			"import java.util.Map;\r" +
-			"public class X {\r" +
-			"	Map<String, Number> map= null;\r" +
+			"function X() {\r" +
+			"	var map= null;\r" +
 			"}\r";
     	ASTNode node = buildAST(
     			contents,
@@ -121,9 +115,9 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test004() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter/src/X.js", true/*resolve*/);
     	String contents =
-			"package pack1;\npublic class X {}";
+			"function X() {}";
     	ASTNode node = buildAST(
     			contents,
     			this.workingCopy,
@@ -135,9 +129,9 @@ public class ASTPositionsTest extends ConverterTestSetup {
 	}
 	
 	public void test005() throws JavaScriptModelException {
-    	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
+    	this.workingCopy = getWorkingCopy("/Converter/src/X.js", true/*resolve*/);
     	String contents =
-			"package pack1;public class X {}";
+			"function X() {}";
     	ASTNode node = buildAST(
     			contents,
     			this.workingCopy,
@@ -147,6 +141,4 @@ public class ASTPositionsTest extends ConverterTestSetup {
 		assertEquals(1, compilationUnit.getLineNumber(0));
        	sanityCheck(contents, compilationUnit);
 	}
-
-
 }
