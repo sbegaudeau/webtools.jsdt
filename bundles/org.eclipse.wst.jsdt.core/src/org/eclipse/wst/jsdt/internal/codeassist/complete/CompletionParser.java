@@ -203,9 +203,6 @@ public class CompletionParser extends AssistParser {
 	public int[] potentialVariableNameStarts;
 	public int[] potentialVariableNameEnds;
 
-	CompletionOnAnnotationOfType pendingAnnotation;
-
-
 public CompletionParser(ProblemReporter problemReporter) {
 	super(problemReporter);
 	this.reportSyntaxErrorIsRequired = false;
@@ -1696,7 +1693,6 @@ protected void consumeCaseLabel() {
 protected void consumeClassBodyDeclaration() {
 	popElement(K_BLOCK_DELIMITER);
 	super.consumeClassBodyDeclaration();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeClassBodyopt() {
 	popElement(K_SELECTOR_QUALIFIER);
@@ -1725,11 +1721,6 @@ protected void consumeClassDeclaration() {
 
 protected void consumeClassHeaderName1() {
 	super.consumeClassHeaderName1();
-
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-		this.pendingAnnotation = null;
-	}
 	classHeaderExtendsOrImplements(false);
 }
 
@@ -1818,10 +1809,6 @@ protected void consumeConstructorHeaderName() {
 		return;
 	} else {
 			super.consumeConstructorHeaderName();
-			if (this.pendingAnnotation != null) {
-				this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-				this.pendingAnnotation = null;
-			}
 	}
 	/* force to start recovering in order to get fake field behavior */
 	if (currentElement == null){
@@ -1837,10 +1824,6 @@ protected void consumeConstructorHeaderName() {
 			super.consumeConstructorHeaderNameWithTypeParameters();
 		} else {
 			super.consumeConstructorHeaderNameWithTypeParameters();
-			if (this.pendingAnnotation != null) {
-				this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-				this.pendingAnnotation = null;
-			}
 		}
 	}
 
@@ -1857,10 +1840,6 @@ protected void consumeDimWithOrWithOutExpr() {
 }
 protected void consumeEnhancedForStatementHeaderInit(boolean hasModifiers) {
 	super.consumeEnhancedForStatementHeaderInit(hasModifiers);
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-		this.pendingAnnotation = null;
-	}
 }
 
 protected void consumeEnterAnonymousClassBody() {
@@ -1914,10 +1893,6 @@ protected void consumeEnterVariable() {
 }
 protected void consumeEnumHeaderName() {
 	super.consumeEnumHeaderName();
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-		this.pendingAnnotation = null;
-	}
 }
 protected void consumeEqualityExpression(int op) {
 	super.consumeEqualityExpression(op);
@@ -2270,10 +2245,6 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 }
 protected void consumeMethodHeaderNameWithTypeParameters( boolean isAnnotationMethod) {
 	super.consumeMethodHeaderNameWithTypeParameters(isAnnotationMethod);
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.astStack[this.astPtr];
-		this.pendingAnnotation = null;
-	}
 }
 protected void consumeMethodHeaderRightParen() {
 	super.consumeMethodHeaderRightParen();
@@ -2384,7 +2355,6 @@ protected void consumeRestoreDiet() {
 }
 protected void consumeSingleTypeImportDeclarationName() {
 	super.consumeSingleTypeImportDeclarationName();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeStatementBreakWithLabel() {
 	super.consumeStatementBreakWithLabel();
@@ -2410,7 +2380,6 @@ protected void consumeStatementSwitch() {
 }
 protected void consumeStaticInitializer() {
 	super.consumeStaticInitializer();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeNestedMethod() {
 	super.consumeNestedMethod();
@@ -2418,17 +2387,9 @@ protected void consumeNestedMethod() {
 }
 protected void consumePackageDeclarationName() {
 	super.consumePackageDeclarationName();
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.compilationUnit.currentPackage;
-		this.pendingAnnotation = null;
-	}
 }
 protected void consumePackageDeclarationNameWithModifiers() {
 	super.consumePackageDeclarationNameWithModifiers();
-	if (this.pendingAnnotation != null) {
-		this.pendingAnnotation.potentialAnnotatedNode = this.compilationUnit.currentPackage;
-		this.pendingAnnotation = null;
-	}
 }
 protected void consumePrimaryNoNewArrayName() {
 	// this is class literal access, so reset potential receiver
@@ -2961,7 +2922,6 @@ protected void consumeTypeArguments() {
 }
 protected void consumeTypeImportOnDemandDeclarationName() {
 	super.consumeTypeImportOnDemandDeclarationName();
-	this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
 }
 protected void consumeUnaryExpression(int op) {
 	super.consumeUnaryExpression(op);
@@ -3570,9 +3530,6 @@ public void recoveryTokenCheck() {
 	RecoveredElement oldElement = currentElement;
 	switch (currentToken) {
 		case TokenNameLBRACE :
-			if(!this.ignoreNextOpeningBrace) {
-				this.pendingAnnotation = null; // the pending annotation cannot be attached to next nodes
-			}
 			super.recoveryTokenCheck();
 			break;
 		case TokenNameRBRACE :
@@ -3662,7 +3619,6 @@ protected boolean resumeAfterRecovery() {
 			/* restart in diet mode for finding sibling constructs */
 			if (currentElement instanceof RecoveredType
 				|| currentElement.enclosingType() != null){
-				this.pendingAnnotation = null;
 
 				if(lastCheckPoint <= this.assistNode.sourceEnd) {
 					lastCheckPoint = this.assistNode.sourceEnd+1;

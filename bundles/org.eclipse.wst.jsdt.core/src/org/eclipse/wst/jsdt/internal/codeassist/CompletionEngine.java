@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionNodeFound;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnAnnotationOfType;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnArgumentName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnBrankStatementLabel;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnClassLiteralAccess;
@@ -1183,7 +1182,7 @@ public final class CompletionEngine
 
 			if (!guessedType.isValidBinding()) return;
 
-			if (!hasPossibleAnnotationTarget(guessedType, scope)) return;
+			return;
 		}
 
 
@@ -2562,33 +2561,6 @@ public final class CompletionEngine
 			}
 			this.requestor.endReporting();
 		}
-	}
-	private long computeTargetedElement(CompletionOnAnnotationOfType fakeNode) {
-		ASTNode annotatedElement = fakeNode.potentialAnnotatedNode;
-
-		if (annotatedElement instanceof TypeDeclaration) {
-			TypeDeclaration annotatedTypeDeclaration = (TypeDeclaration) annotatedElement;
-			if (TypeDeclaration.kind(annotatedTypeDeclaration.modifiers) == TypeDeclaration.ANNOTATION_TYPE_DECL) {
-				return TagBits.AnnotationForAnnotationType | TagBits.AnnotationForType;
-			}
-			return TagBits.AnnotationForType;
-		} else if (annotatedElement instanceof FieldDeclaration) {
-			if (fakeNode.isParameter) {
-				return TagBits.AnnotationForParameter;
-			}
-			return TagBits.AnnotationForField;
-		} else if (annotatedElement instanceof MethodDeclaration) {
-			return TagBits.AnnotationForMethod;
-		} else if (annotatedElement instanceof Argument) {
-			return TagBits.AnnotationForParameter;
-		} else if (annotatedElement instanceof ConstructorDeclaration) {
-			return TagBits.AnnotationForConstructor;
-		} else if (annotatedElement instanceof LocalDeclaration) {
-			return TagBits.AnnotationForLocalVariable;
-		} else if (annotatedElement instanceof ImportReference) {
-			return TagBits.AnnotationForPackage;
-		}
-		return 0;
 	}
 
 	private TypeBinding[] computeTypes(Expression[] arguments) {
@@ -6853,7 +6825,7 @@ public final class CompletionEngine
 				} else if (!CharOperation.prefixEquals(token, sourceType.sourceName, false)
 						&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, sourceType.sourceName))) continue ;
 
-				if (this.assistNodeIsAnnotation && !hasPossibleAnnotationTarget(sourceType, scope)) {
+				if (this.assistNodeIsAnnotation) {
 					continue next;
 				}
 
@@ -7841,33 +7813,6 @@ public final class CompletionEngine
 
 		return this.favoriteReferenceBindings = resolvedImports;
 	}
-
-	protected boolean hasPossibleAnnotationTarget(TypeBinding typeBinding, Scope scope) {
-		if (this.targetedElement == TagBits.AnnotationForPackage) {
-			long target = typeBinding.getAnnotationTagBits() & TagBits.AnnotationTargetMASK;
-			if(target != 0 && (target & TagBits.AnnotationForPackage) == 0) {
-				return false;
-			}
-		} else if ((this.targetedElement & TagBits.AnnotationForType) != 0) {
-			if (scope.parent != null &&
-					scope.parent.parent != null &&
-					scope.parent.referenceContext() instanceof CompletionOnAnnotationOfType &&
-					scope.parent.parent instanceof CompilationUnitScope) {
-				long target = typeBinding.getAnnotationTagBits() & TagBits.AnnotationTargetMASK;
-				if ((this.targetedElement & TagBits.AnnotationForAnnotationType) != 0) {
-					if(target != 0 && (target &(TagBits.AnnotationForType | TagBits.AnnotationForAnnotationType)) == 0) {
-						return false;
-					}
-				} else {
-					if(target != 0 && (target &(TagBits.AnnotationForType)) == 0) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
 
 	public AssistParser getParser() {
 
