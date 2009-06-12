@@ -47,10 +47,6 @@ private static Class[] getAllTestClasses() {
 		// Binding key tests
 		BindingKeyTests.class,
 
-//		
-//		TEMPORARY COMMENT OUT TESTS
-//		
-//		
 //		// creation of method
 //		CreateMembersTests.class,
 //		

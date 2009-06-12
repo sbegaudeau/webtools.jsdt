@@ -1,3 +1,3 @@
-function main( args) {
-	arr[5](1);
+function main(args) {
+	args[5](1);
 }

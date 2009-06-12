@@ -88,9 +88,10 @@ public void testAddNonJavaResourcePackageFragmentRoot() throws JavaScriptModelEx
 	Object[] resources = root.getNonJavaScriptResources();
 	assertResourceNamesEqual(
 		"unexpected non Java resources",
-		".classpath\n" + 
 		".project\n" + 
-		".settings",
+		".settings\n" + 
+		"lib142530.jar\n" + 
+		"lib148949.jar",
 		resources);
 	IFile resource = (IFile)resources[0];
 	IPath newPath = root.getUnderlyingResource().getFullPath().append("TestNonJavaResource.abc");
@@ -105,10 +106,11 @@ public void testAddNonJavaResourcePackageFragmentRoot() throws JavaScriptModelEx
 		resources = root.getNonJavaScriptResources();
 		assertResourcesEqual(
 			"incorrect non java resources", 
-			"/JavaProjectTests/.classpath\n" +
 			"/JavaProjectTests/.project\n" +
 			"/JavaProjectTests/.settings\n" +
-			"/JavaProjectTests/TestNonJavaResource.abc",
+			"/JavaProjectTests/TestNonJavaResource.abc\n" +
+			"/JavaProjectTests/lib142530.jar\n" +
+			"/JavaProjectTests/lib148949.jar",
 			resources);
 	} finally {
 		// clean up
@@ -124,14 +126,13 @@ public void testAddProjectPrerequisite() throws CoreException {
 		createJavaProject("P2");
 		waitForAutoBuild();
 		editFile(
-			"/P2/.classpath", 
+			"/P2/.settings/.jsdtscope", 
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<classpath>\n" +
 			"    <classpathentry kind=\"src\" path=\"/P1\"/>\n" +
-			"    <classpathentry kind=\"output\" path=\"\"/>\n" +
 			"</classpath>"
 		);
-		waitForAutoBuild();
+		getProject("P2").build(IncrementalProjectBuilder.FULL_BUILD, null);
 		IProject[] referencedProjects = getProject("P2").getReferencedProjects();
 		assertResourcesEqual(
 			"Unexpected project references", 
@@ -140,36 +141,6 @@ public void testAddProjectPrerequisite() throws CoreException {
 	} finally {
 		deleteProjects(new String[] {"P1", "P2"});
 	}
-}
-/**
- * Test that a class file in a jar has no corresponding resource.
- */
-public void testArchiveClassFileCorrespondingResource() throws JavaScriptModelException {
-	IPackageFragmentRoot root = getPackageFragmentRoot("JavaProjectTests", "lib.jar");
-	IPackageFragment element = root.getPackageFragment("p");
-	IClassFile cf= element.getClassFile("X.class");
-	IResource corr = cf.getCorrespondingResource();
-	assertTrue("incorrect corresponding resource", corr == null);
-}
-/**
- * Test that a binary type
- * has a corresponding resource.
- */
-public void testBinaryTypeCorrespondingResource() throws CoreException {
-	IClassFile element= getClassFile("/JavaProjectLibTests/lib/p/Y.class");
-	IType type= element.getType();
-	IResource corr= type.getCorrespondingResource();
-	assertTrue("incorrect corresponding resource", corr == null);
-}
-/**
- * Test that a class file
- * has a corresponding resource.
- */
-public void testClassFileCorrespondingResource() throws JavaScriptModelException {
-	IClassFile element= getClassFile("JavaProjectLibTests", "lib", "p", "Y.class");
-	IResource corr= element.getCorrespondingResource();
-	IResource res= getWorkspace().getRoot().getProject("JavaProjectLibTests").getFolder("lib").getFolder("p").getFile("Y.class");
-	assertTrue("incorrect corresponding resource", corr.equals(res));
 }
 /**
  * Test that a compilation unit
@@ -245,13 +216,12 @@ public void testExtraJavaLikeExtension1() throws CoreException {
 	try {
 		createJavaProject("P");
 		createFolder("/P/pack");
-		createFile("/P/pack/X.js", "package pack; public class X {}");
-		createFile("/P/pack/Y.bar", "package pack; public class Y {}");
+		createFile("/P/pack/X.js", "function X() {}");
+		createFile("/P/pack/Y.bar", "function Y() {}");
 		IPackageFragment pkg = getPackage("/P/pack");
 		assertSortedElementsEqual(
 			"Unexpected children of package pack", 
-			"X.java [in pack [in <project root> [in P]]]\n" + 
-			"Y.bar [in pack [in <project root> [in P]]]",
+			"X.js [in pack [in <project root> [in P]]]",
 			pkg.getChildren());
 	} finally {
 		deleteProject("P");
@@ -265,24 +235,16 @@ public void testExtraJavaLikeExtension2() throws CoreException {
 		createJavaProject("P");
 		createFolder("/P/pack");
 		createFile("/P/pack/X.txt", "");
-		createFile("/P/pack/Y.bar", "package pack; public class Y {}");
+		createFile("/P/pack/Y.bar", "function Y() {}");
 		IPackageFragment pkg = getPackage("/P/pack");
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources of package pack", 
-			"X.txt",
+			"X.txt\n" +
+			"Y.bar",
 			pkg.getNonJavaScriptResources());
 	} finally {
 		deleteProject("P");
 	}
-}
-/**
- * Test that a compilation unit can be found for a binary type
- */
-public void testFindElementClassFile() throws JavaScriptModelException {
-	IJavaScriptProject project= getJavaProject("JavaProjectTests");
-	IJavaScriptElement element= project.findElement(new Path("java/lang/Object.js"));
-	assertTrue("CU not found" , element != null && element.getElementType() == IJavaScriptElement.CLASS_FILE
-		&& element.getElementName().equals("Object.class"));
 }
 /**
  * Test that a compilation unit can be found
@@ -435,8 +397,8 @@ public void testGetNonJavaResources1() throws CoreException {
 		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"});
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
-			"/P/.classpath\n" +
-			"/P/.project",
+			"/P/.project\n" +
+			"/P/.settings",
 			project.getNonJavaScriptResources());
 	} finally {
 		this.deleteProject("P");
@@ -451,8 +413,8 @@ public void testGetNonJavaResources2() throws CoreException {
 		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin1", new String[] {"bin2"});
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
-			"/P/.classpath\n" +
-			"/P/.project",
+			"/P/.project\n" +
+			"/P/.settings",
 			project.getNonJavaScriptResources());
 	} finally {
 		this.deleteProject("P");
@@ -467,8 +429,8 @@ public void testGetNonJavaResources3() throws CoreException {
 		this.createFolder("/P/p1");
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
-			"/P/.classpath\n" +
-			"/P/.project",
+			"/P/.project\n" +
+			"/P/.settings",
 			project.getNonJavaScriptResources());
 	} finally {
 		this.deleteProject("P");
@@ -484,8 +446,8 @@ public void testGetNonJavaResources4() throws CoreException {
 		this.createFolder("/P/x.y");
 		assertResourcesEqual(
 			"Unexpected non-java resources for project",
-			"/P/.classpath\n" + 
 			"/P/.project\n" + 
+			"/P/.settings\n" + 
 			"/P/x.y",
 			project.getNonJavaScriptResources());
 	} finally {
@@ -544,43 +506,6 @@ public void testIsDefaultPackage() throws JavaScriptModelException {
 	IPackageFragment p =
 		getPackageFragment("JavaProjectTests", "lib.jar", "p");
 	assertTrue("p should not be default package", !p.isDefaultPackage());
-}
-/**
- * Test that a package fragment in a jar has no corresponding resource.
- */
-public void testJarPackageFragmentCorrespondingResource() throws JavaScriptModelException {
-	IPackageFragmentRoot root = getPackageFragmentRoot("JavaProjectTests", "lib.jar");
-	IPackageFragment element = root.getPackageFragment("p");
-	IResource corr = element.getCorrespondingResource();
-	assertTrue("incorrect corresponding resource", corr == null);
-}
-/**
- * Test that an output location folder is not created as a package fragment.
- */
-public void testOutputLocationNotAddedAsPackageFragment() throws JavaScriptModelException, CoreException {
-	IPackageFragmentRoot root= getPackageFragmentRoot("JavaProjectTests", "");
-	IJavaScriptElement[] packages= root.getChildren();
-	assertElementsEqual(
-		"unexpected package fragments in source folder",
-		"<default> [in <project root> [in JavaProjectTests]]\n" + 
-		"q [in <project root> [in JavaProjectTests]]\n" + 
-		"x [in <project root> [in JavaProjectTests]]\n" + 
-		"x.y [in <project root> [in JavaProjectTests]]",
-		packages);
-
-
-	// create a nested folder in the output location and make sure it does not appear
-	// as a package fragment
-	IContainer underLyingResource = (IContainer)root.getUnderlyingResource();
-	IFolder newFolder= underLyingResource.getFolder(new Path("bin")).getFolder(new Path("nested"));
-	try {
-		startDeltas();
-		newFolder.create(false, true, null);
-		assertTrue("should be one delta (resource deltas)", this.deltaListener.deltas != null || this.deltaListener.deltas.length == 1);
-	} finally {
-		stopDeltas();
-		deleteResource(newFolder);
-	}
 }
 /**
  * Test that a package fragment (non-external, non-jar, non-default)
@@ -804,9 +729,10 @@ public void testPackageFragmentRootNonJavaResources() throws JavaScriptModelExce
 	Object[] resources = root.getNonJavaScriptResources();
 	assertResourceNamesEqual(
 		"unexpected non java resoures (test case 1)", 
-		".classpath\n" + 
 		".project\n" + 
-		".settings",
+		".settings\n" + 
+		"lib142530.jar\n" +
+		"lib148949.jar",
 		resources);
 
 	// source package fragment root without resources
@@ -987,19 +913,9 @@ public void testProjectGetPackageFragments() throws JavaScriptModelException {
 	assertSortedElementsEqual(
 		"unexpected package fragments",
 		"<default> [in "+ getSystemJsPathString() + "]\n" + 
-		"<default> [in <project root> [in JavaProjectTests]]\n" + 
-		"<default> [in lib.jar [in JavaProjectTests]]\n" + 
-		"<default> [in lib142530.jar [in JavaProjectTests]]\n" + 
-		"<default> [in lib148949.jar [in JavaProjectTests]]\n" + 
-		"java [in "+ getSystemJsPathString() + "]\n" + 
-		"java.io [in "+ getSystemJsPathString() + "]\n" + 
-		"java.lang [in "+ getSystemJsPathString() + "]\n" + 
-		"p [in lib.jar [in JavaProjectTests]]\n" + 
-		"p [in lib142530.jar [in JavaProjectTests]]\n" + 
-		"p [in lib148949.jar [in JavaProjectTests]]\n" + 
 		"q [in <project root> [in JavaProjectTests]]\n" + 
 		"x [in <project root> [in JavaProjectTests]]\n" + 
-		"x.y [in <project root> [in JavaProjectTests]]",
+		"x/y [in <project root> [in JavaProjectTests]]",
 		fragments);
 }
 /*
@@ -1013,7 +929,7 @@ public void testProjectImport() throws CoreException {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				createJavaProject("P2");
 				editFile(
-					"/P2/.classpath", 
+					"/P2/.settings/.jsdtscope", 
 					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 					"<classpath>\n" +
 					"    <classpathentry kind=\"src\" path=\"/P1\"/>\n" +
@@ -1044,7 +960,7 @@ public void testRootGetPackageFragments() throws JavaScriptModelException {
 		"<default> [in <project root> [in JavaProjectTests]]\n" + 
 		"q [in <project root> [in JavaProjectTests]]\n" + 
 		"x [in <project root> [in JavaProjectTests]]\n" + 
-		"x.y [in <project root> [in JavaProjectTests]]",
+		"x/y [in <project root> [in JavaProjectTests]]",
 		fragments);
 
 	root= getPackageFragmentRoot("JavaProjectTests", "lib.jar");
@@ -1057,32 +973,6 @@ public void testRootGetPackageFragments() throws JavaScriptModelException {
 }
 /**
  * Test that the correct package fragments exist in the project.
- * (regression test for bug 32041 Multiple output folders fooling Java Model)
- */
-public void testRootGetPackageFragments2() throws CoreException {
-	try {
-		this.createJavaProject("P");
-		this.createFolder("/P/bin");
-		this.createFolder("/P/bin2");
-		this.editFile(
-			"/P/.classpath", 
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<classpath>\n" +
-			"    <classpathentry kind=\"src\" output=\"bin2\" path=\"\"/>\n" +
-			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
-			"</classpath>"
-		);
-		IPackageFragmentRoot root = getPackageFragmentRoot("/P");
-		assertElementsEqual(
-			"Unexpected packages",
-			"<default> [in <project root> [in P]]",
-			root.getChildren());
-	} finally {
-		this.deleteProject("P");
-	}
-}
-/**
- * Test that the correct package fragments exist in the project.
  * (regression test for bug 65693 Package Explorer shows .class files instead of .java)
  */
 public void testRootGetPackageFragments3() throws CoreException {
@@ -1090,29 +980,28 @@ public void testRootGetPackageFragments3() throws CoreException {
 		IJavaScriptProject p1 = createJavaProject("P1");
 		createFile(
 			"/P1/X.js",
-			"public class X {\n" +
+			"function X() {\n" +
 			"}"
 		);
 		getProject("P1").build(IncrementalProjectBuilder.FULL_BUILD, null);
 		IJavaScriptProject p2 = createJavaProject("P2");
 		editFile(
-			"/P2/.classpath", 
+			"/P2/.settings/.jsdtscope", 
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 			"<classpath>\n" +
 			"    <classpathentry kind=\"src\" path=\"\"/>\n" +
 			"    <classpathentry kind=\"lib\" path=\"/P1\"/>\n" +
-			"    <classpathentry kind=\"output\" path=\"\"/>\n" +
 			"</classpath>"
 		);
 		IPackageFragment pkg = p1.getPackageFragmentRoot(p1.getProject()).getPackageFragment("");
 		assertElementsEqual(
 			"Unexpected packages for P1",
-			"X.java [in <default> [in <project root> [in P1]]]",
+			"X.js [in <default> [in <project root> [in P1]]]",
 			pkg.getChildren());
 		pkg = p2.getPackageFragmentRoot(p1.getProject()).getPackageFragment("");
 		assertElementsEqual(
 			"Unexpected packages for P2",
-			"X.class [in <default> [in /P1 [in P2]]]",
+			"X.js [in <default> [in /P1 [in P2]]]",
 			pkg.getChildren());	
 	} finally {
 		deleteProject("P1");
@@ -1139,19 +1028,12 @@ public void testSourceFolderWithJarName() throws CoreException {
  */
 public void testSourceMethodCorrespondingResource() throws JavaScriptModelException {
 	IJavaScriptUnit element= getCompilationUnit("JavaProjectTests", "", "q", "A.js");
-	IFunction[] methods = element.getType("A").getFunctions();
+	IFunction[] methods = element.getFunctions();
 	assertTrue("missing methods", methods.length > 0);
 	IResource corr= methods[0].getCorrespondingResource();
 	assertTrue("incorrect corresponding resource", corr == null);
 }
-///**
-// * Test the jdklevel of the package fragment root
-// */
-//public void testJdkLevelRoot() throws JavaScriptModelException {
-//	IPackageFragmentRoot root= getPackageFragmentRoot("JavaProjectLibTests", "lib/");
-//	assertEquals("wrong type", IPackageFragmentRoot.K_BINARY, root.getKind());
-//	assertEquals("wrong jdk level", ClassFileConstants.JDK1_1, Util.getJdkLevel(root.getResource()));
-//}
+
 /**
  * Test User Library preference. External jar file referenced in library entry does not exist.
  * It does not need to as we only test the preference value...

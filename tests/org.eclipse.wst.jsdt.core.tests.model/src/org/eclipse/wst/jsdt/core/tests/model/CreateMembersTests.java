@@ -25,15 +25,6 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 		super(name);
 	}
 
-	// Use this static initializer to specify subset for tests
-	// All specified tests which do not belong to the class are skipped...
-	static {
-		// Names of tests to run: can be "testBugXXXX" or "BugXXXX")
-//		TESTS_PREFIX = "testCombineAccessRestrictions";
-//		TESTS_NAMES = new String[] {"test004"};
-//		TESTS_NUMBERS = new int[] { 5, 6 };
-//		TESTS_RANGE = new int[] { 21, 38 };
-	}
 	public static Test suite() {
 		return buildModelTestSuite(CreateMembersTests.class, 1/*sort ascending order*/);
 	}

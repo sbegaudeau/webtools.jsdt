@@ -31,16 +31,6 @@ public NameLookupTests2(String name) {
 	super(name);
 }
 
-	// Use this static initializer to specify subset for tests
-	// All specified tests which do not belong to the class are skipped...
-	static {
-//		org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator.PRINT_BUFFER = false;
-//		TESTS_PREFIX =  "testArray";
-//		TESTS_NAMES = new String[] { "testFindBinaryTypeWithDollarName" };
-//		TESTS_NUMBERS = new int[] { 8 };
-//		TESTS_RANGE = new int[] { 6, -1 };
-	}
-
 public static Test suite() {
 	return buildModelTestSuite(NameLookupTests2.class);
 }
@@ -199,8 +189,7 @@ public void testFindPackageFragmentWithWorkingCopy() throws CoreException {
 		createFolder("/P/p1");
 		workingCopies[0] = getWorkingCopy(
 			"/P/p1/X.js", 
-			"package p1;\n" +
-			"public class X {\n" +
+			"function X() {\n" +
 			"}"
 		);
 		NameLookup nameLookup = project.newNameLookup(workingCopies);
@@ -249,8 +238,8 @@ public void testFindBinaryTypeWithSameNameAsMember() throws CoreException, IOExc
 	try {
 		IJavaScriptProject project = createJavaProject("P", new String[] {}, new String[] {"/P/lib"}, new String[] {});
 		createFolder("/P/lib/p");
-		createFile("/P/lib/p/X.class", "");
-		createFile("/P/lib/p/X$X.class", "");
+		createFile("/P/lib/p/X.js", "");
+		createFile("/P/lib/p/X$X.js", "");
 		IType type = getNameLookup((JavaProject) project).findType("p.X", false, NameLookup.ACCEPT_ALL);
 		assertTypesEqual(
 			"Unexpected type", 

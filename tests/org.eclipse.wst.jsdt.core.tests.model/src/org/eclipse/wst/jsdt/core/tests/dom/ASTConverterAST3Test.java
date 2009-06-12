@@ -3416,11 +3416,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("From source", !superclass.isFromSource()); //$NON-NLS-1$
 		ITypeBinding supersuperclass = superclass.getSuperclass();
 		assertNull("No superclass for java.lang.Object", supersuperclass); //$NON-NLS-1$
-		ITypeBinding[] interfaces = typeBinding.getInterfaces();
-		assertNotNull("No interfaces", interfaces); //$NON-NLS-1$
-		assertEquals("More then one super interface", 1, interfaces.length); //$NON-NLS-1$
-		assertTrue("is not an interface", interfaces[0].isInterface()); //$NON-NLS-1$
-		assertTrue("From source", !interfaces[0].isFromSource()); //$NON-NLS-1$
 		assertEquals("Has fields", 0, typeBinding.getDeclaredFields().length); //$NON-NLS-1$
 	}
 

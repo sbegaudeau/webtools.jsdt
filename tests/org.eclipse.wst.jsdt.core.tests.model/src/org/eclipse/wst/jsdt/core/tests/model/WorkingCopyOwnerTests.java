@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1062,11 +1062,6 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			List types = cu.types();
 			assertEquals("Unexpected number of types in AST", 1, types.size());
 			TypeDeclaration type = (TypeDeclaration)types.get(0);
-			ITypeBinding typeBinding = type.resolveBinding();
-			assertTypeBindingsEqual(
-				"Unexpected interfaces", 
-				"I",
-				typeBinding.getInterfaces());
 		} finally {
 			if (workingCopy1 != null) {
 				workingCopy1.discardWorkingCopy();
