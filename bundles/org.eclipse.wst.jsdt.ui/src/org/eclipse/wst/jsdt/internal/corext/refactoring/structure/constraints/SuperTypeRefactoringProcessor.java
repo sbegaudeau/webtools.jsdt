@@ -320,11 +320,6 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			ITypeBinding type= null;
 			for (final Iterator iterator= fTypeBindings.iterator(); iterator.hasNext();) {
 				type= (ITypeBinding) iterator.next();
-				if (type.isTypeVariable()) {
-					final ITypeBinding[] bounds= type.getTypeBounds();
-					for (int index= 0; index < bounds.length; index++)
-						rewrite.addImport(bounds[index]);
-				}
 				rewrite.addImport(type);
 			}
 			IBinding binding= null;

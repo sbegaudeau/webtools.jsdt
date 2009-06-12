@@ -261,12 +261,6 @@ public class OverrideMethodDialog extends SourceActionDialog {
 			if (result != null)
 				return result;
 		}
-		final ITypeBinding[] types= binding.getInterfaces();
-		for (int index= 0; index < types.length; index++) {
-			final ITypeBinding result= getSuperType(types[index], name);
-			if (result != null)
-				return result;
-		}
 		return null;
 	}
 

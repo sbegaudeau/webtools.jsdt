@@ -592,9 +592,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	private void collectTypeVariables(ITypeBinding typeBinding, Set typeVariablesCollector) {
 		if (typeBinding.isTypeVariable()) {
 			typeVariablesCollector.add(typeBinding);
-			ITypeBinding[] typeBounds= typeBinding.getTypeBounds();
-			for (int i= 0; i < typeBounds.length; i++)
-				collectTypeVariables(typeBounds[i], typeVariablesCollector);
 			
 		} else if (typeBinding.isArray()) {
 			collectTypeVariables(typeBinding.getElementType(), typeVariablesCollector);

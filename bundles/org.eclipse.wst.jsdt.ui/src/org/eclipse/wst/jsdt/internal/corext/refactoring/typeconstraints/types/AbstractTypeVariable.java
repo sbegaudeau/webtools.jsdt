@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,17 +23,9 @@ public abstract class AbstractTypeVariable extends TType {
 
 	protected void initialize(ITypeBinding binding) {
 		super.initialize(binding);
-		ITypeBinding[] bounds= binding.getTypeBounds();
-		if (bounds.length == 0) {
-			fBounds= EMPTY_TYPE_ARRAY;
-			if (getEnvironment().getJavaLangObject() == null) {
-				getEnvironment().initializeJavaLangObject(binding.getErasure());
-			}
-		} else {
-			fBounds= new TType[bounds.length];
-			for (int i= 0; i < bounds.length; i++) {
-				fBounds[i]= getEnvironment().create(bounds[i]);
-			}
+		fBounds= EMPTY_TYPE_ARRAY;
+		if (getEnvironment().getJavaLangObject() == null) {
+			getEnvironment().initializeJavaLangObject(binding.getErasure());
 		}
 	}
 	

@@ -311,7 +311,6 @@ public class SourceProvider {
 		makeNamesUnique(rewriter, context.scope);
 		updateTypeReferences(rewriter, context);
 		updateStaticReferences(rewriter, context);
-		updateTypeVariables(rewriter, context);
 		updateMethodTypeVariable(rewriter, context);
 		
 		List ranges= null;
@@ -490,13 +489,6 @@ public class SourceProvider {
 			}
 		}
 		return receiver;
-	}
-
-	private void updateTypeVariables(ASTRewrite rewriter, CallContext context) {
-		ITypeBinding type= context.getReceiverType();
-		if (type == null)
-			return;
-		rewriteReferences(rewriter, type.getTypeArguments(), fAnalyzer.getTypeParameterReferences());
 	}
 	
 	private void updateMethodTypeVariable(ASTRewrite rewriter, CallContext context) {

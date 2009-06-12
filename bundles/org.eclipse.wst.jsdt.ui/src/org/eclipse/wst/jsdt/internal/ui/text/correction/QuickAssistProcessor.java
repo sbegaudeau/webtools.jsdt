@@ -266,11 +266,8 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		final IJavaScriptUnit cu= context.getCompilationUnit();
 		final ConvertAnonymousToNestedRefactoring refactoring= new ConvertAnonymousToNestedRefactoring(anonymTypeDecl);
 		String extTypeName= ASTNodes.getSimpleNameIdentifier((Name) node);
-		if (anonymTypeDecl.resolveBinding().getInterfaces().length == 0) {
-			refactoring.setClassName(Messages.format(CorrectionMessages.QuickAssistProcessor_name_extension_from_interface, extTypeName));
-		} else {
-			refactoring.setClassName(Messages.format(CorrectionMessages.QuickAssistProcessor_name_extension_from_class, extTypeName));
-		}
+		
+		refactoring.setClassName(Messages.format(CorrectionMessages.QuickAssistProcessor_name_extension_from_interface, extTypeName));
 
 		if (refactoring.checkInitialConditions(new NullProgressMonitor()).isOK()) {
 			LinkedProposalModel linkedProposalModel= new LinkedProposalModel();

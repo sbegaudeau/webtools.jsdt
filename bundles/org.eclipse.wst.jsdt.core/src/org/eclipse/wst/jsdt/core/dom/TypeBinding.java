@@ -70,10 +70,6 @@ class TypeBinding implements ITypeBinding {
 	private IVariableBinding[] fields;
 	private IFunctionBinding[] methods;
 	private ITypeBinding[] members;
-	private ITypeBinding[] interfaces;
-	private ITypeBinding[] typeArguments;
-	private ITypeBinding[] bounds;
-	private ITypeBinding[] typeParameters;
 
 	public TypeBinding(BindingResolver resolver, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding binding) {
 		this.binding = binding;
@@ -425,48 +421,6 @@ class TypeBinding implements ITypeBinding {
 		return this.resolver.getTypeBinding(this.binding.erasure());
 	}
 
-	public synchronized ITypeBinding[] getInterfaces() {
-		if (this.interfaces != null) {
-			return this.interfaces;
-		}
-		if (this.binding == null)
-			return this.interfaces = NO_TYPE_BINDINGS;
-		switch (this.binding.kind()) {
-			case Binding.ARRAY_TYPE :
-			case Binding.BASE_TYPE :
-				return this.interfaces = NO_TYPE_BINDINGS;
-		}
-		ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-		ReferenceBinding[] internalInterfaces = null;
-		try {
-			internalInterfaces = referenceBinding.superInterfaces();
-		} catch (RuntimeException e) {
-			/* in case a method cannot be resolvable due to missing jars on the includepath
-			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
-			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
-			 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
-			 */
-			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "Could not retrieve interfaces"); //$NON-NLS-1$
-		}
-		int length = internalInterfaces == null ? 0 : internalInterfaces.length;
-		if (length != 0) {
-			ITypeBinding[] newInterfaces = new ITypeBinding[length];
-			int interfacesCounter = 0;
-			for (int i = 0; i < length; i++) {
-				ITypeBinding typeBinding = this.resolver.getTypeBinding(internalInterfaces[i]);
-				if (typeBinding == null) {
-					continue;
-				}
-				newInterfaces[interfacesCounter++] = typeBinding;
-			}
-			if (length != interfacesCounter) {
-				System.arraycopy(newInterfaces, 0, (newInterfaces = new ITypeBinding[interfacesCounter]), 0, interfacesCounter);
-			}
-			return this.interfaces = newInterfaces;
-		}
-		return this.interfaces = NO_TYPE_BINDINGS;
-	}
-
 	public IJavaScriptElement getJavaElement() {
 		JavaElement element = getUnresolvedJavaElement();
 		if (element == null)
@@ -644,18 +598,6 @@ class TypeBinding implements ITypeBinding {
 				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) this.binding;
 				buffer = new StringBuffer();
 				buffer.append(parameterizedTypeBinding.sourceName());
-				ITypeBinding[] tArguments = getTypeArguments();
-				final int typeArgumentsLength = tArguments.length;
-				if (typeArgumentsLength != 0) {
-					buffer.append('<');
-					for (int i = 0; i < typeArgumentsLength; i++) {
-						if (i > 0) {
-							buffer.append(',');
-						}
-						buffer.append(tArguments[i].getName());
-					}
-					buffer.append('>');
-				}
 				return String.valueOf(buffer);
 
 			case Binding.RAW_TYPE :
@@ -790,33 +732,9 @@ class TypeBinding implements ITypeBinding {
 						.append('.');
 					ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) this.binding;
 					buffer.append(parameterizedTypeBinding.sourceName());
-					ITypeBinding[] tArguments = getTypeArguments();
-					final int typeArgumentsLength = tArguments.length;
-					if (typeArgumentsLength != 0) {
-						buffer.append('<');
-						for (int i = 0; i < typeArgumentsLength; i++) {
-							if (i > 0) {
-								buffer.append(',');
-							}
-							buffer.append(tArguments[i].getQualifiedName());
-						}
-						buffer.append('>');
-					}
 					return String.valueOf(buffer);
 				}
 				buffer.append(getTypeDeclaration().getQualifiedName());
-				ITypeBinding[] tArguments = getTypeArguments();
-				final int typeArgumentsLength = tArguments.length;
-				if (typeArgumentsLength != 0) {
-					buffer.append('<');
-					for (int i = 0; i < typeArgumentsLength; i++) {
-						if (i > 0) {
-							buffer.append(',');
-						}
-						buffer.append(tArguments[i].getQualifiedName());
-					}
-					buffer.append('>');
-				}
 				return String.valueOf(buffer);
 
 			default :
@@ -876,112 +794,6 @@ class TypeBinding implements ITypeBinding {
 			return null;
 		}
 		return this.resolver.getTypeBinding(superclass);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getTypeArguments()
-	 */
-	public ITypeBinding[] getTypeArguments() {
-		if (this.typeArguments != null) {
-			return this.typeArguments;
-		}
-		if (this.binding.isParameterizedType()) {
-			ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) this.binding;
-			final org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] arguments = parameterizedTypeBinding.arguments;
-			if (arguments != null) {
-				int argumentsLength = arguments.length;
-				ITypeBinding[] newTypeArguments = new ITypeBinding[argumentsLength];
-				for (int i = 0; i < argumentsLength; i++) {
-					ITypeBinding typeBinding = this.resolver.getTypeBinding(arguments[i]);
-					if (typeBinding == null) {
-						return this.typeArguments = NO_TYPE_BINDINGS;
-					}
-					newTypeArguments[i] = typeBinding;
-				}
-				return this.typeArguments = newTypeArguments;
-			}
-		}
-		return this.typeArguments = NO_TYPE_BINDINGS;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getTypeBounds()
-	 */
-	public ITypeBinding[] getTypeBounds() {
-		if (this.bounds != null) {
-			return this.bounds;
-		}
-		if (this.binding instanceof TypeVariableBinding) {
-			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			ReferenceBinding varSuperclass = typeVariableBinding.superclass();
-			org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding firstClassOrArrayBound = typeVariableBinding.firstBound;
-			int boundsLength = 0;
-			if (firstClassOrArrayBound != null) {
-				if (firstClassOrArrayBound == varSuperclass) {
-					boundsLength++;
-				} else if (firstClassOrArrayBound.isArrayType()) { // capture of ? extends/super arrayType
-					boundsLength++;
-				} else {
-					firstClassOrArrayBound = null;
-				}
-			}
-			ReferenceBinding[] superinterfaces = typeVariableBinding.superInterfaces();
-			int superinterfacesLength = 0;
-			if (superinterfaces != null) {
-				superinterfacesLength = superinterfaces.length;
-				boundsLength += superinterfacesLength;
-			}
-			if (boundsLength != 0) {
-				ITypeBinding[] typeBounds = new ITypeBinding[boundsLength];
-				int boundsIndex = 0;
-				if (firstClassOrArrayBound != null) {
-					ITypeBinding typeBinding = this.resolver.getTypeBinding(firstClassOrArrayBound);
-					if (typeBinding == null) {
-						return this.bounds = NO_TYPE_BINDINGS;
-					}
-					typeBounds[boundsIndex++] = typeBinding;
-				}
-				if (superinterfaces != null) {
-					for (int i = 0; i < superinterfacesLength; i++, boundsIndex++) {
-						ITypeBinding typeBinding = this.resolver.getTypeBinding(superinterfaces[i]);
-						if (typeBinding == null) {
-							return this.bounds = NO_TYPE_BINDINGS;
-						}
-						typeBounds[boundsIndex] = typeBinding;
-					}
-				}
-				return this.bounds = typeBounds;
-			}
-		}
-		return this.bounds = NO_TYPE_BINDINGS;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getTypeParameters()
-	 */
-	public ITypeBinding[] getTypeParameters() {
-		if (this.typeParameters != null) {
-			return this.typeParameters;
-		}
-		switch(this.binding.kind()) {
-			case Binding.RAW_TYPE :
-			case Binding.PARAMETERIZED_TYPE :
-				return this.typeParameters = NO_TYPE_BINDINGS;
-		}
-		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
-		int typeVariableBindingsLength = typeVariableBindings == null ? 0 : typeVariableBindings.length;
-		if (typeVariableBindingsLength != 0) {
-			ITypeBinding[] newTypeParameters = new ITypeBinding[typeVariableBindingsLength];
-			for (int i = 0; i < typeVariableBindingsLength; i++) {
-				ITypeBinding typeBinding = this.resolver.getTypeBinding(typeVariableBindings[i]);
-				if (typeBinding == null) {
-					return this.typeParameters = NO_TYPE_BINDINGS;
-				}
-				newTypeParameters[i] = typeBinding;
-			}
-			return this.typeParameters = newTypeParameters;
-		}
-		return this.typeParameters = NO_TYPE_BINDINGS;
 	}
 
 	/* (non-Javadoc)

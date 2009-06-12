@@ -1017,12 +1017,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 			if (b != null)
 				return b;
 		}
-		ITypeBinding[] interfaces= currentTypeBinding.getInterfaces();
-		for (int i= 0; i < interfaces.length; i++) {
-			IFunctionBinding b= findMethodBindingInHierarchy(interfaces[i], methodDeclaration);
-			if (b != null)
-				return b;
-		}
 		return null;
 	}
 
@@ -1037,10 +1031,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 
 	private void collectSuperTypes(ITypeBinding curr, List list) {
 		if (list.add(curr.getTypeDeclaration())) {
-			ITypeBinding[] interfaces= curr.getInterfaces();
-			for (int i= 0; i < interfaces.length; i++) {
-				collectSuperTypes(interfaces[i], list);
-			}
 			ITypeBinding superClass= curr.getSuperclass();
 			if (superClass != null) {
 				collectSuperTypes(superClass, list);

@@ -553,9 +553,6 @@ public final class StubUtility2 {
 					allMethods.add(curr);
 				}
 			}
-			ITypeBinding[] superInterfaces= typeBinding.getInterfaces();
-			for (int i= 0; i < superInterfaces.length; i++)
-				findUnimplementedInterfaceMethods(superInterfaces[i], visited, allMethods, currPack, toImplement);
 		}
 	}
 
@@ -578,9 +575,7 @@ public final class StubUtility2 {
 	private static void getDelegatableMethods(AST ast, List tuples, List methods, IVariableBinding fieldBinding, ITypeBinding typeBinding, ITypeBinding binding) {
 		boolean match= false;
 		if (typeBinding.isTypeVariable()) {
-			ITypeBinding[] typeBounds= typeBinding.getTypeBounds();
-			if (typeBounds == null || typeBounds.length == 0)
-				typeBounds= new ITypeBinding[] { ast.resolveWellKnownType("java.lang.Object") }; //$NON-NLS-1$
+			ITypeBinding[] typeBounds= new ITypeBinding[] { ast.resolveWellKnownType("java.lang.Object") }; //$NON-NLS-1$
 			for (int index= 0; index < typeBounds.length; index++) {
 				IFunctionBinding[] candidates= getDelegateCandidates(typeBounds[index], binding);
 				for (int candidate= 0; candidate < candidates.length; candidate++) {
@@ -598,9 +593,6 @@ public final class StubUtility2 {
 				final ITypeBinding superclass= typeBounds[index].getSuperclass();
 				if (superclass != null)
 					getDelegatableMethods(ast, tuples, methods, fieldBinding, superclass, binding);
-				ITypeBinding[] superInterfaces= typeBounds[index].getInterfaces();
-				for (int offset= 0; offset < superInterfaces.length; offset++)
-					getDelegatableMethods(ast, tuples, methods, fieldBinding, superInterfaces[offset], binding);
 			}
 		} else {
 			IFunctionBinding[] candidates= getDelegateCandidates(typeBinding, binding);
@@ -619,9 +611,6 @@ public final class StubUtility2 {
 			final ITypeBinding superclass= typeBinding.getSuperclass();
 			if (superclass != null)
 				getDelegatableMethods(ast, tuples, methods, fieldBinding, superclass, binding);
-			ITypeBinding[] superInterfaces= typeBinding.getInterfaces();
-			for (int offset= 0; offset < superInterfaces.length; offset++)
-				getDelegatableMethods(ast, tuples, methods, fieldBinding, superInterfaces[offset], binding);
 		}
 	}
 
@@ -675,10 +664,6 @@ public final class StubUtility2 {
 		}
 		clazz= typeBinding;
 		while (clazz != null) {
-			ITypeBinding[] superInterfaces= clazz.getInterfaces();
-			for (int index= 0; index < superInterfaces.length; index++) {
-				getOverridableMethods(ast, superInterfaces[index], allMethods);
-			}
 			clazz= clazz.getSuperclass();
 		}
 		if (typeBinding.isInterface())
@@ -705,10 +690,6 @@ public final class StubUtility2 {
 				if (findOverridingMethod(methods[offset], allMethods) == null && !Modifier.isStatic(modifiers))
 					allMethods.add(methods[offset]);
 			}
-		}
-		ITypeBinding[] superInterfaces= superBinding.getInterfaces();
-		for (int index= 0; index < superInterfaces.length; index++) {
-			getOverridableMethods(ast, superInterfaces[index], allMethods);
 		}
 	}
 
@@ -757,10 +738,6 @@ public final class StubUtility2 {
 		HashSet visited= new HashSet();
 		ITypeBinding curr= typeBinding;
 		while (curr != null) {
-			ITypeBinding[] superInterfaces= curr.getInterfaces();
-			for (int i= 0; i < superInterfaces.length; i++) {
-				findUnimplementedInterfaceMethods(superInterfaces[i], visited, allMethods, typeBinding.getPackage(), toImplement);
-			}
 			curr= curr.getSuperclass();
 		}
 

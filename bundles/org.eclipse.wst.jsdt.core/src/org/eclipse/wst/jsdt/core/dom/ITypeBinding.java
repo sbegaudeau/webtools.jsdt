@@ -275,38 +275,6 @@ public interface ITypeBinding extends IBinding {
 	public ITypeBinding getErasure();
 
 	/**
-	 * Returns a list of type bindings representing the direct superinterfaces
-	 * of the class, interface, or enum type represented by this type binding.
-	 * <p>
-	 * If this type binding represents a class or enum type, the return value
-	 * is an array containing type bindings representing all interfaces
-	 * directly implemented by this class. The number and order of the interface
-	 * objects in the array corresponds to the number and order of the interface
-	 * names in the <code>implements</code> clause of the original declaration
-	 * of this type.
-	 * </p>
-	 * <p>
-	 * If this type binding represents an interface, the array contains
-	 * type bindings representing all interfaces directly extended by this
-	 * interface. The number and order of the interface objects in the array
-	 * corresponds to the number and order of the interface names in the
-	 * <code>extends</code> clause of the original declaration of this interface.
-	 * </p>
-	 * <p>
-	 * If the class or enum implements no interfaces, or the interface extends
-	 * no interfaces, or if this type binding represents an array type, a
-	 * primitive type, the null type, a type variable, an annotation type,
-	 * a wildcard type, or a capture binding, this method returns an array of
-     * length 0.
-	 * </p>
-	 *
-	 * @return the list of type bindings for the interfaces extended by this
-	 *   class or enum, or interfaces extended by this interface, or otherwise
-	 *   the empty list
-	 */
-	public ITypeBinding[] getInterfaces();
-
-	/**
 	 * Returns the compiled modifiers for this class, interface, enum,
 	 * or annotation type binding.
 	 * The result may not correspond to the modifiers as declared in the
@@ -475,48 +443,6 @@ public interface ITypeBinding extends IBinding {
 	public ITypeBinding getSuperclass();
 
 	/**
-	 * Returns the type arguments of this generic type instance, or the
-	 * empty list for other type bindings.
-	 * <p>
-	 * Note that type arguments only occur on a type binding that represents
-	 * an instance of a generic type corresponding to a parameterized type
-	 * reference (e.g., <code>Collection&lt;String&gt;</code>).
-	 * Do not confuse these with type parameters which only occur on the
-	 * type binding corresponding directly to the declaration of the
-	 * generic class or interface (e.g., <code>Collection&lt;T&gt;</code>).
-	 * </p>
-	 *
-	 * @return the list of type bindings for the type arguments used to
-	 * instantiate the corresponding generic type, or otherwise the empty list
-	 * @see #getTypeDeclaration()
-	 * @see #isGenericType()
-	 * @see #isParameterizedType()
-	 * @see #isRawType()
-	 *  
-	 */
-	public ITypeBinding[] getTypeArguments();
-
-	/**
-	 * Returns the declared type bounds of this type variable or capture. If the
-	 * variable or the capture had no explicit bound, then it returns an empty list.
-     * <p>
-     * Note that per construction, it can only contain one class or array type,
-     * at most, and then it is located in first position.
-     * </p>
-     * <p>
-     * Also note that array type bound may only occur in the case of a capture
-     * binding, e.g. <code>capture-of ? extends Object[]</code>
-     * </p>
-	 *
-	 * @return the list of type bindings for this type variable or capture,
-     * or otherwise the empty list
-	 * @see #isCapture()
-	 * @see #isTypeVariable()
-	 *  
-	 */
-	public ITypeBinding[] getTypeBounds();
-
-	/**
 	 * Returns the binding for the type declaration corresponding to this type
 	 * binding.
 	 * <p>For parameterized types ({@link #isParameterizedType()})
@@ -533,24 +459,6 @@ public interface ITypeBinding extends IBinding {
 	 *  
 	 */
 	public ITypeBinding getTypeDeclaration();
-
-	/**
-	 * Returns the type parameters of this class or interface type binding.
-	 * <p>
-	 * Note that type parameters only occur on the binding of the
-	 * declaring generic class or interface; e.g., <code>Collection&lt;T&gt;</code>.
-	 * Type bindings corresponding to a raw or parameterized reference to a generic
-	 * type do not carry type parameters (they instead have non-empty type arguments
-	 * and non-trivial erasure).
-	 * </p>
-	 *
-	 * @return the list of binding for the type variables for the type
-	 * parameters of this type, or otherwise the empty list
-	 * @see #isTypeVariable()
-	 *  
-	 */
-	// TODO (jeem) - clarify whether binding for a generic type instance carries a copy of the generic type's type parameters as well as type arguments
-	public ITypeBinding[] getTypeParameters();
 
 	/**
 	 * Returns the corresponding wildcard binding of this capture binding.

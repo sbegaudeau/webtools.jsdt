@@ -349,13 +349,8 @@ public class BindingLabelProvider extends LabelProvider {
 				if (binding.isEnum()) {
 					buffer.append('{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}');
 				} else if (binding.isAnonymous()) {
-					ITypeBinding[] superInterfaces= binding.getInterfaces();
-					ITypeBinding baseType;
-					if (superInterfaces.length > 0) {
-						baseType= superInterfaces[0];
-					} else {
-						baseType= binding.getSuperclass();
-					}
+					ITypeBinding baseType= binding.getSuperclass();
+					
 					if (baseType != null) {
 						StringBuffer anonymBaseType= new StringBuffer();
 						getTypeLabel(baseType, flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, anonymBaseType);
@@ -368,12 +363,6 @@ public class BindingLabelProvider extends LabelProvider {
 				}
 			} else {
 				buffer.append(name);
-			}
-			
-			if ((flags & JavaScriptElementLabels.T_TYPE_PARAMETERS) != 0) {
-				if (binding.isGenericType()) {
-					getTypeParametersLabel(binding.getTypeParameters(), flags, buffer);
-				}
 			}
 		}
 

@@ -927,8 +927,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
             return;
 		Type newType= (Type) ASTNode.copySubtree(fAnonymousInnerClassNode.getAST(), classInstanceCreation.getType());
 		if (binding.getSuperclass().getQualifiedName().equals("java.lang.Object")) { //$NON-NLS-1$
-            Assert.isTrue(binding.getInterfaces().length <= 1);
-            if (binding.getInterfaces().length == 0)
                 return; 
         } else {
             declaration.setSuperclassType(newType); 
@@ -937,11 +935,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 
     private ITypeBinding getSuperTypeBinding() {
     	ITypeBinding types= fAnonymousInnerClassNode.resolveBinding();
-    	ITypeBinding[] interfaces= types.getInterfaces();
-    	if (interfaces.length > 0)
-    		return interfaces[0];
-    	else
-    		return types.getSuperclass();
+    	return types.getSuperclass();
     }
 
     private int createModifiersForNestedClass() {

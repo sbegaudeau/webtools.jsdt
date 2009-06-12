@@ -538,25 +538,6 @@ public final class ImportRewrite {
 		String qualifiedName= getRawQualifiedName(normalizedBinding);
 		if (qualifiedName.length() > 0) {
 			String str= internalAddImport(qualifiedName, qualifiedName, context);
-
-			ITypeBinding[] typeArguments= normalizedBinding.getTypeArguments();
-			if (typeArguments.length > 0) {
-				StringBuffer res= new StringBuffer(str);
-				res.append('<');
-				for (int i= 0; i < typeArguments.length; i++) {
-					if (i > 0) {
-						res.append(',');
-					}
-					ITypeBinding curr= typeArguments[i];
-					if (containsNestedCapture(curr, false)) { // see bug 103044
-						res.append('?');
-					} else {
-						res.append(addImport(curr, context));
-					}
-				}
-				res.append('>');
-				return res.toString();
-			}
 			return str;
 		}
 		return getRawName(normalizedBinding);
@@ -578,22 +559,12 @@ public final class ImportRewrite {
 		if (binding.isArray()) {
 			return containsNestedCapture(binding.getElementType(), true);
 		}
-		ITypeBinding[] typeArguments= binding.getTypeArguments();
-		for (int i= 0; i < typeArguments.length; i++) {
-			if (containsNestedCapture(typeArguments[i], true)) {
-				return true;
-			}
-		}
 		return false;
 	}
 
 	private static ITypeBinding normalizeTypeBinding(ITypeBinding binding) {
 		if (binding != null && !binding.isNullType() && !"void".equals(binding.getName())) { //$NON-NLS-1$
 			if (binding.isAnonymous()) {
-				ITypeBinding[] baseBindings= binding.getInterfaces();
-				if (baseBindings.length > 0) {
-					return baseBindings[0];
-				}
 				return binding.getSuperclass();
 			}
 			if (binding.isCapture()) {

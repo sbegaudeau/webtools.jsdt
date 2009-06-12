@@ -1353,10 +1353,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		if (type.getSuperclass() != null){
 			result.addAll(getAllSuperTypes(type.getSuperclass()));
 		}	
-		ITypeBinding[] interfaces= type.getInterfaces();
-		for (int i=0; i < interfaces.length; i++){
-			result.addAll(getAllSuperTypes(interfaces[i]));
-		}
 		if ((type != fObject) && !contains(result, fObject)){
 			result.add(fObject);
 		}

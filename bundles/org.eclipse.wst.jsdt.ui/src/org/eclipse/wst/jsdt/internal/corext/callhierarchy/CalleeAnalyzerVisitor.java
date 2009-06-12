@@ -211,8 +211,6 @@ class CalleeAnalyzerVisitor extends ASTVisitor {
                 } else {
                     if (!"java.lang.Object".equals(calledTypeBinding.getSuperclass().getQualifiedName())) { //$NON-NLS-1$
                         calledType= (IType) calledTypeBinding.getSuperclass().getJavaElement();
-                    } else {
-                        calledType = (IType) calledTypeBinding.getInterfaces()[0].getJavaElement();
                     }
                 }
 

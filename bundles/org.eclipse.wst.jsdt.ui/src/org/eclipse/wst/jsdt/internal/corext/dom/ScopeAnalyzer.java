@@ -227,11 +227,6 @@ public class ScopeAnalyzer {
 				return true;
 		}
 		
-		ITypeBinding[] interfaces= binding.getInterfaces(); // includes looking for methods: abstract, unimplemented methods
-		for (int i= 0; i < interfaces.length; i++) {
-			if (addInherited(interfaces[i], flags, requestor)) // recursive
-				return true;
-		}
 		return false;
 	}
 		
@@ -247,12 +242,6 @@ public class ScopeAnalyzer {
 		if (hasFlag(TYPES, flags) && !binding.isAnonymous()) {
 			if (requestor.acceptBinding(binding))
 				return true;
-			
-			ITypeBinding[] typeParameters= binding.getTypeParameters();
-			for (int i= 0; i < typeParameters.length; i++) {
-				if (requestor.acceptBinding(typeParameters[i]))
-					return true;
-			}
 		}
 		
 		addInherited(binding, flags, requestor); // add inherited 

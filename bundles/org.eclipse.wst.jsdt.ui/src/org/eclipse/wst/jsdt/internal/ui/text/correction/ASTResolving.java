@@ -857,14 +857,6 @@ public class ASTResolving {
 	}
 
 	private static void collectRelaxingTypes(Collection res, ITypeBinding type) {
-		ITypeBinding[] interfaces= type.getInterfaces();
-		for (int i= 0; i < interfaces.length; i++) {
-			ITypeBinding curr= interfaces[i];
-			if (!res.contains(curr)) {
-				res.add(curr);
-			}
-			collectRelaxingTypes(res, curr);
-		}
 		ITypeBinding binding= type.getSuperclass();
 		if (binding != null) {
 			if (!res.contains(binding)) {
@@ -929,15 +921,6 @@ public class ASTResolving {
 		}
 		if (type.isTypeVariable()) {
 			return isVariableDefinedInContext(context, type);
-		}
-		if (type.isGenericType()) {
-			ITypeBinding[] typeParameters= type.getTypeParameters();
-			for (int i= 0; i < typeParameters.length; i++) {
-				if (!isUseableTypeInContext(typeParameters[i], context, noWildcards)) {
-					return false;
-				}
-			}
-			return true;
 		}
 		if (type.isCapture()) {
 			type= type.getWildcard();

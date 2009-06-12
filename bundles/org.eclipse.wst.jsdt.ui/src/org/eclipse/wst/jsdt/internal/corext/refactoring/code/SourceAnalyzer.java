@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -389,23 +389,9 @@ class SourceAnalyzer  {
 					JavaStatusContext.create(fTypeRoot));
 				return result;
 			}
-			ITypeBinding[] typeParameters= declaringType.getTypeParameters();
-			for (int i= 0; i < typeParameters.length; i++) {
-				NameData data= new NameData(typeParameters[i].getName());
-				fTypeParameterReferences.add(data);
-				fTypeParameterMapping.put(typeParameters[i], data);
-			}
 			
 			fMethodTypeParameterReferences= new ArrayList(0);
-			fMethodTypeParameterMapping= new HashMap();
-			IFunctionBinding method= declarationBinding;
-			typeParameters= method.getTypeParameters();
-			for (int i= 0; i < typeParameters.length; i++) {
-				NameData data= new NameData(typeParameters[i].getName());
-				fMethodTypeParameterReferences.add(data);
-				fMethodTypeParameterMapping.put(typeParameters[i], data);
-			}
-			
+			fMethodTypeParameterMapping= new HashMap();		
 		}
 		if (fDeclaration.isVarargs()) {
 			List parameters= fDeclaration.parameters();

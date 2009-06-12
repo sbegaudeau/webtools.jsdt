@@ -696,9 +696,6 @@ public class CallInliner {
 			if(!visitor.visit(type)) {
 				return true;
 			}
-			else if(type.isInterface()) {
-				return !Bindings.visitInterfaces(type, visitor);
-			}
 			else if(Modifier.isAbstract(type.getModifiers())) {
 				return !Bindings.visitHierarchy(type, visitor);
 			}

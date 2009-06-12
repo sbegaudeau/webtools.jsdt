@@ -573,13 +573,11 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 		newMethod.setName(newMethodName);
 		newMethod.setBody(body);
 
-        ITypeBinding[] ctorOwnerTypeParameters= fCtorBinding.getDeclaringClass().getTypeParameters();
-
-        setMethodReturnType(newMethod, retTypeName, ctorOwnerTypeParameters, ast);
+        setMethodReturnType(newMethod, retTypeName, null, ast);
 
 		newMethod.modifiers().addAll(ASTNodeFactory.newModifiers(ast, Modifier.STATIC | Modifier.PUBLIC));
 
-        setCtorTypeArguments(newCtorCall, retTypeName, ctorOwnerTypeParameters, ast);
+        setCtorTypeArguments(newCtorCall, retTypeName, null, ast);
 
         createFactoryMethodConstructorArgs(ast, newCtorCall);
 

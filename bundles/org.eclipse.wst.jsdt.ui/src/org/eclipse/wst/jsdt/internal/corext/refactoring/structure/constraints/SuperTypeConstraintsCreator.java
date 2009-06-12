@@ -87,9 +87,6 @@ public final class SuperTypeConstraintsCreator extends HierarchicalASTVisitor {
 	private static void getOriginalMethods(final IFunctionBinding binding, final ITypeBinding type, final Collection originals, final boolean implementations) {
 		final ITypeBinding ancestor= type.getSuperclass();
 		if (!implementations) {
-			final ITypeBinding[] types= type.getInterfaces();
-			for (int index= 0; index < types.length; index++)
-				getOriginalMethods(binding, types[index], originals, implementations);
 			if (ancestor != null)
 				getOriginalMethods(binding, ancestor, originals, implementations);
 		}

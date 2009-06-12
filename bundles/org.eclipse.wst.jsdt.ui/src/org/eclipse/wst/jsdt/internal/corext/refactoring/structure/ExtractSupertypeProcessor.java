@@ -472,10 +472,6 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 				final ITypeBinding superBinding= binding.getSuperclass();
 				if (superBinding != null)
 					fTypeBindings.add(superBinding);
-				final ITypeBinding[] bindings= binding.getInterfaces();
-				for (int i= 0; i < bindings.length; i++) {
-	                fTypeBindings.add(bindings[i]);
-                }
 			}
 			final String imports= createTypeImports(extractedWorkingCopy, monitor);
 			if (imports != null && !"".equals(imports)) { //$NON-NLS-1$

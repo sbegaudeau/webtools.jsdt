@@ -23,16 +23,16 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.EnhancedForStatement;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
@@ -55,7 +55,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.util.TightSourceRangeCom
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.wst.jsdt.internal.ui.text.correction.ASTResolving;
 
 /**
  * Operation to convert for loops over iterables to enhanced for loops.
@@ -84,12 +83,6 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 		final ITypeBinding type= binding.getSuperclass();
 		if (type != null) {
 			final ITypeBinding result= getSuperType(type, name);
-			if (result != null)
-				return result;
-		}
-		final ITypeBinding[] types= binding.getInterfaces();
-		for (int index= 0; index < types.length; index++) {
-			final ITypeBinding result= getSuperType(types[index], name);
 			if (result != null)
 				return result;
 		}
@@ -177,16 +170,6 @@ public final class ConvertIterableLoopOperation extends ConvertLoopOperation {
 	 * @return the iterable type
 	 */
 	private ITypeBinding getIterableType(final ITypeBinding iterator) {
-		if (iterator != null) {
-			final ITypeBinding[] bindings= iterator.getTypeArguments();
-			if (bindings.length > 0) {
-				ITypeBinding arg= bindings[0];
-				if (arg.isWildcardType()) {
-					arg= ASTResolving.normalizeWildcardType(arg, true, getRoot().getAST());
-				}
-				return arg;
-			}
-		}
 		return getRoot().getAST().resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 	}
 	
