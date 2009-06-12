@@ -495,7 +495,7 @@ public class SourceProvider {
 		IFunctionBinding method= Invocations.resolveBinding(context.invocation);
 		if (method == null)
 			return;
-		rewriteReferences(rewriter, method.getTypeArguments(), fAnalyzer.getMethodTypeParameterReferences());
+		rewriteReferences(rewriter, null, fAnalyzer.getMethodTypeParameterReferences());
 	}
 
 	private void rewriteReferences(ASTRewrite rewriter, ITypeBinding[] typeArguments, List typeParameterReferences) {

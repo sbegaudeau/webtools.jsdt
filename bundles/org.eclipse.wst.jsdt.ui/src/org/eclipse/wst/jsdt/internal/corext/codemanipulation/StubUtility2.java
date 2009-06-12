@@ -388,9 +388,6 @@ public final class StubUtility2 {
 		decl.setName(ast.newSimpleName(binding.getName()));
 		decl.setConstructor(false);
 
-		ITypeBinding[] typeParams= binding.getTypeParameters();
-		List typeParameters= decl.typeParameters();
-
 		decl.setReturnType2(createTypeNode(importRewrite, binding.getReturnType(), ast));
 
 		List parameters= createParameters(unit, importRewrite, ast, binding, decl);

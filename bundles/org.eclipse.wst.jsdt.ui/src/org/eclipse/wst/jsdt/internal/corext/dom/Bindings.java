@@ -575,53 +575,19 @@ public class Bindings {
 		ITypeBinding[] m2Params= overridden.getParameterTypes();
 		if (m1Params.length != m2Params.length)
 			return false;
-		
-		ITypeBinding[] m1TypeParams= overriding.getTypeParameters();
-		ITypeBinding[] m2TypeParams= overridden.getTypeParameters();
-		if (m1TypeParams.length != m2TypeParams.length
-				&& m1TypeParams.length != 0) //non-generic m1 can override a generic m2
-			return false;
-		
-		//m1TypeParameters.length == (m2TypeParameters.length || 0)
-		if (m2TypeParams.length != 0) {
-			//Note: this branch does not 100% adhere to the spec and may report some false positives.
-			// Full compliance would require major duplication of compiler code.
-			
-			//Compare parameter types:
-			if (equals(m2Params, m1Params))
-				return true;
-			for (int i= 0; i < m1Params.length; i++) {
-				ITypeBinding m1Param= m1Params[i];
-				if (containsTypeVariables(m1Param))
-					m1Param= m1Param.getErasure(); // try to achieve effect of "rename type variables"
-				else if (m1Param.isRawType())
-					m1Param= m1Param.getTypeDeclaration();
-				if (! (equals(m1Param, m2Params[i].getErasure()))) // can erase m2
-					return false;
-			}
+	
+		// m1TypeParams.length == m2TypeParams.length == 0  
+		if (equals(m1Params, m2Params))
 			return true;
-			
-		} else {
-			// m1TypeParams.length == m2TypeParams.length == 0  
-			if (equals(m1Params, m2Params))
-				return true;
-			for (int i= 0; i < m1Params.length; i++) {
-				ITypeBinding m1Param= m1Params[i];
-				if (m1Param.isRawType())
-					m1Param= m1Param.getTypeDeclaration();
-				if (! (equals(m1Param, m2Params[i].getErasure()))) // can erase m2
-					return false;
-			}
-			return true;
+		for (int i= 0; i < m1Params.length; i++) {
+			ITypeBinding m1Param= m1Params[i];
+			if (m1Param.isRawType())
+				m1Param= m1Param.getTypeDeclaration();
+			if (! (equals(m1Param, m2Params[i].getErasure()))) // can erase m2
+				return false;
 		}
-	}
-
-	private static boolean containsTypeVariables(ITypeBinding type) {
-		if (type.isTypeVariable())
-			return true;
-		if (type.isArray())
-			return containsTypeVariables(type.getElementType());
-		return false;
+		return true;
+		
 	}
 
 	/**

@@ -191,16 +191,6 @@ public class BindingLabelProvider extends LabelProvider {
 
 	private static void getMethodLabel(IFunctionBinding binding, long flags, StringBuffer buffer) {
 		// return type
-		if ((flags & JavaScriptElementLabels.M_PRE_TYPE_PARAMETERS) != 0) {
-			if (binding.isGenericMethod()) {
-				ITypeBinding[] typeParameters= binding.getTypeParameters();
-				if (typeParameters.length > 0) {
-					getTypeParametersLabel(typeParameters, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
-					buffer.append(' ');
-				}
-			}
-		}
-		// return type
 		if (((flags & JavaScriptElementLabels.M_PRE_RETURNTYPE) != 0) && !binding.isConstructor()) {
 			getTypeLabel(binding.getReturnType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 			buffer.append(' ');
@@ -211,16 +201,6 @@ public class BindingLabelProvider extends LabelProvider {
 			buffer.append('.');
 		}
 		buffer.append(binding.getName());
-		if ((flags & JavaScriptElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
-			if (binding.isParameterizedMethod()) {
-				ITypeBinding[] typeArguments= binding.getTypeArguments();
-				if (typeArguments.length > 0) {
-					buffer.append(' ');
-					getTypeArgumentsLabel(typeArguments, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
-				}				
-			}
-		}
-		
 		
 		// parameters
 		buffer.append('(');
@@ -257,15 +237,6 @@ public class BindingLabelProvider extends LabelProvider {
 						buffer.append(JavaScriptElementLabels.COMMA_STRING);
 					}
 					getTypeLabel(exceptions[index], (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
-				}
-			}
-		}
-		if ((flags & JavaScriptElementLabels.M_APP_TYPE_PARAMETERS) != 0) {
-			if (binding.isGenericMethod()) {
-				ITypeBinding[] typeParameters= binding.getTypeParameters();
-				if (typeParameters.length > 0) {
-					buffer.append(' ');
-					getTypeParametersLabel(typeParameters, (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
 				}
 			}
 		}

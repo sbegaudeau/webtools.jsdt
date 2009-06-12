@@ -14,8 +14,8 @@ package org.eclipse.wst.jsdt.core.dom;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodB
 import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.Member;
@@ -51,8 +50,6 @@ class FunctionBinding implements IFunctionBinding {
 	private ITypeBinding declaringClass;
 	private ITypeBinding returnType;
 	private String key;
-	private ITypeBinding[] typeParameters;
-	private ITypeBinding[] typeArguments;
 
 	FunctionBinding(BindingResolver resolver, org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding binding) {
 		this.resolver = resolver;
@@ -292,13 +289,6 @@ class FunctionBinding implements IFunctionBinding {
 	}
 
 	/**
-	 * @see IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
-		return this.binding.isSynthetic();
-	}
-
-	/**
 	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isVarargs()
 	 *  
 	 */
@@ -334,77 +324,6 @@ class FunctionBinding implements IFunctionBinding {
 		}
 		org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding otherBinding = ((FunctionBinding) other).binding;
 		return BindingComparator.isEqual(this.binding, otherBinding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#getTypeParameters()
-	 */
-	public ITypeBinding[] getTypeParameters() {
-		if (this.typeParameters != null) {
-			return this.typeParameters;
-		}
-		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
-		int typeVariableBindingsLength = typeVariableBindings == null ? 0 : typeVariableBindings.length;
-		if (typeVariableBindingsLength == 0) {
-			return this.typeParameters = NO_TYPE_BINDINGS;
-		}
-		ITypeBinding[] tParameters = new ITypeBinding[typeVariableBindingsLength];
-		for (int i = 0; i < typeVariableBindingsLength; i++) {
-			ITypeBinding typeBinding = this.resolver.getTypeBinding(typeVariableBindings[i]);
-			if (typeBinding == null) {
-				return this.typeParameters = NO_TYPE_BINDINGS;
-			}
-			tParameters[i] = typeBinding;
-		}
-		return this.typeParameters = tParameters;
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isGenericMethod()
-	 *  
-	 */
-	public boolean isGenericMethod() {
-		// equivalent to return getTypeParameters().length > 0;
-		if (this.typeParameters != null) {
-			return this.typeParameters.length > 0;
-		}
-		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
-		return (typeVariableBindings != null && typeVariableBindings.length > 0);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#getTypeArguments()
-	 */
-	public ITypeBinding[] getTypeArguments() {
-		if (this.typeArguments != null) {
-			return this.typeArguments;
-		}
-
-		if (this.binding instanceof ParameterizedGenericMethodBinding) {
-			ParameterizedGenericMethodBinding genericMethodBinding = (ParameterizedGenericMethodBinding) this.binding;
-			org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] typeArgumentsBindings = genericMethodBinding.typeArguments;
-			int typeArgumentsLength = typeArgumentsBindings == null ? 0 : typeArgumentsBindings.length;
-			if (typeArgumentsLength != 0) {
-				ITypeBinding[] tArguments = new ITypeBinding[typeArgumentsLength];
-				for (int i = 0; i < typeArgumentsLength; i++) {
-					ITypeBinding typeBinding = this.resolver.getTypeBinding(typeArgumentsBindings[i]);
-					if (typeBinding == null) {
-						return this.typeArguments = NO_TYPE_BINDINGS;
-					}
-					tArguments[i] = typeBinding;
-				}
-				return this.typeArguments = tArguments;
-			}
-		}
-		return this.typeArguments = NO_TYPE_BINDINGS;
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isParameterizedMethod()
-	 */
-	public boolean isParameterizedMethod() {
-		return (this.binding instanceof ParameterizedGenericMethodBinding)
-			&& !((ParameterizedGenericMethodBinding) this.binding).isRaw;
 	}
 
 	/**

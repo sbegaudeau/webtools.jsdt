@@ -76,7 +76,6 @@ import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.JavaScriptRefactoringDescriptor;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
@@ -248,14 +247,7 @@ public class InlineConstantRefactoring extends ScriptableRefactoring {
 					if (! (referenceContext instanceof VariableDeclarationFragment
 							|| referenceContext instanceof SingleVariableDeclaration
 							|| referenceContext instanceof Assignment)) {
-						IFunctionBinding methodBinding= Invocations.resolveBinding(invocation);
-						ITypeBinding[] typeArguments= methodBinding.getTypeArguments();
-						ListRewrite typeArgsRewrite= fInitializerRewrite.getListRewrite(invocation, Invocations.getTypeArgumentsProperty(invocation));
-						for (int i= 0; i < typeArguments.length; i++) {
-							Type typeArgument= fNewLocationCuRewrite.getImportRewrite().addImport(typeArguments[i], fNewLocationCuRewrite.getAST());
-							fNewLocationCuRewrite.getImportRemover().registerAddedImports(typeArgument);
-							typeArgsRewrite.insertLast(typeArgument, null);
-						}
+						Invocations.resolveBinding(invocation);
 					}
 				}
 			}

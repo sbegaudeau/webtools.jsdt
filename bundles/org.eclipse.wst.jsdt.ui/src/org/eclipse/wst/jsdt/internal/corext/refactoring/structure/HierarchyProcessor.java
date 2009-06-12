@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
-import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
@@ -141,14 +140,7 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 					if (fMapping[index].getSourceName().equals(name) && node.getIdentifier().equals(name)) {
 						final FunctionDeclaration declaration= (FunctionDeclaration) ASTNodes.getParent(node, FunctionDeclaration.class);
 						if (declaration != null) {
-							final IFunctionBinding method= declaration.resolveBinding();
-							if (method != null) {
-								final ITypeBinding[] bindings= method.getTypeParameters();
-								for (int offset= 0; offset < bindings.length; offset++) {
-									if (bindings[offset].isEqualTo(binding))
-										return true;
-								}
-							}
+							declaration.resolveBinding();
 						}
 						fRewrite.set(node, SimpleName.IDENTIFIER_PROPERTY, fMapping[index].getTargetName(), null);
 					}

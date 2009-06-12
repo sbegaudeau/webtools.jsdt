@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -374,8 +374,7 @@ public class PromoteTempToFieldRefactoring extends ScriptableRefactoring {
     	if (initializer == null)
 	        return;
 	    
-		ITypeBinding[] methodTypeParameters= getMethodDeclaration().resolveBinding().getTypeParameters();
-	    LocalTypeAndVariableUsageAnalyzer localTypeAnalyer= new LocalTypeAndVariableUsageAnalyzer(methodTypeParameters);
+	    LocalTypeAndVariableUsageAnalyzer localTypeAnalyer= new LocalTypeAndVariableUsageAnalyzer(null);
 	    initializer.accept(localTypeAnalyer);
 	    fInitializerUsesLocalTypes= ! localTypeAnalyer.getUsageOfEnclosingNodes().isEmpty();
     }
@@ -389,8 +388,7 @@ public class PromoteTempToFieldRefactoring extends ScriptableRefactoring {
     	if (binding == null)
     		return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.PromoteTempToFieldRefactoring_cannot_promote); 
     	
-		ITypeBinding[] methodTypeParameters= getMethodDeclaration().resolveBinding().getTypeParameters();
-		LocalTypeAndVariableUsageAnalyzer analyzer= new LocalTypeAndVariableUsageAnalyzer(methodTypeParameters);
+		LocalTypeAndVariableUsageAnalyzer analyzer= new LocalTypeAndVariableUsageAnalyzer(null);
 		type.accept(analyzer);
 		boolean usesLocalTypes= ! analyzer.getUsageOfEnclosingNodes().isEmpty();
 		fTempTypeUsesClassTypeVariables= analyzer.getClassTypeVariablesUsed();
