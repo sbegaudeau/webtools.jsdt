@@ -192,13 +192,10 @@ private static Class[] getAllTestClasses() {
 //		// Class file tests
 //		ClassFileTests.class,
 //		
-//		// Java-like extensions tests
-//		JavaLikeExtensionsTests.class,
-//		
-//		// Creation of imports
-//		CreateImportsTests.class,
+		// Java-like extensions tests
+		JavaScriptLikeExtensionsTests.class,
 		
-		// 
+		// Code snipper parsing util tests
 		CodeSnippetParsingUtilTests.class
 	};
 	

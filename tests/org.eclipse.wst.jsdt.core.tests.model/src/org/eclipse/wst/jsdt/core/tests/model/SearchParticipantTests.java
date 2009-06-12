@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaSearchTests.JavaSearchResultCollector;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
+import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 
@@ -85,7 +86,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 		}
 	}
 	
-	public class TestSearchDocument extends SearchDocument {
+	public class TestSearchDocument extends JavaSearchDocument {
 
 		public boolean indexingRequested;
 		private String fileSystemPath;
@@ -122,14 +123,6 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 		protected String getPathString(IResource resource, IJavaScriptElement element) {
 			return super.getPathString(resource, element).replaceAll(".js", ".test");
 		}
-	}
-
-	// Use this static initializer to specify subset for tests
-	// All specified tests which do not belong to the class are skipped...
-	static {
-//		TESTS_NAMES = new String[] { "testSearch"};
-	//	TESTS_NUMBERS = new int[] { 23, 28, 38 };
-	//	TESTS_RANGE = new int[] { 21, 38 };
 	}
 
 	public static Test suite() {
@@ -210,7 +203,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 	public synchronized void testIndexDocument01() throws CoreException, InterruptedException {
 		createFile(
 			"/P/X.test",
-			"public class X {\n" +
+			"function X() {\n" +
 			"}"
 		);
 		TestSearchParticipant participant = new TestSearchParticipant();
@@ -271,7 +264,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 	public synchronized void testIndexDocument03() throws CoreException, InterruptedException {
 		createFile(
 			"/P/X.test",
-			"public class X {\n" +
+			"function X() {\n" +
 			"}"
 		);
 		TestSearchParticipant participant = new TestSearchParticipant();
@@ -295,7 +288,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 	public void testSearch() throws CoreException {
 		createFile(
 			"/P/X.test",
-			"public class X {\n" +
+			"function X() {\n" +
 			"}"
 		);
 
@@ -306,7 +299,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 		waitUntilIndexesReady();
 
 		// search for declaration of X
-		SearchPattern pattern = SearchPattern.createPattern("X", IJavaScriptSearchConstants.DECLARATIONS, IJavaScriptSearchConstants.TYPE, SearchPattern.R_EXACT_MATCH);
+		SearchPattern pattern = SearchPattern.createPattern("X", IJavaScriptSearchConstants.FUNCTION, IJavaScriptSearchConstants.FUNCTION, SearchPattern.R_EXACT_MATCH);
 		IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 		SearchRequestor requestor =  new TestResultCollector();
 		new SearchEngine().search(pattern, new SearchParticipant[] {participant}, scope, requestor, null);

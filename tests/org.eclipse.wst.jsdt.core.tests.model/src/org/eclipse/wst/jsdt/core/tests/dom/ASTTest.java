@@ -782,7 +782,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			} else {
 				td.modifiers().add(localAst.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD));
 			}
-			td.setInterface(false); 
 			td.setName(localAst.newSimpleName("MyClass")); //$NON-NLS-1$
 			{ 
 				JSdoc jd = localAst.newJSdoc();
@@ -2310,14 +2309,10 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		if (ast.apiLevel() == AST.JLS2) {
 			assertTrue(x.getModifiers() == Modifier.NONE);
 			assertTrue(x.getSuperclass() == null);
-			assertTrue(x.superInterfaces().size() == 0);
 		} else {
 			assertTrue(x.modifiers().size() == 0);
-			assertTrue(x.typeParameters().size() == 0);
 			assertTrue(x.getSuperclassType() == null);
-			assertTrue(x.superInterfaceTypes().size() == 0);
 		}
-		assertTrue(x.isInterface() == false);
 		assertTrue(x.getName().getParent() == x);
 		assertTrue(x.getName().isDeclaration() == true);
 		assertTrue(x.getJavadoc() == null);
@@ -2328,9 +2323,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ast.modificationCount() == previousCount);
 	
 		previousCount = ast.modificationCount();
-		x.setInterface(true);	
-		assertTrue(ast.modificationCount() > previousCount);
-		assertTrue(x.isInterface() == true);
 		
 		if (ast.apiLevel() == AST.JLS2) {
 			int legal = Modifier.PUBLIC | Modifier.PROTECTED
@@ -2383,19 +2375,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			});
 		}
 		
-		if (ast.apiLevel() == AST.JLS2) {
-			genericPropertyListTest(x, x.superInterfaces(),
-			  new Property("SuperInterfaces", true, Name.class) { //$NON-NLS-1$
-				public ASTNode sample(AST targetAst, boolean parented) {
-					SimpleName result = targetAst.newSimpleName("foo"); //$NON-NLS-1$
-					if (parented) {
-						targetAst.newExpressionStatement(result);
-					}
-					return result;
-				}
-			});
-		}
-		
 		if (ast.apiLevel() >= AST.JLS3) {
 			genericPropertyTest(x, new Property("SuperclassType", false, Type.class) { //$NON-NLS-1$
 				public ASTNode sample(AST targetAst, boolean parented) {
@@ -2415,7 +2394,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 		
 		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyListTest(x, x.superInterfaceTypes(),
+			genericPropertyListTest(x, null,
 			  new Property("SuperInterfaceTypes", true, Type.class) { //$NON-NLS-1$
 				public ASTNode sample(AST targetAst, boolean parented) {
 					SimpleType result = targetAst.newSimpleType(targetAst.newSimpleName("foo")); //$NON-NLS-1$

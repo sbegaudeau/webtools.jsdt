@@ -1058,13 +1058,9 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.setName(N1);
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setSuperclass(N2);
-			x1.superInterfaces().add(N3);
-			x1.superInterfaces().add(N4);
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.superInterfaceTypes().add(T1);
-			x1.superInterfaceTypes().add(T2);
 		}
 		x1.bodyDeclarations().add(FD1);
 		x1.bodyDeclarations().add(FD2);

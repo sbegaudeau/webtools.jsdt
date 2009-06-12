@@ -7843,22 +7843,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertEquals("errors found", 0, compilationUnit.getProblems().length); //$NON-NLS-1$
 		assertNotNull("not null", node); //$NON-NLS-1$
 		assertTrue("not a type declaration", node instanceof TypeDeclaration); //$NON-NLS-1$
-		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		List superInterfaces = typeDeclaration.superInterfaceTypes();
-		assertEquals("wrong size", 1, superInterfaces.size()); //$NON-NLS-1$
-		Type type = (Type) superInterfaces.get(0);
-		assertEquals("wrong type", type.getNodeType(), ASTNode.SIMPLE_TYPE);
-		SimpleType simpleType = (SimpleType) type;
-		Name name = simpleType.getName();
-		assertTrue("not a qualified name", name.isQualifiedName()); //$NON-NLS-1$
-		QualifiedName qualifiedName = (QualifiedName) name;
-		name = qualifiedName.getQualifier();
-		assertTrue("not a simple name", name.isSimpleName()); //$NON-NLS-1$
-		SimpleName simpleName = (SimpleName) name;
-		IBinding binding = simpleName.resolveBinding();
-		assertNotNull("no binding", binding); //$NON-NLS-1$
-		assertEquals("wrong type", IBinding.TYPE, binding.getKind()); //$NON-NLS-1$
-		assertEquals("wrong name", "Sorter", binding.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 	}	
 	
 	/**

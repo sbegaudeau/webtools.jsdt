@@ -1714,13 +1714,9 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.setName(N1);
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setSuperclass(N2);
-			x1.superInterfaces().add(N3);
-			x1.superInterfaces().add(N4);
 		} else {
 			x1.modifiers().add(MOD1);
 			x1.modifiers().add(MOD2);
-			x1.superInterfaceTypes().add(T1);
-			x1.superInterfaceTypes().add(T2); //$NON-NLS-1$
 		}
 		x1.bodyDeclarations().add(FD1);
 		x1.bodyDeclarations().add(FD2);
@@ -1729,7 +1725,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.accept(v1);
 		String result = b.toString();
 		if (ast.apiLevel() == AST.JLS2) {
-			assertTrue(result.equals("[(TD"+JD1S+N1S+N2S+N3S+N4S+FD1S+FD2S+"TD)]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			assertTrue(result.equals("[(TD"+JD1S+N1S+N2S+FD1S+FD2S+"TD)]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		} else {
 			assertTrue(result.equals("[(TD"+JD1S+MOD1S+MOD2S+N1S+TP1S+PT1S+T1S+T2S+FD1S+FD2S+"TD)]")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		}

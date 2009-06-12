@@ -3106,7 +3106,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			TypeDeclaration newDeclaration= ast.newTypeDeclaration();
 			newDeclaration.setName(ast.newSimpleName("X"));
-			newDeclaration.setInterface(true);
 				
 			rewrite.replace(stmt.getTypeDeclaration(), newDeclaration, null);
 		}

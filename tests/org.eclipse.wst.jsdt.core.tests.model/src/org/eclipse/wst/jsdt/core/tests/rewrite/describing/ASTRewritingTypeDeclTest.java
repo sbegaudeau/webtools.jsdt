@@ -110,12 +110,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			
 			SimpleName newSuperclass= ast.newSimpleName("Object");
 			rewrite.replace(superClass, newSuperclass, null);
-
-			List superInterfaces= type.superInterfaces();
-			assertTrue("Has super interfaces", !superInterfaces.isEmpty());
-			
-			SimpleName newSuperinterface= ast.newSimpleName("Cloneable");
-			rewrite.replace((ASTNode) superInterfaces.get(0), newSuperinterface, null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
@@ -130,9 +124,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			// change flags
 			int newModifiers= 0;
 			rewrite.set(type, TypeDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-
-			// change to interface
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.TRUE, null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", members.size() == 1);
@@ -148,10 +139,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			// change flags
 			int newModifiers= 0;
 			rewrite.set(type, TypeDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-
-			// change to class
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.FALSE, null);
-			
 			
 			SimpleName newSuperclass= ast.newSimpleName("Object");
 			rewrite.set(type, TypeDeclaration.SUPERCLASS_PROPERTY, newSuperclass, null);
@@ -224,12 +211,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			
 			Type newSuperclass= ast.newSimpleType(ast.newSimpleName("Object"));
 			rewrite.replace(superClass, newSuperclass, null);
-
-			List superInterfaces= type.superInterfaceTypes();
-			assertTrue("Has super interfaces", !superInterfaces.isEmpty());
-			
-			Type newSuperinterface= ast.newSimpleType(ast.newSimpleName("Cloneable"));
-			rewrite.replace((ASTNode) superInterfaces.get(0), newSuperinterface, null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
@@ -243,8 +224,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			
 			rewrite.remove((ASTNode) type.modifiers().get(0), null);
 			
-			// change to interface
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.TRUE, null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", members.size() == 1);
@@ -258,10 +237,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			TypeDeclaration type= findTypeDeclaration(astRoot, "G");
 			
 			rewrite.getListRewrite(type, TypeDeclaration.MODIFIERS2_PROPERTY).insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
-						
-			// change to class
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.FALSE, null);
-			
 			
 			Type newSuperclass= ast.newSimpleType(ast.newSimpleName("Object"));
 			rewrite.set(type, TypeDeclaration.SUPERCLASS_TYPE_PROPERTY, newSuperclass, null);
@@ -327,19 +302,11 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			// change flags
 			int newModifiers= 0;
 			rewrite.set(type, TypeDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-
-			// change to interface
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.TRUE, null);
 		
 			Name superClass= type.getSuperclass();
 			assertTrue("Has super type", superClass != null);
 			
 			rewrite.remove(superClass, null);
-
-			List superInterfaces= type.superInterfaces();
-			assertTrue("Has super interfaces", !superInterfaces.isEmpty());
-			
-			rewrite.remove((ASTNode) superInterfaces.get(0), null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
@@ -355,13 +322,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			// change flags
 			int newModifiers= Modifier.FINAL;
 			rewrite.set(type, TypeDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-
-			// change to interface
-			rewrite.set(type, TypeDeclaration.INTERFACE_PROPERTY, Boolean.TRUE, null);
-			
-			List superInterfaces= type.superInterfaces();
-			assertTrue("Has super interfaces", !superInterfaces.isEmpty());
-			rewrite.remove((ASTNode) superInterfaces.get(0), null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", members.size() == 1);
@@ -430,10 +390,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			// change flags
 			int newModifiers= Modifier.PUBLIC | Modifier.FINAL;
 			rewrite.set(type, TypeDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-				
-			SimpleName newSuperinterface= ast.newSimpleName("Cloneable");
-			
-			rewrite.getListRewrite(type, TypeDeclaration.SUPER_INTERFACES_PROPERTY).insertFirst(newSuperinterface, null);
 			
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
@@ -465,9 +421,6 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		}			
 		{ // insert interface
 			TypeDeclaration type= findTypeDeclaration(astRoot, "G");
-						
-			SimpleName newInterface= ast.newSimpleName("Runnable");
-			rewrite.getListRewrite(type, TypeDeclaration.SUPER_INTERFACES_PROPERTY).insertLast(newInterface, null);
 			
 			FunctionDeclaration newMethodDecl= createNewMethod(ast, "newMethod", true);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertLast(newMethodDecl,  null);

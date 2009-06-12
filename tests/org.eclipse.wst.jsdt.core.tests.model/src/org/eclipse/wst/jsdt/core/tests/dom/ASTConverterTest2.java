@@ -417,7 +417,6 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		assertNotNull(node);
 		assertTrue("Not a type declaration", node.getNodeType() == ASTNode.TYPE_DECLARATION); //$NON-NLS-1$
 		TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-		assertTrue("Not an interface", typeDeclaration.isInterface()); //$NON-NLS-1$
 		ITypeBinding typeBinding = typeDeclaration.resolveBinding();
 		assertNotNull("No type binding", typeBinding); //$NON-NLS-1$
 		assertNotNull("No declaring node", unit.findDeclaringNode(typeBinding)); //$NON-NLS-1$
