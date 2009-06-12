@@ -174,7 +174,7 @@ public class AnonymousTypeCompletionProposal extends JavaTypeCompletionProposal 
 							key= keys[index];
 							for (int offset= 0; offset < bindings.length; offset++) {
 								if (key.equals(bindings[offset].getKey())) {
-									stub= StubUtility2.createImplementationStub(copy, rewrite, importRewrite, bindings[offset], binding.getName(), binding.isInterface(), settings);
+									stub= StubUtility2.createImplementationStub(copy, rewrite, importRewrite, bindings[offset], binding.getName(), false, settings);
 									if (stub != null)
 										rewriter.insertFirst(stub, null);
 									break;

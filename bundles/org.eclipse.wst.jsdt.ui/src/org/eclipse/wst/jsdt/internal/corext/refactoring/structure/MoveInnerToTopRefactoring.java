@@ -1287,7 +1287,7 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 	private void modifyInterfaceMemberModifiers(final ITypeBinding binding) {
 		Assert.isNotNull(binding);
 		ITypeBinding declaring= binding.getDeclaringClass();
-		while (declaring != null && !declaring.isInterface()) {
+		while (declaring != null) {
 			declaring= declaring.getDeclaringClass();
 		}
 		if (declaring != null) {

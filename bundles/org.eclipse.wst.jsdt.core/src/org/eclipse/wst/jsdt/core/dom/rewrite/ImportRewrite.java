@@ -517,15 +517,6 @@ public final class ImportRewrite {
 		if (normalizedBinding == null) {
 			return "invalid"; //$NON-NLS-1$
 		}
-		if (normalizedBinding.isWildcardType()) {
-			StringBuffer res= new StringBuffer("?"); //$NON-NLS-1$
-			ITypeBinding bound= normalizedBinding.getBound();
-			if (bound != null && !bound.isWildcardType() && !bound.isCapture()) { // bug 95942
-				res.append(" super "); //$NON-NLS-1$
-				res.append(addImport(bound, context));
-			}
-			return res.toString();
-		}
 
 		if (normalizedBinding.isArray()) {
 			StringBuffer res= new StringBuffer(addImport(normalizedBinding.getElementType(), context));
@@ -547,15 +538,6 @@ public final class ImportRewrite {
 		if (binding == null || binding.isPrimitive() || binding.isTypeVariable()) {
 			return false;
 		}
-		if (binding.isCapture()) {
-			if (isNested) {
-				return true;
-			}
-			return containsNestedCapture(binding.getWildcard(), true);
-		}
-		if (binding.isWildcardType()) {
-			return containsNestedCapture(binding.getBound(), true);
-		}
 		if (binding.isArray()) {
 			return containsNestedCapture(binding.getElementType(), true);
 		}
@@ -566,9 +548,6 @@ public final class ImportRewrite {
 		if (binding != null && !binding.isNullType() && !"void".equals(binding.getName())) { //$NON-NLS-1$
 			if (binding.isAnonymous()) {
 				return binding.getSuperclass();
-			}
-			if (binding.isCapture()) {
-				return binding.getWildcard();
 			}
 			return binding;
 		}

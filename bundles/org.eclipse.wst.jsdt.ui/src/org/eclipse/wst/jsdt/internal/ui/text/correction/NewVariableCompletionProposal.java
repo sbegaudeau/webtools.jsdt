@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,6 @@ import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
@@ -357,7 +356,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 			newDecl.setType(type);
 			newDecl.modifiers().addAll(ASTNodeFactory.newModifiers(ast, evaluateFieldModifiers(newTypeDecl)));
 
-			if (fSenderBinding.isInterface() || fVariableKind == CONST_FIELD) {
+			if (fVariableKind == CONST_FIELD) {
 				fragment.setInitializer(ASTNodeFactory.newDefaultExpression(ast, type, 0));
 			}
 
@@ -371,7 +370,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 			ListRewrite listRewriter= rewrite.getListRewrite(newTypeDecl, property);
 			listRewriter.insertAt(newDecl, insertIndex, null);
 
-			ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(getLinkedProposalModel(), rewrite, newDecl.modifiers(), fSenderBinding.isInterface());
+			ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(getLinkedProposalModel(), rewrite, newDecl.modifiers(), false);
 			
 			addLinkedPosition(rewrite.track(newDecl.getType()), false, KEY_TYPE);
 			if (!isInDifferentCU) {
@@ -417,13 +416,6 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 
 		ITypeBinding binding= ASTResolving.guessBindingForReference(fOriginalNode);
 		if (binding != null) {
-			if (binding.isWildcardType()) {
-				binding= ASTResolving.normalizeWildcardType(binding, isVariableAssigned(), ast);
-				if (binding == null) {
-					// only null binding applies
-					binding= ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$ 
-				}
-			}
 			
 			if (isVariableAssigned()) {
 				ITypeBinding[] typeProposals= ASTResolving.getRelaxingTypes(ast, binding);
@@ -451,17 +443,6 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 
 
 	private int evaluateFieldModifiers(ASTNode newTypeDecl) {
-		if (fSenderBinding.isAnnotation()) {
-			return 0;
-		}
-		if (fSenderBinding.isInterface()) {
-			// for interface members copy the modifiers from an existing field
-			FieldDeclaration[] fieldDecls= ((TypeDeclaration) newTypeDecl).getFields();
-			if (fieldDecls.length > 0) {
-				return fieldDecls[0].getModifiers();
-			}
-			return 0;
-		}
 		int modifiers= 0;
 
 		if (fVariableKind == CONST_FIELD) {

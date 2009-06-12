@@ -349,10 +349,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ChangeTypeRefactoring_typeParametersNotSupported); 
 			}
 			
-			if (fSelectionTypeBinding.isEnum()){
-				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ChangeTypeRefactoring_enumsNotSupported); 
-			}
-			
 			pm.worked(1);
 
 			if (fSelectedType != null){ // if invoked from unit test, compute valid types here
@@ -544,7 +540,7 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 		ASTNode nodeToReplace= oldType;    
 			                   				                   
 	    //TODO handle types other than simple & parameterized (e.g., arrays)
-		Assert.isTrue(fSelectedType.isClass() || fSelectedType.isInterface());
+		Assert.isTrue(fSelectedType.isClass());
 		
 		Type newType= ast.newSimpleType(ASTNodeFactory.newName(ast, typeName));
 		

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public class OverrideCompletionProposal extends JavaTypeCompletionProposal imple
 					FunctionDeclaration stub= null;
 					for (index= 0; index < bindings.length; index++) {
 						if (key.equals(bindings[index].getKey())) {
-							stub= StubUtility2.createImplementationStub(fCompilationUnit, rewrite, importRewrite, bindings[index], binding.getName(), binding.isInterface(), settings);
+							stub= StubUtility2.createImplementationStub(fCompilationUnit, rewrite, importRewrite, bindings[index], binding.getName(), false, settings);
 							if (stub != null)
 								rewriter.insertFirst(stub, null);
 							break;

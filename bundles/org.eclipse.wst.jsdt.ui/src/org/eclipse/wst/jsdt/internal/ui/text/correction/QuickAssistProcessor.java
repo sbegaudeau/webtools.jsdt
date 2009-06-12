@@ -1079,7 +1079,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 		}
 		Expression right= (Expression) arguments.get(0);
 		ITypeBinding binding = right.resolveTypeBinding();
-		if (binding != null && !(binding.isClass() || binding.isInterface())) { //overloaded equals w/ non-class/interface argument or null
+		if (binding != null && !(binding.isClass())) { //overloaded equals w/ non-class/interface argument or null
 			return false;
 		}
 		if (resultingCollections == null) {

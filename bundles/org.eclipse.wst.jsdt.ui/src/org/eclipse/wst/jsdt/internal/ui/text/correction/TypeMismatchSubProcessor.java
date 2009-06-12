@@ -115,9 +115,6 @@ public class TypeMismatchSubProcessor {
 				if (currBinding == null) {
 					currBinding= ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 				}
-				if (currBinding.isWildcardType()) {
-					currBinding= ASTResolving.normalizeWildcardType(currBinding, true, ast);
-				}
 
 				ASTRewrite rewrite= ASTRewrite.create(ast);
 
@@ -144,9 +141,6 @@ public class TypeMismatchSubProcessor {
 			currBinding= Bindings.normalizeTypeBinding(currBinding);
 			if (currBinding == null) {
 				currBinding= ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
-			}
-			if (currBinding.isWildcardType()) {
-				currBinding= ASTResolving.normalizeWildcardType(currBinding, true, ast);
 			}
 			addChangeSenderTypeProposals(context, receiverNode, currBinding, true, 6, proposals);
 		}
@@ -246,11 +240,7 @@ public class TypeMismatchSubProcessor {
 		}
 		if (targetCu != null && ASTResolving.isUseableTypeInContext(returnType, overriddenDecl, false)) {
 			TypeChangeCompletionProposal proposal= new TypeChangeCompletionProposal(targetCu, overriddenDecl, astRoot, returnType, false, 7);
-			if (overridenDeclType.isInterface()) {
-				proposal.setDisplayName(Messages.format(CorrectionMessages.TypeMismatchSubProcessor_changereturnofimplemented_description, overriddenDecl.getName()));
-			} else {
-				proposal.setDisplayName(Messages.format(CorrectionMessages.TypeMismatchSubProcessor_changereturnofoverridden_description, overriddenDecl.getName()));
-			}
+			proposal.setDisplayName(Messages.format(CorrectionMessages.TypeMismatchSubProcessor_changereturnofoverridden_description, overriddenDecl.getName()));
 			proposals.add(proposal);
 		}
 	}

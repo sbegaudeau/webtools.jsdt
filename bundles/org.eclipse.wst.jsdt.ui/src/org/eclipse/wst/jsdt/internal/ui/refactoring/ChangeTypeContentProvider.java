@@ -54,9 +54,6 @@ class ChangeTypeContentProvider implements ITreeContentProvider {
 		if (type.getSuperclass() != null){
 			result.add(type.getSuperclass());
 		}	
-		if (fGeneralizeType.getOriginalType().isInterface() && type != fGeneralizeType.getObject()){
-			result.add(fGeneralizeType.getObject());
-		}
 		return result;
 	}	
 

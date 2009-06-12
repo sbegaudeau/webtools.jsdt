@@ -437,8 +437,6 @@ public class TypeContextChecker {
 	private static ITypeBinding handleBug84585(ITypeBinding typeBinding) {
 		if (typeBinding == null)
 			return null;
-		else if (typeBinding.isGenericType() && ! typeBinding.isRawType())
-			return null; //see bug 84585
 		else
 			return typeBinding;
 	}

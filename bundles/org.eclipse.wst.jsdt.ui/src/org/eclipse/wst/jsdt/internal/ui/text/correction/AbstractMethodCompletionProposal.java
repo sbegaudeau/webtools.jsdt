@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,7 +132,7 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 			} else {
 				decl.setReturnType2(returnType);
 			}
-			if (!fSenderBinding.isInterface() && returnType != null) {
+			if (returnType != null) {
 				ReturnStatement returnStatement= ast.newReturnStatement();
 				returnStatement.setExpression(ASTNodeFactory.newDefaultExpression(ast, returnType, 0));
 				bodyStatement= ASTNodes.asFormattedString(returnStatement, 0, String.valueOf('\n'), getCompilationUnit().getJavaScriptProject().getOptions(true));
@@ -142,15 +142,13 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		addNewParameters(rewrite, takenNames, decl.parameters());
 		addNewExceptions(rewrite, decl.thrownExceptions());
 
-		Block body= null;
-		if (!fSenderBinding.isInterface()) {
-			body= ast.newBlock();
-			String placeHolder= CodeGeneration.getMethodBodyContent(getCompilationUnit(), fSenderBinding.getName(), newNameNode.getIdentifier(), isConstructor(), bodyStatement, String.valueOf('\n'));
-			if (placeHolder != null) {
-				ASTNode todoNode= rewrite.createStringPlaceholder(placeHolder, ASTNode.RETURN_STATEMENT);
-				body.statements().add(todoNode);
-			}
+		Block body= ast.newBlock();
+		String placeHolder= CodeGeneration.getMethodBodyContent(getCompilationUnit(), fSenderBinding.getName(), newNameNode.getIdentifier(), isConstructor(), bodyStatement, String.valueOf('\n'));
+		if (placeHolder != null) {
+			ASTNode todoNode= rewrite.createStringPlaceholder(placeHolder, ASTNode.RETURN_STATEMENT);
+			body.statements().add(todoNode);
 		}
+		
 		decl.setBody(body);
 
 		CodeGenerationSettings settings= JavaPreferencesSettings.getCodeGenerationSettings(getCompilationUnit().getJavaScriptProject());

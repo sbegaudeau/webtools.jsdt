@@ -22,7 +22,7 @@ public final class GenericType extends HierarchyType {
 	}
 
 	protected void initialize(ITypeBinding binding, IType javaElementType) {
-		Assert.isTrue(binding.isGenericType());
+		Assert.isTrue(false);
 		super.initialize(binding, javaElementType);
 	}
 	

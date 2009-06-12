@@ -135,9 +135,6 @@ public class ReturnTypeSubProcessor {
 				if (binding == null) {
 					binding= ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 				}
-				if (binding.isWildcardType()) {
-					binding= ASTResolving.normalizeWildcardType(binding, true, ast);
-				}
 				
 				FunctionDeclaration methodDeclaration= (FunctionDeclaration) decl;
 
@@ -208,9 +205,6 @@ public class ReturnTypeSubProcessor {
 			typeBinding= Bindings.normalizeTypeBinding(typeBinding);
 			if (typeBinding == null) {
 				typeBinding= ast.resolveWellKnownType("void"); //$NON-NLS-1$
-			}
-			if (typeBinding.isWildcardType()) {
-				typeBinding= ASTResolving.normalizeWildcardType(typeBinding, true, ast);
 			}
 			
 			ASTRewrite rewrite= ASTRewrite.create(ast);

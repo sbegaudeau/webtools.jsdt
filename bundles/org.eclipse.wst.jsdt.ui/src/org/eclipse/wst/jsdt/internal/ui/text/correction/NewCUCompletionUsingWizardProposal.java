@@ -11,9 +11,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.JFaceResources;
@@ -254,10 +251,6 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 			if (type.isTopLevel() || type.isMember()) {
 				if (type.isClass() && (fTypeKind == K_CLASS)) {
 					page.setSuperClass(type.getQualifiedName(), true);
-				} else if (type.isInterface()) {
-					List superInterfaces= new ArrayList();
-					superInterfaces.add(type.getQualifiedName());
-					page.setSuperInterfaces(superInterfaces, true);
 				}
 			}
 		}

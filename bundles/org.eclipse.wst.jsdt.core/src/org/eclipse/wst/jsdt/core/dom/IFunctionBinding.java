@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -173,15 +173,6 @@ public interface IFunctionBinding extends IBinding {
 	 *  
 	 */
 	public ITypeBinding[] getTypeParameters();
-
-	/**
-	 * Returns whether this is the binding for an annotation type member.
-	 *
-	 * @return <code>true</code> iff this is the binding for an annotation type member
-	 *         and <code>false</code> otherwise
-	 *  
-	 */
-	public boolean isAnnotationMember();
 
 	/**
 	 * Returns whether this method binding represents a declaration of

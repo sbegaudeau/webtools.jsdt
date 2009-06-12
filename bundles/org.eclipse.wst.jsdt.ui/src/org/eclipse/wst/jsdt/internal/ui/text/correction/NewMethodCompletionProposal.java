@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
@@ -33,7 +32,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
@@ -53,17 +51,6 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 	}
 
 	private int evaluateModifiers(ASTNode targetTypeDecl) {
-		if (getSenderBinding().isAnnotation()) {
-			return 0;
-		}
-		if (getSenderBinding().isInterface()) {
-			// for interface and annotation members copy the modifiers from an existing field
-			FunctionDeclaration[] methodDecls= ((TypeDeclaration) targetTypeDecl).getMethods();
-			if (methodDecls.length > 0) {
-				return methodDecls[0].getModifiers();
-			}
-			return 0;
-		}
 		ASTNode invocationNode= getInvocationNode();
 		if (invocationNode instanceof FunctionInvocation) {
 			int modifiers= 0;
@@ -96,7 +83,7 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 	 */
 	protected void addNewModifiers(ASTRewrite rewrite, ASTNode targetTypeDecl, List modifiers) {
 		modifiers.addAll(rewrite.getAST().newModifiers(evaluateModifiers(targetTypeDecl)));
-		ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(getLinkedProposalModel(), rewrite, modifiers, getSenderBinding().isInterface());
+		ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(getLinkedProposalModel(), rewrite, modifiers, false);
 	}
 
 
@@ -168,9 +155,6 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 		}
 		if (newTypeNode == null) {
 			ITypeBinding binding= ASTResolving.guessBindingForReference(node);
-			if (binding != null && binding.isWildcardType()) {
-				binding= ASTResolving.normalizeWildcardType(binding, false, ast);
-			}
 			if (binding != null) {
 				newTypeNode= getImportRewrite().addImport(binding, ast);
 			} else {
@@ -226,9 +210,6 @@ public class NewMethodCompletionProposal extends AbstractMethodCompletionProposa
 
 	private Type evaluateParameterType(AST ast, Expression elem, String key) throws CoreException {
 		ITypeBinding binding= Bindings.normalizeTypeBinding(elem.resolveTypeBinding());
-		if (binding != null && binding.isWildcardType()) {
-			binding= ASTResolving.normalizeWildcardType(binding, true, ast);
-		}
 		if (binding != null) {
 			ITypeBinding[] typeProposals= ASTResolving.getRelaxingTypes(ast, binding);
 			for (int i= 0; i < typeProposals.length; i++) {

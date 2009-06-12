@@ -84,17 +84,6 @@ public interface ITypeBinding extends IBinding {
 	public String getBinaryName();
 
 	/**
-	 * Returns the bound of this wildcard type if it has one.
-	 * Returns <code>null</code> if this is not a wildcard type.
-	 *
-	 * @return the bound of this wildcard type, or <code>null</code> if none
-	 * @see #isWildcardType()
-	 * @see #isUpperbound()
-	 *  
-	 */
-	public ITypeBinding getBound();
-
-	/**
 	 * Returns the binding representing the component type of this array type,
 	 * or <code>null</code> if this is not an array type binding. The component
 	 * type of an array might be an array type.
@@ -461,29 +450,6 @@ public interface ITypeBinding extends IBinding {
 	public ITypeBinding getTypeDeclaration();
 
 	/**
-	 * Returns the corresponding wildcard binding of this capture binding.
-     * Returns <code>null</code> if this type bindings does not represent
-     * a capture binding.
-	 *
-	 * @return the corresponding wildcard binding for a capture
-	 * binding, <code>null</code> otherwise
-	 *  
-	 */
-	public ITypeBinding getWildcard();
-
-	/**
-	 * Returns whether this type binding represents an annotation type.
-	 * <p>
-	 * Note that an annotation type is always an interface.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this object represents an annotation type,
-	 *    and <code>false</code> otherwise
-	 *  
-	 */
-	public boolean isAnnotation();
-
-	/**
 	 * Returns whether this type binding represents an anonymous class.
 	 * <p>
 	 * An anonymous class is a subspecies of local class, and therefore mutually
@@ -521,33 +487,6 @@ public interface ITypeBinding extends IBinding {
 	public boolean isAssignmentCompatible(ITypeBinding variableType);
 
 	/**
-	 * Returns whether this type binding represents a capture binding.
-	 * <p>
-	 * Capture bindings result from capture conversion.
-	 * </p>
-	 * <p>
-	 * A capture binding may have upper bounds and a lower bound.
-	 * Upper bounds may be accessed using {@link #getTypeBounds()},
-	 * the lower bound must be accessed indirectly through the associated
-	 * wildcard {@link #getWildcard()} when it is a lower bound wildcard.
-	 * </p>
-	 * <p>
-	 * Note that capture bindings are distinct from type variables
-     * (even though they are often depicted as synthetic type
-     * variables); as such, {@link #isTypeVariable()} answers
-     * <code>false</code> for capture bindings, and
-     * {@link #isCapture()} answers <code>false</code> for type variables.
-	 * </p>
-     *
-	 * @return <code>true</code> if this type binding is a capture,
-	 *   and <code>false</code> otherwise
-	 * @see #getTypeBounds()
-	 * @see #getWildcard()
-	 *  
-	 */
-	public boolean isCapture();
-
-	/**
 	 * Returns whether this type is cast compatible with the given type.
 	 * <p>
 	 * NOTE: The cast compatibility check performs backwards.
@@ -574,15 +513,6 @@ public interface ITypeBinding extends IBinding {
 	public boolean isClass();
 
 	/**
-	 * Returns whether this type binding represents an enum type.
-	 *
-	 * @return <code>true</code> if this object represents an enum type,
-	 *    and <code>false</code> otherwise
-	 *  
-	 */
-	public boolean isEnum();
-
-	/**
 	 * Returns whether this type binding originated in source code.
 	 * Returns <code>false</code> for all primitive types, the null type,
 	 * array types, and for all classes, interfaces, enums, annotation
@@ -594,41 +524,6 @@ public interface ITypeBinding extends IBinding {
 	 *    and <code>false</code> otherwise
 	 */
 	public boolean isFromSource();
-
-	/**
-	 * Returns whether this type binding represents a declaration of
-	 * a generic class or interface.
-	 * <p>
-	 * Note that type parameters only occur on the binding of the
-	 * declaring generic class or interface; e.g., <code>Collection&lt;T&gt;</code>.
-	 * Type bindings corresponding to a raw or parameterized reference to a generic
-	 * type do not carry type parameters (they instead have non-empty type arguments
-	 * and non-trivial erasure).
-	 * This method is fully equivalent to <code>getTypeParameters().length &gt; 0)</code>.
-	 * </p>
-	 * <p>
-	 * Note that {@link #isGenericType()},
-	 * {@link #isParameterizedType()},
-	 * and {@link #isRawType()} are mutually exclusive.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this type binding represents a
-	 * declaration of a generic class or interface, and <code>false</code> otherwise
-	 * @see #getTypeParameters()
-	 *  
-	 */
-	public boolean isGenericType();
-
-	/**
-	 * Returns whether this type binding represents an interface type.
-	 * <p>
-	 * Note that an interface can also be an annotation type.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this object represents an interface,
-	 *    and <code>false</code> otherwise
-	 */
-	public boolean isInterface();
 
 	/**
 	 * Returns whether this type binding represents a local class.
@@ -774,24 +669,6 @@ public interface ITypeBinding extends IBinding {
 	 *  
 	 */
 	public boolean isTypeVariable();
-
-	/**
-	 * Returns whether this type binding represents a wildcard type. A wildcard
-	 * type occus only as an argument to a parameterized type reference.
-	 * <p>
-	 * For example, a AST type like
-	 * <code>Collection&lt;? extends Object&gt;</code> typically resolves to a
-	 * parameterized type binding whose type argument is a wildcard type
-	 * with upper type bound <code>java.util.Object</code>.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this object represents a wildcard type,
-	 *    and <code>false</code> otherwise
-	 *  
-	 * @see #getBound()
-	 * @see #isUpperbound()
-	 */
-	public boolean isWildcardType();
 
 	public boolean isCompilationUnit();
 

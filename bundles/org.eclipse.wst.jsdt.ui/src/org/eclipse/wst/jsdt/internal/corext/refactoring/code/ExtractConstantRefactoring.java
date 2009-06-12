@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -267,12 +267,6 @@ public class ExtractConstantRefactoring extends ScriptableRefactoring {
 			if (isLiteralNodeSelected())
 				fReplaceAllOccurrences= false;
 			
-			ITypeBinding targetType= getContainingTypeBinding();
-			if (targetType.isAnnotation() || targetType.isInterface()) {
-				fTargetIsInterface= true;
-				fVisibility= JdtFlags.VISIBILITY_STRING_PUBLIC;
-			}
-			
 			return result;
 		} finally {
 			pm.done();
@@ -505,8 +499,7 @@ public class ExtractConstantRefactoring extends ScriptableRefactoring {
 					typeGroup.addProposal(relaxingTypes[i], fCuRewrite.getCu(), relaxingTypes.length - i);
 				}
 			}
-			boolean isInterface= parent.resolveBinding() != null && parent.resolveBinding().isInterface();
-			ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(fLinkedProposalModel, rewrite, fieldDeclaration.modifiers(), isInterface);
+			ModifierCorrectionSubProcessor.installLinkedVisibilityProposals(fLinkedProposalModel, rewrite, fieldDeclaration.modifiers(), false);
 		}
 	}
 

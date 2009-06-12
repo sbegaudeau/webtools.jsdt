@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,7 +78,7 @@ public class UnimplementedMethodsCompletionProposal extends ASTRewriteCorrection
 		ImportRewrite imports= createImportRewrite((JavaScriptUnit) fTypeNode.getRoot());
 		ImportRewriteContext context= new ContextSensitiveImportRewriteContext((JavaScriptUnit) fTypeNode.getRoot(), fTypeNode.getStartPosition(), imports);
 		for (int i= 0; i < methods.length; i++) {
-			FunctionDeclaration newMethodDecl= StubUtility2.createImplementationStub(getCompilationUnit(), rewrite, imports, ast, methods[i], binding.getName(), settings, binding.isInterface(), context);
+			FunctionDeclaration newMethodDecl= StubUtility2.createImplementationStub(getCompilationUnit(), rewrite, imports, ast, methods[i], binding.getName(), settings, false, context);
 			listRewrite.insertLast(newMethodDecl, null);
 		}
 		return rewrite;

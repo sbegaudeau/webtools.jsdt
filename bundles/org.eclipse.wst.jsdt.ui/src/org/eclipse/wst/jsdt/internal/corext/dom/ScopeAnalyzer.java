@@ -364,9 +364,6 @@ public class ScopeAnalyzer {
 			// special case for switch on enum
 			if (selector.getLocationInParent() == SwitchCase.EXPRESSION_PROPERTY) {
 				ITypeBinding binding= ((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
-				if (binding != null && binding.isEnum()) {
-					return getEnumContants(binding);
-				}
 			}
 			
 			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentType(selector);
@@ -454,9 +451,6 @@ public class ScopeAnalyzer {
 			// special case for switch on enum
 			if (selector.getLocationInParent() == SwitchCase.EXPRESSION_PROPERTY) {
 				ITypeBinding binding= ((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
-				if (binding != null && binding.isEnum()) {
-					return hasEnumContants(declaration, binding);
-				}
 			}
 			
 			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentTypeContext(selector);
@@ -556,7 +550,7 @@ public class ScopeAnalyzer {
 		}
 	
 		int modifiers= binding.getModifiers();
-		if (Modifier.isPublic(modifiers) || declaring.isInterface()) {
+		if (Modifier.isPublic(modifiers)) {
 			return true;
 		} else if (Modifier.isProtected(modifiers) || !Modifier.isPrivate(modifiers)) {
 			if (declaring.getPackage() == context.getPackage()) {

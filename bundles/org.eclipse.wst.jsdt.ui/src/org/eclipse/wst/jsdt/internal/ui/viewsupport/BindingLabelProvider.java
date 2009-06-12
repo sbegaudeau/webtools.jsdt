@@ -65,15 +65,10 @@ public class BindingLabelProvider extends LabelProvider {
 			if (typeBinding.isArray()) {
 				typeBinding= typeBinding.getElementType();
 			}
-			if (typeBinding.isCapture()) {
-				typeBinding.getWildcard();
-			}
 			return getTypeImageDescriptor(typeBinding.getDeclaringClass() != null, typeBinding, flags);
 		} else if (binding instanceof IFunctionBinding) {
 			ITypeBinding type= ((IFunctionBinding) binding).getDeclaringClass();
 			int modifiers= binding.getModifiers();
-			if (type.isEnum() && (!Modifier.isPublic(modifiers) && !Modifier.isProtected(modifiers) && !Modifier.isPrivate(modifiers)) && ((IFunctionBinding) binding).isConstructor())
-				return JavaPluginImages.DESC_MISC_PRIVATE;
 			return getMethodImageDescriptor(binding.getModifiers());
 		} else if (binding instanceof IVariableBinding)
 			return getFieldImageDescriptor((IVariableBinding) binding);
@@ -286,17 +281,7 @@ public class BindingLabelProvider extends LabelProvider {
 	}
 
 	private static ImageDescriptor getTypeImageDescriptor(boolean inner, ITypeBinding binding, int flags) {
-		if (binding.isEnum())
-			return JavaPluginImages.DESC_OBJS_ENUM;
-		else if (binding.isAnnotation())
-			return JavaPluginImages.DESC_OBJS_ANNOTATION;
-		else if (binding.isInterface()) {
-			if ((flags & JavaElementImageProvider.LIGHT_TYPE_ICONS) != 0)
-				return JavaPluginImages.DESC_OBJS_INTERFACEALT;
-			if (inner)
-				return getInnerInterfaceImageDescriptor(binding.getModifiers());
-			return getInterfaceImageDescriptor(binding.getModifiers());
-		} else if (binding.isClass()) {
+		if (binding.isClass()) {
 			if ((flags & JavaElementImageProvider.LIGHT_TYPE_ICONS) != 0)
 				return JavaPluginImages.DESC_OBJS_CLASSALT;
 			if (inner)
@@ -331,24 +316,13 @@ public class BindingLabelProvider extends LabelProvider {
 			}
 		}
 		
-		if (binding.isCapture()) {
-			getTypeLabel(binding.getWildcard(), flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
-		} else if (binding.isWildcardType()) {
-			buffer.append('?');
-			ITypeBinding bound= binding.getBound();
-			if (bound != null) {
-				buffer.append(" super "); //$NON-NLS-1$
-				getTypeLabel(bound, flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
-			}
-		} else if (binding.isArray()) {
+		if (binding.isArray()) {
 			getTypeLabel(binding.getElementType(), flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buffer);
 			appendDimensions(binding.getDimensions(), buffer);
 		} else { // type variables, primitive, reftype
 			String name= binding.getTypeDeclaration().getName();
 			if (name.length() == 0) {
-				if (binding.isEnum()) {
-					buffer.append('{' + JavaScriptElementLabels.ELLIPSIS_STRING + '}');
-				} else if (binding.isAnonymous()) {
+				if (binding.isAnonymous()) {
 					ITypeBinding baseType= binding.getSuperclass();
 					
 					if (baseType != null) {

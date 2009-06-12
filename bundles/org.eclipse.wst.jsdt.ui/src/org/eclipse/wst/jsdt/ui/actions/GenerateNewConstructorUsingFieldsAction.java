@@ -314,15 +314,12 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 			notifyResult(false);
 			return;
 		}
-		if (provided.isEnum()) {
-			bindings= new IFunctionBinding[] {getObjectConstructor(provider.getCompilationUnit())};
-		} else {
-			bindings= StubUtility2.getVisibleConstructors(provided, false, true);
-			if (bindings.length == 0) {
-				MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_error_nothing_found);
-				notifyResult(false);
-				return;
-			}
+		
+		bindings= StubUtility2.getVisibleConstructors(provided, false, true);
+		if (bindings.length == 0) {
+			MessageDialog.openInformation(getShell(), ActionMessages.GenerateConstructorUsingFieldsAction_error_title, ActionMessages.GenerateConstructorUsingFieldsAction_error_nothing_found);
+			notifyResult(false);
+			return;
 		}
 
 		GenerateConstructorUsingFieldsSelectionDialog dialog= new GenerateConstructorUsingFieldsSelectionDialog(getShell(), new BindingLabelProvider(), provider, fEditor, type, bindings);

@@ -341,11 +341,6 @@ public class ASTResolving {
     		node= node.getParent();
     	}
     	ITypeBinding binding= Bindings.normalizeTypeBinding(getPossibleTypeBinding(node));
-    	if (binding != null) {
-    		if (binding.isWildcardType()) {
-    			return normalizeWildcardType(binding, true, node.getAST());
-    		}
-    	}
     	return binding;
     }
 
@@ -455,9 +450,6 @@ public class ASTResolving {
 				
 				if (!fVisitedBindings.add(node.getKey())) {
 					return true;
-				}
-				if (node.isGenericType()) {
-					return true; // only look at  parameterized types
 				}
 				if (context != null && !isUseableTypeInContext(node, context, false)) {
 					return true;
@@ -797,7 +789,7 @@ public class ASTResolving {
 	}
 
 	public static IJavaScriptUnit findCompilationUnitForBinding(IJavaScriptUnit cu, JavaScriptUnit astRoot, ITypeBinding binding) throws JavaScriptModelException {
-		if (binding == null || !binding.isFromSource() || binding.isTypeVariable() || binding.isWildcardType()) {
+		if (binding == null || !binding.isFromSource() || binding.isTypeVariable()) {
 			return null;
 		}
 		ASTNode node= astRoot.findDeclaringNode(binding.getTypeDeclaration());
@@ -922,39 +914,7 @@ public class ASTResolving {
 		if (type.isTypeVariable()) {
 			return isVariableDefinedInContext(context, type);
 		}
-		if (type.isCapture()) {
-			type= type.getWildcard();
-		}
-		
-		if (type.isWildcardType()) {
-			if (noWildcards) {
-				return false;
-			}
-			if (type.getBound() != null) {
-				return isUseableTypeInContext(type.getBound(), context, noWildcards);
-			}
-		}
 		return true;
-	}
-		
-	/**
-	 * Use this method before creating a type for a wildcard. Either to assign a wildcard to a new type or for a type to be assigned.
-	 * 
-	 * @param wildcardType the wildcard type to normalize
-	 * @param isBindingToAssign If true, then a new receiver type is searched (X x= s), else the type of a sender (R r= x)
-	 * @param ast th current AST
-	 * @return Returns the normalized binding or null when only the 'null' binding 
-	 */
-	public static ITypeBinding normalizeWildcardType(ITypeBinding wildcardType, boolean isBindingToAssign, AST ast) {
-		ITypeBinding bound= wildcardType.getBound();
-		if (isBindingToAssign) {
-			return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
-		} else {
-			if (bound == null) {
-				return null;
-			}
-		}			
-		return bound;
 	}
 
 	// pretty signatures

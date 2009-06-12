@@ -467,7 +467,7 @@ public class Bindings {
 	public static boolean isVisibleInHierarchy(IFunctionBinding member, IPackageBinding pack) {
 		int otherflags= member.getModifiers();
 		ITypeBinding declaringType= member.getDeclaringClass();
-		if (Modifier.isPublic(otherflags) || Modifier.isProtected(otherflags) || (declaringType != null && declaringType.isInterface())) {
+		if (Modifier.isPublic(otherflags) || Modifier.isProtected(otherflags)) {
 			return true;
 		} else if (Modifier.isPrivate(otherflags)) {
 			return false;
@@ -621,10 +621,6 @@ public class Bindings {
 			return true;
 		if (type.isArray())
 			return containsTypeVariables(type.getElementType());
-		if (type.isCapture())
-			return containsTypeVariables(type.getWildcard());
-		if (type.isWildcardType() && type.getBound() != null)
-			return containsTypeVariables(type.getBound());
 		return false;
 	}
 
@@ -834,9 +830,6 @@ public class Bindings {
 			if (binding.isAnonymous()) {
 				return binding.getSuperclass();
 			}
-			if (binding.isCapture()) {
-				return binding.getWildcard();
-			}
 			return binding;
 		}
 		return null;
@@ -861,11 +854,7 @@ public class Bindings {
 		if (binding.isPrimitive())
 			return binding;
 		binding= normalizeTypeBinding(binding);
-		if (binding == null || !binding.isWildcardType())
-			return binding;
-		
-		return ast.resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
-		
+		return binding;
 	}
 
 	/**
@@ -914,12 +903,6 @@ public class Bindings {
 	
 	public static String getRawName(ITypeBinding binding) {
 		String name= binding.getName();
-		if (binding.isGenericType()) {
-			int idx= name.indexOf('<');
-			if (idx != -1) {
-				return name.substring(0, idx);
-			}
-		}
 		return name;
 	}
 	

@@ -1496,7 +1496,7 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 				ITypeBinding binding= null;
 				for (int index= 0; index < bindings.length; index++) {
 					binding= bindings[index].getType();
-					if ((binding.isClass() || binding.isEnum()) && binding.isFromSource()) {
+					if (binding.isClass() && binding.isFromSource()) {
 						possibleTargets.add(bindings[index]);
 						candidateTargets.add(bindings[index]);
 					}

@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -126,19 +124,6 @@ class TypeBinding implements ITypeBinding {
 		return new String(dotSeparated);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getBound()
-	 */
-	public ITypeBinding getBound() {
-		if (this.binding.isWildcard()) {
-			WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
-			if (wildcardBinding.bound != null) {
-				return this.resolver.getTypeBinding(wildcardBinding.bound);
-			}
-		}
-		return null;
-	}
-
 	/*
 	 * Returns the class file for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
@@ -198,7 +183,7 @@ class TypeBinding implements ITypeBinding {
 			return this.fields;
 		}
 		try {
-			if (isClass() || isInterface() || isEnum()) {
+			if (isClass()) {
 				ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 				FieldBinding[] fieldBindings = referenceBinding.availableFields(); // resilience
 				int length = fieldBindings.length;
@@ -233,7 +218,7 @@ class TypeBinding implements ITypeBinding {
 			return this.methods;
 		}
 		try {
-			if (isClass() || isInterface() || isEnum()) {
+			if (isClass()) {
 				ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 				org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding[] internalMethods = referenceBinding.availableMethods(); // be resilient
 				int length = internalMethods.length;
@@ -281,7 +266,7 @@ class TypeBinding implements ITypeBinding {
 			return this.members;
 		}
 		try {
-			if (isClass() || isInterface() || isEnum()) {
+			if (isClass()) {
 				ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 				ReferenceBinding[] internalMembers = referenceBinding.memberTypes();
 				int length = internalMembers.length;
@@ -350,7 +335,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#getDeclaringClass()
 	 */
 	public synchronized ITypeBinding getDeclaringClass() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			if (referenceBinding.isNestedType()) {
 				try {
@@ -485,17 +470,13 @@ class TypeBinding implements ITypeBinding {
 			}
 		} else if (referenceBinding.isTypeVariable()) {
 			// type parameter
-			final String typeVariableName = new String(referenceBinding.sourceName());
 			Binding declaringElement = ((TypeVariableBinding) referenceBinding).declaringElement;
-			IBinding declaringTypeBinding = null;
 			if (declaringElement instanceof MethodBinding) {
-				declaringTypeBinding = this.resolver.getMethodBinding((MethodBinding) declaringElement);
+				this.resolver.getMethodBinding((MethodBinding) declaringElement);
 				return null;
 			} else {
 				ITypeBinding typeBinding2 = this.resolver.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) declaringElement);
 				if (typeBinding2 == null) return null;
-				declaringTypeBinding = typeBinding2;
-				IType declaringType = (IType) declaringTypeBinding.getJavaElement();
 				return null;
 			}
 		} else {
@@ -554,21 +535,6 @@ class TypeBinding implements ITypeBinding {
 				return accessFlags & ~Modifier.FINAL;
 			}
 			return accessFlags;
-		} else if (isAnnotation()) {
-			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
-			// clear the AccAbstract, AccAnnotation and the AccInterface bits
-			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccAnnotation);
-		} else if (isInterface()) {
-			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
-			// clear the AccAbstract and the AccInterface bits
-			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface);
-		} else if (isEnum()) {
-			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
-			// clear the AccEnum bits
-			return accessFlags & ~ClassFileConstants.AccEnum;
 		} else {
 			return Modifier.NONE;
 		}
@@ -579,18 +545,11 @@ class TypeBinding implements ITypeBinding {
 		switch (this.binding.kind()) {
 
 			case Binding.WILDCARD_TYPE :
-				WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
 				buffer = new StringBuffer();
 				buffer.append(TypeConstants.WILDCARD_NAME);
-				if (wildcardBinding.bound != null) {
-					buffer.append(getBound().getName());
-				}
 				return String.valueOf(buffer);
 
 			case Binding.TYPE_PARAMETER :
-				if (isCapture()) {
-					return NO_NAME;
-				}
 				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
 				return new String(typeVariableBinding.sourceName);
 
@@ -605,7 +564,7 @@ class TypeBinding implements ITypeBinding {
 
 			case Binding.ARRAY_TYPE :
 				ITypeBinding elementType = getElementType();
-				if (elementType.isLocal() || elementType.isAnonymous() || elementType.isCapture()) {
+				if (elementType.isLocal() || elementType.isAnonymous()) {
 					return NO_NAME;
 				}
 				int dimensions = getDimensions();
@@ -690,13 +649,8 @@ class TypeBinding implements ITypeBinding {
 		switch (this.binding.kind()) {
 
 			case Binding.WILDCARD_TYPE :
-				WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
 				buffer = new StringBuffer();
 				buffer.append(TypeConstants.WILDCARD_NAME);
-				final ITypeBinding bound = getBound();
-				if (bound != null) {
-					buffer.append(bound.getQualifiedName());
-				}
 				return String.valueOf(buffer);
 
 			case Binding.RAW_TYPE :
@@ -704,7 +658,7 @@ class TypeBinding implements ITypeBinding {
 
 			case Binding.ARRAY_TYPE :
 				ITypeBinding elementType = getElementType();
-				if (elementType.isLocal() || elementType.isAnonymous() || elementType.isCapture()) {
+				if (elementType.isLocal() || elementType.isAnonymous()) {
 					return NO_NAME;
 				}
 				final int dimensions = getDimensions();
@@ -718,9 +672,6 @@ class TypeBinding implements ITypeBinding {
 				return String.valueOf(buffer);
 
 			case Binding.TYPE_PARAMETER :
-				if (isCapture()) {
-					return NO_NAME;
-				}
 				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
 				return new String(typeVariableBinding.sourceName);
 
@@ -796,43 +747,11 @@ class TypeBinding implements ITypeBinding {
 		return this.resolver.getTypeBinding(superclass);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
-	 *  
-	 */
-	public ITypeBinding getWildcard() {
-		if (this.binding instanceof CaptureBinding) {
-			CaptureBinding captureBinding = (CaptureBinding) this.binding;
-			return this.resolver.getTypeBinding(captureBinding.wildcard);
-		}
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isGenericType()
-	 *  
-	 */
-	public boolean isGenericType() {
-		// equivalent to return getTypeParameters().length > 0;
-		if (isRawType()) {
-			return false;
-		}
-		TypeVariableBinding[] typeVariableBindings = this.binding.typeVariables();
-		return (typeVariableBindings != null && typeVariableBindings.length > 0);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isAnnotation()
-	 */
-	public boolean isAnnotation() {
-		return this.binding.isAnnotationType();
-	}
-
 	/*
 	 * @see ITypeBinding#isAnonymous()
 	 */
 	public boolean isAnonymous() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return referenceBinding.isAnonymousType();
 		}
@@ -862,13 +781,6 @@ class TypeBinding implements ITypeBinding {
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013
 			return false;
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see ITypeBinding#isCapture()
-	 */
-	public boolean isCapture() {
-		return this.binding.isCapture();
 	}
 
 	/* (non-Javadoc)
@@ -906,18 +818,11 @@ class TypeBinding implements ITypeBinding {
 	 * @see IBinding#isDeprecated()
 	 */
 	public boolean isDeprecated() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return referenceBinding.isDeprecated();
 		}
 		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see ITypeBinding#isEnum()
-	 */
-	public boolean isEnum() {
-		return this.binding.isEnum();
 	}
 
 	/*
@@ -945,7 +850,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isFromSource()
 	 */
 	public boolean isFromSource() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			if (referenceBinding.isRawType()) {
 				return !((RawTypeBinding) referenceBinding).genericType().isBinaryBinding();
@@ -978,25 +883,15 @@ class TypeBinding implements ITypeBinding {
 				}
 			}
 
-		} else if (isCapture()) {
-			CaptureBinding captureBinding = (CaptureBinding) this.binding;
-			return !captureBinding.sourceType.isBinaryBinding();
 		}
 		return false;
-	}
-
-	/*
-	 * @see ITypeBinding#isInterface()
-	 */
-	public boolean isInterface() {
-		return this.binding.isInterface() && !this.binding.isTypeVariable() && !this.binding.isWildcard();
 	}
 
 	/*
 	 * @see ITypeBinding#isLocal()
 	 */
 	public boolean isLocal() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return referenceBinding.isLocalType() && !referenceBinding.isMemberType();
 		}
@@ -1007,7 +902,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isMember()
 	 */
 	public boolean isMember() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return referenceBinding.isMemberType();
 		}
@@ -1018,7 +913,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isNested()
 	 */
 	public boolean isNested() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return referenceBinding.isNestedType();
 		}
@@ -1030,13 +925,6 @@ class TypeBinding implements ITypeBinding {
 	 */
 	public boolean isNullType() {
 		return this.binding == org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding.NULL;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isParameterizedType()
-	 */
-	public boolean isParameterizedType() {
-		return this.binding.isParameterizedType() && ((ParameterizedTypeBinding) this.binding).arguments != null;
 	}
 
 	/*
@@ -1078,18 +966,11 @@ class TypeBinding implements ITypeBinding {
 		}
 	}
 
-	/**
-	 * @see IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
-		return false;
-	}
-
 	/*
 	 * @see ITypeBinding#isTopLevel()
 	 */
 	public boolean isTopLevel() {
-		if (isClass() || isInterface() || isEnum()) {
+		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			return !referenceBinding.isNestedType();
 		}
@@ -1103,15 +984,8 @@ class TypeBinding implements ITypeBinding {
 		return this.binding.isTypeVariable() && !this.binding.isCapture();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isWildcardType()
-	 */
-	public boolean isWildcardType() {
-		return this.binding.isWildcard();
-	}
-
 	private boolean shouldBeRemoved(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {
-		return methodBinding.isDefaultAbstract() || methodBinding.isSynthetic() || (methodBinding.isConstructor() && isInterface());
+		return methodBinding.isDefaultAbstract() || methodBinding.isSynthetic();
 	}
 
 	/*

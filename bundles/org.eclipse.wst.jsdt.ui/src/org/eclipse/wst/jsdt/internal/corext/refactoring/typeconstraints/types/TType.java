@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,12 +87,6 @@ public abstract class TType {
 			fFlags= F_IS_CLASS;
 		// the annotation test has to be done before test for interface
 		// since annotations are interfaces as well.
-		} else if (binding.isAnnotation()) { 
-			fFlags= F_IS_ANNOTATION | F_IS_INTERFACE;
-		} else if (binding.isInterface()) {
-			fFlags= F_IS_INTERFACE;
-		} else if (binding.isEnum()) {
-			fFlags= F_IS_ENUM;
 		}
 
 		if (binding.isTopLevel()) {

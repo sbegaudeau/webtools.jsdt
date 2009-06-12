@@ -153,7 +153,7 @@ public class JdtFlags {
 		} else if (binding instanceof ITypeBinding) {
 			declaringType= ((ITypeBinding) binding).getDeclaringClass();
 		}
-		return declaringType != null && (declaringType.isInterface() || declaringType.isAnnotation());
+		return false;
 	}
 
 	private static boolean isNestedInterfaceOrAnnotation(IMember member) throws JavaScriptModelException{

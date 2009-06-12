@@ -165,14 +165,6 @@ public class TypeEnvironment {
 			return createArrayType(binding);
 		} else if (binding.isRawType()) {
 			return createRawType(binding);
-		} else if (binding.isGenericType()) {
-			return createGenericType(binding);
-		}else if (binding.isWildcardType()) {
-			if (binding.getBound() == null) {
-				return createUnboundWildcardType(binding);
-			}
-		} else if (binding.isCapture()) {
-			return createCaptureType(binding);
 		}
 		if ("null".equals(binding.getName())) //$NON-NLS-1$
 			return NULL;

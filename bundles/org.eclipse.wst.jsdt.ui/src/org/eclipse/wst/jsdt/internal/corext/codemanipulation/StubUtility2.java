@@ -226,18 +226,16 @@ public final class StubUtility2 {
 		String[] paramNames= StubUtility.suggestArgumentNames(unit.getJavaScriptProject(), methodBinding);
 		for (int i= 0; i < params.length; i++) {
 			SingleVariableDeclaration varDecl= ast.newSingleVariableDeclaration();
-			if (params[i].isWildcardType())
-				varDecl.setType(imports.addImport(params[i].getBound(), ast));
-			else {
-				if (methodBinding.isVarargs() && params[i].isArray() && i == params.length - 1) {
-					StringBuffer buffer= new StringBuffer(imports.addImport(params[i].getElementType()));
-					for (int dim= 1; dim < params[i].getDimensions(); dim++)
-						buffer.append("[]"); //$NON-NLS-1$
-					varDecl.setType(ASTNodeFactory.newType(ast, buffer.toString()));
-					varDecl.setVarargs(true);
-				} else
-					varDecl.setType(imports.addImport(params[i], ast));
-			}
+			
+			if (methodBinding.isVarargs() && params[i].isArray() && i == params.length - 1) {
+				StringBuffer buffer= new StringBuffer(imports.addImport(params[i].getElementType()));
+				for (int dim= 1; dim < params[i].getDimensions(); dim++)
+					buffer.append("[]"); //$NON-NLS-1$
+				varDecl.setType(ASTNodeFactory.newType(ast, buffer.toString()));
+				varDecl.setVarargs(true);
+			} else
+				varDecl.setType(imports.addImport(params[i], ast));
+			
 			varDecl.setName(ast.newSimpleName(paramNames[i]));
 			parameters.add(varDecl);
 		}
@@ -335,7 +333,7 @@ public final class StubUtility2 {
 
 			String bodyStatement= ""; //$NON-NLS-1$
 			ITypeBinding declaringType= binding.getDeclaringClass();
-			if (Modifier.isAbstract(binding.getModifiers()) || declaringType.isAnnotation() || declaringType.isInterface()) {
+			if (Modifier.isAbstract(binding.getModifiers())) {
 				Expression expression= ASTNodeFactory.newDefaultExpression(ast, decl.getReturnType2(), decl.getExtraDimensions());
 				if (expression != null) {
 					ReturnStatement returnStatement= ast.newReturnStatement();
@@ -411,7 +409,7 @@ public final class StubUtility2 {
 
 			String bodyStatement= ""; //$NON-NLS-1$
 			ITypeBinding declaringType= binding.getDeclaringClass();
-			if (Modifier.isAbstract(binding.getModifiers()) || declaringType.isAnnotation() || declaringType.isInterface()) {
+			if (Modifier.isAbstract(binding.getModifiers())) {
 				Expression expression= ASTNodeFactory.newDefaultExpression(ast, decl.getReturnType2(), decl.getExtraDimensions());
 				if (expression != null) {
 					ReturnStatement returnStatement= ast.newReturnStatement();
@@ -616,11 +614,10 @@ public final class StubUtility2 {
 
 	private static IFunctionBinding[] getDelegateCandidates(ITypeBinding binding, ITypeBinding hierarchy) {
 		List allMethods= new ArrayList();
-		boolean isInterface= binding.isInterface();
 		IFunctionBinding[] typeMethods= binding.getDeclaredMethods();
 		for (int index= 0; index < typeMethods.length; index++) {
 			final int modifiers= typeMethods[index].getModifiers();
-			if (!typeMethods[index].isConstructor() && !Modifier.isStatic(modifiers) && (isInterface || Modifier.isPublic(modifiers))) {
+			if (!typeMethods[index].isConstructor() && !Modifier.isStatic(modifiers) && (Modifier.isPublic(modifiers))) {
 				IFunctionBinding result= Bindings.findOverriddenMethodInHierarchy(hierarchy, typeMethods[index]);
 				if (result != null && Flags.isFinal(result.getModifiers()))
 					continue;
@@ -666,19 +663,17 @@ public final class StubUtility2 {
 		while (clazz != null) {
 			clazz= clazz.getSuperclass();
 		}
-		if (typeBinding.isInterface())
-			getOverridableMethods(ast, ast.resolveWellKnownType("java.lang.Object"), allMethods); //$NON-NLS-1$
 		if (!isSubType)
 			allMethods.removeAll(Arrays.asList(typeMethods));
 		int modifiers= 0;
-		if (!typeBinding.isInterface()) {
-			for (int index= allMethods.size() - 1; index >= 0; index--) {
-				IFunctionBinding method= (IFunctionBinding) allMethods.get(index);
-				modifiers= method.getModifiers();
-				if (Modifier.isFinal(modifiers))
-					allMethods.remove(index);
-			}
+		
+		for (int index= allMethods.size() - 1; index >= 0; index--) {
+			IFunctionBinding method= (IFunctionBinding) allMethods.get(index);
+			modifiers= method.getModifiers();
+			if (Modifier.isFinal(modifiers))
+				allMethods.remove(index);
 		}
+		
 		return (IFunctionBinding[]) allMethods.toArray(new IFunctionBinding[allMethods.size()]);
 	}
 
@@ -729,7 +724,7 @@ public final class StubUtility2 {
 		for (int i= 0; i < allMethods.size(); i++) {
 			IFunctionBinding curr= (IFunctionBinding) allMethods.get(i);
 			int modifiers= curr.getModifiers();
-			if ((Modifier.isAbstract(modifiers) || curr.getDeclaringClass().isInterface()) && (typeBinding != curr.getDeclaringClass())) {
+			if ((Modifier.isAbstract(modifiers)) && (typeBinding != curr.getDeclaringClass())) {
 				// implement all abstract methods
 				toImplement.add(curr);
 			}

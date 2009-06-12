@@ -156,9 +156,6 @@ public class UnresolvedElementsSubProcessor {
 					}
 				} else if (locationInParent == SwitchCase.EXPRESSION_PROPERTY) {
 					ITypeBinding switchExp= ((SwitchStatement) node.getParent().getParent()).getExpression().resolveTypeBinding();
-					if (switchExp != null && switchExp.isEnum()) {
-						binding= switchExp;
-					}
 				} else if (locationInParent == SuperFieldAccess.NAME_PROPERTY) {
 					binding= declaringTypeBinding.getSuperclass();
 				}
@@ -306,34 +303,29 @@ public class UnresolvedElementsSubProcessor {
 		String name= simpleName.getIdentifier();
 		String label;
 		Image image;
-		if (senderDeclBinding.isEnum() && !isWriteAccess) {
-			label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createenum_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) });
-			image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
-			proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.ENUM_CONST, simpleName, senderDeclBinding, 10, image));
-		} else {
-			if (!mustBeConst) {
-				if (binding == null) {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createfield_description, name);
-					image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PRIVATE);
-				} else {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createfield_other_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) } );
-					image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
-				}
-				int fieldRelevance= StubUtility.hasFieldName(targetCU.getJavaScriptProject(), name) ? 9 : 6;
-				proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.FIELD, simpleName, senderDeclBinding, fieldRelevance, image));
+		
+		if (!mustBeConst) {
+			if (binding == null) {
+				label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createfield_description, name);
+				image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PRIVATE);
+			} else {
+				label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createfield_other_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) } );
+				image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
 			}
+			int fieldRelevance= StubUtility.hasFieldName(targetCU.getJavaScriptProject(), name) ? 9 : 6;
+			proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.FIELD, simpleName, senderDeclBinding, fieldRelevance, image));
+		}
 
-			if (!isWriteAccess && !senderDeclBinding.isAnonymous()) {
-				if (binding == null) {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconst_description, name);
-					image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PRIVATE);
-				} else {
-					label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconst_other_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) } );
-					image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
-				}
-				int constRelevance= StubUtility.hasConstantName(name) ? 9 : 4;
-				proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.CONST_FIELD, simpleName, senderDeclBinding, constRelevance, image));
+		if (!isWriteAccess && !senderDeclBinding.isAnonymous()) {
+			if (binding == null) {
+				label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconst_description, name);
+				image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PRIVATE);
+			} else {
+				label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createconst_other_description, new Object[] { name, ASTResolving.getTypeSignature(senderDeclBinding) } );
+				image= JavaPluginImages.get(JavaPluginImages.IMG_FIELD_PUBLIC);
 			}
+			int constRelevance= StubUtility.hasConstantName(name) ? 9 : 4;
+			proposals.add(new NewVariableCompletionProposal(label, targetCU, NewVariableCompletionProposal.CONST_FIELD, simpleName, senderDeclBinding, constRelevance, image));
 		}
 	}
 
@@ -1065,9 +1057,6 @@ public class UnresolvedElementsSubProcessor {
 				if (newType == null) {
 					newType= astRoot.getAST().resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 				}
-				if (newType.isWildcardType()) {
-					newType= ASTResolving.normalizeWildcardType(newType, true, astRoot.getAST());
-				}
 				if (!ASTResolving.isUseableTypeInContext(newType, methodDecl, false)) {
 					return;
 				}
@@ -1106,9 +1095,7 @@ public class UnresolvedElementsSubProcessor {
 		for (int i= 0; i < args.size(); i++) {
 			Expression expr= (Expression) args.get(i);
 			ITypeBinding curr= Bindings.normalizeTypeBinding(expr.resolveTypeBinding());
-			if (curr != null && curr.isWildcardType()) {
-				curr= ASTResolving.normalizeWildcardType(curr, true, expr.getAST());
-			}
+			
 			if (curr == null) {
 				curr= expr.getAST().resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
 			}
@@ -1153,9 +1140,7 @@ public class UnresolvedElementsSubProcessor {
 			Expression nodeToCast= (Expression) arguments.get(idx);
 			ITypeBinding castType= paramTypes[idx];
 			castType= Bindings.normalizeTypeBinding(castType);
-			if (castType.isWildcardType()) {
-				castType= ASTResolving.normalizeWildcardType(castType, false, nodeToCast.getAST());
-			}
+			
 			if (castType != null) {
 				TypeMismatchSubProcessor.addChangeSenderTypeProposals(context, nodeToCast, castType, false, 5, proposals);
 			}
@@ -1242,12 +1227,7 @@ public class UnresolvedElementsSubProcessor {
 			Expression arg= (Expression) arguments.get(diffIndex);
 			String name= arg instanceof SimpleName ? ((SimpleName) arg).getIdentifier() : null;
 			ITypeBinding argType= argTypes[diffIndex];
-			if (argType.isWildcardType()) {
-				argType= ASTResolving.normalizeWildcardType(argType, true, arg.getAST());
-				if (argType== null) {
-					return null;
-				}
-			}
+			
 			changeDesc[diffIndex]= new EditDescription(argType, name);
 		}
 		return changeDesc;
