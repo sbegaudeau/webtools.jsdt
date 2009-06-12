@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,61 +38,22 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		suite.addTest(new ASTRewritingModifyingInsertTest("test0009"));
 		return suite;
 	}
-	/**
-	 * insert a new import declaration
-	 */
-	public void test0001() throws Exception {		
-		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0001", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test0001;\n");
-		buf.append("import java.util.*;\n");
-		buf.append("import java.lang.*;\n");
-		buf.append("import java.awt.*;\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createCU(cu, false);
-		
-		astRoot.recordModifications();
-		
-		AST a = astRoot.getAST();
-		
-		List imports = astRoot.imports();
-		Name name = a.newSimpleName("aaa");
-		ImportDeclaration importDeclaration = a.newImportDeclaration();
-		importDeclaration.setName(name);
-		importDeclaration.setOnDemand(true);
-		imports.add(importDeclaration);
-		
-		String preview = evaluateRewrite(cu, astRoot);
-		
-		buf= new StringBuffer();
-		buf.append("package test0001;\n");
-		buf.append("import java.util.*;\n");
-		buf.append("import java.lang.*;\n");
-		buf.append("import java.awt.*;\n");
-		buf.append("import aaa.*;\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		assertEqualString(preview, buf.toString());
-	}
 	
 	/**
-	 * insert a new type at first position
+	 * insert a new function at first position
 	 */
-	public void test0002() throws Exception {
-		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0002", false, null);
+	public void test0001() throws Exception {
+		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0001", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0002;\n");
+		buf.append("var test0001;\n");
 		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Y() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
@@ -103,46 +64,95 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration = a.newTypeDeclaration();
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = a.newFunctionDeclaration();
 		SimpleName name = a.newSimpleName("AAA");
-		typeDeclaration.setName(name);
-		types.add(0, typeDeclaration);
+		functionDeclaration.setName(name);
+		statements.add(0, functionDeclaration);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0002;\n");
-		buf.append("\n");
-		buf.append("class AAA {\n");
+		buf.append("function AAA() {\n");
 		buf.append("}\n");
-		buf.append("public class X {\n");
+		buf.append("var test0001;\n");
 		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Y() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 	}
 
 	/**
-	 * insert a new type
+	 * insert a new function
+	 */
+	public void test0002() throws Exception {
+		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0002", false, null);
+		StringBuffer buf= new StringBuffer();
+		buf.append("var test0002;\n");
+		buf.append("\n");
+		buf.append("function X() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Y() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		
+		JavaScriptUnit astRoot= createCU(cu, false);
+		
+		astRoot.recordModifications();
+		
+		AST a = astRoot.getAST();
+		
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = a.newFunctionDeclaration();
+		SimpleName name = a.newSimpleName("AAA");
+		functionDeclaration.setName(name);
+		statements.add(1, functionDeclaration);
+		
+		String preview = evaluateRewrite(cu, astRoot);
+		
+		buf= new StringBuffer();
+		buf.append("var test0002;\n");
+		buf.append("\n");
+		buf.append("function AAA() {\n");
+		buf.append("}\n");
+		buf.append("function X() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Y() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		assertEqualString(preview, buf.toString());
+	}
+	/**
+	 * insert a new function at last position
 	 */
 	public void test0003() throws Exception {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0003", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0003;\n");
+		buf.append("var test0003;\n");
 		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Y() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
@@ -153,133 +163,82 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration = a.newTypeDeclaration();
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = a.newFunctionDeclaration();
 		SimpleName name = a.newSimpleName("AAA");
-		typeDeclaration.setName(name);
-		types.add(1, typeDeclaration);
+		functionDeclaration.setName(name);
+		statements.add(4, functionDeclaration);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0003;\n");
+		buf.append("var test0003;\n");
 		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class AAA {\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Y() {\n");
 		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function Z() {\n");
+		buf.append("\n");
+		buf.append("}\n");
+		buf.append("function AAA() {\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 	}
 	/**
-	 * insert a new type at last position
-	 */
+	 * insert a new javadoc for a type
+	 */ 
 	public void test0004() throws Exception {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0004", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0004;\n");
+		buf.append("var test0004;\n");
 		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		JavaScriptUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);;
 		
 		astRoot.recordModifications();
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration = a.newTypeDeclaration();
-		SimpleName name = a.newSimpleName("AAA");
-		typeDeclaration.setName(name);
-		types.add(3, typeDeclaration);
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = (FunctionDeclaration)statements.get(1);
+		JSdoc jsdoc = a.newJSdoc();
+		List tags = jsdoc.tags();
+		TagElement tag = a.newTagElement();
+		List fragment = tag.fragments();
+		TextElement text = a.newTextElement();
+		text.setText("NOTHING");
+		fragment.add(text);
+		tags.add(tag);
+		functionDeclaration.setJavadoc(jsdoc);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0004;\n");
+		buf.append("var test0004;\n");
 		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("/**\n");
+		buf.append(" * NOTHING\n");
+		buf.append(" */\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Y {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class Z {\n");
-		buf.append("\n");
-		buf.append("}\n");
-		buf.append("class AAA {\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 	}
-//	/**
-//	 * insert a new javadoc for a type
-//	 */ 
-//	public void test0005() throws Exception {
-//		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0005", false, null);
-//		StringBuffer buf= new StringBuffer();
-//		buf.append("package test0005;\n");
-//		buf.append("\n");
-//		buf.append("public class X {\n");
-//		buf.append("\n");
-//		buf.append("}\n");
-//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-//		
-//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
-//		
-//		astRoot.recordModifications();
-//		
-//		AST a = astRoot.getAST();
-//		
-//		List types = astRoot.types();
-//		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-//		Javadoc javadoc = a.newJavadoc();
-//		List tags = javadoc.tags();
-//		TagElement tag = a.newTagElement();
-//		List fragment = tag.fragments();
-//		TextElement text = a.newTextElement();
-//		text.setText("NOTHING");
-//		fragment.add(text);
-//		tags.add(tag);
-//		typeDeclaration.setJavadoc(javadoc);
-//		
-//		String preview = evaluateRewrite(cu, astRoot);
-//		
-//		buf= new StringBuffer();
-//		buf.append("package test0005;\n");
-//		buf.append("\n");
-//		buf.append("/**\n");
-//		buf.append(" * NOTHING\n");
-//		buf.append(" */\n");
-//		buf.append("public class X {\n");
-//		buf.append("\n");
-//		buf.append("}\n");
-//		assertEqualString(preview, buf.toString());
-//	}
 	
 	/**
-	 * insert a new member type
+	 * insert a new nested function
 	 */
-	public void test0006() throws Exception {
-		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0006", false, null);
+	public void test0005() throws Exception {
+		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0005", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0006;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
@@ -289,21 +248,18 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		List body = typeDeclaration.bodyDeclarations();
-		TypeDeclaration typeDeclaration2 = a.newTypeDeclaration();
-		typeDeclaration2.setName(a.newSimpleName("Z"));
-		body.add(typeDeclaration2);
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = (FunctionDeclaration)statements.get(0);
+		Block functionBody = functionDeclaration.getBody();
+		FunctionDeclaration functionDeclaration2 = a.newFunctionDeclaration();
+		functionDeclaration2.setName(a.newSimpleName("Z"));
+		functionBody.statements().add(functionDeclaration2);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0006;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("\n");
-		buf.append("    class Z {\n");
+		buf.append("function X() {\n");
+		buf.append("    function Z() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
@@ -315,11 +271,8 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 	public void test0007() throws Exception {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0007", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0007;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("    public class Y {\n");
-		buf.append("    \n");
+		buf.append("function X() {\n");
+		buf.append("    function Y() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
@@ -330,195 +283,42 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		List body = typeDeclaration.bodyDeclarations();
-		TypeDeclaration typeDeclaration2 = a.newTypeDeclaration();
-		typeDeclaration2.setName(a.newSimpleName("Z"));
-		body.add(typeDeclaration2);
+		List statements = astRoot.statements();
+		FunctionDeclaration functionDeclaration = (FunctionDeclaration)statements.get(0);
+		Block functionBody = functionDeclaration.getBody();
+		FunctionDeclaration functionDeclaration2 = a.newFunctionDeclaration();
+		functionDeclaration2.setName(a.newSimpleName("Z"));
+		functionBody.statements().add(functionDeclaration2);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0007;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("    public class Y {\n");
-		buf.append("    \n");
+		buf.append("function X() {\n");
+		buf.append("    function Y() {\n");
 		buf.append("    }\n");
-		buf.append("\n");
-		buf.append("    class Z {\n");
+		buf.append("    function Z() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 	}
 	
-//	/**
-//	 * insert a new javadoc fort a member type
-//	 */
-//	public void test0008() throws Exception {
-//		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0008", false, null);
-//		StringBuffer buf= new StringBuffer();
-//		buf.append("package test0008;\n");
-//		buf.append("\n");
-//		buf.append("public class X {\n");
-//		buf.append("    public class Y {\n");
-//		buf.append("    \n");
-//		buf.append("    }\n");
-//		buf.append("}\n");
-//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-//		
-//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
-//		
-//		astRoot.recordModifications();
-//		
-//		AST a = astRoot.getAST();
-//		
-//		List types = astRoot.types();
-//		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-//		typeDeclaration = typeDeclaration.getTypes()[0];
-//		Javadoc javadoc = a.newJavadoc();
-//		List tags = javadoc.tags();
-//		TagElement tag = a.newTagElement();
-//		List fragment = tag.fragments();
-//		TextElement text = a.newTextElement();
-//		text.setText("NOTHING");
-//		fragment.add(text);
-//		tags.add(tag);
-//		typeDeclaration.setJavadoc(javadoc);
-//		
-//		String preview = evaluateRewrite(cu, astRoot);
-//		
-//		buf= new StringBuffer();
-//		buf.append("package test0008;\n");
-//		buf.append("\n");
-//		buf.append("public class X {\n");
-//		buf.append("    /**\n");
-//		buf.append("     * NOTHING\n");
-//		buf.append("     */\n");
-//		buf.append("    public class Y {\n");
-//		buf.append("    \n");
-//		buf.append("    }\n");
-//		buf.append("}\n");
-//		assertEqualString(preview, buf.toString());
-//	}
-//	
-//	/**
-//	 * insert a new javadoc fort a member type
-//	 */
-//	public void test0009() throws Exception {
-//		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0009", false, null);
-//		StringBuffer buf= new StringBuffer();
-//		buf.append("package test0009;\n");
-//		buf.append("\n");
-//		buf.append("public class X {\n");
-//		buf.append("    /*\\u002A\n");
-//		buf.append("     * NOTHING\n");
-//		buf.append("     */\n");
-//		buf.append("    public class Y {\n");
-//		buf.append("    \n");
-//		buf.append("    }\n");
-//		buf.append("}\n");
-//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-//		
-//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
-//		
-//		astRoot.recordModifications();
-//		
-//		AST a = astRoot.getAST();
-//		
-//		List types = astRoot.types();
-//		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-//		typeDeclaration = typeDeclaration.getTypes()[0];
-//		Javadoc javadoc = typeDeclaration.getJavadoc();
-//		List tags = javadoc.tags();
-//		TagElement tag = a.newTagElement();
-//		tag.setTagName("@nothing");
-//		TextElement textElement = a.newTextElement();
-//		textElement.setText(" none");
-//		tag.fragments().add(textElement);
-//		tags.add(tag);
-//		
-//		String preview = evaluateRewrite(cu, astRoot);
-//		
-//		buf= new StringBuffer();
-//		buf.append("package test0008;\n");
-//		buf.append("\n");
-//		buf.append("public class X {\n");
-//		buf.append("    public class Y {\n");
-//		buf.append("    \n");
-//		buf.append("    }\n");
-//		buf.append("}\n");
-//		assertEqualString(preview, buf.toString());
-//	}
-	
-	/** @deprecated using deprecated code */
-	public void test0010() throws Exception {
+	public void test0008() throws Exception {
 		String source = "\n";
 		JavaScriptUnit astRoot= createCU(source.toCharArray());
 		astRoot.recordModifications();
 		
 		AST a = astRoot.getAST();
 		
-		PackageDeclaration packageDeclaration =  a.newPackageDeclaration();
-		packageDeclaration.setName(a.newSimpleName("test0010"));
-		astRoot.setPackage(packageDeclaration);
-		TypeDeclaration typeDeclaration =  a.newTypeDeclaration();
-		typeDeclaration.setName(a.newSimpleName("X"));
-		typeDeclaration.setModifiers(Modifier.PUBLIC);
+		FunctionDeclaration functionDeclaration = a.newFunctionDeclaration();
+		functionDeclaration.setName(a.newSimpleName("X"));
 		
-		astRoot.types().add(typeDeclaration);
-		
-		String preview = evaluateRewrite(source, astRoot);
-		
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test0010;\n");
-		buf.append("\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		assertEqualString(preview, buf.toString());
-	}
-	
-	public void test0011() throws Exception {
-		String source = "\n";
-		JavaScriptUnit astRoot= createCU(source.toCharArray());
-		astRoot.recordModifications();
-		
-		AST a = astRoot.getAST();
-		
-		PackageDeclaration packageDeclaration =  a.newPackageDeclaration();
-		packageDeclaration.setName(a.newSimpleName("test0011"));
-		astRoot.setPackage(packageDeclaration);
-		
-		String preview = evaluateRewrite(source, astRoot);
-		
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test0011;\n");
-		buf.append("\n");
-		assertEqualString(preview, buf.toString());
-	}
-	
-	/** @deprecated using deprecated code */
-	public void test0012() throws Exception {
-		String source = "\n";
-		JavaScriptUnit astRoot= createCU(source.toCharArray());
-		astRoot.recordModifications();
-		
-		AST a = astRoot.getAST();
-		
-		TypeDeclaration typeDeclaration =  a.newTypeDeclaration();
-		typeDeclaration.setName(a.newSimpleName("X"));
-		typeDeclaration.setModifiers(Modifier.PUBLIC);
-		
-		astRoot.types().add(typeDeclaration);
+		astRoot.statements().add(functionDeclaration);
 		
 		String preview = evaluateRewrite(source, astRoot);
 		
 		StringBuffer buf= new StringBuffer();
 		buf.append("\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 	}
