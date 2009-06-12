@@ -71,8 +71,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.IReorgPolicy.IMove
 import org.eclipse.wst.jsdt.internal.corext.refactoring.sef.SelfEncapsulateFieldRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeSignatureRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ChangeTypeRefactoring;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractInterfaceProcessor;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractInterfaceRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeProcessor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ExtractSupertypeRefactoring;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.JavaMoveRefactoring;
@@ -93,7 +91,6 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.JavaPreferencesSettings;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ChangeSignatureWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ChangeTypeWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ConvertAnonymousToNestedWizard;
-import org.eclipse.wst.jsdt.internal.ui.refactoring.ExtractInterfaceWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.ExtractSupertypeWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.InlineConstantWizard;
 import org.eclipse.wst.jsdt.internal.ui.refactoring.InlineTempWizard;
@@ -270,11 +267,6 @@ public final class RefactoringExecutionStarter {
 	public static void startDeleteRefactoring(final Object[] elements, final Shell shell) throws CoreException {
 		final DeleteRefactoring refactoring= new JavaDeleteRefactoring(new JavaDeleteProcessor(elements));
 		DeleteUserInterfaceManager.getDefault().getStarter(refactoring).activate(refactoring, shell, RefactoringSaveHelper.SAVE_NOTHING);
-	}
-
-	public static void startExtractInterfaceRefactoring(final IType type, final Shell shell) throws JavaScriptModelException {
-		final ExtractInterfaceRefactoring refactoring= new ExtractInterfaceRefactoring(new ExtractInterfaceProcessor(type, JavaPreferencesSettings.getCodeGenerationSettings(type.getJavaScriptProject())));
-		new RefactoringStarter().activate(refactoring, new ExtractInterfaceWizard(refactoring), shell, RefactoringMessages.OpenRefactoringWizardAction_refactoring, RefactoringSaveHelper.SAVE_JAVA_ONLY_UPDATES);
 	}
 
 	public static void startExtractSupertypeRefactoring(final IMember[] members, final Shell shell) throws JavaScriptModelException {

@@ -449,7 +449,7 @@ public class ModifierCorrectionSubProcessor {
 		boolean parentIsAbstractClass= false;
 		if (parentType instanceof TypeDeclaration) {
 			parentTypeDecl= (TypeDeclaration) parentType;
-			parentIsAbstractClass= !parentTypeDecl.isInterface() && Modifier.isAbstract(parentTypeDecl.getModifiers());
+			parentIsAbstractClass= Modifier.isAbstract(parentTypeDecl.getModifiers());
 		}
 		boolean hasNoBody= (decl.getBody() == null);
 

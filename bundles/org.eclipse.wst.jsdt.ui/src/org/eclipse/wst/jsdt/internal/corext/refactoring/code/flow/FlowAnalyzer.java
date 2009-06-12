@@ -791,7 +791,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		if (skipNode(node))
 			return;
 		GenericSequentialFlowInfo info= processSequential(node, node.getSuperclassType());
-		process(info, node.superInterfaceTypes());
 		process(info, node.bodyDeclarations());
 		info.setNoReturn();
 	}

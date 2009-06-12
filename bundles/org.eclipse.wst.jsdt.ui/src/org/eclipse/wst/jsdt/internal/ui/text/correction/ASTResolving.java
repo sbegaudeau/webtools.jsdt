@@ -751,9 +751,7 @@ public class ASTResolving {
 
 		switch (parent.getNodeType()) {
 			case ASTNode.TYPE_DECLARATION:
-				if (node.getLocationInParent() == TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY) {
-					kind= SimilarElementsRequestor.INTERFACES;
-				} else if (node.getLocationInParent() == TypeDeclaration.SUPERCLASS_TYPE_PROPERTY) {
+				if (node.getLocationInParent() == TypeDeclaration.SUPERCLASS_TYPE_PROPERTY) {
 					kind= SimilarElementsRequestor.CLASSES;
 				}
 				break;

@@ -58,11 +58,9 @@ import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Statement;
-import org.eclipse.wst.jsdt.core.dom.StructuralPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
-import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -736,47 +734,6 @@ public class LocalCorrectionsSubProcessor {
 		Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
 		ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), rewrite, 5, image); 
 		proposals.add(proposal);
-	}
-
-
-	public static void getInterfaceExtendsClassProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {
-		JavaScriptUnit root= context.getASTRoot();
-		ASTNode selectedNode= problem.getCoveringNode(root);
-		if (selectedNode == null) {
-			return;
-		}
-		while (selectedNode.getParent() instanceof Type) {
-			selectedNode= selectedNode.getParent();
-		}
-
-		StructuralPropertyDescriptor locationInParent= selectedNode.getLocationInParent();
-		if (locationInParent != TypeDeclaration.SUPERCLASS_TYPE_PROPERTY) {
-			return;
-		}
-
-		TypeDeclaration typeDecl= (TypeDeclaration) selectedNode.getParent();
-		{
-			ASTRewrite rewrite= ASTRewrite.create(root.getAST());
-			ASTNode placeHolder= rewrite.createMoveTarget(selectedNode);
-			ListRewrite interfaces= rewrite.getListRewrite(typeDecl, TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY);
-			interfaces.insertFirst(placeHolder, null);
-
-			String label= CorrectionMessages.LocalCorrectionsSubProcessor_extendstoimplements_description;
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), rewrite, 6, image); 
-			proposals.add(proposal);
-		}
-		{
-			ASTRewrite rewrite= ASTRewrite.create(root.getAST());
-
-			rewrite.set(typeDecl, TypeDeclaration.INTERFACE_PROPERTY, Boolean.TRUE, null);
-
-			String typeName= typeDecl.getName().getIdentifier();
-			String label= Messages.format(CorrectionMessages.LocalCorrectionsSubProcessor_classtointerface_description, typeName);
-			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_CHANGE);
-			ASTRewriteCorrectionProposal proposal= new ASTRewriteCorrectionProposal(label, context.getCompilationUnit(), rewrite, 3, image); 
-			proposals.add(proposal);
-		}
 	}
 
 	public static void getUnreachableCodeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) {

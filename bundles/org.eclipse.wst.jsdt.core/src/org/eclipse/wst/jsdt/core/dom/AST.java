@@ -1234,7 +1234,6 @@ public final class AST {
 	 */
 	public TypeDeclaration newTypeDeclaration() {
 		TypeDeclaration result = new TypeDeclaration(this);
-		result.setInterface(false);
 		return result;
 	}
 

@@ -317,8 +317,7 @@ public class JavadocTagsSubProcessor {
 			String typeQualifiedName= Bindings.getTypeQualifiedName(binding);
 			String[] typeParamNames;
 			if (declaration instanceof TypeDeclaration) {
-				List typeParams= ((TypeDeclaration) declaration).typeParameters();
-				typeParamNames= new String[typeParams.size()];
+				typeParamNames= new String[0];
 			} else {
 				typeParamNames= new String[0];
 			}

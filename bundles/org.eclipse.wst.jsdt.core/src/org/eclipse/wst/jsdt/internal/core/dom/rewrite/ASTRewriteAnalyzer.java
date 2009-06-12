@@ -1425,92 +1425,41 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			rewriteModifiers2(node, TypeDeclaration.MODIFIERS2_PROPERTY, pos);
 		}
 
-		boolean isInterface= ((Boolean) getOriginalValue(node, TypeDeclaration.INTERFACE_PROPERTY)).booleanValue();
-		// modifiers & class/interface
-		boolean invertType= isChanged(node, TypeDeclaration.INTERFACE_PROPERTY);
-		if (invertType) {
-			try {
-				int typeToken= isInterface ? ITerminalSymbols.TokenNameinterface : ITerminalSymbols.TokenNameclass;
-				getScanner().readToToken(typeToken, node.getStartPosition());
-
-				String str= isInterface ? "class" : "interface"; //$NON-NLS-1$ //$NON-NLS-2$
-				int start= getScanner().getCurrentStartOffset();
-				int end= getScanner().getCurrentEndOffset();
-
-				doTextReplace(start, end - start, str, getEditGroup(node, TypeDeclaration.INTERFACE_PROPERTY));
-			} catch (CoreException e) {
-				// ignore
-			}
-		}
-
 		// name
 		pos= rewriteRequiredNode(node, TypeDeclaration.NAME_PROPERTY);
 
 		// superclass
-		if (!isInterface || invertType) {
-			ChildPropertyDescriptor superClassProperty= (apiLevel == JLS2_INTERNAL) ? TypeDeclaration.SUPERCLASS_PROPERTY : TypeDeclaration.SUPERCLASS_TYPE_PROPERTY;
+		ChildPropertyDescriptor superClassProperty= (apiLevel == JLS2_INTERNAL) ? TypeDeclaration.SUPERCLASS_PROPERTY : TypeDeclaration.SUPERCLASS_TYPE_PROPERTY;
 
-			RewriteEvent superClassEvent= getEvent(node, superClassProperty);
+		RewriteEvent superClassEvent= getEvent(node, superClassProperty);
 
-			int changeKind= superClassEvent != null ? superClassEvent.getChangeKind() : RewriteEvent.UNCHANGED;
-			switch (changeKind) {
-				case RewriteEvent.INSERTED: {
-					doTextInsert(pos, " extends ", getEditGroup(superClassEvent)); //$NON-NLS-1$
-					doTextInsert(pos, (ASTNode) superClassEvent.getNewValue(), 0, false, getEditGroup(superClassEvent));
-					break;
-				}
-				case RewriteEvent.REMOVED: {
-					ASTNode superClass= (ASTNode) superClassEvent.getOriginalValue();
-					int endPos= getExtendedEnd(superClass);
-					doTextRemoveAndVisit(pos, endPos - pos, superClass, getEditGroup(superClassEvent));
-					pos= endPos;
-					break;
-				}
-				case RewriteEvent.REPLACED: {
-					ASTNode superClass= (ASTNode) superClassEvent.getOriginalValue();
-					SourceRange range= getExtendedRange(superClass);
-					int offset= range.getStartPosition();
-					int length= range.getLength();
-					doTextRemoveAndVisit(offset, length, superClass, getEditGroup(superClassEvent));
-					doTextInsert(offset, (ASTNode) superClassEvent.getNewValue(), 0, false, getEditGroup(superClassEvent));
-					pos= offset + length;
-					break;
-				}
-				case RewriteEvent.UNCHANGED: {
-					pos= doVisit(node, superClassProperty, pos);
-				}
+		int changeKind= superClassEvent != null ? superClassEvent.getChangeKind() : RewriteEvent.UNCHANGED;
+		switch (changeKind) {
+			case RewriteEvent.INSERTED: {
+				doTextInsert(pos, " extends ", getEditGroup(superClassEvent)); //$NON-NLS-1$
+				doTextInsert(pos, (ASTNode) superClassEvent.getNewValue(), 0, false, getEditGroup(superClassEvent));
+				break;
 			}
-		}
-		// extended interfaces
-		ChildListPropertyDescriptor superInterfaceProperty= (apiLevel == JLS2_INTERNAL) ? TypeDeclaration.SUPER_INTERFACES_PROPERTY : TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY;
-
-		RewriteEvent interfaceEvent= getEvent(node, superInterfaceProperty);
-		if (interfaceEvent == null || interfaceEvent.getChangeKind() == RewriteEvent.UNCHANGED) {
-			if (invertType) {
-				List originalNodes= (List) getOriginalValue(node, superInterfaceProperty);
-				if (!originalNodes.isEmpty()) {
-					String keyword= isInterface ? " implements " : " extends "; //$NON-NLS-1$ //$NON-NLS-2$
-					ASTNode firstNode= (ASTNode) originalNodes.get(0);
-					doTextReplace(pos, firstNode.getStartPosition() - pos, keyword, getEditGroup(node, TypeDeclaration.INTERFACE_PROPERTY));
-				}
+			case RewriteEvent.REMOVED: {
+				ASTNode superClass= (ASTNode) superClassEvent.getOriginalValue();
+				int endPos= getExtendedEnd(superClass);
+				doTextRemoveAndVisit(pos, endPos - pos, superClass, getEditGroup(superClassEvent));
+				pos= endPos;
+				break;
 			}
-			pos= doVisit(node, superInterfaceProperty, pos);
-		} else {
-			String keyword= (isInterface == invertType) ? " implements " : " extends "; //$NON-NLS-1$ //$NON-NLS-2$
-			if (invertType) {
-				List newNodes= (List) interfaceEvent.getNewValue();
-				if (!newNodes.isEmpty()) {
-					List origNodes= (List) interfaceEvent.getOriginalValue();
-					int firstStart= pos;
-					if (!origNodes.isEmpty()) {
-						firstStart= ((ASTNode) origNodes.get(0)).getStartPosition();
-					}
-					doTextReplace(pos, firstStart - pos, keyword, getEditGroup(node, TypeDeclaration.INTERFACE_PROPERTY));
-					keyword= ""; //$NON-NLS-1$
-					pos= firstStart;
-				}
+			case RewriteEvent.REPLACED: {
+				ASTNode superClass= (ASTNode) superClassEvent.getOriginalValue();
+				SourceRange range= getExtendedRange(superClass);
+				int offset= range.getStartPosition();
+				int length= range.getLength();
+				doTextRemoveAndVisit(offset, length, superClass, getEditGroup(superClassEvent));
+				doTextInsert(offset, (ASTNode) superClassEvent.getNewValue(), 0, false, getEditGroup(superClassEvent));
+				pos= offset + length;
+				break;
 			}
-			pos= rewriteNodeList(node, superInterfaceProperty, pos, keyword, ", "); //$NON-NLS-1$
+			case RewriteEvent.UNCHANGED: {
+				pos= doVisit(node, superClassProperty, pos);
+			}
 		}
 
 		// type members

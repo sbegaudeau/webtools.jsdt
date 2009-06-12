@@ -535,7 +535,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		final AST ast= fAnonymousInnerClassNode.getAST();
 		
 		final TypeDeclaration newDeclaration= ast.newTypeDeclaration();
-		newDeclaration.setInterface(false);
 		newDeclaration.setJavadoc(null);
 		newDeclaration.modifiers().addAll(ASTNodeFactory.newModifiers(ast, createModifiersForNestedClass()));
 		newDeclaration.setName(ast.newSimpleName(fClassName));
@@ -930,8 +929,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		if (binding.getSuperclass().getQualifiedName().equals("java.lang.Object")) { //$NON-NLS-1$
             Assert.isTrue(binding.getInterfaces().length <= 1);
             if (binding.getInterfaces().length == 0)
-                return;
-            declaration.superInterfaceTypes().add(0, newType); 
+                return; 
         } else {
             declaration.setSuperclassType(newType); 
         }

@@ -1254,19 +1254,8 @@ class NaiveASTFlattener extends ASTVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			printModifiers(node.modifiers());
 		}
-		this.buffer.append(node.isInterface() ? "interface " : "class ");//$NON-NLS-2$//$NON-NLS-1$
+		this.buffer.append("class ");//$NON-NLS-1$
 		node.getName().accept(this);
-		if (node.getAST().apiLevel() >= AST.JLS3) {
-			if (!node.typeParameters().isEmpty()) {
-				this.buffer.append("<");//$NON-NLS-1$
-				for (Iterator it = node.typeParameters().iterator(); it.hasNext(); ) {
-					if (it.hasNext()) {
-						this.buffer.append(",");//$NON-NLS-1$
-					}
-				}
-				this.buffer.append(">");//$NON-NLS-1$
-			}
-		}
 		this.buffer.append(" ");//$NON-NLS-1$
 		if (node.getAST().apiLevel() == AST.JLS2_INTERNAL) {
 			if (node.internalGetSuperclass() != null) {
@@ -1274,33 +1263,11 @@ class NaiveASTFlattener extends ASTVisitor {
 				node.internalGetSuperclass().accept(this);
 				this.buffer.append(" ");//$NON-NLS-1$
 			}
-			if (!node.internalSuperInterfaces().isEmpty()) {
-				this.buffer.append(node.isInterface() ? "extends " : "implements ");//$NON-NLS-2$//$NON-NLS-1$
-				for (Iterator it = node.internalSuperInterfaces().iterator(); it.hasNext(); ) {
-					Name n = (Name) it.next();
-					n.accept(this);
-					if (it.hasNext()) {
-						this.buffer.append(", ");//$NON-NLS-1$
-					}
-				}
-				this.buffer.append(" ");//$NON-NLS-1$
-			}
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.getSuperclassType() != null) {
 				this.buffer.append("extends ");//$NON-NLS-1$
 				node.getSuperclassType().accept(this);
-				this.buffer.append(" ");//$NON-NLS-1$
-			}
-			if (!node.superInterfaceTypes().isEmpty()) {
-				this.buffer.append(node.isInterface() ? "extends " : "implements ");//$NON-NLS-2$//$NON-NLS-1$
-				for (Iterator it = node.superInterfaceTypes().iterator(); it.hasNext(); ) {
-					Type t = (Type) it.next();
-					t.accept(this);
-					if (it.hasNext()) {
-						this.buffer.append(", ");//$NON-NLS-1$
-					}
-				}
 				this.buffer.append(" ");//$NON-NLS-1$
 			}
 		}

@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.BreakStatement;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
-import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ChildPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
@@ -1038,8 +1037,7 @@ public class ASTRewriteFlattener extends ASTVisitor {
 			visitList(node, TypeDeclaration.MODIFIERS2_PROPERTY, String.valueOf(' '), Util.EMPTY_STRING, String.valueOf(' '));
 		}
 
-		boolean isInterface= getBooleanAttribute(node, TypeDeclaration.INTERFACE_PROPERTY);
-		this.result.append(isInterface ? "interface " : "class "); //$NON-NLS-1$ //$NON-NLS-2$
+		this.result.append("class "); //$NON-NLS-1$
 		getChildNode(node, TypeDeclaration.NAME_PROPERTY).accept(this);
 
 		this.result.append(' ');
@@ -1052,9 +1050,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 			this.result.append(' ');
 		}
 
-		ChildListPropertyDescriptor superInterfaceProperty= (apiLevel == JLS2_INTERNAL) ? TypeDeclaration.SUPER_INTERFACES_PROPERTY : TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY;
-		String lead= isInterface ? "extends " : "implements ";  //$NON-NLS-1$//$NON-NLS-2$
-		visitList(node, superInterfaceProperty, String.valueOf(','), lead, Util.EMPTY_STRING);
 		this.result.append('{');
 		visitList(node, TypeDeclaration.BODY_DECLARATIONS_PROPERTY, null);
 		this.result.append('}');

@@ -208,18 +208,6 @@ public class TypeMismatchSubProcessor {
 		if (targetCu != null && ASTResolving.isUseableTypeInContext(castTypeBinding, callerBindingDecl, false)) {
 			proposals.add(new TypeChangeCompletionProposal(targetCu, callerBindingDecl, astRoot, castTypeBinding, isAssignedNode, relevance));
 		}
-
-		// add interface to resulting type
-		if (!isAssignedNode) {
-			ITypeBinding nodeType= nodeToCast.resolveTypeBinding();
-			if (castTypeBinding.isInterface() && nodeType != null && nodeType.isClass() && !nodeType.isAnonymous() && nodeType.isFromSource()) {
-				ITypeBinding typeDecl= nodeType.getTypeDeclaration();
-				IJavaScriptUnit nodeCu= ASTResolving.findCompilationUnitForBinding(cu, astRoot, typeDecl);
-				if (nodeCu != null && ASTResolving.isUseableTypeInContext(castTypeBinding, typeDecl, true)) {
-					proposals.add(new ImplementInterfaceProposal(nodeCu, typeDecl, astRoot, castTypeBinding, relevance - 1));
-				}
-			}
-		}
 	}
 
 	public static void addIncompatibleReturnTypeProposals(IInvocationContext context, IProblemLocation problem, Collection proposals) throws JavaScriptModelException {

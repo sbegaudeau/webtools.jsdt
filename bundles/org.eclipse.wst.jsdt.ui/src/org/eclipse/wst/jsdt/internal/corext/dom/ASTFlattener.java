@@ -1286,19 +1286,8 @@ public class ASTFlattener extends GenericVisitor {
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			printModifiers(node.modifiers());
 		}
-		this.fBuffer.append(node.isInterface() ? "interface " : "class ");//$NON-NLS-2$//$NON-NLS-1$
+		this.fBuffer.append("class ");//$NON-NLS-1$
 		node.getName().accept(this);
-		if (node.getAST().apiLevel() >= AST.JLS3) {
-			if (!node.typeParameters().isEmpty()) {
-				this.fBuffer.append("<");//$NON-NLS-1$
-				for (Iterator it= node.typeParameters().iterator(); it.hasNext();) {
-					if (it.hasNext()) {
-						this.fBuffer.append(",");//$NON-NLS-1$
-					}
-				}
-				this.fBuffer.append(">");//$NON-NLS-1$
-			}
-		}
 		this.fBuffer.append(" ");//$NON-NLS-1$
 		if (node.getAST().apiLevel() == AST.JLS2) {
 			if (node.getSuperclass() != null) {
@@ -1306,33 +1295,11 @@ public class ASTFlattener extends GenericVisitor {
 				node.getSuperclass().accept(this);
 				this.fBuffer.append(" ");//$NON-NLS-1$
 			}
-			if (!node.superInterfaces().isEmpty()) {
-				this.fBuffer.append(node.isInterface() ? "extends " : "implements ");//$NON-NLS-2$//$NON-NLS-1$
-				for (Iterator it= node.superInterfaces().iterator(); it.hasNext();) {
-					Name n= (Name) it.next();
-					n.accept(this);
-					if (it.hasNext()) {
-						this.fBuffer.append(", ");//$NON-NLS-1$
-					}
-				}
-				this.fBuffer.append(" ");//$NON-NLS-1$
-			}
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.getSuperclassType() != null) {
 				this.fBuffer.append("extends ");//$NON-NLS-1$
 				node.getSuperclassType().accept(this);
-				this.fBuffer.append(" ");//$NON-NLS-1$
-			}
-			if (!node.superInterfaceTypes().isEmpty()) {
-				this.fBuffer.append(node.isInterface() ? "extends " : "implements ");//$NON-NLS-2$//$NON-NLS-1$
-				for (Iterator it= node.superInterfaceTypes().iterator(); it.hasNext();) {
-					Type t= (Type) it.next();
-					t.accept(this);
-					if (it.hasNext()) {
-						this.fBuffer.append(", ");//$NON-NLS-1$
-					}
-				}
 				this.fBuffer.append(" ");//$NON-NLS-1$
 			}
 		}

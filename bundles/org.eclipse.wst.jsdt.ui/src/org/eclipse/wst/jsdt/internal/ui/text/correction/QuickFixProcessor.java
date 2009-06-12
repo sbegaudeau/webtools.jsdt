@@ -449,9 +449,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UnnecessaryElse:
 				LocalCorrectionsSubProcessor.getUnnecessaryElseProposals(context, problem, proposals);
 				break;
-			case IProblem.SuperclassMustBeAClass:
-				LocalCorrectionsSubProcessor.getInterfaceExtendsClassProposals(context, problem, proposals);
-				break;
 			case IProblem.CodeCannotBeReached:
 				LocalCorrectionsSubProcessor.getUnreachableCodeProposals(context, problem, proposals);
 				break;

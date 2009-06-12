@@ -562,16 +562,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 				if (type != null && unit.findDeclaringNode(binding) != null)
 					addTypeQualification(type, targetRewrite, group);
 			}
-			List types= null;
-			if (declaration instanceof TypeDeclaration)
-				types= ((TypeDeclaration) declaration).superInterfaceTypes();
-			if (types != null) {
-				for (final Iterator iterator= types.iterator(); iterator.hasNext();) {
-					type= (Type) iterator.next();
-					if (unit.findDeclaringNode(type.resolveBinding()) != null)
-						addTypeQualification(type, targetRewrite, group);
-				}
-			}
 		}
 	}
 

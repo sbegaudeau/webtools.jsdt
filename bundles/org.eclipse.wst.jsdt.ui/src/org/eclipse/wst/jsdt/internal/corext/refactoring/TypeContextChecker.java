@@ -568,15 +568,12 @@ public class TypeContextChecker {
 			
 			if (decl instanceof TypeDeclaration) {
 				TypeDeclaration type= (TypeDeclaration) decl;
-				buf.append(type.isInterface() ? "interface " : "class "); //$NON-NLS-1$//$NON-NLS-2$
+				buf.append("class "); //$NON-NLS-1$
 				buf.append(type.getName().getIdentifier());
 				if (type.getSuperclassType() != null) {
 					buf.append(" extends "); //$NON-NLS-1$
 					buf.append(ASTNodes.asString(type.getSuperclassType()));
 				}
-				List superInterfaces= type.superInterfaceTypes();
-				appendSuperInterfaces(buf, superInterfaces);
-				
 			}
 			
 			buf.append("{\n"); //$NON-NLS-1$

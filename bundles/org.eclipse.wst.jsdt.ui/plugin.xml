@@ -5054,9 +5054,6 @@
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.MoveStaticMembersRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.move.static"/>
       <contribution
-            class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.ExtractInterfaceRefactoringContribution"
-            id="org.eclipse.wst.jsdt.ui.extract.interface"/>
-      <contribution
             class="org.eclipse.wst.jsdt.internal.corext.refactoring.scripting.UseSupertypeRefactoringContribution"
             id="org.eclipse.wst.jsdt.ui.use.supertype"/>
       <contribution

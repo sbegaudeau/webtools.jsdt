@@ -2487,14 +2487,11 @@ class ASTConverter {
 	}
 
 	public ASTNode convert(org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration typeDeclaration) {
-		int kind = org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration.kind(typeDeclaration.modifiers);
-
 		checkCanceled();
 		TypeDeclaration typeDecl = new TypeDeclaration(this.ast);
 		if (typeDeclaration.modifiersSourceStart != -1) {
 			setModifiers(typeDecl, typeDeclaration);
 		}
-		typeDecl.setInterface(kind == org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration.INTERFACE_DECL);
 		final SimpleName typeName = new SimpleName(this.ast);
 		typeName.internalSetIdentifier(new String(typeDeclaration.name));
 		typeName.setSourceRange(typeDeclaration.sourceStart, typeDeclaration.sourceEnd - typeDeclaration.sourceStart + 1);
@@ -2511,21 +2508,6 @@ class ASTConverter {
 				case AST.JLS3 :
 					typeDecl.setSuperclassType(convertType(typeDeclaration.superclass));
 					break;
-			}
-		}
-
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-		if (superInterfaces != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					for (int index = 0, length = superInterfaces.length; index < length; index++) {
-						typeDecl.internalSuperInterfaces().add(convert(superInterfaces[index]));
-					}
-					break;
-				case AST.JLS3 :
-					for (int index = 0, length = superInterfaces.length; index < length; index++) {
-						typeDecl.superInterfaceTypes().add(convertType(superInterfaces[index]));
-					}
 			}
 		}
 		

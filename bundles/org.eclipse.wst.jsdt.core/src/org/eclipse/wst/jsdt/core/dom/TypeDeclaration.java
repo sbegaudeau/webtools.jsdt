@@ -94,13 +94,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		internalModifiers2PropertyFactory(TypeDeclaration.class);
 
 	/**
-	 * The "interface" structural property of this node type.
-	 *  
-	 */
-	public static final SimplePropertyDescriptor INTERFACE_PROPERTY =
-		new SimplePropertyDescriptor(TypeDeclaration.class, "interface", boolean.class, MANDATORY); //$NON-NLS-1$
-
-	/**
 	 * The "name" structural property of this node type.
 	 *  
 	 */
@@ -116,25 +109,11 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		new ChildPropertyDescriptor(TypeDeclaration.class, "superclass", Name.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
-	 * The "superInterfaces" structural property of this node type (JLS2 API only).
-	 *  
-	 */
-	public static final ChildListPropertyDescriptor SUPER_INTERFACES_PROPERTY =
-		new ChildListPropertyDescriptor(TypeDeclaration.class, "superInterfaces", Name.class, NO_CYCLE_RISK); //$NON-NLS-1$
-
-	/**
 	 * The "superclassType" structural property of this node type (added in JLS3 API).
 	 *  
 	 */
 	public static final ChildPropertyDescriptor SUPERCLASS_TYPE_PROPERTY =
 		new ChildPropertyDescriptor(TypeDeclaration.class, "superclassType", Type.class, OPTIONAL, NO_CYCLE_RISK); //$NON-NLS-1$
-
-	/**
-	 * The "superInterfaceTypes" structural property of this node type (added in JLS3 API).
-	 *  
-	 */
-	public static final ChildListPropertyDescriptor SUPER_INTERFACE_TYPES_PROPERTY =
-		new ChildListPropertyDescriptor(TypeDeclaration.class, "superInterfaceTypes", Type.class, NO_CYCLE_RISK); //$NON-NLS-1$
 
 	/**
 	 * The "bodyDeclarations" structural property of this node type (added in JLS3 API).
@@ -164,10 +143,8 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		createPropertyList(TypeDeclaration.class, propertyList);
 		addProperty(JAVADOC_PROPERTY, propertyList);
 		addProperty(MODIFIERS_PROPERTY, propertyList);
-		addProperty(INTERFACE_PROPERTY, propertyList);
 		addProperty(NAME_PROPERTY, propertyList);
 		addProperty(SUPERCLASS_PROPERTY, propertyList);
-		addProperty(SUPER_INTERFACES_PROPERTY, propertyList);
 		addProperty(BODY_DECLARATIONS_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_2_0 = reapPropertyList(propertyList);
 
@@ -175,10 +152,8 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 		createPropertyList(TypeDeclaration.class, propertyList);
 		addProperty(JAVADOC_PROPERTY, propertyList);
 		addProperty(MODIFIERS2_PROPERTY, propertyList);
-		addProperty(INTERFACE_PROPERTY, propertyList);
 		addProperty(NAME_PROPERTY, propertyList);
 		addProperty(SUPERCLASS_TYPE_PROPERTY, propertyList);
-		addProperty(SUPER_INTERFACE_TYPES_PROPERTY, propertyList);
 		addProperty(BODY_DECLARATIONS_PROPERTY, propertyList);
 		PROPERTY_DESCRIPTORS_3_0 = reapPropertyList(propertyList);
 	}
@@ -203,33 +178,11 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	}
 
 	/**
-	 * <code>true</code> for an interface, <code>false</code> for a class.
-	 * Defaults to class.
-	 */
-	private boolean isInterface = false;
-
-	/**
-	 * The type paramters (element type: <code>TypeParameter</code>).
-	 * Null in JLS2. Added in JLS3; defaults to an empty list
-	 * (see constructor).
-	 *  
-	 */
-	private ASTNode.NodeList typeParameters = null;
-
-	/**
 	 * The optional superclass name; <code>null</code> if none.
 	 * Defaults to none. Note that this field is not used for
 	 * interface declarations. Not used in 3.0.
 	 */
 	private Name optionalSuperclassName = null;
-
-	/**
-	 * The superinterface names (element type: <code>Name</code>).
-	 * JLS2 only; defaults to an empty list. Not used in JLS3.
-	 * (see constructor).
-	 *
-	 */
-	private ASTNode.NodeList superInterfaceNames = null;
 
 	/**
 	 * The optional superclass type; <code>null</code> if none.
@@ -238,14 +191,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 *  
 	 */
 	private Type optionalSuperclassType = null;
-
-	/**
-	 * The superinterface types (element type: <code>Type</code>).
-	 * Null in JLS2. Added in JLS3; defaults to an empty list
-	 * (see constructor).
-	 *  
-	 */
-	private ASTNode.NodeList superInterfaceTypes = null;
 
 	/**
 	 * Creates a new AST node for a type declaration owned by the given
@@ -263,12 +208,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 */
 	TypeDeclaration(AST ast) {
 		super(ast);
-		if (ast.apiLevel == AST.JLS2_INTERNAL) {
-			this.superInterfaceNames = new ASTNode.NodeList(SUPER_INTERFACES_PROPERTY);
-		}
-		if (ast.apiLevel >= AST.JLS3) {
-			this.superInterfaceTypes = new ASTNode.NodeList(SUPER_INTERFACE_TYPES_PROPERTY);
-		}
 	}
 
 	/* (omit javadoc for this method)
@@ -299,14 +238,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	 * Method declared on ASTNode.
 	 */
 	final boolean internalGetSetBooleanProperty(SimplePropertyDescriptor property, boolean get, boolean value) {
-		if (property == INTERFACE_PROPERTY) {
-			if (get) {
-				return isInterface();
-			} else {
-				setInterface(value);
-				return false;
-			}
-		}
 		// allow default implementation to flag the error
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
@@ -357,12 +288,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 	final List internalGetChildListProperty(ChildListPropertyDescriptor property) {
 		if (property == MODIFIERS2_PROPERTY) {
 			return modifiers();
-		}
-		if (property == SUPER_INTERFACES_PROPERTY) {
-			return superInterfaces();
-		}
-		if (property == SUPER_INTERFACE_TYPES_PROPERTY) {
-			return superInterfaceTypes();
 		}
 		if (property == BODY_DECLARATIONS_PROPERTY) {
 			return bodyDeclarations();
@@ -426,19 +351,12 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 			result.internalSetModifiers(getModifiers());
 			result.setSuperclass(
 					(Name) ASTNode.copySubtree(target, getSuperclass()));
-			result.superInterfaces().addAll(
-					ASTNode.copySubtrees(target, superInterfaces()));
 		}
-		result.setInterface(isInterface());
 		result.setName((SimpleName) getName().clone(target));
 		if (this.ast.apiLevel >= AST.JLS3) {
 			result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
-			result.typeParameters().addAll(
-					ASTNode.copySubtrees(target, typeParameters()));
 			result.setSuperclassType(
 					(Type) ASTNode.copySubtree(target, getSuperclassType()));
-			result.superInterfaceTypes().addAll(
-					ASTNode.copySubtrees(target, superInterfaceTypes()));
 		}
 		result.bodyDeclarations().addAll(
 			ASTNode.copySubtrees(target, bodyDeclarations()));
@@ -464,63 +382,17 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 				acceptChild(visitor, getJavadoc());
 				acceptChild(visitor, getName());
 				acceptChild(visitor, getSuperclass());
-				acceptChildren(visitor, this.superInterfaceNames);
 				acceptChildren(visitor, this.bodyDeclarations);
 			}
 			if (this.ast.apiLevel >= AST.JLS3) {
 				acceptChild(visitor, getJavadoc());
 				acceptChildren(visitor, this.modifiers);
 				acceptChild(visitor, getName());
-				acceptChildren(visitor, this.typeParameters);
 				acceptChild(visitor, getSuperclassType());
-				acceptChildren(visitor, this.superInterfaceTypes);
 				acceptChildren(visitor, this.bodyDeclarations);
 			}
 		}
 		visitor.endVisit(this);
-	}
-
-	/**
-	 * Returns whether this type declaration declares a class or an
-	 * interface.
-	 *
-	 * @return <code>true</code> if this is an interface declaration,
-	 *    and <code>false</code> if this is a class declaration
-	 */
-	public boolean isInterface() {
-		return this.isInterface;
-	}
-
-	/**
-	 * Sets whether this type declaration declares a class or an
-	 * interface.
-	 *
-	 * @param isInterface <code>true</code> if this is an interface
-	 *    declaration, and <code>false</code> if this is a class
-	 * 	  declaration
-	 */
-	public void setInterface(boolean isInterface) {
-		preValueChange(INTERFACE_PROPERTY);
-		this.isInterface = isInterface;
-		postValueChange(INTERFACE_PROPERTY);
-	}
-
-	/**
-	 * Returns the live ordered list of type parameters of this type
-	 * declaration (added in JLS3 API). This list is non-empty for parameterized types.
-	 *
-	 * @return the live list of type parameters
-	 *    (element type: <code>TypeParameter</code>)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 *  
-	 */
-	public List typeParameters() {
-		// more efficient than just calling unsupportedIn2() to check
-		if (this.typeParameters == null) {
-			unsupportedIn2();
-		}
-		return this.typeParameters;
 	}
 
 	/**
@@ -641,57 +513,6 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
  	}
 
 	/**
-	 * Returns the live ordered list of names of superinterfaces of this type
-	 * declaration (JLS2 API only). For a class declaration, these are the names
-	 * of the interfaces that this class implements; for an interface
-	 * declaration, these are the names of the interfaces that this interface
-	 * extends.
-	 *
-	 * @return the live list of interface names
-	 *    (element type: <code>Name</code>)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * an AST later than JLS2
-	 * @deprecated In the JLS3 API, this method is replaced by
-	 * {@link #superInterfaceTypes()}.
-	 */
-	public List superInterfaces() {
-		return internalSuperInterfaces();
-	}
-
-	/**
-	 * Internal synonym for deprecated method. Used to avoid
-	 * deprecation warnings.
-	 *  
-	 */
-	/*package*/ final List internalSuperInterfaces() {
-		// more efficient than just calling supportedOnlyIn2() to check
-		if (this.superInterfaceNames == null) {
-			supportedOnlyIn2();
-		}
-		return this.superInterfaceNames;
-	}
-
-	/**
-	 * Returns the live ordered list of superinterfaces of this type
-	 * declaration (added in JLS3 API). For a class declaration, these are the interfaces
-	 * that this class implements; for an interface declaration,
-	 * these are the interfaces that this interface extends.
-	 *
-	 * @return the live list of interface types
-	 *    (element type: <code>Type</code>)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 *  
-	 */
-	public List superInterfaceTypes() {
-		// more efficient than just calling unsupportedIn2() to check
-		if (this.superInterfaceTypes == null) {
-			unsupportedIn2();
-		}
-		return this.superInterfaceTypes;
-	}
-
-	/**
 	 * Returns the ordered list of field declarations of this type
 	 * declaration. For a class declaration, these are the
 	 * field declarations; for an interface declaration, these are
@@ -806,11 +627,8 @@ public class TypeDeclaration extends AbstractTypeDeclaration {
 			+ (this.optionalDocComment == null ? 0 : getJavadoc().treeSize())
 			+ (this.modifiers == null ? 0 : this.modifiers.listSize())
 			+ (this.typeName == null ? 0 : getName().treeSize())
-			+ (this.typeParameters == null ? 0 : this.typeParameters.listSize())
 			+ (this.optionalSuperclassName == null ? 0 : getSuperclass().treeSize())
 			+ (this.optionalSuperclassType == null ? 0 : getSuperclassType().treeSize())
-			+ (this.superInterfaceNames == null ? 0 : this.superInterfaceNames.listSize())
-			+ (this.superInterfaceTypes == null ? 0 : this.superInterfaceTypes.listSize())
 			+ this.bodyDeclarations.listSize();
 	}
 }

@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 
 
 public class JdtFlags {
@@ -108,8 +107,6 @@ public class JdtFlags {
 	
 
 	public static boolean isPublic(BodyDeclaration bodyDeclaration) {
-		if (isInterfaceOrAnnotationMember(bodyDeclaration))
-			return true;
 		return Modifier.isPublic(bodyDeclaration.getModifiers());
 	}
 
@@ -157,12 +154,6 @@ public class JdtFlags {
 			declaringType= ((ITypeBinding) binding).getDeclaringClass();
 		}
 		return declaringType != null && (declaringType.isInterface() || declaringType.isAnnotation());
-	}
-	
-	private static boolean isInterfaceOrAnnotationMember(BodyDeclaration bodyDeclaration) {
-		boolean isInterface= (bodyDeclaration.getParent() instanceof TypeDeclaration) &&
-				((TypeDeclaration)bodyDeclaration.getParent()).isInterface();
-		return 	isInterface ;
 	}
 
 	private static boolean isNestedInterfaceOrAnnotation(IMember member) throws JavaScriptModelException{

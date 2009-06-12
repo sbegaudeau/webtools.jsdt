@@ -1878,27 +1878,17 @@ public class ASTMatcher {
 			if (!safeSubtreeMatch(node.internalGetSuperclass(), o.internalGetSuperclass())) {
 				return false;
 			}
-			if (!safeSubtreeListMatch(node.internalSuperInterfaces(), o.internalSuperInterfaces())) {
-				return false;
-			}
 		}
 		if (level >= AST.JLS3) {
 			if (!safeSubtreeListMatch(node.modifiers(), o.modifiers())) {
 				return false;
 			}
-			if (!safeSubtreeListMatch(node.typeParameters(), o.typeParameters())) {
-				return false;
-			}
 			if (!safeSubtreeMatch(node.getSuperclassType(), o.getSuperclassType())) {
-				return false;
-			}
-			if (!safeSubtreeListMatch(node.superInterfaceTypes(), o.superInterfaceTypes())) {
 				return false;
 			}
 		}
 		return (
-				(node.isInterface() == o.isInterface())
-				&& safeSubtreeMatch(node.getJavadoc(), o.getJavadoc())
+				safeSubtreeMatch(node.getJavadoc(), o.getJavadoc())
 				&& safeSubtreeMatch(node.getName(), o.getName())
 				&& safeSubtreeListMatch(node.bodyDeclarations(), o.bodyDeclarations()));
 	}
