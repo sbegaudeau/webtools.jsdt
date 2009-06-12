@@ -33,14 +33,5 @@ public interface IExtendedModifier {
 	 * (instance of {@link Modifier}), and <code>false</code> otherwise
 	 */
 	public boolean isModifier();
-
-	/**
-	 * Returns whether this extended modifier is an annotation.
-	 *
-	 * @return <code>true</code> if this is an annotation
-	 * (instance of a subclass of {@link Annotation}), and
-	 * <code>false</code> otherwise
-	 */
-	public boolean isAnnotation();
 }
 

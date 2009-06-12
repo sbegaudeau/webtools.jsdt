@@ -86,13 +86,11 @@
  *                                 NoAdditionalBoundAfterTypeVariable
  *                                 UnsafeGenericArrayForVarargs
  *                                 IllegalAccessFromTypeVariable
- *                                 AnnotationValueMustBeArrayInitializer
  *                                 InvalidEncoding
  *                                 CannotReadSource
  *                                 ExternalProblemNotFixable
  *                                 ExternalProblemFixable
  *     IBM Corporation - added the following constants
- *                                 AnnotationValueMustBeAnEnumConstant
  *                                 OverridingMethodWithoutSuperInvocation
  *                                 MethodMustOverrideOrImplement
  *                                 TypeHidingTypeParameterFromType
@@ -286,7 +284,6 @@ void setSourceStart(int sourceStart);
 	int IllegalPrimitiveOrArrayTypeForEnclosingInstance = TypeRelated + 27;
 	int EnclosingInstanceInConstructorCall = Internal + 28;
 	int AnonymousClassCannotExtendFinalClass = TypeRelated + 29;
-	int CannotDefineAnnotationInLocalType = Internal + 30;
 	int CannotDefineEnumInLocalType = Internal + 31;
 	int NonStaticContextForEnumMemberType = Internal + 32;
 	int TypeHidingType = TypeRelated + 33;

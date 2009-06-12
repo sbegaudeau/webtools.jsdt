@@ -79,7 +79,6 @@ public interface IBinding {
 	 * 	<code>TYPE</code>,
 	 * 	<code>VARIABLE</code>,
 	 * 	<code>METHOD</code>,
-	 * 	<code>ANNOTATION</code>,
 	 * or <code>MEMBER_VALUE_PAIR</code>.
 	 * <p>
 	 * Note that additional kinds might be added in the

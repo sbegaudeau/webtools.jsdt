@@ -32,7 +32,7 @@ import java.util.List;
  *        [<b>throws</b> TypeName { <b>,</b> TypeName } ] Block
  * </pre>
  * For JLS3, type parameters and reified modifiers
- * (and annotations) were added:
+ * were added:
  * <pre>
  * FunctionDeclaration:
  *    [ jsdoc ] { ExtendedModifier }

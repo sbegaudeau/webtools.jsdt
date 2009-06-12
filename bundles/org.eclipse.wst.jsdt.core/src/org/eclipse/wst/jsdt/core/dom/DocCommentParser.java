@@ -43,12 +43,6 @@ class DocCommentParser extends AbstractCommentParser {
 		this.kind = DOM_PARSER | TEXT_PARSE;
 	}
 
-	/* (non-Javadoc)
-	 * Returns true if tag @deprecated is present in annotation.
-	 *
-	 * If annotation checking is enabled, will also construct an Annotation node, which will be stored into Parser.annotation
-	 * slot for being consumed later on.
-	 */
 	public JSdoc parse(int[] positions) {
 		return parse(positions[0], positions[1]-positions[0]);
 	}

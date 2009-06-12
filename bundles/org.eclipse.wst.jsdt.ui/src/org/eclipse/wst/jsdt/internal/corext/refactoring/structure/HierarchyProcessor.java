@@ -162,21 +162,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 		RefactoringStatus status= new RefactoringStatus();
 		if (!JavaModelUtil.is50OrHigher(destination.getJavaScriptProject())) {
 			for (int index= 0; index < members.length; index++) {
-				try {
-					BodyDeclaration decl= ASTNodeSearchUtil.getBodyDeclarationNode(members[index], sourceRewriter.getRoot());
-					if (decl != null) {
-						for (final Iterator iterator= decl.modifiers().iterator(); iterator.hasNext();) {
-							boolean reported= false;
-							final IExtendedModifier modifier= (IExtendedModifier) iterator.next();
-							if (!reported && modifier.isAnnotation()) {
-								status.merge(RefactoringStatus.createErrorStatus(Messages.format(RefactoringCoreMessages.PullUpRefactoring_incompatible_langauge_constructs, new String[] { JavaScriptElementLabels.getTextLabel(members[index], JavaScriptElementLabels.ALL_FULLY_QUALIFIED), JavaScriptElementLabels.getTextLabel(destination, JavaScriptElementLabels.ALL_DEFAULT)}), JavaStatusContext.create(members[index])));
-								reported= true;
-							}
-						}
-					}
-				} catch (JavaScriptModelException exception) {
-					JavaScriptPlugin.log(exception);
-				}
 				if (members[index] instanceof IFunction) {
 					final IFunction method= (IFunction) members[index];
 					try {

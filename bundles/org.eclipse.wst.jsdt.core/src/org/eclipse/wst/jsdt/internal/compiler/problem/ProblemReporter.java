@@ -1524,8 +1524,6 @@ public void illegalLocalTypeDeclaration(TypeDeclaration typeDeclaration) {
 	int problemID = 0;
 	if ((typeDeclaration.modifiers & ClassFileConstants.AccEnum) != 0) {
 		problemID = IProblem.CannotDefineEnumInLocalType;
-	} else if ((typeDeclaration.modifiers & ClassFileConstants.AccAnnotation) != 0) {
-		problemID = IProblem.CannotDefineAnnotationInLocalType;
 	} else if ((typeDeclaration.modifiers & ClassFileConstants.AccInterface) != 0) {
 		problemID = IProblem.CannotDefineInterfaceInLocalType;
 	}

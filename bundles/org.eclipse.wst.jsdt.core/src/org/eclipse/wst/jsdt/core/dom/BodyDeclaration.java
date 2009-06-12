@@ -231,10 +231,10 @@ public abstract class BodyDeclaration extends ProgramElement {
 	}
 
 	/**
-	 * Returns the live ordered list of modifiers and annotations
+	 * Returns the live ordered list of modifiers
 	 * of this declaration .
 	 *
-	 * @return the live list of modifiers and annotations
+	 * @return the live list of modifiers
 	 *    (element type: <code>IExtendedModifier</code>)
 	 */
 	public List modifiers() {

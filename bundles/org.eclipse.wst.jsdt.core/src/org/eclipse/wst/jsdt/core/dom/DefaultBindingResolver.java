@@ -86,8 +86,8 @@ class DefaultBindingResolver extends BindingResolver {
 		Map bindingKeysToBindings;
 		/**
 		 * This map is used to keep the correspondance between new bindings and the
-		 * validator bindings as well as new annotation instances to their internal counterpart.
-		 * This is an identity map. We should only create one object for one binding or annotation.
+		 * validator bindings to their internal counterpart.
+		 * This is an identity map. We should only create one object for one binding.
 		 */
 		Map compilerBindingsToASTBindings;
 
