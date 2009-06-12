@@ -2452,7 +2452,6 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			IBinding binding = seeRef.resolveBinding();
 			assertTrue("Wrong kind of binding", binding instanceof ITypeBinding);
 			ITypeBinding typeBinding = (ITypeBinding)binding;
-			assertTrue(seeRef.toString()+" should have a generic type binding", typeBinding.isGenericType());
 			assertFalse(seeRef.toString()+" should NOT have a raw type binding", typeBinding.isRawType());
 			// Get inline tag simple name reference in second tag
 			assertEquals("Invalid number of fragments for inline tag element: "+inlineTag, 1, inlineTag.fragments().size());
@@ -2463,7 +2462,6 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			binding = linkRef.resolveBinding();
 			assertTrue("Wrong kind of binding", binding instanceof ITypeBinding);
 			typeBinding = (ITypeBinding)binding;
-			assertTrue(linkRef.toString()+" should have a generic type binding", typeBinding.isGenericType());
 			assertFalse(linkRef.toString()+" should NOT have a raw type binding", typeBinding.isRawType());
 		}
 	}

@@ -3407,7 +3407,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("A member class", !typeBinding.isMember()); //$NON-NLS-1$
 		assertTrue("An array", !typeBinding.isArray()); //$NON-NLS-1$
 		assertTrue("Not a class", typeBinding.isClass()); //$NON-NLS-1$
-		assertTrue("An interface", !typeBinding.isInterface()); //$NON-NLS-1$
 		assertTrue("Not from source", typeBinding.isFromSource()); //$NON-NLS-1$
 		assertTrue("Is nested", typeBinding.isTopLevel()); //$NON-NLS-1$
 		assertTrue("A primitive type", !typeBinding.isPrimitive()); //$NON-NLS-1$
@@ -3461,7 +3460,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("A member class", !typeBinding.isMember()); //$NON-NLS-1$
 		assertTrue("An array", !typeBinding.isArray()); //$NON-NLS-1$
 		assertTrue("A class", !typeBinding.isClass()); //$NON-NLS-1$
-		assertTrue("Not an interface", typeBinding.isInterface()); //$NON-NLS-1$
 		assertTrue("Not from source", typeBinding.isFromSource()); //$NON-NLS-1$
 		assertTrue("Is nested", typeBinding.isTopLevel()); //$NON-NLS-1$
 		assertTrue("A primitive type", !typeBinding.isPrimitive()); //$NON-NLS-1$
@@ -3495,7 +3493,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("A member class", !typeBinding.isMember()); //$NON-NLS-1$
 		assertTrue("An array", !typeBinding.isArray()); //$NON-NLS-1$
 		assertTrue("Not a class", typeBinding.isClass()); //$NON-NLS-1$
-		assertTrue("An interface", !typeBinding.isInterface()); //$NON-NLS-1$
 		assertTrue("Not from source", typeBinding.isFromSource()); //$NON-NLS-1$
 		assertTrue("Is a top level", !typeBinding.isTopLevel()); //$NON-NLS-1$
 		assertTrue("A primitive type", !typeBinding.isPrimitive()); //$NON-NLS-1$
@@ -3530,7 +3527,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("Not a member class", typeBinding.isMember()); //$NON-NLS-1$
 		assertTrue("An array", !typeBinding.isArray()); //$NON-NLS-1$
 		assertTrue("Not a class", typeBinding.isClass()); //$NON-NLS-1$
-		assertTrue("An interface", !typeBinding.isInterface()); //$NON-NLS-1$
 		assertTrue("Not from source", typeBinding.isFromSource()); //$NON-NLS-1$
 		assertTrue("Is a top level", !typeBinding.isTopLevel()); //$NON-NLS-1$
 		assertTrue("A primitive type", !typeBinding.isPrimitive()); //$NON-NLS-1$
@@ -3565,7 +3561,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertTrue("A member class", !typeBinding.isMember()); //$NON-NLS-1$
 		assertTrue("An array", !typeBinding.isArray()); //$NON-NLS-1$
 		assertTrue("Not a class", typeBinding.isClass()); //$NON-NLS-1$
-		assertTrue("An interface", !typeBinding.isInterface()); //$NON-NLS-1$
 		assertTrue("Not from source", typeBinding.isFromSource()); //$NON-NLS-1$
 		assertTrue("Is a top level", !typeBinding.isTopLevel()); //$NON-NLS-1$
 		assertTrue("A primitive type", !typeBinding.isPrimitive()); //$NON-NLS-1$
