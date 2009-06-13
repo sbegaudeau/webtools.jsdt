@@ -424,18 +424,6 @@ public void testGetSuperclassTypeSignature() throws JavaScriptModelException {
 }
 
 /*
- * Ensures that IType#getSuperInterfaceTypeSignatures() is correct for a binary type.
- * (regression test for bug 78520 [model] IType#getSuperInterfaceTypeSignatures() doesn't include type arguments)
- */
-public void testGetSuperInterfaceTypeSignatures() throws JavaScriptModelException {
-	IType type = this.jarRoot.getPackageFragment("generic").getClassFile("V.class").getType();
-	assertStringsEqual(
-		"Unexpected signatures", 
-		"Lgeneric.I<Ljava.lang.String;>;\n",
-		type.getSuperInterfaceTypeSignatures());
-}
-
-/*
  * Ensures that the parameter names of a binary method with source attached are correct.
  */
 public void testParameterNames01() throws CoreException {

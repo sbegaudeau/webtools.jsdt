@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,17 +57,9 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 	IType[] allClasses2 = loaded.getAllClasses();
 	compare("["+focus+"] all classes are not the same", allClasses1, allClasses2);
 	
-	IType[] allInterfaces1 = stored.getAllInterfaces();
-	IType[] allInterfaces2 = loaded.getAllInterfaces();
-	compare("["+focus+"] all interfaces are not the same", allInterfaces1, allInterfaces2);
-	
 	IType[] rootClasses1 = stored.getRootClasses();
 	IType[] rootClasses2 = loaded.getRootClasses();
 	compare("["+focus+"] all roots are not the same", rootClasses1, rootClasses2);
-	
-	IType[] rootInterfaces1 = stored.getRootInterfaces();
-	IType[] rootInterfaces2 = loaded.getRootInterfaces();
-	compare("["+focus+"] all roots are not the same", rootInterfaces1, rootInterfaces2);
 	
 	Object[] missingTypes1 = stored.missingTypes.toArray();
 	Object[] missingTypes2 = loaded.missingTypes.toArray();
@@ -84,10 +76,6 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 		IType superclass2 = loaded.getSuperclass(aType);
 		assertEquals("["+focus+"] superclass are not the same for "+aType.getFullyQualifiedName(), superclass1, superclass2);
 		
-		IType[] superInterfaces1 = stored.getSuperInterfaces(aType);
-		IType[] superInterfaces2 = loaded.getSuperInterfaces(aType);
-		compare("["+focus+"] all super interfaces are not the same for "+aType.getFullyQualifiedName(), superInterfaces1, superInterfaces2);
-		
 		IType[] superTypes1 = stored.getSupertypes(aType);
 		IType[] superTypes2 = loaded.getSupertypes(aType);
 		compare("["+focus+"] all super types are not the same for "+aType.getFullyQualifiedName(), superTypes1, superTypes2);
@@ -99,10 +87,6 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 		IType[] subtypes1 = stored.getSubtypes(aType);
 		IType[] subtypes2 = loaded.getSubtypes(aType);
 		compare("["+focus+"] all subtypes are not the same for "+aType.getFullyQualifiedName(), subtypes1, subtypes2);
-		
-		IType[] extendingInterfaces1 = stored.getExtendingInterfaces(aType);
-		IType[] extendingInterfaces2 = loaded.getExtendingInterfaces(aType);
-		compare("["+focus+"] all extending interfaces are not the same for "+aType.getFullyQualifiedName(), extendingInterfaces1, extendingInterfaces2);
 		
 		IType[] implementingClasses1 = stored.getImplementingClasses(aType);
 		IType[] implementingClasses2 = loaded.getImplementingClasses(aType);
