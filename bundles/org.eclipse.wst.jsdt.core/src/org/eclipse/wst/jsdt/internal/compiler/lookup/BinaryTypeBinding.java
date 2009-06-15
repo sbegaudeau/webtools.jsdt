@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,6 @@ import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ClassSignature;
-import org.eclipse.wst.jsdt.internal.compiler.env.EnumConstantSignature;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryElementValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
@@ -62,15 +59,6 @@ static Object convertMemberValue(Object binaryValue, LookupEnvironment env) {
 		return binaryValue;
 	if (binaryValue instanceof ClassSignature)
 		return env.getTypeFromSignature(((ClassSignature) binaryValue).getTypeName(), 0, -1, false, null);
-	if (binaryValue instanceof IBinaryAnnotation)
-		return createAnnotation((IBinaryAnnotation) binaryValue, env);
-	if (binaryValue instanceof EnumConstantSignature) {
-		EnumConstantSignature ref = (EnumConstantSignature) binaryValue;
-		ReferenceBinding enumType =
-			(ReferenceBinding) env.getTypeFromSignature(ref.getTypeName(), 0, -1, false, null);
-		enumType = resolveType(enumType, env, false);
-		return enumType.getField(ref.getEnumConstantName(), false);
-	}
 	if (binaryValue instanceof Object[]) {
 		Object[] objects = (Object[]) binaryValue;
 		int length = objects.length;
@@ -84,24 +72,6 @@ static Object convertMemberValue(Object binaryValue, LookupEnvironment env) {
 	// should never reach here.
 	throw new IllegalStateException();
 }
-static AnnotationBinding createAnnotation(IBinaryAnnotation annotationInfo, LookupEnvironment env) {
-	IBinaryElementValuePair[] binaryPairs = annotationInfo.getElementValuePairs();
-	int length = binaryPairs == null ? 0 : binaryPairs.length;
-	ElementValuePair[] pairs = length == 0 ? Binding.NO_ELEMENT_VALUE_PAIRS : new ElementValuePair[length];
-	for (int i = 0; i < length; i++)
-		pairs[i] = new ElementValuePair(binaryPairs[i].getName(), convertMemberValue(binaryPairs[i].getValue(), env), null);
-
-	char[] typeName = annotationInfo.getTypeName();
-	ReferenceBinding annotationType = env.getTypeFromConstantPoolName(typeName, 1, typeName.length - 1, false);
-	return new UnresolvedAnnotationBinding(annotationType, pairs, env);
-}
-public static AnnotationBinding[] createAnnotations(IBinaryAnnotation[] annotationInfos, LookupEnvironment env) {
-	int length = annotationInfos == null ? 0 : annotationInfos.length;
-	AnnotationBinding[] result = length == 0 ? Binding.NO_ANNOTATIONS : new AnnotationBinding[length];
-	for (int i = 0; i < length; i++)
-		result[i] = createAnnotation(annotationInfos[i], env);
-	return result;
-}
 public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironment environment, boolean convertGenericToRawType) {
 	if (type instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) type).resolve(environment, convertGenericToRawType);
@@ -109,8 +79,6 @@ public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironm
 	{
 		if (type.isParameterizedType())
 			return ((ParameterizedTypeBinding) type).resolve();
-		if (type.isWildcard())
-			return ((WildcardBinding) type).resolve();
 	}
 
 	if (convertGenericToRawType) // raw reference to generic ?
@@ -122,9 +90,6 @@ public static TypeBinding resolveType(TypeBinding type, LookupEnvironment enviro
 
 		case Binding.PARAMETERIZED_TYPE :
 			return ((ParameterizedTypeBinding) type).resolve();
-
-		case Binding.WILDCARD_TYPE :
-			return ((WildcardBinding) type).resolve();
 
 		case Binding.ARRAY_TYPE :
 			resolveType(((ArrayBinding) type).leafComponentType, environment, parameterizedType, rank);
@@ -850,8 +815,6 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 	if (this == otherType) return true;
 	if (otherType == null) return false;
 	switch(otherType.kind()) {
-		case Binding.WILDCARD_TYPE :
-			return ((WildcardBinding) otherType).boundCheck(this);
 		case Binding.RAW_TYPE :
 			return otherType.erasure() == this;
 	}
@@ -914,9 +877,6 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 		method.typeVariables[i].resolve(this.environment);
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
-}
-AnnotationBinding[] retrieveAnnotations(Binding binding) {
-	return AnnotationBinding.addStandardAnnotations(super.retrieveAnnotations(binding), binding.getAnnotationTagBits(), this.environment);
 }
 SimpleLookupTable storedAnnotations(boolean forceInitialize) {
 	if (forceInitialize && this.storedAnnotations == null) {

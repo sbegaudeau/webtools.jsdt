@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,7 @@ public interface IBinaryType extends IGenericType {
 	IBinaryNestedType[] NoNestedType = new IBinaryNestedType[0];
 	IBinaryField[] NoField = new IBinaryField[0];
 	IBinaryMethod[] NoMethod = new IBinaryMethod[0];
-/**
- * Answer the runtime visible and invisible annoations for this type or null if none.
- */
 
-IBinaryAnnotation[] getAnnotations();
 /**
  * Answer the resolved name of the enclosing type in the
  * class file format as specified in section 4.2 of the Java 2 VM spec

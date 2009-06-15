@@ -37,14 +37,12 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public abstract class PatternLocator implements IIndexConstants {
@@ -573,10 +571,6 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 		for (int i=0; i<typeArgumentsLength; i++) {
 			// Get parameterized type argument binding
 			TypeBinding argumentBinding = argumentsBinding[i];
-			if (argumentBinding instanceof CaptureBinding) {
-				WildcardBinding capturedWildcard = ((CaptureBinding)argumentBinding).wildcard;
-				if (capturedWildcard != null) argumentBinding = capturedWildcard;
-			}
 			// Get binding for pattern argument
 			char[] patternTypeArgument = patternArguments[i];
 			char patternWildcard = patternTypeArgument[0];
@@ -593,9 +587,7 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 			// Verify tha pattern binding is compatible with match type argument binding
 			switch (patternWildcard) {
 				default:
-					if (argumentBinding.isWildcard()) {
-						WildcardBinding wildcardBinding = (WildcardBinding) argumentBinding;
-					} else if (argumentBinding == patternBinding)
+					if (argumentBinding == patternBinding)
 						// valid only when arg is equals to pattern
 						continue;
 					break;
@@ -778,43 +770,7 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 				patternTypeArgument = Signature.toCharArray(patternTypeArgument);
 				if (!this.isCaseSensitive) patternTypeArgument = CharOperation.toLowerCase(patternTypeArgument);
 				boolean patternTypeArgHasAnyChars = CharOperation.contains(new char[] {'*', '?'}, patternTypeArgument);
-
-				// Verify that names match...
-				// ...special case for wildcard
-				if (argTypeBinding instanceof CaptureBinding) {
-					WildcardBinding capturedWildcard = ((CaptureBinding)argTypeBinding).wildcard;
-					if (capturedWildcard != null) argTypeBinding = capturedWildcard;
-				}
-				if (argTypeBinding.isWildcard()) {
-					WildcardBinding wildcardBinding = (WildcardBinding) argTypeBinding;
-					// Look if bound name match pattern type argument
-					ReferenceBinding boundBinding = (ReferenceBinding) wildcardBinding.bound;
-					if (CharOperation.match(patternTypeArgument, boundBinding.shortReadableName(), this.isCaseSensitive) ||
-						CharOperation.match(patternTypeArgument, boundBinding.readableName(), this.isCaseSensitive)) {
-						// found name in hierarchy => match
-						continue nextTypeArgument;
-					}
-
-					// If pattern is not exact then match fails
-					if (patternTypeArgHasAnyChars) return impossible;
-
-					// Look for bound name in type argument superclasses
-					boundBinding = boundBinding.superclass();
-					while (boundBinding != null) {
-						if (CharOperation.equals(patternTypeArgument, boundBinding.shortReadableName(), this.isCaseSensitive) ||
-							CharOperation.equals(patternTypeArgument, boundBinding.readableName(), this.isCaseSensitive)) {
-							// found name in hierarchy => match
-							continue nextTypeArgument;
-						} else if (boundBinding.isLocalType() || boundBinding.isMemberType()) {
-							// for local or member type, verify also source name (bug 81084)
-							if (CharOperation.match(patternTypeArgument, boundBinding.sourceName(), this.isCaseSensitive))
-								continue nextTypeArgument;
-						}
-						boundBinding = boundBinding.superclass();
-					}
-					return impossible;
-				}
-
+		
 				// See if names match
 				if (CharOperation.match(patternTypeArgument, argTypeBinding.shortReadableName(), this.isCaseSensitive) ||
 					CharOperation.match(patternTypeArgument, argTypeBinding.readableName(), this.isCaseSensitive)) {

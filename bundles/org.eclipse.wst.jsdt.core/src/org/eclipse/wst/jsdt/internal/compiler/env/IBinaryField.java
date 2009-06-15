@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.env;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 
 public interface IBinaryField extends IGenericField {
-/**
- * Answer the runtime visible and invisible annotations for this field or null if none.
- */
-IBinaryAnnotation[] getAnnotations();
 
 /**
  *

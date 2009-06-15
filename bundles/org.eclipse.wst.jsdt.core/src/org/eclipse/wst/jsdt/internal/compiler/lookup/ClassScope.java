@@ -980,8 +980,6 @@ public class ClassScope extends Scope {
 
 	// Answer whether a cycle was found between the sourceType & the superType
 	private boolean detectHierarchyCycle(SourceTypeBinding sourceType, ReferenceBinding superType, TypeReference reference) {
-		if (superType.isRawType())
-			superType = ((RawTypeBinding) superType).genericType();
 		// by this point the superType must be a binary or source type
 
 		if (sourceType == superType) {

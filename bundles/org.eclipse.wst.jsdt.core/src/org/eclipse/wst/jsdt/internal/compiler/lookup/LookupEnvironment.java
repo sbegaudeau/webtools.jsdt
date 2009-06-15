@@ -442,7 +442,6 @@ public TypeBinding computeBoxingType(TypeBinding type) {
 	}
 	// allow indirect unboxing conversion for wildcards and type parameters
 	switch (type.kind()) {
-		case Binding.WILDCARD_TYPE :
 		case Binding.TYPE_PARAMETER :
 			switch (type.erasure().id) {
 				case TypeIds.T_JavaLangBoolean :
@@ -518,7 +517,6 @@ public TypeBinding convertToRawType(TypeBinding type) {
 		switch(type.kind()) {
 		case Binding.BASE_TYPE :
 		case Binding.TYPE_PARAMETER:
-		case Binding.WILDCARD_TYPE:
 		case Binding.RAW_TYPE:
 			return type;
 		case Binding.ARRAY_TYPE:
@@ -549,7 +547,7 @@ public TypeBinding convertToRawType(TypeBinding type) {
 	ReferenceBinding originalEnclosing = originalType.enclosingType();
 	TypeBinding convertedType;
 	if (originalEnclosing == null) {
-		convertedType = needToConvert ? createRawType((ReferenceBinding)originalType.erasure(), null) : originalType;
+		convertedType = originalType;
 	} else {
 		ReferenceBinding convertedEnclosing;
 		if (originalEnclosing.kind() == Binding.RAW_TYPE) {
@@ -560,9 +558,7 @@ public TypeBinding convertToRawType(TypeBinding type) {
 		} else {
 			convertedEnclosing = convertToParameterizedType(originalEnclosing);
 		}
-		if (needToConvert) {
-			convertedType = createRawType((ReferenceBinding) originalType.erasure(), convertedEnclosing);
-		} else if (originalEnclosing != convertedEnclosing) {
+		if (originalEnclosing != convertedEnclosing) {
 			convertedType = createParameterizedType((ReferenceBinding) originalType.erasure(), null, convertedEnclosing);
 		} else {
 			convertedType = originalType;
@@ -582,7 +578,6 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 	switch(type.kind()) {
 		case Binding.BASE_TYPE :
 		case Binding.TYPE_PARAMETER:
-		case Binding.WILDCARD_TYPE:
 		case Binding.RAW_TYPE:
 			return type;
 		case Binding.ARRAY_TYPE:
@@ -613,15 +608,13 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 	ReferenceBinding originalEnclosing = originalType.enclosingType();
 	TypeBinding convertedType;
 	if (originalEnclosing == null) {
-		convertedType = needToConvert ? createRawType((ReferenceBinding)originalType.erasure(), null) : originalType;
+		convertedType = originalType;
 	} else {
 		ReferenceBinding convertedEnclosing = (ReferenceBinding) convertUnresolvedBinaryToRawType(originalEnclosing);
 		if (convertedEnclosing != originalEnclosing) {
 			needToConvert |= !((ReferenceBinding)originalType).isStatic();
 		}
-		if (needToConvert) {
-			convertedType = createRawType((ReferenceBinding) originalType.erasure(), convertedEnclosing);
-		} else if (originalEnclosing != convertedEnclosing) {
+		if (originalEnclosing != convertedEnclosing) {
 			convertedType = createParameterizedType((ReferenceBinding) originalType.erasure(), null, convertedEnclosing);
 		} else {
 			convertedType = originalType;
@@ -631,69 +624,6 @@ public TypeBinding convertUnresolvedBinaryToRawType(TypeBinding type) {
 		return dimension > 0 ? (TypeBinding)createArrayType(convertedType, dimension) : convertedType;
 	}
 	return type;
-}
-
-/*
- *  Used to guarantee annotation identity.
- */
-public AnnotationBinding createAnnotation(ReferenceBinding annotationType, ElementValuePair[] pairs) {
-	// cached info is array of already created annotation binding for this type
-	AnnotationBinding[] cachedInfo = (AnnotationBinding[])this.uniqueAnnotationBindings.get(annotationType);
-	boolean needToGrow = false;
-	int index = 0;
-	if (pairs.length != 0) {
-		AnnotationBinding.setMethodBindings(annotationType, pairs);
-	}
-	if (cachedInfo != null){
-		nextCachedType :
-			// iterate existing parameterized for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++){
-				AnnotationBinding cachedType = cachedInfo[index];
-				if (cachedType == null) break nextCachedType;
-				ElementValuePair[] elementValuePairs = cachedType.pairs;
-				int length2 = pairs.length;
-				if (length2 != elementValuePairs.length) continue nextCachedType;
-				loop: for (int i = 0; i < length2; i++) {
-					ElementValuePair pair = elementValuePairs[i];
-					// loop on the given pair to make sure one will match
-					for (int j = 0; j < length2; j++) {
-						ElementValuePair pair2 = pairs[j];
-						if (pair.binding == pair2.binding) {
-							if (pair.value == null) {
-								if (pair2.value == null) {
-									continue loop;
-								}
-								continue nextCachedType;
-							} else {
-								if (pair2.value == null
-										|| !pair2.value.equals(pair.value)) {
-									continue nextCachedType;
-								}
-							}
-							continue loop;
-						}
-					}
-					// no match found for pair so we create a new annotation binding
-					continue nextCachedType;
-				}
-				// cached type match, reuse current
-				return cachedType;
-		}
-		needToGrow = true;
-	} else {
-		cachedInfo = new AnnotationBinding[1];
-		this.uniqueAnnotationBindings.put(annotationType, cachedInfo);
-	}
-	// grow cache ?
-	int length = cachedInfo.length;
-	if (needToGrow && index == length){
-		System.arraycopy(cachedInfo, 0, cachedInfo = new AnnotationBinding[length*2], 0, length);
-		this.uniqueAnnotationBindings.put(annotationType, cachedInfo);
-	}
-	// add new binding
-	AnnotationBinding annotationBinding = new AnnotationBinding(annotationType, pairs);
-	cachedInfo[index] = annotationBinding;
-	return annotationBinding;
 }
 
 /* Used to guarantee array type identity.
@@ -800,79 +730,6 @@ public PackageBinding createPackage(char[][] compoundName) {
 	return packageBinding;
 }
 
-public ParameterizedGenericMethodBinding createParameterizedGenericMethod(MethodBinding genericMethod, RawTypeBinding rawType) {
-
-	// cached info is array of already created parameterized types for this type
-	ParameterizedGenericMethodBinding[] cachedInfo = (ParameterizedGenericMethodBinding[])this.uniqueParameterizedGenericMethodBindings.get(genericMethod);
-	boolean needToGrow = false;
-	int index = 0;
-	if (cachedInfo != null){
-		nextCachedMethod :
-			// iterate existing parameterized for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++){
-				ParameterizedGenericMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) break nextCachedMethod;
-				if (!cachedMethod.isRaw) continue nextCachedMethod;
-				if (cachedMethod.declaringClass != (rawType == null ? genericMethod.declaringClass : rawType)) continue nextCachedMethod;
-				return cachedMethod;
-		}
-		needToGrow = true;
-	} else {
-		cachedInfo = new ParameterizedGenericMethodBinding[5];
-		this.uniqueParameterizedGenericMethodBindings.put(genericMethod, cachedInfo);
-	}
-	// grow cache ?
-	int length = cachedInfo.length;
-	if (needToGrow && index == length){
-		System.arraycopy(cachedInfo, 0, cachedInfo = new ParameterizedGenericMethodBinding[length*2], 0, length);
-		this.uniqueParameterizedGenericMethodBindings.put(genericMethod, cachedInfo);
-	}
-	// add new binding
-	ParameterizedGenericMethodBinding parameterizedGenericMethod = new ParameterizedGenericMethodBinding(genericMethod, rawType, this);
-	cachedInfo[index] = parameterizedGenericMethod;
-	return parameterizedGenericMethod;
-}
-
-public ParameterizedGenericMethodBinding createParameterizedGenericMethod(MethodBinding genericMethod, TypeBinding[] typeArguments) {
-
-	// cached info is array of already created parameterized types for this type
-	ParameterizedGenericMethodBinding[] cachedInfo = (ParameterizedGenericMethodBinding[])this.uniqueParameterizedGenericMethodBindings.get(genericMethod);
-	int argLength = typeArguments == null ? 0: typeArguments.length;
-	boolean needToGrow = false;
-	int index = 0;
-	if (cachedInfo != null){
-		nextCachedMethod :
-			// iterate existing parameterized for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++){
-				ParameterizedGenericMethodBinding cachedMethod = cachedInfo[index];
-				if (cachedMethod == null) break nextCachedMethod;
-				if (cachedMethod.isRaw) continue nextCachedMethod;
-				TypeBinding[] cachedArguments = cachedMethod.typeArguments;
-				int cachedArgLength = cachedArguments == null ? 0 : cachedArguments.length;
-				if (argLength != cachedArgLength) continue nextCachedMethod;
-				for (int j = 0; j < cachedArgLength; j++){
-					if (typeArguments[j] != cachedArguments[j]) continue nextCachedMethod;
-				}
-				// all arguments match, reuse current
-				return cachedMethod;
-		}
-		needToGrow = true;
-	} else {
-		cachedInfo = new ParameterizedGenericMethodBinding[5];
-		this.uniqueParameterizedGenericMethodBindings.put(genericMethod, cachedInfo);
-	}
-	// grow cache ?
-	int length = cachedInfo.length;
-	if (needToGrow && index == length){
-		System.arraycopy(cachedInfo, 0, cachedInfo = new ParameterizedGenericMethodBinding[length*2], 0, length);
-		this.uniqueParameterizedGenericMethodBindings.put(genericMethod, cachedInfo);
-	}
-	// add new binding
-	ParameterizedGenericMethodBinding parameterizedGenericMethod = new ParameterizedGenericMethodBinding(genericMethod, typeArguments, this);
-	cachedInfo[index] = parameterizedGenericMethod;
-	return parameterizedGenericMethod;
-}
-
 public ParameterizedTypeBinding createParameterizedType(ReferenceBinding genericType, TypeBinding[] typeArguments, ReferenceBinding enclosingType) {
 
 	// cached info is array of already created parameterized types for this type
@@ -912,86 +769,6 @@ public ParameterizedTypeBinding createParameterizedType(ReferenceBinding generic
 	ParameterizedTypeBinding parameterizedType = new ParameterizedTypeBinding(genericType,typeArguments, enclosingType, this);
 	cachedInfo[index] = parameterizedType;
 	return parameterizedType;
-}
-
-public RawTypeBinding createRawType(ReferenceBinding genericType, ReferenceBinding enclosingType) {
-	// cached info is array of already created raw types for this type
-	RawTypeBinding[] cachedInfo = (RawTypeBinding[])this.uniqueRawTypeBindings.get(genericType);
-	boolean needToGrow = false;
-	int index = 0;
-	if (cachedInfo != null){
-		nextCachedType :
-			// iterate existing parameterized for reusing one with same type arguments if any
-			for (int max = cachedInfo.length; index < max; index++){
-			    RawTypeBinding cachedType = cachedInfo[index];
-			    if (cachedType == null) break nextCachedType;
-			    if (cachedType.actualType() != genericType) continue nextCachedType; // remain of unresolved type
-			    if (cachedType.enclosingType() != enclosingType) continue nextCachedType;
-				// all enclosing type match, reuse current
-				return cachedType;
-		}
-		needToGrow = true;
-	} else {
-		cachedInfo = new RawTypeBinding[1];
-		this.uniqueRawTypeBindings.put(genericType, cachedInfo);
-	}
-	// grow cache ?
-	int length = cachedInfo.length;
-	if (needToGrow && index == length){
-		System.arraycopy(cachedInfo, 0, cachedInfo = new RawTypeBinding[length*2], 0, length);
-		this.uniqueRawTypeBindings.put(genericType, cachedInfo);
-	}
-	// add new binding
-	RawTypeBinding rawType = new RawTypeBinding(genericType, enclosingType, this);
-	cachedInfo[index] = rawType;
-	return rawType;
-
-}
-
-public WildcardBinding createWildcard(ReferenceBinding genericType, int rank, TypeBinding bound, TypeBinding[] otherBounds, int boundKind) {
-
-	// cached info is array of already created wildcard  types for this type
-	if (genericType == null) // pseudo wildcard denoting composite bounds for lub computation
-		genericType = ReferenceBinding.LUB_GENERIC;
-	WildcardBinding[] cachedInfo = (WildcardBinding[])this.uniqueWildcardBindings.get(genericType);
-	boolean needToGrow = false;
-	int index = 0;
-	if (cachedInfo != null){
-		nextCachedType :
-			// iterate existing wildcards for reusing one with same information if any
-			for (int max = cachedInfo.length; index < max; index++){
-			    WildcardBinding cachedType = cachedInfo[index];
-			    if (cachedType == null) break nextCachedType;
-			    if (cachedType.genericType != genericType) continue nextCachedType; // remain of unresolved type
-			    if (cachedType.rank != rank) continue nextCachedType;
-			    if (cachedType.boundKind != boundKind) continue nextCachedType;
-			    if (cachedType.bound != bound) continue nextCachedType;
-			    if (cachedType.otherBounds != otherBounds) {
-			    	int cachedLength = cachedType.otherBounds == null ? 0 : cachedType.otherBounds.length;
-			    	int length = otherBounds == null ? 0 : otherBounds.length;
-			    	if (cachedLength != length) continue nextCachedType;
-			    	for (int j = 0; j < length; j++) {
-			    		if (cachedType.otherBounds[j] != otherBounds[j]) continue nextCachedType;
-			    	}
-			    }
-				// all match, reuse current
-				return cachedType;
-		}
-		needToGrow = true;
-	} else {
-		cachedInfo = new WildcardBinding[10];
-		this.uniqueWildcardBindings.put(genericType, cachedInfo);
-	}
-	// grow cache ?
-	int length = cachedInfo.length;
-	if (needToGrow && index == length){
-		System.arraycopy(cachedInfo, 0, cachedInfo = new WildcardBinding[length*2], 0, length);
-		this.uniqueWildcardBindings.put(genericType, cachedInfo);
-	}
-	// add new binding
-	WildcardBinding wildcard = new WildcardBinding(genericType, rank, bound, otherBounds, boundKind, this);
-	cachedInfo[index] = wildcard;
-	return wildcard;
 }
 
 /**

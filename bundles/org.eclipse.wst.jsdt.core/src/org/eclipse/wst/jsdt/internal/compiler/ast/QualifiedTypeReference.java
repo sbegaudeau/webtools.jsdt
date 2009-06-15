@@ -99,12 +99,7 @@ public class QualifiedTypeReference extends TypeReference implements IQualifiedT
 					return null;
 			ReferenceBinding currentType = (ReferenceBinding) this.resolvedType;
 			if (qualifiedType != null) {
-				boolean rawQualified;
-				if (currentType.isGenericType()) {
-					qualifiedType = scope.environment().createRawType(currentType, qualifiedType);
-				} else if ((rawQualified = qualifiedType.isRawType()) && !currentType.isStatic()) {
-					qualifiedType = scope.environment().createRawType((ReferenceBinding)currentType.erasure(), qualifiedType);
-				} else if ((rawQualified || qualifiedType.isParameterizedType()) && qualifiedType.erasure() == currentType.enclosingType().erasure()) {
+				if ((qualifiedType.isParameterizedType()) && qualifiedType.erasure() == currentType.enclosingType().erasure()) {
 					qualifiedType = scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), null, qualifiedType);
 				} else {
 					qualifiedType = currentType;

@@ -1123,7 +1123,6 @@ private ReferenceBinding typeToRecord(TypeBinding type) {
 	switch (type.kind()) {
 		case Binding.BASE_TYPE :
 		case Binding.TYPE_PARAMETER :
-		case Binding.WILDCARD_TYPE :
 			return null;
 		case Binding.PARAMETERIZED_TYPE :
 		case Binding.RAW_TYPE :

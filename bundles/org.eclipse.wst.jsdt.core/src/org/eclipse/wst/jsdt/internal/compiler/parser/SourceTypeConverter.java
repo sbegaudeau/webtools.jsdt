@@ -58,7 +58,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceImport;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.core.CompilationUnitElementInfo;
 import org.eclipse.wst.jsdt.internal.core.ImportDeclaration;
@@ -791,25 +790,8 @@ public class SourceTypeConverter {
 					while (typeName[this.namePos] == ' ') this.namePos++;
 					switch(typeName[this.namePos]) {
 						case 's' :
-							checkSuper: {
-								int max = TypeConstants.WILDCARD_SUPER.length-1;
-								for (int ahead = 1; ahead < max; ahead++) {
-									if (typeName[this.namePos+ahead] != TypeConstants.WILDCARD_SUPER[ahead+1]) {
-										break checkSuper;
-									}
-								}
-							}
 							break;
 						case 'e' :
-							checkExtends: {
-								int max = TypeConstants.WILDCARD_EXTENDS.length-1;
-								for (int ahead = 1; ahead < max; ahead++) {
-									if (typeName[this.namePos+ahead] != TypeConstants.WILDCARD_EXTENDS[ahead+1]) {
-										break checkExtends;
-									}
-								}
-								this.namePos += max;
-							}
 							break;
 					}
 				case '[' :

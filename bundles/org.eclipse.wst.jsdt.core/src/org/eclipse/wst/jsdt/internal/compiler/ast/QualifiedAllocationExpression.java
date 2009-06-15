@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -240,7 +239,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 					if (closestMatch != null) {
 						if (closestMatch.original().typeVariables != Binding.NO_TYPE_VARIABLES) { // generic method
 							// shouldn't return generic method outside its context, rather convert it to raw method (175409)
-							closestMatch = scope.environment().createParameterizedGenericMethod(closestMatch.original(), (RawTypeBinding)null);
 						}
 						this.binding = closestMatch;
 						MethodBinding closestMatchOriginal = closestMatch.original();

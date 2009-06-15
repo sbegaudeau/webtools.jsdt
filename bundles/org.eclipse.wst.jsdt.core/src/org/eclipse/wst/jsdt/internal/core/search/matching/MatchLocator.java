@@ -55,7 +55,6 @@ import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
 import org.eclipse.wst.jsdt.core.search.TypeDeclarationMatch;
-import org.eclipse.wst.jsdt.core.search.TypeParameterReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.TypeReferenceMatch;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -1543,19 +1542,6 @@ public SearchMatch newPackageReferenceMatch(
 	IResource resource = this.currentPossibleMatch.resource;
 	boolean insideDocComment = (reference.bits & ASTNode.InsideJavadoc) != 0;
 	return new PackageReferenceMatch(enclosingElement, accuracy, offset, length, insideDocComment, participant, resource);
-}
-
-public SearchMatch newTypeParameterReferenceMatch(
-		IJavaScriptElement enclosingElement,
-		int accuracy,
-		int offset,
-		int length,
-		ASTNode reference) {
-	int bits = reference.bits;
-	boolean insideDocComment = (bits & ASTNode.InsideJavadoc) != 0;
-	SearchParticipant participant = getParticipant();
-	IResource resource = this.currentPossibleMatch.resource;
-	return new TypeParameterReferenceMatch(enclosingElement, accuracy, offset, length, insideDocComment, participant, resource);
 }
 
 public TypeReferenceMatch newTypeReferenceMatch(

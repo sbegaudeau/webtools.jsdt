@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,15 +40,6 @@ public interface TypeConstants {
 	char[] CharArray_JAVA_IO_OBJECTSTREAMFIELD = "java.io.ObjectStreamField".toCharArray(); //$NON-NLS-1$
 	char[] ANONYM_PREFIX = "new ".toCharArray(); //$NON-NLS-1$
 	char[] ANONYM_SUFFIX = "(){}".toCharArray(); //$NON-NLS-1$
-    char[] WILDCARD_NAME = { '?' };
-    char[] WILDCARD_SUPER = " super ".toCharArray(); //$NON-NLS-1$
-    char[] WILDCARD_EXTENDS = " extends ".toCharArray(); //$NON-NLS-1$
-    char[] WILDCARD_MINUS = { '-' };
-    char[] WILDCARD_STAR = { '*' };
-    char[] WILDCARD_PLUS = { '+' };
-    char[] WILDCARD_CAPTURE_NAME_PREFIX = "capture#".toCharArray(); //$NON-NLS-1$
-    char[] WILDCARD_CAPTURE_NAME_SUFFIX = "-of ".toCharArray(); //$NON-NLS-1$
-	char[] WILDCARD_CAPTURE = { '!' };
 	char[] BYTE = "byte".toCharArray(); //$NON-NLS-1$
 	char[] SHORT = "short".toCharArray(); //$NON-NLS-1$
 	char[] INT = "int".toCharArray(); //$NON-NLS-1$

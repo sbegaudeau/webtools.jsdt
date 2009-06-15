@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,6 @@ package org.eclipse.wst.jsdt.internal.compiler.env;
 // in the constructor's signature.
 
 public interface IBinaryMethod extends IGenericMethod {
-
-/**
- * Answer the runtime visible and invisible annotations for this method or null if none.
- */
-IBinaryAnnotation[] getAnnotations();
 
 /**
  * Return {@link ClassSignature} for a Class {@link java.lang.Class}.
@@ -58,12 +53,6 @@ char[] getGenericSignature();
  *   - Object[] foo(int) is (I)[Ljava/lang/Object;
  */
 char[] getMethodDescriptor();
-
-/**
- * Answer the annotations on the <code>index</code>th parameter or null if none
- * @param index the index of the parameter of interest
- */
-IBinaryAnnotation[] getParameterAnnotations(int index);
 
 /**
  * Answer the name of the method.

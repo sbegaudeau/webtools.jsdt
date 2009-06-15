@@ -59,10 +59,6 @@ public class TypeVariableBinding extends ReferenceBinding {
 		if (this.superclass == null)
 			return TypeConstants.OK;
 
-		if (argumentType.isWildcard() && !argumentType.isIntersectionType()) {
-			WildcardBinding wildcard = (WildcardBinding) argumentType;
-			return TypeConstants.OK;
-		}
 		boolean unchecked = false;
 		if (this.superclass.id != TypeIds.T_JavaLangObject) {
 			TypeBinding superType = this.superclass;
@@ -124,10 +120,6 @@ public class TypeVariableBinding extends ReferenceBinding {
 				if (boxedType == actualType) return;
 				actualType = boxedType;
 				break;
-			case Binding.WILDCARD_TYPE :
-				WildcardBinding actualWildcard = (WildcardBinding) actualType;
-				if (actualWildcard.otherBounds != null) break; // intersection type
-				return; // wildcards are not true type expressions (JLS 15.12.2.7, p.453 2nd discussion)
 		}
 
 		// reverse constraint, to reflect variable on rhs:   A << T --> T >: A

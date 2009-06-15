@@ -24,8 +24,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodVerifier;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -69,13 +67,6 @@ class FunctionBinding implements IFunctionBinding {
 	 */
 	public boolean isDefaultConstructor() {
 		final ReferenceBinding declaringClassBinding = this.binding.declaringClass;
-		if (declaringClassBinding.isRawType()) {
-			RawTypeBinding rawTypeBinding = (RawTypeBinding) declaringClassBinding;
-			if (rawTypeBinding.genericType().isBinaryBinding()) {
-				return false;
-			}
-			return (this.binding.modifiers & ExtraCompilerModifiers.AccIsDefaultConstructor) != 0;
-		}
 		if (declaringClassBinding.isBinaryBinding()) {
 			return false;
 		}
@@ -324,14 +315,6 @@ class FunctionBinding implements IFunctionBinding {
 		}
 		org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding otherBinding = ((FunctionBinding) other).binding;
 		return BindingComparator.isEqual(this.binding, otherBinding);
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.IFunctionBinding#isRawMethod()
-	 */
-	public boolean isRawMethod() {
-		return (this.binding instanceof ParameterizedGenericMethodBinding)
-			&& ((ParameterizedGenericMethodBinding) this.binding).isRaw;
 	}
 
 	public boolean isSubsignature(IFunctionBinding otherMethod) {

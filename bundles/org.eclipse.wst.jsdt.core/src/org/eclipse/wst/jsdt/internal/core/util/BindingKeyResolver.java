@@ -13,35 +13,22 @@ package org.eclipse.wst.jsdt.internal.core.util;
 import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ConditionalExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
 public class BindingKeyResolver extends BindingKeyParser {
 	Compiler compiler;
@@ -105,81 +92,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 		}
 	}
 
-	public void consumeCapture(final int position) {
-		CompilationUnitDeclaration outerParsedUnit = this.outerMostParsedUnit == null ? this.parsedUnit : this.outerMostParsedUnit;
-		if (outerParsedUnit == null) return;
-		final Binding wildcardBinding = ((BindingKeyResolver) this.types.get(0)).compilerBinding;
-		class CaptureFinder extends ASTVisitor {
-			CaptureBinding capture;
-			boolean checkType(TypeBinding binding) {
-				if (binding == null)
-					return false;
-				switch (binding.kind()) {
-					case Binding.PARAMETERIZED_TYPE:
-						TypeBinding[] arguments = ((ParameterizedTypeBinding) binding).arguments;
-						if (arguments == null) return false;
-						for (int i = 0, length = arguments.length; i < length; i++) {
-							if (checkType(arguments[i]))
-								return true;
-						}
-						break;
-					case Binding.WILDCARD_TYPE:
-						return checkType(((WildcardBinding) binding).bound);
-					case Binding.ARRAY_TYPE:
-						return checkType(((ArrayBinding) binding).leafComponentType);
-					case Binding.TYPE_PARAMETER:
-						if (binding.isCapture()) {
-							CaptureBinding captureBinding = (CaptureBinding) binding;
-							if (captureBinding.position == position && captureBinding.wildcard == wildcardBinding) {
-								this.capture = captureBinding;
-								return true;
-							}
-						}
-						break;
-				}
-				return false;
-			}
-			public boolean visit(SingleNameReference singleNameReference, BlockScope blockScope) {
-				if (checkType(singleNameReference.resolvedType))
-					return false;
-				return super.visit(singleNameReference, blockScope);
-			}
-			public boolean visit(QualifiedNameReference qualifiedNameReference, BlockScope blockScope) {
-				if (checkType(qualifiedNameReference.resolvedType))
-					return false;
-				return super.visit(qualifiedNameReference, blockScope);
-			}
-			public boolean visit(MessageSend messageSend, BlockScope blockScope) {
-				if (checkType(messageSend.resolvedType))
-					return false;
-				return super.visit(messageSend, blockScope);
-			}
-			public boolean visit(FieldReference fieldReference, BlockScope blockScope) {
-				if (checkType(fieldReference.resolvedType))
-					return false;
-				return super.visit(fieldReference, blockScope);
-			}
-			public boolean visit(ConditionalExpression conditionalExpression, BlockScope blockScope) {
-				if (checkType(conditionalExpression.resolvedType))
-					return false;
-				return super.visit(conditionalExpression, blockScope);
-			}
-			public boolean visit(Assignment assignment, BlockScope blockScope) {
-				if (checkType(assignment.resolvedType))
-					return false;
-				return super.visit(assignment, blockScope);
-			}
-			public boolean visit(ArrayReference arrayReference, BlockScope blockScope) {
-				if (checkType(arrayReference.resolvedType))
-					return false;
-				return super.visit(arrayReference, blockScope);
-			}
-		}
-		CaptureFinder captureFinder = new CaptureFinder();
-		outerParsedUnit.traverse(captureFinder, outerParsedUnit.scope);
-		this.typeBinding = captureFinder.capture;
-	}
-
 	public void consumeException() {
 		this.types = new ArrayList();
 	}
@@ -194,17 +106,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 				return;
 			}
 		}
-	}
-
-	public void consumeParameterizedGenericMethod() {
-		if (this.methodBinding == null)
-			return;
-		TypeBinding[] arguments = getTypeBindingArguments();
-		if (arguments.length != this.methodBinding.typeVariables().length)
-			this.methodBinding = this.environment.createParameterizedGenericMethod(this.methodBinding, (RawTypeBinding) null);
-		else
-	 		this.methodBinding = this.environment.createParameterizedGenericMethod(this.methodBinding, arguments);
-		this.compilerBinding = this.methodBinding;
 	}
 
 	public void consumeLocalType(char[] uniqueKey) {
@@ -267,11 +168,8 @@ public class BindingKeyResolver extends BindingKeyParser {
 				// parameterized member type with parameterized enclosing type
 				this.genericType = this.genericType.getMemberType(simpleTypeName);
 			}
-			if (!isRaw)
-				this.typeBinding = this.environment.createParameterizedType(this.genericType, arguments, (ReferenceBinding) this.typeBinding);
-			else
-				// raw type
-				this.typeBinding = this.environment.createRawType(this.genericType, (ReferenceBinding) this.typeBinding);
+			
+			this.typeBinding = this.environment.createParameterizedType(this.genericType, arguments, (ReferenceBinding) this.typeBinding);
 		} else {
 			// parameterized top level type or parameterized member type with raw enclosing type
 			this.genericType = (ReferenceBinding) this.typeBinding;
@@ -284,8 +182,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 
 	public void consumeParser(BindingKeyParser parser) {
 		this.types.add(parser);
-		if (((BindingKeyResolver) parser).compilerBinding instanceof WildcardBinding)
-			this.rank++;
 	}
 
 	public void consumeScope(int scopeNumber) {

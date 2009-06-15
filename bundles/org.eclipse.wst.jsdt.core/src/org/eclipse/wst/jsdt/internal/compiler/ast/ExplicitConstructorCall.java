@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
@@ -295,7 +294,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 						if (closestMatch != null) {
 							if (closestMatch.original().typeVariables != Binding.NO_TYPE_VARIABLES) { // generic method
 								// shouldn't return generic method outside its context, rather convert it to raw method (175409)
-								closestMatch = scope.environment().createParameterizedGenericMethod(closestMatch.original(), (RawTypeBinding)null);
 							}
 							this.binding = closestMatch;
 							MethodBinding closestMatchOriginal = closestMatch.original();

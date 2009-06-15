@@ -132,7 +132,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MetatdataTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
@@ -5146,10 +5145,6 @@ public final class CompletionEngine
 			if (minTypeArgLength != 0 && minTypeArgLength != method.typeVariables.length)
 				continue next;
 
-			if (minTypeArgLength != 0) {
-				method = scope.environment().createParameterizedGenericMethod(method, typeArgTypes);
-			}
-
 			if (minArgLength > method.parameters.length)
 				continue next;
 
@@ -6054,13 +6049,6 @@ public final class CompletionEngine
 			if(method.typeVariables != null && method.typeVariables.length > 0) {
 				char[][] excludedNames = findEnclosingTypeNames(scope);
 				char[][] substituedParameterNames = substituteMethodTypeParameterNames(method.typeVariables, excludedNames);
-				if(substituedParameterNames != null) {
-					method = new ParameterizedMethodBinding(
-								method.declaringClass,
-								method,
-								substituedParameterNames,
-								scope.environment());
-				}
 			}
 
 			StringBuffer completion = new StringBuffer(10);

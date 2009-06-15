@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.HashSet;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
@@ -24,7 +23,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
 /**
  * Internal helper class for comparing bindings.
@@ -220,32 +218,8 @@ class BindingComparator {
 					&& isEqual(parameterizedTypeBinding.arguments, parameterizedTypeBinding2.arguments, visitedTypes)
 					&& isEqual(parameterizedTypeBinding.enclosingType(), parameterizedTypeBinding2.enclosingType(), visitedTypes);
 
-			case Binding.WILDCARD_TYPE :
-				if (!typeBinding2.isWildcard()) {
-					return false;
-				}
-				WildcardBinding wildcardBinding = (WildcardBinding) typeBinding;
-				WildcardBinding wildcardBinding2 = (WildcardBinding) typeBinding2;
-				return isEqual(wildcardBinding.bound, wildcardBinding2.bound, visitedTypes)
-					&& wildcardBinding.boundKind == wildcardBinding2.boundKind;
-
 			case Binding.TYPE_PARAMETER :
 				if (!(typeBinding2.isTypeVariable())) {
-					return false;
-				}
-				if (typeBinding.isCapture()) {
-					if (!(typeBinding2.isCapture())) {
-						return false;
-					}
-					CaptureBinding captureBinding = (CaptureBinding) typeBinding;
-					CaptureBinding captureBinding2 = (CaptureBinding) typeBinding2;
-					if (captureBinding.position == captureBinding2.position) {
-						if (visitedTypes.contains(typeBinding)) return true;
-						visitedTypes.add(typeBinding);
-
-						return isEqual(captureBinding.wildcard, captureBinding2.wildcard, visitedTypes)
-							&& isEqual(captureBinding.sourceType, captureBinding2.sourceType, visitedTypes);
-					}
 					return false;
 				}
 				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) typeBinding;

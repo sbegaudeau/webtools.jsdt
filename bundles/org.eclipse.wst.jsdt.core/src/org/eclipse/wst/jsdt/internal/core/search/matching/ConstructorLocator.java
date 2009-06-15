@@ -31,10 +31,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class ConstructorLocator extends PatternLocator {
@@ -225,50 +221,7 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 	// Create search match
 	match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, true, isSynthetic, reference);
 
-	// Look to refine accuracy
-	if (constructorBinding instanceof ParameterizedGenericMethodBinding) { // parameterized generic method
-		// Update match regarding constructor type arguments
-		ParameterizedGenericMethodBinding parameterizedMethodBinding = (ParameterizedGenericMethodBinding) constructorBinding;
-		match.setRaw(parameterizedMethodBinding.isRaw);
-		TypeBinding[] typeBindings = parameterizedMethodBinding.isRaw ? null : parameterizedMethodBinding.typeArguments;
-		updateMatch(typeBindings, locator, this.pattern.constructorArguments, this.pattern.hasConstructorParameters());
-
-		// Update match regarding declaring class type arguments
-		if (constructorBinding.declaringClass.isParameterizedType() || constructorBinding.declaringClass.isRawType()) {
-			ParameterizedTypeBinding parameterizedBinding = (ParameterizedTypeBinding)constructorBinding.declaringClass;
-			if (!this.pattern.hasTypeArguments() && this.pattern.hasConstructorArguments() || parameterizedBinding.isParameterizedWithOwnVariables()) {
-				// special case for constructor pattern which defines arguments but no type
-				// in this case, we only use refined accuracy for constructor
-			} else if (this.pattern.hasTypeArguments() && !this.pattern.hasConstructorArguments()) {
-				// special case for constructor pattern which defines no constructor arguments but has type ones
-				// in this case, we do not use refined accuracy
-				updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
-			} else {
-				updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
-			}
-		} else if (this.pattern.hasTypeArguments()) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-
-		// Update match regarding constructor parameters
-		// TODO ? (frederic)
-	} else if (constructorBinding instanceof ParameterizedMethodBinding) {
-		// Update match regarding declaring class type arguments
-		if (constructorBinding.declaringClass.isParameterizedType() || constructorBinding.declaringClass.isRawType()) {
-			ParameterizedTypeBinding parameterizedBinding = (ParameterizedTypeBinding)constructorBinding.declaringClass;
-			if (!this.pattern.hasTypeArguments() && this.pattern.hasConstructorArguments()) {
-				// special case for constructor pattern which defines arguments but no type
-				updateMatch(parameterizedBinding, new char[][][] {this.pattern.constructorArguments}, this.pattern.hasTypeParameters(), 0, locator);
-			} else if (!parameterizedBinding.isParameterizedWithOwnVariables()) {
-				updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
-			}
-		} else if (this.pattern.hasTypeArguments()) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-
-		// Update match regarding constructor parameters
-		// TODO ? (frederic)
-	} else if (this.pattern.hasConstructorArguments()) { // binding has no type params, compatible erasure if pattern does
+	if (this.pattern.hasConstructorArguments()) { // binding has no type params, compatible erasure if pattern does
 		match.setRule(SearchPattern.R_ERASURE_MATCH);
 	}
 

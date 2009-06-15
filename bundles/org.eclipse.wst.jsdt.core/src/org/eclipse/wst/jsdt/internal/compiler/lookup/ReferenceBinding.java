@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -856,19 +856,7 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 	if (this.isEquivalentTo(otherType))
 		return true;
 	switch (otherType.kind()) {
-		case Binding.WILDCARD_TYPE :
-			return false; // should have passed equivalence check above if
-							// wildcard
 		case Binding.TYPE_PARAMETER :
-			// check compatibility with capture of ? super X
-			if (otherType.isCapture()) {
-				CaptureBinding otherCapture = (CaptureBinding) otherType;
-				TypeBinding otherLowerBound;
-				if ((otherLowerBound = otherCapture.lowerBound) != null) {
-					if (otherLowerBound.isArrayType()) return false;
-					return this.isCompatibleWith(otherLowerBound);
-				}
-			}
 		case Binding.GENERIC_TYPE :
 		case Binding.TYPE :
 		case Binding.PARAMETERIZED_TYPE :
@@ -1101,17 +1089,6 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 	return readableName;
 }
 
-public AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
-	SimpleLookupTable store = storedAnnotations(false);
-	return store == null ? null : (AnnotationHolder) store.get(binding);
-}
-AnnotationBinding[] retrieveAnnotations(Binding binding) {
-	AnnotationHolder holder = retrieveAnnotationHolder(binding, true);
-	return holder == null ? Binding.NO_ANNOTATIONS : holder.getAnnotations();
-}
-public void setAnnotations(AnnotationBinding[] annotations) {
-	storeAnnotations(this, annotations);
-}
 public char[] shortReadableName() /*Object*/ {
     char[] shortReadableName;
 	if (isMemberType()) {
@@ -1142,33 +1119,6 @@ public char[] signature() /* Ljava/lang/Object; */ {
 }
 public char[] sourceName() {
 	return this.sourceName;
-}
-void storeAnnotationHolder(Binding binding, AnnotationHolder holder) {
-	if (holder == null) {
-		SimpleLookupTable store = storedAnnotations(false);
-		if (store != null)
-			store.removeKey(binding);
-	} else {
-		SimpleLookupTable store = storedAnnotations(true);
-		if (store != null)
-			store.put(binding, holder);
-	}
-}
-void storeAnnotations(Binding binding, AnnotationBinding[] annotations) {
-	AnnotationHolder holder = null;
-	if (annotations == null || annotations.length == 0) {
-		SimpleLookupTable store = storedAnnotations(false);
-		if (store != null)
-			holder = (AnnotationHolder) store.get(binding);
-		if (holder == null) return; // nothing to delete
-	} else {
-		SimpleLookupTable store = storedAnnotations(true);
-		if (store == null) return; // not supported
-		holder = (AnnotationHolder) store.get(binding);
-		if (holder == null)
-			holder = new AnnotationHolder();
-	}
-	storeAnnotationHolder(binding, holder.setAnnotations(annotations));
 }
 SimpleLookupTable storedAnnotations(boolean forceInitialize) {
 	return null; // overrride if interested in storing annotations for the receiver, its fields and methods

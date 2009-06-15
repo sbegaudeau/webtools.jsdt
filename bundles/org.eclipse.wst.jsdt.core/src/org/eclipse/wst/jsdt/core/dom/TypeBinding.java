@@ -32,16 +32,13 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CaptureBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.RawTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
@@ -351,7 +348,7 @@ class TypeBinding implements ITypeBinding {
 			}
 		} else if (this.binding.isTypeVariable()) {
 			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			Binding declaringElement = typeVariableBinding.isCapture() ? ((CaptureBinding) typeVariableBinding).sourceType : typeVariableBinding.declaringElement;
+			Binding declaringElement = typeVariableBinding.declaringElement;
 			if (declaringElement instanceof ReferenceBinding) {
 				try {
 					return this.resolver.getTypeBinding((ReferenceBinding)declaringElement);
@@ -424,7 +421,6 @@ class TypeBinding implements ITypeBinding {
 				typeBinding = ((ArrayBinding) typeBinding).leafComponentType();
 				return getUnresolvedJavaElement(typeBinding);
 			case Binding.BASE_TYPE :
-			case Binding.WILDCARD_TYPE :
 				return null;
 			default :
 				if (typeBinding.isCapture())
@@ -544,11 +540,6 @@ class TypeBinding implements ITypeBinding {
 		StringBuffer buffer;
 		switch (this.binding.kind()) {
 
-			case Binding.WILDCARD_TYPE :
-				buffer = new StringBuffer();
-				buffer.append(TypeConstants.WILDCARD_NAME);
-				return String.valueOf(buffer);
-
 			case Binding.TYPE_PARAMETER :
 				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
 				return new String(typeVariableBinding.sourceName);
@@ -597,7 +588,6 @@ class TypeBinding implements ITypeBinding {
 			case Binding.BASE_TYPE :
 			case Binding.ARRAY_TYPE :
 			case Binding.TYPE_PARAMETER : // includes capture scenario
-			case Binding.WILDCARD_TYPE :
 				return null;
 		}
 		ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
@@ -647,11 +637,6 @@ class TypeBinding implements ITypeBinding {
 	public String getQualifiedName() {
 		StringBuffer buffer;
 		switch (this.binding.kind()) {
-
-			case Binding.WILDCARD_TYPE :
-				buffer = new StringBuffer();
-				buffer.append(TypeConstants.WILDCARD_NAME);
-				return String.valueOf(buffer);
 
 			case Binding.RAW_TYPE :
 				return getTypeDeclaration().getQualifiedName();
@@ -852,9 +837,7 @@ class TypeBinding implements ITypeBinding {
 	public boolean isFromSource() {
 		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			if (referenceBinding.isRawType()) {
-				return !((RawTypeBinding) referenceBinding).genericType().isBinaryBinding();
-			} else if (referenceBinding.isParameterizedType()) {
+			if (referenceBinding.isParameterizedType()) {
 				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) referenceBinding;
 				org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding erasure = parameterizedTypeBinding.erasure();
 				if (erasure instanceof ReferenceBinding) {

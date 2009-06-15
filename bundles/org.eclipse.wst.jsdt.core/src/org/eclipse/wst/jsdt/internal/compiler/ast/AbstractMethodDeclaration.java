@@ -26,8 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
-
-import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
@@ -134,19 +132,10 @@ public abstract class AbstractMethodDeclaration
 				}
 			}
 			boolean used = this.binding.isAbstract() || this.binding.isNative();
-			AnnotationBinding[][] paramAnnotations = null;
 			for (int i = 0, length = this.arguments.length; i < length && i < this.binding.parameters.length; i++) {
 				IArgument argument = this.arguments[i];
 				argument.bind(this.scope, this.binding.parameters[i], used);
-//				if (argument.getAnnotation() != null) {
-//					this.binding.tagBits |= TagBits.HasParameterAnnotations;
-//					if (paramAnnotations == null)
-//						paramAnnotations = new AnnotationBinding[length][];
-//					paramAnnotations[i] = argument.getBinding().getAnnotations();
-//				}
 			}
-			if (paramAnnotations != null)
-				this.binding.setParameterAnnotations(paramAnnotations);
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,6 @@ public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declar
 	this.parameters = initialMethodBinding.parameters;
 	this.thrownExceptions = initialMethodBinding.thrownExceptions;
 	this.declaringClass = declaringClass;
-	declaringClass.storeAnnotationHolder(this, initialMethodBinding.declaringClass.retrieveAnnotationHolder(initialMethodBinding, true));
 }
 /* Answer true if the argument types & the receiver's parameters have the same erasure
 */
@@ -306,15 +305,7 @@ MethodBinding computeSubstitutedMethod(MethodBinding method, LookupEnvironment e
 	if (length != vars.length)
 		return null;
 
-	// must substitute to detect cases like:
-	//   <T1 extends X<T1>> void dup() {}
-	//   <T2 extends X<T2>> Object dup() {return null;}
-	ParameterizedGenericMethodBinding substitute =
-		env.createParameterizedGenericMethod(method, this.typeVariables);
-	for (int i = 0; i < length; i++)
-		if (!this.typeVariables[i].isInterchangeableWith(vars[i], substitute))
-			return null;
-	return substitute;
+	return method;
 }
 /*
  * declaringUniqueKey dot selector genericSignature
@@ -434,10 +425,6 @@ public char[] genericSignature() {
 	sig.getChars(0, sigLength, genericSignature, 0);
 	return genericSignature;
 }
-public AnnotationBinding[] getAnnotations() {
-	MethodBinding originalMethod = this.original();
-	return originalMethod.declaringClass.retrieveAnnotations(originalMethod);
-}
 ///**
 // * @param index the index of the parameter of interest
 // * @return the annotations on the <code>index</code>th parameter
@@ -488,8 +475,7 @@ public Object getDefaultValue() {
 		}
 		originalMethod.tagBits |= TagBits.DefaultValueResolved;
 	}
-	AnnotationHolder holder = originalMethod.declaringClass.retrieveAnnotationHolder(originalMethod, true);
-	return holder == null ? null : holder.getDefaultValue();
+	return null;
 }
 public TypeVariableBinding getTypeVariable(char[] variableName) {
 	for (int i = this.typeVariables.length; --i >= 0;)
@@ -672,28 +658,9 @@ public char[] readableName() /* foo(int, Thread) */ {
 	buffer.append(')');
 	return buffer.toString().toCharArray();
 }
-public void setAnnotations(AnnotationBinding[] annotations) {
-	this.declaringClass.storeAnnotations(this, annotations);
-}
-public void setAnnotations(AnnotationBinding[] annotations, AnnotationBinding[][] parameterAnnotations, Object defaultValue) {
-	this.declaringClass.storeAnnotationHolder(this,  AnnotationHolder.storeAnnotations(annotations, parameterAnnotations, defaultValue));
-}
 public void setDefaultValue(Object defaultValue) {
 	MethodBinding originalMethod = this.original();
 	originalMethod.tagBits |= TagBits.DefaultValueResolved;
-
-	AnnotationHolder holder = this.declaringClass.retrieveAnnotationHolder(this, false);
-	if (holder == null)
-		setAnnotations(null, null, defaultValue);
-	else
-		setAnnotations(holder.getAnnotations(), holder.getParameterAnnotations(), defaultValue);
-}
-public void setParameterAnnotations(AnnotationBinding[][] parameterAnnotations) {
-	AnnotationHolder holder = this.declaringClass.retrieveAnnotationHolder(this, false);
-	if (holder == null)
-		setAnnotations(null, parameterAnnotations, null);
-	else
-		setAnnotations(holder.getAnnotations(), parameterAnnotations, holder.getDefaultValue());
 }
 /**
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#shortReadableName()

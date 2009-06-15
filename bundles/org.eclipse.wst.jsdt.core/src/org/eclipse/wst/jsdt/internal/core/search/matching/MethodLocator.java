@@ -36,8 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedGenericMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
@@ -336,60 +334,7 @@ void matchReportReference(MessageSend messageSend, MatchLocator locator, MethodB
 
 	// Look if there's a need to special report for parameterized type
 	boolean isParameterized = false;
-	if (methodBinding instanceof ParameterizedGenericMethodBinding) { // parameterized generic method
-		isParameterized = true;
-
-		// Update match regarding method type arguments
-		ParameterizedGenericMethodBinding parameterizedMethodBinding = (ParameterizedGenericMethodBinding) methodBinding;
-		match.setRaw(parameterizedMethodBinding.isRaw);
-		TypeBinding[] typeArguments = /*parameterizedMethodBinding.isRaw ? null :*/ parameterizedMethodBinding.typeArguments;
-		updateMatch(typeArguments, locator, this.pattern.methodArguments, this.pattern.hasMethodParameters());
-
-		// Update match regarding declaring class type arguments
-		if (methodBinding.declaringClass.isParameterizedType() || methodBinding.declaringClass.isRawType()) {
-			ParameterizedTypeBinding parameterizedBinding = (ParameterizedTypeBinding)methodBinding.declaringClass;
-			if (!this.pattern.hasTypeArguments() && this.pattern.hasMethodArguments() || parameterizedBinding.isParameterizedWithOwnVariables()) {
-				// special case for pattern which defines method arguments but not its declaring type
-				// in this case, we do not refine accuracy using declaring type arguments...!
-			} else {
-				updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
-			}
-		} else if (this.pattern.hasTypeArguments()) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-
-		// Update match regarding method parameters
-		// TODO ? (frederic)
-
-		// Update match regarding method return type
-		// TODO ? (frederic)
-
-		// Special case for errors
-		if (match.getRule() != 0 && messageSend.resolvedType == null) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-	} else if (methodBinding instanceof ParameterizedMethodBinding) {
-		isParameterized = true;
-		if (methodBinding.declaringClass.isParameterizedType() || methodBinding.declaringClass.isRawType()) {
-			ParameterizedTypeBinding parameterizedBinding = (ParameterizedTypeBinding)methodBinding.declaringClass;
-			if (!parameterizedBinding.isParameterizedWithOwnVariables()) {
-				updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
-			}
-		} else if (this.pattern.hasTypeArguments()) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-
-		// Update match regarding method parameters
-		// TODO ? (frederic)
-
-		// Update match regarding method return type
-		// TODO ? (frederic)
-
-		// Special case for errors
-		if (match.getRule() != 0 && messageSend.resolvedType == null) {
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-		}
-	} else if (this.pattern.hasMethodArguments()) { // binding has no type params, compatible erasure if pattern does
+	if (this.pattern.hasMethodArguments()) { // binding has no type params, compatible erasure if pattern does
 		match.setRule(SearchPattern.R_ERASURE_MATCH);
 	}
 

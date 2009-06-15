@@ -98,19 +98,9 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 
 		for (int i = 0; i < length; i++) {
 			TypeBinding argument = originalArguments[i];
-			if (argument.kind() == Binding.WILDCARD_TYPE && ((WildcardBinding)argument).otherBounds == null) { // no capture for intersection types
-				capturedArguments[i] = new CaptureBinding((WildcardBinding) argument, contextType, position, scope.compilationUnitScope().nextCaptureID());
-			} else {
-				capturedArguments[i] = argument;
-			}
+			capturedArguments[i] = argument;
 		}
 		ParameterizedTypeBinding capturedParameterizedType = this.environment.createParameterizedType(this.type, capturedArguments, enclosingType());
-		for (int i = 0; i < length; i++) {
-			TypeBinding argument = capturedArguments[i];
-			if (argument.isCapture()) {
-				((CaptureBinding)argument).initializeBounds(scope, capturedParameterizedType);
-			}
-		}
 		return capturedParameterizedType;
 	}
 	/**
@@ -229,8 +219,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		    for (int i = 0, length = this.arguments.length; i < length; i++) {
 		    	TypeBinding typeBinding = this.arguments[i];
 		        sig.append(typeBinding.computeUniqueKey(false/*not a leaf*/));
-		        if (typeBinding instanceof CaptureBinding)
-		        	captureSourceType = ((CaptureBinding) typeBinding).sourceType;
 		    }
 		    sig.append('>');
 		}
@@ -252,10 +240,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	 */
 	public char[] constantPoolName() {
 		return this.type.constantPoolName(); // erasure
-	}
-
-	public ParameterizedMethodBinding createParameterizedMethod(MethodBinding originalMethod) {
-		return new ParameterizedMethodBinding(this, originalMethod);
 	}
 
 	/**
@@ -315,7 +299,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			FieldBinding[] parameterizedFields = new FieldBinding[length];
 			for (int i = 0; i < length; i++)
 				// substitute all fields, so as to get updated declaring class at least
-				parameterizedFields[i] = new ParameterizedFieldBinding(this, originalFields[i]);
 			this.fields = parameterizedFields;
 		} finally {
 			// if the original fields cannot be retrieved (ex. AbortCompilation), then assume we do not have any fields
@@ -526,9 +509,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		    if (length == 0) return Binding.NO_METHODS;
 
 		    parameterizedMethods = new MethodBinding[length];
-		    for (int i = 0; i < length; i++)
-		    	// substitute methods, so as to get updated declaring class at least
-	            parameterizedMethods[i] = createParameterizedMethod(originalMethods[i]);
+
 		    if (this.methods == null) {
 				MethodBinding[] temp = new MethodBinding[length];
 				System.arraycopy(parameterizedMethods, 0, temp, 0, length);
@@ -607,9 +588,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	    if (otherType == null)
 	        return false;
 	    switch(otherType.kind()) {
-
-	    	case Binding.WILDCARD_TYPE :
-	        	return ((WildcardBinding) otherType).boundCheck(this);
 
 	    	case Binding.PARAMETERIZED_TYPE :
 	            ParameterizedTypeBinding otherParamType = (ParameterizedTypeBinding) otherType;
@@ -766,9 +744,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		    MethodBinding[] originalMethods = this.type.methods();
 		    int length = originalMethods.length;
 		    MethodBinding[] parameterizedMethods = new MethodBinding[length];
-		    for (int i = 0; i < length; i++)
-		    	// substitute all methods, so as to get updated declaring class at least
-	            parameterizedMethods[i] = createParameterizedMethod(originalMethods[i]);
 		    this.methods = parameterizedMethods;
 		} finally {
 			// if the original methods cannot be retrieved (ex. AbortCompilation), then assume we do not have any methods

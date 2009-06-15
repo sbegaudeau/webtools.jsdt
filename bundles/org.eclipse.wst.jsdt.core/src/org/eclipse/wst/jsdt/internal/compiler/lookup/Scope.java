@@ -251,9 +251,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				TypeBinding[] originalArguments = originalParameterizedType.arguments;
 				TypeBinding[] substitutedArguments = originalArguments;
 				if (originalArguments != null) {
-					if (substitution.isRawSubstitution()) {
-						return originalParameterizedType.environment.createRawType(originalParameterizedType.genericType(), substitutedEnclosing);
-					}
 					substitutedArguments = substitute(substitution, originalArguments);
 				}
 				if (substitutedArguments != originalArguments || substitutedEnclosing != originalEnclosing) {
@@ -294,9 +291,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 			    // treat as if parameterized with its type variables (non generic type gets 'null' arguments)
 				if (substitutedEnclosing != originalEnclosing) {
-					return substitution.isRawSubstitution()
-						? substitution.environment().createRawType(originalReferenceType, substitutedEnclosing)
-						:  substitution.environment().createParameterizedType(originalReferenceType, null, substitutedEnclosing);
+					return substitution.environment().createParameterizedType(originalReferenceType, null, substitutedEnclosing);
 				}
 				break;
 			case Binding.GENERIC_TYPE:
@@ -307,9 +302,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					substitutedEnclosing = (ReferenceBinding) substitute(substitution, originalEnclosing);
 				}
 
-				if (substitution.isRawSubstitution()) {
-					return substitution.environment().createRawType(originalReferenceType, substitutedEnclosing);
-				}
 			    // treat as if parameterized with its type variables (non generic type gets 'null' arguments)
 				originalArguments = originalReferenceType.typeVariables();
 				substitutedArguments = substitute(substitution, originalArguments);
@@ -423,7 +415,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 			if (newArgs != null)
 				arguments = newArgs;
-			method = ParameterizedGenericMethodBinding.computeCompatibleMethod(method, arguments, this, invocationSite);
 			if (method == null) return null; // incompatible
 			if (!method.isValidBinding()) return method; // bound check issue is taking precedence
 			parameters = method.parameters; // reacquire them after type inference has performed
@@ -681,7 +672,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			switch (receiverType.kind()) {
 				case Binding.BASE_TYPE :
 					return null;
-				case Binding.WILDCARD_TYPE :
 				case Binding.TYPE_PARAMETER : // capture
 					TypeBinding receiverErasure = receiverType.erasure();
 					if (!receiverErasure.isArrayType())
@@ -1141,19 +1131,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				: mostSpecificInterfaceMethodBinding(candidates, visiblesCount, invocationSite);
 		}
 
-		// check for duplicate parameterized methods
-		if (compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-			for (int i = 0; i < visiblesCount; i++) {
-				MethodBinding current = candidates[i];
-				if (current instanceof ParameterizedGenericMethodBinding)
-					current = ((ParameterizedGenericMethodBinding) current).originalMethod;
-				if (current instanceof ParameterizedMethodBinding)
-					for (int j = i + 1; j < visiblesCount; j++)
-						if (current.declaringClass == candidates[j].declaringClass && current.areParametersEqual(candidates[j]))
-							return new ProblemMethodBinding(candidates[i], candidates[i].selector, candidates[i].parameters, ProblemReasons.Ambiguous);
-			}
-		}
-
 		MethodBinding mostSpecificMethod = mostSpecificMethodBinding(candidates, visiblesCount, argumentTypes, invocationSite, receiverType);
 		if (searchForDefaultAbstractMethod) { // search interfaces for a better match
 			if (mostSpecificMethod.isValidBinding())
@@ -1200,7 +1177,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			            break;
 			        case 'g':
 			            if (CharOperation.equals(selector, GETCLASS) && methodBinding.returnType.isParameterizedType()/*1.5*/) {
-							return ParameterizedMethodBinding.instantiateGetClass(receiverType, methodBinding, this);
+							return null;
 			            }
 			            break;
 			    }
@@ -2316,13 +2293,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (!methodBinding.isValidBinding())
 				return methodBinding;
 
-			// special treatment for Object.getClass() in 1.5 mode (substitute parameterized return type)
-			if (receiverType.id != T_JavaLangObject
-				&& argumentTypes == Binding.NO_PARAMETERS
-			    && CharOperation.equals(selector, GETCLASS)
-			    && methodBinding.returnType.isParameterizedType()/*1.5*/) {
-					return ParameterizedMethodBinding.instantiateGetClass(receiverType, methodBinding, this);
-		    }
 			return methodBinding;
 		} catch (AbortCompilation e) {
 			e.updateContext(invocationSite, referenceCompilationUnit().compilationResult);
@@ -2806,13 +2776,11 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					((ReferenceBinding)binding).closestMatch(),
 					typeBinding.problemId());
 
-			if (typeBinding.isGenericType()) {
-				qualifiedType = this.environment().createRawType(typeBinding, qualifiedType);
-			} else {
-				qualifiedType = (qualifiedType != null && (qualifiedType.isRawType() || qualifiedType.isParameterizedType()))
-					? this.environment().createParameterizedType(typeBinding, null, qualifiedType)
-					: typeBinding;
-			}
+			
+			qualifiedType = (qualifiedType != null && (qualifiedType.isRawType() || qualifiedType.isParameterizedType()))
+				? this.environment().createParameterizedType(typeBinding, null, qualifiedType)
+				: typeBinding;
+			
 		}
 		return qualifiedType;
 	}
@@ -3090,8 +3058,8 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		TypeBinding lub = lowerUpperBound(new TypeBinding[]{u,v}, lubStack);
 		if (lub == null) return null;
 		// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-		if (lub == TypeBinding.INT) return environment().createWildcard(genericType, rank, null, null /*no extra bound*/, 0);
-		return environment().createWildcard(genericType, rank, lub, null /*no extra bound*/, 0);
+		if (lub == TypeBinding.INT) return null;
+		return null;
 	}
 
 	// 15.12.2
@@ -3174,7 +3142,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				otherBounds[rank++] = mec;
 			}
 		}
-		TypeBinding intersectionType = environment().createWildcard(null, 0, firstBound, otherBounds, 0);
+		TypeBinding intersectionType = null;
 		return commonDim == 0 ? intersectionType : environment().createArrayType(intersectionType, commonDim);
 	}
 
@@ -3272,21 +3240,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				typeToVisit = leafType;
 			}
 			currentType = (ReferenceBinding) typeToVisit;
-			if (currentType.isCapture()) {
-				TypeBinding firstBound = ((CaptureBinding) currentType).firstBound;
-				if (firstBound != null && firstBound.isArrayType()) {
-					TypeBinding superType = dim == 0 ? firstBound : (TypeBinding)environment().createArrayType(firstBound, dim); // recreate array if needed
-					if (!typesToVisit.contains(superType)) {
-						typesToVisit.add(superType);
-						max++;
-						TypeBinding superTypeErasure = (firstBound.isTypeVariable() || firstBound.isWildcard() /*&& !itsInterface.isCapture()*/) ? superType : superType.erasure();
-						if (superTypeErasure != superType) {
-							allInvocations.put(superTypeErasure, superType);
-						}
-					}
-					continue;
-				}
-			}
 			// inject super interfaces prior to superclass
 			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
 			if (itsInterfaces != null) { // can be null during code assist operations that use LookupEnvironment.completeTypeBindings(parsedUnit, buildFieldsAndMethods)
@@ -3536,14 +3489,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					}
 
 					MethodBinding methodToTest = next;
-					if (next instanceof ParameterizedGenericMethodBinding) {
-						ParameterizedGenericMethodBinding pNext = (ParameterizedGenericMethodBinding) next;
-						if (pNext.isRaw && !pNext.isStatic()) {
-							// hold onto the raw substituted method
-						} else {
-							methodToTest = pNext.originalMethod;
-						}
-					}
 					MethodBinding acceptable = computeCompatibleMethod(methodToTest, tiebreakMethod.parameters, invocationSite);
 					/* There are 4 choices to consider with current & next :
 					 foo(B) & foo(A) where B extends A
@@ -3580,7 +3525,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		// so now with the first acceptable method, find the 'correct' inherited method for each other acceptable method AND
 		// see if they are equal after substitution of type variables (do the type variables have to be equal to be considered an override???)
 		if (receiverType != null)
-			receiverType = receiverType instanceof CaptureBinding ? receiverType : (ReferenceBinding) receiverType.erasure();
+			receiverType = (ReferenceBinding) receiverType.erasure();
 		nextSpecific : for (int i = 0; i < visibleSize; i++) {
 			MethodBinding current = moreSpecific[i];
 			if (current != null) {

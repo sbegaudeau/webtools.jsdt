@@ -176,24 +176,6 @@ public interface IFunctionBinding extends IBinding {
 	public IFunctionBinding getMethodDeclaration();
 
 	/**
-	 * Returns whether this method binding represents an instance of
-	 * a generic method corresponding to a raw method reference.
-	 * <p>
-	 * Note that {@link #isGenericMethod()},
-	 * {@link #isParameterizedMethod()},
-	 * and {@link #isRawMethod()} are mutually exclusive.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this method binding represents a
-	 * an instance of a generic method corresponding to a raw
-	 * method reference, and <code>false</code> otherwise
-	 * @see #getMethodDeclaration()
-	 * @see #getTypeArguments()
-	 *  
-	 */
-	public boolean isRawMethod();
-
-	/**
 	 * Returns whether this method's signature is a subsignature of the given method.
 	 *
 	 * @return <code>true</code> if this method's signature is a subsignature of the given method

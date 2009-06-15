@@ -1226,9 +1226,6 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 	if (otherType == null) return false;
 	switch(otherType.kind()) {
 
-		case Binding.WILDCARD_TYPE :
-			return ((WildcardBinding) otherType).boundCheck(this);
-
 		case Binding.PARAMETERIZED_TYPE :
 			if ((otherType.tagBits & TagBits.HasDirectWildcard) == 0 && (!this.isMemberType() || !otherType.isMemberType()))
 				return false; // should have been identical
@@ -1697,11 +1694,6 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
-}
-public AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceInitialization) {
-	if (forceInitialization)
-		binding.getAnnotationTagBits(); // ensure annotations are up to date
-	return super.retrieveAnnotationHolder(binding, false);
 }
 public void setFields(FieldBinding[] fields) {
 //	if (this.nextType!=null)

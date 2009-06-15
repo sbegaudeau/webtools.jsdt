@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryNestedType;
@@ -226,13 +225,6 @@ public String toString() {
 		}
 	}
 	return buffer.toString();
-}
-
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType
- */
-public IBinaryAnnotation[] getAnnotations() {
-	return null;
 }
 
 /**

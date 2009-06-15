@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -162,22 +162,11 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 //			break;
 		case Binding.BASE_TYPE :
 			return otherType.isAnyType();
-		case Binding.WILDCARD_TYPE :
-		    return ((WildcardBinding) otherType).boundCheck(this);
 
 		case Binding.TYPE :
 		    return otherType==this.referenceBinding;
 
 		case Binding.TYPE_PARAMETER :
-			// check compatibility with capture of ? super X
-			if (otherType.isCapture()) {
-				CaptureBinding otherCapture = (CaptureBinding) otherType;
-				TypeBinding otherLowerBound;
-				if ((otherLowerBound = otherCapture.lowerBound) != null) {
-					if (!otherLowerBound.isArrayType()) return false;
-					return this.isCompatibleWith(otherLowerBound);
-				}
-			}
 			return false;
 
 	}

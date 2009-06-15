@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -123,19 +122,6 @@ public class JavadocAllocationExpression extends AllocationExpression implements
 		} else if (hasTypeVarArgs) {
 			MethodBinding problem = new ProblemMethodBinding(this.binding, this.binding.selector, argumentTypes, ProblemReasons.NotFound);
 			scope.problemReporter().javadocInvalidConstructor(this, problem, scope.getDeclarationModifiers());
-		} else if (this.binding instanceof ParameterizedMethodBinding) {
-			ParameterizedMethodBinding paramMethodBinding = (ParameterizedMethodBinding) this.binding;
-			if (paramMethodBinding.hasSubstitutedParameters()) {
-				int length = argumentTypes.length;
-				for (int i=0; i<length; i++) {
-					if (paramMethodBinding.parameters[i] != argumentTypes[i] &&
-							paramMethodBinding.parameters[i].erasure() != argumentTypes[i].erasure()) {
-						MethodBinding problem = new ProblemMethodBinding(this.binding, this.binding.selector, argumentTypes, ProblemReasons.NotFound);
-						scope.problemReporter().javadocInvalidConstructor(this, problem, scope.getDeclarationModifiers());
-						break;
-					}
-				}
-			}
 		} else if (this.resolvedType.isMemberType()) {
 			int length = qualification.length;
 			if (length > 1) { // accept qualified member class constructor reference => see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=103304
