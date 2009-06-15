@@ -132,18 +132,6 @@ IType[] getAllTypes();
  */
 int getCachedFlags(IType type);
 /**
- * Returns all classes resolved to implement the given interface,
- * in no particular order, limited to the classes in this type
- * hierarchy's  graph. Returns an empty collection if the given type is a
- * class, or if no classes were resolved to implement the given
- * interface.
- *
- * @param type the given type
- * @return all classes resolved to implement the given interface limited to the classes in this type
- * hierarchy's  graph, an empty array if none
- */
-IType[] getImplementingClasses(IType type);
-/**
  * Returns all classes in the graph which have no resolved superclass,
  * in no particular order.
  *

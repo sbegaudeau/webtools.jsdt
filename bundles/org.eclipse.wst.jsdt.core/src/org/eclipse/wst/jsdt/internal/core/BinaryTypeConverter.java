@@ -139,13 +139,6 @@ public class BinaryTypeConverter {
 			typeDeclaration.superclass = createTypeReference(type.getSuperclassName().toCharArray());
 			typeDeclaration.superclass.bits |= ASTNode.IsSuperType;
 		}
-		String[] interfaceNames = type.getSuperInterfaceNames();
-		int interfaceCount = interfaceNames == null ? 0 : interfaceNames.length;
-		typeDeclaration.superInterfaces = new TypeReference[interfaceCount];
-		for (int i = 0; i < interfaceCount; i++) {
-			typeDeclaration.superInterfaces[i] = createTypeReference(interfaceNames[i].toCharArray());
-			typeDeclaration.superInterfaces[i].bits |= ASTNode.IsSuperType;
-		}
 
 		/* convert member types */
 		IType[] memberTypes = type.getTypes();

@@ -177,14 +177,6 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 		return new String[] {realImport};
 	}
 
-
-	/**
-	 * @deprecated Use {@link #getIncludepathEntries()} instead
-	 */
-	public IIncludePathEntry[] getClasspathEntries() {
-		return getIncludepathEntries();
-	}
-
 	public IIncludePathEntry[] getIncludepathEntries() {
 		LibraryLocation libLocation =  getLibraryLocation();
 		char[][] filesInLibs = libLocation.getLibraryFileNames();

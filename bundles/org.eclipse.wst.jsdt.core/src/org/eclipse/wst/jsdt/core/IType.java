@@ -427,60 +427,6 @@ public interface IType extends IMember, IFunctionContainer {
 	String getSuperclassTypeSignature() throws JavaScriptModelException;
 
 	/**
-	 * Returns the type signatures of the interfaces that this type
-	 * implements or extends, in the order in which they are listed in the
-	 * source.
-	 * <p>
-	 * For classes and enum types, this gives the interfaces that this
-	 * class implements. For interfaces and annotation types,
-	 * this gives the interfaces that this interface extends.
-	 * An empty collection is returned if this type does not implement or
-	 * extend any interfaces. For anonymous types, an empty collection is
-	 * always returned.
-	 * </p>
-	 * <p>
-	 * The type signatures may be either unresolved (for source types)
-	 * or resolved (for binary types), and either basic (for basic types)
-	 * or rich (for parameterized types). See {@link Signature} for details.
-	 * </p>
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return  the type signatures of interfaces that this type implements
-	 * or extends, in the order in which they are listed in the source,
-	 * an empty collection if none
-	 */
-	String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException;
-
-	/**
-	 * Returns the names of interfaces that this type implements or extends,
-	 * in the order in which they are listed in the source.
-	 * <p>
-	 * For classes, this gives the interfaces that this class implements.
-	 * For interfaces, this gives the interfaces that this interface extends.
-	 * An empty collection is returned if this type does not implement or
-	 * extend any interfaces. For source types, simple names are returned,
-	 * for binary types, qualified names are returned.
-	 * For anonymous types, an empty collection is always returned.
-	 * If the list of supertypes includes parameterized types,
-	 * the string may include type arguments enclosed in "&lt;&gt;".
-	 * If the result is needed for anything other than display
-	 * purposes, use {@link #getSuperInterfaceTypeSignatures()} which returns
-	 * structured signature strings containing more precise information.
-	 * </p>
-	 *
-	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
-	 *
-	 * @exception JavaScriptModelException if this element does not exist or if an
-	 *		exception occurs while accessing its corresponding resource.
-	 * @return  the names of interfaces that this type implements or extends, in the order in which they are listed in the source,
-	 * an empty collection if none
-	 */
-	String[] getSuperInterfaceNames() throws JavaScriptModelException;
-
-	/**
 	 * Returns the member type declared in this type with the given simple name.
 	 * This is a handle-only method. The type may or may not exist.
 	 *

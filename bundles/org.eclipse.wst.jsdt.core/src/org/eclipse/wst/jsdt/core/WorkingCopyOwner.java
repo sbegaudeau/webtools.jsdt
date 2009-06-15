@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,57 +90,6 @@ public abstract class WorkingCopyOwner {
 	 */
 	public IProblemRequestor getProblemRequestor(IJavaScriptUnit workingCopy) {
 		return null;
-	}
-
-	/**
-	 * Returns a new working copy with the given name using this working copy owner to
-	 * create its buffer.
-	 * <p>
-	 * This working copy always belongs to the default package in a package
-	 * fragment root that corresponds to its JavaScript project, and this JavaScript project never exists.
-	 * However this JavaScript project has the given includepath that is used when resolving names
-	 * in this working copy.
-	 * </p><p>
-	 * A DOM AST created using this working copy will have bindings resolved using the given
-	 * includepath, and problem are reported to the given problem requestor.
-	 * <p></p>
-	 * <code>JavaScriptCore#getOptions()</code> is used to create the DOM AST as it is not
-	 * possible to set the options on the non-existing JavaScript project.
-	 * </p><p>
-	 * When the working copy instance is created, an {@link IJavaScriptElementDelta#ADDED added delta} is
-	 * reported on this working copy.
-	 * </p><p>
-	 * Once done with the working copy, users of this method must discard it using
-	 * {@link IJavaScriptUnit#discardWorkingCopy()}.
-	 * </p><p>
-	 * Note that when such working copy is committed, only its buffer is saved (see
-	 * {@link IBuffer#save(IProgressMonitor, boolean)}) but no resource is created.
-	 * </p><p>
-	 * This method is not intended to be overriden by clients.
-	 * </p>
-	 *
-	 * @param name the name of the working copy (e.g. "X.js")
-	 * @param includepath the includepath used to resolve names in this working copy
-	 * @param problemRequestor a requestor which will get notified of problems detected during
-	 * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
-	 * 	that the client is not interested in problems.
-	 * @param monitor a progress monitor used to report progress while opening the working copy
-	 * 	or <code>null</code> if no progress should be reported
-	 * @throws JavaScriptModelException if the contents of this working copy can
-	 *   not be determined.
-	 * @return a new working copy
-	 * @see IJavaScriptUnit#becomeWorkingCopy(IProblemRequestor, IProgressMonitor)
-	 *
-	 * @deprecated Use {@link #newWorkingCopy(String, IIncludePathEntry[], IProgressMonitor)} instead.
-	 * 	Note that if this deprecated method is used, problems may be reported twice
-	 * 	if the given requestor is not the same as the current working copy owner one.
-	 */
-	public final IJavaScriptUnit newWorkingCopy(String name, IIncludePathEntry[] classpath, IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaScriptModelException {
-		ExternalJavaProject project = new ExternalJavaProject(classpath);
-		IPackageFragment parent = project.getPackageFragmentRoot(Path.EMPTY).getPackageFragment(IPackageFragment.DEFAULT_PACKAGE_NAME);
-		CompilationUnit result = new CompilationUnit((PackageFragment) parent, name, this);
-		result.becomeWorkingCopy(problemRequestor, monitor);
-		return result;
 	}
 
 	/**

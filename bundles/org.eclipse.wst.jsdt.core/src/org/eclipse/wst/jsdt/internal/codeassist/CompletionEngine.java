@@ -4095,7 +4095,6 @@ public final class CompletionEngine
 					fieldImportProposal.setName(field.name);
 					fieldImportProposal.setCompletion(fieldImportCompletion);
 					fieldImportProposal.setFlags(field.modifiers);
-					fieldImportProposal.setAdditionalFlags(CompletionFlags.StaticImport);
 					fieldImportProposal.setReplaceRange(importStart - this.offset, importEnd - this.offset);
 					fieldImportProposal.setRelevance(relevance);
 
@@ -5611,7 +5610,6 @@ public final class CompletionEngine
 						methodImportProposal.setName(method.selector);
 						methodImportProposal.setCompletion(methodImportCompletion);
 						methodImportProposal.setFlags(method.modifiers);
-						methodImportProposal.setAdditionalFlags(CompletionFlags.StaticImport);
 						methodImportProposal.setReplaceRange(importStart - this.offset, importEnd - this.offset);
 						methodImportProposal.setRelevance(relevance);
 						if(parameterNames != null) methodImportProposal.setParameterNames(parameterNames);

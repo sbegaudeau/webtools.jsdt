@@ -665,8 +665,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		if (foundInHierarchyClasses != null)
 			result.addAll(Arrays.asList(foundInHierarchyClasses));
 		
-		IType[] implementingClasses= hierarchy.getImplementingClasses(type);	
-		IFunction[] foundInImplementingClasses= classesDeclareMethodName(hierarchy, Arrays.asList(implementingClasses), method, newName);
+		IFunction[] foundInImplementingClasses= classesDeclareMethodName(hierarchy, Arrays.asList(new IType[0]), method, newName);
 		if (foundInImplementingClasses != null)
 			result.addAll(Arrays.asList(foundInImplementingClasses));
 		return (IFunction[]) result.toArray(new IFunction[result.size()]);	

@@ -222,18 +222,6 @@ public class StubCreator {
 		fBuffer.append(index);
 	}
 
-	protected void appendSuperInterfaceTypes(final IType type) throws JavaScriptModelException {
-		final String[] signatures= type.getSuperInterfaceTypeSignatures();
-		if (signatures.length > 0) {
-			fBuffer.append(" implements "); //$NON-NLS-1$
-		}
-		for (int index= 0; index < signatures.length; index++) {
-			if (index > 0)
-				fBuffer.append(","); //$NON-NLS-1$
-			fBuffer.append(Signature.toString(signatures[index]));
-		}
-	}
-
 	protected void appendTopLevelType(final IType type, IProgressMonitor subProgressMonitor) throws JavaScriptModelException {
 		String packageName= type.getPackageFragment().getElementName();
 		if (packageName.length() > 0) {
@@ -256,7 +244,6 @@ public class StubCreator {
 					fBuffer.append(" extends "); //$NON-NLS-1$
 					fBuffer.append(Signature.toString(signature));
 				}
-				appendSuperInterfaceTypes(type);
 				fBuffer.append("{\n"); //$NON-NLS-1$
 				appendMembers(type, new SubProgressMonitor(monitor, 1));
 				fBuffer.append("}"); //$NON-NLS-1$

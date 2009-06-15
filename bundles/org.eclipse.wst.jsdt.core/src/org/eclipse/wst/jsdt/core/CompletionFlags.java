@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,24 +32,9 @@ public final class CompletionFlags {
 	public static final int Default = 0x0000;
 
 	/**
-	 * Constant representing a static import
-	 */
-	public static final int StaticImport = 0x0001;
-
-	/**
 	 * Not instantiable.
 	 */
 	private CompletionFlags() {
 		// Not instantiable
-	}
-
-	/**
-	 * Returns whether the given integer includes the {@link #StaticImport} flag.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the {@link #StaticImport} flag is included
-	 */
-	public static boolean isStaticImport(int flags) {
-		return (flags & StaticImport) != 0;
 	}
 }

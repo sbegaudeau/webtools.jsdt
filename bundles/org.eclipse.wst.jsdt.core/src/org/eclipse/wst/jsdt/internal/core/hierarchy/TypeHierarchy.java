@@ -729,17 +729,6 @@ boolean includesTypeOrSupertype(IType type) {
 			String simpleName = superclassName.substring(lastSeparator+1);
 			if (hasTypeNamed(simpleName)) return true;
 		}
-
-		// check superinterfaces
-		String[] superinterfaceNames = type.getSuperInterfaceNames();
-		if (superinterfaceNames != null) {
-			for (int i = 0, length = superinterfaceNames.length; i < length; i++) {
-				String superinterfaceName = superinterfaceNames[i];
-				int lastSeparator = superinterfaceName.lastIndexOf('.');
-				String simpleName = superinterfaceName.substring(lastSeparator+1);
-				if (hasTypeNamed(simpleName)) return true;
-			}
-		}
 	} catch (JavaScriptModelException e) {
 		// ignore
 	}
@@ -1397,26 +1386,6 @@ boolean subtypesIncludeSupertypeOf(IType type) {
 		superclassName;
 	if (hasSubtypeNamed(simpleSuper)) {
 		return true;
-	}
-
-	// look for super interfaces
-	String[] interfaceNames = null;
-	try {
-		interfaceNames = type.getSuperInterfaceNames();
-	} catch (JavaScriptModelException e) {
-		if (DEBUG)
-			e.printStackTrace();
-		return false;
-	}
-	for (int i = 0, length = interfaceNames.length; i < length; i++) {
-		dot = -1;
-		String interfaceName = interfaceNames[i];
-		String simpleInterface = (dot = interfaceName.lastIndexOf('.')) > -1 ?
-			interfaceName.substring(dot) :
-			interfaceName;
-		if (hasSubtypeNamed(simpleInterface)) {
-			return true;
-		}
 	}
 
 	return false;

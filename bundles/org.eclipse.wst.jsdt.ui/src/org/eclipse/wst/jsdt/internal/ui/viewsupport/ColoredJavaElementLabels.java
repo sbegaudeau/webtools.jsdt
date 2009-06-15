@@ -525,13 +525,8 @@ public class ColoredJavaElementLabels {
 		String typeName= type.getElementName();
 		if (typeName.length() == 0) { // anonymous
 			try {
-				String supertypeName;
-				String[] superInterfaceNames= type.getSuperInterfaceNames();
-				if (superInterfaceNames.length > 0) {
-					supertypeName= Signature.getSimpleName(superInterfaceNames[0]);
-				} else {
-					supertypeName= Signature.getSimpleName(type.getSuperclassName());
-				}
+				String supertypeName= Signature.getSimpleName(type.getSuperclassName());
+				
 				typeName= Messages.format(JavaUIMessages.JavaElementLabels_anonym_type , supertypeName); 
 				
 			} catch (JavaScriptModelException e) {
