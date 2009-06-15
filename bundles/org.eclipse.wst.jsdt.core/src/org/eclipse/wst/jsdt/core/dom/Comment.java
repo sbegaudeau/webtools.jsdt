@@ -21,7 +21,7 @@ package org.eclipse.wst.jsdt.core.dom;
  * Comment:
  *     LineComment
  *     BlockComment
- *     Javadoc
+ *     JSdoc
  * </pre>
  * </p>
  *
