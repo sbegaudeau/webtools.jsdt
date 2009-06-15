@@ -46,9 +46,8 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		/* foo(): append a return statement */
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
-		buf.append("    public Object foo() {\n");
+		buf.append("function C() {\n");
+		buf.append("    function foo() {\n");
 		buf.append("        if (this.equals(new Object())) {\n");
 		buf.append("            toString();\n");
 		buf.append("        }\n");
@@ -58,10 +57,10 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	
 		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
-		Block block= methodDecl.getBody();
+		FunctionDeclaration methodDec2= (FunctionDeclaration)methodDecl.getBody().statements().get(0);
+		Block block= methodDec2.getBody();
 		assertTrue("No block" , block != null);	
 		
 		ReturnStatement returnStatement= block.getAST().newReturnStatement();
@@ -71,9 +70,8 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
-		buf.append("    public Object foo() {\n");
+		buf.append("function C() {\n");
+		buf.append("    function foo() {\n");
 		buf.append("        if (this.equals(new Object())) {\n");
 		buf.append("            toString();\n");
 		buf.append("        }\n");
@@ -82,7 +80,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("}\n");
 		
 		assertEqualString(preview, buf.toString());
-
 	}
 
 	public void testInsert2() throws Exception {
@@ -90,12 +87,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		
 		/* insert a statement before */
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class D {\n");
-		buf.append("    public Object goo() {\n");
-		buf.append("        Integer i= new Integer(3);\n");
+		buf.append("function D() {\n");
+		buf.append("    function goo() {\n");
+		buf.append("        Number i= new Number(3);\n");
 		buf.append("    }\n");
-		buf.append("    public void hoo(int p1, Object p2) {\n");
+		buf.append("    function hoo(p1, p2) {\n");
 		buf.append("        return;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
@@ -103,15 +99,18 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		
 		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "D");
 		
-		FunctionDeclaration methodDeclGoo= findMethodDeclaration(type, "goo");
+		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
+		
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
+		FunctionDeclaration methodDeclGoo= (FunctionDeclaration)methodDecl.getBody().statements().get(0);
+
 		List bodyStatements= methodDeclGoo.getBody().statements();
 
 		ASTNode copy= rewrite.createCopyTarget((ASTNode) bodyStatements.get(0));
 		
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "hoo");
-		Block block= methodDecl.getBody();
+		FunctionDeclaration methodDeclHoo= (FunctionDeclaration)methodDecl.getBody().statements().get(1);
+		Block block= methodDeclHoo.getBody();
 		assertTrue("No block" , block != null);
 		
 		List statements= block.statements();
@@ -124,19 +123,17 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class D {\n");
-		buf.append("    public Object goo() {\n");
-		buf.append("        Integer i= new Integer(3);\n");
+		buf.append("function D() {\n");
+		buf.append("    function goo() {\n");
+		buf.append("        Number i= new Number(3);\n");
 		buf.append("    }\n");
-		buf.append("    public void hoo(int p1, Object p2) {\n");
-		buf.append("        Integer i= new Integer(3);\n");
+		buf.append("    function hoo(p1, p2) {\n");
+		buf.append("        Number i= new Number(3);\n");
 		buf.append("        return;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());			
-
 	}
 
 	public void testInsert3() throws Exception {
@@ -420,14 +417,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testBreakStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        break;\n");
-		buf.append("        break label;\n");
-		buf.append("        break label;\n");
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    break;\n");
+		buf.append("    break label;\n");
+		buf.append("    break label;\n");
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -436,8 +430,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -470,159 +463,22 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        break label2;\n");
-		buf.append("        break label2;\n");
-		buf.append("        break;\n");
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    break label2;\n");
+		buf.append("    break label2;\n");
+		buf.append("    break;\n");
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
 	}
-	
-	public void testConstructorInvocation() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public E(String e, String f) {\n");
-		buf.append("        this();\n");
-		buf.append("    }\n");
-		buf.append("    public E() {\n");
-		buf.append("        this(\"Hello\", true);\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration[] declarations= type.getMethods();
-		assertTrue("Number of statements not 2", declarations.length == 2);			
-
-		{ // add parameters
-			Block block= declarations[0].getBody();
-			List statements= block.statements();
-			assertTrue("Number of statements not 1", statements.size() == 1);
-			
-			ConstructorInvocation invocation= (ConstructorInvocation) statements.get(0);
-				
-			StringLiteral stringLiteral1= ast.newStringLiteral();
-			stringLiteral1.setLiteralValue("Hello");
-			
-			StringLiteral stringLiteral2= ast.newStringLiteral();
-			stringLiteral2.setLiteralValue("World");
-			
-			ListRewrite listRewrite= rewrite.getListRewrite(invocation, ConstructorInvocation.ARGUMENTS_PROPERTY);
-			listRewrite.insertLast(stringLiteral1, null);
-			listRewrite.insertLast(stringLiteral2, null);
-			
-		}
-		{ //remove parameters
-			Block block= declarations[1].getBody();
-			List statements= block.statements();
-			assertTrue("Number of statements not 1", statements.size() == 1);			
-			ConstructorInvocation invocation= (ConstructorInvocation) statements.get(0);
-	
-			List arguments= invocation.arguments();
-			
-			rewrite.remove((ASTNode) arguments.get(0), null);
-			rewrite.remove((ASTNode) arguments.get(1), null);
-		}		
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public E(String e, String f) {\n");
-		buf.append("        this(\"Hello\", \"World\");\n");
-		buf.append("    }\n");
-		buf.append("    public E() {\n");
-		buf.append("        this();\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-
-	}
-	
-	public void testConstructorInvocation2() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public <A, B>E(String e, String f) {\n");
-		buf.append("        this();\n");
-		buf.append("    }\n");
-		buf.append("    public E() {\n");
-		buf.append("        <String, String>this(\"Hello\", true);\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration[] declarations= type.getMethods();
-		assertTrue("Number of declarations not 2", declarations.length == 2);			
-
-		{ // add type argument
-			Block block= declarations[0].getBody();
-			List statements= block.statements();
-			assertTrue("Number of statements not 1", statements.size() == 1);
-			
-			Type newTypeArg= ast.newSimpleType(ast.newSimpleName("A"));
-			ConstructorInvocation invocation= (ConstructorInvocation) statements.get(0);
-			ListRewrite listRewrite= rewrite.getListRewrite(invocation, ConstructorInvocation.TYPE_ARGUMENTS_PROPERTY);
-			listRewrite.insertLast(newTypeArg, null);
-		}
-		{ //remove type argument
-			Block block= declarations[1].getBody();
-			List statements= block.statements();
-			assertTrue("Number of statements not 1", statements.size() == 1);			
-			ConstructorInvocation invocation= (ConstructorInvocation) statements.get(0);
-	
-			List typeArguments= invocation.typeArguments();
-			
-			rewrite.remove((ASTNode) typeArguments.get(0), null);
-			rewrite.remove((ASTNode) typeArguments.get(1), null);
-		}		
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public <A, B>E(String e, String f) {\n");
-		buf.append("        <A>this();\n");
-		buf.append("    }\n");
-		buf.append("    public E() {\n");
-		buf.append("        this(\"Hello\", true);\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-
-	}
-	
 
 	public void testContinueStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        continue;\n");
-		buf.append("        continue label;\n");
-		buf.append("        continue label;\n");
-		buf.append("    }\n");
+		buf.append("function foo() {\n");
+		buf.append("    continue;\n");
+		buf.append("    continue label;\n");
+		buf.append("    continue label;\n");
 		buf.append("}\n");	
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
@@ -632,8 +488,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -667,13 +522,10 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        continue label2;\n");
-		buf.append("        continue label2;\n");
-		buf.append("        continue;\n");
-		buf.append("    }\n");
+		buf.append("function foo() {\n");
+		buf.append("    continue label2;\n");
+		buf.append("    continue label2;\n");
+		buf.append("    continue;\n");
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 
@@ -682,14 +534,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testDoStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        do {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        } while (i == j);\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    do {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    } while (i == j);\n");		
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -698,8 +547,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -724,16 +572,12 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        do {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        } while (true);\n");		
-		buf.append("    }\n");
+		buf.append("function foo() {\n");
+		buf.append("    do {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    } while (true);\n");		
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
-
 	}
 	
 	public void testDoStatement1() throws Exception {
@@ -1273,18 +1117,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testIfStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        } else {\n");
-		buf.append("        }\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");
+		buf.append("function foo() {\n");
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    } else {\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    }\n");
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -1293,8 +1134,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 2", statements.size() == 2);
@@ -1331,19 +1171,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        if (true) {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        }\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        } else {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        }\n");		
+		buf.append("function foo() {\n");
+		buf.append("    if (true) {\n");
+		buf.append("        hoo(11);\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    } else {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
 	}
@@ -1351,31 +1188,27 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testIfStatement1() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        } else {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        }\n");
-		buf.append("        if (i == 0) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        } else\n");
-		buf.append("            hoo(11);\n");
+		buf.append("function foo() {\n");
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    } else {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    }\n");
+		buf.append("    if (i == 0) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    } else\n");
+		buf.append("        hoo(11);\n");
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 5", statements.size() == 3);
@@ -1414,21 +1247,18 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        if (i == 0)\n");
-		buf.append("            System.beep();\n");
-		buf.append("        if (i == 0)\n");
-		buf.append("            System.beep();\n");
-		buf.append("        else {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        }\n");
-		buf.append("        if (i == 0)\n");
-		buf.append("            System.beep();\n");
-		buf.append("        else\n");
-		buf.append("            hoo(11);\n");
+		buf.append("function foo() {\n");
+		buf.append("    if (i == 0)\n");
+		buf.append("        System.beep();\n");
+		buf.append("    if (i == 0)\n");
+		buf.append("        System.beep();\n");
+		buf.append("    else {\n");
+		buf.append("        hoo(11);\n");
 		buf.append("    }\n");
+		buf.append("    if (i == 0)\n");
+		buf.append("        System.beep();\n");
+		buf.append("    else\n");
+		buf.append("        hoo(11);\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
@@ -2823,63 +2653,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		assertEqualString(preview, buf.toString());
 
 	}
-
-	public void testSynchronizedStatement() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        synchronized(this) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");
-		buf.append("    }\n");
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
-		Block block= methodDecl.getBody();
-		List statements= block.statements();
-		assertTrue("Number of statements not 1", statements.size() == 1);
-
-		{ // replace expression and body
-//			SynchronizedStatement statement= (SynchronizedStatement) statements.get(0);
-//			ASTNode newExpression= ast.newSimpleName("obj");
-//			rewrite.replace(statement.getExpression(), newExpression, null);
-			
-			Block newBody= ast.newBlock();
-						
-			Assignment assign= ast.newAssignment();
-			assign.setLeftHandSide(ast.newSimpleName("x"));
-			assign.setRightHandSide(ast.newNumberLiteral("1"));
-			assign.setOperator(Assignment.Operator.ASSIGN);
-			
-			newBody.statements().add(ast.newExpressionStatement(assign));
-			
-//			rewrite.replace(statement.getBody(), newBody, null);
-		}		
-				
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-//		buf.append("        synchronized(obj) {\n");
-		buf.append("            x = 1;\n");
-//		buf.append("        }\n");
-		buf.append("    }\n");
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-
-	}
 	
 	/** @deprecated using deprecated code */
 	public void testThrowStatement() throws Exception {
@@ -2951,24 +2724,21 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testTryStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(int i) {\n");
-		buf.append("        try {\n");	
-		buf.append("        } finally {\n");
-		buf.append("        }\n");		
-		buf.append("        try {\n");	
-		buf.append("        } catch (IOException e) {\n");
-		buf.append("        } finally {\n");
-		buf.append("        }\n");
-		buf.append("        try {\n");	
-		buf.append("        } catch (IOException e) {\n");
-		buf.append("        }\n");
-		buf.append("        try {\n");	
-		buf.append("        } catch (IOException e) {\n");
-		buf.append("        }\n");		
+		buf.append("function foo(i) {\n");
+		buf.append("    try {\n");	
+		buf.append("    } finally {\n");
+		buf.append("    }\n");		
+		buf.append("    try {\n");	
+		buf.append("    } catch (e) {\n");
+		buf.append("    } finally {\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("    try {\n");	
+		buf.append("    } catch (e) {\n");
+		buf.append("    }\n");
+		buf.append("    try {\n");	
+		buf.append("    } catch (e) {\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -2977,8 +2747,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List blockStatements= block.statements();
 		assertTrue("Number of statements not 4", blockStatements.size() == 4);
@@ -2987,7 +2756,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			CatchClause catchClause= ast.newCatchClause();
 			SingleVariableDeclaration decl= ast.newSingleVariableDeclaration();
-			decl.setType(ast.newSimpleType(ast.newSimpleName("IOException")));
 			decl.setName(ast.newSimpleName("e"));
 			catchClause.setException(decl);
 						
@@ -3005,7 +2773,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			CatchClause catchClause= ast.newCatchClause();
 			SingleVariableDeclaration decl= ast.newSingleVariableDeclaration();
-			decl.setType(ast.newSimpleType(ast.newSimpleName("Exception")));
 			decl.setName(ast.newSimpleName("x"));
 			catchClause.setException(decl);
 			
@@ -3024,101 +2791,27 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			body.statements().add(ast.newReturnStatement());
 
 			rewrite.set(tryStatement, TryStatement.FINALLY_PROPERTY, body, null);
-		}
-		{ // insert catch before and after existing
-			TryStatement tryStatement= (TryStatement) blockStatements.get(3);
-			
-			CatchClause catchClause1= ast.newCatchClause();
-			SingleVariableDeclaration decl1= ast.newSingleVariableDeclaration();
-			decl1.setType(ast.newSimpleType(ast.newSimpleName("ParseException")));
-			decl1.setName(ast.newSimpleName("e"));
-			catchClause1.setException(decl1);
-			
-			rewrite.getListRewrite(tryStatement, TryStatement.CATCH_CLAUSES_PROPERTY).insertFirst(catchClause1, null);
-
-			
-			CatchClause catchClause2= ast.newCatchClause();
-			SingleVariableDeclaration decl2= ast.newSingleVariableDeclaration();
-			decl2.setType(ast.newSimpleType(ast.newSimpleName("FooException")));
-			decl2.setName(ast.newSimpleName("e"));
-			catchClause2.setException(decl2);
-			
-			rewrite.getListRewrite(tryStatement, TryStatement.CATCH_CLAUSES_PROPERTY).insertLast(catchClause2, null);
-		}				
-			
+		}	
 	
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(int i) {\n");
-		buf.append("        try {\n");
-		buf.append("        } catch (IOException e) {\n");		
-		buf.append("        } finally {\n");
-		buf.append("            return;\n");				
-		buf.append("        }\n");		
-		buf.append("        try {\n");	
-		buf.append("        } catch (Exception x) {\n");
-		buf.append("        }\n");
-		buf.append("        try {\n");	
-		buf.append("        } finally {\n");
-		buf.append("            return;\n");		
-		buf.append("        }\n");
-		buf.append("        try {\n");
-		buf.append("        } catch (ParseException e) {\n");
-		buf.append("        } catch (IOException e) {\n");
-		buf.append("        } catch (FooException e) {\n");
-		buf.append("        }\n");		
+		buf.append("function foo(i) {\n");
+		buf.append("    try {\n");
+		buf.append("    } catch ( e) {\n");		
+		buf.append("    } finally {\n");
+		buf.append("        return;\n");				
+		buf.append("    }\n");		
+		buf.append("    try {\n");	
+		buf.append("    } catch (x) {\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-
-	}
-
-	/** @deprecated using deprecated code */
-	public void testTypeDeclarationStatement() throws Exception {
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        class A {\n");
-		buf.append("        }\n");
+		buf.append("    try {\n");	
+		buf.append("    } finally {\n");
+		buf.append("        return;\n");		
 		buf.append("    }\n");
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
-		Block block= methodDecl.getBody();
-		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
-		
-		List statements= block.statements();
-		assertTrue("Number of statements not 1", statements.size() == 1);
-		{ // replace expression
-			TypeDeclarationStatement stmt= (TypeDeclarationStatement) statements.get(0);
-			
-			TypeDeclaration newDeclaration= ast.newTypeDeclaration();
-			newDeclaration.setName(ast.newSimpleName("X"));
-				
-			rewrite.replace(stmt.getTypeDeclaration(), newDeclaration, null);
-		}
-				
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        interface X {\n");
-		buf.append("        }\n");
-		buf.append("    }\n");
+		buf.append("    try {\n");
+		buf.append("    } catch (e) {\n");
+		buf.append("    }\n");	
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 
@@ -3127,14 +2820,10 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testVariableDeclarationStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class A {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        int i1= 1;\n");
-		buf.append("        int i2= 1, k2= 2, n2= 3;\n");
-		buf.append("        final int i3= 1, k3= 2, n3= 3;\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    var i1= 1;\n");
+		buf.append("    var i2= 1, k2= 2, n2= 3;\n");
+		buf.append("}\n");		
 		IJavaScriptUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -3143,23 +2832,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "A");
 		
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
 		List statements= block.statements();
-		assertTrue("Number of statements not 3", statements.size() == 3);
+		assertTrue("Number of statements not 2", statements.size() == 2);
 		{	// add modifier, change type, add fragment
 			VariableDeclarationStatement decl= (VariableDeclarationStatement) statements.get(0);
-			
-			// add modifier
-			int newModifiers= Modifier.FINAL;
-			rewrite.set(decl, VariableDeclarationStatement.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-			
-			PrimitiveType newType= ast.newPrimitiveType(PrimitiveType.BOOLEAN);
-			rewrite.replace(decl.getType(), newType, null);
 					
 			VariableDeclarationFragment frag=	ast.newVariableDeclarationFragment();
 			frag.setName(ast.newSimpleName("k1"));
@@ -3169,10 +2850,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		}
 		{	// add modifiers, remove first two fragments, replace last
 			VariableDeclarationStatement decl= (VariableDeclarationStatement) statements.get(1);
-			
-			// add modifier
-			int newModifiers= Modifier.FINAL;
-			rewrite.set(decl, VariableDeclarationStatement.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
 			
 			List fragments= decl.fragments();
 			assertTrue("Number of fragments not 3", fragments.size() == 3);
@@ -3186,25 +2863,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			rewrite.replace((ASTNode) fragments.get(2), frag, null);
 		}
-		{	// remove modifiers
-			VariableDeclarationStatement decl= (VariableDeclarationStatement) statements.get(2);
-			
-			// add modifiers
-			int newModifiers= 0;
-			rewrite.set(decl, VariableDeclarationStatement.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
-		}
 				
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class A {\n");
-		buf.append("    public void foo() {\n");		
-		buf.append("        final boolean i1= 1, k1;\n");
-		buf.append("        final int k2;\n");
-		buf.append("        int i3= 1, k3= 2, n3= 3;\n");
-		buf.append("    }\n");		
-		buf.append("}\n");	
+		buf.append("function foo() {\n");		
+		buf.append("    var i1= 1, k1;\n");
+		buf.append("    var k2;\n");
+		buf.append("}\n");		
 		
 		assertEqualString(preview, buf.toString());
 
@@ -3213,14 +2879,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testWhileStatement() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (i == j) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    while (i == j) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -3229,8 +2892,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -3255,14 +2917,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (true) {\n");
-		buf.append("            hoo(11);\n");
-		buf.append("        }\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    while (true) {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
 	}
@@ -3270,20 +2929,17 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testWhileStatement1() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (true) {\n");
-		buf.append("            foo();\n");		
-		buf.append("        }\n");	
-		buf.append("        while (true)\n");
-		buf.append("            foo();\n");	
-		buf.append("        while (true) {\n");
-		buf.append("            foo();\n");	
-		buf.append("        }\n");	
-		buf.append("        while (true)\n");
-		buf.append("            foo();\n");	
-		buf.append("    }\n");
+		buf.append("function foo() {\n");
+		buf.append("    while (true) {\n");
+		buf.append("        foo();\n");		
+		buf.append("    }\n");	
+		buf.append("    while (true)\n");
+		buf.append("        foo();\n");	
+		buf.append("    while (true) {\n");
+		buf.append("        foo();\n");	
+		buf.append("    }\n");	
+		buf.append("    while (true)\n");
+		buf.append("        foo();\n");	
 		buf.append("}\n");	
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
@@ -3291,8 +2947,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -3307,7 +2962,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			newTry.getBody().statements().add(ast.newReturnStatement());
 			CatchClause newCatchClause= ast.newCatchClause();
 			SingleVariableDeclaration varDecl= ast.newSingleVariableDeclaration();
-			varDecl.setType(ast.newSimpleType(ast.newSimpleName("Exception")));
 			varDecl.setName(ast.newSimpleName("e"));
 			newCatchClause.setException(varDecl);
 			newTry.catchClauses().add(newCatchClause);
@@ -3350,7 +3004,6 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			newTry.getBody().statements().add(ast.newReturnStatement());
 			CatchClause newCatchClause= ast.newCatchClause();
 			SingleVariableDeclaration varDecl= ast.newSingleVariableDeclaration();
-			varDecl.setType(ast.newSimpleType(ast.newSimpleName("Exception")));
 			varDecl.setName(ast.newSimpleName("e"));
 			newCatchClause.setException(varDecl);
 			newTry.catchClauses().add(newCatchClause);
@@ -3358,31 +3011,27 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			rewrite.replace(whileStatement.getBody(), newTry, null);
 		}
 		
-		
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (true)\n");
-		buf.append("            try {\n");
-		buf.append("                return;\n");
-		buf.append("            } catch (Exception e) {\n");
-		buf.append("            }\n");	
-		buf.append("        while (true) {\n");
-		buf.append("            hoo(11);\n");
+		buf.append("function foo() {\n");
+		buf.append("    while (true)\n");
+		buf.append("        try {\n");
+		buf.append("            return;\n");
+		buf.append("        } catch (e) {\n");
 		buf.append("        }\n");	
-		buf.append("        while (true) {\n");
-		buf.append("            hoo(11);\n");
+		buf.append("    while (true) {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    }\n");	
+		buf.append("    while (true) {\n");
+		buf.append("        hoo(11);\n");
+		buf.append("    }\n");	
+		buf.append("    while (true)\n");
+		buf.append("        try {\n");
+		buf.append("            return;\n");
+		buf.append("        } catch (e) {\n");
 		buf.append("        }\n");	
-		buf.append("        while (true)\n");
-		buf.append("            try {\n");
-		buf.append("                return;\n");
-		buf.append("            } catch (Exception e) {\n");
-		buf.append("            }\n");	
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
 	}		
@@ -3391,14 +3040,11 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testInsertCode() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (i == j) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    while (i == j) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
@@ -3406,8 +3052,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		
 	
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -3431,15 +3076,12 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        //hello\n");
-		buf.append("        if (i == 3) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    //hello\n");
+		buf.append("    if (i == 3) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
 
 	}
@@ -3447,23 +3089,18 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 	public void testInsertComment() throws Exception {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (i == j) {\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");		
-		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("function foo() {\n");
+		buf.append("    while (i == j) {\n");
+		buf.append("        System.beep();\n");
+		buf.append("    }\n");		
+		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
 		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
-
 		// Get while statement block
-		TypeDeclaration typeDecl = (TypeDeclaration) astRoot.types().get(0);
-		FunctionDeclaration methodDecl= typeDecl.getMethods()[0];
+		FunctionDeclaration methodDecl= (FunctionDeclaration) astRoot.statements().get(0);
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		WhileStatement whileStatement= (WhileStatement) statements.get(0);
@@ -3482,22 +3119,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo() {\n");
-		buf.append("        while (i == j) {\n");
-		buf.append("            /*\n");
-		buf.append("             * Here's the block comment I want to insert :-)\n");
-		buf.append("             */\n");
-		buf.append("            System.beep();\n");
-		buf.append("        }\n");
+		buf.append("function foo() {\n");
+		buf.append("    while (i == j) {\n");
+		buf.append("        /*\n");
+		buf.append("         * Here's the block comment I want to insert :-)\n");
+		buf.append("         */\n");
+		buf.append("        System.beep();\n");
 		buf.append("    }\n");
-		buf.append("}\n");	
+		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
-
-	}
-	
+	}	
 }
-
-
-
