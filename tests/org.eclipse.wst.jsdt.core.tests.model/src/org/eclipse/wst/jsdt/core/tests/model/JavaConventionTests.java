@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.model;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import junit.framework.Test;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class JavaConventionTests extends AbstractJavaModelTests {

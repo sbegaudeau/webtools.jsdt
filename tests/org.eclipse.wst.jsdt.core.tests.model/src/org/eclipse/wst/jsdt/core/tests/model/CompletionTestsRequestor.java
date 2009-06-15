@@ -14,7 +14,6 @@ import java.util.Vector;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.Signature;
 
 public class CompletionTestsRequestor extends CompletionRequestor {
