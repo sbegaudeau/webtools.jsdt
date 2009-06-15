@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2004,2008 IBM Corporation and others.
+ * Copyright (c) 2004,2009 IBM Corporation and others.
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
@@ -18,10 +18,8 @@ import junit.framework.TestSuite;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.wst.jsdt.core.tests.RunDOMTests;
 import org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
-import org.eclipse.wst.jsdt.core.tests.model.JSDTModelTests;
 import org.eclipse.wst.jsdt.web.core.tests.translation.AllWebCoreTests;
 import org.eclipse.wst.jsdt.web.ui.tests.AllWebUITests;
 import org.osgi.framework.Bundle;
