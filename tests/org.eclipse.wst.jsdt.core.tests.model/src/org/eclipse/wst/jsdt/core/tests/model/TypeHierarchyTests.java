@@ -1019,29 +1019,6 @@ public void testGetCachedFlags() throws JavaScriptModelException {
 	int flags = hierarchy.getCachedFlags(type2);
 }
 /**
- * Ensures that the correct implementing interfaces exist in the type 
- * hierarchy.
- */
-public void testGetImplementingClasses() throws JavaScriptModelException {
-	IType type = getCompilationUnit("TypeHierarchy", "src", "p2", "I.js").getType("I");
-	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getImplementingClasses(type);
-	this.assertTypesEqual(
-		"Unexpected implementing classes of I",
-		"p2.X\n",
-		types
-	);
-
-	type = getCompilationUnit("TypeHierarchy", "src", "p2", "X.js").getType("X");
-	hierarchy = type.newTypeHierarchy(null);
-	types = hierarchy.getImplementingClasses(type);
-	this.assertTypesEqual(
-		"Unexpected implementing classes of X",
-		"", // classes cannot implement a class
-		types
-	);
-}
-/**
  * Ensures that the correct root classes exist in the type 
  * hierarchy.
  */

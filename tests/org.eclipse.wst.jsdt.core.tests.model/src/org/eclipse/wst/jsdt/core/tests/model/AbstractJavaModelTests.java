@@ -1615,7 +1615,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				return buffer;
 			}
 		};
-		return owner.newWorkingCopy(name, classpath, problemRequestor, null/*no progress monitor*/);
+		return owner.newWorkingCopy(name, classpath, null/*no progress monitor*/);
 	}
 
 	public byte[] read(java.io.File file) throws java.io.IOException {
