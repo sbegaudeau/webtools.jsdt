@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,20 +67,6 @@ IField[] getFields() throws JavaScriptModelException;
  */
 IFunction getFunction(String name, String[] parameterTypeSignatures);
 
-/**
- * Returns the methods and constructors declared by this type.
- * For binary types, this may include the special <code>&lt;clinit&gt</code>; method
- * and synthetic methods.
- * If this is a source type, the results are listed in the order
- * in which they appear in the source, otherwise, the results are
- * in no particular order.
- *
- * @exception JavaScriptModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- * @return the methods and constructors declared by this type
- * @deprecated Use {@link #getFunctions()} instead
- */
-IFunction[] getMethods() throws JavaScriptModelException;
 /**
  * Returns the methods and constructors declared by this type or file.
  *

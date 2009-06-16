@@ -272,8 +272,8 @@ public class OverrideMethodDialog extends SourceActionDialog {
 //		IMethod[] methods = type.getMethods();
 		String parentName = type.getSuperclassName();
 		IType superType =  type.getJavaScriptProject().findType(parentName);
-		IFunction pMethods[] = superType.getMethods();
-		IFunction tMethods[] = type.getMethods();
+		IFunction pMethods[] = superType.getFunctions();
+		IFunction tMethods[] = type.getFunctions();
 		
 		IFunction parentMethods[] = new IFunction[0];
 		

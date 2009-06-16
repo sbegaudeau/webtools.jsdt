@@ -343,13 +343,6 @@ public IFunction getFunction(String selector, String[] parameterTypeSignatures) 
 }
 /**
  * @see IType
- * @deprecated Use {@link #getFunctions()} instead
- */
-public IFunction[] getMethods() throws JavaScriptModelException {
-	return getFunctions();
-}
-/**
- * @see IType
  */
 public IFunction[] getFunctions() throws JavaScriptModelException {
 	ArrayList list = getChildrenOfType(METHOD);
