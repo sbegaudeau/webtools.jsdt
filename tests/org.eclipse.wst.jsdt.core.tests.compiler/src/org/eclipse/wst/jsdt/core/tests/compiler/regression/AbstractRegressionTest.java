@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.StopableTestCase;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.core.tests.util.CompilerTestSetup;
-import org.eclipse.wst.jsdt.core.tests.util.TestVerifier;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
@@ -132,9 +131,9 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 	public static final String INFERENCE_ENGINES = "InferenceEnginesOption";
 
 	protected String[] classpaths;
-	protected boolean createdVerifier;
+//	protected boolean createdVerifier;
 	protected INameEnvironment javaClassLib;
-	protected TestVerifier verifier;
+//	protected TestVerifier verifier;
 
 	public AbstractRegressionTest(String name) {
 		super(name);
@@ -311,27 +310,27 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		if (className.endsWith(PACKAGE_INFO_NAME))
 			return;
 
-		if (vmArguments != null) {
-			if (this.verifier != null) {
-				this.verifier.shutDown();
-			}
-			this.verifier = new TestVerifier(false);
-			this.createdVerifier = true;
-		}
-		boolean passed = this.verifier
-				.verifyClassFiles(sourceFile, className,
-						expectedSuccessOutputString, this.classpaths, null,
-						vmArguments);
-		assertTrue(this.verifier.failureReason, // computed by
-												// verifyClassFiles(...) action
-				passed);
-		if (vmArguments != null) {
-			if (this.verifier != null) {
-				this.verifier.shutDown();
-			}
-			this.verifier = new TestVerifier(false);
-			this.createdVerifier = true;
-		}
+//		if (vmArguments != null) {
+//			if (this.verifier != null) {
+//				this.verifier.shutDown();
+//			}
+//			this.verifier = new TestVerifier(false);
+//			this.createdVerifier = true;
+//		}
+//		boolean passed = this.verifier
+//				.verifyClassFiles(sourceFile, className,
+//						expectedSuccessOutputString, this.classpaths, null,
+//						vmArguments);
+//		assertTrue(this.verifier.failureReason, // computed by
+//												// verifyClassFiles(...) action
+//				passed);
+//		if (vmArguments != null) {
+//			if (this.verifier != null) {
+//				this.verifier.shutDown();
+//			}
+//			this.verifier = new TestVerifier(false);
+//			this.createdVerifier = true;
+//		}
 	}
 
 	/*
@@ -472,7 +471,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		if (setUp instanceof RegressionTestSetup) {
 			RegressionTestSetup regressionTestSetUp = (RegressionTestSetup) setUp;
 			this.javaClassLib = regressionTestSetUp.javaClassLib;
-			this.verifier = regressionTestSetUp.verifier;
+//			this.verifier = regressionTestSetUp.verifier;
 		}
 	}
 
@@ -670,35 +669,35 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				if (className.endsWith(PACKAGE_INFO_NAME))
 					return;
 
+//				if (vmArguments != null) {
+//					if (this.verifier != null) {
+//						this.verifier.shutDown();
+//					}
+//					this.verifier = new TestVerifier(false);
+//					this.createdVerifier = true;
+//				}
+//				boolean passed = this.verifier.verifyClassFiles(sourceFile,
+//						className, expectedSuccessOutputString,
+//						this.classpaths, null, vmArguments);
+//				if (!passed) {
+//					System.out.println(getClass().getName() + '#' + getName());
+//					for (int i = 0; i < testFiles.length; i += 2) {
+//						System.out.print(testFiles[i]);
+//						System.out.println(" ["); //$NON-NLS-1$
+//						System.out.println(testFiles[i + 1]);
+//						System.out.println("]"); //$NON-NLS-1$
+//					}
+//				}
+//				assertTrue(this.verifier.failureReason, // computed by
+//														// verifyClassFiles(...)
+//														// action
+//						passed);
 				if (vmArguments != null) {
-					if (this.verifier != null) {
-						this.verifier.shutDown();
-					}
-					this.verifier = new TestVerifier(false);
-					this.createdVerifier = true;
-				}
-				boolean passed = this.verifier.verifyClassFiles(sourceFile,
-						className, expectedSuccessOutputString,
-						this.classpaths, null, vmArguments);
-				if (!passed) {
-					System.out.println(getClass().getName() + '#' + getName());
-					for (int i = 0; i < testFiles.length; i += 2) {
-						System.out.print(testFiles[i]);
-						System.out.println(" ["); //$NON-NLS-1$
-						System.out.println(testFiles[i + 1]);
-						System.out.println("]"); //$NON-NLS-1$
-					}
-				}
-				assertTrue(this.verifier.failureReason, // computed by
-														// verifyClassFiles(...)
-														// action
-						passed);
-				if (vmArguments != null) {
-					if (this.verifier != null) {
-						this.verifier.shutDown();
-					}
-					this.verifier = new TestVerifier(false);
-					this.createdVerifier = true;
+//					if (this.verifier != null) {
+//						this.verifier.shutDown();
+//					}
+//					this.verifier = new TestVerifier(false);
+//					this.createdVerifier = true;
 				}
 			} else {
 				System.out.println(getClass().getName() + '#' + getName());
@@ -786,14 +785,14 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 						sourceFile.length() - 5).replace('/', '.').replace(
 						'\\', '.');
 
-				boolean passed = this.verifier.verifyClassFilesThrowingError(
-						sourceFile, className, expectedSuccessOutputString,
-						this.classpaths, null, vmArguments);
-				if (exception == null)
-					assertTrue(this.verifier.failureReason, // computed by
-															// verifyClassFiles(...)
-															// action
-							passed);
+//				boolean passed = this.verifier.verifyClassFilesThrowingError(
+//						sourceFile, className, expectedSuccessOutputString,
+//						this.classpaths, null, vmArguments);
+//				if (exception == null)
+//					assertTrue(this.verifier.failureReason, // computed by
+//															// verifyClassFiles(...)
+//															// action
+//							passed);
 			} else {
 				if (exception == null)
 					assertTrue("Unexpected problems: " + requestor.problemLog,
@@ -1299,53 +1298,53 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		if (className.endsWith(PACKAGE_INFO_NAME))
 			return;
 
-		if (vmArguments != null) {
-			if (this.verifier != null) {
-				this.verifier.shutDown();
-			}
-			this.verifier = new TestVerifier(false);
-			this.createdVerifier = true;
-		}
-		boolean passed = this.verifier
-				.verifyClassFiles(sourceFile, className,
-						expectedSuccessOutputString, this.classpaths, null,
-						vmArguments);
-		if (!passed) {
-			String platformIndependantExpectedSuccessOutputString = Util
-					.convertToIndependantLineDelimiter(expectedSuccessOutputString);
-			String platformIndependantFailureReason = Util
-					.convertToIndependantLineDelimiter(this.verifier.failureReason);
-			if (platformIndependantFailureReason
-					.indexOf(platformIndependantExpectedSuccessOutputString) == -1) {
-				System.out.println(getClass().getName() + '#' + getName());
-				System.out.println(Util.displayString(
-						platformIndependantFailureReason, INDENT, SHIFT));
-				assertEquals("Invalid runtime log ",
-						platformIndependantExpectedSuccessOutputString,
-						platformIndependantFailureReason);
-				System.out.println(getClass().getName() + '#' + getName());
-				for (int i = 0; i < testFiles.length; i += 2) {
-					System.out.print(testFiles[i]);
-					System.out.println(" ["); //$NON-NLS-1$
-					System.out.println(testFiles[i + 1]);
-					System.out.println("]"); //$NON-NLS-1$
-				}
-			}
-		} else if (vmArguments != null) {
-			if (this.verifier != null) {
-				this.verifier.shutDown();
-			}
-			this.verifier = new TestVerifier(false);
-			this.createdVerifier = true;
-		}
+//		if (vmArguments != null) {
+//			if (this.verifier != null) {
+//				this.verifier.shutDown();
+//			}
+//			this.verifier = new TestVerifier(false);
+//			this.createdVerifier = true;
+//		}
+//		boolean passed = this.verifier
+//				.verifyClassFiles(sourceFile, className,
+//						expectedSuccessOutputString, this.classpaths, null,
+//						vmArguments);
+//		if (!passed) {
+//			String platformIndependantExpectedSuccessOutputString = Util
+//					.convertToIndependantLineDelimiter(expectedSuccessOutputString);
+//			String platformIndependantFailureReason = Util
+//					.convertToIndependantLineDelimiter(this.verifier.failureReason);
+//			if (platformIndependantFailureReason
+//					.indexOf(platformIndependantExpectedSuccessOutputString) == -1) {
+//				System.out.println(getClass().getName() + '#' + getName());
+//				System.out.println(Util.displayString(
+//						platformIndependantFailureReason, INDENT, SHIFT));
+//				assertEquals("Invalid runtime log ",
+//						platformIndependantExpectedSuccessOutputString,
+//						platformIndependantFailureReason);
+//				System.out.println(getClass().getName() + '#' + getName());
+//				for (int i = 0; i < testFiles.length; i += 2) {
+//					System.out.print(testFiles[i]);
+//					System.out.println(" ["); //$NON-NLS-1$
+//					System.out.println(testFiles[i + 1]);
+//					System.out.println("]"); //$NON-NLS-1$
+//				}
+//			}
+//		} else if (vmArguments != null) {
+//			if (this.verifier != null) {
+//				this.verifier.shutDown();
+//			}
+//			this.verifier = new TestVerifier(false);
+//			this.createdVerifier = true;
+//		}
 	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		if (this.verifier == null) {
-			this.verifier = new TestVerifier(true);
-			this.createdVerifier = true;
-		}
+//		if (this.verifier == null) {
+//			this.verifier = new TestVerifier(true);
+//			this.createdVerifier = true;
+//		}
 		if (RUN_JAVAC) {
 			if (isFirst()) {
 				if (javacFullLog == null) {
@@ -1434,13 +1433,13 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 	}
 
 	public void stop() {
-		this.verifier.shutDown();
+//		this.verifier.shutDown();
 	}
 
 	protected void tearDown() throws Exception {
-		if (this.createdVerifier) {
-			this.stop();
-		}
+//		if (this.createdVerifier) {
+//			this.stop();
+//		}
 		// clean up output dir
 		File outputDir = new File(OUTPUT_DIR);
 		if (outputDir.exists()) {
@@ -1502,21 +1501,21 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				throw e;
 			}
 			if (!requestor.hasErrors) {
-				String sourceFile = testFiles[0];
-				boolean passed = true;
-				if (!passed) {
-					System.out.println(getClass().getName() + '#' + getName());
-					for (int i = 0; i < testFiles.length; i += 2) {
-						System.out.print(testFiles[i]);
-						System.out.println(" ["); //$NON-NLS-1$
-						System.out.println(testFiles[i + 1]);
-						System.out.println("]"); //$NON-NLS-1$
-					}
-				}
-				assertTrue(this.verifier.failureReason, // computed by
-														// verifyClassFiles(...)
-														// action
-						passed);
+//				String sourceFile = testFiles[0];
+//				boolean passed = true;
+//				if (!passed) {
+//					System.out.println(getClass().getName() + '#' + getName());
+//					for (int i = 0; i < testFiles.length; i += 2) {
+//						System.out.print(testFiles[i]);
+//						System.out.println(" ["); //$NON-NLS-1$
+//						System.out.println(testFiles[i + 1]);
+//						System.out.println("]"); //$NON-NLS-1$
+//					}
+//				}
+//				assertTrue(this.verifier.failureReason, // computed by
+//														// verifyClassFiles(...)
+//														// action
+//						passed);
 			} else {
 				System.out.println(getClass().getName() + '#' + getName());
 				System.out.println(Util.displayString(requestor.problemLog,
