@@ -2690,7 +2690,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(((PrimitiveType) x.getReturnType()).getPrimitiveTypeCode() == PrimitiveType.VOID);
 		} else {
 			assertTrue(x.modifiers().size() == 0);
-			assertTrue(x.typeParameters().size() == 0);
 			assertTrue(x.getReturnType2().getParent() == x);
 			assertTrue(x.getReturnType2().isPrimitiveType());
 			assertTrue(((PrimitiveType) x.getReturnType2()).getPrimitiveTypeCode() == PrimitiveType.VOID);
