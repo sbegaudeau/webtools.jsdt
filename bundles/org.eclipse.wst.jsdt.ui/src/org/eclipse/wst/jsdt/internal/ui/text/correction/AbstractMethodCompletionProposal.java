@@ -115,7 +115,6 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		addNewModifiers(rewrite, targetTypeDecl, decl.modifiers());
 
 		ArrayList takenNames= new ArrayList();
-		addNewTypeParameters(rewrite, takenNames, decl.typeParameters());
 
 		decl.setName(newNameNode);
 
@@ -193,7 +192,6 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 	protected abstract boolean isConstructor();
 
 	protected abstract void addNewModifiers(ASTRewrite rewrite, ASTNode targetTypeDecl, List exceptions);
-	protected abstract void addNewTypeParameters(ASTRewrite rewrite, List takenNames, List params) throws CoreException;
 	protected abstract void addNewParameters(ASTRewrite rewrite, List takenNames, List params) throws CoreException;
 	protected abstract void addNewExceptions(ASTRewrite rewrite, List exceptions) throws CoreException;
 

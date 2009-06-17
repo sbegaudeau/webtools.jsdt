@@ -1186,10 +1186,6 @@ public class ASTMatcher {
 			if (!safeSubtreeMatch(node.getReturnType2(), o.getReturnType2())) {
 				return false;
 			}
-			// n.b. compare type parameters even for constructors
-			if (!safeSubtreeListMatch(node.typeParameters(), o.typeParameters())) {
-				return false;
-			}
 		}
 		return ((node.isConstructor() == o.isConstructor())
 				&& safeSubtreeMatch(node.getJavadoc(), o.getJavadoc())

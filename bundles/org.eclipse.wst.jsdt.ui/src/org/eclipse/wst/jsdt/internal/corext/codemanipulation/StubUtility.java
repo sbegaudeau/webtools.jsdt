@@ -629,8 +629,6 @@ public class StubUtility {
 		}
 			
 		IDocument textBuffer= new Document(str);
-		List typeParams= decl.typeParameters();
-		String[] typeParamNames= new String[typeParams.size()];
 		List params= decl.parameters();
 		String[] paramNames= new String[params.size()];
 		for (int i= 0; i < paramNames.length; i++) {
@@ -650,7 +648,7 @@ public class StubUtility {
 		int[] tagOffsets= position.getOffsets();
 		for (int i= tagOffsets.length - 1; i >= 0; i--) { // from last to first
 			try {
-				insertTag(textBuffer, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, typeParamNames, isDeprecated, lineDelimiter);
+				insertTag(textBuffer, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, new String[0], isDeprecated, lineDelimiter);
 			} catch (BadLocationException e) {
 				throw new CoreException(JavaUIStatus.createError(IStatus.ERROR, e));
 			}

@@ -813,15 +813,6 @@ public class ASTFlattener extends GenericVisitor {
 		}
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			printModifiers(node.modifiers());
-			if (!node.typeParameters().isEmpty()) {
-				this.fBuffer.append("<");//$NON-NLS-1$
-				for (Iterator it= node.typeParameters().iterator(); it.hasNext();) {
-					if (it.hasNext()) {
-						this.fBuffer.append(",");//$NON-NLS-1$
-					}
-				}
-				this.fBuffer.append("> ");//$NON-NLS-1$
-			}
 		}
 //		if (!node.isConstructor()) {
 //			if (node.getAST().apiLevel() == AST.JLS2) {

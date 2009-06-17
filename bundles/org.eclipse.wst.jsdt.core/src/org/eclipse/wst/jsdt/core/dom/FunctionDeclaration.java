@@ -241,14 +241,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 	private boolean returnType2Initialized = false;
 
 	/**
-	 * The type paramters (element type: <code>TypeParameter</code>).
-	 * Null in JLS2. Added in JLS3; defaults to an empty list
-	 * (see constructor).
-	 *  
-	 */
-	private ASTNode.NodeList typeParameters = null;
-
-	/**
 	 * The number of array dimensions that appear after the parameters, rather
 	 * than after the return type itself; defaults to 0.
 	 *
@@ -444,8 +436,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 		}
 		if (this.ast.apiLevel >= AST.JLS3) {
 			result.modifiers().addAll(ASTNode.copySubtrees(target, modifiers()));
-			result.typeParameters().addAll(
-					ASTNode.copySubtrees(target, typeParameters()));
 			result.setReturnType2(
 					(Type) ASTNode.copySubtree(target, getReturnType2()));
 		}
@@ -486,7 +476,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 				acceptChild(visitor, getReturnType());
 			} else {
 				acceptChildren(visitor, this.modifiers);
-				acceptChildren(visitor, this.typeParameters);
 				acceptChild(visitor, getReturnType2());
 			}
 			// n.b. visit return type even for constructors
@@ -518,24 +507,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 		preValueChange(CONSTRUCTOR_PROPERTY);
 		this.isConstructor = isConstructor;
 		postValueChange(CONSTRUCTOR_PROPERTY);
-	}
-
-	/**
-	 * Returns the live ordered list of type parameters of this method
-	 * declaration (added in JLS3 API). This list is non-empty for parameterized methods.
-	 *
-	 * @return the live list of type parameters
-	 *    (element type: <code>TypeParameter</code>)
-	 * @exception UnsupportedOperationException if this operation is used in
-	 * a JLS2 AST
-	 *  
-	 */
-	public List typeParameters() {
-		// more efficient than just calling unsupportedIn2() to check
-		if (this.typeParameters == null) {
-			unsupportedIn2();
-		}
-		return this.typeParameters;
 	}
 
 	/**
@@ -890,7 +861,6 @@ public class FunctionDeclaration extends BodyDeclaration {
 			memSize()
 			+ (this.optionalDocComment == null ? 0 : getJavadoc().treeSize())
 			+ (this.modifiers == null ? 0 : this.modifiers.listSize())
-			+ (this.typeParameters == null ? 0 : this.typeParameters.listSize())
 			+ (this.methodName == null ? 0 : getName().treeSize())
 			+ (this.returnType == null ? 0 : this.returnType.treeSize())
 			+ this.parameters.listSize()

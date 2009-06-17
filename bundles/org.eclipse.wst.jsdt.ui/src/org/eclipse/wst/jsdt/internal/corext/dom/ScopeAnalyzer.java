@@ -630,9 +630,6 @@ public class ScopeAnalyzer {
 					body.accept(this);
 				}
 				visitBackwards(node.parameters());
-				if (node.getAST().apiLevel() >= AST.JLS3) {
-					visitBackwards(node.typeParameters());
-				}
 			}
 			return false;
 		}
