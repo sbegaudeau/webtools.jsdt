@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,10 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 
 import java.util.ResourceBundle;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -21,13 +23,18 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.texteditor.ITextEditorExtension;
 import org.eclipse.ui.texteditor.RetargetTextEditorAction;
+import org.eclipse.ui.texteditor.StatusLineContributionItem;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.actions.JdtActionConstants;
 
 public class CompilationUnitEditorActionContributor extends BasicCompilationUnitEditorActionContributor {
+	private static final boolean _showOffset = Boolean.valueOf((Platform.getDebugOption("org.eclipse.wst.jsdt.ui/statusbar/offset"))).booleanValue() || Platform.inDebugMode() || Platform.inDevelopmentMode(); //$NON-NLS-1$
 
 	private RetargetTextEditorAction fToggleInsertModeAction;
+
+	private StatusLineContributionItem fOffsetStatusField = null;
 
 	public CompilationUnitEditorActionContributor() {
 		super();
@@ -36,6 +43,10 @@ public class CompilationUnitEditorActionContributor extends BasicCompilationUnit
 
 		fToggleInsertModeAction= new RetargetTextEditorAction(b, "CompilationUnitEditorActionContributor.ToggleInsertMode.", IAction.AS_CHECK_BOX); //$NON-NLS-1$
 		fToggleInsertModeAction.setActionDefinitionId(ITextEditorActionDefinitionIds.TOGGLE_INSERT_MODE);
+		
+		if (_showOffset) {
+			fOffsetStatusField = new StatusLineContributionItem(IJavaEditorActionConstants.STATUS_CATEGORY_OFFSET, true, 10);
+		}
 	}
 
 
@@ -52,14 +63,33 @@ public class CompilationUnitEditorActionContributor extends BasicCompilationUnit
 	}
 
 	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToStatusLine(org.eclipse.jface.action.IStatusLineManager)
+	 */
+	public void contributeToStatusLine(IStatusLineManager manager) {
+		super.contributeToStatusLine(manager);
+		if (_showOffset) {
+			manager.add(fOffsetStatusField);
+		}
+	}
+
+	/*
 	 * @see IEditorActionBarContributor#setActiveEditor(IEditorPart)
 	 */
 	public void setActiveEditor(IEditorPart part) {
 		super.setActiveEditor(part);
 
 		ITextEditor textEditor= null;
+		ITextEditorExtension textEditorExtension= null;
 		if (part instanceof ITextEditor)
 			textEditor= (ITextEditor) part;
+		if (part instanceof ITextEditorExtension)
+			textEditorExtension= (ITextEditorExtension) part;
+		
+		if(_showOffset && textEditorExtension !=null) {
+			textEditorExtension.setStatusField(null, IJavaEditorActionConstants.STATUS_CATEGORY_OFFSET);
+		}
 
 		// Source menu.
 		IActionBars bars= getActionBars();
@@ -76,5 +106,10 @@ public class CompilationUnitEditorActionContributor extends BasicCompilationUnit
 		bars.setGlobalActionHandler(ActionFactory.REFRESH.getId(), action);
 
 		fToggleInsertModeAction.setAction(getAction(textEditor, ITextEditorActionConstants.TOGGLE_INSERT_MODE));
+
+		if(_showOffset && textEditorExtension !=null) {
+			textEditorExtension.setStatusField(fOffsetStatusField, IJavaEditorActionConstants.STATUS_CATEGORY_OFFSET);
+			// fOffsetStatusField.setActionHandler(action);
+		}
 	}
 }

@@ -85,14 +85,15 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.eclipse.ui.texteditor.IStatusField;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.texteditor.ResourceAction;
 import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.ISourceReference;
@@ -1716,4 +1717,23 @@ public class CompilationUnitEditor extends JavaEditor implements IJavaReconcilin
 		markAsStateDependentAction(ITextEditorActionDefinitionIds.DELETE_NEXT_WORD, true);
 	}
 
+	protected void updateStatusField(String category) {
+		super.updateStatusField(category);
+
+		if (ITextEditorActionConstants.STATUS_CATEGORY_INPUT_POSITION.equals(category)) {
+			IStatusField field = getStatusField(IJavaEditorActionConstants.STATUS_CATEGORY_OFFSET);
+			if (field != null) {
+				ISourceViewer sourceViewer = getSourceViewer();
+				Point selection = sourceViewer.getTextWidget().getSelection();
+				int offset1 = widgetOffset2ModelOffset(sourceViewer, selection.x);
+				int offset2 = widgetOffset2ModelOffset(sourceViewer, selection.y);
+				String text = null;
+				if (offset1 != offset2)
+					text = "[" + offset1 + "-" + offset2 + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				else
+					text = "[ " + offset1 + " ]"; //$NON-NLS-1$ //$NON-NLS-2$
+				field.setText(text);
+			}
+		}
+	}
 }
