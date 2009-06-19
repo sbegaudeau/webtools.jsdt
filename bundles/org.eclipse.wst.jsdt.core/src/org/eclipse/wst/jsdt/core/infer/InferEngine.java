@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.infer;
 
-
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
@@ -31,6 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
@@ -44,6 +44,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NumberLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
+import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
@@ -54,7 +55,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 /**
- * 
  * The default inference engine.  This class can also be subclassed by Inferrence providors.
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
@@ -282,7 +282,7 @@ public class InferEngine extends ASTVisitor {
 	public boolean visit(IAssignment assignment) {
 		pushContext();
 		Expression assignmentExpression=(Expression)assignment.getExpression();
-		if (handlePrototype((Assignment)assignment))
+		if (handlePotentialType((Assignment)assignment))
 		{
 
 		}
@@ -689,7 +689,7 @@ public class InferEngine extends ASTVisitor {
 	}
 	
 	
-	protected boolean handlePrototype(Assignment assignment) {
+	protected boolean handlePotentialType(Assignment assignment) {
 
 		Expression lhs = assignment.lhs;
 		if (lhs instanceof FieldReference) {
@@ -795,6 +795,52 @@ public class InferEngine extends ASTVisitor {
 //					return false;
 //				InferredType newType = addType(typeName);
 //				newType.isDefinition=true;
+
+				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+
+				//prevent Object literal based anonymous types from being created more than once
+				if( passNumber == 1 && assignment.expression instanceof ObjectLiteral ){
+					return false;
+				}
+
+				char[] memberName = fieldReference.token;
+				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
+
+				InferredType typeOf = getTypeOf(assignment.expression);
+				IFunctionDeclaration methodDecl=null;
+
+				if (typeOf==null || typeOf==FunctionType)
+					methodDecl=getDefinedFunction(assignment.expression);
+
+				if (methodDecl!=null)
+				{
+					InferredMember method = newType.addMethod(memberName, methodDecl,false);
+					method.nameStart=nameStart;
+				}
+				// http://bugs.eclipse.org/269053 - constructor property not supported in JSDT
+				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
+				{
+					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
+					attribute.initializationStart=assignment.expression.sourceStart;
+					attribute.nameStart=nameStart;
+					if (attribute.type==null)
+						attribute.type=typeOf;
+				}
+				return true;
+			} else if(fieldReference.receiver instanceof ThisReference) {
+				InferredType newType = null;
+				
+				MethodDeclaration parentMethod = this.currentContext.currentMethod;
+				if( parentMethod != null && parentMethod.getName() != null )
+					newType = compUnit.findInferredType( parentMethod.getName() );
+				else
+					return false; //no type created
+
+				//create the new type if not found
+				if( newType == null ){
+					newType = addType( parentMethod.getName() );
+					newType.isDefinition = true;
+				}
 
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 
@@ -962,6 +1008,48 @@ public class InferEngine extends ASTVisitor {
 			return FunctionType;
 		else if(expression instanceof UnaryExpression) {
 			return getTypeOf(((UnaryExpression)expression).expression);
+		} else if(expression instanceof BinaryExpression) {
+			BinaryExpression bExpression = (BinaryExpression) expression;
+			int operator = (bExpression.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
+			switch(operator) {
+				case OperatorIds.MULTIPLY :
+				case OperatorIds.DIVIDE :
+				case OperatorIds.REMAINDER :
+				case OperatorIds.MINUS:
+				case OperatorIds.LEFT_SHIFT:
+				case OperatorIds.RIGHT_SHIFT:
+					return NumberType;
+				case OperatorIds.PLUS:
+					InferredType leftType = getTypeOf(bExpression.left);
+					InferredType rightType = getTypeOf(bExpression.right);
+					if(leftType != null && leftType.equals(StringType))
+						return StringType;
+					if(rightType != null && rightType.equals(StringType))
+						return StringType;
+					if(leftType == null || rightType == null)
+						return null;
+					if(leftType.equals(StringType) || rightType.equals(StringType)) {
+						return StringType;
+					} else if(leftType.equals(NumberType) && rightType.equals(NumberType)) {
+						return NumberType;
+					}
+					return null;
+				case OperatorIds.EQUAL_EQUAL:
+				case OperatorIds.EQUAL_EQUAL_EQUAL:
+				case OperatorIds.NOT_EQUAL:
+				case OperatorIds.NOT_EQUAL_EQUAL:
+				case OperatorIds.GREATER:
+				case OperatorIds.GREATER_EQUAL:
+				case OperatorIds.LESS:
+				case OperatorIds.LESS_EQUAL:
+				case OperatorIds.INSTANCEOF:
+				case OperatorIds.IN:
+				case OperatorIds.AND_AND:
+				case OperatorIds.OR_OR:
+					return BooleanType;
+				default:
+					return null;
+			}
 		}
 
 		return null;
