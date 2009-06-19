@@ -12,15 +12,10 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
-import junit.framework.Test;
-
 public class CharOperationTest extends AbstractRegressionTest {
 	
 public CharOperationTest(String name) {
 	super(name);
-}
-public static Test suite() {
-	return buildAllCompliancesTestSuite(testClass());
 }
 
 public void test001() {

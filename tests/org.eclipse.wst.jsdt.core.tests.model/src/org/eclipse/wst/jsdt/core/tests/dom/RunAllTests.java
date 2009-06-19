@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public static Class[] getAllTestClasses() {
 		org.eclipse.wst.jsdt.core.tests.dom.ASTVisitorTest.class,
 		//org.eclipse.wst.jsdt.core.tests.dom.ASTMatcherTest.class,
 		//org.eclipse.wst.jsdt.core.tests.dom.ASTStructuralPropertyTest.class,
-		//org.eclipse.wst.jsdt.core.tests.dom.ASTParserTest.class,
+		org.eclipse.wst.jsdt.core.tests.dom.ASTParserTest.class,
 		//org.eclipse.wst.jsdt.core.tests.dom.ASTModelBridgeTests.class,
 		// org.eclipse.wst.jsdt.core.tests.dom.BatchASTCreationTests.class,
 		//org.eclipse.wst.jsdt.core.tests.dom.CompatibilityRulesTests.class,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class ASTParserTest extends org.eclipse.wst.jsdt.core.tests.junit.extensi
 		for (int i = 0, max = methods.length; i < max; i++) {
 			if (methods[i].getName().startsWith("test")) { //$NON-NLS-1$
 				suite.addTest(new ASTParserTest(methods[i].getName(), AST.JLS2));
-				suite.addTest(new ASTParserTest(methods[i].getName(), AST.JLS3));
+				//suite.addTest(new ASTParserTest(methods[i].getName(), AST.JLS3));
 			}
 		}
 		return suite;

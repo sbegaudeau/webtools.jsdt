@@ -17,7 +17,6 @@ import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.ArrayTest;
 import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.BooleanTest;
-import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.CastTest;
 import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.Compliance_1_4;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
@@ -37,7 +36,6 @@ public static Test suite() {
 	standardTests.add(ArrayTest.class);
 	standardTests.add(AssignmentTest.class);
 	standardTests.add(BooleanTest.class);
-	standardTests.add(CastTest.class);
 //	standardTests.add(ClassFileComparatorTest.class);
 //	standardTests.add(CollisionCase.class);
 //	standardTests.add(ConstantTest.class);
