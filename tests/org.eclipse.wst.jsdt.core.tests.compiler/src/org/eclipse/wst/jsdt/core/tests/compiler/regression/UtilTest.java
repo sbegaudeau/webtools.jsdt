@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,7 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
 import java.io.File;
 
-//import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-
-//import junit.framework.AssertionFailedError;
-import junit.framework.Test;
 
 public class UtilTest extends AbstractRegressionTest {
 
@@ -25,12 +21,7 @@ StringBuffer camelCaseErrors;
 public UtilTest(String name) {
 	super(name);
 }
-static {
-//	TESTS_RANGE = new int[] { 62, -1 };
-}
-public static Test suite() {
-	return buildAllCompliancesTestSuite(testClass());
-}
+
 /**
  * Assert that a pattern and a name matches or not.
  * If result is invalid then store warning in buffer and display it.
@@ -167,7 +158,7 @@ public void test17() {
 public void test18() {
 
 	assertTrue("Pattern matching failure",
-		CharOperation.match("main(*)".toCharArray(), "main(java.lang.String[] argv)".toCharArray(), true));
+		CharOperation.match("main(*)".toCharArray(), "main(argv)".toCharArray(), true));
 }
 public void test19() {
 
@@ -339,9 +330,9 @@ public void test42() {
 	assertTrue("Path pattern matching failure-3",
 		checkPathMatch("**/test/**".toCharArray(), "a/test".toCharArray(), true));
 	assertTrue("Path pattern matching failure-4",
-		checkPathMatch("**/test/**".toCharArray(), "test/a.java".toCharArray(), true));
+		checkPathMatch("**/test/**".toCharArray(), "test/a.js".toCharArray(), true));
 	assertTrue("Path pattern matching failure-5",
-		!checkPathMatch("**/test/**".toCharArray(), "org/apache/test.java".toCharArray(), true));
+		!checkPathMatch("**/test/**".toCharArray(), "org/apache/test.js".toCharArray(), true));
 }
 /*
  * Corner cases

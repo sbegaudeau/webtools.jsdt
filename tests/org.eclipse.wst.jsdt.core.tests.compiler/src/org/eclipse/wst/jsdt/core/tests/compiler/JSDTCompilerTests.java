@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,8 @@ import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicParserTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicResolveTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.CharOperationTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
+import org.eclipse.wst.jsdt.core.tests.compiler.regression.UtilTest;
+import org.eclipse.wst.jsdt.core.tests.interpret.BasicInterpretTest;
 
 /**
  * Run all compiler regression tests
@@ -48,9 +50,16 @@ public static Test suite() {
 	standardTests.add(InferTypesTests.class);
 	standardTests.add(BasicResolveTests.class);
 	standardTests.add(CharOperationTest.class);
+	standardTests.add(UtilTest.class);
 	
 	// parser tests
 	standardTests.add(SyntaxErrorTest.class);
+	
+	// interpret tests
+	standardTests.add(BasicInterpretTest.class);
+	
+	
+	
 	
 //	standardTests.addAll(JavadocTest.allTestClasses);
 
