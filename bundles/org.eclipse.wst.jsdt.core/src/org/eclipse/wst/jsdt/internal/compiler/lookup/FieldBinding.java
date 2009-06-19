@@ -116,14 +116,12 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	if (isPrivate()) {
 		// answer true if the receiverType is the declaringClass
 		// AND the invocationType and the declaringClass have a common enclosingType
-		receiverCheck: {
-			if (receiverType != declaringClass) {
-				// special tolerance for type variable direct bounds
-				if (receiverType.isTypeVariable() && ((TypeVariableBinding) receiverType).isErasureBoundTo(declaringClass.erasure()))
-					break receiverCheck;
-				return false;
-			}
+		
+		if (receiverType != declaringClass) {
+			// special tolerance for type variable direct bounds
+			return false;
 		}
+		
 
 		if (invocationType != declaringClass) {
 			ReferenceBinding outerInvocationType = invocationType;

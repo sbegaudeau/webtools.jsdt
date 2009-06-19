@@ -384,7 +384,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 		switch (this.binding.kind()) {
 			case Binding.BASE_TYPE :
 			case Binding.ARRAY_TYPE :
-			case Binding.TYPE_PARAMETER : // includes capture scenario
 				return null;
 		}
 		ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;

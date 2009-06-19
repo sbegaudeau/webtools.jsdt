@@ -47,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocPara
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocTag;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnJavadocTypeParamReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnKeyword;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnLocalName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAccess;
@@ -141,7 +140,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
@@ -1560,7 +1558,7 @@ public final class CompletionEngine
 					}
 				}
 
-			} else if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+			} else if (qualifiedBinding instanceof ReferenceBinding) {
 				boolean isInsideAnnotationAttribute = ref.isInsideAnnotationAttribute;
 				ReferenceBinding receiverType = (ReferenceBinding) qualifiedBinding;
 				setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
@@ -1671,7 +1669,7 @@ public final class CompletionEngine
 			long completionPosition = ref.sourcePositions[ref.tokens.length];
 
 			// get the source positions of the completion identifier
-			if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+			if (qualifiedBinding instanceof ReferenceBinding) {
 				if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
 					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 
@@ -1714,7 +1712,7 @@ public final class CompletionEngine
 			long completionPosition = ref.sourcePositions[ref.tokens.length];
 
 			// get the source positions of the completion identifier
-			if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+			if (qualifiedBinding instanceof ReferenceBinding) {
 				if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
 					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 
@@ -1971,7 +1969,7 @@ public final class CompletionEngine
 					receiverType = ((VariableBinding)qualifiedBinding).type;
 				} else if(qualifiedBinding instanceof MethodBinding) {
 					receiverType = ((MethodBinding)qualifiedBinding).returnType;
-				} else if(qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+				} else if(qualifiedBinding instanceof ReferenceBinding) {
 					onlyStatic = true;
 					receiverType = (TypeBinding)qualifiedBinding;
 				}
@@ -2021,7 +2019,7 @@ public final class CompletionEngine
 				this.javadocTagPosition = typeRef.tagSourceStart;
 
 				// get the source positions of the completion identifier
-				if (qualifiedBinding instanceof ReferenceBinding && !(qualifiedBinding instanceof TypeVariableBinding)) {
+				if (qualifiedBinding instanceof ReferenceBinding) {
 					if (!this.requestor.isIgnored(CompletionProposal.TYPE_REF) ||
 							((this.assistNodeInJavadoc & CompletionOnJavadoc.TEXT) != 0 && !this.requestor.isIgnored(CompletionProposal.JSDOC_TYPE_REF))) {
 						int rangeStart = typeRef.completeInText() ? typeRef.sourceStart : (int) (completionPosition >>> 32);
@@ -2176,13 +2174,6 @@ public final class CompletionEngine
 					CompletionOnJavadocParamNameReference paramRef = (CompletionOnJavadocParamNameReference) astNode;
 					setSourceRange(paramRef.tagSourceStart, paramRef.tagSourceEnd);
 					findJavadocParamNames(paramRef.token, paramRef.missingParams, false);
-					findJavadocParamNames(paramRef.token, paramRef.missingTypeParams, true);
-				}
-			} else if (astNode instanceof CompletionOnJavadocTypeParamReference) {
-				if (!this.requestor.isIgnored(CompletionProposal.JSDOC_PARAM_REF)) {
-					CompletionOnJavadocTypeParamReference paramRef = (CompletionOnJavadocTypeParamReference) astNode;
-					setSourceRange(paramRef.tagSourceStart, paramRef.tagSourceEnd);
-					findJavadocParamNames(paramRef.token, paramRef.missingParams, true);
 				}
 			} else if (astNode instanceof CompletionOnJavadocTag) {
 				CompletionOnJavadocTag javadocTag = (CompletionOnJavadocTag) astNode;
@@ -5109,7 +5100,7 @@ public final class CompletionEngine
 
 			if (method.isDefaultAbstract())	continue next;
 
-			if (method.isConstructor()) continue next;
+			//if (method.isConstructor()) continue next;
 
 			if (this.options.checkDeprecation &&
 					method.isViewedAsDeprecated() &&
@@ -5141,7 +5132,7 @@ public final class CompletionEngine
 				}
 			}
 
-			if (minTypeArgLength != 0 && minTypeArgLength != method.typeVariables.length)
+			if (minTypeArgLength != 0 && minTypeArgLength != 0)
 				continue next;
 
 			if (minArgLength > method.parameters.length)
@@ -6044,11 +6035,6 @@ public final class CompletionEngine
 
 			char[][] parameterNames = findMethodParameterNames(method, parameterFullTypeNames);
 
-			if(method.typeVariables != null && method.typeVariables.length > 0) {
-				char[][] excludedNames = findEnclosingTypeNames(scope);
-				char[][] substituedParameterNames = substituteMethodTypeParameterNames(method.typeVariables, excludedNames);
-			}
-
 			StringBuffer completion = new StringBuffer(10);
 			if (!exactMatch) {
 				createMethod(method, parameterPackageNames, parameterFullTypeNames, parameterNames, completion);
@@ -6092,32 +6078,6 @@ public final class CompletionEngine
 			}
 		}
 		methodsFound.addAll(newMethodsFound);
-	}
-
-	private void createTypeVariable(TypeVariableBinding typeVariable, StringBuffer completion) {
-		completion.append(typeVariable.sourceName);
-
-		if (typeVariable.superclass != null && typeVariable.firstBound == typeVariable.superclass) {
-		    completion.append(' ');
-		    completion.append(EXTENDS);
-		    completion.append(' ');
-		    createType(typeVariable.superclass, completion);
-		}
-		if (typeVariable.superInterfaces != null && typeVariable.superInterfaces != Binding.NO_SUPERINTERFACES) {
-		   if (typeVariable.firstBound != typeVariable.superclass) {
-			   completion.append(' ');
-			   completion.append(EXTENDS);
-			   completion.append(' ');
-		   }
-		   for (int i = 0, length = typeVariable.superInterfaces.length; i < length; i++) {
-			   if (i > 0 || typeVariable.firstBound == typeVariable.superclass) {
-				   completion.append(' ');
-				   completion.append(EXTENDS);
-				   completion.append(' ');
-			   }
-			   createType(typeVariable.superInterfaces[i], completion);
-		   }
-		}
 	}
 
 	private void createType(TypeBinding type, StringBuffer completion) {
@@ -6194,22 +6154,6 @@ public final class CompletionEngine
 		int insertedModifiers = method.modifiers & ~(ClassFileConstants.AccNative | ClassFileConstants.AccAbstract);
 		if(insertedModifiers != ClassFileConstants.AccDefault){
 			ASTNode.printModifiers(insertedModifiers, completion);
-		}
-
-		//// Type parameters
-
-		TypeVariableBinding[] typeVariableBindings = method.typeVariables;
-		if(typeVariableBindings != null && typeVariableBindings.length != 0) {
-			completion.append('<');
-			for (int i = 0; i < typeVariableBindings.length; i++) {
-				if(i != 0) {
-					completion.append(',');
-					completion.append(' ');
-				}
-				createTypeVariable(typeVariableBindings[i], completion);
-			}
-			completion.append('>');
-			completion.append(' ');
 		}
 
 		//// Return type
@@ -8103,13 +8047,6 @@ public final class CompletionEngine
 					if(binaryExpression.left instanceof SingleNameReference){
 						SingleNameReference name = (SingleNameReference) binaryExpression.left;
 						Binding b = scope.getBinding(name.token, Binding.VARIABLE | Binding.TYPE, name, false);
-						if(b instanceof ReferenceBinding) {
-							TypeVariableBinding[] typeVariableBindings =((ReferenceBinding)b).typeVariables();
-							if(typeVariableBindings != null && typeVariableBindings.length > 0) {
-								addExpectedType(typeVariableBindings[0].firstBound, scope);
-							}
-
-						}
 					}
 				}
 			} else if(parent instanceof UnaryExpression) {
@@ -8769,44 +8706,6 @@ public final class CompletionEngine
 
 		printDebugTab(tab, buffer);
 		buffer.append("}\n");//$NON-NLS-1$
-	}
-
-	private char[][] substituteMethodTypeParameterNames(TypeVariableBinding[] typeVariables, char[][] excludedNames) {
-		char[][] substituedParameterNames = new char[typeVariables.length][];
-
-		for (int i = 0; i < substituedParameterNames.length; i++) {
-			substituedParameterNames[i] = typeVariables[i].sourceName;
-		}
-
-		boolean foundConflicts = false;
-
-		nextTypeParameter : for (int i = 0; i < typeVariables.length; i++) {
-			TypeVariableBinding typeVariableBinding = typeVariables[i];
-			char[] methodParameterName = typeVariableBinding.sourceName;
-
-			for (int j = 0; j < excludedNames.length; j++) {
-				char[] typeParameterName = excludedNames[j];
-				if(CharOperation.equals(typeParameterName, methodParameterName, false)) {
-					char[] substitution;
-					if(methodParameterName.length == 1) {
-						if(ScannerHelper.isUpperCase(methodParameterName[0])) {
-							substitution = substituteMethodTypeParameterName(methodParameterName[0], 'A', 'Z', excludedNames, substituedParameterNames);
-						} else {
-							substitution = substituteMethodTypeParameterName(methodParameterName[0], 'a', 'z', excludedNames, substituedParameterNames);
-						}
-					} else {
-						substitution = substituteMethodTypeParameterName(methodParameterName, excludedNames, substituedParameterNames);
-					}
-					substituedParameterNames[i] = substitution;
-
-					foundConflicts = true;
-					continue nextTypeParameter;
-				}
-			}
-		}
-
-		if(foundConflicts) return substituedParameterNames;
-		return null;
 	}
 
 	private char[] substituteMethodTypeParameterName(char firstName, char startChar, char endChar, char[][] excludedNames, char[][] otherParameterNames) {

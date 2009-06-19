@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,11 +52,6 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 
 	public FieldBinding[] fields() {
 		return functionTypeBinding.fields();
-	}
-
-
-	public char[] genericSignature() {
-		return functionTypeBinding.genericSignature();
 	}
 
 
@@ -143,12 +138,6 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 	public String toString() {
 		return functionTypeBinding.toString();
 	}
-
-
-	public TypeVariableBinding[] typeVariables() {
-		return functionTypeBinding.typeVariables();
-	}
-
 
 	void verifyMethods(MethodVerifier verifier) {
 		functionTypeBinding.verifyMethods(verifier);

@@ -15,13 +15,11 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 /**
  * Node representing a Javadoc comment including code selection.
@@ -55,8 +53,6 @@ public class CompletionJavadoc extends Javadoc {
 				boolean resolve = true;
 				if (this.completionNode instanceof CompletionOnJavadocParamNameReference) {
 					resolve = ((CompletionOnJavadocParamNameReference)this.completionNode).token != null;
-				} else if (this.completionNode instanceof CompletionOnJavadocTypeParamReference) {
-					resolve = ((CompletionOnJavadocTypeParamReference)this.completionNode).token != null;
 				}
 				if (resolve) {
 					switch (scope.kind) {
@@ -73,12 +69,6 @@ public class CompletionJavadoc extends Javadoc {
 					if (scope.kind == Scope.METHOD_SCOPE) {
 						paramNameReference.missingParams = missingParamTags(paramNameReference.binding, (MethodScope)scope);
 					}
-					if (paramNameReference.token == null || paramNameReference.token.length == 0) {
-						paramNameReference.missingTypeParams = missingTypeParameterTags(paramNameReference.binding, scope);
-					}
-				} else if (this.completionNode instanceof CompletionOnJavadocTypeParamReference) {
-					CompletionOnJavadocTypeParamReference typeParamReference = (CompletionOnJavadocTypeParamReference) this.completionNode;
-					typeParamReference.missingParams = missingTypeParameterTags(typeParamReference.resolvedType, scope);
 				}
 			}
 			Binding qualifiedBinding = null;
@@ -235,30 +225,6 @@ public class CompletionJavadoc extends Javadoc {
 			}
 			return missingParams;
 		}
-		return null;
-	}
-
-	/*
-	 * Look for missing type parameters @param tags
-	 */
-	private char[][] missingTypeParameterTags(Binding paramNameRefBinding, Scope scope) {
-		int paramTypeParamLength = this.paramTypeParameters == null ? 0 : this.paramTypeParameters.length;
-
-		// Verify if there's any type parameter to tag
-		TypeVariableBinding[] typeVariables = null;
-		switch (scope.kind) {
-			case Scope.METHOD_SCOPE:
-				AbstractMethodDeclaration methodDeclaration = ((MethodScope)scope).referenceMethod();
-				if (methodDeclaration == null) return null;
-				typeVariables = methodDeclaration.binding.typeVariables;
-				break;
-			case Scope.CLASS_SCOPE:
-				TypeDeclaration typeDeclaration = ((ClassScope) scope).referenceContext;
-				typeVariables = typeDeclaration.binding.typeVariables;
-				break;
-		}
-		if (typeVariables == null || typeVariables.length == 0) return null;
-
 		return null;
 	}
 }

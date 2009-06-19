@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -88,32 +87,6 @@ class TypeBinding implements ITypeBinding {
 	public String getBinaryName() {
 		if (this.binding.isCapture()) {
 			return null; // no binary name for capture binding
-		} else if (this.binding.isTypeVariable()) {
-			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			org.eclipse.wst.jsdt.internal.compiler.lookup.Binding declaring = typeVariableBinding.declaringElement;
-			StringBuffer binaryName = new StringBuffer();
-			switch(declaring.kind()) {
-				case org.eclipse.wst.jsdt.internal.compiler.lookup.Binding.METHOD :
-					MethodBinding methodBinding = (MethodBinding) declaring;
-					char[] constantPoolName = methodBinding.declaringClass.constantPoolName();
-					if (constantPoolName == null) return null;
-					binaryName
-						.append(CharOperation.replaceOnCopy(constantPoolName, '/', '.'))
-						.append('$')
-						.append(methodBinding.signature())
-						.append('$')
-						.append(typeVariableBinding.sourceName);
-					break;
-				default :
-					org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding typeBinding = (org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) declaring;
-					constantPoolName = typeBinding.constantPoolName();
-					if (constantPoolName == null) return null;
-					binaryName
-						.append(CharOperation.replaceOnCopy(constantPoolName, '/', '.'))
-						.append('$')
-						.append(typeVariableBinding.sourceName);
-			}
-			return String.valueOf(binaryName);
 		}
  		char[] constantPoolName = this.binding.constantPoolName();
 		if (constantPoolName == null) return null;
@@ -309,21 +282,6 @@ class TypeBinding implements ITypeBinding {
 					org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "Could not retrieve declaring method"); //$NON-NLS-1$
 				}
 			}
-		} else if (this.binding.isTypeVariable()) {
-			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			Binding declaringElement = typeVariableBinding.declaringElement;
-			if (declaringElement instanceof MethodBinding) {
-				try {
-					return this.resolver.getMethodBinding((MethodBinding)declaringElement);
-				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the includepath
-					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
-					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
-					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
-					 */
-					org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "Could not retrieve declaring method"); //$NON-NLS-1$
-				}
-			}
 		}
 		return null;
 	}
@@ -337,21 +295,6 @@ class TypeBinding implements ITypeBinding {
 			if (referenceBinding.isNestedType()) {
 				try {
 					return this.resolver.getTypeBinding(referenceBinding.enclosingType());
-				} catch (RuntimeException e) {
-					/* in case a method cannot be resolvable due to missing jars on the includepath
-					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
-					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=63550
-					 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=64299
-					 */
-					org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "Could not retrieve declaring class"); //$NON-NLS-1$
-				}
-			}
-		} else if (this.binding.isTypeVariable()) {
-			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			Binding declaringElement = typeVariableBinding.declaringElement;
-			if (declaringElement instanceof ReferenceBinding) {
-				try {
-					return this.resolver.getTypeBinding((ReferenceBinding)declaringElement);
 				} catch (RuntimeException e) {
 					/* in case a method cannot be resolvable due to missing jars on the includepath
 					 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871
@@ -427,7 +370,7 @@ class TypeBinding implements ITypeBinding {
 					return null;
 		}
 		ReferenceBinding referenceBinding;
-		if (typeBinding.isParameterizedType() || typeBinding.isRawType())
+		if (typeBinding.isParameterizedType())
 			referenceBinding = (ReferenceBinding) typeBinding.erasure();
 		else
 			referenceBinding = (ReferenceBinding) typeBinding;
@@ -462,17 +405,6 @@ class TypeBinding implements ITypeBinding {
 				return (JavaElement) cu.getElementAt(sourceStart);
 			} catch (JavaScriptModelException e) {
 				// does not exist
-				return null;
-			}
-		} else if (referenceBinding.isTypeVariable()) {
-			// type parameter
-			Binding declaringElement = ((TypeVariableBinding) referenceBinding).declaringElement;
-			if (declaringElement instanceof MethodBinding) {
-				this.resolver.getMethodBinding((MethodBinding) declaringElement);
-				return null;
-			} else {
-				ITypeBinding typeBinding2 = this.resolver.getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) declaringElement);
-				if (typeBinding2 == null) return null;
 				return null;
 			}
 		} else {
@@ -540,19 +472,6 @@ class TypeBinding implements ITypeBinding {
 		StringBuffer buffer;
 		switch (this.binding.kind()) {
 
-			case Binding.TYPE_PARAMETER :
-				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-				return new String(typeVariableBinding.sourceName);
-
-			case Binding.PARAMETERIZED_TYPE :
-				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) this.binding;
-				buffer = new StringBuffer();
-				buffer.append(parameterizedTypeBinding.sourceName());
-				return String.valueOf(buffer);
-
-			case Binding.RAW_TYPE :
-				return getTypeDeclaration().getName();
-
 			case Binding.ARRAY_TYPE :
 				ITypeBinding elementType = getElementType();
 				if (elementType.isLocal() || elementType.isAnonymous()) {
@@ -587,7 +506,6 @@ class TypeBinding implements ITypeBinding {
 		switch (this.binding.kind()) {
 			case Binding.BASE_TYPE :
 			case Binding.ARRAY_TYPE :
-			case Binding.TYPE_PARAMETER : // includes capture scenario
 				return null;
 		}
 		ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
@@ -638,9 +556,6 @@ class TypeBinding implements ITypeBinding {
 		StringBuffer buffer;
 		switch (this.binding.kind()) {
 
-			case Binding.RAW_TYPE :
-				return getTypeDeclaration().getQualifiedName();
-
 			case Binding.ARRAY_TYPE :
 				ITypeBinding elementType = getElementType();
 				if (elementType.isLocal() || elementType.isAnonymous()) {
@@ -654,23 +569,6 @@ class TypeBinding implements ITypeBinding {
 				}
 				buffer = new StringBuffer(elementType.getQualifiedName());
 				buffer.append(brackets);
-				return String.valueOf(buffer);
-
-			case Binding.TYPE_PARAMETER :
-				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-				return new String(typeVariableBinding.sourceName);
-
-			case Binding.PARAMETERIZED_TYPE :
-				buffer = new StringBuffer();
-				if (isMember()) {
-					buffer
-						.append(getDeclaringClass().getQualifiedName())
-						.append('.');
-					ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) this.binding;
-					buffer.append(parameterizedTypeBinding.sourceName());
-					return String.valueOf(buffer);
-				}
-				buffer.append(getTypeDeclaration().getQualifiedName());
 				return String.valueOf(buffer);
 
 			default :
@@ -847,25 +745,6 @@ class TypeBinding implements ITypeBinding {
 			} else {
 				return !referenceBinding.isBinaryBinding();
 			}
-		} else if (isTypeVariable()) {
-			final TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this.binding;
-			final Binding declaringElement = typeVariableBinding.declaringElement;
-			if (declaringElement instanceof MethodBinding) {
-				MethodBinding methodBinding = (MethodBinding) declaringElement;
-				return !methodBinding.declaringClass.isBinaryBinding();
-			} else {
-				final org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding typeBinding = (org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) declaringElement;
-				if (typeBinding instanceof ReferenceBinding) {
-					return !((ReferenceBinding) typeBinding).isBinaryBinding();
-				} else if (typeBinding instanceof ArrayBinding) {
-					final ArrayBinding arrayBinding = (ArrayBinding) typeBinding;
-					final org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding leafComponentType = arrayBinding.leafComponentType;
-					if (leafComponentType instanceof ReferenceBinding) {
-						return !((ReferenceBinding) leafComponentType).isBinaryBinding();
-					}
-				}
-			}
-
 		}
 		return false;
 	}
@@ -915,13 +794,6 @@ class TypeBinding implements ITypeBinding {
 	 */
 	public boolean isPrimitive() {
 		return !isNullType() && binding.isBaseType();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isRawType()
-	 */
-	public boolean isRawType() {
-		return this.binding.isRawType();
 	}
 
 	/* (non-Javadoc)

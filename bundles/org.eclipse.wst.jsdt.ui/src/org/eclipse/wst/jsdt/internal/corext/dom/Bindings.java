@@ -581,8 +581,6 @@ public class Bindings {
 			return true;
 		for (int i= 0; i < m1Params.length; i++) {
 			ITypeBinding m1Param= m1Params[i];
-			if (m1Param.isRawType())
-				m1Param= m1Param.getTypeDeclaration();
 			if (! (equals(m1Param, m2Params[i].getErasure()))) // can erase m2
 				return false;
 		}

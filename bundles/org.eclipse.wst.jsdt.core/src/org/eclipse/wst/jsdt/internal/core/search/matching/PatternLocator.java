@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public abstract class PatternLocator implements IIndexConstants {
@@ -468,56 +467,6 @@ public int resolveLevel(ASTNode possibleMatchingNode) {
 	return IMPOSSIBLE_MATCH;
 }
 /*
- * Update pattern locator match for parameterized top level types.
- * Set match raw flag and recurse to enclosing types if any...
- */
-protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[][][] patternTypeArguments, MatchLocator locator) {
-	// Only possible if locator has an unit scope.
-	if (locator.unitScope != null) {
-		updateMatch(parameterizedBinding, patternTypeArguments, false, 0, locator);
-	}
-}
-protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[][][] patternTypeArguments, boolean patternHasTypeParameters, int depth, MatchLocator locator) {
-	// Only possible if locator has an unit scope.
-	if (locator.unitScope == null) return;
-
-	// Set match raw flag
-	boolean endPattern = patternTypeArguments==null  ? true  : depth>=patternTypeArguments.length;
-	TypeBinding[] argumentsBindings = parameterizedBinding.arguments;
-	boolean isRaw = parameterizedBinding.isRawType()|| (argumentsBindings==null && parameterizedBinding.genericType().isGenericType());
-	if (isRaw && !match.isRaw()) {
-		match.setRaw(isRaw);
-	}
-
-	// Update match
-	if (!endPattern && patternTypeArguments != null) {
-		// verify if this is a reference to the generic type itself
-		if (!isRaw && patternHasTypeParameters && argumentsBindings != null) {
-			boolean needUpdate = false;
-			TypeVariableBinding[] typeVariables = parameterizedBinding.genericType().typeVariables();
-			for (int i=0, l=argumentsBindings.length; i<l; i++) {
-				if (argumentsBindings[i] != typeVariables[i]) {
-					needUpdate = true;
-					break;
-				}
-			}
-			if (needUpdate) {
-				char[][] patternArguments =  patternTypeArguments[depth];
-				updateMatch(argumentsBindings, locator, patternArguments, patternHasTypeParameters);
-			}
-		} else {
-			char[][] patternArguments =  patternTypeArguments[depth];
-			updateMatch(argumentsBindings, locator, patternArguments, patternHasTypeParameters);
-		}
-	}
-
-	// Recurse
-	TypeBinding enclosingType = parameterizedBinding.enclosingType();
-	if (enclosingType != null && (enclosingType.isParameterizedType() || enclosingType.isRawType())) {
-		updateMatch((ParameterizedTypeBinding)enclosingType, patternTypeArguments, patternHasTypeParameters, depth+1, locator);
-	}
-}
-/*
  * Update pattern locator match comparing type arguments with pattern ones.
  * Try to resolve pattern and look for compatibility with type arguments
  * to set match rule.
@@ -727,23 +676,14 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 	// pattern has type parameter(s) or type argument(s)
 	if (type.isGenericType()) {
 		// Binding is generic, get its type variable(s)
-		TypeVariableBinding[] typeVariables = null;
 		if (type instanceof SourceTypeBinding) {
 			SourceTypeBinding sourceTypeBinding = (SourceTypeBinding) type;
-			typeVariables = sourceTypeBinding.typeVariables;
 		} else if (type instanceof BinaryTypeBinding) {
 			BinaryTypeBinding binaryTypeBinding = (BinaryTypeBinding) type;
-			if (this.mustResolve)
-				typeVariables = binaryTypeBinding.typeVariables(); // TODO (frederic) verify performance
 		}
-		if (patternTypeArguments[depth] != null && patternTypeArguments[depth].length > 0 &&
-			typeVariables != null && typeVariables.length > 0) {
-			if (typeVariables.length != patternTypeArguments[depth].length) return IMPOSSIBLE_MATCH;
-		}
+		
 		// TODO (frederic) do we need to verify each parameter?
 		return level; // we can't do better
-	} else if (type.isRawType()) {
-		return level; // raw type always match
 	} else {
 		TypeBinding leafType = type.leafComponentType();
 		if (!leafType.isParameterizedType()) {

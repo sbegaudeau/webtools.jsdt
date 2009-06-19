@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 20067 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,8 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -221,57 +219,8 @@ public class ForeachStatement extends Statement implements IForeachStatement {
 	   					this.collection.computeConversion(scope, collectionType, collectionType);
 					}
 
-			    	TypeBinding[] arguments = null;
-			    	switch (iterableType.kind()) {
-			    		case Binding.RAW_TYPE : // for(Object o : Iterable)
-							this.kind = RAW_ITERABLE;
-							this.collectionElementType = scope.getJavaLangObject();
-							if (!collectionElementType.isCompatibleWith(elementType)
-									&& !scope.isBoxingCompatibleWith(collectionElementType, elementType)) {
-								scope.problemReporter().notCompatibleTypesErrorInForeach(collection, collectionElementType, elementType);
-							}
-							// no conversion needed as only for reference types
-			    			break checkIterable;
-
-			    		case Binding.GENERIC_TYPE : // for (T t : Iterable<T>) - in case used inside Iterable itself
-			    			arguments = iterableType.typeVariables();
-			    			break;
-
-			    		case Binding.PARAMETERIZED_TYPE : // for(E e : Iterable<E>)
-			    			arguments = ((ParameterizedTypeBinding)iterableType).arguments;
-			    			break;
-
-			    		default:
-			    			break checkIterable;
-			    	}
-			    	// generic or parameterized case
-					if (arguments.length != 1) break checkIterable; // per construction can only be one
-					this.kind = GENERIC_ITERABLE;
-
-					this.collectionElementType = arguments[0];
-					if (!collectionElementType.isCompatibleWith(elementType)
-							&& !scope.isBoxingCompatibleWith(collectionElementType, elementType)) {
-						scope.problemReporter().notCompatibleTypesErrorInForeach(collection, collectionElementType, elementType);
-					}
-					int compileTimeTypeID = collectionElementType.id;
-					// no conversion needed as only for reference types
-					if (elementType.isBaseType()) {
-						if (!collectionElementType.isBaseType()) {
-							compileTimeTypeID = scope.environment().computeBoxingType(collectionElementType).id;
-							this.elementVariableImplicitWidening = UNBOXING;
-							if (elementType.isBaseType()) {
-								this.elementVariableImplicitWidening |= (elementType.id << 4) + compileTimeTypeID;
-							}
-						} else {
-							this.elementVariableImplicitWidening = (elementType.id << 4) + compileTimeTypeID;
-						}
-					} else {
-						if (collectionElementType.isBaseType()) {
-							int boxedID = scope.environment().computeBoxingType(collectionElementType).id;
-							this.elementVariableImplicitWidening = BOXING | (compileTimeTypeID << 4) | compileTimeTypeID; // use primitive type in implicit conversion
-							compileTimeTypeID = boxedID;
-						}
-					}
+			    	
+			    	break checkIterable;
 			    }
 			}
 			switch(this.kind) {

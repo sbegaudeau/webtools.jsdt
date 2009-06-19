@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,19 +135,6 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 	} else {
 		readableName = this.sourceName;
 	}
-	TypeVariableBinding[] typeVars;
-	if ((typeVars = this.typeVariables()) != Binding.NO_TYPE_VARIABLES) {
-	    StringBuffer nameBuffer = new StringBuffer(10);
-	    nameBuffer.append(readableName).append('<');
-	    for (int i = 0, length = typeVars.length; i < length; i++) {
-	        if (i > 0) nameBuffer.append(',');
-	        nameBuffer.append(typeVars[i].readableName());
-	    }
-	    nameBuffer.append('>');
-	    int nameLength = nameBuffer.length();
-		readableName = new char[nameLength];
-		nameBuffer.getChars(0, nameLength, readableName, 0);
-	}
 	return readableName;
 }
 
@@ -162,19 +149,6 @@ public char[] shortReadableName() /*Object*/ {
 		shortReadableName = CharOperation.concat(enclosingType().shortReadableName(), sourceName, '.');
 	} else {
 		shortReadableName = sourceName;
-	}
-	TypeVariableBinding[] typeVars;
-	if ((typeVars = this.typeVariables()) != Binding.NO_TYPE_VARIABLES) {
-	    StringBuffer nameBuffer = new StringBuffer(10);
-	    nameBuffer.append(shortReadableName).append('<');
-	    for (int i = 0, length = typeVars.length; i < length; i++) {
-	        if (i > 0) nameBuffer.append(',');
-	        nameBuffer.append(typeVars[i].shortReadableName());
-	    }
-	    nameBuffer.append('>');
-		int nameLength = nameBuffer.length();
-		shortReadableName = new char[nameLength];
-		nameBuffer.getChars(0, nameLength, shortReadableName, 0);
 	}
 	return shortReadableName;
 }

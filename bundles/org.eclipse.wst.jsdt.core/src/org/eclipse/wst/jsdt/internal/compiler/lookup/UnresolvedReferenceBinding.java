@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,9 +53,6 @@ ReferenceBinding resolve(LookupEnvironment environment, boolean convertGenericTo
 		}
 		setResolvedType(targetType, environment);
 	}
-	if (convertGenericToRawType) {
-		targetType = (ReferenceBinding) environment.convertUnresolvedBinaryToRawType(targetType);
-	}
 	return targetType;
 }
 void setResolvedType(ReferenceBinding targetType, LookupEnvironment environment) {
@@ -68,7 +65,6 @@ void setResolvedType(ReferenceBinding targetType, LookupEnvironment environment)
 	if (this.wrappers != null)
 		for (int i = 0, l = this.wrappers.length; i < l; i++)
 			this.wrappers[i].swapUnresolved(this, targetType, environment);
-	environment.updateCaches(this, targetType);
 }
 public String toString() {
 	return "Unresolved type " + ((compoundName != null) ? CharOperation.toString(compoundName) : "UNNAMED"); //$NON-NLS-1$ //$NON-NLS-2$

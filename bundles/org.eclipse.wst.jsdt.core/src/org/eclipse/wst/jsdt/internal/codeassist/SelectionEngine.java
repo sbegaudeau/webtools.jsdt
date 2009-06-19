@@ -65,7 +65,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
@@ -955,47 +954,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	}
 
 	private void selectFrom(Binding binding, CompilationUnitDeclaration parsedUnit, boolean isDeclaration) {
-		if(binding instanceof TypeVariableBinding) {
-			TypeVariableBinding typeVariableBinding = (TypeVariableBinding) binding;
-			Binding enclosingElement = typeVariableBinding.declaringElement;
-			this.noProposal = false;
-
-			if(enclosingElement instanceof SourceTypeBinding) {
-				SourceTypeBinding enclosingType = (SourceTypeBinding) enclosingElement;
-				if (isLocal(enclosingType) && this.requestor instanceof SelectionRequestor) {
-					((SelectionRequestor)this.requestor).acceptLocalTypeParameter(typeVariableBinding);
-				} else {
-					this.requestor.acceptTypeParameter(
-						enclosingType.qualifiedPackageName(),
-						enclosingType.getFileName(),
-						enclosingType.qualifiedSourceName(),
-						typeVariableBinding.sourceName(),
-						false,
-						this.actualSelectionStart,
-						this.actualSelectionEnd);
-				}
-			} else if(enclosingElement instanceof MethodBinding) {
-				MethodBinding enclosingMethod = (MethodBinding) enclosingElement;
-				if (isLocal(enclosingMethod.declaringClass) && this.requestor instanceof SelectionRequestor) {
-					//((SelectionRequestor)this.requestor).acceptLocalMethodTypeParameter(typeVariableBinding);
-				} else {
-					this.requestor.acceptMethodTypeParameter(
-						enclosingMethod.declaringClass.qualifiedPackageName(),
-						enclosingMethod.declaringClass.getFileName(),
-						enclosingMethod.declaringClass.qualifiedSourceName(),
-						enclosingMethod.isConstructor()
-								? enclosingMethod.declaringClass.sourceName()
-								: enclosingMethod.selector,
-						enclosingMethod.sourceStart(),
-						enclosingMethod.sourceEnd(),
-						typeVariableBinding.sourceName(),
-						false,
-						this.actualSelectionStart,
-						this.actualSelectionEnd);
-				}
-			}
-			this.acceptedAnswer = true;
-		} else if (binding instanceof ReferenceBinding) {
+		if (binding instanceof ReferenceBinding) {
 			ReferenceBinding typeBinding = (ReferenceBinding) binding;
 			if(typeBinding instanceof ProblemReferenceBinding) {
 				typeBinding = typeBinding.closestMatch();
@@ -1044,30 +1003,8 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						parameterSignatures[i] = new String(getSignature(parameterTypes[i])).replace('/', '.');
 					}
 
-					TypeVariableBinding[] typeVariables = methodBinding.original().typeVariables;
-					length = typeVariables == null ? 0 : typeVariables.length;
 					char[][] typeParameterNames = new char[length][];
 					char[][][] typeParameterBoundNames = new char[length][][];
-					for (int i = 0; i < length; i++) {
-						TypeVariableBinding typeVariable = typeVariables[i];
-						typeParameterNames[i] = typeVariable.sourceName;
-						if (typeVariable.firstBound == null) {
-							typeParameterBoundNames[i] = new char[0][];
-						} else if (typeVariable.firstBound == typeVariable.superclass) {
-							int boundCount = 1 + (typeVariable.superInterfaces == null ? 0 : typeVariable.superInterfaces.length);
-							typeParameterBoundNames[i] = new char[boundCount][];
-							typeParameterBoundNames[i][0] = typeVariable.superclass.sourceName;
-							for (int j = 1; j < boundCount; j++) {
-								typeParameterBoundNames[i][j] = typeVariables[i].superInterfaces[j - 1].sourceName;
-							}
-						} else {
-							int boundCount = typeVariable.superInterfaces == null ? 0 : typeVariable.superInterfaces.length;
-							typeParameterBoundNames[i] = new char[boundCount][];
-							for (int j = 0; j < boundCount; j++) {
-								typeParameterBoundNames[i][j] = typeVariables[i].superInterfaces[j].sourceName;
-							}
-						}
-					}
 
 					ReferenceBinding declaringClass = methodBinding.declaringClass;
 					if (	( ( methodBinding instanceof LocalFunctionBinding || isLocal(declaringClass))

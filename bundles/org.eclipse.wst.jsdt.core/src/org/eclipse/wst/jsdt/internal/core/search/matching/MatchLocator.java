@@ -100,7 +100,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
@@ -931,13 +930,9 @@ public MethodBinding getMethodBinding(MethodPattern methodPattern) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) declaringTypeBinding;
 			MethodBinding[] methods = referenceBinding.getMethods(methodPattern.selector);
 			int methodsLength = methods.length;
-			TypeVariableBinding[] refTypeVariables = referenceBinding.typeVariables();
-			int typeVarLength = refTypeVariables==null ? 0 : refTypeVariables.length;
 			for (int i=0; i<methodsLength; i++) {
 				TypeBinding[] methodParameters = methods[i].parameters;
 				int paramLength = methodParameters==null ? 0 : methodParameters.length;
-				TypeVariableBinding[] methodTypeVariables = methods[i].typeVariables;
-				int methTypeVarLength = methodTypeVariables==null ? 0 : methodTypeVariables.length;
 				boolean found = false;
 				if (methodParameters != null && paramLength == paramTypeslength) {
 					for (int p=0; p<paramLength; p++) {
@@ -947,24 +942,6 @@ public MethodBinding getMethodBinding(MethodPattern methodPattern) {
 						} else {
 							// type variable
 							found = false;
-							if (refTypeVariables != null) {
-								for (int v=0; v<typeVarLength; v++) {
-									if (!CharOperation.equals(refTypeVariables[v].sourceName, parameterTypes[p])) {
-										found = false;
-										break;
-									}
-									found = true;
-								}
-							}
-							if (!found && methodTypeVariables != null) {
-								for (int v=0; v<methTypeVarLength; v++) {
-									if (!CharOperation.equals(methodTypeVariables[v].sourceName, parameterTypes[p])) {
-										found = false;
-										break;
-									}
-									found = true;
-								}
-							}
 							if (!found) break;
 						}
 					}

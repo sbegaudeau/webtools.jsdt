@@ -41,7 +41,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -997,9 +996,7 @@ public void resolve(BlockScope blockScope) {
 				&& existing != this.binding
 				&& existing.isValidBinding()) {
 			ReferenceBinding existingType = (ReferenceBinding) existing;
-			if (existingType instanceof TypeVariableBinding) {
-				blockScope.problemReporter().typeHiding(this, (TypeVariableBinding) existingType);
-			} else if (existingType instanceof LocalTypeBinding
+			if (existingType instanceof LocalTypeBinding
 						&& ((LocalTypeBinding) existingType).scope.methodScope() == blockScope.methodScope()) {
 					// dup in same method
 					blockScope.problemReporter().duplicateNestedType(this);

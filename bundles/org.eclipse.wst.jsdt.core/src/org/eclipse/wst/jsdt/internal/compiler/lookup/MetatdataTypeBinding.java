@@ -590,9 +590,6 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 	if (otherType == null) return false;
 	return false;
 }
-public boolean isGenericType() {
-    return this.typeVariables != Binding.NO_TYPE_VARIABLES;
-}
 public ReferenceBinding[] memberTypes() {
 	if (this.nextType==null)
 		return this.memberTypes;
@@ -671,14 +668,10 @@ public MethodBinding[] methods() {
 						if (pLength != params2.length)
 							continue nextSibling;
 
-						TypeVariableBinding[] vars = method.typeVariables;
-						TypeVariableBinding[] vars2 = method2.typeVariables;
-						boolean equalTypeVars = vars == vars2;
+						boolean equalTypeVars = true;
 						MethodBinding subMethod = method2;
 						if (!equalTypeVars) {
-							MethodBinding temp = method
-									.computeSubstitutedMethod(method2,
-											this.libraryScope.environment());
+							MethodBinding temp = method2;
 							if (temp != null) {
 								equalTypeVars = true;
 								subMethod = temp;
@@ -693,26 +686,12 @@ public MethodBinding[] methods() {
 								&& (equalParams || method
 										.areParameterErasuresEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
-						} else if (!equalTypeVars
-								&& vars != Binding.NO_TYPE_VARIABLES
-								&& vars2 != Binding.NO_TYPE_VARIABLES) {
-							// type variables are different so we can distinguish between methods
-							continue nextSibling;
 						} else if (pLength > 0) {
 							// check to see if the erasure of either method is equal to the other
 							int index = pLength;
 							for (; --index >= 0;) {
 								if (params1[index] != params2[index].erasure())
 									break;
-								if (params1[index] == params2[index]) {
-									TypeBinding type = params1[index]
-											.leafComponentType();
-									if (type instanceof MetatdataTypeBinding
-											&& type.typeVariables() != Binding.NO_TYPE_VARIABLES) {
-										index = pLength; // handle comparing identical source types like X<T>... its erasure is itself BUT we need to answer false
-										break;
-									}
-								}
 							}
 							if (index >= 0 && index < pLength) {
 								for (index = pLength; --index >= 0;)
@@ -947,17 +926,6 @@ public String toString() {
 	else buffer.append("interface "); //$NON-NLS-1$
 	buffer.append((this.compoundName != null) ? CharOperation.toString(this.compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 
-	if (this.typeVariables == null) {
-		buffer.append("<NULL TYPE VARIABLES>"); //$NON-NLS-1$
-	} else if (this.typeVariables != Binding.NO_TYPE_VARIABLES) {
-		buffer.append("\n\t<"); //$NON-NLS-1$
-		for (int i = 0, length = this.typeVariables.length; i < length; i++) {
-			if (i  > 0)
-				buffer.append(", "); //$NON-NLS-1$
-			buffer.append((this.typeVariables[i] != null) ? this.typeVariables[i].toString() : "NULL TYPE VARIABLE"); //$NON-NLS-1$
-		}
-		buffer.append(">"); //$NON-NLS-1$
-	}
 	buffer.append("\n\textends "); //$NON-NLS-1$
 	buffer.append((this.superclass != null) ? this.superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
 
@@ -1011,9 +979,6 @@ public String toString() {
 
 	buffer.append("\n\n"); //$NON-NLS-1$
 	return buffer.toString();
-}
-public TypeVariableBinding[] typeVariables() {
-	return this.typeVariables;
 }
 void verifyMethods(MethodVerifier verifier) {
 	verifier.verify(this);

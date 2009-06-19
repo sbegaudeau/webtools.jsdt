@@ -908,7 +908,7 @@ public class ASTResolving {
 		if (type.isAnonymous()) {
 			return false;
 		}
-		if (type.isRawType() || type.isPrimitive()) {
+		if (type.isPrimitive()) {
 			return true;
 		}
 		if (type.isTypeVariable()) {

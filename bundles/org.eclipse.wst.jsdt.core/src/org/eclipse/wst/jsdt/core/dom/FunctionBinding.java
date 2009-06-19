@@ -322,7 +322,7 @@ class FunctionBinding implements IFunctionBinding {
 			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding other = ((FunctionBinding) otherMethod).binding;
 			if (!CharOperation.equals(this.binding.selector, other.selector))
 				return false;
-			return this.binding.areParameterErasuresEqual(other) && this.binding.areTypeVariableErasuresEqual(other);
+			return this.binding.areParameterErasuresEqual(other);
 		} catch (AbortCompilation e) {
 			// don't surface internal exception to clients
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=143013

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import java.util.ArrayList;
-
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -46,7 +44,6 @@ public class BinaryTypeBinding extends ReferenceBinding {
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
 	protected ReferenceBinding[] memberTypes;
-	protected TypeVariableBinding[] typeVariables;
 
 	// For the link with the principle structure
 	protected LookupEnvironment environment;
@@ -81,27 +78,13 @@ public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironm
 			return ((ParameterizedTypeBinding) type).resolve();
 	}
 
-	if (convertGenericToRawType) // raw reference to generic ?
-		return (ReferenceBinding) environment.convertUnresolvedBinaryToRawType(type);
 	return type;
 }
 public static TypeBinding resolveType(TypeBinding type, LookupEnvironment environment, ParameterizedTypeBinding parameterizedType, int rank) {
 	switch (type.kind()) {
 
-		case Binding.PARAMETERIZED_TYPE :
-			return ((ParameterizedTypeBinding) type).resolve();
-
 		case Binding.ARRAY_TYPE :
 			resolveType(((ArrayBinding) type).leafComponentType, environment, parameterizedType, rank);
-			break;
-
-		case Binding.TYPE_PARAMETER :
-			((TypeVariableBinding) type).resolve(environment);
-			break;
-
-		case Binding.GENERIC_TYPE :
-			if (parameterizedType == null) // raw reference to generic ?
-				return environment.convertUnresolvedBinaryToRawType(type);
 			break;
 
 		default:
@@ -217,7 +200,6 @@ public MethodBinding[] availableMethods() {
 void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 	// default initialization for super-interfaces early, in case some aborting compilation error occurs,
 	// and still want to use binaries passed that point (e.g. type hierarchy resolver, see bug 63748).
-	this.typeVariables = Binding.NO_TYPE_VARIABLES;
 	this.superInterfaces = Binding.NO_SUPERINTERFACES;
 
 	// must retrieve member types in case superclass/interfaces need them
@@ -266,14 +248,13 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 		if (wrapper.signature[wrapper.start] == '<') {
 			// ParameterPart = '<' ParameterSignature(s) '>'
 			wrapper.start++; // skip '<'
-			this.typeVariables = createTypeVariables(wrapper, true);
 			wrapper.start++; // skip '>'
 			this.tagBits |=  TagBits.HasUnresolvedTypeVariables;
 			this.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 		}
 
 		// attempt to find the superclass if it exists in the cache (otherwise - resolve it when requested)
-		this.superclass = (ReferenceBinding) environment.getTypeFromTypeSignature(wrapper, Binding.NO_TYPE_VARIABLES, this);
+		this.superclass = (ReferenceBinding) environment.getTypeFromTypeSignature(wrapper, this);
 		this.tagBits |= TagBits.HasUnresolvedSuperclass;
 
 		this.superInterfaces = Binding.NO_SUPERINTERFACES;
@@ -281,7 +262,7 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 			// attempt to find each superinterface if it exists in the cache (otherwise - resolve it when requested)
 			java.util.ArrayList types = new java.util.ArrayList(2);
 			do {
-				types.add(environment.getTypeFromTypeSignature(wrapper, Binding.NO_TYPE_VARIABLES, this));
+				types.add(environment.getTypeFromTypeSignature(wrapper, this));
 			} while (!wrapper.atEnd());
 			this.superInterfaces = new ReferenceBinding[types.size()];
 			types.toArray(this.superInterfaces);
@@ -314,7 +295,7 @@ private void createFields(ISourceField[] iFields, long sourceLevel) {
 				char[] fieldSignature = null;//use15specifics ? binaryField.getGenericSignature() : null;
 				TypeBinding type = fieldSignature == null
 					? environment.getTypeFromSignature(binaryField.getTypeName(), 0, -1, false, this)
-					: environment.getTypeFromTypeSignature(new SignatureWrapper(fieldSignature), Binding.NO_TYPE_VARIABLES, this);
+					: environment.getTypeFromTypeSignature(new SignatureWrapper(fieldSignature), this);
 				FieldBinding field =
 					new FieldBinding(
 //						binaryField.getName(),
@@ -544,50 +525,6 @@ private void createMethods(ISourceMethod[] iMethods, long sourceLevel) {
 		}
 	}
 }
-private TypeVariableBinding[] createTypeVariables(SignatureWrapper wrapper, boolean assignVariables) {
-	// detect all type variables first
-	char[] typeSignature = wrapper.signature;
-	int depth = 0, length = typeSignature.length;
-	int rank = 0;
-	ArrayList variables = new ArrayList(1);
-	depth = 0;
-	boolean pendingVariable = true;
-	createVariables: {
-		for (int i = 1; i < length; i++) {
-			switch(typeSignature[i]) {
-				case '<' :
-					depth++;
-					break;
-				case '>' :
-					if (--depth < 0)
-						break createVariables;
-					break;
-				case ';' :
-					if ((depth == 0) && (i +1 < length) && (typeSignature[i+1] != ':'))
-						pendingVariable = true;
-					break;
-				default:
-					if (pendingVariable) {
-						pendingVariable = false;
-						int colon = CharOperation.indexOf(':', typeSignature, i);
-						char[] variableName = CharOperation.subarray(typeSignature, i, colon);
-						variables.add(new TypeVariableBinding(variableName, this, rank++));
-					}
-			}
-		}
-	}
-	// initialize type variable bounds - may refer to forward variables
-	TypeVariableBinding[] result;
-	variables.toArray(result = new TypeVariableBinding[rank]);
-	// when creating the type variables for a type, the type must remember them before initializing each variable
-	// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=163680
-	if (assignVariables)
-		this.typeVariables = result;
-	for (int i = 0; i < rank; i++) {
-		initializeTypeVariable(result[i], result, wrapper);
-	}
-	return result;
-}
 /* Answer the receiver's enclosing type... null if the receiver is a top level type.
 *
 * NOTE: enclosingType of a binary type is resolved when needed
@@ -617,12 +554,6 @@ public FieldBinding[] fields() {
 		resolveTypeFor(fields[i]);
 	this.tagBits |= TagBits.AreFieldsComplete;
 	return fields;
-}
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#genericTypeSignature()
- */
-public char[] genericTypeSignature() {
-	return computeGenericTypeSignature(this.typeVariables);
 }
 //NOTE: the return type, arg & exception types of each method of a binary type are resolved when needed
 public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
@@ -766,47 +697,6 @@ public MethodBinding[] getMethods(char[] selector) {
 public boolean hasMemberTypes() {
     return this.memberTypes.length > 0;
 }
-// NOTE: member types of binary types are resolved when needed
-public TypeVariableBinding getTypeVariable(char[] variableName) {
-	TypeVariableBinding variable = super.getTypeVariable(variableName);
-	variable.resolve(this.environment);
-	return variable;
-}
-private void initializeTypeVariable(TypeVariableBinding variable, TypeVariableBinding[] existingVariables, SignatureWrapper wrapper) {
-	// ParameterSignature = Identifier ':' TypeSignature
-	//   or Identifier ':' TypeSignature(optional) InterfaceBound(s)
-	// InterfaceBound = ':' TypeSignature
-	int colon = CharOperation.indexOf(':', wrapper.signature, wrapper.start);
-	wrapper.start = colon + 1; // skip name + ':'
-	ReferenceBinding type, firstBound = null;
-	if (wrapper.signature[wrapper.start] == ':') {
-		type = environment.getResolvedType(TypeConstants.JAVA_LANG_OBJECT, null);
-	} else {
-		type = (ReferenceBinding) environment.getTypeFromTypeSignature(wrapper, existingVariables, this);
-		firstBound = type;
-	}
-
-	// variable is visible to its bounds
-	variable.modifiers |= ExtraCompilerModifiers.AccUnresolved;
-	variable.superclass = type;
-
-	ReferenceBinding[] bounds = null;
-	if (wrapper.signature[wrapper.start] == ':') {
-		java.util.ArrayList types = new java.util.ArrayList(2);
-		do {
-			wrapper.start++; // skip ':'
-			types.add(environment.getTypeFromTypeSignature(wrapper, existingVariables, this));
-		} while (wrapper.signature[wrapper.start] == ':');
-		bounds = new ReferenceBinding[types.size()];
-		types.toArray(bounds);
-	}
-
-	variable.superInterfaces = bounds == null ? Binding.NO_SUPERINTERFACES : bounds;
-	if (firstBound == null) {
-		firstBound = variable.superInterfaces.length == 0 ? null : variable.superInterfaces[0];
-	}
-	variable.firstBound = firstBound;
-}
 /**
  * Returns true if a type is identical to another one,
  * or for generic types, true if compared to its raw type.
@@ -814,18 +704,9 @@ private void initializeTypeVariable(TypeVariableBinding variable, TypeVariableBi
 public boolean isEquivalentTo(TypeBinding otherType) {
 	if (this == otherType) return true;
 	if (otherType == null) return false;
-	switch(otherType.kind()) {
-		case Binding.RAW_TYPE :
-			return otherType.erasure() == this;
-	}
 	return false;
 }
-public boolean isGenericType() {
-    return this.typeVariables != Binding.NO_TYPE_VARIABLES;
-}
 public int kind() {
-	if (this.typeVariables != Binding.NO_TYPE_VARIABLES)
-		return Binding.GENERIC_TYPE;
 	return Binding.TYPE;
 }
 // NOTE: member types of binary types are resolved when needed
@@ -873,8 +754,6 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 		method.parameters[i] = resolveType(method.parameters[i], this.environment, null, 0);
 	for (int i = method.thrownExceptions.length; --i >= 0;)
 		method.thrownExceptions[i] = resolveType(method.thrownExceptions[i], this.environment, true);
-	for (int i = method.typeVariables.length; --i >= 0;)
-		method.typeVariables[i].resolve(this.environment);
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
 }
@@ -913,15 +792,6 @@ public ReferenceBinding[] superInterfaces() {
 	}
 	this.tagBits &= ~TagBits.HasUnresolvedSuperinterfaces;
 	return this.superInterfaces;
-}
-public TypeVariableBinding[] typeVariables() {
- 	if ((this.tagBits & TagBits.HasUnresolvedTypeVariables) == 0)
-		return this.typeVariables;
-
- 	for (int i = this.typeVariables.length; --i >= 0;)
-		this.typeVariables[i].resolve(this.environment);
-	this.tagBits &= ~TagBits.HasUnresolvedTypeVariables;
-	return this.typeVariables;
 }
 public String toString() {
 	StringBuffer buffer = new StringBuffer();

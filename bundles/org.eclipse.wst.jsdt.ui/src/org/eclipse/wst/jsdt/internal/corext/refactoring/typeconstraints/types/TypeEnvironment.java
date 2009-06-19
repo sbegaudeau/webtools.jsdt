@@ -163,8 +163,6 @@ public class TypeEnvironment {
 			return createPrimitiveType(binding);
 		} else if (binding.isArray()) {
 			return createArrayType(binding);
-		} else if (binding.isRawType()) {
-			return createRawType(binding);
 		}
 		if ("null".equals(binding.getName())) //$NON-NLS-1$
 			return NULL;

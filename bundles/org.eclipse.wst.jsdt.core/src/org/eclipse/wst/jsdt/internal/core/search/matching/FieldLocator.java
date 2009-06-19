@@ -295,7 +295,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[][][] patternTypeArguments, MatchLocator locator) {
 	// We can only refine if locator has an unit scope.
 	if (locator.unitScope == null) return;
-	updateMatch(parameterizedBinding, patternTypeArguments, false, 0, locator);
 	if (!match.isExact()) {
 		// cannot accept neither erasure nor compatible match
 		match.setRule(0);

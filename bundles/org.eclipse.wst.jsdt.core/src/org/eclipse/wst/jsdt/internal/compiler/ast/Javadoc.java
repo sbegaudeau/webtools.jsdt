@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 
 /**
@@ -241,7 +240,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			JavadocSingleNameReference param = this.paramReferences[i];
 			scope.problemReporter().javadocUnexpectedTag(param.tagSourceStart, param.tagSourceEnd);
 		}
-		resolveTypeParameterTags(scope, true);
 
 		// @return tags
 		if (this.returnStatement != null) {
@@ -353,7 +351,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 		// @param tags
 		boolean considerParamRefAsUsage = methScope.compilerOptions().reportUnusedParameterIncludeDocCommentReference;
 		resolveParamTags(methScope, reportMissing,considerParamRefAsUsage);
-		resolveTypeParameterTags(methScope, reportMissing);
 
 		// @return tags
 		if (this.returnStatement == null) {
@@ -551,46 +548,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 					}
 				}
 			}
-		}
-	}
-
-	/*
-	 * Resolve @param tags for type parameters
-	 */
-	private void resolveTypeParameterTags(Scope scope, boolean reportMissing) {
-		int paramTypeParamLength = this.paramTypeParameters == null ? 0 : this.paramTypeParameters.length;
-
-		// Get declaration infos
-		TypeVariableBinding[] typeVariables = null;
-		int modifiers = -1;
-		switch (scope.kind) {
-			case Scope.METHOD_SCOPE:
-				AbstractMethodDeclaration methodDeclaration = ((MethodScope)scope).referenceMethod();
-				// If no referenced method (field initializer for example) then report a problem for each param tag
-				if (methodDeclaration == null) {
-					for (int i = 0; i < paramTypeParamLength; i++) {
-						JavadocSingleNameReference param = this.paramReferences[i];
-						scope.problemReporter().javadocUnexpectedTag(param.tagSourceStart, param.tagSourceEnd);
-					}
-					return;
-				}
-				typeVariables = methodDeclaration.binding.typeVariables;
-				modifiers = methodDeclaration.binding.modifiers;
-				break;
-			case Scope.CLASS_SCOPE:
-				TypeDeclaration typeDeclaration = ((ClassScope) scope).referenceContext;
-				typeVariables = typeDeclaration.binding.typeVariables;
-				modifiers = typeDeclaration.binding.modifiers;
-				break;
-		}
-
-		// If no type variables then report a problem for each param type parameter tag
-		if (typeVariables == null || typeVariables.length == 0) {
-			for (int i = 0; i < paramTypeParamLength; i++) {
-				JavadocSingleTypeReference param = this.paramTypeParameters[i];
-				scope.problemReporter().javadocUnexpectedTag(param.tagSourceStart, param.tagSourceEnd);
-			}
-			return;
 		}
 	}
 

@@ -24,10 +24,6 @@ public abstract class Binding {
 	public static final int IMPORT = ASTNode.Bit6;
 	public static final int ARRAY_TYPE = TYPE | ASTNode.Bit7;
 	public static final int BASE_TYPE = TYPE | ASTNode.Bit8;
-	public static final int PARAMETERIZED_TYPE = TYPE | ASTNode.Bit9;
-	public static final int RAW_TYPE = TYPE | ASTNode.Bit11;
-	public static final int GENERIC_TYPE = TYPE | ASTNode.Bit12;
-	public static final int TYPE_PARAMETER = TYPE | ASTNode.Bit13;
 	public static final int COMPILATION_UNIT = ASTNode.Bit14;
 
 	public static final int BASIC_BINDINGS_MASK= METHOD|TYPE|VARIABLE;
@@ -43,7 +39,6 @@ public abstract class Binding {
 	public static final ReferenceBinding[] NO_SUPERINTERFACES = new ReferenceBinding[0];
 	public static final ReferenceBinding[] NO_MIXINS = new ReferenceBinding[0];
 	public static final ReferenceBinding[] NO_MEMBER_TYPES = new ReferenceBinding[0];
-	public static final TypeVariableBinding[] NO_TYPE_VARIABLES = new TypeVariableBinding[0];
 	public static final ElementValuePair[] NO_ELEMENT_VALUE_PAIRS = new ElementValuePair[0];
 
 	/*

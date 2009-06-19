@@ -285,8 +285,6 @@ public class MethodScope extends BlockScope {
 					problemReporter().illegalVararg(argTypes[argLength], method);
 			}
 		}
-
-	    methodBinding.typeVariables = Binding.NO_TYPE_VARIABLES;
 	
 		return methodBinding;
 	}

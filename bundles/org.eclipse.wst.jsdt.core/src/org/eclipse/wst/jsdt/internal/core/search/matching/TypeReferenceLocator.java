@@ -484,11 +484,7 @@ protected void matchReportReference(QualifiedTypeReference qTypeRef, IJavaScript
 void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding, MatchLocator locator) throws CoreException {
 
 	// Look if there's a need to special report for parameterized type
-	if (refBinding.isParameterizedType() || refBinding.isRawType()) {
-
-		// Try to refine accuracy
-		ParameterizedTypeBinding parameterizedBinding = (ParameterizedTypeBinding)refBinding;
-		updateMatch(parameterizedBinding, this.pattern.getTypeArguments(), this.pattern.hasTypeParameters(), 0, locator);
+	if (refBinding.isParameterizedType()) {
 
 		// See whether it is necessary to report or not
 		if (match.getRule() == 0) return; // impossible match

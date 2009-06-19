@@ -18,10 +18,8 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 
 /**
@@ -29,32 +27,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
  *
  */
 class BindingComparator {
-	/**
-	 * @param bindings
-	 * @param otherBindings
-	 * @return true if both parameters are equals, false otherwise
-	 */
-	static boolean isEqual(TypeVariableBinding[] bindings, TypeVariableBinding[] otherBindings) {
-		if (bindings == null) {
-			return otherBindings == null;
-		}
-		if (otherBindings == null) {
-			return false;
-		}
-		int length = bindings.length;
-		int otherLength = otherBindings.length;
-		if (length != otherLength) {
-			return false;
-		}
-		for (int i = 0; i < length; i++) {
-			TypeVariableBinding typeVariableBinding = bindings[i];
-			TypeVariableBinding typeVariableBinding2 = otherBindings[i];
-			if (!isEqual(typeVariableBinding, typeVariableBinding2)) {
-				return false;
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * @param declaringElement
@@ -206,52 +178,12 @@ class BindingComparator {
 				return typeBinding.dimensions() == typeBinding2.dimensions()
 						&& isEqual(typeBinding.leafComponentType(), typeBinding2.leafComponentType(), visitedTypes);
 
-			case Binding.PARAMETERIZED_TYPE :
-				if (!typeBinding2.isParameterizedType()) {
-					return false;
-				}
-				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) typeBinding;
-				ParameterizedTypeBinding parameterizedTypeBinding2 = (ParameterizedTypeBinding) typeBinding2;
-				return CharOperation.equals(parameterizedTypeBinding.compoundName, parameterizedTypeBinding2.compoundName)
-					&& (parameterizedTypeBinding.modifiers & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
-							== (parameterizedTypeBinding2.modifiers & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
-					&& isEqual(parameterizedTypeBinding.arguments, parameterizedTypeBinding2.arguments, visitedTypes)
-					&& isEqual(parameterizedTypeBinding.enclosingType(), parameterizedTypeBinding2.enclosingType(), visitedTypes);
-
-			case Binding.TYPE_PARAMETER :
-				if (!(typeBinding2.isTypeVariable())) {
-					return false;
-				}
-				TypeVariableBinding typeVariableBinding = (TypeVariableBinding) typeBinding;
-				TypeVariableBinding typeVariableBinding2 = (TypeVariableBinding) typeBinding2;
-				if (CharOperation.equals(typeVariableBinding.sourceName, typeVariableBinding2.sourceName)) {
-					if (visitedTypes.contains(typeBinding)) return true;
-					visitedTypes.add(typeBinding);
-
-					return isEqual(typeVariableBinding.declaringElement, typeVariableBinding2.declaringElement, visitedTypes)
-					&& isEqual(typeVariableBinding.superclass(), typeVariableBinding2.superclass(), visitedTypes)
-					&& isEqual(typeVariableBinding.superInterfaces(), typeVariableBinding2.superInterfaces(), visitedTypes);
-				}
-				return false;
-			case Binding.GENERIC_TYPE :
-				if (!typeBinding2.isGenericType()) {
-					return false;
-				}
-				ReferenceBinding referenceBinding = (ReferenceBinding) typeBinding;
-				ReferenceBinding referenceBinding2 = (ReferenceBinding) typeBinding2;
-				return CharOperation.equals(referenceBinding.compoundName, referenceBinding2.compoundName)
-					&& (referenceBinding.modifiers & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
-							== (referenceBinding2.modifiers & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
-					&& isEqual(referenceBinding.typeVariables(), referenceBinding2.typeVariables(), visitedTypes)
-					&& isEqual(referenceBinding.enclosingType(), referenceBinding2.enclosingType(), visitedTypes);
-
-			case Binding.RAW_TYPE :
 			default :
 				if (!(typeBinding2 instanceof ReferenceBinding)) {
 					return false;
 				}
-				referenceBinding = (ReferenceBinding) typeBinding;
-				referenceBinding2 = (ReferenceBinding) typeBinding2;
+				ReferenceBinding referenceBinding = (ReferenceBinding) typeBinding;
+				ReferenceBinding referenceBinding2 = (ReferenceBinding) typeBinding2;
 				char[] constantPoolName = referenceBinding.constantPoolName();
 				char[] constantPoolName2 = referenceBinding2.constantPoolName();
 				// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=116833
@@ -272,7 +204,6 @@ class BindingComparator {
 				}
 				return CharOperation.equals(referenceBinding.compoundName, referenceBinding2.compoundName)
 					&& (!referenceBinding2.isGenericType())
-					&& (referenceBinding.isRawType() == referenceBinding2.isRawType())
 					&& ((referenceBinding.modifiers & ~ClassFileConstants.AccSuper) & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
 							== ((referenceBinding2.modifiers & ~ClassFileConstants.AccSuper) & (ExtraCompilerModifiers.AccJustFlag | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation))
 					&& isEqual(referenceBinding.enclosingType(), referenceBinding2.enclosingType(), visitedTypes);

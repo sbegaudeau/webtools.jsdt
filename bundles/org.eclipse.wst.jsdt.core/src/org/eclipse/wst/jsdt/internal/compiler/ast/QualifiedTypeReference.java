@@ -22,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 
 public class QualifiedTypeReference extends TypeReference implements IQualifiedTypeReference {
@@ -88,9 +87,6 @@ public class QualifiedTypeReference extends TypeReference implements IQualifiedT
 			findNextTypeBinding(i, scope, packageBinding);
 			if (!this.resolvedType.isValidBinding())
 				return this.resolvedType;
-			if (i == 0 && this.resolvedType.isTypeVariable() && ((TypeVariableBinding) this.resolvedType).firstBound == null) { // cannot select from a type variable
-				return this.resolvedType = null;
-			}
 			if (i < last && isTypeUseDeprecated(this.resolvedType, scope)) {
 				reportDeprecatedType(this.resolvedType, scope);
 			}
@@ -99,13 +95,9 @@ public class QualifiedTypeReference extends TypeReference implements IQualifiedT
 					return null;
 			ReferenceBinding currentType = (ReferenceBinding) this.resolvedType;
 			if (qualifiedType != null) {
-				if ((qualifiedType.isParameterizedType()) && qualifiedType.erasure() == currentType.enclosingType().erasure()) {
-					qualifiedType = scope.environment().createParameterizedType((ReferenceBinding)currentType.erasure(), null, qualifiedType);
-				} else {
-					qualifiedType = currentType;
-				}
+				qualifiedType = currentType;
 			} else {
-				qualifiedType = currentType.isGenericType() ? (ReferenceBinding)scope.environment().convertToRawType(currentType) : currentType;
+				qualifiedType = currentType;
 			}
 		}
 		this.resolvedType = qualifiedType;

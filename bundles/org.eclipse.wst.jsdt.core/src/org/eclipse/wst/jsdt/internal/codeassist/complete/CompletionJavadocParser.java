@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -504,11 +504,9 @@ public class CompletionJavadocParser extends JavadocParser {
 				|| ((startPosition == (endPosition+1) && endPosition == this.cursorLocation)); // or it's a completion on empty token
 			if (inCompletion) {
 				if (this.completionNode == null) {
-					if (isTypeParam) {
-						this.completionNode = new CompletionOnJavadocTypeParamReference(name, namePosition, startPosition, endPosition);
-					} else {
-						this.completionNode = new CompletionOnJavadocParamNameReference(name, namePosition, startPosition, endPosition);
-					}
+					
+					this.completionNode = new CompletionOnJavadocParamNameReference(name, namePosition, startPosition, endPosition);
+					
 					if (CompletionEngine.DEBUG) {
 						System.out.println("	completion param="+completionNode); //$NON-NLS-1$
 					}
@@ -524,18 +522,6 @@ public class CompletionJavadocParser extends JavadocParser {
 					}
 					paramNameRef.tagSourceStart = startPosition;
 					paramNameRef.tagSourceEnd = endPosition;
-				} else if (this.completionNode instanceof CompletionOnJavadocTypeParamReference) {
-					CompletionOnJavadocTypeParamReference typeParamRef = (CompletionOnJavadocTypeParamReference)this.completionNode;
-					int nameStart = (int) (namePosition>>32);
-					typeParamRef.sourceStart = nameStart;
-					int nameEnd = (int) namePosition;
-					if (nameStart<this.cursorLocation && this.cursorLocation<nameEnd) {
-						typeParamRef.sourceEnd = this.cursorLocation + 1;
-					} else {
-						typeParamRef.sourceEnd = nameEnd;
-					}
-					typeParamRef.tagSourceStart = startPosition;
-					typeParamRef.tagSourceEnd = endPosition;
 				}
 			}
 			return valid;
@@ -603,11 +589,9 @@ public class CompletionJavadocParser extends JavadocParser {
 			Expression expression = (Expression) astStack[astPtr];
 			// See if expression is concerned by completion
 			if (expression.sourceStart <= (this.cursorLocation+1) && this.cursorLocation <= expression.sourceEnd) {
-				if (isTypeParam) {
-					this.completionNode = new CompletionOnJavadocTypeParamReference((JavadocSingleTypeReference)expression);
-				} else {
-					this.completionNode = new CompletionOnJavadocParamNameReference((JavadocSingleNameReference)expression);
-				}
+				
+				this.completionNode = new CompletionOnJavadocParamNameReference((JavadocSingleNameReference)expression);
+				
 				if (CompletionEngine.DEBUG) {
 					System.out.println("	completion param="+completionNode); //$NON-NLS-1$
 				}

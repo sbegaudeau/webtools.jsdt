@@ -597,34 +597,6 @@ public interface ITypeBinding extends IBinding {
 	public boolean isPrimitive();
 
 	/**
-	 * Returns whether this type binding represents an instance of
-	 * a generic type corresponding to a raw type reference.
-	 * <p>
-	 * For example, an AST type like
-	 * <code>Collection</code> typically resolves to a
-	 * type binding whose type argument is the type binding for
-	 * the class <code>java.lang.Object</code> (the
-	 * default bound for the single type parameter of
-	 * <code>java.util.Collection</code>) and whose erasure is the
-	 * type binding for the generic type
-	 * <code>java.util.Collection</code>.
-	 * </p>
-	 * <p>
-	 * Note that {@link #isGenericType()},
-	 * {@link #isParameterizedType()},
-	 * and {@link #isRawType()} are mutually exclusive.
-	 * </p>
-	 *
-	 * @return <code>true</code> if this type binding represents a
-	 * an instance of a generic type corresponding to a raw
-	 * type reference, and <code>false</code> otherwise
-	 * @see #getTypeDeclaration()
-	 * @see #getTypeArguments()
-	 *  
-	 */
-	public boolean isRawType();
-
-	/**
 	 * Returns whether this type is subtype compatible with the given type.
 	 *
 	 * <p>If the receiver or the argument is a recovered type, the answer is always false,

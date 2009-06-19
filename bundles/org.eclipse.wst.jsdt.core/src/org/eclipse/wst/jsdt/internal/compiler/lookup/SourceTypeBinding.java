@@ -39,7 +39,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
 	public ReferenceBinding[] memberTypes=Binding.NO_MEMBER_TYPES;
-    public TypeVariableBinding[] typeVariables=Binding.NO_TYPE_VARIABLES;
 
 	public Scope scope;
 	public ClassScope  classScope;
@@ -683,7 +682,6 @@ public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMe
 	return accessMethod;
 }
 public int kind() {
-	if (this.typeVariables != Binding.NO_TYPE_VARIABLES) return Binding.GENERIC_TYPE;
 	return Binding.TYPE;
 }
 public char[] computeUniqueKey(boolean isLeaf) {
@@ -788,44 +786,6 @@ public FieldBinding[] fields() {
 	}
 	else
 		return this.fields;
-}
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#genericTypeSignature()
- */
-public char[] genericTypeSignature() {
-    if (this.genericReferenceTypeSignature == null)
-    	this.genericReferenceTypeSignature = computeGenericTypeSignature(this.typeVariables);
-    return this.genericReferenceTypeSignature;
-}
-/**
- * <param1 ... paramN>superclass superinterface1 ... superinterfaceN
- * <T:LY<TT;>;U:Ljava/lang/Object;V::Ljava/lang/Runnable;:Ljava/lang/Cloneable;:Ljava/util/Map;>Ljava/lang/Exception;Ljava/lang/Runnable;
- */
-public char[] genericSignature() {
-    StringBuffer sig = null;
-	if (this.typeVariables != Binding.NO_TYPE_VARIABLES) {
-	    sig = new StringBuffer(10);
-	    sig.append('<');
-	    for (int i = 0, length = this.typeVariables.length; i < length; i++)
-	        sig.append(this.typeVariables[i].genericSignature());
-	    sig.append('>');
-	} else {
-	    // could still need a signature if any of supertypes is parameterized
-	    noSignature: if (this.superclass == null || !this.superclass.isParameterizedType()) {
-		    for (int i = 0, length = this.superInterfaces.length; i < length; i++)
-		        if (this.superInterfaces[i].isParameterizedType())
-					break noSignature;
-	        return null;
-	    }
-	    sig = new StringBuffer(10);
-	}
-	if (this.superclass != null)
-		sig.append(this.superclass.genericTypeSignature());
-	else // interface scenario only (as Object cannot be generic) - 65953
-		sig.append(this.scope.getJavaLangObject().genericTypeSignature());
-    for (int i = 0, length = this.superInterfaces.length; i < length; i++)
-        sig.append(this.superInterfaces[i].genericTypeSignature());
-	return sig.toString().toCharArray();
 }
 
 /**
@@ -1224,43 +1184,7 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 
 	if (this == otherType) return true;
 	if (otherType == null) return false;
-	switch(otherType.kind()) {
-
-		case Binding.PARAMETERIZED_TYPE :
-			if ((otherType.tagBits & TagBits.HasDirectWildcard) == 0 && (!this.isMemberType() || !otherType.isMemberType()))
-				return false; // should have been identical
-			ParameterizedTypeBinding otherParamType = (ParameterizedTypeBinding) otherType;
-			if (this != otherParamType.genericType())
-				return false;
-			if (!isStatic()) { // static member types do not compare their enclosing
-            	ReferenceBinding enclosing = enclosingType();
-            	if (enclosing != null) {
-            		ReferenceBinding otherEnclosing = otherParamType.enclosingType();
-            		if (otherEnclosing == null) return false;
-            		if ((otherEnclosing.tagBits & TagBits.HasDirectWildcard) == 0) {
-						if (enclosing != otherEnclosing) return false;
-            		} else {
-            			if (!enclosing.isEquivalentTo(otherParamType.enclosingType())) return false;
-            		}
-            	}
-			}
-			int length = this.typeVariables == null ? 0 : this.typeVariables.length;
-			TypeBinding[] otherArguments = otherParamType.arguments;
-			int otherLength = otherArguments == null ? 0 : otherArguments.length;
-			if (otherLength != length)
-				return false;
-			for (int i = 0; i < length; i++)
-				if (!this.typeVariables[i].isTypeArgumentContainedBy(otherArguments[i]))
-					return false;
-			return true;
-
-		case Binding.RAW_TYPE :
-	        return otherType.erasure() == this;
-	}
 	return false;
-}
-public boolean isGenericType() {
-    return this.typeVariables != Binding.NO_TYPE_VARIABLES;
 }
 public ReferenceBinding[] memberTypes() {
 	if (this.nextType==null)
@@ -1372,48 +1296,23 @@ public MethodBinding[] methods() {
 						if (pLength != params2.length)
 							continue nextSibling;
 
-						TypeVariableBinding[] vars = method.typeVariables;
-						TypeVariableBinding[] vars2 = method2.typeVariables;
-						boolean equalTypeVars = vars == vars2;
+						
 						MethodBinding subMethod = method2;
-						if (!equalTypeVars) {
-							MethodBinding temp = method
-									.computeSubstitutedMethod(method2,
-											this.scope.environment());
-							if (temp != null) {
-								equalTypeVars = true;
-								subMethod = temp;
-							}
-						}
 						boolean equalParams = method
 								.areParametersEqual(subMethod);
-						if (equalParams && equalTypeVars) {
+						if (equalParams) {
 							// duplicates regardless of return types
 						} else if (method.returnType.erasure() == subMethod.returnType
 								.erasure()
 								&& (equalParams || method
 										.areParameterErasuresEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
-						} else if (!equalTypeVars
-								&& vars != Binding.NO_TYPE_VARIABLES
-								&& vars2 != Binding.NO_TYPE_VARIABLES) {
-							// type variables are different so we can distinguish between methods
-							continue nextSibling;
 						} else if (pLength > 0) {
 							// check to see if the erasure of either method is equal to the other
 							int index = pLength;
 							for (; --index >= 0;) {
 								if (params1[index] != params2[index].erasure())
 									break;
-								if (params1[index] == params2[index]) {
-									TypeBinding type = params1[index]
-											.leafComponentType();
-									if (type instanceof SourceTypeBinding
-											&& type.typeVariables() != Binding.NO_TYPE_VARIABLES) {
-										index = pLength; // handle comparing identical source types like X<T>... its erasure is itself BUT we need to answer false
-										break;
-									}
-								}
 							}
 							if (index >= 0 && index < pLength) {
 								for (index = pLength; --index >= 0;)
@@ -1841,17 +1740,6 @@ public String toString() {
 	else buffer.append("interface "); //$NON-NLS-1$
 	buffer.append((this.compoundName != null) ? CharOperation.toString(this.compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 
-	if (this.typeVariables == null) {
-		buffer.append("<NULL TYPE VARIABLES>"); //$NON-NLS-1$
-	} else if (this.typeVariables != Binding.NO_TYPE_VARIABLES) {
-		buffer.append("\n\t<"); //$NON-NLS-1$
-		for (int i = 0, length = this.typeVariables.length; i < length; i++) {
-			if (i  > 0)
-				buffer.append(", "); //$NON-NLS-1$
-			buffer.append((this.typeVariables[i] != null) ? this.typeVariables[i].toString() : "NULL TYPE VARIABLE"); //$NON-NLS-1$
-		}
-		buffer.append(">"); //$NON-NLS-1$
-	}
 	buffer.append("\n\textends "); //$NON-NLS-1$
 	buffer.append((this.superclass != null) ? this.superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
 
@@ -1905,9 +1793,6 @@ public String toString() {
 
 	buffer.append("\n\n"); //$NON-NLS-1$
 	return buffer.toString();
-}
-public TypeVariableBinding[] typeVariables() {
-	return this.typeVariables;
 }
 void verifyMethods(MethodVerifier verifier) {
 	verifier.verify(this);

@@ -1105,8 +1105,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		final AST ast= name.getAST();
 		boolean raw= false;
 		final ITypeBinding binding= name.resolveTypeBinding();
-		if (binding != null && binding.isRawType())
-			raw= true;
 		return ast.newName(fQualifiedTypeName);
 	}
 
@@ -1114,8 +1112,6 @@ public final class MoveInnerToTopRefactoring extends ScriptableRefactoring {
 		final AST ast= name.getAST();
 		boolean raw= false;
 		final ITypeBinding binding= name.resolveTypeBinding();
-		if (binding != null && binding.isRawType())
-			raw= true;
 		return ast.newSimpleType(ast.newSimpleName(fType.getElementName()));
 	}
 

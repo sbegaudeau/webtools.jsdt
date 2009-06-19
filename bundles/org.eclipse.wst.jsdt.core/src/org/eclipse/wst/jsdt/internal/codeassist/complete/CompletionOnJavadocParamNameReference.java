@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CompletionOnJavadocParamNameReference extends JavadocSingleNameReference implements CompletionOnJavadoc {
 	public int completionFlags = JAVADOC;
 	public char[][] missingParams;
-	public char[][] missingTypeParams;
 
 	public CompletionOnJavadocParamNameReference(char[] name, long pos, int start, int end) {
 		super(name, pos, start, end);

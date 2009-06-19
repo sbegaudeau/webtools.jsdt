@@ -210,107 +210,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 	    ReferenceBinding[] substitutedTypes = originalTypes;
 	    for (int i = 0, length = originalTypes.length; i < length; i++) {
 	        ReferenceBinding originalType = originalTypes[i];
-	        ReferenceBinding substitutedParameter = (ReferenceBinding)substitute(substitution, originalType);
-	        if (substitutedParameter != originalType) {
-	            if (substitutedTypes == originalTypes) {
-	                System.arraycopy(originalTypes, 0, substitutedTypes = new ReferenceBinding[length], 0, i);
-	            }
-	            substitutedTypes[i] = substitutedParameter;
-	        } else if (substitutedTypes != originalTypes) {
+	    
+	        if (substitutedTypes != originalTypes) {
 	            substitutedTypes[i] = originalType;
 	        }
 	    }
 	    return substitutedTypes;
-	}
-
-	/**
-	 * Returns a type, where original type was substituted using the receiver
-	 * parameterized type.
-	 * In raw mode, all parameterized type denoting same original type are converted
-	 * to raw types. e.g.
-	 * class X <T> {
-	 *   X<T> foo;
-	 *   X<String> bar;
-	 * } when used in raw fashion, then type of both foo and bar is raw type X.
-	 *
-	 */
-	public static TypeBinding substitute(Substitution substitution, TypeBinding originalType) {
-		if (originalType == null) return null;
-		switch (originalType.kind()) {
-
-			case Binding.TYPE_PARAMETER:
-				return substitution.substitute((TypeVariableBinding) originalType);
-
-			case Binding.PARAMETERIZED_TYPE:
-				ParameterizedTypeBinding originalParameterizedType = (ParameterizedTypeBinding) originalType;
-				ReferenceBinding originalEnclosing = originalType.enclosingType();
-				ReferenceBinding substitutedEnclosing = originalEnclosing;
-				if (originalEnclosing != null) {
-					substitutedEnclosing = (ReferenceBinding) substitute(substitution, originalEnclosing);
-				}
-				TypeBinding[] originalArguments = originalParameterizedType.arguments;
-				TypeBinding[] substitutedArguments = originalArguments;
-				if (originalArguments != null) {
-					substitutedArguments = substitute(substitution, originalArguments);
-				}
-				if (substitutedArguments != originalArguments || substitutedEnclosing != originalEnclosing) {
-//					identicalVariables: { // if substituted with original variables, then answer the generic type itself
-//						if (substitutedEnclosing != null) {
-//							//if (!(substitutedEnclosing instanceof SourceTypeBinding)) break identicalVariables;
-//							if (substitutedEnclosing != originalEnclosing) break identicalVariables;
-//						}
-//						if (originalParameterizedType.type.isBinaryBinding()) break identicalVariables; // generic binary is never used as is, see 85262
-//						TypeVariableBinding[] originalVariables = originalParameterizedType.type.typeVariables();
-//						for (int i = 0, length = originalVariables.length; i < length; i++) {
-//							if (substitutedArguments[i] != originalVariables[i]) break identicalVariables;
-//						}
-//						return originalParameterizedType.type;
-//					}
-					return originalParameterizedType.environment.createParameterizedType(
-							originalParameterizedType.genericType(), substitutedArguments, substitutedEnclosing);
-				}
-				break;
-
-			case Binding.ARRAY_TYPE:
-				ArrayBinding originalArrayType = (ArrayBinding) originalType;
-				TypeBinding originalLeafComponentType = originalArrayType.leafComponentType;
-				TypeBinding substitute = substitute(substitution, originalLeafComponentType); // substitute could itself be array type
-				if (substitute != originalLeafComponentType) {
-					return originalArrayType.environment.createArrayType(substitute.leafComponentType(), substitute.dimensions() + originalType.dimensions());
-				}
-				break;
-
-			case Binding.TYPE:
-				if (!originalType.isMemberType()) break;
-				ReferenceBinding originalReferenceType = (ReferenceBinding) originalType;
-				originalEnclosing = originalType.enclosingType();
-				substitutedEnclosing = originalEnclosing;
-				if (originalEnclosing != null) {
-					substitutedEnclosing = (ReferenceBinding) substitute(substitution, originalEnclosing);
-				}
-
-			    // treat as if parameterized with its type variables (non generic type gets 'null' arguments)
-				if (substitutedEnclosing != originalEnclosing) {
-					return substitution.environment().createParameterizedType(originalReferenceType, null, substitutedEnclosing);
-				}
-				break;
-			case Binding.GENERIC_TYPE:
-				originalReferenceType = (ReferenceBinding) originalType;
-				originalEnclosing = originalType.enclosingType();
-				substitutedEnclosing = originalEnclosing;
-				if (originalEnclosing != null) {
-					substitutedEnclosing = (ReferenceBinding) substitute(substitution, originalEnclosing);
-				}
-
-			    // treat as if parameterized with its type variables (non generic type gets 'null' arguments)
-				originalArguments = originalReferenceType.typeVariables();
-				substitutedArguments = substitute(substitution, originalArguments);
-//				if (substitutedArguments != originalArguments || substitutedEnclosing != originalEnclosing) {
-				return substitution.environment().createParameterizedType(originalReferenceType, substitutedArguments, substitutedEnclosing);
-//				}
-//				break;
-		}
-		return originalType;
 	}
 
 	/**
@@ -322,13 +227,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 	    TypeBinding[] substitutedTypes = originalTypes;
 	    for (int i = 0, length = originalTypes.length; i < length; i++) {
 	        TypeBinding originalType = originalTypes[i];
-	        TypeBinding substitutedParameter = substitute(substitution, originalType);
-	        if (substitutedParameter != originalType) {
-	            if (substitutedTypes == originalTypes) {
-	                System.arraycopy(originalTypes, 0, substitutedTypes = new TypeBinding[length], 0, i);
-	            }
-	            substitutedTypes[i] = substitutedParameter;
-	        } else if (substitutedTypes != originalTypes) {
+	        if (substitutedTypes != originalTypes) {
 	            substitutedTypes[i] = originalType;
 	        }
 	    }
@@ -387,11 +286,9 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 		TypeBinding[] genericTypeArguments = invocationSite.genericTypeArguments();
 		TypeBinding[] parameters = method.parameters;
-		TypeVariableBinding[] typeVariables = method.typeVariables;
 		if (parameters == arguments
 //			&& (method.returnType.tagBits & TagBits.HasTypeVariable) == 0
-			&& genericTypeArguments == null
-			&& typeVariables == Binding.NO_TYPE_VARIABLES)
+			&& genericTypeArguments == null)
 				return method;
 
 		int argLength = arguments.length;
@@ -400,25 +297,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		if (argLength != paramLength)
 			if (!isVarArgs || argLength < paramLength - 1)
 				return null; // incompatible
-
-		if (typeVariables != Binding.NO_TYPE_VARIABLES) { // generic method
-			TypeBinding[] newArgs = null;
-			for (int i = 0; i < argLength; i++) {
-				TypeBinding param = i < paramLength ? parameters[i] : parameters[paramLength - 1];
-				if (arguments[i].isBaseType() != param.isBaseType()) {
-					if (newArgs == null) {
-						newArgs = new TypeBinding[argLength];
-						System.arraycopy(arguments, 0, newArgs, 0, argLength);
-					}
-					newArgs[i] = environment().computeBoxingType(arguments[i]);
-				}
-			}
-			if (newArgs != null)
-				arguments = newArgs;
-			if (method == null) return null; // incompatible
-			if (!method.isValidBinding()) return method; // bound check issue is taking precedence
-			parameters = method.parameters; // reacquire them after type inference has performed
-		}
 
 		if (parameterCompatibilityLevel(method, arguments) > NOT_COMPATIBLE)
 			return method;
@@ -630,7 +508,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding exactMethod = (receiverType!=null) ?
 			receiverType.getExactMethod(selector, argumentTypes, unitScope) :
 				unitScope.referenceContext.compilationUnitBinding.getExactMethod(selector, argumentTypes, unitScope);
-		if (exactMethod != null && exactMethod.typeVariables == Binding.NO_TYPE_VARIABLES && !exactMethod.isBridge()) {
+		if (exactMethod != null && !exactMethod.isBridge()) {
 			// must find both methods for this case: <S extends A> void foo() {}  and  <N extends B> N foo() { return null; }
 			// or find an inherited method when the exact match is to a bridge method
 			unitScope.recordTypeReferences(exactMethod.thrownExceptions);
@@ -668,28 +546,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		unitScope.recordTypeReference(receiverType);
 
 		checkArrayField: {
-			TypeBinding leafType;
 			switch (receiverType.kind()) {
 				case Binding.BASE_TYPE :
 					return null;
-				case Binding.TYPE_PARAMETER : // capture
-					TypeBinding receiverErasure = receiverType.erasure();
-					if (!receiverErasure.isArrayType())
-						break checkArrayField;
-					leafType = receiverErasure.leafComponentType();
-					break;
-//				case Binding.ARRAY_TYPE :
-//					leafType = receiverType.leafComponentType();
-//					break;
 				default:
 					break checkArrayField;
 			}
-			if (leafType instanceof ReferenceBinding)
-				if (!((ReferenceBinding) leafType).canBeSeenBy(this))
-					return new ProblemFieldBinding((ReferenceBinding)leafType, fieldName, ProblemReasons.ReceiverTypeNotVisible);
-			if (CharOperation.equals(fieldName, LENGTH))
-				return ArrayBinding.ArrayLength;
-			return null;
 		}
 
 		ReferenceBinding currentType = (ReferenceBinding) receiverType;
@@ -961,8 +823,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							MethodBinding matchingMethod = (MethodBinding) found.elementAt(j);
 							if (currentMethod.areParametersEqual(matchingMethod)) {
 								if (isCompliant15) {
-									if (matchingMethod.typeVariables != Binding.NO_TYPE_VARIABLES && invocationSite.genericTypeArguments() == null)
-										continue nextMethod; // keep inherited substituted methods to detect anonymous errors
 									if (matchingMethod.hasSubstitutedParameters() && !currentMethod.original().areParametersEqual(matchingMethod.original()))
 										continue nextMethod; // keep inherited substituted methods to detect anonymous errors
 									if (matchingMethod.isBridge() && !currentMethod.isBridge())
@@ -2475,11 +2335,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				switch (scope.kind) {
 					case METHOD_SCOPE :
 						MethodScope methodScope = (MethodScope) scope;
-						AbstractMethodDeclaration methodDecl = methodScope.referenceMethod();
-						if (methodDecl != null && methodDecl.binding != null) {
-							TypeVariableBinding typeVariable = methodDecl.binding.getTypeVariable(name);
-							if (typeVariable != null)	return typeVariable;
-						}
 						insideStaticContext |= methodScope.isStatic;
 						insideTypeAnnotation = methodScope.insideTypeAnnotation;
 					case BLOCK_SCOPE :
@@ -2495,9 +2350,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						if (scope == this && (sourceType.tagBits & TagBits.TypeVariablesAreConnected) == 0) {
 							// type variables take precedence over the source type, ex. class X <X> extends X == class X <Y> extends Y
 							// but not when we step out to the enclosing type
-							TypeVariableBinding typeVariable = sourceType.getTypeVariable(name);
-							if (typeVariable != null)
-								return typeVariable;
 							if (CharOperation.equals(name, sourceType.sourceName))
 								return sourceType;
 							insideStaticContext |= sourceType.isStatic();
@@ -2532,12 +2384,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 									// only remember the memberType if its the first one found or the previous one was not visible & memberType is...
 									foundType = memberType;
 							}
-						}
-						TypeVariableBinding typeVariable = sourceType.getTypeVariable(name);
-						if (typeVariable != null) {
-							if (insideStaticContext) // do not consider this type modifiers: access is legite within same type
-								return new ProblemReferenceBinding(name, typeVariable, ProblemReasons.NonStaticReferenceInStaticContext);
-							return typeVariable;
 						}
 						insideStaticContext |= sourceType.isStatic();
 						insideTypeAnnotation = false;
@@ -2758,7 +2604,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 		// binding is now a ReferenceBinding
 		ReferenceBinding typeBinding = (ReferenceBinding) binding;
-		ReferenceBinding qualifiedType = (ReferenceBinding) this.environment().convertToRawType(typeBinding);
+		ReferenceBinding qualifiedType = typeBinding;
 
 		if (checkVisibility) // handles the fall through case
 			if (!typeBinding.canBeSeenBy(this))
@@ -2777,9 +2623,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					typeBinding.problemId());
 
 			
-			qualifiedType = (qualifiedType != null && (qualifiedType.isRawType() || qualifiedType.isParameterizedType()))
-				? this.environment().createParameterizedType(typeBinding, null, qualifiedType)
-				: typeBinding;
+			qualifiedType = typeBinding;
 			
 		}
 		return qualifiedType;
@@ -2826,19 +2670,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				TypeBinding oneParam = oneParams[i];
 				TypeBinding twoParam = twoParams[i];
 				if (oneParam == twoParam) {
-					if (oneParam.leafComponentType().isRawType()) {
-						// A#RAW is not more specific than a rawified A<T>
-						if (oneParam == one.original().parameters[i] && oneParam != two.original().parameters[i])
-							return false;
-					}
 					continue;
 				}
 				if (oneParam.isCompatibleWith(twoParam)) {
-					if (oneParam.leafComponentType().isRawType()) {
-						// A#RAW is not more specific than a rawified A<T>
-						if (oneParam.needsUncheckedConversion(two.declaringClass.isRawType() ? twoParam : two.original().parameters[i]))
-							return false;
-					}
+					
 				} else {
 					if (i == oneParamsLength - 1 && one.isVarargs() && two.isVarargs()) {
 						TypeBinding eType = ((ArrayBinding) twoParam).elementsType();
@@ -3012,54 +2847,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		if (invocationData instanceof TypeBinding) { // only one invocation, simply return it (array only allocated if more than one)
 			return (TypeBinding) invocationData;
 		}
-		TypeBinding[] invocations = (TypeBinding[]) invocationData;
 
-		// if mec is an array type, intersect invocation leaf component types, then promote back to array
-		int dim = mec.dimensions();
 		mec = mec.leafComponentType();
 
-		int argLength = mec.typeVariables().length;
-		if (argLength == 0) return mec; // should be caught by no invocation check
-
-		// infer proper parameterized type from invocations
-		TypeBinding[] bestArguments = new TypeBinding[argLength];
-		for (int i = 0, length = invocations.length; i < length; i++) {
-			TypeBinding invocation = invocations[i].leafComponentType();
-			switch (invocation.kind()) {
-				case Binding.GENERIC_TYPE :
-					TypeVariableBinding[] invocationVariables = invocation.typeVariables();
-					for (int j = 0; j < argLength; j++) {
-						TypeBinding bestArgument = leastContainingTypeArgument(bestArguments[j], invocationVariables[j], (ReferenceBinding) mec, j, lubStack);
-						if (bestArgument == null) return null;
-						bestArguments[j] = bestArgument;
-					}
-					break;
-				case Binding.PARAMETERIZED_TYPE :
-					ParameterizedTypeBinding parameterizedType = (ParameterizedTypeBinding)invocation;
-					for (int j = 0; j < argLength; j++) {
-						TypeBinding bestArgument = leastContainingTypeArgument(bestArguments[j], parameterizedType.arguments[j], (ReferenceBinding) mec, j, lubStack);
-						if (bestArgument == null) return null;
-						bestArguments[j] = bestArgument;
-					}
-					break;
-				case Binding.RAW_TYPE :
-					return dim == 0 ? invocation : environment().createArrayType(invocation, dim); // raw type is taking precedence
-			}
-		}
-		TypeBinding least = environment().createParameterizedType((ReferenceBinding) mec.erasure(), bestArguments, mec.enclosingType());
-		return dim == 0 ? least : environment().createArrayType(least, dim);
-	}
-
-	// JLS 15.12.2
-	private TypeBinding leastContainingTypeArgument(TypeBinding u, TypeBinding v, ReferenceBinding genericType, int rank, List lubStack) {
-		if (u == null) return v;
-		if (u == v) return u;
-
-		TypeBinding lub = lowerUpperBound(new TypeBinding[]{u,v}, lubStack);
-		if (lub == null) return null;
-		// int is returned to denote cycle detected in lub computation - stop recursion by answering unbound wildcard
-		if (lub == TypeBinding.INT) return null;
-		return null;
+		return mec; // should be caught by no invocation check
 	}
 
 	// 15.12.2
@@ -3545,7 +3336,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						TypeBinding superType = original.declaringClass.findSuperTypeWithSameErasure(original2.declaringClass.erasure());
 						if (superType == null)
 							continue nextSpecific; // current's declaringClass is not a subtype of next's declaringClass
-						if (current.hasSubstitutedParameters() || original.typeVariables != Binding.NO_TYPE_VARIABLES) {
+						if (current.hasSubstitutedParameters()) {
 							if (original2.declaringClass != superType) {
 								// must find inherited method with the same substituted variables
 								MethodBinding[] superMethods = ((ReferenceBinding) superType).getMethods(original2.selector);
@@ -3556,8 +3347,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 									}
 								}
 							}
-							if (original.typeVariables != Binding.NO_TYPE_VARIABLES)
-								original2 = original.computeSubstitutedMethod(original2, environment());
 							if (original2 == null || !original.areParametersEqual(original2))
 								continue nextSpecific; // current does not override next
 						}
@@ -3588,8 +3377,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 								}
 							}
 						}
-						if (original.typeVariables != Binding.NO_TYPE_VARIABLES)
-							original2 = original.computeSubstitutedMethod(original2, environment());
 						if (original2 == null || !original.areParameterErasuresEqual(original2))
 							continue nextSpecific; // current does not override next
 						if (!original.returnType.isCompatibleWith(original2.returnType) &&

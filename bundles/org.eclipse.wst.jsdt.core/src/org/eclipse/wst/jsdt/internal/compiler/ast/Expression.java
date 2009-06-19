@@ -32,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 public abstract class Expression extends Statement implements IExpression {
 
@@ -305,15 +304,6 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 					// recurse on array type elements
 					return checkCastTypesCompatibility(scope, castElementType, exprElementType, expression);
 
-				case Binding.TYPE_PARAMETER :
-					// ( TYPE_PARAMETER ) ARRAY
-					TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
-					if (match == null) {
-						checkUnsafeCast(scope, castType, expressionType, null /*no match*/, true);
-					}
-					// recurse on the type variable upper bound
-					return checkCastTypesCompatibility(scope, ((TypeVariableBinding)castType).upperBound(), expressionType, expression);
-
 				default:
 					// ( CLASS/INTERFACE ) ARRAY
 					switch (castType.id) {
@@ -329,14 +319,6 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 					}
 			}
 
-		case Binding.TYPE_PARAMETER :
-			TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
-			if (match != null) {
-				return checkUnsafeCast(scope, castType, expressionType, match, false);
-			}
-			// recursively on the type variable upper bound
-			return checkCastTypesCompatibility(scope, castType, ((TypeVariableBinding)expressionType).upperBound(), expression);
-
 		default:
 			if (expressionType.isInterface()) {
 				switch (castType.kind()) {
@@ -351,20 +333,11 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 								return false;
 						}
 
-					case Binding.TYPE_PARAMETER :
-						// ( INTERFACE ) TYPE_PARAMETER
-						match = expressionType.findSuperTypeWithSameErasure(castType);
-						if (match == null) {
-							checkUnsafeCast(scope, castType, expressionType, null /*no match*/, true);
-						}
-						// recurse on the type variable upper bound
-						return checkCastTypesCompatibility(scope, ((TypeVariableBinding)castType).upperBound(), expressionType, expression);
-
 					default :
 						if (castType.isInterface()) {
 							// ( INTERFACE ) INTERFACE
 							ReferenceBinding interfaceType = (ReferenceBinding) expressionType;
-							match = interfaceType.findSuperTypeWithSameErasure(castType);
+							TypeBinding match = interfaceType.findSuperTypeWithSameErasure(castType);
 							if (match != null) {
 								return checkUnsafeCast(scope, castType, interfaceType, match, false);
 							}
@@ -403,7 +376,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 							}
 							// can only be a downcast
 							tagAsNeedCheckCast();
-							match = castType.findSuperTypeWithSameErasure(expressionType);
+							TypeBinding match = castType.findSuperTypeWithSameErasure(expressionType);
 							if (match != null) {
 								return checkUnsafeCast(scope, castType, expressionType, match, true);
 							}
@@ -432,20 +405,11 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 						}
 						return false;
 
-					case Binding.TYPE_PARAMETER :
-						// ( TYPE_PARAMETER ) CLASS
-						match = expressionType.findSuperTypeWithSameErasure(castType);
-						if (match == null) {
-							checkUnsafeCast(scope, castType, expressionType, match, true);
-						}
-						// recurse on the type variable upper bound
-						return checkCastTypesCompatibility(scope, ((TypeVariableBinding)castType).upperBound(), expressionType, expression);
-
 					default :
 						if (castType.isInterface()) {
 							// ( INTERFACE ) CLASS
 							ReferenceBinding refExprType = (ReferenceBinding) expressionType;
-							match = refExprType.findSuperTypeWithSameErasure(castType);
+							TypeBinding match = refExprType.findSuperTypeWithSameErasure(castType);
 							if (match != null) {
 								return checkUnsafeCast(scope, castType, expressionType, match, false);
 							}
@@ -467,7 +431,7 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 							return true;
 						} else {
 							// ( CLASS ) CLASS
-							match = expressionType.findSuperTypeWithSameErasure(castType);
+							TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
 							if (match != null) {
 								if (expression != null && castType.id == TypeIds.T_JavaLangString) this.constant = expression.constant; // (String) cst is still a constant
 								return checkUnsafeCast(scope, castType, expressionType, match, false);

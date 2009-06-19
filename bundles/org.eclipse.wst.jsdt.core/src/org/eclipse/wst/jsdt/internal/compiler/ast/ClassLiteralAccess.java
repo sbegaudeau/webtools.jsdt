@@ -20,8 +20,6 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -72,21 +70,8 @@ public class ClassLiteralAccess extends Expression  {
 			return null;
 		}
 		ReferenceBinding classType = scope.getJavaLangClass();
-		if (classType.isGenericType()) {
-		    // Integer.class --> Class<Integer>, perform boxing of base types (int.class --> Class<Integer>)
-			TypeBinding boxedType = null;
-			if (targetType.id == T_void) {
-				boxedType = scope.environment().getType(JAVA_LANG_VOID);
-				if (boxedType == null) {
-					boxedType = new ProblemReferenceBinding(JAVA_LANG_VOID, null, ProblemReasons.NotFound);
-				}
-			} else {
-				boxedType = scope.boxing(targetType);
-			}
-		    this.resolvedType = scope.environment().createParameterizedType(classType, new TypeBinding[]{ boxedType }, null/*not a member*/);
-		} else {
-		    this.resolvedType = classType;
-		}
+		this.resolvedType = classType;
+		
 		return this.resolvedType;
 	}
 

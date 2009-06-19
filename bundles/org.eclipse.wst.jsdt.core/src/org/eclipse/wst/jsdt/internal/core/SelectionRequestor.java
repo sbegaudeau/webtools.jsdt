@@ -39,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -375,16 +374,6 @@ public void acceptLocalType(TypeBinding typeBinding) {
 			System.out.print(res.toString());
 			System.out.println(")"); //$NON-NLS-1$
 		}
-	}
-}
-public void acceptLocalTypeParameter(TypeVariableBinding typeVariableBinding) {
-	IJavaScriptElement res;
-	if(typeVariableBinding.declaringElement instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeVariableBinding.declaringElement).genericType();
-		res = findLocalElement(localTypeBinding.sourceStart());
-	} else {
-		SourceTypeBinding typeBinding = (SourceTypeBinding)typeVariableBinding.declaringElement;
-		res = findLocalElement(typeBinding.sourceStart());
 	}
 }
 public void acceptLocalVariable(LocalVariableBinding binding) {

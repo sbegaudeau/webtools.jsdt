@@ -23,7 +23,6 @@ public class MethodBinding extends Binding {
 	public TypeBinding[] parameters;
 	public ReferenceBinding[] thrownExceptions;
 	public ReferenceBinding declaringClass;
-	public TypeVariableBinding[] typeVariables = Binding.NO_TYPE_VARIABLES;
 	char[] signature;
 	public long tagBits;
 	public FunctionTypeBinding functionTypeBinding;
@@ -143,22 +142,6 @@ public final boolean canBeSeenBy(PackageBinding invocationPackage) {
 	// isProtected() or isDefault()
 	return invocationPackage == declaringClass.getPackage();
 }
-/* Answer true if the type variables have the same erasure
-*/
-public final boolean areTypeVariableErasuresEqual(MethodBinding method) {
-	TypeVariableBinding[] vars = method.typeVariables;
-	if (this.typeVariables == vars)
-		return true;
-
-	int length = this.typeVariables.length;
-	if (length != vars.length)
-		return false;
-
-	for (int i = 0; i < length; i++)
-		if (this.typeVariables[i] != vars[i] && this.typeVariables[i].erasure() != vars[i].erasure())
-			return false;
-	return true;
-}
 /* Answer true if the receiver is visible to the type provided by the scope.
 * InvocationSite implements isSuperAccess() to provide additional information
 * if the receiver is protected.
@@ -255,14 +238,11 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	if (isPrivate()) {
 		// answer true if the receiverType is the declaringClass
 		// AND the invocationType and the declaringClass have a common enclosingType
-		receiverCheck: {
-			if (receiverType != declaringClass) {
-				// special tolerance for type variable direct bounds
-				if (receiverType.isTypeVariable() && ((TypeVariableBinding) receiverType).isErasureBoundTo(declaringClass.erasure()))
-					break receiverCheck;
-				return false;
-			}
+		
+		if (receiverType != declaringClass) {
+			return false;
 		}
+		
 
 		if (invocationType != declaringClass) {
 			ReferenceBinding outerInvocationType = invocationType;
@@ -298,14 +278,6 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 		if (currentPackage != null && currentPackage != declaringPackage) return false;
 	} while ((currentType = currentType.superclass()) != null);
 	return false;
-}
-MethodBinding computeSubstitutedMethod(MethodBinding method, LookupEnvironment env) {
-	int length = this.typeVariables.length;
-	TypeVariableBinding[] vars = method.typeVariables;
-	if (length != vars.length)
-		return null;
-
-	return method;
 }
 /*
  * declaringUniqueKey dot selector genericSignature
@@ -390,13 +362,7 @@ public final char[] constantPoolName() {
 public char[] genericSignature() {
 	if ((this.modifiers & ExtraCompilerModifiers.AccGenericSignature) == 0) return null;
 	StringBuffer sig = new StringBuffer(10);
-	if (this.typeVariables != Binding.NO_TYPE_VARIABLES) {
-		sig.append('<');
-		for (int i = 0, length = this.typeVariables.length; i < length; i++) {
-			sig.append(this.typeVariables[i].genericSignature());
-		}
-		sig.append('>');
-	}
+	
 	sig.append('(');
 	for (int i = 0, length = this.parameters.length; i < length; i++) {
 		sig.append(this.parameters[i].genericTypeSignature());
@@ -475,12 +441,6 @@ public Object getDefaultValue() {
 		}
 		originalMethod.tagBits |= TagBits.DefaultValueResolved;
 	}
-	return null;
-}
-public TypeVariableBinding getTypeVariable(char[] variableName) {
-	for (int i = this.typeVariables.length; --i >= 0;)
-		if (CharOperation.equals(this.typeVariables[i].sourceName, variableName))
-			return this.typeVariables[i];
 	return null;
 }
 /**
@@ -820,9 +780,6 @@ public String toString() {
  */
 public MethodBinding tiebreakMethod() {
 	return this;
-}
-public TypeVariableBinding[] typeVariables() {
-	return this.typeVariables;
 }
 
 public void createFunctionTypeBinding(Scope scope)

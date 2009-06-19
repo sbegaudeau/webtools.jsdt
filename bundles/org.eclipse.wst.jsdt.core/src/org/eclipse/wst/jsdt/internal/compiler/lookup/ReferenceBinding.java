@@ -214,17 +214,11 @@ public final boolean canBeSeenBy(ReferenceBinding receiverType, ReferenceBinding
 	if (isPrivate()) {
 		// answer true if the receiverType is the receiver or its enclosingType
 		// AND the invocationType and the receiver have a common enclosingType
-		receiverCheck: {
-			if (!(receiverType == this || receiverType == enclosingType())) {
-				// special tolerance for type variable direct bounds
-				if (receiverType.isTypeVariable()) {
-					TypeVariableBinding typeVariable = (TypeVariableBinding) receiverType;
-					if (typeVariable.isErasureBoundTo(this.erasure()) || typeVariable.isErasureBoundTo(enclosingType().erasure()))
-						break receiverCheck;
-				}
-				return false;
-			}
+		if (!(receiverType == this || receiverType == enclosingType())) {
+			// special tolerance for type variable direct bounds
+			return false;
 		}
+		
 
 		if (invocationType != this) {
 			ReferenceBinding outerInvocationType = invocationType;
@@ -321,40 +315,6 @@ public ReferenceBinding closestMatch() {
 	return this; // by default, the closest match is the binding itself
 }
 
-public char[] computeGenericTypeSignature(TypeVariableBinding[] typeVariables) {
-
-	boolean isMemberOfGeneric = isMemberType() && (enclosingType().modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0;
-	if (typeVariables == Binding.NO_TYPE_VARIABLES && !isMemberOfGeneric) {
-		return signature();
-	}
-	StringBuffer sig = new StringBuffer(10);
-	if (isMemberOfGeneric) {
-	    char[] typeSig = enclosingType().genericTypeSignature();
-	    for (int i = 0; i < typeSig.length-1; i++) { // copy all but trailing semicolon
-	    	sig.append(typeSig[i]);
-	    }
-	    sig.append('.'); // NOTE: cannot override trailing ';' with '.' in enclosing signature, since shared char[]
-	    sig.append(this.sourceName);
-	}	else {
-	    char[] typeSig = signature();
-	    for (int i = 0; i < typeSig.length-1; i++) { // copy all but trailing semicolon
-	    	sig.append(typeSig[i]);
-	    }
-	}
-	if (typeVariables == Binding.NO_TYPE_VARIABLES) {
-	    sig.append(';');
-	} else {
-	    sig.append('<');
-	    for (int i = 0, length = typeVariables.length; i < length; i++) {
-	        sig.append(typeVariables[i].genericTypeSignature());
-	    }
-	    sig.append(">;"); //$NON-NLS-1$
-	}
-	int sigLength = sig.length();
-	char[] result = new char[sigLength];
-	sig.getChars(0, sigLength, result, 0);
-	return result;
-}
 public void computeId() {
 
 	switch (this.compoundName.length) {
@@ -642,14 +602,6 @@ public PackageBinding getPackage() {
 	return this.fPackage;
 }
 
-public TypeVariableBinding getTypeVariable(char[] variableName) {
-	TypeVariableBinding[] typeVariables = typeVariables();
-	for (int i = typeVariables.length; --i >= 0;)
-		if (CharOperation.equals(typeVariables[i].sourceName, variableName))
-			return typeVariables[i];
-	return null;
-}
-
 public int hashCode() {
 	// ensure ReferenceBindings hash to the same posiiton as UnresolvedReferenceBindings so they can be replaced without rehashing
 	// ALL ReferenceBindings are unique when created so equals() is the same as ==
@@ -856,19 +808,7 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 	if (this.isEquivalentTo(otherType))
 		return true;
 	switch (otherType.kind()) {
-		case Binding.TYPE_PARAMETER :
-		case Binding.GENERIC_TYPE :
 		case Binding.TYPE :
-		case Binding.PARAMETERIZED_TYPE :
-		case Binding.RAW_TYPE :
-			switch (this.kind()) {
-				case Binding.GENERIC_TYPE :
-				case Binding.PARAMETERIZED_TYPE :
-				case Binding.RAW_TYPE :
-					if (this.erasure() == otherType.erasure())
-						return false; // should have passed equivalence check
-										// above if same erasure
-			}
 			ReferenceBinding otherReferenceType = (ReferenceBinding) otherType;
 			if (otherReferenceType.isInterface()) // could be annotation type
 				return implementsInterface(otherReferenceType, true);
@@ -1073,19 +1013,6 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 	} else {
 		readableName = CharOperation.concatWith(this.compoundName, '.');
 	}
-	TypeVariableBinding[] typeVars;
-	if ((typeVars = this.typeVariables()) != Binding.NO_TYPE_VARIABLES) {
-	    StringBuffer nameBuffer = new StringBuffer(10);
-	    nameBuffer.append(readableName).append('<');
-	    for (int i = 0, length = typeVars.length; i < length; i++) {
-	        if (i > 0) nameBuffer.append(',');
-	        nameBuffer.append(typeVars[i].readableName());
-	    }
-	    nameBuffer.append('>');
-		int nameLength = nameBuffer.length();
-		readableName = new char[nameLength];
-		nameBuffer.getChars(0, nameLength, readableName, 0);
-	}
 	return readableName;
 }
 
@@ -1095,19 +1022,6 @@ public char[] shortReadableName() /*Object*/ {
 		shortReadableName = CharOperation.concat(enclosingType().shortReadableName(), this.sourceName, '.');
 	} else {
 		shortReadableName = this.sourceName;
-	}
-	TypeVariableBinding[] typeVars;
-	if ((typeVars = this.typeVariables()) != Binding.NO_TYPE_VARIABLES) {
-	    StringBuffer nameBuffer = new StringBuffer(10);
-	    nameBuffer.append(shortReadableName).append('<');
-	    for (int i = 0, length = typeVars.length; i < length; i++) {
-	        if (i > 0) nameBuffer.append(',');
-	        nameBuffer.append(typeVars[i].shortReadableName());
-	    }
-	    nameBuffer.append('>');
-		int nameLength = nameBuffer.length();
-		shortReadableName = new char[nameLength];
-		nameBuffer.getChars(0, nameLength, shortReadableName, 0);
 	}
 	return shortReadableName;
 }

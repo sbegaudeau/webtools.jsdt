@@ -814,7 +814,6 @@ private Binding findImport(char[][] compoundName, int length) {
 	}
 
 	while (i < length) {
-		type = (ReferenceBinding)environment.convertToRawType(type); // type imports are necessarily raw for all except last
 		if (!type.canBeSeenBy(environment.defaultPackage))
 			return new ProblemReferenceBinding(CharOperation.subarray(compoundName, 0, i), type, ProblemReasons.NotVisible);
 
@@ -1122,11 +1121,7 @@ private ReferenceBinding typeToRecord(TypeBinding type) {
 
 	switch (type.kind()) {
 		case Binding.BASE_TYPE :
-		case Binding.TYPE_PARAMETER :
 			return null;
-		case Binding.PARAMETERIZED_TYPE :
-		case Binding.RAW_TYPE :
-			type = type.erasure();
 	}
 	if (type instanceof CompilationUnitBinding)
 		return null;

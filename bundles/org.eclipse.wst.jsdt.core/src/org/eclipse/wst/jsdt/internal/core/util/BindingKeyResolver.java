@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
 public class BindingKeyResolver extends BindingKeyParser {
 	Compiler compiler;
@@ -158,28 +157,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.compilerBinding = new PackageBinding(this.compoundName, null, this.environment);
 	}
 
-	public void consumeParameterizedType(char[] simpleTypeName, boolean isRaw) {
-		TypeBinding[] arguments = getTypeBindingArguments();
-		if (simpleTypeName != null) {
-			if (this.genericType == null) {
-				// parameterized member type with raw enclosing type
-				this.genericType = ((ReferenceBinding) this.typeBinding).getMemberType(simpleTypeName);
-			} else {
-				// parameterized member type with parameterized enclosing type
-				this.genericType = this.genericType.getMemberType(simpleTypeName);
-			}
-			
-			this.typeBinding = this.environment.createParameterizedType(this.genericType, arguments, (ReferenceBinding) this.typeBinding);
-		} else {
-			// parameterized top level type or parameterized member type with raw enclosing type
-			this.genericType = (ReferenceBinding) this.typeBinding;
-			ReferenceBinding enclosing = this.genericType.enclosingType();
-			if (enclosing != null) enclosing = (ReferenceBinding) this.environment.convertToRawType(enclosing);
-			this.typeBinding = this.environment.createParameterizedType(this.genericType, arguments, enclosing);
-		}
-	}
-
-
 	public void consumeParser(BindingKeyParser parser) {
 		this.types.add(parser);
 	}
@@ -193,10 +170,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 		this.scope = (BlockScope) this.scope.subscopes[scopeNumber];
 	}
 
-	public void consumeRawType() {
-		if (this.typeBinding == null) return;
-		this.typeBinding = this.environment.convertToRawType(this.typeBinding);
-	}
 	public void consumeSecondaryType(char[] simpleTypeName) {
 		this.secondarySimpleName = simpleTypeName;
 	}
@@ -222,24 +195,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 		if (this.typeBinding != null) {
 			this.typeBinding = getArrayBinding(this.dimension, this.typeBinding);
 			this.compilerBinding = this.typeBinding;
-		}
-	}
-
-	public void consumeTypeVariable(char[] position, char[] typeVariableName) {
-		if (position.length > 0) {
-			int pos = Integer.parseInt(new String(position));
-			MethodBinding[] methods = ((ReferenceBinding) this.typeBinding).availableMethods(); // resilience
-			if (methods != null && pos < methods.length) {
-				this.methodBinding = methods[pos];
-			}
-		}
-	 	TypeVariableBinding[] typeVariableBindings = this.methodBinding != null ? this.methodBinding.typeVariables() : this.typeBinding.typeVariables();
-	 	for (int i = 0, length = typeVariableBindings.length; i < length; i++) {
-			TypeVariableBinding typeVariableBinding = typeVariableBindings[i];
-			if (CharOperation.equals(typeVariableName, typeVariableBinding.sourceName())) {
-				this.typeBinding = typeVariableBinding;
-				return;
-			}
 		}
 	}
 

@@ -167,7 +167,6 @@ public class ClassScope extends Scope {
 		LocalTypeBinding localType = new LocalTypeBinding(this, enclosingType, this.innermostSwitchCase());
 		referenceContext.binding = localType;
 		checkAndSetModifiers();
-		buildTypeVariables();
 
 		// Look at member types
 		ReferenceBinding[] memberTypeBindings = Binding.NO_MEMBER_TYPES;
@@ -334,14 +333,8 @@ public class ClassScope extends Scope {
 		environment().setAccessRestriction(sourceType, accessRestriction);
 		sourceType.fPackage.addType(sourceType);
 		checkAndSetModifiers();
-		buildTypeVariables();
 		buildMemberTypes(accessRestriction);
 		return sourceType;
-	}
-
-	private void buildTypeVariables() {
-	    SourceTypeBinding sourceType = getReferenceBinding();
-	    sourceType.typeVariables = Binding.NO_TYPE_VARIABLES;
 	}
 
 	private void checkAndSetModifiers() {

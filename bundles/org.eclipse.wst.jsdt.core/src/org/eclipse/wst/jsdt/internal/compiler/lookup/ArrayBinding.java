@@ -41,36 +41,6 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 	this.fPackage=environment.defaultPackage;
 }
 
-/**
- * Collect the substitutes into a map for certain type variables inside the receiver type
- * e.g.   Collection<T>.collectSubstitutes(Collection<List<X>>, Map), will populate Map with: T --> List<X>
- * Constraints:
- *   A << F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_EXTENDS (1))
- *   A = F   corresponds to:      F.collectSubstitutes(..., A, ..., CONSTRAINT_EQUAL (0))
- *   A >> F   corresponds to:   F.collectSubstitutes(..., A, ..., CONSTRAINT_SUPER (2))
-*/
-public void collectSubstitutes(Scope scope, TypeBinding actualType, InferenceContext inferenceContext, int constraint) {
-
-//	if ((this.tagBits & TagBits.HasTypeVariable) == 0) return;
-//	if (actualType == TypeBinding.NULL) return;
-//
-//	switch(actualType.kind()) {
-//		case Binding.ARRAY_TYPE :
-//	        int actualDim = actualType.dimensions();
-//	        if (actualDim == this.dimensions) {
-//			    this.leafComponentType.collectSubstitutes(scope, actualType.leafComponentType(), inferenceContext, constraint);
-//	        } else if (actualDim > this.dimensions) {
-//	            ArrayBinding actualReducedType = this.environment.createArrayType(actualType.leafComponentType(), actualDim - this.dimensions);
-//	            this.leafComponentType.collectSubstitutes(scope, actualReducedType, inferenceContext, constraint);
-//	        }
-//			break;
-//		case Binding.TYPE_PARAMETER :
-//			//TypeVariableBinding variable = (TypeVariableBinding) otherType;
-//			// TODO (philippe) should consider array bounds, and recurse
-//			break;
-//	}
-}
-
 /*
  * brakets leafUniqueKey
  * p.X[][] --> [[Lp/X;
@@ -166,9 +136,6 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 		case Binding.TYPE :
 		    return otherType==this.referenceBinding;
 
-		case Binding.TYPE_PARAMETER :
-			return false;
-
 	}
 	//Check dimensions - Java does not support explicitly sized dimensions for types.
 	//However, if it did, the type checking support would go here.
@@ -236,7 +203,7 @@ public char[] sourceName() {
 }
 public void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceBinding resolvedType, LookupEnvironment env) {
 	if (this.leafComponentType == unresolvedType) {
-		this.leafComponentType = env.convertUnresolvedBinaryToRawType(resolvedType);
+		this.leafComponentType = resolvedType;
 		this.tagBits |= this.leafComponentType.tagBits & (TagBits.HasTypeVariable | TagBits.HasDirectWildcard);
 	}
 }

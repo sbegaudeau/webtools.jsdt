@@ -189,12 +189,8 @@ class DefaultBindingResolver extends BindingResolver {
 				return getPackageBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding) binding);
 			case Binding.TYPE:
 			case Binding.BASE_TYPE:
-			case Binding.GENERIC_TYPE:
-			case Binding.PARAMETERIZED_TYPE:
-			case Binding.RAW_TYPE:
 				return getTypeBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
 			case Binding.ARRAY_TYPE:
-			case Binding.TYPE_PARAMETER:
 				return new TypeBinding(this, (org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding) binding);
 			case Binding.METHOD:
 				return getMethodBinding((org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding) binding);

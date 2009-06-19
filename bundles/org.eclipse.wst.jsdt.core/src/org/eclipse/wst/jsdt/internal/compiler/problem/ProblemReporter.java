@@ -92,7 +92,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
@@ -3956,20 +3955,6 @@ public void parameterAssignment(LocalVariableBinding local, ASTNode location) {
 		severity,
 		nodeSourceStart(local, location),
 		nodeSourceEnd(local, location)); // should never be a qualified name reference
-}
-private String parameterBoundAsString(TypeVariableBinding typeVariable, boolean makeShort) {
-    StringBuffer nameBuffer = new StringBuffer(10);
-    if (typeVariable.firstBound == typeVariable.superclass) {
-        nameBuffer.append(makeShort ? typeVariable.superclass.shortReadableName() : typeVariable.superclass.readableName());
-    }
-    int length;
-    if ((length = typeVariable.superInterfaces.length) > 0) {
-	    for (int i = 0; i < length; i++) {
-	        if (i > 0 || typeVariable.firstBound == typeVariable.superclass) nameBuffer.append(" & "); //$NON-NLS-1$
-	        nameBuffer.append(makeShort ? typeVariable.superInterfaces[i].shortReadableName() : typeVariable.superInterfaces[i].readableName());
-	    }
-	}
-	return nameBuffer.toString();
 }
 public void parseError(
 	int startPosition,
