@@ -46,7 +46,6 @@ public char[][] getExceptionTypeNames() {
 public abstract char[] getReturnTypeName();
 
 public abstract boolean isConstructor();
-public abstract boolean isAnnotationMethod();
 protected void setArgumentNames(char[][] names) {
 	this.argumentNames = names;
 }

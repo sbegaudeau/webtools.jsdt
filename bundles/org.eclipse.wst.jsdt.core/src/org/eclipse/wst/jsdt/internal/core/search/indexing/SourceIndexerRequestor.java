@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
@@ -146,11 +145,6 @@ private void enterClass(TypeInfo typeInfo) {
 		// add implicit constructor reference to default constructor
 		this.indexer.addConstructorReference(typeInfo.superclass, 0);
 	}
-	if (typeInfo.superinterfaces != null){
-		for (int i = 0, length = typeInfo.superinterfaces.length; i < length; i++) {
-			typeInfo.superinterfaces[i] = getSimpleName(typeInfo.superinterfaces[i]);
-		}
-	}
 	char[][] typeNames;
 	if (this.methodDepth > 0) {
 		// set specific ['0'] value for local and anonymous to be able to filter them
@@ -159,14 +153,6 @@ private void enterClass(TypeInfo typeInfo) {
 		typeNames = this.enclosingTypeNames();
 	}
 	char[][] typeParameterSignatures = null;
-	if (typeInfo.typeParameters != null) {
-		int typeParametersLength = typeInfo.typeParameters.length;
-		typeParameterSignatures = new char[typeParametersLength][];
-		for (int i = 0; i < typeParametersLength; i++) {
-			ISourceElementRequestor.TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-			typeParameterSignatures[i] = Signature.createTypeParameterSignature(typeParameterInfo.name, typeParameterInfo.bounds == null ? CharOperation.NO_CHAR_CHAR : typeParameterInfo.bounds);
-		}
-	}
 	char [] typeName=typeInfo.name;
 	char [] pkgName=this.packageName;
 	int index;
@@ -175,7 +161,7 @@ private void enterClass(TypeInfo typeInfo) {
 		pkgName=CharOperation.subarray(typeName, 0, index);
 		typeName=CharOperation.subarray(typeName, index+1, typeName.length);
 	}
-	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeInfo.superinterfaces, typeParameterSignatures, typeInfo.secondary);
+	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeParameterSignatures, typeInfo.secondary);
 	this.pushTypeName(typeInfo.name);
 }
 /**
@@ -193,11 +179,6 @@ public void enterConstructor(MethodInfo methodInfo) {
 }
 private void enterEnum(TypeInfo typeInfo) {
 	// eliminate possible qualifications, given they need to be fully resolved again
-	if (typeInfo.superinterfaces != null){
-		for (int i = 0, length = typeInfo.superinterfaces.length; i < length; i++){
-			typeInfo.superinterfaces[i] = getSimpleName(typeInfo.superinterfaces[i]);
-		}
-	}
 	char[][] typeNames;
 	if (this.methodDepth > 0) {
 		typeNames = ONE_ZERO_CHAR;
@@ -205,7 +186,7 @@ private void enterEnum(TypeInfo typeInfo) {
 		typeNames = this.enclosingTypeNames();
 	}
 	char[] superclass = typeInfo.superclass == null ? CharOperation.concatWith(TypeConstants.JAVA_LANG_ENUM, '.'): typeInfo.superclass;
-	this.indexer.addEnumDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, superclass, typeInfo.superinterfaces, typeInfo.secondary);
+	this.indexer.addEnumDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, superclass, typeInfo.secondary);
 	this.pushTypeName(typeInfo.name);
 }
 /**
@@ -224,31 +205,6 @@ public void enterField(FieldInfo fieldInfo) {
  */
 public void enterInitializer(int declarationSourceStart, int modifiers) {
 	this.methodDepth++;
-}
-private void enterInterface(TypeInfo typeInfo) {
-	// eliminate possible qualifications, given they need to be fully resolved again
-	if (typeInfo.superinterfaces != null){
-		for (int i = 0, length = typeInfo.superinterfaces.length; i < length; i++){
-			typeInfo.superinterfaces[i] = getSimpleName(typeInfo.superinterfaces[i]);
-		}
-	}
-	char[][] typeNames;
-	if (this.methodDepth > 0) {
-		typeNames = ONE_ZERO_CHAR;
-	} else {
-		typeNames = this.enclosingTypeNames();
-	}
-	char[][] typeParameterSignatures = null;
-	if (typeInfo.typeParameters != null) {
-		int typeParametersLength = typeInfo.typeParameters.length;
-		typeParameterSignatures = new char[typeParametersLength][];
-		for (int i = 0; i < typeParametersLength; i++) {
-			ISourceElementRequestor.TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-			typeParameterSignatures[i] = Signature.createTypeParameterSignature(typeParameterInfo.name, typeParameterInfo.bounds);
-		}
-	}
-	this.indexer.addInterfaceDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, typeInfo.superinterfaces, typeParameterSignatures, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);
 }
 /**
  * @see ISourceElementRequestor#enterMethod(MethodInfo)
@@ -269,9 +225,6 @@ public void enterType(TypeInfo typeInfo) {
 			break;
 		case TypeDeclaration.ANNOTATION_TYPE_DECL:
 			enterAnnotationType(typeInfo);
-			break;
-		case TypeDeclaration.INTERFACE_DECL:
-			enterInterface(typeInfo);
 			break;
 		case TypeDeclaration.ENUM_DECL:
 			enterEnum(typeInfo);

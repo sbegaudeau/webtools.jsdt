@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,27 +45,13 @@ public interface ISourceElementRequestor {
 		public int nameSourceStart;
 		public int nameSourceEnd;
 		public char[] superclass;
-		public char[][] superinterfaces;
-		public TypeParameterInfo[] typeParameters;
-		public long[] annotationPositions;
 		public char[][] categories;
 		public boolean secondary;
 		public boolean anonymousMember;
 	}
 
-	public static class TypeParameterInfo {
-		public int declarationStart;
-		public int declarationEnd;
-		public char[] name;
-		public int nameSourceStart;
-		public int nameSourceEnd;
-		public char[][] bounds;
-		public long[] annotationPositions;
-	}
-
 	public static class MethodInfo {
 		public boolean isConstructor;
-		public boolean isAnnotation;
 		public int declarationStart;
 		public int modifiers;
 		public char[] returnType;
@@ -75,8 +61,6 @@ public interface ISourceElementRequestor {
 		public char[][] parameterTypes;
 		public char[][] parameterNames;
 		public char[][] exceptionTypes;
-		public TypeParameterInfo[] typeParameters;
-		public long[] annotationPositions;
 		public char[][] categories;
 	}
 
@@ -87,7 +71,6 @@ public interface ISourceElementRequestor {
 		public char[] name;
 		public int nameSourceStart;
 		public int nameSourceEnd;
-		public long[] annotationPositions;
 		public char[][] categories;
 	}
 

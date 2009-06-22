@@ -47,7 +47,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	protected PrintWriter out; // output for messages that are not sent to problemReporter
 
 	// management of unit to be processed
-	//public CompilationUnitResult currentCompilationUnitResult;
 	public CompilationUnitDeclaration[] unitsToProcess;
 	public int totalUnits; // (totalUnits-1) gives the last unit in unitToProcess
 
@@ -58,7 +57,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public static boolean DEBUG = false;
 	public int parseThreshold = -1;
 
-	public AbstractAnnotationProcessorManager annotationProcessorManager;
 	public ReferenceBinding[] referenceBindings;
 
 
@@ -334,13 +332,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 			beginToCompile(sourceUnits);
 
-			if (this.annotationProcessorManager != null) {
-				processAnnotations();
-				if (!options.generateClassFiles) {
-					// -proc:only was set on the command line
-					return;
-				}
-			}
 			// process all units (some more could be injected in the loop by the lookup environment)
 			for (; i < this.totalUnits; i++) {
 				unit = unitsToProcess[i];
@@ -606,51 +597,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		unit.compilationResult.totalUnitsKnown = totalUnits;
 
 		this.lookupEnvironment.unitBeingCompleted = null;
-	}
-
-	protected void processAnnotations() {
-		int newUnitSize = 0;
-		int newClassFilesSize = 0;
-		int bottom = 0;
-		int top = this.unitsToProcess.length;
-		ReferenceBinding[] binaryTypeBindingsTemp = this.referenceBindings;
-		if (top == 0 && binaryTypeBindingsTemp == null) return;
-		this.referenceBindings = null;
-		do {
-			// extract units to process
-			int length = top - bottom;
-			CompilationUnitDeclaration[] currentUnits = new CompilationUnitDeclaration[length];
-			int index = 0;
-			for (int i = bottom; i < top; i++) {
-				CompilationUnitDeclaration currentUnit = this.unitsToProcess[i];
-				if ((currentUnit.bits & ASTNode.IsImplicitUnit) == 0) {
-					currentUnits[index++] = currentUnit;
-				}
-			}
-			if (index != length) {
-				System.arraycopy(currentUnits, 0, (currentUnits = new CompilationUnitDeclaration[index]), 0, index);
-			}
-			this.annotationProcessorManager.processAnnotations(currentUnits, binaryTypeBindingsTemp, false);
-			ICompilationUnit[] newUnits = this.annotationProcessorManager.getNewUnits();
-			newUnitSize = newUnits.length;
-			ReferenceBinding[] newClassFiles = this.annotationProcessorManager.getNewClassFiles();
-			binaryTypeBindingsTemp = newClassFiles;
-			newClassFilesSize = newClassFiles.length;
-			if (newUnitSize != 0) {
-				// we reset the compiler in order to restart with the new units
-				internalBeginToCompile(newUnits, newUnitSize);
-				bottom = top;
-				top = this.unitsToProcess.length;
-			} else {
-				bottom = top;
-			}
-			this.annotationProcessorManager.reset();
-		} while (newUnitSize != 0 || newClassFilesSize != 0);
-		// one more loop to create possible resources
-		// this loop cannot create any java source files
-		// TODO (olivier) we should check if we should pass any unit at all for the last round
-		this.annotationProcessorManager.processAnnotations(null, null, true);
-		// TODO we might want to check if this loop created new units
 	}
 
 	public void reset() {

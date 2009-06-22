@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Locale;
@@ -33,12 +32,10 @@ import org.eclipse.wst.jsdt.core.compiler.BuildContext;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -141,8 +138,6 @@ public void acceptResult(CompilationResult result) {
 				problemSourceFiles.add(compilationUnit);
 
 		String typeLocator = compilationUnit.typeLocator();
-		if (result.hasAnnotations && this.filesWithAnnotations != null) // only initialized if an annotation processor is attached
-			this.filesWithAnnotations.add(compilationUnit);
 
 		finishedWith(typeLocator, result, compilationUnit.getMainTypeName(), new ArrayList(), new ArrayList());
 		notifier.compiled(compilationUnit);
@@ -379,16 +374,6 @@ public ICompilationUnit fromIFile(IFile file) {
 	return findSourceFile(file, true);
 }
 
-protected void initializeAnnotationProcessorManager(Compiler newCompiler) {
-	AbstractAnnotationProcessorManager annotationManager = JavaModelManager.getJavaModelManager().createAnnotationProcessorManager();
-	if (annotationManager != null) {
-		annotationManager.configureFromPlatform(newCompiler, this, javaBuilder.javaProject);
-		annotationManager.setErr(new PrintWriter(System.err));
-		annotationManager.setOut(new PrintWriter(System.out));
-	}
-	newCompiler.annotationProcessorManager = annotationManager;
-}
-
 protected RuntimeException internalException(CoreException t) {
 	ImageBuilderInternalException imageBuilderException = new ImageBuilderInternalException(t);
 	if (inCompiler)
@@ -439,12 +424,6 @@ protected Compiler newCompiler() {
 
 	// enable the compiler reference info support
 	options.produceReferenceInfo = true;
-
-	if (options.complianceLevel >= ClassFileConstants.JDK1_6
-			&& options.processAnnotations) {
-		// support for Java 6 annotation processors
-		initializeAnnotationProcessorManager(newCompiler);
-	}
 
 	return newCompiler;
 }

@@ -224,8 +224,6 @@ public void enterField(FieldInfo fieldInfo) {
 	  info.setTypeName(typeName);
 	}
 
-	this.unitInfo.addAnnotationPositions(handle, fieldInfo.annotationPositions);
-
 	addToChildren(parentInfo, handle);
 	if (parentInfo instanceof CompilationUnitElementInfo) {
 		CompilationUnitElementInfo compilationUnitInfo = (CompilationUnitElementInfo) parentInfo;
@@ -304,8 +302,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	SourceMethodElementInfo info;
 	if (methodInfo.isConstructor)
 		info = new SourceConstructorInfo();
-	else if (methodInfo.isAnnotation)
-		info = new SourceAnnotationMethodInfo();
 	else
 		info = new SourceMethodInfo();
 	info.setSourceRangeStart(methodInfo.declarationStart);
@@ -324,7 +320,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	info.setExceptionTypeNames(exceptionTypes);
 	for (int i = 0, length = exceptionTypes.length; i < length; i++)
 		exceptionTypes[i] = manager.intern(exceptionTypes[i]);
-	this.unitInfo.addAnnotationPositions(handle, methodInfo.annotationPositions);
 	addToChildren(parentInfo, handle);
 	if (parentInfo instanceof CompilationUnitElementInfo) {
 		CompilationUnitElementInfo compilationUnitInfo = (CompilationUnitElementInfo) parentInfo;
@@ -333,13 +328,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	this.newElements.put(handle, info);
 	this.infoStack.push(info);
 	this.handleStack.push(handle);
-
-	if (methodInfo.typeParameters != null) {
-		for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
-			TypeParameterInfo typeParameterInfo = methodInfo.typeParameters[i];
-			exitMember(typeParameterInfo.declarationEnd);
-		}
-	}
 }
 /**
  * @see ISourceElementRequestor
@@ -380,25 +368,13 @@ public void enterType(TypeInfo typeInfo) {
 	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	char[] superclass = typeInfo.superclass;
 	info.setSuperclassName(superclass == null ? null : manager.intern(superclass));
-	char[][] superinterfaces = typeInfo.superinterfaces;
-	for (int i = 0, length = superinterfaces == null ? 0 : superinterfaces.length; i < length; i++)
-		superinterfaces[i] = manager.intern(superinterfaces[i]);
-	info.setSuperInterfaceNames(superinterfaces);
 	info.addCategories(handle, typeInfo.categories);
 	if (parentHandle.getElementType() == IJavaScriptElement.TYPE)
 		((SourceTypeElementInfo) parentInfo).addCategories(handle, typeInfo.categories);
 	addToChildren(parentInfo, handle);
-	this.unitInfo.addAnnotationPositions(handle, typeInfo.annotationPositions);
 	this.newElements.put(handle, info);
 	this.infoStack.push(info);
 	this.handleStack.push(handle);
-
-	if (typeInfo.typeParameters != null) {
-		for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
-			TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-			exitMember(typeParameterInfo.declarationEnd);
-		}
-	}
 }
 /**
  * @see ISourceElementRequestor
@@ -467,13 +443,6 @@ public void exitMethod(int declarationEnd, int defaultValueStart, int defaultVal
 	SourceMethodElementInfo info = (SourceMethodElementInfo) this.infoStack.pop();
 	info.setSourceRangeEnd(declarationEnd);
 	setChildren(info);
-
-	// remember default value of annotation method
-	if (info.isAnnotationMethod()) {
-		SourceAnnotationMethodInfo annotationMethodInfo = (SourceAnnotationMethodInfo) info;
-		annotationMethodInfo.defaultValueStart = defaultValueStart;
-		annotationMethodInfo.defaultValueEnd = defaultValueEnd;
-	}
 	this.handleStack.pop();
 }
 /**

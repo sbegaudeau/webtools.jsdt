@@ -24,7 +24,6 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
@@ -59,10 +58,8 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.core.CompilationUnitElementInfo;
 import org.eclipse.wst.jsdt.internal.core.ImportDeclaration;
 import org.eclipse.wst.jsdt.internal.core.InitializerElementInfo;
-import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.PackageFragment;
 import org.eclipse.wst.jsdt.internal.core.SourceField;
 import org.eclipse.wst.jsdt.internal.core.SourceFieldElementInfo;
@@ -98,7 +95,6 @@ public class SourceTypeConverter {
 	private ProblemReporter problemReporter;
 	private ICompilationUnit cu;
 	private char[] source;
-	private HashMap annotationPositions;
 	private boolean has1_5Compliance;
 
 	int namePos;
@@ -145,7 +141,6 @@ public class SourceTypeConverter {
 		SourceTypeElementInfo topLevelTypeInfo = (SourceTypeElementInfo) sourceTypes[0];
 		org.eclipse.wst.jsdt.core.IJavaScriptUnit cuHandle = topLevelTypeInfo.getHandle().getJavaScriptUnit();
 		this.cu = (ICompilationUnit) cuHandle;
-		this.annotationPositions = ((CompilationUnitElementInfo) ((JavaElement) this.cu).getElementInfo()).annotationPositions;
 
 		if (true){//this.has1_5Compliance && this.annotationPositions != null && this.annotationPositions.size() > 10) { // experimental value
 			// if more than 10 annotations, diet parse as this is faster

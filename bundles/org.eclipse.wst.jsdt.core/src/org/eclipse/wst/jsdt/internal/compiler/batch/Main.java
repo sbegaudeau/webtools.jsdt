@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
-import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
@@ -3315,7 +3314,6 @@ public void performCompilation() throws InvalidInputException {
 	if (this.compilerOptions.complianceLevel >= ClassFileConstants.JDK1_6
 			&& this.compilerOptions.processAnnotations) {
 		if (checkVMVersion(ClassFileConstants.JDK1_6)) {
-			initializeAnnotationProcessorManager();
 			if (this.classNames != null) {
 				this.batchCompiler.setBinaryTypes(processClassNames(this.batchCompiler.lookupEnvironment));
 			}
@@ -3370,27 +3368,7 @@ protected ReferenceBinding[] processClassNames(LookupEnvironment environment) th
 	}
 	return referenceBindings;
 }
-protected void initializeAnnotationProcessorManager() {
-	try {
-		Class c = Class.forName("org.eclipse.wst.jsdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager"); //$NON-NLS-1$
-		AbstractAnnotationProcessorManager annotationManager = (AbstractAnnotationProcessorManager) c.newInstance();
-		annotationManager.configure(this, this.expandedCommandLine);
-		annotationManager.setErr(this.err);
-		annotationManager.setOut(this.out);
-		this.batchCompiler.annotationProcessorManager = annotationManager;
-	} catch (ClassNotFoundException e) {
-		// ignore
-	} catch (InstantiationException e) {
-		// should not happen
-		throw new org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation();
-	} catch (IllegalAccessException e) {
-		// should not happen
-		throw new org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation();
-	} catch(UnsupportedClassVersionError e) {
-		// report a warning
-		this.logger.logIncorrectVMVersionForAnnotationProcessing();
-	}
-}
+
 public void printUsage() {
 	printUsage("misc.usage"); //$NON-NLS-1$
 }

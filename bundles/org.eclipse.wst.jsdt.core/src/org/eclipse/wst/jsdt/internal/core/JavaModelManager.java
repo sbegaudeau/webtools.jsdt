@@ -110,7 +110,6 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
-import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -1432,55 +1431,6 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			JavaModelManager.PERF_CONTAINER_INITIALIZER = PerformanceStats.isEnabled(CONTAINER_INITIALIZER_PERF);
 			ReconcileWorkingCopyOperation.PERF = PerformanceStats.isEnabled(RECONCILE_PERF);
 		}
-	}
-
-	/*
-	 * Return a new Java 6 annotation processor manager.  The manager will need to
-	 * be configured before it can be used.  Returns null if a manager cannot be
-	 * created, ie if the current VM does not support Java 6 annotation processing.
-	 */
-	public AbstractAnnotationProcessorManager createAnnotationProcessorManager() {
-		synchronized(this) {
-			if (this.annotationProcessorManagerFactory == null) {
-				IExtensionPoint extension = Platform.getExtensionRegistry().getExtensionPoint(JavaScriptCore.PLUGIN_ID, ANNOTATION_PROCESSOR_MANAGER_EXTPOINT_ID);
-				if (extension == null)
-					return null;
-				IExtension[] extensions = extension.getExtensions();
-				for(int i = 0; i < extensions.length; i++) {
-					if (i > 0) {
-						Util.log(null, "An annotation processor manager is already registered: ignoring " + extensions[i].getUniqueIdentifier()); //$NON-NLS-1$
-						break;
-					}
-					IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
-					for(int j = 0; j < configElements.length; j++) {
-						final IConfigurationElement configElement = configElements[j];
-						if ("annotationProcessorManager".equals(configElement.getName())) { //$NON-NLS-1$
-							this.annotationProcessorManagerFactory = configElement;
-							break;
-						}
-					}
-				}
-			}
-		}
-
-		if (this.annotationProcessorManagerFactory == null) {
-			return null;
-		}
-		final AbstractAnnotationProcessorManager[] apm = new AbstractAnnotationProcessorManager[1];
-		apm[0] = null;
-		final IConfigurationElement factory = this.annotationProcessorManagerFactory;
-		SafeRunner.run(new ISafeRunnable() {
-			public void handleException(Throwable exception) {
-				Util.log(exception, "Exception occurred while loading annotation processor manager"); //$NON-NLS-1$
-			}
-			public void run() throws Exception {
-				Object executableExtension = factory.createExecutableExtension("class"); //$NON-NLS-1$
-				if (executableExtension instanceof AbstractAnnotationProcessorManager) {
-					apm[0] = (AbstractAnnotationProcessorManager) executableExtension;
-				}
-			}
-		});
-		return apm[0];
 	}
 
 	/*

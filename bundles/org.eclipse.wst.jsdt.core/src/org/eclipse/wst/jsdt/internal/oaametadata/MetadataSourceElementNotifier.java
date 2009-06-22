@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,6 @@ public class MetadataSourceElementNotifier {
 		String superClass=clazz.getSuperClass();
 		if (superClass!=null)
 			typeInfo.superclass =superClass.toCharArray();
-		typeInfo.superinterfaces = null;
 		typeInfo.secondary = false;
 
 		typeInfo.anonymousMember = false;
@@ -145,8 +144,6 @@ public class MetadataSourceElementNotifier {
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.exceptionTypes = null;
-		methodInfo.typeParameters = null;//getTypeParameterInfos(methodDeclaration.typeParameters());
-		methodInfo.annotationPositions = null;//collectAnnotationPositions(methodDeclaration.annotations);
 		methodInfo.categories =null;// (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 

@@ -4779,19 +4779,6 @@ protected void consumeRecoveryMethodHeaderName() {
 //	}
 	this.consumeMethodHeaderName(false);
 }
-protected void consumeRecoveryMethodHeaderNameWithTypeParameters() {
-	// this method is call only inside recovery
-	boolean isAnnotationMethod = false;
-//	if(this.currentElement instanceof RecoveredType) {
-//		isAnnotationMethod = (((RecoveredType)this.currentElement).typeDeclaration.modifiers & ClassFileConstants.AccAnnotation) != 0;
-//	} else {
-//		RecoveredType recoveredType = this.currentElement.enclosingType();
-//		if(recoveredType != null) {
-//			isAnnotationMethod = (recoveredType.typeDeclaration.modifiers & ClassFileConstants.AccAnnotation) != 0;
-//		}
-//	}
-	this.consumeMethodHeaderNameWithTypeParameters(isAnnotationMethod);
-}
 protected void consumeReduceImports() {
 	// Consume imports
 	int length;

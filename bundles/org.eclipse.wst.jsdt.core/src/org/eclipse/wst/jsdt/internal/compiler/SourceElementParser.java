@@ -115,7 +115,6 @@ public class SourceElementParser extends CommentRecorderParser {
 	
 	
 	public static final boolean NOTIFY_LOCALS=false;
-	static final ISourceElementRequestor.TypeParameterInfo[ ] EMPTY_TYPEPARAMETERINFO=new ISourceElementRequestor.TypeParameterInfo[0];
 /**
  * An ast visitor that visits local type declarations.
  */
@@ -430,28 +429,6 @@ protected void consumeConstructorHeaderNameWithTypeParameters() {
 		rememberCategories();
 	}
 }
-protected void consumeEnumConstantWithClassBody() {
-	super.consumeEnumConstantWithClassBody();
-	if ((currentToken == TokenNameCOMMA || currentToken == TokenNameSEMICOLON)
-			&& astStack[astPtr] instanceof FieldDeclaration) {
-		this.sourceEnds.put(this.astStack[this.astPtr], this.scanner.currentPosition - 1);
-		rememberCategories();
-	}
-}
-protected void consumeEnumConstantNoClassBody() {
-	super.consumeEnumConstantNoClassBody();
-	if ((currentToken == TokenNameCOMMA || currentToken == TokenNameSEMICOLON)
-			&& this.astStack[this.astPtr] instanceof FieldDeclaration) {
-		this.sourceEnds.put(this.astStack[this.astPtr], this.scanner.currentPosition - 1);
-		rememberCategories();
-	}
-}
-protected void consumeEnumHeaderName() {
-	int currentAstPtr = this.astPtr;
-	super.consumeEnumHeaderName();
-	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
-		rememberCategories();
-}
 protected void consumeExitVariableWithInitialization() {
 	// ExitVariableWithInitialization ::= $empty
 	// the scanner is located after the comma or the semi-colon.
@@ -505,12 +482,6 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 	// the declarationSourceStart to be set
 	flushCommentsDefinedPriorTo(this.scanner.currentPosition);
 }
-protected void consumeInterfaceHeaderName1() {
-	int currentAstPtr = this.astPtr;
-	super.consumeInterfaceHeaderName1();
-	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
-		rememberCategories();
-}
 protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
 	long selectorSourcePositions = (isAnonymousMethod) ? this.lParenPos
 			:this.identifierPositionStack[this.identifierPtr];
@@ -523,15 +494,6 @@ protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
 	}
 }
 
-protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMethod) {
-	long selectorSourcePositions = this.identifierPositionStack[this.identifierPtr];
-	int selectorSourceEnd = (int) selectorSourcePositions;
-	int currentAstPtr = this.astPtr;
-	super.consumeMethodHeaderNameWithTypeParameters(isAnnotationMethod);
-	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
-		this.sourceEnds.put(this.astStack[this.astPtr], selectorSourceEnd);
-		rememberCategories();
-}
 /*
  *
  * INTERNAL USE-ONLY
@@ -539,20 +501,6 @@ protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMet
 protected void consumeMethodInvocationName() {
 	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
 	super.consumeMethodInvocationName();
-
-	// when the name is only an identifier...we have a message send to "this" (implicit)
-	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
-	Expression[] args = messageSend.arguments;
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(
-			messageSend.selector,
-			args == null ? 0 : args.length,
-			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
-protected void consumeMethodInvocationNameWithTypeArguments() {
-	// FunctionInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
-	super.consumeMethodInvocationNameWithTypeArguments();
 
 	// when the name is only an identifier...we have a message send to "this" (implicit)
 	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
@@ -583,36 +531,9 @@ protected void consumeMethodInvocationPrimary() {
  *
  * INTERNAL USE-ONLY
  */
-protected void consumeMethodInvocationPrimaryWithTypeArguments() {
-	super.consumeMethodInvocationPrimaryWithTypeArguments();
-	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
-	Expression[] args = messageSend.arguments;
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(
-			messageSend.selector,
-			args == null ? 0 : args.length,
-			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
-/*
- *
- * INTERNAL USE-ONLY
- */
 protected void consumeMethodInvocationSuper() {
 	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
 	super.consumeMethodInvocationSuper();
-	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
-	Expression[] args = messageSend.arguments;
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(
-			messageSend.selector,
-			args == null ? 0 : args.length,
-			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
-protected void consumeMethodInvocationSuperWithTypeArguments() {
-	// FunctionInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
-	super.consumeMethodInvocationSuperWithTypeArguments();
 	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
 	Expression[] args = messageSend.arguments;
 	if (reportReferenceInfo) {
@@ -1056,7 +977,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 	typeInfo.nameSourceStart = type.getNameStart();
 	typeInfo.nameSourceEnd = typeInfo.nameSourceStart+typeInfo.name.length-1;
 	typeInfo.superclass = type.getSuperClassName();
-	typeInfo.superinterfaces = null;
 //		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
 //		typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
 //		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
@@ -1365,7 +1285,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					}
 
 					ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-					methodInfo.isAnnotation = false;
 					methodInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 					methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
 					methodInfo.returnType = methodDeclaration.returnType == null ? null : CharOperation.concatWith(methodDeclaration.returnType.getParameterizedTypeName(), '.');
@@ -1375,7 +1294,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					methodInfo.parameterTypes = argumentTypes;
 					methodInfo.parameterNames = argumentNames;
 					methodInfo.exceptionTypes = getThrownExceptionTypes(methodDeclaration);
-					methodInfo.typeParameters =EMPTY_TYPEPARAMETERINFO;
 					methodInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 					requestor.enterMethod(methodInfo);
 				}
@@ -1530,7 +1448,6 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			typeInfo.nameSourceStart = typeDeclaration.sourceStart;
 			typeInfo.nameSourceEnd = sourceEnd(typeDeclaration);
 			typeInfo.superclass = superclassName;
-			typeInfo.superinterfaces = interfaceNames;
 			typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 			typeInfo.secondary = typeDeclaration.isSecondary();
 			typeInfo.anonymousMember = typeDeclaration.allocation != null && typeDeclaration.allocation.enclosingInstance != null;

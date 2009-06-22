@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,27 +97,6 @@ void acceptInitializer(
  *
  */
 void acceptLineSeparatorPositions(int[] positions);
-/**
- * @param declarationStart - a source position corresponding to the start of the package
- *  declaration
- * @param declarationEnd - a source position corresponding to the end of the package
- *  declaration
- * @param javaDocPositions - answer back an array of sourceStart/sourceEnd
- * positions of the available JavaDoc comments. The array is a flattened
- * structure: 2*n entries with consecutives start and end positions.
- * If no JavaDoc is available, then null is answered instead of an empty array.
- * e.g. { 10, 20, 25, 45 }  --> javadoc1 from 10 to 20, javadoc2 from 25 to 45
- * The array is equals to null if there are no javadoc comments
- * @param name - the name of the package
- * @param nameStartPosition - a source position corresponding to the first character of the
- *  name
- */
-void acceptPackage(
-	int declarationStart,
-	int declarationEnd,
-	int[] javaDocPositions,
-	char[] name,
-	int nameStartPosition);
 /**
  * @param problem - Used to report a problem while running the JDOM
  */
@@ -259,44 +238,6 @@ void enterField(
 	int extendedTypeDimensionCount,
 	int extendedTypeDimensionEnd);
 /**
- * @param declarationStart - a source position corresponding to the start
- *  of this class.
- * @param javaDocPositions - answer back an array of sourceStart/sourceEnd
- * positions of the available JavaDoc comments. The array is a flattened
- * structure: 2*n entries with consecutives start and end positions.
- * If no JavaDoc is available, then null is answered instead of an empty array.
- * e.g. { 10, 20, 25, 45 }  --> javadoc1 from 10 to 20, javadoc2 from 25 to 45
- * The array is equals to null if there are no javadoc comments
- * @param modifiers - the modifiers for this class
- * @param modifiersStart - a source position corresponding to the start
- *  of the textual modifiers, is < 0 if there are no textual modifiers
- * @param interfaceStart - a source position corresponding to the start
- *  of the keyword 'interface'
- * @param name - the name of the class
- * @param nameStart - a source position corresponding to the start of the name
- * @param nameEnd - a source position corresponding to the end of the name
- * @param superinterfaces - the name of the superinterfaces
- * @param superinterfaceStarts - an array of source positions corresponding
- *  to the start of their respective superinterface names
- * @param superinterfaceEnds - an array of source positions corresponding
- *  to the end of their respective superinterface names
- * @param bodyStart - a source position corresponding to the open bracket
- *  of the class body
- */
-void enterInterface(
-	int declarationStart,
-	int[] javaDocPositions,
-	int modifiers,
-	int modifiersStart,
-	int interfaceStart,
-	char[] name,
-	int nameStart,
-	int nameEnd,
-	char[][] superinterfaces,
-	int[] superinterfaceStarts,
-	int[] superinterfaceEnds,
-	int bodyStart);
-/**
  * @param declarationStart - a source position corresponding to the first character
  *  of this constructor declaration
  * @param javaDocPositions - answer back an array of sourceStart/sourceEnd
@@ -391,14 +332,6 @@ void exitConstructor(
  *  This can include whitespace and comments following the semi-colon.
  */
 void exitField(
-	int bodyEnd,
-	int declarationEnd);
-/**
- * @param bodyEnd - a source position corresponding to the closing bracket of the interface
- * @param declarationEnd - a source position corresponding to the end of the interface
- *  declaration.  This can include whitespace and comments following the closing bracket.
- */
-void exitInterface(
 	int bodyEnd,
 	int declarationEnd);
 /**

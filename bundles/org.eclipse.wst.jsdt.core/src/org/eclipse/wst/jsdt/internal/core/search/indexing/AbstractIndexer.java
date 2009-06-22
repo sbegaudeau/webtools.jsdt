@@ -41,7 +41,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			char[] name,
 			char[][] enclosingTypeNames,
 			char[] superclass,
-			char[][] superinterfaces,
 			char[][] typeParameterSignatures,
 			boolean secondary) {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
@@ -53,16 +52,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
-		if (superinterfaces != null) {
-			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = superinterfaces[i];
-				addTypeReference(superinterface);
-				addIndexEntry(
-					SUPER_REF,
-					SuperTypeReferencePattern.createIndexKey(
-						modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superinterface, INTERFACE_SUFFIX));
-			}
-		}
 	}
 	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes, char[][] exceptionTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
@@ -84,23 +73,13 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		if (innermostTypeName != simpleTypeName)
 			addIndexEntry(CONSTRUCTOR_REF, ConstructorPattern.createIndexKey(innermostTypeName, argCount));
 	}
-	public void addEnumDeclaration(int modifiers, char[] packageName, char[] name, char[][] enclosingTypeNames, char[] superclass, char[][] superinterfaces, boolean secondary) {
+	public void addEnumDeclaration(int modifiers, char[] packageName, char[] name, char[][] enclosingTypeNames, char[] superclass, boolean secondary) {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
 
 		addIndexEntry(
 			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
-		if (superinterfaces != null) {
-			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = superinterfaces[i];
-				addTypeReference(superinterface);
-				addIndexEntry(
-					SUPER_REF,
-					SuperTypeReferencePattern.createIndexKey(
-						modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superinterface, INTERFACE_SUFFIX));
-			}
-		}
 	}
 	public void addFieldDeclaration(char[] typeName, char[] fieldName, boolean isVar) {
 		char [] key = isVar ? VAR_DECL:FIELD_DECL;

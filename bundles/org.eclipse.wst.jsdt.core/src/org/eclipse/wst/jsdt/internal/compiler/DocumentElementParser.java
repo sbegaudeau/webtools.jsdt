@@ -574,107 +574,6 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 	pushOnAstStack(arg);
 	intArrayPtr--;
 }
-/*
- *
- * INTERNAL USE-ONLY
- */
-protected void consumeInterfaceDeclaration() {
-	super.consumeInterfaceDeclaration();
-	// we know that we have a TypeDeclaration on the top of the astStack
-	if (isLocalDeclaration()) {
-		// we ignore the local variable declarations
-		return;
-	}
-	requestor.exitInterface(endStatementPosition, // the '}' is the end of the body
-	 ((TypeDeclaration) astStack[astPtr]).declarationSourceEnd);
-}
-/*
- *
- * INTERNAL USE-ONLY
- */
-protected void consumeInterfaceHeader() {
-	//InterfaceHeader ::= $empty
-	super.consumeInterfaceHeader();
-	if (isLocalDeclaration()) {
-		// we ignore the local variable declarations
-		intArrayPtr--;
-		return;
-	}
-	TypeDeclaration typeDecl = (TypeDeclaration) astStack[astPtr];
-	TypeReference[] superInterfaces = typeDecl.superInterfaces;
-	char[][] interfaceNames = null;
-	int[] interfaceNameStarts = null;
-	int[] interfacenameEnds = null;
-	int superInterfacesLength = 0;
-	if (superInterfaces != null) {
-		superInterfacesLength = superInterfaces.length;
-		interfaceNames = new char[superInterfacesLength][];
-		interfaceNameStarts = new int[superInterfacesLength];
-		interfacenameEnds = new int[superInterfacesLength];
-	}
-	if (superInterfaces != null) {
-		for (int i = 0; i < superInterfacesLength; i++) {
-			TypeReference superInterface = superInterfaces[i];
-			interfaceNames[i] = CharOperation.concatWith(superInterface.getTypeName(), '.');
-			interfaceNameStarts[i] = superInterface.sourceStart;
-			interfacenameEnds[i] = superInterface.sourceEnd;
-		}
-	}
-	// flush the comments related to the interface header
-	scanner.commentPtr = -1;
-	requestor.enterInterface(
-		typeDecl.declarationSourceStart,
-		intArrayStack[intArrayPtr--],
-		typeDecl.modifiers,
-		typeDecl.modifiersSourceStart,
-		typeStartPosition,
-		typeDecl.name,
-		typeDecl.sourceStart,
-		typeDecl.sourceEnd,
-		interfaceNames,
-		interfaceNameStarts,
-		interfacenameEnds,
-		scanner.currentPosition - 1);
-}
-protected void consumeInterfaceHeaderName1() {
-	// InterfaceHeaderName ::= Modifiersopt 'interface' 'Identifier'
-	TypeDeclaration typeDecl = new TypeDeclaration(this.compilationUnit.compilationResult);
-	if (nestedMethod[nestedType] == 0) {
-		if (nestedType != 0) {
-			typeDecl.bits |= ASTNode.IsMemberType;
-		}
-	} else {
-		// Record that the block has a declaration for local types
-		typeDecl.bits |= ASTNode.IsLocalType;
-		markEnclosingMemberWithLocalType();
-		blockReal();
-	}
-
-	//highlight the name of the type
-	long pos = identifierPositionStack[identifierPtr];
-	typeDecl.sourceEnd = (int) pos;
-	typeDecl.sourceStart = (int) (pos >>> 32);
-	typeDecl.name = identifierStack[identifierPtr--];
-	identifierLengthPtr--;
-
-	//compute the declaration source too
-	// 'class' and 'interface' push an int position
-	typeStartPosition = typeDecl.declarationSourceStart = intStack[intPtr--];
-	intPtr--;
-	int declSourceStart = intStack[intPtr--];
-	typeDecl.modifiersSourceStart = intStack[intPtr--];
-	typeDecl.modifiers = this.intStack[this.intPtr--] | ClassFileConstants.AccInterface;
-	if (typeDecl.declarationSourceStart > declSourceStart) {
-		typeDecl.declarationSourceStart = declSourceStart;
-	}
-	this.expressionLengthPtr--;
-	
-	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
-	pushOnAstStack(typeDecl);
-	// javadoc
-	typeDecl.javadoc = this.javadoc;
-	this.javadoc = null;
-}
 protected void consumeInternalCompilationUnit() {
 	// InternalCompilationUnit ::= PackageDeclaration
 	// InternalCompilationUnit ::= PackageDeclaration ImportDeclarations ReduceImports
@@ -853,42 +752,6 @@ protected void consumeModifiers() {
 	pushOnIntStack(
 		declarationSourceStart >= 0 ? declarationSourceStart : modifiersSourceStart);
 	resetModifiers();
-}
-/*
- *
- * INTERNAL USE-ONLY
- */
-protected void consumePackageDeclarationName() {
-	/* persisting javadoc positions */
-	pushOnIntArrayStack(this.getJavaDocPositions());
-
-	super.consumePackageDeclarationName();
-	ImportReference importReference = compilationUnit.currentPackage;
-
-	requestor.acceptPackage(
-		importReference.declarationSourceStart,
-		importReference.declarationSourceEnd,
-		intArrayStack[intArrayPtr--],
-		CharOperation.concatWith(importReference.getImportName(), '.'),
-		importReference.sourceStart);
-}
-/*
-*
-* INTERNAL USE-ONLY
-*/
-protected void consumePackageDeclarationNameWithModifiers() {
-	/* persisting javadoc positions */
-	pushOnIntArrayStack(this.getJavaDocPositions());
-
-	super.consumePackageDeclarationNameWithModifiers();
-	ImportReference importReference = compilationUnit.currentPackage;
-
-	requestor.acceptPackage(
-		importReference.declarationSourceStart,
-		importReference.declarationSourceEnd,
-		intArrayStack[intArrayPtr--],
-		CharOperation.concatWith(importReference.getImportName(), '.'),
-		importReference.sourceStart);
 }
 protected void consumePushModifiers() {
 	checkComment(); // might update modifiers with AccDeprecated
@@ -1170,27 +1033,6 @@ public void parseMethod(char[] regionSource) {
 	} catch (AbortCompilation ex) {
 		// ignore this exception
 	}
-}
-/*
- * Investigate one package statement declaration.
- */
-public void parsePackage(char[] regionSource) {
-	try {
-		initialize();
-		goForPackageDeclaration();
-		referenceContext =
-			compilationUnit =
-				new CompilationUnitDeclaration(
-					problemReporter(),
-					new CompilationResult(regionSource, null, 0, 0, this.options.maxProblemsPerUnit),
-					regionSource.length);
-		scanner.resetTo(0, regionSource.length);
-		scanner.setSource(regionSource);
-		parse();
-	} catch (AbortCompilation ex) {
-		// ignore this exception
-	}
-
 }
 /*
  * Investigate one type declaration, its fields, methods and member types.
