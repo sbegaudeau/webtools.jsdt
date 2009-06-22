@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ public final class SourceType {
 	private int nameSourceStart;
 	private int nameSourceEnd;
 	private char[] superclassName;
-	private char[][] interfaceNames;
 	private SourceType[] memberTypes;
 	private int numberOfMemberTypes;
 	private SourceMethod[] methods;
@@ -45,7 +44,6 @@ public SourceType(
 	int nameSourceStart,
 	int nameSourceEnd,
 	char[] superclassName,
-	char[][] interfaceNames,
 	char[] source) {
 
 	this.enclosingTypeName = enclosingTypeName;
@@ -56,7 +54,6 @@ public SourceType(
 	this.nameSourceStart = nameSourceStart;
 	this.nameSourceEnd = nameSourceEnd;
 	this.superclassName = superclassName;
-	this.interfaceNames = interfaceNames;
 	this.source = source;
 }
 protected void addField(SourceField sourceField) {
@@ -154,9 +151,6 @@ public char[][] getImports() {
 	}
 	return importNames;
 }
-public char[][] getInterfaceNames() {
-	return interfaceNames;
-}
 public SourceType[] getMemberTypes() {
 	if (memberTypes != null && memberTypes.length != numberOfMemberTypes) {
 		System.arraycopy(
@@ -226,9 +220,6 @@ public void setPackage(SourcePackage sourcePackage) {
 public void setSuperclass(char[] superclassName) {
 	this.superclassName = superclassName;
 }
-public void setSuperinterfaces(char[][] superinterfacesNames) {
-	this.interfaceNames = superinterfacesNames;
-}
 public String tabString(int tab) {
 	/*slow code*/
 
@@ -259,12 +250,6 @@ public String toString(int tab) {
 	buffer.append(isInterface() ? "interface " : "class ").append(name).append(" ");
 	if (superclassName != null) {
 		buffer.append("extends ").append(superclassName).append(" ");
-	}
-	if (interfaceNames != null) {
-		buffer.append("implements ");
-		for (int i = 0, max = interfaceNames.length; i < max; i++) {
-			buffer.append(interfaceNames[i]).append(", ");
-		}
 	}
 	buffer.append("{\n");
 	if (memberTypes != null) {

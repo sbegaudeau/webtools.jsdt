@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -196,7 +196,6 @@ public void enterType(TypeInfo typeInfo) {
 				typeInfo.nameSourceStart, 
 				typeInfo.nameSourceEnd, 
 				typeInfo.superclass, 
-				typeInfo.superinterfaces, 
 				source); 
 		currentType.setPackage(currentPackage);
 		setImports();
@@ -213,16 +212,9 @@ public void enterType(TypeInfo typeInfo) {
 					typeInfo.nameSourceStart, 
 					typeInfo.nameSourceEnd, 
 					typeInfo.superclass, 
-					typeInfo.superinterfaces, 
 					source)); 
 		memberType.parent = currentType;
 		currentType = memberType;
-	}
-	if (typeInfo.typeParameters != null) {
-		for (int i = 0, length = typeInfo.typeParameters.length; i < length; i++) {
-			TypeParameterInfo typeParameterInfo = typeInfo.typeParameters[i];
-			addTypeParameter(typeParameterInfo);
-		}
 	}
 }
 public void enterCompilationUnit() {
@@ -326,25 +318,6 @@ protected void enterAbtractMethod(MethodInfo methodInfo) {
 						methodInfo.exceptionTypes,
 						source)); 
 
-	}
-	
-	if (methodInfo.typeParameters != null) {
-		for (int i = 0, length = methodInfo.typeParameters.length; i < length; i++) {
-			TypeParameterInfo typeParameterInfo = methodInfo.typeParameters[i];
-			addTypeParameter(typeParameterInfo);
-		}
-	}
-}
-public void addTypeParameter(TypeParameterInfo typeParameterInfo) {
-	if (currentMethod.typeParameterNames == null) {
-		currentMethod.typeParameterNames = new char[][] {typeParameterInfo.name};
-		currentMethod.typeParameterBounds = new char[][][] {typeParameterInfo.bounds};
-	} else {
-		int length = currentMethod.typeParameterNames.length;
-		System.arraycopy(currentMethod.typeParameterNames, 0, currentMethod.typeParameterNames = new char[length+1][],0, length);
-		currentMethod.typeParameterNames[length] = typeParameterInfo.name;
-		System.arraycopy(currentMethod.typeParameterBounds, 0, currentMethod.typeParameterBounds = new char[length+1][][],0, length);
-		currentMethod.typeParameterBounds[length] = typeParameterInfo.bounds;
 	}
 }
 public void exitType(int declarationEnd) {
@@ -2275,9 +2248,6 @@ public void test25() {
 		"Invalid class declarationSourceEnd ", 
 		92, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("contains superinterfaces " , currentType.getInterfaceNames() != null);
-	assertEquals(" invalid superinterfaces length ", 1, currentType.getInterfaceNames().length);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2334,8 +2304,6 @@ public void test26() {
 		"Invalid class declarationSourceEnd ", 
 		102, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2405,8 +2373,6 @@ public void test27() {
 		"Invalid class declarationSourceEnd ", 
 		113, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2474,8 +2440,6 @@ public void test28() {
 		"Invalid class declarationSourceEnd ", 
 		78, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2554,8 +2518,6 @@ public void test29() {
 		"Invalid class declarationSourceEnd ", 
 		357, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -2636,8 +2598,6 @@ public void test30() {
 		"Invalid class declarationSourceEnd ", 
 		357, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -2718,8 +2678,6 @@ public void test31() {
 		"Invalid class declarationSourceEnd ", 
 		334, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -2797,8 +2755,6 @@ public void test32() {
 		"Invalid class declarationSourceEnd ", 
 		315, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2861,8 +2817,6 @@ public void test33() {
 		"Invalid class declarationSourceEnd ", 
 		315, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -2929,8 +2883,6 @@ public void test34() {
 		"Invalid class declarationSourceEnd ", 
 		342, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3011,8 +2963,6 @@ public void test35() {
 		"Invalid class declarationSourceEnd ", 
 		309, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -3088,8 +3038,6 @@ public void test36() {
 		"Invalid class declarationSourceEnd ", 
 		309, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -3156,8 +3104,6 @@ public void test37() {
 		"Invalid class declarationSourceEnd ", 
 		112, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3237,8 +3183,6 @@ public void test38() {
 		"Invalid class declarationSourceEnd ", 
 		112, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3320,8 +3264,6 @@ public void test39() {
 		"Invalid class declarationSourceEnd ", 
 		109, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3400,8 +3342,6 @@ public void test40() {
 		"Invalid class declarationSourceEnd ", 
 		109, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3478,8 +3418,6 @@ public void test41() {
 		"Invalid class declarationSourceEnd ", 
 		139, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -3530,8 +3468,6 @@ public void test42() {
 		"Invalid class declarationSourceEnd ", 
 		29, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3574,8 +3510,6 @@ public void test43() {
 		"Invalid class declarationSourceEnd ", 
 		29, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3620,8 +3554,6 @@ public void test44() {
 		"Invalid class declarationSourceEnd ", 
 		31, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3668,8 +3600,6 @@ public void test45() {
 		"Invalid class declarationSourceEnd ", 
 		31, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3717,7 +3647,6 @@ public void test46() {
 		34, 
 		currentType.getDeclarationSourceEnd()); 
 
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3760,8 +3689,6 @@ public void test47() {
 		"Invalid class declarationSourceEnd ", 
 		34, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("doesn't contain superinterfaces " , currentType.getInterfaceNames() == null);
 	
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3805,9 +3732,6 @@ public void test48() {
 		50, 
 		currentType.getDeclarationSourceEnd()); 
 
-	assertTrue("has 2 superinterfaces " , currentType.getInterfaceNames() != null);
-	assertEquals("2 superinterfaces " , 2, currentType.getInterfaceNames().length);	
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
 
@@ -3844,9 +3768,6 @@ public void test49() {
 		"Invalid class declarationSourceEnd ", 
 		50, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("has 2 superinterfaces " , currentType.getInterfaceNames() != null);
-	assertEquals("2 superinterfaces " , 2, currentType.getInterfaceNames().length);	
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -3887,8 +3808,6 @@ public void test50() {
 		"Invalid class declarationSourceEnd ", 
 		42, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -3933,8 +3852,6 @@ public void test51() {
 		42, 
 		currentType.getDeclarationSourceEnd()); 
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("has one field ", 1, fields.length);
@@ -3978,8 +3895,6 @@ public void test52() {
 		"Invalid class declarationSourceEnd ", 
 		52, 
 		currentType.getDeclarationSourceEnd()); 
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4034,8 +3949,6 @@ public void test53() {
 		60, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("has one field ", 1, fields.length);
@@ -4089,8 +4002,6 @@ public void test54() {
 		"Invalid class declarationSourceEnd ", 
 		78, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4152,8 +4063,6 @@ public void test55() {
 		"Invalid class declarationSourceEnd ", 
 		78, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4219,8 +4128,6 @@ public void test56() {
 		75, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("has 2 fields ", 2, fields.length);
@@ -4279,8 +4186,6 @@ public void test57() {
 		75, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("has 2 fields ", 2, fields.length);
@@ -4336,8 +4241,6 @@ public void test58() {
 		62, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
 
@@ -4384,8 +4287,6 @@ public void test59() {
 		"Invalid class declarationSourceEnd ", 
 		60, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -4439,8 +4340,6 @@ public void test60() {
 		161, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
 
@@ -4492,8 +4391,6 @@ public void test61() {
 		47, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 
@@ -4538,8 +4435,6 @@ public void test62() {
 		"Invalid class declarationSourceEnd ", 
 		78, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -4588,8 +4483,6 @@ public void test63() {
 		"Invalid class declarationSourceEnd ", 
 		66, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4642,8 +4535,6 @@ public void test64() {
 		66, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals("has one field", 1, fields.length);
@@ -4695,8 +4586,6 @@ public void test65() {
 		"Invalid class declarationSourceEnd ", 
 		68, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4755,8 +4644,6 @@ public void test66() {
 		72, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
 	assertEquals(" invalid fields length ", 1, fields.length);
@@ -4813,8 +4700,6 @@ public void test67() {
 		71, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
 
@@ -4866,8 +4751,6 @@ public void test68() {
 		"Invalid class declarationSourceEnd ", 
 		71, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
@@ -4922,8 +4805,6 @@ public void test69() {
 		"Invalid class declarationSourceEnd ", 
 		87, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
@@ -4981,8 +4862,6 @@ public void test70() {
 		69, 
 		currentType.getDeclarationSourceEnd());
 
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
-
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields == null);
 
@@ -5036,8 +4915,6 @@ public void test71() {
 		"Invalid class declarationSourceEnd ", 
 		93, 
 		currentType.getDeclarationSourceEnd());
-
-	assertTrue("has no superinterfaces " , currentType.getInterfaceNames() == null);
 
 	SourceField[] fields = currentType.getFields();
 	assertTrue(" invalid fields ", fields != null);
