@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -436,14 +435,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 	}
 
 	if (foundNothing) {
-		if (JavaScriptCore.IS_ECMASCRIPT4 && isInterface()) {
-			 if (this.superInterfaces.length == 1) {
-				if (refScope != null)
-					refScope.recordTypeReference(this.superInterfaces[0]);
-				return this.superInterfaces[0].getExactMethod(selector, argumentTypes, refScope);
-			 }
-		/* BC- Added cycle check BUG 200501 */
-		} else if (this.superclass != null && this.superclass!=this) {
+		if (this.superclass != null && this.superclass!=this) {
 			if (refScope != null)
 				refScope.recordTypeReference(this.superclass);
 			return this.superclass.getExactMethod(selector, argumentTypes, refScope);
@@ -561,26 +553,6 @@ public MethodBinding[] getMethods(char[] selector) {
 }
 
 /**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#initializeDeprecatedAnnotationTagBits()
- */
-public void initializeDeprecatedAnnotationTagBits() {
-//	if ((this.tagBits & TagBits.DeprecatedAnnotationResolved) == 0) {
-//		TypeDeclaration typeDecl = this.classScope.referenceContext;
-//		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
-//		try {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
-//			ASTNode.resolveDeprecatedAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
-//			this.tagBits |= TagBits.DeprecatedAnnotationResolved;
-//		} finally {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
-//		}
-//		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0) {
-//			this.modifiers |= ClassFileConstants.AccDeprecated;
-//		}
-//	}
-}
-
-/**
  * Returns true if a type is identical to another one,
  * or for generic types, true if compared to its raw type.
  */
@@ -681,8 +653,7 @@ public MethodBinding[] methods() {
 								.areParametersEqual(subMethod);
 						if (equalParams && equalTypeVars) {
 							// duplicates regardless of return types
-						} else if (method.returnType.erasure() == subMethod.returnType
-								.erasure()
+						} else if (method.returnType == subMethod.returnType
 								&& (equalParams || method
 										.areParameterErasuresEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
@@ -690,12 +661,12 @@ public MethodBinding[] methods() {
 							// check to see if the erasure of either method is equal to the other
 							int index = pLength;
 							for (; --index >= 0;) {
-								if (params1[index] != params2[index].erasure())
+								if (params1[index] != params2[index])
 									break;
 							}
 							if (index >= 0 && index < pLength) {
 								for (index = pLength; --index >= 0;)
-									if (params1[index].erasure() != params2[index])
+									if (params1[index] != params2[index])
 										break;
 							}
 							if (index >= 0)
@@ -901,9 +872,6 @@ public ReferenceBinding superclass() {
 		return this.superclass;
 
 }
-public ReferenceBinding[] superInterfaces() {
-	return this.superInterfaces;
-}
 public String toString() {
     StringBuffer buffer = new StringBuffer(30);
     buffer.append("(id="); //$NON-NLS-1$
@@ -928,19 +896,6 @@ public String toString() {
 
 	buffer.append("\n\textends "); //$NON-NLS-1$
 	buffer.append((this.superclass != null) ? this.superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
-
-	if (this.superInterfaces != null) {
-		if (this.superInterfaces != Binding.NO_SUPERINTERFACES) {
-			buffer.append("\n\timplements : "); //$NON-NLS-1$
-			for (int i = 0, length = this.superInterfaces.length; i < length; i++) {
-				if (i  > 0)
-					buffer.append(", "); //$NON-NLS-1$
-				buffer.append((this.superInterfaces[i] != null) ? this.superInterfaces[i].debugName() : "NULL TYPE"); //$NON-NLS-1$
-			}
-		}
-	} else {
-		buffer.append("NULL SUPERINTERFACES"); //$NON-NLS-1$
-	}
 
 	if (enclosingType() != null) {
 		buffer.append("\n\tenclosing type : "); //$NON-NLS-1$

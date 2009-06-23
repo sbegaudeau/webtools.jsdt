@@ -456,8 +456,6 @@ public int nullStatus(FlowInfo flowInfo) {
 							}
 							if ((this.bits & IsStrictlyAssigned) == 0) {
 								constant = variable.constant();
-								if (fieldType != null)
-									fieldType = fieldType.capture(scope, this.sourceEnd); // perform capture conversion if read access
 							} else {
 								constant = Constant.NotAConstant;
 							}
@@ -474,10 +472,7 @@ public int nullStatus(FlowInfo flowInfo) {
 						if (fieldType.isAnonymousType())
 							bits |= Binding.TYPE;
 						
-						return this.resolvedType =
-							(((this.bits & IsStrictlyAssigned) == 0)
-								? fieldType.capture(scope, this.sourceEnd)
-								: fieldType);
+						return this.resolvedType = fieldType;
 					}
 
 					if (binding instanceof MethodBinding)

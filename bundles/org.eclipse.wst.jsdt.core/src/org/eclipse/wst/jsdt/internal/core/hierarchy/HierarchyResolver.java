@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,7 +212,6 @@ private IType findSuperClass(IGenericType type, ReferenceBinding typeBinding) {
 
 
 	if (superBinding != null) {
-		superBinding = (ReferenceBinding) superBinding.erasure();
 		if (typeBinding.isHierarchyInconsistent()) {
 			if (superBinding.problemId() == ProblemReasons.NotFound) {
 				this.hasMissingSuperClass = true;
@@ -355,24 +354,6 @@ private void fixSupertypeBindings() {
 				}
 				if (superclass != null)
 					((SourceTypeBinding) typeBinding).superclass = (ReferenceBinding) superclass;
-
-				TypeReference[] superInterfaces = typeDeclaration == null ? null : typeDeclaration.superInterfaces;
-				int length;
-				ReferenceBinding[] interfaceBindings = typeBinding.superInterfaces();
-				if (superInterfaces != null && (length = superInterfaces.length) > (interfaceBindings == null ? 0 : interfaceBindings.length)) { // check for interfaceBindings being null (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=139689)
-					interfaceBindings = new ReferenceBinding[length];
-					int index = 0;
-					for (int i = 0; i < length; i++) {
-						ReferenceBinding superInterface = (ReferenceBinding) superInterfaces[i].resolvedType;
-						if (superInterface instanceof ProblemReferenceBinding)
-							superInterface = superInterface.closestMatch();
-						if (superInterface != null)
-							interfaceBindings[index++] = superInterface;
-					}
-					if (index < length)
-						System.arraycopy(interfaceBindings, 0, interfaceBindings = new ReferenceBinding[index], 0 , index);
-					((SourceTypeBinding) typeBinding).superInterfaces = interfaceBindings;
-				}
 			}
 		} else if (typeBinding instanceof BinaryTypeBinding) {
 			try {
@@ -382,12 +363,6 @@ private void fixSupertypeBindings() {
 				((BinaryTypeBinding) typeBinding).tagBits &= ~TagBits.HasUnresolvedSuperclass;
 				this.builder.hierarchy.missingTypes.add(new String(typeBinding.superclass().sourceName()));
 				this.hasMissingSuperClass = true;
-			}
-			try {
-				typeBinding.superInterfaces();
-			} catch (AbortCompilation e) {
-				// allow subsequent call to superInterfaces() to succeed so that we don't have to catch AbortCompilation everywhere
-				((BinaryTypeBinding) typeBinding).tagBits &= ~TagBits.HasUnresolvedSuperinterfaces;
 			}
 		}
 	}
@@ -656,7 +631,6 @@ public void resolve(IGenericType suppliedType) {
 					try {
 						ReferenceBinding typeBinding = this.typeBindings[i];
 						typeBinding.superclass();
-						typeBinding.superInterfaces();
 					} catch (AbortCompilation e) {
 						// classpath problem for this type: ignore
 					}
@@ -842,7 +816,6 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 				try {
 					ReferenceBinding typeBinding = this.typeBindings[i];
 					typeBinding.superclass();
-					typeBinding.superInterfaces();
 				} catch (AbortCompilation e) {
 					// classpath problem for this type: ignore
 				}
@@ -948,16 +921,8 @@ private boolean subTypeOfType(ReferenceBinding subType, ReferenceBinding typeBin
 	if (typeBinding == null || subType == null) return false;
 	if (subType == typeBinding) return true;
 	ReferenceBinding superclass = subType.superclass();
-	if (superclass != null) superclass = (ReferenceBinding) superclass.erasure();
 	if (superclass != null && superclass.id == TypeIds.T_JavaLangObject && subType.isHierarchyInconsistent()) return false;
 	if (this.subTypeOfType(superclass, typeBinding)) return true;
-	ReferenceBinding[] superInterfaces = subType.superInterfaces();
-	if (superInterfaces != null) {
-		for (int i = 0, length = superInterfaces.length; i < length; i++) {
-			ReferenceBinding superInterface = (ReferenceBinding) superInterfaces[i].erasure();
-			if (this.subTypeOfType(superInterface, typeBinding)) return true;
-		}
-	}
 	return false;
 }
 protected void worked(IProgressMonitor monitor, int work) {

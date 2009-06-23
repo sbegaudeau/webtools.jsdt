@@ -105,13 +105,6 @@ public boolean canBeInstantiated() {
 }
 
 /**
- * Perform capture conversion on a given type (only effective on parameterized type with wildcards)
- */
-public TypeBinding capture(Scope scope, int position) {
-	return this;
-}
-
-/**
  *  Answer the receiver's constant pool name.
  *  NOTE: This method should only be used during/after code gen.
  *  e.g. 'java/lang/Object'
@@ -135,10 +128,6 @@ public ReferenceBinding enclosingType() {
 	return null;
 }
 
-public TypeBinding erasure() {
-	return this;
-}
-
 /**
  * Find supertype which erases to a given well-known type, or null if not found
  * (using id avoids triggering the load of well-known type: 73740)
@@ -152,13 +141,13 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 	ReferenceBinding reference = (ReferenceBinding) this;
 
     // do not allow type variables to match with erasures for free
-    if (reference.id == wellKnownErasureID || (!isTypeVariable() && !isIntersectionType()  && erasure().id == wellKnownErasureID)) return reference;
+    if (reference.id == wellKnownErasureID || (!isTypeVariable() && !isIntersectionType()  && this.id == wellKnownErasureID)) return reference;
 
     ReferenceBinding currentType = reference;
     // iterate superclass to avoid recording interfaces if searched supertype is class
     if (erasureIsClass) {
 		while ((currentType = currentType.superclass()) != null) {
-			if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure().id == wellKnownErasureID))
+			if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.id == wellKnownErasureID))
 				return currentType;
 		}
 		return null;
@@ -166,42 +155,12 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 	ReferenceBinding[] interfacesToVisit = null;
 	int nextPosition = 0;
 	do {
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			if (interfacesToVisit == null) {
-				interfacesToVisit = itsInterfaces;
-				nextPosition = interfacesToVisit.length;
-			} else {
-				int itsLength = itsInterfaces.length;
-				if (nextPosition + itsLength >= interfacesToVisit.length)
-					System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-				nextInterface : for (int a = 0; a < itsLength; a++) {
-					ReferenceBinding next = itsInterfaces[a];
-					for (int b = 0; b < nextPosition; b++)
-						if (next == interfacesToVisit[b]) continue nextInterface;
-					interfacesToVisit[nextPosition++] = next;
-				}
-			}
-		}
 	} while ((currentType = currentType.superclass()) != null);
 
 	for (int i = 0; i < nextPosition; i++) {
 		currentType = interfacesToVisit[i];
-		if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure().id == wellKnownErasureID))
+		if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.id == wellKnownErasureID))
 			return currentType;
-
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			int itsLength = itsInterfaces.length;
-			if (nextPosition + itsLength >= interfacesToVisit.length)
-				System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-			nextInterface : for (int a = 0; a < itsLength; a++) {
-				ReferenceBinding next = itsInterfaces[a];
-				for (int b = 0; b < nextPosition; b++)
-					if (next == interfacesToVisit[b]) continue nextInterface;
-				interfacesToVisit[nextPosition++] = next;
-			}
-		}
 	}
 	return null;
 }
@@ -234,56 +193,23 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 			return arrayType.environment().createArrayType(leafSuperType, arrayType.dimensions);
 
 		case Binding.TYPE :
-		    // do not allow type variables/intersection types to match with erasures for free
-		    if (!otherType.isTypeVariable() && !otherType.isIntersectionType()) otherType = otherType.erasure();
-		    if (this == otherType || (!isTypeVariable() && !isIntersectionType() && erasure() == otherType)) return this;
+		    if (this == otherType || (!isTypeVariable() && !isIntersectionType() && this == otherType)) return this;
 
 		    ReferenceBinding currentType = (ReferenceBinding)this;
 		    if (!otherType.isInterface()) {
 				while ((currentType = currentType.superclass()) != null) {
-					if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure() == otherType)) return currentType;
+					if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType == otherType)) return currentType;
 				}
 				return null;
 		    }
 			ReferenceBinding[] interfacesToVisit = null;
 			int nextPosition = 0;
 			do {
-				ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-				if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-					if (interfacesToVisit == null) {
-						interfacesToVisit = itsInterfaces;
-						nextPosition = interfacesToVisit.length;
-					} else {
-						int itsLength = itsInterfaces.length;
-						if (nextPosition + itsLength >= interfacesToVisit.length)
-							System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-						nextInterface : for (int a = 0; a < itsLength; a++) {
-							ReferenceBinding next = itsInterfaces[a];
-							for (int b = 0; b < nextPosition; b++)
-								if (next == interfacesToVisit[b]) continue nextInterface;
-							interfacesToVisit[nextPosition++] = next;
-						}
-					}
-				}
 			} while ((currentType = currentType.superclass()) != null);
 
 			for (int i = 0; i < nextPosition; i++) {
 				currentType = interfacesToVisit[i];
-				if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.erasure() == otherType))
 					return currentType;
-
-				ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-				if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
 			}
 	}
 	return null;
@@ -295,8 +221,8 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 public TypeBinding genericCast(TypeBinding otherType) {
 	if (this == otherType)
 		return null;
-	TypeBinding otherErasure = otherType.erasure();
-	if (otherErasure == this.erasure())
+	TypeBinding otherErasure = otherType;
+	if (otherErasure == this)
 		return null;
 	return otherErasure;
 }

@@ -855,8 +855,8 @@ MethodBinding findStaticMethod(ReferenceBinding currentType, char[] selector) {
 					return method;
 			}
 		}
-		if (currentType.superInterfaces() == null) // needed for statically imported types which don't know their hierarchy yet
-			((SourceTypeBinding) currentType).classScope.connectTypeHierarchy();
+		
+		((SourceTypeBinding) currentType).classScope.connectTypeHierarchy();
 	} while ((currentType = currentType.superclass()) != null);
 	return null;
 }
@@ -1074,10 +1074,6 @@ public void storeDependencyInfo() {
 		ReferenceBinding superclass = type.superclass();
 		if (superclass != null)
 			recordSuperTypeReference(superclass);
-		ReferenceBinding[] interfaces = type.superInterfaces();
-		if (interfaces != null)
-			for (int j = 0, length = interfaces.length; j < length; j++)
-				recordSuperTypeReference(interfaces[j]);
 	}
 
 	for (int i = 0, l = referencedTypes.size; i < l; i++) {

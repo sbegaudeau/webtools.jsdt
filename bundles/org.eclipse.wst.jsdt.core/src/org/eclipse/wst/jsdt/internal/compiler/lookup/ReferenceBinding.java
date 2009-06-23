@@ -228,7 +228,7 @@ public final boolean canBeSeenBy(ReferenceBinding receiverType, ReferenceBinding
 				temp = temp.enclosingType();
 			}
 
-			ReferenceBinding outerDeclaringClass = (ReferenceBinding)this.erasure();
+			ReferenceBinding outerDeclaringClass = (ReferenceBinding)this;
 			temp = outerDeclaringClass.enclosingType();
 			while (temp != null) {
 				outerDeclaringClass = temp;
@@ -294,7 +294,7 @@ public final boolean canBeSeenBy(Scope scope) {
 			temp = temp.enclosingType();
 		}
 
-		ReferenceBinding outerDeclaringClass = (ReferenceBinding)this.erasure();
+		ReferenceBinding outerDeclaringClass = (ReferenceBinding)this;
 		temp = outerDeclaringClass.enclosingType();
 		while (temp != null) {
 			outerDeclaringClass = temp;
@@ -626,24 +626,6 @@ public boolean hasIncompatibleSuperType(ReferenceBinding otherType) {
 		match = otherType.findSuperTypeWithSameErasure(currentType);
 		if (match != null && !match.isIntersectingWith(currentType))
 			return true;
-
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			if (interfacesToVisit == null) {
-				interfacesToVisit = itsInterfaces;
-				nextPosition = interfacesToVisit.length;
-			} else {
-				int itsLength = itsInterfaces.length;
-				if (nextPosition + itsLength >= interfacesToVisit.length)
-					System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-				nextInterface : for (int a = 0; a < itsLength; a++) {
-					ReferenceBinding next = itsInterfaces[a];
-					for (int b = 0; b < nextPosition; b++)
-						if (next == interfacesToVisit[b]) continue nextInterface;
-					interfacesToVisit[nextPosition++] = next;
-				}
-			}
-		}
 	} while ((currentType = currentType.superclass()) != null);
 
 	for (int i = 0; i < nextPosition; i++) {
@@ -652,19 +634,6 @@ public boolean hasIncompatibleSuperType(ReferenceBinding otherType) {
 		match = otherType.findSuperTypeWithSameErasure(currentType);
 		if (match != null && !match.isIntersectingWith(currentType))
 			return true;
-
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			int itsLength = itsInterfaces.length;
-			if (nextPosition + itsLength >= interfacesToVisit.length)
-				System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-			nextInterface : for (int a = 0; a < itsLength; a++) {
-				ReferenceBinding next = itsInterfaces[a];
-				for (int b = 0; b < nextPosition; b++)
-					if (next == interfacesToVisit[b]) continue nextInterface;
-				interfacesToVisit[nextPosition++] = next;
-			}
-		}
 	}
 	return false;
 }
@@ -673,59 +642,6 @@ public boolean hasMemberTypes() {
 }
 public final boolean hasRestrictedAccess() {
 	return (this.modifiers & ExtraCompilerModifiers.AccRestrictedAccess) != 0;
-}
-
-/** Answer true if the receiver implements anInterface or is identical to anInterface.
-* If searchHierarchy is true, then also search the receiver's superclasses.
-*
-* NOTE: Assume that anInterface is an interface.
-*/
-public boolean implementsInterface(ReferenceBinding anInterface, boolean searchHierarchy) {
-	if (this == anInterface)
-		return true;
-
-	ReferenceBinding[] interfacesToVisit = null;
-	int nextPosition = 0;
-	ReferenceBinding currentType = this;
-	do {
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) { // in code assist cases when source types are added late, may not be finished connecting hierarchy
-			if (interfacesToVisit == null) {
-				interfacesToVisit = itsInterfaces;
-				nextPosition = interfacesToVisit.length;
-			} else {
-				int itsLength = itsInterfaces.length;
-				if (nextPosition + itsLength >= interfacesToVisit.length)
-					System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-				nextInterface : for (int a = 0; a < itsLength; a++) {
-					ReferenceBinding next = itsInterfaces[a];
-					for (int b = 0; b < nextPosition; b++)
-						if (next == interfacesToVisit[b]) continue nextInterface;
-					interfacesToVisit[nextPosition++] = next;
-				}
-			}
-		}
-	} while (searchHierarchy && (currentType = currentType.superclass()) != null);
-
-	for (int i = 0; i < nextPosition; i++) {
-		currentType = interfacesToVisit[i];
-		if (currentType.isEquivalentTo(anInterface))
-			return true;
-
-		ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-		if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) { // in code assist cases when source types are added late, may not be finished connecting hierarchy
-			int itsLength = itsInterfaces.length;
-			if (nextPosition + itsLength >= interfacesToVisit.length)
-				System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-			nextInterface : for (int a = 0; a < itsLength; a++) {
-				ReferenceBinding next = itsInterfaces[a];
-				for (int b = 0; b < nextPosition; b++)
-					if (next == interfacesToVisit[b]) continue nextInterface;
-				interfacesToVisit[nextPosition++] = next;
-			}
-		}
-	}
-	return false;
 }
 
 // Internal method... assume its only sent to classes NOT interfaces
@@ -752,10 +668,6 @@ boolean implementsMethod(MethodBinding method) {
 */
 public final boolean isAbstract() {
 	return (this.modifiers & ClassFileConstants.AccAbstract) != 0;
-}
-
-public boolean isAnnotationType() {
-	return (this.modifiers & ClassFileConstants.AccAnnotation) != 0;
 }
 
 public final boolean isBinaryBinding() {
@@ -810,8 +722,6 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 	switch (otherType.kind()) {
 		case Binding.TYPE :
 			ReferenceBinding otherReferenceType = (ReferenceBinding) otherType;
-			if (otherReferenceType.isInterface()) // could be annotation type
-				return implementsInterface(otherReferenceType, true);
 			if (this.isInterface())  // Explicit conversion from an interface
 										// to a class is not allowed
 				return false;
@@ -844,10 +754,6 @@ public final boolean isDeprecated() {
 	return (this.modifiers & ClassFileConstants.AccDeprecated) != 0;
 }
 
-public boolean isEnum() {
-	return (this.modifiers & ClassFileConstants.AccEnum) != 0;
-}
-
 /**
  * Answer true if the receiver is final and cannot be subclassed
  */
@@ -860,11 +766,6 @@ public final boolean isFinal() {
  */
 public boolean isHierarchyBeingConnected() {
 	return (this.tagBits & TagBits.EndHierarchyCheck) == 0 && (this.tagBits & TagBits.BeginHierarchyCheck) != 0;
-}
-
-public boolean isInterface() {
-	// consider strict interfaces and annotation types
-	return (this.modifiers & ClassFileConstants.AccInterface) != 0;
 }
 
 /**
@@ -1034,14 +935,9 @@ public char[] signature() /* Ljava/lang/Object; */ {
 public char[] sourceName() {
 	return this.sourceName;
 }
-SimpleLookupTable storedAnnotations(boolean forceInitialize) {
-	return null; // overrride if interested in storing annotations for the receiver, its fields and methods
-}
+
 public ReferenceBinding superclass() {
 	return null;
-}
-public ReferenceBinding[] superInterfaces() {
-	return Binding.NO_SUPERINTERFACES;
 }
 public ReferenceBinding[] syntheticEnclosingInstanceTypes() {
 	if (isStatic()) return null;

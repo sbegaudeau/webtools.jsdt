@@ -184,12 +184,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	}
 
 	/**
-     * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#erasure()
-     */
-    public TypeBinding erasure() {
-        return this.type.erasure(); // erasure
-    }
-	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#fieldCount()
 	 */
 	public int fieldCount() {
@@ -350,18 +344,11 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			// cannot be picked up as an exact match if its a possible anonymous case, such as:
 			// class A<T extends Number> { public void id(T t) {} }
 			// class B<TT> extends A<Integer> { public <ZZ> void id(Integer i) {} }
-			if (match.hasSubstitutedParameters()) return null;
 			return match;
 		}
 
 		if (foundNothing && (this.arguments == null || this.arguments.length <= 1)) {
-			if (isInterface()) {
-				 if (superInterfaces().length == 1) {
-					if (refScope != null)
-						refScope.recordTypeReference(superInterfaces[0]);
-					return superInterfaces[0].getExactMethod(selector, argumentTypes, refScope);
-				 }
-			} else if (superclass() != null) {
+			if (superclass() != null) {
 				if (refScope != null)
 					refScope.recordTypeReference(superclass);
 				return superclass.getExactMethod(selector, argumentTypes, refScope);
@@ -678,18 +665,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		return this.superclass;
 	}
 
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#superInterfaces()
-	 */
-	public ReferenceBinding[] superInterfaces() {
-	    if (this.superInterfaces == null) {
-	    		if (this.type.isHierarchyBeingConnected())
-	    			return Binding.NO_SUPERINTERFACES; // prevent superinterfaces from being assigned before they are connected
-	    		this.superInterfaces = Scope.substitute(this, this.type.superInterfaces());
-	    }
-		return this.superInterfaces;
-	}
-
 	public void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceBinding resolvedType, LookupEnvironment env) {
 		boolean update = false;
 		if (this.type == unresolvedType) {
@@ -747,19 +722,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 
 		buffer.append("\n\textends "); //$NON-NLS-1$
 		buffer.append((superclass != null) ? superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
-
-		if (superInterfaces != null) {
-			if (superInterfaces != Binding.NO_SUPERINTERFACES) {
-				buffer.append("\n\timplements : "); //$NON-NLS-1$
-				for (int i = 0, length = superInterfaces.length; i < length; i++) {
-					if (i  > 0)
-						buffer.append(", "); //$NON-NLS-1$
-					buffer.append((superInterfaces[i] != null) ? superInterfaces[i].debugName() : "NULL TYPE"); //$NON-NLS-1$
-				}
-			}
-		} else {
-			buffer.append("NULL SUPERINTERFACES"); //$NON-NLS-1$
-		}
 
 		if (enclosingType() != null) {
 			buffer.append("\n\tenclosing type : "); //$NON-NLS-1$

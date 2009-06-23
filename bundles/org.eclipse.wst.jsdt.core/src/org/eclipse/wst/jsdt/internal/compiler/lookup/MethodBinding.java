@@ -72,7 +72,7 @@ public final boolean areParameterErasuresEqual(MethodBinding method) {
 		return false;
 
 	for (int i = 0; i < length; i++)
-		if (parameters[i] != args[i] && parameters[i].erasure() != args[i].erasure())
+		if (parameters[i] != args[i] && parameters[i] != args[i])
 			return false;
 	return true;
 }
@@ -173,7 +173,7 @@ public final boolean canBeSeenBy(InvocationSite invocationSite, Scope scope) {
 			temp = temp.enclosingType();
 		}
 
-		ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass.erasure();
+		ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass;
 		temp = outerDeclaringClass.enclosingType();
 		while (temp != null) {
 			outerDeclaringClass = temp;
@@ -210,8 +210,8 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 		if (invocationType.fPackage == declaringClass.fPackage) return true;
 
 		ReferenceBinding currentType = invocationType;
-		TypeBinding receiverErasure = receiverType.erasure();
-		ReferenceBinding declaringErasure = (ReferenceBinding) declaringClass.erasure();
+		TypeBinding receiverErasure = receiverType;
+		ReferenceBinding declaringErasure = (ReferenceBinding) declaringClass;
 		int depth = 0;
 		do {
 			if (currentType.findSuperTypeWithSameErasure(declaringErasure) != null) {
@@ -252,7 +252,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 				temp = temp.enclosingType();
 			}
 
-			ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass.erasure();
+			ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass;
 			temp = outerDeclaringClass.enclosingType();
 			while (temp != null) {
 				outerDeclaringClass = temp;
@@ -442,19 +442,6 @@ public Object getDefaultValue() {
 		originalMethod.tagBits |= TagBits.DefaultValueResolved;
 	}
 	return null;
-}
-/**
- * Returns true if method got substituted parameter types
- * (see ParameterizedMethodBinding)
- */
-public boolean hasSubstitutedParameters() {
-	return false;
-}
-
-/* Answer true if the return type got substituted.
- */
-public boolean hasSubstitutedReturnType() {
-	return false;
 }
 
 /* Answer true if the receiver is an abstract method

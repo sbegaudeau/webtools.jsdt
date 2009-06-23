@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,17 +95,6 @@ public int resolveLevel(Binding binding) {
 	if (this.pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_INTERFACES) {
 		level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
 		if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
-	}
-
-	if (this.pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_CLASSES) {
-		ReferenceBinding[] superInterfaces = type.superInterfaces();
-		for (int i = 0, max = superInterfaces.length; i < max; i++) {
-			int newLevel = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, superInterfaces[i]);
-			if (newLevel > level) {
-				if (newLevel == ACCURATE_MATCH) return ACCURATE_MATCH;
-				level = newLevel;
-			}
-		}
 	}
 	return level;
 }

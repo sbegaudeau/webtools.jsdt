@@ -343,7 +343,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getErasure()
 	 */
 	public ITypeBinding getErasure() {
-		return this.resolver.getTypeBinding(this.binding.erasure());
+		return this.resolver.getTypeBinding(this.binding);
 	}
 
 	public IJavaScriptElement getJavaElement() {
@@ -371,7 +371,7 @@ class TypeBinding implements ITypeBinding {
 		}
 		ReferenceBinding referenceBinding;
 		if (typeBinding.isParameterizedType())
-			referenceBinding = (ReferenceBinding) typeBinding.erasure();
+			referenceBinding = (ReferenceBinding) typeBinding;
 		else
 			referenceBinding = (ReferenceBinding) typeBinding;
 		char[] fileName = referenceBinding.getFileName();
@@ -681,7 +681,6 @@ class TypeBinding implements ITypeBinding {
 			if (!(type instanceof TypeBinding)) return false;
 			org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding expressionType = ((TypeBinding) type).binding;
 			// simulate capture in case checked binding did not properly get extracted from a reference
-			expressionType = expressionType.capture(scope, 0);
 			return expression.checkCastTypesCompatibility(scope, this.binding, expressionType, null);
 		} catch (AbortCompilation e) {
 			// don't surface internal exception to clients
@@ -737,7 +736,7 @@ class TypeBinding implements ITypeBinding {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			if (referenceBinding.isParameterizedType()) {
 				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) referenceBinding;
-				org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding erasure = parameterizedTypeBinding.erasure();
+				org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding erasure = parameterizedTypeBinding;
 				if (erasure instanceof ReferenceBinding) {
 					return !((ReferenceBinding) erasure).isBinaryBinding();
 				}

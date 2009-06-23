@@ -126,10 +126,7 @@ public char[] genericTypeSignature() {
 public char[] readableName() /*java.lang.Object,  p.X<T> */ {
     char[] readableName;
 	if (isAnonymousType()) {
-		if (superInterfaces == Binding.NO_SUPERINTERFACES)
-			readableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.readableName(), TypeConstants.ANONYM_SUFFIX);
-		else
-			readableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superInterfaces[0].readableName(), TypeConstants.ANONYM_SUFFIX);
+		readableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.readableName(), TypeConstants.ANONYM_SUFFIX);
 	} else if (isMemberType()) {
 		readableName = CharOperation.concat(enclosingType().readableName(), this.sourceName, '.');
 	} else {
@@ -141,10 +138,7 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 public char[] shortReadableName() /*Object*/ {
     char[] shortReadableName;
 	if (isAnonymousType()) {
-		if (superInterfaces == Binding.NO_SUPERINTERFACES)
-			shortReadableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.shortReadableName(), TypeConstants.ANONYM_SUFFIX);
-		else
-			shortReadableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superInterfaces[0].shortReadableName(), TypeConstants.ANONYM_SUFFIX);
+		shortReadableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.shortReadableName(), TypeConstants.ANONYM_SUFFIX);
 	} else if (isMemberType()) {
 		shortReadableName = CharOperation.concat(enclosingType().shortReadableName(), sourceName, '.');
 	} else {
@@ -177,11 +171,7 @@ public char[] signature() {
 }
 public char[] sourceName() {
 	if (isAnonymousType()) {
-		if (superInterfaces == Binding.NO_SUPERINTERFACES)
-			return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.sourceName(), TypeConstants.ANONYM_SUFFIX);
-		else
-			return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superInterfaces[0].sourceName(), TypeConstants.ANONYM_SUFFIX);
-
+		return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.sourceName(), TypeConstants.ANONYM_SUFFIX);
 	} else
 		return sourceName;
 }

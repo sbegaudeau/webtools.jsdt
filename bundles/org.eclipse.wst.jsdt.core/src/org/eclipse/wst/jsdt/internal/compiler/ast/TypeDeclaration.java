@@ -633,7 +633,7 @@ public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, Fl
 	}
 	// add superclass enclosing instance arg for anonymous types (if necessary)
 	if (nestedType.isAnonymousType()) {
-		ReferenceBinding superclassBinding = (ReferenceBinding)nestedType.superclass.erasure();
+		ReferenceBinding superclassBinding = (ReferenceBinding)nestedType.superclass;
 		if (superclassBinding.enclosingType() != null && !superclassBinding.isStatic()) {
 			if (!superclassBinding.isLocalType()
 					|| ((NestedTypeBinding)superclassBinding).getSyntheticField(superclassBinding.enclosingType(), true) != null){
@@ -838,13 +838,6 @@ public void resolve() {
 		return;
 	}
 	try {
-		boolean old = this.staticInitializerScope.insideTypeAnnotation;
-//		try {
-//			this.staticInitializerScope.insideTypeAnnotation = true;
-//			resolveAnnotations(this.staticInitializerScope, this.annotations, sourceType);
-//		} finally {
-//			this.staticInitializerScope.insideTypeAnnotation = old;
-//		}
 		if ((this.bits & ASTNode.UndocumentedEmptyBlock) != 0) {
 			this.scope.problemReporter().undocumentedEmptyBlock(this.bodyStart-1, this.bodyEnd);
 		}
@@ -905,7 +898,7 @@ public void resolve() {
 				}
 				if (current.isStatic()) break checkEnclosedInGeneric;
 				if (current.isLocalType()) {
-					NestedTypeBinding nestedType = (NestedTypeBinding) current.erasure();
+					NestedTypeBinding nestedType = (NestedTypeBinding) current;
 					if (nestedType.scope.methodScope().isStatic) break checkEnclosedInGeneric;
 				}
 			} while ((current = current.enclosingType()) != null);

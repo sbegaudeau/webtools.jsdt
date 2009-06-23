@@ -46,7 +46,6 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	public CompilationUnitBinding(CompilationUnitScope scope,PackageBinding fPackage,char [] path,ReferenceBinding superType ) {
 		super(new char [][]{scope.referenceContext.getFileName()}, fPackage, scope);
 		this.compilationUnitScope=scope;
-		this.superInterfaces=Binding.NO_SUPERINTERFACES;
 		this.memberTypes=Binding.NO_MEMBER_TYPES;
 		this.sourceName=this.fileName;
 		setShortName(this.fileName);

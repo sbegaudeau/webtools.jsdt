@@ -144,7 +144,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
-import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -1196,7 +1195,6 @@ public final class CompletionEngine
 			case ClassFileConstants.AccAnnotation:
 			case ClassFileConstants.AccAnnotation | ClassFileConstants.AccInterface:
 				relevance += computeRelevanceForAnnotation();
-				if (guessedType != null) relevance += computeRelevanceForAnnotationTarget(guessedType);
 				relevance += computeRelevanceForInterface();
 				break;
 			case ClassFileConstants.AccEnum:
@@ -1531,7 +1529,7 @@ public final class CompletionEngine
 				setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 				TypeBinding receiverType = ((VariableBinding) qualifiedBinding).type;
 				if (receiverType != null) {
-					findFieldsAndMethods(this.completionToken, receiverType.capture(scope, ref.sourceEnd), scope, ref, scope,false,false,false, null, null, null, false);
+					findFieldsAndMethods(this.completionToken, receiverType, scope, ref, scope,false,false,false, null, null, null, false);
 				} else if (this.assistNodeInJavadoc == 0 &&
 						(this.requestor.isAllowingRequiredProposals(CompletionProposal.FIELD_REF, CompletionProposal.TYPE_REF) ||
 								this.requestor.isAllowingRequiredProposals(CompletionProposal.METHOD_REF, CompletionProposal.TYPE_REF))) {
@@ -1764,7 +1762,7 @@ public final class CompletionEngine
 
 					findFieldsAndMethods(
 						this.completionToken,
-						((TypeBinding) qualifiedBinding).capture(scope, access.receiver.sourceEnd),
+						((TypeBinding) qualifiedBinding),
 						scope,
 						access,
 						scope,
@@ -1816,7 +1814,7 @@ public final class CompletionEngine
 					null,
 					argTypes,
 					(messageSend.receiver!=null)?
-									(ReferenceBinding)((ReferenceBinding) qualifiedBinding).capture(scope, messageSend.receiver.sourceEnd)
+									(ReferenceBinding)((ReferenceBinding) qualifiedBinding)
 									:null,
 					scope,
 					new ObjectVector(),
@@ -1981,7 +1979,7 @@ public final class CompletionEngine
 								typeArgTypes,
 								null,
 								  (messageSend.receiver!=null)?
-										  (ReferenceBinding)receiverType.capture(scope, messageSend.receiver.sourceEnd) :null,
+										  (ReferenceBinding)receiverType :null,
 								scope,
 								new ObjectVector(),
 								onlyStatic,
@@ -2133,7 +2131,7 @@ public final class CompletionEngine
 						this.completionToken,
 						null,
 						argTypes,
-						(ReferenceBinding) ((ReferenceBinding) qualifiedBinding).capture(scope, messageSend.receiver.sourceEnd),
+						(ReferenceBinding) ((ReferenceBinding) qualifiedBinding),
 						scope,
 						new ObjectVector(),
 						false,
@@ -2734,16 +2732,7 @@ public final class CompletionEngine
 
 				if (exceptionType.enclosingType().isSuperclassOf(otherType.enclosingType()))
 					return;
-
-				if (otherType.enclosingType().isInterface())
-					if (exceptionType.enclosingType()
-						.implementsInterface(otherType.enclosingType(), true))
-						return;
-
-				if (exceptionType.enclosingType().isInterface())
-					if (otherType.enclosingType()
-						.implementsInterface(exceptionType.enclosingType(), true))
-						return;
+					
 			}
 		}
 
@@ -3084,9 +3073,9 @@ public final class CompletionEngine
 										if (p>0) javadocCompletion.append(", "); //$NON-NLS-1$
 										TypeBinding argTypeBinding = constructor.parameters[p];
 										if (isVarargs && p == ln - 1)  {
-											createVargsType(argTypeBinding.erasure(), javadocCompletion);
+											createVargsType(argTypeBinding, javadocCompletion);
 										} else {
-											createType(argTypeBinding.erasure(), javadocCompletion);
+											createType(argTypeBinding, javadocCompletion);
 										}
 									}
 								}
@@ -3247,12 +3236,7 @@ public final class CompletionEngine
 					if (otherField.declaringClass.isInterface()) {
 						if (field.declaringClass == scope.getJavaLangObject())
 							continue next;
-						if (field.declaringClass.implementsInterface(otherField.declaringClass, true))
-							continue next;
 					}
-					if (field.declaringClass.isInterface())
-						if (otherField.declaringClass.implementsInterface(field.declaringClass, true))
-							continue next;
 					if(canBePrefixed) {
 						prefixRequired = true;
 					} else {
@@ -3425,23 +3409,6 @@ public final class CompletionEngine
 		ReferenceBinding[] interfacesToVisit = null;
 		int nextPosition = 0;
 		do {
-			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-			if (notInJavadoc && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				if (interfacesToVisit == null) {
-					interfacesToVisit = itsInterfaces;
-					nextPosition = interfacesToVisit.length;
-				} else {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
 
 			FieldBinding[] fields = currentType.availableFields();
 			if(fields != null && fields.length > 0) {
@@ -3510,19 +3477,6 @@ public final class CompletionEngine
 						missingElementsStarts,
 						missingElementsEnds,
 						missingElementsHaveProblems);
-				}
-
-				ReferenceBinding[] itsInterfaces = anInterface.superInterfaces();
-				if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
 				}
 			}
 		}
@@ -4598,16 +4552,6 @@ public final class CompletionEngine
 
 					if (memberType.enclosingType().isSuperclassOf(otherType.enclosingType()))
 						continue next;
-
-					if (otherType.enclosingType().isInterface())
-						if (memberType.enclosingType()
-							.implementsInterface(otherType.enclosingType(), true))
-							continue next;
-
-					if (memberType.enclosingType().isInterface())
-						if (otherType.enclosingType()
-							.implementsInterface(memberType.enclosingType(), true))
-							continue next;
 				}
 			}
 
@@ -4657,10 +4601,7 @@ public final class CompletionEngine
 			}
 			if (staticFieldsAndMethodOnly && this.insideQualifiedReference) relevance += R_NON_INHERITED; // This criterion doesn't concern types and is added to be balanced with field and method relevance.
 
-			if (memberType.isAnnotationType()) {
-				relevance += computeRelevanceForAnnotation();
-				relevance += computeRelevanceForAnnotationTarget(memberType);
-			} else if (memberType.isClass()) {
+			if (memberType.isClass()) {
 				relevance += computeRelevanceForClass();
 				relevance += computeRelevanceForException(memberType.sourceName);
 			} else if(memberType.isEnum()) {
@@ -4714,110 +4655,7 @@ public final class CompletionEngine
 
 		if (this.assistNodeIsSuperType && !this.insideQualifiedReference) return; // we're trying to find a supertype
 
-		if (currentType.superInterfaces() == null)
-			return; // we're trying to find a supertype
-
-
-		if (this.insideQualifiedReference
-			|| typeName.length == 0) { // do not search up the hierarchy
-
-			findMemberTypes(
-				typeName,
-				currentType.memberTypes(),
-				typesFound,
-				receiverType,
-				typeInvocation,
-				staticOnly,
-				staticFieldsAndMethodOnly,
-				fromStaticImport,
-				checkQualification,
-				scope);
-			return;
-		}
-
-		ReferenceBinding[] interfacesToVisit = null;
-		int nextPosition = 0;
-
-		do {
-			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-			if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				if (interfacesToVisit == null) {
-					interfacesToVisit = itsInterfaces;
-					nextPosition = interfacesToVisit.length;
-				} else {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
-
-			findMemberTypes(
-				typeName,
-				currentType.memberTypes(),
-				typesFound,
-				receiverType,
-				typeInvocation,
-				staticOnly,
-				staticFieldsAndMethodOnly,
-				fromStaticImport,
-				checkQualification,
-				scope);
-
-			currentType = currentType.superclass();
-		} while (currentType != null);
-
-		if(proposeAllMemberTypes) {
-			ReferenceBinding[] memberTypes = receiverType.memberTypes();
-			for (int i = 0; i < memberTypes.length; i++) {
-				if(memberTypes[i] != typeToIgnore) {
-					findSubMemberTypes(
-						typeName,
-						memberTypes[i],
-						scope,
-						typeInvocation,
-						staticOnly,
-						staticFieldsAndMethodOnly,
-						fromStaticImport,
-						typesFound);
-				}
-			}
-		}
-
-		if (interfacesToVisit != null) {
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding anInterface = interfacesToVisit[i];
-				findMemberTypes(
-					typeName,
-					anInterface.memberTypes(),
-					typesFound,
-					receiverType,
-					typeInvocation,
-					staticOnly,
-					staticFieldsAndMethodOnly,
-					fromStaticImport,
-					checkQualification,
-					scope);
-
-				ReferenceBinding[] itsInterfaces = anInterface.superInterfaces();
-				if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
-		}
+		return; // we're trying to find a supertype
 	}
 
 	/*
@@ -4871,119 +4709,7 @@ public final class CompletionEngine
 		if (typeName == null || typeName.length == 0)
 			return;
 
-		if (currentType.superInterfaces() == null)
-			return; // we're trying to find a supertype
-
-		findMemberTypes(
-				typeName,
-				currentType.memberTypes(),
-				typesFound,
-				receiverType,
-				typeInvocation,
-				staticOnly,
-				staticFieldsAndMethodOnly,
-				fromStaticImport,
-				true,
-				scope);
-
-		ReferenceBinding[] memberTypes = receiverType.memberTypes();
-		next : for (int i = 0; i < memberTypes.length; i++) {
-			if (this.options.checkVisibility) {
-				if (typeInvocation != null && !memberTypes[i].canBeSeenBy(receiverType, typeInvocation)) {
-					continue next;
-				} else if(typeInvocation == null && !memberTypes[i].canBeSeenBy(this.unitScope.getDefaultPackage())) {
-					continue next;
-				}
-			}
-			findSubMemberTypes(
-				typeName,
-				memberTypes[i],
-				scope,
-				typeInvocation,
-				staticOnly,
-				staticFieldsAndMethodOnly,
-				fromStaticImport,
-				typesFound);
-		}
-	}
-
-	private void findInterfacesMethods(
-		char[] selector,
-		TypeBinding[] typeArgTypes,
-		TypeBinding[] argTypes,
-		ReferenceBinding receiverType,
-		ReferenceBinding[] itsInterfaces,
-		Scope scope,
-		ObjectVector methodsFound,
-		boolean onlyStaticMethods,
-		boolean exactMatch,
-		boolean isCompletingDeclaration,
-		InvocationSite invocationSite,
-		Scope invocationScope,
-		boolean implicitCall,
-		boolean superCall,
-		boolean canBePrefixed,
-		Binding[] missingElements,
-		int[] missingElementssStarts,
-		int[] missingElementsEnds,
-		boolean missingElementsHaveProblems) {
-
-		if (selector == null)
-			return;
-
-		if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			ReferenceBinding[] interfacesToVisit = itsInterfaces;
-			int nextPosition = interfacesToVisit.length;
-
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding currentType = interfacesToVisit[i];
-				MethodBinding[] methods = currentType.availableMethods();
-				if(methods != null) {
-					if(isCompletingDeclaration) {
-						findLocalMethodDeclarations(
-							selector,
-							methods,
-							scope,
-							methodsFound,
-							exactMatch,
-							receiverType);
-					} else {
-						findLocalMethods(
-							selector,
-							typeArgTypes,
-							argTypes,
-							methods,
-							methods.length,
-							scope,
-							methodsFound,
-							onlyStaticMethods,
-							exactMatch,
-							receiverType,
-							invocationSite,
-							invocationScope,
-							implicitCall,
-							superCall,
-							canBePrefixed,
-							missingElements,
-							missingElementssStarts,
-							missingElementsEnds,
-							missingElementsHaveProblems);
-					}
-				}
-
-				if ((itsInterfaces = currentType.superInterfaces()) != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
-		}
+		return; // we're trying to find a supertype
 	}
 
 	private void findImplicitMessageSends(
@@ -5243,9 +4969,9 @@ public final class CompletionEngine
 							if (p>0) javadocCompletion.append(", "); //$NON-NLS-1$
 							TypeBinding argTypeBinding = method.parameters[p];
 							if (isVarargs && p == ln - 1)  {
-								createVargsType(argTypeBinding.erasure(), javadocCompletion);
+								createVargsType(argTypeBinding, javadocCompletion);
 							} else {
-								createType(argTypeBinding.erasure(), javadocCompletion);
+								createType(argTypeBinding, javadocCompletion);
 							}
 						}
 					}
@@ -5795,16 +5521,6 @@ public final class CompletionEngine
 		}
 		return 0;
 	}
-	private int computeRelevanceForAnnotationTarget(TypeBinding typeBinding){
-		if (this.assistNodeIsAnnotation &&
-				(this.targetedElement & TagBits.AnnotationTargetMASK) != 0) {
-			long target = typeBinding.getAnnotationTagBits() & TagBits.AnnotationTargetMASK;
-			if(target == 0 || (target & this.targetedElement) != 0) {
-				return R_TARGET;
-			}
-		}
-		return 0;
-	}
 	private int computeRelevanceForClass(){
 		if(this.assistNodeIsClass) {
 			return R_CLASS;
@@ -6254,73 +5970,9 @@ public final class CompletionEngine
 		ReferenceBinding currentType = receiverType;
 		if (notInJavadoc) {
 			if (receiverType.isInterface()) {
-				if (isCompletingDeclaration) {
-					findInterfacesMethods(
-						selector,
-						typeArgTypes,
-						argTypes,
-						receiverType,
-						currentType.superInterfaces(),
-						scope,
-						methodsFound,
-						onlyStaticMethods,
-						exactMatch,
-						isCompletingDeclaration,
-						invocationSite,
-						invocationScope,
-						implicitCall,
-						superCall,
-						canBePrefixed,
-						missingElements,
-						missingElementsStarts,
-						missingElementsEnds,
-						missingElementsHaveProblems);
-				} else {
-					findInterfacesMethods(
-						selector,
-						typeArgTypes,
-						argTypes,
-						receiverType,
-						new ReferenceBinding[]{currentType},
-						scope,
-						methodsFound,
-						onlyStaticMethods,
-						exactMatch,
-						isCompletingDeclaration,
-						invocationSite,
-						invocationScope,
-						implicitCall,
-						superCall,
-						canBePrefixed,
-						missingElements,
-						missingElementsStarts,
-						missingElementsEnds,
-						missingElementsHaveProblems);
-				}
-
 				currentType = scope.getJavaLangObject();
 			} else {
 				if (isCompletingDeclaration){
-					findInterfacesMethods(
-						selector,
-						typeArgTypes,
-						argTypes,
-						receiverType,
-						currentType.superInterfaces(),
-						scope,
-						methodsFound,
-						onlyStaticMethods,
-						exactMatch,
-						isCompletingDeclaration,
-						invocationSite,
-						invocationScope,
-						implicitCall,
-						superCall,
-						canBePrefixed,
-						missingElements,
-						missingElementsStarts,
-						missingElementsEnds,
-						missingElementsHaveProblems);
 
 					currentType = receiverType.superclass();
 				}
@@ -6393,34 +6045,6 @@ public final class CompletionEngine
 			if (notInJavadoc &&
 					hasPotentialDefaultAbstractMethods &&
 					(currentType.isAbstract() || currentType.isTypeVariable() || currentType.isIntersectionType())){
-
-				ReferenceBinding[] superInterfaces = currentType.superInterfaces();
-				if (superInterfaces != null && currentType.isIntersectionType()) {
-					for (int i = 0; i < superInterfaces.length; i++) {
-						superInterfaces[i] = (ReferenceBinding)superInterfaces[i].capture(invocationScope, invocationSite.sourceEnd());
-					}
-				}
-
-				findInterfacesMethods(
-					selector,
-					typeArgTypes,
-					argTypes,
-					receiverType,
-					superInterfaces,
-					scope,
-					methodsFound,
-					onlyStaticMethods,
-					exactMatch,
-					isCompletingDeclaration,
-					invocationSite,
-					invocationScope,
-					implicitCall,
-					superCall,
-					canBePrefixed,
-					missingElements,
-					missingElementsStarts,
-					missingElementsEnds,
-					missingElementsHaveProblems);
 			} else {
 				hasPotentialDefaultAbstractMethods = false;
 			}
@@ -6432,7 +6056,7 @@ public final class CompletionEngine
 		}
 	}
 	private char[][] findMethodParameterNames(MethodBinding method, char[][] parameterTypeNames){
-		TypeBinding erasure =  method.declaringClass.erasure();
+		TypeBinding erasure =  method.declaringClass;
 		if(!(erasure instanceof ReferenceBinding)) return null;
 
 		char[][] parameterNames = null;
@@ -6601,7 +6225,6 @@ public final class CompletionEngine
 								relevance += computeRelevanceForClass();
 								relevance += computeRelevanceForQualification(false);
 								relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for nested type
-								relevance += computeRelevanceForAnnotationTarget(localType);
 
 								this.noProposal = false;
 								if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
@@ -6783,10 +6406,7 @@ public final class CompletionEngine
 				relevance += computeRelevanceForQualification(false);
 				relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE); // no access restriction for type in the current unit
 
-				if (sourceType.isAnnotationType()) {
-					relevance += computeRelevanceForAnnotation();
-					relevance += computeRelevanceForAnnotationTarget(sourceType);
-				} else if (sourceType.isInterface()) {
+				if (sourceType.isInterface()) {
 					relevance += computeRelevanceForInterface();
 				} else if(sourceType.isClass()){
 					relevance += computeRelevanceForClass();
@@ -7837,24 +7457,6 @@ public final class CompletionEngine
 		ReferenceBinding[] interfacesToVisit = null;
 		int nextPosition = 0;
 		do {
-			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-			if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				if (interfacesToVisit == null) {
-					interfacesToVisit = itsInterfaces;
-					nextPosition = interfacesToVisit.length;
-				} else {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
-
 			FieldBinding[] fields = currentType.availableFields();
 			if(fields != null && fields.length > 0) {
 				computeAlreadyDefinedName(
@@ -7880,19 +7482,6 @@ public final class CompletionEngine
 						receiverType,
 						invocationSite,
 						result);
-				}
-
-				ReferenceBinding[] itsInterfaces = anInterface.superInterfaces();
-				if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
 				}
 			}
 		}
@@ -7968,14 +7557,6 @@ public final class CompletionEngine
 
 				while(binding != null) {
 					computeExpectedTypesForMessageSend(
-						binding,
-						messageSend.selector,
-						messageSend.arguments,
-						(ReferenceBinding)messageSend.actualReceiverType,
-						scope,
-						messageSend,
-						isStatic);
-					computeExpectedTypesForMessageSendForInterface(
 						binding,
 						messageSend.selector,
 						messageSend.arguments,
@@ -8150,46 +7731,6 @@ public final class CompletionEngine
 			TypeBinding expectedType = method.parameters[arguments.length - 1];
 			if(expectedType != null) {
 				addExpectedType(expectedType, scope);
-			}
-		}
-	}
-
-	private void computeExpectedTypesForMessageSendForInterface(
-		ReferenceBinding binding,
-		char[] selector,
-		Expression[] arguments,
-		ReferenceBinding receiverType,
-		Scope scope,
-		InvocationSite invocationSite,
-		boolean isStatic) {
-
-		ReferenceBinding[] itsInterfaces = binding.superInterfaces();
-		if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-			ReferenceBinding[] interfacesToVisit = itsInterfaces;
-			int nextPosition = interfacesToVisit.length;
-
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding currentType = interfacesToVisit[i];
-				computeExpectedTypesForMessageSend(
-					currentType,
-					selector,
-					arguments,
-					receiverType,
-					scope,
-					invocationSite,
-					isStatic);
-
-				if ((itsInterfaces = currentType.superInterfaces()) != Binding.NO_SUPERINTERFACES) {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
 			}
 		}
 	}
@@ -8706,56 +8247,6 @@ public final class CompletionEngine
 
 		printDebugTab(tab, buffer);
 		buffer.append("}\n");//$NON-NLS-1$
-	}
-
-	private char[] substituteMethodTypeParameterName(char firstName, char startChar, char endChar, char[][] excludedNames, char[][] otherParameterNames) {
-		char name = firstName;
-		next : while (true) {
-			for (int i = 0 ; i < excludedNames.length ; i++){
-				if(excludedNames[i].length == 1 && ScannerHelper.toLowerCase(excludedNames[i][0]) == ScannerHelper.toLowerCase(name)) {
-					name++;
-					if(name > endChar)
-						name = startChar;
-					if(name == firstName)
-						return substituteMethodTypeParameterName(new char[]{firstName}, excludedNames, otherParameterNames);
-					continue next;
-				}
-			}
-
-			for (int i = 0; i < otherParameterNames.length; i++) {
-				if(otherParameterNames[i].length == 1 && ScannerHelper.toLowerCase(otherParameterNames[i][0]) == ScannerHelper.toLowerCase(name)) {
-					name++;
-					if(name > endChar)
-						name = startChar;
-					if(name == firstName)
-						return substituteMethodTypeParameterName(new char[]{firstName}, excludedNames, otherParameterNames);
-					continue next;
-				}
-			}
-			break next;
-		}
-		return new char[]{name};
-	}
-
-	private char[] substituteMethodTypeParameterName(char[] firstName, char[][] excludedNames, char[][] otherParameterNames) {
-		char[] name = firstName;
-		int count = 2;
-		next : while(true) {
-			for(int k = 0 ; k < excludedNames.length ; k++){
-				if(CharOperation.equals(name, excludedNames[k], false)) {
-					name = CharOperation.concat(firstName, String.valueOf(count++).toCharArray());
-					continue next;
-				}
-			}
-			for (int i = 0; i < otherParameterNames.length; i++) {
-				if(CharOperation.equals(name, otherParameterNames[i], false)) {
-					name = CharOperation.concat(firstName, String.valueOf(count++).toCharArray());
-					continue next;
-				}
-			}
-			break next;
-		}
-		return name;
 	}
 
 	public CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction) {

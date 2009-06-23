@@ -265,28 +265,6 @@ private boolean matchOverriddenMethod(ReferenceBinding type, MethodBinding metho
 		}
 	}
 
-	// matches interfaces
-	ReferenceBinding[] interfaces = type.superInterfaces();
-	if (interfaces == null) return false;
-	int iLength = interfaces.length;
-	for (int i = 0; i<iLength; i++) {
-		if (interfaces[i].isParameterizedType()) {
-			MethodBinding[] methods = interfaces[i].getMethods(this.pattern.selector);
-			int length = methods.length;
-			for (int j = 0; j<length; j++) {
-				if (methods[j].areParametersEqual(method)) {
-					if (matchMethod == null) {
-						if (methodParametersEqualsPattern(methods[j].original())) return true;
-					} else {
-						if (methods[j].original().areParametersEqual(matchMethod)) return true;
-					}
-				}
-			}
-		}
-		if (matchOverriddenMethod(interfaces[i], method, matchMethod)) {
-			return true;
-		}
-	}
 	return false;
 }
 /**
@@ -608,7 +586,7 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 					if (argumentTypes.length == parameters.length) {
 						boolean found = true;
 						for (int j=0,l=parameters.length; j<l; j++) {
-							if (parameters[j].erasure() != argumentTypes[j].erasure()) {
+							if (parameters[j] != argumentTypes[j]) {
 								found = false;
 								break;
 							}
@@ -630,19 +608,8 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 		}
 	}
 
-	// matches interfaces
-	ReferenceBinding[] interfaces = type.superInterfaces();
-	if (interfaces == null) return INACCURATE_MATCH;
-	for (int i = 0; i < interfaces.length; i++) {
-		level = resolveLevelAsSubtype(qualifiedPattern, interfaces[i], null);
-		if (level != IMPOSSIBLE_MATCH) {
-			if (!type.isAbstract() && !type.isInterface()) { // if concrete class, then method is overridden
-				level |= OVERRIDDEN_METHOD_FLAVOR;
-			}
-			return level | SUB_INVOCATION_FLAVOR; // add flavor to returned level
-		}
-	}
-	return IMPOSSIBLE_MATCH;
+	
+	return INACCURATE_MATCH;
 }
 public String toString() {
 	return "Locator for " + this.pattern.toString(); //$NON-NLS-1$

@@ -27,7 +27,6 @@ public class LibraryAPIsBinding  extends SourceTypeBinding {
 
 	public LibraryAPIsBinding(CompilationUnitScope scope,PackageBinding fPackage, char [] fileName ) {
 		this.compilationUnitScope=scope;
-		this.superInterfaces=Binding.NO_SUPERINTERFACES;
 		this.memberTypes=Binding.NO_MEMBER_TYPES;
 		this.fileName=fileName;
 		this.sourceName=this.fileName;

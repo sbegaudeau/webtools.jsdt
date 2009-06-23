@@ -249,7 +249,7 @@ class JavaScriptUnitBinding implements ITypeBinding {
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getErasure()
 	 */
 	public ITypeBinding getErasure() {
-		return this.resolver.getTypeBinding(this.binding.erasure());
+		return this.resolver.getTypeBinding(this.binding);
 	}
 
 	public ITypeBinding[] getInterfaces() {

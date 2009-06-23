@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,12 +92,6 @@ boolean areReturnTypesCompatible0(MethodBinding one, MethodBinding two) {
 	if (two.declaringClass.id == TypeIds.T_JavaLangObject)
 		return one.returnType.isCompatibleWith(two.returnType);
 
-	// both are interfaces, see if they're related
-	if (one.declaringClass.implementsInterface(two.declaringClass, true))
-		return one.returnType.isCompatibleWith(two.returnType);
-	if (two.declaringClass.implementsInterface(one.declaringClass, true))
-		return two.returnType.isCompatibleWith(one.returnType);
-
 	// unrelated interfaces... one must be a subtype of the other
 	return one.returnType.isCompatibleWith(two.returnType)
 		|| two.returnType.isCompatibleWith(one.returnType);
@@ -120,7 +114,7 @@ boolean areTypesEqual(TypeBinding one, TypeBinding two) {
 boolean canSkipInheritedMethods() {
 	if (this.type.superclass() != null && this.type.superclass().isAbstract())
 		return false;
-	return this.type.superInterfaces() == Binding.NO_SUPERINTERFACES;
+	return true;
 }
 boolean canSkipInheritedMethods(MethodBinding one, MethodBinding two) {
 	return two == null // already know one is not null
@@ -184,14 +178,7 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 			if (!isAsVisible(currentMethod, inheritedMethod))
 				problemReporter(currentMethod).visibilityConflict(currentMethod, inheritedMethod);
 			if (options.reportDeprecationWhenOverridingDeprecatedMethod && inheritedMethod.isViewedAsDeprecated()) {
-				if (!currentMethod.isViewedAsDeprecated() || options.reportDeprecationInsideDeprecatedCode) {
-					// check against the other inherited methods to see if they hide this inheritedMethod
-					ReferenceBinding declaringClass = inheritedMethod.declaringClass;
-					if (declaringClass.isInterface())
-						for (int j = length; --j >= 0;)
-							if (i != j && methods[j].declaringClass.implementsInterface(declaringClass, false))
-								continue nextMethod;
-
+				if (!currentMethod.isViewedAsDeprecated() || options.reportDeprecationInsideDeprecatedCode) {	
 					problemReporter(currentMethod).overridesDeprecatedMethod(currentMethod, inheritedMethod);
 				}
 			}
@@ -419,7 +406,7 @@ void computeInheritedMethods() {
 	ReferenceBinding superclass = this.type.isInterface()
 		? this.type.scope.getJavaLangObject() // check interface methods against Object
 		: this.type.superclass(); // class or enum
-	computeInheritedMethods(superclass, type.superInterfaces());
+	computeInheritedMethods(superclass, null);
 }
 /*
 Binding creation is responsible for reporting:
@@ -441,7 +428,7 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 	ReferenceBinding[] interfacesToVisit = null;
 	int nextPosition = 0;
 	ReferenceBinding[] itsInterfaces = superInterfaces;
-	if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
+	if (itsInterfaces != null) {
 		nextPosition = itsInterfaces.length;
 		interfacesToVisit = itsInterfaces;
 	}
@@ -453,23 +440,6 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 	while (superType != null && superType.isValidBinding()) {
 	    if (allSuperclassesAreAbstract) {
 		    if (superType.isAbstract()) {
-				// only need to include superinterfaces if immediate superclasses are abstract
-				if ((itsInterfaces = superType.superInterfaces()) != Binding.NO_SUPERINTERFACES) {
-					if (interfacesToVisit == null) {
-						interfacesToVisit = itsInterfaces;
-						nextPosition = interfacesToVisit.length;
-					} else {
-						int itsLength = itsInterfaces.length;
-						if (nextPosition + itsLength >= interfacesToVisit.length)
-							System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-						nextInterface : for (int a = 0; a < itsLength; a++) {
-							ReferenceBinding next = itsInterfaces[a];
-							for (int b = 0; b < nextPosition; b++)
-								if (next == interfacesToVisit[b]) continue nextInterface;
-							interfacesToVisit[nextPosition++] = next;
-						}
-					}
-				}
 			} else {
 			    allSuperclassesAreAbstract = false;
 			}
@@ -538,30 +508,16 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 		superType = interfacesToVisit[i];
 		if (superType.isValidBinding()) {
 			if (skip != null && skip.includes(superType)) continue;
-			if ((itsInterfaces = superType.superInterfaces()) != Binding.NO_SUPERINTERFACES) {
-				int itsLength = itsInterfaces.length;
-				if (nextPosition + itsLength >= interfacesToVisit.length)
-					System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-				nextInterface : for (int a = 0; a < itsLength; a++) {
-					ReferenceBinding next = itsInterfaces[a];
-					for (int b = 0; b < nextPosition; b++)
-						if (next == interfacesToVisit[b]) continue nextInterface;
-					interfacesToVisit[nextPosition++] = next;
-				}
-			}
 
 			MethodBinding[] methods = superType.unResolvedMethods();
-			nextMethod : for (int m = methods.length; --m >= 0;) { // Interface methods are all abstract public
+			for (int m = methods.length; --m >= 0;) { // Interface methods are all abstract public
 				MethodBinding inheritedMethod = methods[m];
 				MethodBinding[] existingMethods = (MethodBinding[]) this.inheritedMethods.get(inheritedMethod.selector);
 				if (existingMethods == null) {
 					existingMethods = new MethodBinding[] {inheritedMethod};
 				} else {
 					int length = existingMethods.length;
-					// look to see if any of the existingMethods implement this inheritedMethod
-					for (int e = 0; e < length; e++)
-						if (isInterfaceMethodImplemented(inheritedMethod, existingMethods[e], superType))
-							continue nextMethod; // skip interface method with the same signature if visible to its declaringClass
+						
 					System.arraycopy(existingMethods, 0, existingMethods = new MethodBinding[length + 1], 0, length);
 					existingMethods[length] = inheritedMethod;
 				}
@@ -635,16 +591,6 @@ int[] findOverriddenInheritedMethods(MethodBinding[] methods, int length) {
 			if (toSkip != null && toSkip[j] == -1) continue;
 			ReferenceBinding declaringClass2 = methods[j].declaringClass;
 			if (declaringClass == declaringClass2) continue;
-			if (declaringClass.implementsInterface(declaringClass2, true)) {
-				if (toSkip == null)
-					toSkip = new int[length];
-				toSkip[j] = -1;
-			} else if (declaringClass2.implementsInterface(declaringClass, true)) {
-				if (toSkip == null)
-					toSkip = new int[length];
-				toSkip[i] = -1;
-				continue nextMethod;
-			}
 		}
 	}
 	return toSkip;
@@ -660,10 +606,6 @@ boolean isAsVisible(MethodBinding newMethod, MethodBinding inheritedMethod) {
 
 	return !newMethod.isPrivate();		// The inheritedMethod cannot be private since it would not be visible
 }
-boolean isInterfaceMethodImplemented(MethodBinding inheritedMethod, MethodBinding existingMethod, ReferenceBinding superType) {
-	// skip interface method with the same signature if visible to its declaringClass
-	return areParametersEqual(existingMethod, inheritedMethod) && existingMethod.declaringClass.implementsInterface(superType, true);
-}
 boolean isSameClassOrSubclassOf(ReferenceBinding testClass, ReferenceBinding superclass) {
 	do {
 		if (testClass == superclass) return true;
@@ -678,12 +620,7 @@ boolean mustImplementAbstractMethod(ReferenceBinding declaringClass) {
 		while (superclass.isAbstract() && superclass != declaringClass)
 			superclass = superclass.superclass(); // find the first concrete superclass or the abstract declaringClass
 	} else {
-		if (this.type.implementsInterface(declaringClass, false)) {
-			if (this.type.isAbstract()) return false; // leave it for the subclasses
-			if (!superclass.implementsInterface(declaringClass, true)) // only if a superclass does not also implement the interface
-				return true;
-		}
-		while (superclass.isAbstract() && !superclass.implementsInterface(declaringClass, false))
+		while (superclass.isAbstract())
 			superclass = superclass.superclass(); // find the first concrete superclass or the superclass which implements the interface
 	}
 	return superclass.isAbstract();		// if it is a concrete class then we have already reported problem against it

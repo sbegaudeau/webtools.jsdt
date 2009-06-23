@@ -89,8 +89,8 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 
 		ReferenceBinding currentType = invocationType;
 		int depth = 0;
-		ReferenceBinding receiverErasure = (ReferenceBinding)receiverType.erasure();
-		ReferenceBinding declaringErasure = (ReferenceBinding) declaringClass.erasure();
+		ReferenceBinding receiverErasure = (ReferenceBinding)receiverType;
+		ReferenceBinding declaringErasure = declaringClass;
 		do {
 			if (currentType.findSuperTypeWithSameErasure(declaringErasure) != null) {
 				if (invocationSite.isSuperAccess())
@@ -131,7 +131,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 				temp = temp.enclosingType();
 			}
 
-			ReferenceBinding outerDeclaringClass = (ReferenceBinding) declaringClass.erasure();
+			ReferenceBinding outerDeclaringClass = (ReferenceBinding) declaringClass;
 			temp = outerDeclaringClass.enclosingType();
 			while (temp != null) {
 				outerDeclaringClass = temp;

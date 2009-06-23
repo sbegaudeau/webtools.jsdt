@@ -56,8 +56,6 @@ public class QualifiedThisReference extends ThisReference implements IQualifiedT
 		// X.this is not a param/raw type as denoting enclosing instance
 		TypeBinding type = this.qualification.resolveType(scope, true /* check bounds*/);
 		if (type == null) return null;
-		// X.this is not a param/raw type as denoting enclosing instance
-		type = type.erasure();
 
 		// resolvedType needs to be converted to parameterized
 		if (type instanceof ReferenceBinding) {

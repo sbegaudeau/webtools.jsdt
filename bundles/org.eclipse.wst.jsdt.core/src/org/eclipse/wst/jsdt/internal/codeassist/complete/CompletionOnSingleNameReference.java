@@ -62,7 +62,7 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 
 	public TypeBinding resolveType(BlockScope scope) {
 		if(scope instanceof MethodScope) {
-			throw new CompletionNodeFound(this, scope, ((MethodScope)scope).insideTypeAnnotation);
+			throw new CompletionNodeFound(this, scope, false);
 		}
 		throw new CompletionNodeFound(this, scope);
 	}

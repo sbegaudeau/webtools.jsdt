@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
-import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.core.SourceField;
 import org.eclipse.wst.jsdt.internal.core.SourceMethod;
 
@@ -40,15 +39,12 @@ public class BinaryTypeBinding extends ReferenceBinding {
 	// all of these fields are ONLY guaranteed to be initialized if accessed using their public accessor method
 	protected ReferenceBinding superclass;
 	protected ReferenceBinding enclosingType;
-	protected ReferenceBinding[] superInterfaces;
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
 	protected ReferenceBinding[] memberTypes;
 
 	// For the link with the principle structure
 	protected LookupEnvironment environment;
-
-	protected SimpleLookupTable storedAnnotations = null; // keys are this ReferenceBinding & its fields and methods, value is an AnnotationHolder
 
 static Object convertMemberValue(Object binaryValue, LookupEnvironment env) {
 	if (binaryValue == null) return null;
@@ -198,10 +194,6 @@ public MethodBinding[] availableMethods() {
 	return availableMethods;
 }
 void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
-	// default initialization for super-interfaces early, in case some aborting compilation error occurs,
-	// and still want to use binaries passed that point (e.g. type hierarchy resolver, see bug 63748).
-	this.superInterfaces = Binding.NO_SUPERINTERFACES;
-
 	// must retrieve member types in case superclass/interfaces need them
 	this.memberTypes = Binding.NO_MEMBER_TYPES;
 	ISourceType[] memberTypeStructures = binaryType.getMemberTypes();
@@ -229,19 +221,6 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 			this.superclass = environment.getTypeFromConstantPoolName(superclassName, 0, -1, false);
 			this.tagBits |= TagBits.HasUnresolvedSuperclass;
 		}
-
-		this.superInterfaces = Binding.NO_SUPERINTERFACES;
-		char[][] interfaceNames = binaryType.getInterfaceNames();
-		if (interfaceNames != null) {
-			int size = interfaceNames.length;
-			if (size > 0) {
-				this.superInterfaces = new ReferenceBinding[size];
-				for (int i = 0; i < size; i++)
-					// attempt to find each superinterface if it exists in the cache (otherwise - resolve it when requested)
-					this.superInterfaces[i] = environment.getTypeFromConstantPoolName(interfaceNames[i], 0, -1, false);
-				this.tagBits |= TagBits.HasUnresolvedSuperinterfaces;
-			}
-		}
 	} else {
 		// ClassSignature = ParameterPart(optional) super_TypeSignature interface_signature
 		SignatureWrapper wrapper = new SignatureWrapper(typeSignature);
@@ -256,18 +235,6 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 		// attempt to find the superclass if it exists in the cache (otherwise - resolve it when requested)
 		this.superclass = (ReferenceBinding) environment.getTypeFromTypeSignature(wrapper, this);
 		this.tagBits |= TagBits.HasUnresolvedSuperclass;
-
-		this.superInterfaces = Binding.NO_SUPERINTERFACES;
-		if (!wrapper.atEnd()) {
-			// attempt to find each superinterface if it exists in the cache (otherwise - resolve it when requested)
-			java.util.ArrayList types = new java.util.ArrayList(2);
-			do {
-				types.add(environment.getTypeFromTypeSignature(wrapper, this));
-			} while (!wrapper.atEnd());
-			this.superInterfaces = new ReferenceBinding[types.size()];
-			types.toArray(this.superInterfaces);
-			this.tagBits |= TagBits.HasUnresolvedSuperinterfaces;
-		}
 	}
 
 	if (needFieldsAndMethods) {
@@ -615,13 +582,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 		}
 	}
 	if (foundNothing) {
-		if (isInterface()) {
-			 if (superInterfaces().length == 1) { // ensure superinterfaces are resolved before checking
-				if (refScope != null)
-					refScope.recordTypeReference(superInterfaces[0]);
-				return superInterfaces[0].getExactMethod(selector, argumentTypes, refScope);
-			 }
-		} else if (superclass() != null) { // ensure superclass is resolved before checking
+		if (superclass() != null) { // ensure superclass is resolved before checking
 			if (refScope != null)
 				refScope.recordTypeReference(superclass);
 			return superclass.getExactMethod(selector, argumentTypes, refScope);
@@ -757,14 +718,7 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
 }
-SimpleLookupTable storedAnnotations(boolean forceInitialize) {
-	if (forceInitialize && this.storedAnnotations == null) {
-		if (!this.environment.globalOptions.storeAnnotations)
-			return null; // not supported during this compile
-		this.storedAnnotations = new SimpleLookupTable(3);
-	}
-	return this.storedAnnotations;
-}
+
 /* Answer the receiver's superclass... null if the receiver is Object or an interface.
 *
 * NOTE: superclass of a binary type is resolved when needed
@@ -780,19 +734,7 @@ public ReferenceBinding superclass() {
 		this.tagBits |= TagBits.HierarchyHasProblems; // propagate type inconsistency
 	return this.superclass;
 }
-// NOTE: superInterfaces of binary types are resolved when needed
-public ReferenceBinding[] superInterfaces() {
-	if ((this.tagBits & TagBits.HasUnresolvedSuperinterfaces) == 0)
-		return this.superInterfaces;
 
-	for (int i = this.superInterfaces.length; --i >= 0;) {
-		this.superInterfaces[i] = resolveType(this.superInterfaces[i], this.environment, true);
-		if (this.superInterfaces[i].problemId() == ProblemReasons.NotFound)
-			this.tagBits |= TagBits.HierarchyHasProblems; // propagate type inconsistency
-	}
-	this.tagBits &= ~TagBits.HasUnresolvedSuperinterfaces;
-	return this.superInterfaces;
-}
 public String toString() {
 	StringBuffer buffer = new StringBuffer();
 
@@ -812,19 +754,6 @@ public String toString() {
 
 	buffer.append("\n\textends "); //$NON-NLS-1$
 	buffer.append((superclass != null) ? superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
-
-	if (superInterfaces != null) {
-		if (superInterfaces != Binding.NO_SUPERINTERFACES) {
-			buffer.append("\n\timplements : "); //$NON-NLS-1$
-			for (int i = 0, length = superInterfaces.length; i < length; i++) {
-				if (i  > 0)
-					buffer.append(", "); //$NON-NLS-1$
-				buffer.append((superInterfaces[i] != null) ? superInterfaces[i].debugName() : "NULL TYPE"); //$NON-NLS-1$
-			}
-		}
-	} else {
-		buffer.append("NULL SUPERINTERFACES"); //$NON-NLS-1$
-	}
 
 	if (enclosingType != null) {
 		buffer.append("\n\tenclosing type : "); //$NON-NLS-1$

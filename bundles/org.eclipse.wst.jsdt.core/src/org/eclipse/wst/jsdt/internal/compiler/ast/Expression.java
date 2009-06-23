@@ -557,10 +557,6 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 		for (int i = 0, max = methodBindings.length; i < max; i++) {
 			collector.add(methodBindings[i]);
 		}
-		ReferenceBinding[] superInterfaces = binding.superInterfaces();
-		for (int i = 0, max = superInterfaces.length; i < max; i++) {
-			getAllInheritedMethods0(superInterfaces[i], collector);
-		}
 	}
 
 	public boolean isCompactableOperation() {

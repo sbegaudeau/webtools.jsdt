@@ -389,9 +389,7 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 	if (index == length) { //	restrictiveFlag == FIELD
 		this.constant = ((FieldBinding) this.binding).constant();
 		// perform capture conversion if read access
-		return (type != null && (this.bits & ASTNode.IsStrictlyAssigned) == 0)
-				? type.capture(scope, this.sourceEnd)
-				: type;
+		return type;
 	}
 	// allocation of the fieldBindings array	and its respective constants
 	int otherBindingsLength = length - index;
@@ -410,7 +408,7 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 
 		this.bits &= ~ASTNode.DepthMASK; // flush previous depth if any
 		FieldBinding previousField = field;
-		field = scope.getField(type.capture(scope, (int)this.sourcePositions[index]), token, this);
+		field = scope.getField(type, token, this);
 		int place = index - this.indexOfFirstFieldBinding;
 		this.otherBindings[place] = field;
 		this.otherDepths[place] = (this.bits & ASTNode.DepthMASK) >> ASTNode.DepthSHIFT;
@@ -418,7 +416,7 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 			// set generic cast of for previous field (if any)
 			if (previousField != null) {
 				TypeBinding fieldReceiverType = type;
-				TypeBinding receiverErasure = type.erasure();
+				TypeBinding receiverErasure = type;
 				if (receiverErasure instanceof ReferenceBinding) {
 					if (receiverErasure.findSuperTypeWithSameErasure(field.declaringClass) == null) {
 						fieldReceiverType = field.declaringClass; // handle indirect inheritance thru variable secondary bound
@@ -458,9 +456,7 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 	setDepth(firstDepth);
 	type = (this.otherBindings[otherBindingsLength - 1]).type;
 	// perform capture conversion if read access
-	return (type != null && (this.bits & ASTNode.IsStrictlyAssigned) == 0)
-			? type.capture(scope, this.sourceEnd)
-			: type;
+	return type;
 }
 
 public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
@@ -530,7 +526,7 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FieldBindi
 		            index < 0 ? (this.otherBindings == null ? 0 : this.otherBindings.length) : index,
 		            currentScope.enclosingSourceType().getUpdatedFieldBinding(
 		                    getCodegenBinding(index < 0 ? (this.otherBindings == null ? 0 : this.otherBindings.length) : index),
-		                    (ReferenceBinding)lastReceiverType.erasure()));
+		                    (ReferenceBinding)lastReceiverType));
 		}
 	}
 }

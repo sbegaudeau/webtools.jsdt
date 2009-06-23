@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -49,10 +46,8 @@ public class ClassScope extends Scope {
 		SourceTypeBinding sourceType = getReferenceBinding();
 		if (supertype.isInterface()) {
 			sourceType.superclass = getJavaLangObject();
-			sourceType.superInterfaces = new ReferenceBinding[] { supertype };
 		} else {
 			sourceType.superclass = supertype;
-			sourceType.superInterfaces = Binding.NO_SUPERINTERFACES;
 		}
 		connectMemberTypes();
 		buildFieldsAndMethods();
@@ -619,24 +614,6 @@ public class ClassScope extends Scope {
 	}
 
 	public void checkParameterizedSuperTypeCollisions() {
-		// check for parameterized interface collisions (when different parameterizations occur)
-		SourceTypeBinding sourceType = getReferenceBinding();
-		ReferenceBinding[] interfaces = sourceType.superInterfaces;
-		Map invocations = new HashMap(2);
-		ReferenceBinding itsSuperclass = sourceType.isInterface() ? null : sourceType.superclass;
-		nextInterface: for (int i = 0, length = interfaces.length; i < length; i++) {
-			ReferenceBinding one =  interfaces[i];
-			if (one == null) continue nextInterface;
-			if (itsSuperclass != null && hasErasedCandidatesCollisions(itsSuperclass, one, invocations, sourceType, referenceContext))
-				continue nextInterface;
-			nextOtherInterface: for (int j = 0; j < i; j++) {
-				ReferenceBinding two = interfaces[j];
-				if (two == null) continue nextOtherInterface;
-				if (hasErasedCandidatesCollisions(one, two, invocations, sourceType, referenceContext))
-					continue nextInterface;
-			}
-		}
-
 		ReferenceBinding[] memberTypes = getReferenceBinding().memberTypes;
 		if (memberTypes != null && memberTypes != Binding.NO_MEMBER_TYPES)
 			for (int i = 0, size = memberTypes.length; i < size; i++)
@@ -648,63 +625,11 @@ public class ClassScope extends Scope {
 		// when no member types are defined, tag the sourceType & each superType with the HasNoMemberTypes bit
 		// assumes super types have already been checked & tagged
 		ReferenceBinding currentType = sourceType;
-		ReferenceBinding[] interfacesToVisit = null;
-		int nextPosition = 0;
 		do {
 			if (currentType.hasMemberTypes()) // avoid resolving member types eagerly
 				return;
-
-			ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
-			// in code assist cases when source types are added late, may not be finished connecting hierarchy
-			if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				if (interfacesToVisit == null) {
-					interfacesToVisit = itsInterfaces;
-					nextPosition = interfacesToVisit.length;
-				} else {
-					int itsLength = itsInterfaces.length;
-					if (nextPosition + itsLength >= interfacesToVisit.length)
-						System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-					nextInterface : for (int a = 0; a < itsLength; a++) {
-						ReferenceBinding next = itsInterfaces[a];
-						for (int b = 0; b < nextPosition; b++)
-							if (next == interfacesToVisit[b]) continue nextInterface;
-						interfacesToVisit[nextPosition++] = next;
-					}
-				}
-			}
 			/* BC- Added cycle check BUG 200501 */
 		} while (currentType.superclass()!=currentType && (currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
-
-		if (interfacesToVisit != null) {
-			// contains the interfaces between the sourceType and any superclass, which was tagged as having no member types
-			boolean needToTag = false;
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding anInterface = interfacesToVisit[i];
-				if ((anInterface.tagBits & TagBits.HasNoMemberTypes) == 0) { // skip interface if it already knows it has no member types
-					if (anInterface.hasMemberTypes()) // avoid resolving member types eagerly
-						return;
-
-					needToTag = true;
-					ReferenceBinding[] itsInterfaces = anInterface.superInterfaces();
-					if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-						int itsLength = itsInterfaces.length;
-						if (nextPosition + itsLength >= interfacesToVisit.length)
-							System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-						nextInterface : for (int a = 0; a < itsLength; a++) {
-							ReferenceBinding next = itsInterfaces[a];
-							for (int b = 0; b < nextPosition; b++)
-								if (next == interfacesToVisit[b]) continue nextInterface;
-							interfacesToVisit[nextPosition++] = next;
-						}
-					}
-				}
-			}
-
-			if (needToTag) {
-				for (int i = 0; i < nextPosition; i++)
-					interfacesToVisit[i].tagBits |= TagBits.HasNoMemberTypes;
-			}
-		}
 
 		// tag the sourceType and all of its superclasses, unless they have already been tagged
 		currentType = sourceType;
@@ -736,7 +661,6 @@ public class ClassScope extends Scope {
 		SourceTypeBinding sourceType = getReferenceBinding();
 		if (sourceType.id == T_JavaLangObject) { // handle the case of redefining java.lang.Object up front
 			sourceType.superclass = null;
-			sourceType.superInterfaces = Binding.NO_SUPERINTERFACES;
 			if (!sourceType.isClass())
 				problemReporter().objectMustBeClass(sourceType);
 //			if (referenceContext.superclass != null || (referenceContext.superInterfaces != null && referenceContext.superInterfaces.length > 0))
@@ -791,82 +715,8 @@ public class ClassScope extends Scope {
 		return false; // reported some error against the source type
 	}
 
-	/*
-		Our current belief based on available JCK 1.3 tests is:
-			inherited member types are visible as a potential superclass.
-			inherited interfaces are visible when defining a superinterface.
-
-		Error recovery story:
-			ensure the superinterfaces contain only valid visible interfaces.
-
-		Answer false if an error was reported against the sourceType.
-	*/
-	private boolean connectSuperInterfaces() {
-		SourceTypeBinding sourceType = getReferenceBinding();
-		sourceType.superInterfaces = Binding.NO_SUPERINTERFACES;
-		if (referenceContext!=null && referenceContext.superInterfaces == null) {
-			if (sourceType.isAnnotationType() && compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) { // do not connect if source < 1.5 as annotation already got flagged as syntax error) {
-				ReferenceBinding annotationType = getJavaLangAnnotationAnnotation();
-				boolean foundCycle = detectHierarchyCycle(sourceType, annotationType, null);
-				sourceType.superInterfaces = new ReferenceBinding[] { annotationType };
-				return !foundCycle;
-			}
-			return true;
-		}
-		if (sourceType.id == T_JavaLangObject) // already handled the case of redefining java.lang.Object
-			return true;
-
-		boolean noProblems = true;
-//		int length = referenceContext.superInterfaces.length;
-//		ReferenceBinding[] interfaceBindings = new ReferenceBinding[length];
-//		int count = 0;
-//		nextInterface : for (int i = 0; i < length; i++) {
-//		    TypeReference superInterfaceRef = referenceContext.superInterfaces[i];
-//			ReferenceBinding superInterface = findSupertype(superInterfaceRef);
-//			if (superInterface == null) { // detected cycle
-//				sourceType.tagBits |= TagBits.HierarchyHasProblems;
-//				noProblems = false;
-//				continue nextInterface;
-//			}
-//			superInterfaceRef.resolvedType = superInterface; // hold onto the problem type
-//			// check for simple interface collisions
-//			// Check for a duplicate interface once the name is resolved, otherwise we may be confused (ie : a.b.I and c.d.I)
-//			for (int j = 0; j < i; j++) {
-//				if (interfaceBindings[j] == superInterface) {
-//					problemReporter().duplicateSuperinterface(sourceType, superInterfaceRef, superInterface);
-//					continue nextInterface;
-//				}
-//			}
-//			if (!superInterface.isInterface()) {
-//				problemReporter().superinterfaceMustBeAnInterface(sourceType, superInterfaceRef, superInterface);
-//				sourceType.tagBits |= TagBits.HierarchyHasProblems;
-//				noProblems = false;
-//				continue nextInterface;
-//			} else if (superInterface.isAnnotationType()){
-//				problemReporter().annotationTypeUsedAsSuperinterface(sourceType, superInterfaceRef, superInterface);
-//			}
-//			if ((superInterface.tagBits & TagBits.HasDirectWildcard) != 0) {
-//				problemReporter().superTypeCannotUseWildcard(sourceType, superInterfaceRef, superInterface);
-//				sourceType.tagBits |= TagBits.HierarchyHasProblems;
-//				noProblems = false;
-//				continue nextInterface;
-//			}
-//			// only want to reach here when no errors are reported
-//			interfaceBindings[count++] = superInterface;
-//		}
-//		// hold onto all correctly resolved superinterfaces
-//		if (count > 0) {
-//			if (count != length)
-//				System.arraycopy(interfaceBindings, 0, interfaceBindings = new ReferenceBinding[count], 0, count);
-//			sourceType.superInterfaces = interfaceBindings;
-//		}
-		return noProblems;
-	}
-
-
 	private boolean connectMixins() {
 		SourceTypeBinding sourceType = this.inferredType.binding;
-		sourceType.superInterfaces = Binding.NO_MIXINS;
 		if (sourceType.id == T_JavaLangObject) // already handled the case of redefining java.lang.Object
 			return true;
 		if (this.inferredType.mixins==null || this.inferredType.mixins.isEmpty())
@@ -1015,25 +865,6 @@ public class ClassScope extends Scope {
 				}
 			}
 
-			ReferenceBinding[] itsInterfaces = superType.superInterfaces();
-			if (itsInterfaces != null && itsInterfaces != Binding.NO_SUPERINTERFACES) {
-				for (int i = 0, length = itsInterfaces.length; i < length; i++) {
-					ReferenceBinding anInterface = itsInterfaces[i];
-					if (sourceType == anInterface) {
-						problemReporter().hierarchyCircularity(sourceType, superType, reference);
-						sourceType.tagBits |= TagBits.HierarchyHasProblems;
-						superType.tagBits |= TagBits.HierarchyHasProblems;
-						return true;
-					}
-					if (anInterface.isParameterizedType())
-						anInterface = ((ParameterizedTypeBinding) anInterface).genericType();
-					hasCycle |= detectHierarchyCycle(sourceType, anInterface, reference);
-					if ((anInterface.tagBits & TagBits.HierarchyHasProblems) != 0) {
-						sourceType.tagBits |= TagBits.HierarchyHasProblems;
-						superType.tagBits |= TagBits.HierarchyHasProblems;
-					}
-				}
-			}
 			return hasCycle;
 		}
 
@@ -1082,8 +913,6 @@ public class ClassScope extends Scope {
 			ReferenceBinding superType = (ReferenceBinding) typeReference.resolveSuperType(this);
 			return superType;
 		} catch (AbortCompilation e) {
-			SourceTypeBinding sourceType = this.getReferenceBinding();
-			if (sourceType.superInterfaces == null)  sourceType.superInterfaces = Binding.NO_SUPERINTERFACES; // be more resilient for hierarchies (144976)
 			e.updateContext(typeReference, referenceCompilationUnit().compilationResult);
 			throw e;
 		} finally {

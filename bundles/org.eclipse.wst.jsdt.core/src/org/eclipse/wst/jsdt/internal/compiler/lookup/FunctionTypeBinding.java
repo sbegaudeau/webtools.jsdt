@@ -129,12 +129,6 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 		return functionTypeBinding.superclass();
 	}
 
-
-	public ReferenceBinding[] superInterfaces() {
-		return functionTypeBinding.superInterfaces();
-	}
-
-
 	public String toString() {
 		return functionTypeBinding.toString();
 	}

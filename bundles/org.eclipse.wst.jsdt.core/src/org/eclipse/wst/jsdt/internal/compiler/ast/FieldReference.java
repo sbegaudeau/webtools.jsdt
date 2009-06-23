@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -441,7 +441,7 @@ if( this.isPrototype() ){
 		}
 		if (JavaScriptCore.IS_ECMASCRIPT4)
 		{
-			TypeBinding receiverErasure = this.receiverType.erasure();
+			TypeBinding receiverErasure = this.receiverType;
 			if (receiverErasure instanceof ReferenceBinding) {
 				if (receiverErasure.findSuperTypeWithSameErasure(fieldBinding.declaringClass) == null) {
 					this.receiverType = fieldBinding.declaringClass; // handle indirect inheritance thru variable secondary bound
@@ -468,10 +468,7 @@ if( this.isPrototype() ){
 			}
 		}
 		// perform capture conversion if read access
-		return this.resolvedType =
-			(((this.bits & IsStrictlyAssigned) == 0)
-				? fieldBinding.type.capture(scope, this.sourceEnd)
-				: fieldBinding.type);
+		return this.resolvedType = fieldBinding.type;
 	}
 	else if( memberBinding instanceof MethodBinding ){
 		MethodBinding methodBinding=(MethodBinding) memberBinding;

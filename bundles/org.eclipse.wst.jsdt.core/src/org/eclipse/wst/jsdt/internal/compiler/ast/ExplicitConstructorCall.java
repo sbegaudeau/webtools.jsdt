@@ -131,7 +131,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	 * exact need.
 	 */
 	void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
-		ReferenceBinding superTypeErasure = (ReferenceBinding) binding.declaringClass.erasure();
+		ReferenceBinding superTypeErasure = (ReferenceBinding) binding.declaringClass;
 
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
 		// perform some emulation work in case there is some and we are inside a local type only
@@ -302,7 +302,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					}
 					return;
 				}
-			} else if (receiverType.erasure().id == T_JavaLangEnum) {
+			} else if (receiverType.id == T_JavaLangEnum) {
 				// TODO (philippe) get rid of once well-known binding is available
 				argumentTypes = new TypeBinding[] { scope.getJavaLangString(), TypeBinding.INT };
 			}

@@ -135,7 +135,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 		for (int i = 0; i < length; i++) {
 			TypeReference substituedType = substituedTypeNodes[i];
 			if (substituedType.resolvedType == null) return false;
-			ReferenceBinding erasure = (ReferenceBinding)substituedType.resolvedType.leafComponentType().erasure();
+			ReferenceBinding erasure = (ReferenceBinding)substituedType.resolvedType.leafComponentType();
 			Binding missingElement;
 			int depthToRemove = originalTypeNames[i].length - 1 ;
 			if (depthToRemove == 0) {
@@ -396,7 +396,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 							missingElementsStarts,
 							missingElementsEnds)) {
 						requestor.accept(
-								guessedType.capture(scope, typeRef.sourceEnd),
+								guessedType,
 								missingElements,
 								missingElementsStarts,
 								missingElementsEnds,

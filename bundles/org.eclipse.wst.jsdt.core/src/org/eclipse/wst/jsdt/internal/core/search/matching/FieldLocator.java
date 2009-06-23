@@ -444,7 +444,7 @@ protected int resolveLevelForType(TypeBinding typeBinding) {
 	FieldPattern fieldPattern = (FieldPattern) this.pattern;
 	TypeBinding fieldTypeBinding = typeBinding;
 	if (fieldTypeBinding != null && fieldTypeBinding.isParameterizedType()) {
-		fieldTypeBinding = typeBinding.erasure();
+		fieldTypeBinding = typeBinding;
 	}
 	return resolveLevelForType(
 			fieldPattern.typeSimpleName,

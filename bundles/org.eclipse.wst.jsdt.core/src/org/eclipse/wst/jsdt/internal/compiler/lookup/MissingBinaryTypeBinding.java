@@ -33,7 +33,6 @@ public MissingBinaryTypeBinding(PackageBinding packageBinding, char[][] compound
 	this.sourceName = compoundName[compoundName.length - 1]; // [java][util][Map$Entry]
 	this.modifiers = ClassFileConstants.AccPublic;
 	this.superclass = null; // will be fixed up using #setMissingSuperclass(...)
-	this.superInterfaces = Binding.NO_SUPERINTERFACES;
 	this.memberTypes = Binding.NO_MEMBER_TYPES;
 	this.fields = Binding.NO_FIELDS;
 	this.methods = Binding.NO_METHODS;

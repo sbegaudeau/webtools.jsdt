@@ -63,7 +63,7 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		// check captured variables are initialized in current context (26134)
 		ReferenceBinding allocatedType = this.superTypeBinding == null ? this.binding.declaringClass : this.superTypeBinding;
 		checkCapturedLocalInitializationIfNecessary(
-			(ReferenceBinding) allocatedType.erasure(),
+			(ReferenceBinding) allocatedType,
 			currentScope,
 			flowInfo);
 
@@ -115,7 +115,7 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 	public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
 
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
-		ReferenceBinding allocatedTypeErasure = (ReferenceBinding) this.binding.declaringClass.erasure();
+		ReferenceBinding allocatedTypeErasure = (ReferenceBinding) this.binding.declaringClass;
 
 		// perform some extra emulation work in case there is some and we are inside a local type only
 		if (allocatedTypeErasure.isNestedType()

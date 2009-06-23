@@ -311,7 +311,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 					// if binding is valid then look if we have a reference to an overriden method/constructor
 					if (messageSend.binding != null && messageSend.binding.isValidBinding() && messageSend.actualReceiverType instanceof ReferenceBinding) {
 						ReferenceBinding methodReceiverType = (ReferenceBinding) messageSend.actualReceiverType;
-						if ((methodReceiverType.isSuperclassOf(methDecl.binding.declaringClass) || (methodReceiverType.isInterface() && methDecl.binding.declaringClass.implementsInterface(methodReceiverType, true))) &&
+						if ((methodReceiverType.isSuperclassOf(methDecl.binding.declaringClass)) &&
 							CharOperation.equals(messageSend.selector, methDecl.selector) &&
 							(methDecl.binding.returnType.isCompatibleWith(messageSend.binding.returnType))) {
 							if (messageSend.arguments == null && methDecl.arguments == null) {
@@ -611,7 +611,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			// Look for undocumented thrown exception
 			for (int i = 0; i < boundExceptionLength; i++) {
 				ReferenceBinding exceptionBinding = md.binding.thrownExceptions[i];
-				if (exceptionBinding != null) exceptionBinding = (ReferenceBinding) exceptionBinding.erasure();
 				boolean found = false;
 				for (int j = 0; j < maxRef && !found; j++) {
 					if (typeReferences[j] != null) {

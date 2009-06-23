@@ -571,7 +571,6 @@ protected void reportDeclaration(ASTNode reference, IJavaScriptElement element, 
 		if (original == null) return; // original may not be set (bug 71279)
 		typeBinding = original;
 	}
-	typeBinding = typeBinding.erasure();
 	reportDeclaration((ReferenceBinding) typeBinding, maxType, locator, knownTypes);
 }
 protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, MatchLocator locator, SimpleSet knownTypes) throws CoreException {

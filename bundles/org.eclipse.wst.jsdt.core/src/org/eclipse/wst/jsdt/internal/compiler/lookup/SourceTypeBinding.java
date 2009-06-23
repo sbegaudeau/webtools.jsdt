@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class SourceTypeBinding extends ReferenceBinding {
 	public ReferenceBinding superclass;
-	public ReferenceBinding[] superInterfaces= Binding.NO_SUPERINTERFACES;
 	public ReferenceBinding[] mixins= Binding.NO_MIXINS;
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
@@ -643,7 +642,7 @@ public SyntheticMethodBinding addSyntheticMethod(MethodBinding targetMethod, boo
 public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMethodToBridge, MethodBinding targetMethod) {
 	if (isInterface()) return null; // only classes & enums get bridge methods
 	// targetMethod may be inherited
-	if (inheritedMethodToBridge.returnType.erasure() == targetMethod.returnType.erasure()
+	if (inheritedMethodToBridge.returnType == targetMethod.returnType
 		&& inheritedMethodToBridge.areParameterErasuresEqual(targetMethod)) {
 			return null; // do not need bridge method
 	}
@@ -659,7 +658,7 @@ public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMe
 			if (synthetic instanceof MethodBinding) {
 				MethodBinding method = (MethodBinding) synthetic;
 				if (CharOperation.equals(inheritedMethodToBridge.selector, method.selector)
-					&& inheritedMethodToBridge.returnType.erasure() == method.returnType.erasure()
+					&& inheritedMethodToBridge.returnType == method.returnType
 					&& inheritedMethodToBridge.areParameterErasuresEqual(method)) {
 						return null;
 				}
@@ -963,14 +962,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 	}
 
 	if (foundNothing) {
-		if (JavaScriptCore.IS_ECMASCRIPT4 && isInterface()) {
-			 if (this.superInterfaces.length == 1) {
-				if (refScope != null)
-					refScope.recordTypeReference(this.superInterfaces[0]);
-				return this.superInterfaces[0].getExactMethod(selector, argumentTypes, refScope);
-			 }
-		/* BC- Added cycle check BUG 200501 */
-		} else if (this.superclass != null && this.superclass!=this) {
+		if (this.superclass != null && this.superclass!=this) {
 			if (refScope != null)
 				refScope.recordTypeReference(this.superclass);
 			 MethodBinding exactMethod = this.superclass.getExactMethod(selector, argumentTypes, refScope);
@@ -1302,8 +1294,7 @@ public MethodBinding[] methods() {
 								.areParametersEqual(subMethod);
 						if (equalParams) {
 							// duplicates regardless of return types
-						} else if (method.returnType.erasure() == subMethod.returnType
-								.erasure()
+						} else if (method.returnType == subMethod.returnType
 								&& (equalParams || method
 										.areParameterErasuresEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
@@ -1311,12 +1302,12 @@ public MethodBinding[] methods() {
 							// check to see if the erasure of either method is equal to the other
 							int index = pLength;
 							for (; --index >= 0;) {
-								if (params1[index] != params2[index].erasure())
+								if (params1[index] != params2[index])
 									break;
 							}
 							if (index >= 0 && index < pLength) {
 								for (index = pLength; --index >= 0;)
-									if (params1[index].erasure() != params2[index])
+									if (params1[index] != params2[index])
 										break;
 							}
 							if (index >= 0)
@@ -1633,9 +1624,6 @@ public ReferenceBinding superclass() {
 	return this.nextType.superclass();
 
 }
-public ReferenceBinding[] superInterfaces() {
-	return this.superInterfaces;
-}
 // TODO (philippe) could be a performance issue since some senders are building the list just to count them
 public SyntheticMethodBinding[] syntheticMethods() {
 
@@ -1741,19 +1729,6 @@ public String toString() {
 
 	buffer.append("\n\textends "); //$NON-NLS-1$
 	buffer.append((this.superclass != null) ? this.superclass.debugName() : "NULL TYPE"); //$NON-NLS-1$
-
-	if (this.superInterfaces != null) {
-		if (this.superInterfaces != Binding.NO_SUPERINTERFACES) {
-			buffer.append("\n\timplements : "); //$NON-NLS-1$
-			for (int i = 0, length = this.superInterfaces.length; i < length; i++) {
-				if (i  > 0)
-					buffer.append(", "); //$NON-NLS-1$
-				buffer.append((this.superInterfaces[i] != null) ? this.superInterfaces[i].debugName() : "NULL TYPE"); //$NON-NLS-1$
-			}
-		}
-	} else {
-		buffer.append("NULL SUPERINTERFACES"); //$NON-NLS-1$
-	}
 
 	if (enclosingType() != null) {
 		buffer.append("\n\tenclosing type : "); //$NON-NLS-1$

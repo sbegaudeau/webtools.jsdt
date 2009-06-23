@@ -83,15 +83,7 @@ public TypeBinding elementsType() {
 	if (this.dimensions == 1) return this.leafComponentType;
 	return this.environment.createArrayType(this.leafComponentType, this.dimensions - 1);
 }
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#erasure()
- */
-public TypeBinding erasure() {
-    TypeBinding erasedType = this.leafComponentType.erasure();
-    if (this.leafComponentType != erasedType)
-        return this.environment.createArrayType(erasedType, this.dimensions);
-    return this;
-}
+
 public LookupEnvironment environment() {
     return this.environment;
 }

@@ -331,7 +331,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 		if ((field.modifiers & ExtraCompilerModifiers.AccRestrictedAccess) != 0) {
 			AccessRestriction restriction =
-				scope.environment().getAccessRestriction(field.declaringClass.erasure());
+				scope.environment().getAccessRestriction(field.declaringClass);
 			if (restriction != null) {
 				scope.problemReporter().forbiddenReference(field, this,
 						restriction.getFieldAccessMessageTemplate(), restriction.getProblemId());
@@ -369,7 +369,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 			// note: explicit constructors calls warnings are kept despite the 'new C1()' case (two
 			//       warnings, one on type, the other on constructor), because of the 'super()' case.
 			AccessRestriction restriction =
-				scope.environment().getAccessRestriction(method.declaringClass.erasure());
+				scope.environment().getAccessRestriction(method.declaringClass);
 			if (restriction != null) {
 				if (method.isConstructor()) {
 					scope.problemReporter().forbiddenReference(method, this,
@@ -432,18 +432,15 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 		if ((refType.isPrivate() || refType.isLocalType()) && !scope.isDefinedInType(refType)) {
 			// ignore cases where type is used from within inside itself
-			((ReferenceBinding)refType.erasure()).modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
+			((ReferenceBinding)refType).modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
 		}
 
 		if (refType.hasRestrictedAccess()) {
-			AccessRestriction restriction = scope.environment().getAccessRestriction(type.erasure());
+			AccessRestriction restriction = scope.environment().getAccessRestriction(type);
 			if (restriction != null) {
 				scope.problemReporter().forbiddenReference(type, this, restriction.getMessageTemplate(), restriction.getProblemId());
 			}
 		}
-
-		// force annotations resolution before deciding whether the type may be deprecated
-		refType.initializeDeprecatedAnnotationTagBits();
 
 		if (!refType.isViewedAsDeprecated()) return false;
 

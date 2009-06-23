@@ -211,7 +211,7 @@ public class ForeachStatement extends Statement implements IForeachStatement {
 			    checkIterable: {
 			    	if (iterableType == null) break checkIterable;
 
-					this.iteratorReceiverType = collectionType.erasure();
+					this.iteratorReceiverType = collectionType;
 					if (((ReferenceBinding)iteratorReceiverType).findSuperTypeErasingTo(T_JavaLangIterable, false) == null) {
 						this.iteratorReceiverType = iterableType; // handle indirect inheritance thru variable secondary bound
 	   					this.collection.computeConversion(scope, iterableType, collectionType);

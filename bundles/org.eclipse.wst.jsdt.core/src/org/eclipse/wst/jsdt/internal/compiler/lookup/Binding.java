@@ -36,7 +36,6 @@ public abstract class Binding {
 	public static final ReferenceBinding[] ANY_EXCEPTION = new ReferenceBinding[] { null }; // special handler for all exceptions
 	public static final FieldBinding[] NO_FIELDS = new FieldBinding[0];
 	public static final MethodBinding[] NO_METHODS = new MethodBinding[0];
-	public static final ReferenceBinding[] NO_SUPERINTERFACES = new ReferenceBinding[0];
 	public static final ReferenceBinding[] NO_MIXINS = new ReferenceBinding[0];
 	public static final ReferenceBinding[] NO_MEMBER_TYPES = new ReferenceBinding[0];
 	public static final ElementValuePair[] NO_ELEMENT_VALUE_PAIRS = new ElementValuePair[0];
@@ -58,24 +57,6 @@ public abstract class Binding {
 	 */
 	public char[] computeUniqueKey(boolean isLeaf) {
 		return null;
-	}
-
-	/**
-	 * Compute the tagbits for standard annotations. For source types, these could require
-	 * lazily resolving corresponding annotation nodes, in case of forward references.
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding#getAnnotationTagBits()
-	 */
-	public long getAnnotationTagBits() {
-		return 0;
-	}
-
-	/**
-	 * Compute the tag bits for @Deprecated annotations, avoiding resolving
-	 * entire annotation if not necessary.
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding#initializeDeprecatedAnnotationTagBits()
-	 */
-	public void initializeDeprecatedAnnotationTagBits() {
-		// empty block
 	}
 
 	/* API
