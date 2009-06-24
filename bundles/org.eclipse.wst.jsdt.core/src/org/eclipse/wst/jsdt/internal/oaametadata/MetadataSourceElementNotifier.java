@@ -143,7 +143,6 @@ public class MetadataSourceElementNotifier {
 		methodInfo.nameSourceEnd = 0;//method.nameStart+method.name.length-1;
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
-		methodInfo.exceptionTypes = null;
 		methodInfo.categories =null;// (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 

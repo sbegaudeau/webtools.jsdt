@@ -847,22 +847,6 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 		if (isInRange) {
 			requestor.enterCompilationUnit();
 		}
-		char[][] packageName = parsedUnit.compilationResult.getPackageName();
-		
-		
-		/* Start BC ---- Shouldn't need package decleration element, but still may be used elsewhere.  This keeps the packagename out of the UI */
-		/*
-		requestor.acceptPackage(
-				-1,
-				-1,
-				CharOperation.concatWith(packageName, '.'));
-		*/
-		
-		/* --------- END BC -------- */
-		
-		
-		
-		
 		
 //		ImportReference currentPackage = parsedUnit.currentPackage;
 //		ImportReference[] imports = parsedUnit.imports;
@@ -1045,7 +1029,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
-		methodInfo.exceptionTypes = null;
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 
@@ -1122,7 +1105,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		}
 		isVarArgs = arguments[argumentLength-1].isVarArgs();
 	}
-	char[][] thrownExceptionTypes = getThrownExceptionTypes(methodDeclaration);
 	// by default no selector end position
 	int selectorSourceEnd = -1;
 	if (methodDeclaration.isConstructor()) {
@@ -1144,7 +1126,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.nameSourceEnd = selectorSourceEnd;
 			methodInfo.parameterTypes = argumentTypes;
 			methodInfo.parameterNames = argumentNames;
-			methodInfo.exceptionTypes = thrownExceptionTypes;
 			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 			requestor.enterConstructor(methodInfo);
 		}
@@ -1197,7 +1178,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		methodInfo.nameSourceEnd = selectorSourceEnd;
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
-		methodInfo.exceptionTypes = thrownExceptionTypes;
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 	}
@@ -1208,20 +1188,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 	}
 	this.nestedMethodIndex--;
-}
-
-private char[][] getThrownExceptionTypes(AbstractMethodDeclaration methodDeclaration) {
-	char[][] thrownExceptionTypes = null;
-	TypeReference[] thrownExceptions = methodDeclaration.thrownExceptions;
-	if (thrownExceptions != null) {
-		int thrownExceptionLength = thrownExceptions.length;
-		thrownExceptionTypes = new char[thrownExceptionLength][];
-		for (int i = 0; i < thrownExceptionLength; i++) {
-			thrownExceptionTypes[i] =
-				CharOperation.concatWith(thrownExceptions[i].getParameterizedTypeName(), '.');
-		}
-	}
-	return thrownExceptionTypes;
 }
 
 /*
@@ -1245,6 +1211,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					alloc.sourceStart);
 			}
 			// fall through next case
+		//$FALL-THROUGH$
 		case AbstractVariableDeclaration.FIELD:
 		case AbstractVariableDeclaration.LOCAL_VARIABLE:
 			int fieldEndPosition = this.sourceEnds.get(fieldDeclaration);
@@ -1293,7 +1260,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					methodInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
 					methodInfo.parameterTypes = argumentTypes;
 					methodInfo.parameterNames = argumentNames;
-					methodInfo.exceptionTypes = getThrownExceptionTypes(methodDeclaration);
 					methodInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 					requestor.enterMethod(methodInfo);
 				}

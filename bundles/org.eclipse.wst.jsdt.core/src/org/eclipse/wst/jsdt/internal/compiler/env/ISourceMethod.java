@@ -22,19 +22,10 @@ int getDeclarationSourceEnd();
  */
 
 int getDeclarationSourceStart();
-/**
- * Answer the unresolved names of the exception types
- * or null if the array is empty.
- *
- * A name is a simple name or a qualified, dot separated name.
- * For example, Hashtable or java.util.Hashtable.
- */
 
-char[][] getExceptionTypeNames();
 /**
  * Answer the source end position of the method's selector.
  */
-
 int getNameSourceEnd();
 /**
  * Answer the source start position of the method's selector.

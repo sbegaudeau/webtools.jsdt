@@ -53,7 +53,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
 	}
-	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes, char[][] exceptionTypes) {
+	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
 		addIndexEntry(CONSTRUCTOR_DECL, ConstructorPattern.createIndexKey(CharOperation.lastSegment(typeName,'.'), argCount));
 
@@ -61,9 +61,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			for (int i = 0; i < argCount; i++)
 				addTypeReference(parameterTypes[i]);
 		}
-		if (exceptionTypes != null)
-			for (int i = 0, max = exceptionTypes.length; i < max; i++)
-				addTypeReference(exceptionTypes[i]);
 	}
 	public void addConstructorReference(char[] typeName, int argCount) {
 		char[] simpleTypeName = CharOperation.lastSegment(typeName,'.');
@@ -108,7 +105,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		}
 	}
 	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes,
-				char[] returnType, char[][] exceptionTypes,boolean isFunction) {
+				char[] returnType,boolean isFunction) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
 		addIndexEntry(isFunction ? FUNCTION_DECL : METHOD_DECL, MethodPattern.createIndexKey(methodName, argCount));
 
@@ -116,9 +113,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			for (int i = 0; i < argCount; i++)
 				addTypeReference(parameterTypes[i]);
 		}
-		if (exceptionTypes != null)
-			for (int i = 0, max = exceptionTypes.length; i < max; i++)
-				addTypeReference(exceptionTypes[i]);
 		if (returnType != null)
 			addTypeReference(returnType);
 	}

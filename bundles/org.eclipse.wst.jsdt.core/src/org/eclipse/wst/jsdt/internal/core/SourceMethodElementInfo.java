@@ -27,30 +27,15 @@ public abstract class SourceMethodElementInfo extends MemberElementInfo implemen
 	 */
 	protected char[][] argumentNames;
 
-	/**
-	 * A collection of type names of the exceptions this
-	 * method throws, or an empty collection if this method
-	 * does not declare to throw any exceptions. A name is a simple
-	 * name or a qualified, dot separated name.
-	 * For example, Hashtable or java.util.Hashtable.
-	 */
-	protected char[][] exceptionTypes;
-
 
 public char[][] getArgumentNames() {
 	return this.argumentNames;
-}
-public char[][] getExceptionTypeNames() {
-	return this.exceptionTypes;
 }
 public abstract char[] getReturnTypeName();
 
 public abstract boolean isConstructor();
 protected void setArgumentNames(char[][] names) {
 	this.argumentNames = names;
-}
-protected void setExceptionTypeNames(char[][] types) {
-	this.exceptionTypes = types;
 }
 protected abstract void setReturnType(char[] type);
 }

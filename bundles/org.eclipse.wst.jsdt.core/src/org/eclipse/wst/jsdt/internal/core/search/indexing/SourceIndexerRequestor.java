@@ -174,7 +174,7 @@ public void enterCompilationUnit() {
  * @see ISourceElementRequestor#enterConstructor(MethodInfo)
  */
 public void enterConstructor(MethodInfo methodInfo) {
-	this.indexer.addConstructorDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.exceptionTypes);
+	this.indexer.addConstructorDeclaration(methodInfo.name, methodInfo.parameterTypes);
 	this.methodDepth++;
 }
 private void enterEnum(TypeInfo typeInfo) {
@@ -211,7 +211,7 @@ public void enterInitializer(int declarationSourceStart, int modifiers) {
  */
 public void enterMethod(MethodInfo methodInfo) {
 	boolean isFunction=this.depth==0;
-	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.returnType, methodInfo.exceptionTypes,isFunction);
+	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.returnType,isFunction);
 	this.methodDepth++;
 }
 /**

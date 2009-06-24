@@ -362,17 +362,6 @@ public class SourceTypeConverter {
 			}
 		}
 
-		/* convert thrown exceptions */
-		char[][] exceptionTypeNames = methodInfo.getExceptionTypeNames();
-		int exceptionCount = exceptionTypeNames == null ? 0 : exceptionTypeNames.length;
-		if (exceptionCount > 0) {
-			method.thrownExceptions = new TypeReference[exceptionCount];
-			for (int i = 0; i < exceptionCount; i++) {
-				method.thrownExceptions[i] =
-					createTypeReference(exceptionTypeNames[i], start, end);
-			}
-		}
-
 		/* convert local and anonymous types */
 		if ((this.flags & LOCAL_TYPE) != 0) {
 			IJavaScriptElement[] children = methodInfo.getChildren();

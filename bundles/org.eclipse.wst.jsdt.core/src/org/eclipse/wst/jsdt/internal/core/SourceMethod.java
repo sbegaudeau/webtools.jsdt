@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,14 +52,6 @@ public boolean equals(Object o) {
  */
 public int getElementType() {
 	return METHOD;
-}
-/**
- * @see IFunction
- */
-public String[] getExceptionTypes() throws JavaScriptModelException {
-	SourceMethodElementInfo info = (SourceMethodElementInfo) getElementInfo();
-	char[][] exs= info.getExceptionTypeNames();
-	return CompilationUnitStructureRequestor.convertTypeNamesToSigs(exs);
 }
 /**
  * @see JavaElement#getHandleMemento(StringBuffer)

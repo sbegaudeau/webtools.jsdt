@@ -278,9 +278,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	if (methodInfo.parameterNames == null) {
 		methodInfo.parameterNames= CharOperation.NO_CHAR_CHAR;
 	}
-	if (methodInfo.exceptionTypes == null) {
-		methodInfo.exceptionTypes= CharOperation.NO_CHAR_CHAR;
-	}
 
 	String[] parameterTypeSigs = convertTypeNamesToSigs(methodInfo.parameterTypes);
 	if (parentHandle.getElementType() == IJavaScriptElement.TYPE
@@ -316,10 +313,6 @@ public void enterMethod(MethodInfo methodInfo) {
 	info.setArgumentNames(parameterNames);
 	char[] returnType = methodInfo.returnType == null ? null : manager.intern(methodInfo.returnType);
 	info.setReturnType(returnType);
-	char[][] exceptionTypes = methodInfo.exceptionTypes;
-	info.setExceptionTypeNames(exceptionTypes);
-	for (int i = 0, length = exceptionTypes.length; i < length; i++)
-		exceptionTypes[i] = manager.intern(exceptionTypes[i]);
 	addToChildren(parentInfo, handle);
 	if (parentInfo instanceof CompilationUnitElementInfo) {
 		CompilationUnitElementInfo compilationUnitInfo = (CompilationUnitElementInfo) parentInfo;
