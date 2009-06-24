@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -272,18 +272,6 @@ boolean matchTypeDeclaration(TypeDeclarationPattern pattern, Object binaryInfo, 
 	switch (pattern.typeSuffix) {
 		case CLASS_SUFFIX:
 			return kind == TypeDeclaration.CLASS_DECL;
-		case INTERFACE_SUFFIX:
-			return kind == TypeDeclaration.INTERFACE_DECL;
-		case ENUM_SUFFIX:
-			return kind == TypeDeclaration.ENUM_DECL;
-		case ANNOTATION_TYPE_SUFFIX:
-			return kind == TypeDeclaration.ANNOTATION_TYPE_DECL;
-		case CLASS_AND_INTERFACE_SUFFIX:
-			return kind == TypeDeclaration.CLASS_DECL || kind == TypeDeclaration.INTERFACE_DECL;
-		case CLASS_AND_ENUM_SUFFIX:
-			return kind == TypeDeclaration.CLASS_DECL || kind == TypeDeclaration.ENUM_DECL;
-		case INTERFACE_AND_ANNOTATION_SUFFIX:
-			return kind == TypeDeclaration.INTERFACE_DECL || kind == TypeDeclaration.ANNOTATION_TYPE_DECL;
 		case TYPE_SUFFIX: // nothing
 	}
 	return true;

@@ -916,16 +916,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
         	case TypeDeclaration.CLASS_DECL :
 				this.scribe.printNextToken(TerminalTokens.TokenNameclass, true);
         		break;
-        	case TypeDeclaration.INTERFACE_DECL :
-				this.scribe.printNextToken(TerminalTokens.TokenNameinterface, true);
-        		break;
-        	case TypeDeclaration.ENUM_DECL :
-				this.scribe.printNextToken(TerminalTokens.TokenNameenum, true);
-        		break;
-        	case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				this.scribe.printNextToken(TerminalTokens.TokenNameAT, this.preferences.insert_space_before_at_in_annotation_type_declaration);
-				this.scribe.printNextToken(TerminalTokens.TokenNameinterface, this.preferences.insert_space_after_at_in_annotation_type_declaration);
-        		break;
         }
 		this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
 
@@ -955,189 +945,38 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			} while (!ok);
 			this.scribe.exitAlignment(superclassAlignment, true);
 		}
-
-		/*
-		 * Super Interfaces
-		 */
-		final TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-		if (superInterfaces != null) {
-			int alignment_for_superinterfaces;
-			int kind = TypeDeclaration.kind(typeDeclaration.modifiers);
-			switch(kind) {
-				case TypeDeclaration.ENUM_DECL :
-					alignment_for_superinterfaces = this.preferences.alignment_for_superinterfaces_in_enum_declaration;
-					break;
-				default:
-					alignment_for_superinterfaces = this.preferences.alignment_for_superinterfaces_in_type_declaration;
-					break;
-			}
-			int superInterfaceLength = superInterfaces.length;
-			Alignment interfaceAlignment =this.scribe.createAlignment(
-					"superInterfaces",//$NON-NLS-1$
-					alignment_for_superinterfaces,
-					superInterfaceLength+1,  // implements token is first fragment
-					this.scribe.scanner.currentPosition);
-			this.scribe.enterAlignment(interfaceAlignment);
-			boolean ok = false;
-			do {
-				try {
-					this.scribe.alignFragment(interfaceAlignment, 0);
-					if (kind == TypeDeclaration.INTERFACE_DECL) {
-						this.scribe.printNextToken(TerminalTokens.TokenNameextends, true);
-					} else  {
-						this.scribe.printNextToken(TerminalTokens.TokenNameimplements, true);
-					}
-					for (int i = 0; i < superInterfaceLength; i++) {
-						if (i > 0) {
-							this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_superinterfaces);
-							this.scribe.printTrailingComment();
-							this.scribe.alignFragment(interfaceAlignment, i+1);
-							if (this.preferences.insert_space_after_comma_in_superinterfaces) {
-								this.scribe.space();
-							}
-							superInterfaces[i].traverse(this, typeDeclaration.scope);
-						} else {
-							this.scribe.alignFragment(interfaceAlignment, i+1);
-							this.scribe.space();
-							superInterfaces[i].traverse(this, typeDeclaration.scope);
-						}
-					}
-					ok = true;
-				} catch (AlignmentException e) {
-					this.scribe.redoAlignment(e);
-				}
-			} while (!ok);
-			this.scribe.exitAlignment(interfaceAlignment, true);
-		}
-
+		
 		/*
 		 * Type body
 		 */
 		String class_declaration_brace;
 		boolean space_before_opening_brace;
 		int kind = TypeDeclaration.kind(typeDeclaration.modifiers);
-		switch(kind) {
-			case TypeDeclaration.ENUM_DECL :
-				class_declaration_brace = this.preferences.brace_position_for_enum_declaration;
-				space_before_opening_brace = this.preferences.insert_space_before_opening_brace_in_enum_declaration;
-				break;
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				class_declaration_brace = this.preferences.brace_position_for_annotation_type_declaration;
-				space_before_opening_brace =  this.preferences.insert_space_before_opening_brace_in_annotation_type_declaration;
-				break;
-			default:
-				class_declaration_brace = this.preferences.brace_position_for_type_declaration;
-				space_before_opening_brace = this.preferences.insert_space_before_opening_brace_in_type_declaration;
-				break;
-		}
+		
+		class_declaration_brace = this.preferences.brace_position_for_type_declaration;
+		space_before_opening_brace = this.preferences.insert_space_before_opening_brace_in_type_declaration;
+
         formatLeftCurlyBrace(line, class_declaration_brace);
 		formatTypeOpeningBrace(class_declaration_brace, space_before_opening_brace, typeDeclaration);
 
 		boolean indent_body_declarations_compare_to_header;
-		switch(kind) {
-			case TypeDeclaration.ENUM_DECL :
-				indent_body_declarations_compare_to_header = this.preferences.indent_body_declarations_compare_to_enum_declaration_header;
-				break;
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				indent_body_declarations_compare_to_header = this.preferences.indent_body_declarations_compare_to_annotation_declaration_header;
-				break;
-			default:
-				indent_body_declarations_compare_to_header = this.preferences.indent_body_declarations_compare_to_type_header;
-				break;
-		}
+
+		indent_body_declarations_compare_to_header = this.preferences.indent_body_declarations_compare_to_type_header;
+
 		if (indent_body_declarations_compare_to_header) {
 			this.scribe.indent();
 		}
-
-		if (kind == TypeDeclaration.ENUM_DECL) {
-			FieldDeclaration[] fieldDeclarations = typeDeclaration.fields;
-			boolean hasConstants = false;
-			if (fieldDeclarations != null) {
-				int length = fieldDeclarations.length;
-				int enumConstantsLength = 0;
-				for (int i = 0; i < length; i++) {
-					break;
-				}
-				hasConstants = enumConstantsLength != 0;
-				if (enumConstantsLength > 1) {
-					Alignment enumConstantsAlignment = this.scribe.createAlignment(
-							"enumConstants",//$NON-NLS-1$
-							this.preferences.alignment_for_enum_constants,
-							enumConstantsLength,
-							this.scribe.scanner.currentPosition,
-							0, // we don't want to indent enum constants when splitting to a new line
-							false);
-					this.scribe.enterAlignment(enumConstantsAlignment);
-					boolean ok = false;
-					do {
-						try {
-							for (int i = 0; i < enumConstantsLength; i++) {
-								this.scribe.alignFragment(enumConstantsAlignment, i);
-								FieldDeclaration fieldDeclaration = fieldDeclarations[i];
-								fieldDeclaration.traverse(this, typeDeclaration.initializerScope);
-								if (isNextToken(TerminalTokens.TokenNameCOMMA)) {
-									this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_enum_declarations);
-									if (this.preferences.insert_space_after_comma_in_enum_declarations) {
-										this.scribe.space();
-									}
-									this.scribe.printTrailingComment();
-									if (fieldDeclaration.initialization instanceof QualifiedAllocationExpression) {
-										this.scribe.printNewLine();
-									}
-								}
-							}
-							ok = true;
-						} catch (AlignmentException e) {
-							this.scribe.redoAlignment(e);
-						}
-					} while (!ok);
-					this.scribe.exitAlignment(enumConstantsAlignment, true);
-				} else {
-					FieldDeclaration fieldDeclaration = fieldDeclarations[0];
-					fieldDeclaration.traverse(this, typeDeclaration.initializerScope);
-					if (isNextToken(TerminalTokens.TokenNameCOMMA)) {
-						this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_enum_declarations);
-						if (this.preferences.insert_space_after_comma_in_enum_declarations) {
-							this.scribe.space();
-						}
-						this.scribe.printTrailingComment();
-						if (fieldDeclaration.initialization instanceof QualifiedAllocationExpression) {
-							this.scribe.printNewLine();
-						}
-					}
-				}
-			}
-			if (isNextToken(TerminalTokens.TokenNameSEMICOLON)) {
-				this.scribe.printNextToken(TerminalTokens.TokenNameSEMICOLON, this.preferences.insert_space_before_semicolon);
-				this.scribe.printTrailingComment();
-			}
-			if (hasConstants) {
-				this.scribe.printNewLine();
-			}
-		}
-
+		
 		formatTypeMembers(typeDeclaration);
 
 		if (indent_body_declarations_compare_to_header) {
 			this.scribe.unIndent();
 		}
 
-		switch(kind) {
-			case TypeDeclaration.ENUM_DECL :
-				if (this.preferences.insert_new_line_in_empty_enum_declaration) {
-					this.scribe.printNewLine();
-				}
-				break;
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				if (this.preferences.insert_new_line_in_empty_annotation_declaration) {
-					this.scribe.printNewLine();
-				}
-				break;
-			default :
-				if (this.preferences.insert_new_line_in_empty_type_declaration) {
-					this.scribe.printNewLine();
-				}
+		if (this.preferences.insert_new_line_in_empty_type_declaration) {
+			this.scribe.printNewLine();
 		}
+		
 		this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE);
 		this.scribe.printTrailingComment();
 		if (class_declaration_brace.equals(DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED)) {
@@ -1254,28 +1093,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				manageOpeningParenthesizedExpression(currentMessageSend, numberOfParens);
 			}
 			ASTNode[] arguments = currentMessageSend.arguments;
-			TypeReference[] typeArguments = currentMessageSend.typeArguments;
-			if (typeArguments != null) {
-					this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_arguments);
-					if (this.preferences.insert_space_after_opening_angle_bracket_in_type_arguments) {
-						this.scribe.space();
-					}
-					int length = typeArguments.length;
-					for (int i = 0; i < length - 1; i++) {
-						typeArguments[i].traverse(this, scope);
-						this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_arguments);
-						if (this.preferences.insert_space_after_comma_in_type_arguments) {
-							this.scribe.space();
-						}
-					}
-					typeArguments[length - 1].traverse(this, scope);
-					if (isClosingGenericToken()) {
-						this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_arguments);
-					}
-					if (this.preferences.insert_space_after_closing_angle_bracket_in_type_arguments) {
-						this.scribe.space();
-					}
-			}
 			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier); // selector
 			this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_method_invocation);
 			if (arguments != null) {
@@ -1340,28 +1157,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					final int numberOfParens = (currentMessageSend.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
 					if (numberOfParens > 0) {
 						manageOpeningParenthesizedExpression(currentMessageSend, numberOfParens);
-					}
-					TypeReference[] typeArguments = currentMessageSend.typeArguments;
-					if (typeArguments != null) {
-							this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_arguments);
-							if (this.preferences.insert_space_after_opening_angle_bracket_in_type_arguments) {
-								this.scribe.space();
-							}
-							int length = typeArguments.length;
-							for (int j = 0; j < length - 1; j++) {
-								typeArguments[j].traverse(this, scope);
-								this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_arguments);
-								if (this.preferences.insert_space_after_comma_in_type_arguments) {
-									this.scribe.space();
-								}
-							}
-							typeArguments[length - 1].traverse(this, scope);
-							if (isClosingGenericToken()) {
-								this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_arguments);
-							}
-							if (this.preferences.insert_space_after_closing_angle_bracket_in_type_arguments) {
-								this.scribe.space();
-							}
 					}
 					ASTNode[] arguments = currentMessageSend.arguments;
 					// Fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=221018
@@ -1604,28 +1399,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			this.scribe.alignFragment(messageAlignment, 0);
 			if (messageSend.selector!=null)
 				this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
-		}
-		TypeReference[] typeArguments = messageSend.typeArguments;
-		if (typeArguments != null) {
-				this.scribe.printNextToken(TerminalTokens.TokenNameLESS, this.preferences.insert_space_before_opening_angle_bracket_in_type_arguments);
-				if (this.preferences.insert_space_after_opening_angle_bracket_in_type_arguments) {
-					this.scribe.space();
-				}
-				int length = typeArguments.length;
-				for (int i = 0; i < length - 1; i++) {
-					typeArguments[i].traverse(this, scope);
-					this.scribe.printNextToken(TerminalTokens.TokenNameCOMMA, this.preferences.insert_space_before_comma_in_type_arguments);
-					if (this.preferences.insert_space_after_comma_in_type_arguments) {
-						this.scribe.space();
-					}
-				}
-				typeArguments[length - 1].traverse(this, scope);
-				if (isClosingGenericToken()) {
-					this.scribe.printNextToken(CLOSING_GENERICS_EXPECTEDTOKENS, this.preferences.insert_space_before_closing_angle_bracket_in_type_arguments);
-				}
-				if (this.preferences.insert_space_after_closing_angle_bracket_in_type_arguments) {
-					this.scribe.space();
-				}
 		}
 		if (messageSend.selector!=null)
 			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier); // selector
@@ -2022,12 +1795,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		boolean insertNewLine = memberLength > 0;
 
 		if (!insertNewLine) {
-			if (TypeDeclaration.kind(typeDeclaration.modifiers) == TypeDeclaration.ENUM_DECL) {
-				insertNewLine = this.preferences.insert_new_line_in_empty_enum_declaration;
-			} else if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0) {
+			if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0) {
 				insertNewLine = this.preferences.insert_new_line_in_empty_anonymous_type_declaration;
-			} else if (TypeDeclaration.kind(typeDeclaration.modifiers) == TypeDeclaration.ANNOTATION_TYPE_DECL) {
-				insertNewLine = this.preferences.insert_new_line_in_empty_annotation_declaration;
 			} else {
 				insertNewLine = this.preferences.insert_new_line_in_empty_type_declaration;
 			}

@@ -2532,12 +2532,6 @@ protected void reportMatching(TypeDeclaration type, IJavaScriptElement parent, i
 		if (superClass != null) {
 			reportMatchingSuper(superClass, enclosingElement, type.binding, nodeSet, matchedClassContainer);
 		}
-		TypeReference[] superInterfaces = type.superInterfaces;
-		if (superInterfaces != null) {
-			for (int i = 0, l = superInterfaces.length; i < l; i++) {
-				reportMatchingSuper(superInterfaces[i], enclosingElement, type.binding, nodeSet, matchedClassContainer);
-			}
-		}
 	}
 
 	// filter out element not in hierarchy scope

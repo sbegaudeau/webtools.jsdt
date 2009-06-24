@@ -223,12 +223,6 @@ public void enterType(TypeInfo typeInfo) {
 		case TypeDeclaration.CLASS_DECL:
 			enterClass(typeInfo);
 			break;
-		case TypeDeclaration.ANNOTATION_TYPE_DECL:
-			enterAnnotationType(typeInfo);
-			break;
-		case TypeDeclaration.ENUM_DECL:
-			enterEnum(typeInfo);
-			break;
 	}
 }
 

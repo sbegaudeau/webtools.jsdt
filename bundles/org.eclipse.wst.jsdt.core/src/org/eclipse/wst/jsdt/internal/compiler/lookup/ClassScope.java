@@ -169,12 +169,6 @@ public class ClassScope extends Scope {
 			int count = 0;
 			nextMember : for (int i = 0; i < size; i++) {
 				TypeDeclaration memberContext = referenceContext.memberTypes[i];
-				switch(TypeDeclaration.kind(memberContext.modifiers)) {
-					case TypeDeclaration.INTERFACE_DECL :
-					case TypeDeclaration.ANNOTATION_TYPE_DECL :
-						problemReporter().illegalLocalTypeDeclaration(memberContext);
-						continue nextMember;
-				}
 				ReferenceBinding type = localType;
 				// check that the member does not conflict with an enclosing type
 				do {
@@ -222,17 +216,6 @@ public class ClassScope extends Scope {
 			int count = 0;
 			nextMember : for (int i = 0; i < length; i++) {
 				TypeDeclaration memberContext = referenceContext.memberTypes[i];
-				switch(TypeDeclaration.kind(memberContext.modifiers)) {
-					case TypeDeclaration.INTERFACE_DECL :
-					case TypeDeclaration.ANNOTATION_TYPE_DECL :
-						if (sourceType.isNestedType()
-								&& sourceType.isClass() // no need to check for enum, since implicitly static
-								&& !sourceType.isStatic()) {
-							problemReporter().illegalLocalTypeDeclaration(memberContext);
-							continue nextMember;
-						}
-					break;
-				}
 				ReferenceBinding type = sourceType;
 				// check that the member does not conflict with an enclosing type
 				do {
@@ -260,8 +243,7 @@ public class ClassScope extends Scope {
 	}
 
 	private void buildMethods() {
-		boolean isEnum = TypeDeclaration.kind(referenceContext.modifiers) == TypeDeclaration.ENUM_DECL;
-		if (referenceContext.methods == null && !isEnum) {
+		if (referenceContext.methods == null) {
 			getReferenceBinding().setMethods(Binding.NO_METHODS);
 			return;
 		}
@@ -278,7 +260,7 @@ public class ClassScope extends Scope {
 			}
 		}
 
-		int count = isEnum ? 2 : 0; // reserve 2 slots for special enum methods: #values() and #valueOf(String)
+		int count = 0; // reserve 2 slots for special enum methods: #values() and #valueOf(String)
 		MethodBinding[] methodBindings = new MethodBinding[(clinitIndex == -1 ? size : size - 1) + count];
 		// create special methods for enums
 	    SourceTypeBinding sourceType = getReferenceBinding();
@@ -447,7 +429,7 @@ public class ClassScope extends Scope {
 					AbstractMethodDeclaration[] methods = typeDeclaration.methods;
 					int methodsLength = methods == null ? 0 : methods.length;
 					// TODO (kent) cannot tell that the superinterfaces are empty or that their methods are implemented
-					boolean definesAbstractMethod = typeDeclaration.superInterfaces != null;
+					boolean definesAbstractMethod = false;
 					for (int i = 0; i < methodsLength && !definesAbstractMethod; i++)
 						definesAbstractMethod = methods[i].isAbstract();
 					if (!definesAbstractMethod) break checkAbstractEnum; // all methods have bodies

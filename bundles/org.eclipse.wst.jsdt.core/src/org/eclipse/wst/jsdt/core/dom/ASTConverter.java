@@ -1917,19 +1917,6 @@ class ASTConverter {
 					superMethodInvocation.arguments().add(expri);
 				}
 			}
-			final TypeReference[] typeArguments = expression.typeArguments;
-			if (typeArguments != null) {
-				switch(this.ast.apiLevel) {
-					case AST.JLS2_INTERNAL :
-						superMethodInvocation.setFlags(superMethodInvocation.getFlags() | ASTNode.MALFORMED);
-						break;
-					case AST.JLS3 :
-						for (int i = 0, max = typeArguments.length; i < max; i++) {
-							superMethodInvocation.typeArguments().add(convertType(typeArguments[i]));
-						}
-						break;
-				}
-			}
 			expr = superMethodInvocation;
 		} else {
 			// returns a FunctionInvocation
@@ -1978,19 +1965,6 @@ class ASTConverter {
 			methodInvocation.setExpression(qualifier);
 			if (qualifier != null) {
 				sourceStart = qualifier.getStartPosition();
-			}
-			final TypeReference[] typeArguments = expression.typeArguments;
-			if (typeArguments != null) {
-				switch(this.ast.apiLevel) {
-					case AST.JLS2_INTERNAL :
-						methodInvocation.setFlags(methodInvocation.getFlags() | ASTNode.MALFORMED);
-						break;
-					case AST.JLS3 :
-						for (int i = 0, max = typeArguments.length; i < max; i++) {
-							methodInvocation.typeArguments().add(convertType(typeArguments[i]));
-						}
-						break;
-				}
 			}
 			expr = methodInvocation;
 		}

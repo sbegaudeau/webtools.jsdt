@@ -597,15 +597,6 @@ protected CompilationUnitDeclaration endParse(int act) {
 			case TypeDeclaration.CLASS_DECL :
 				consumeClassDeclaration();
 				break;
-			case TypeDeclaration.INTERFACE_DECL :
-				consumeInterfaceDeclaration();
-				break;
-			case TypeDeclaration.ENUM_DECL :
-				consumeEnumDeclaration();
-				break;
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				consumeAnnotationTypeDeclaration();
-				break;
 		}
 	}
 	if (compilationUnit != null) {
@@ -1324,29 +1315,7 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 	int memberTypeIndex = 0;
 
 	if (notifyTypePresence){
-		char[][] interfaceNames = null;
-		int superInterfacesLength = 0;
-		TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-		if (superInterfaces != null) {
-			superInterfacesLength = superInterfaces.length;
-			interfaceNames = new char[superInterfacesLength][];
-		} else {
-			if ((typeDeclaration.bits & ASTNode.IsAnonymousType) != 0) {
-				// see PR 3442
-				QualifiedAllocationExpression alloc = typeDeclaration.allocation;
-				if (alloc != null && alloc.type != null) {
-					superInterfaces = new TypeReference[] { alloc.type};
-					superInterfacesLength = 1;
-					interfaceNames = new char[1][];
-				}
-			}
-		}
-		if (superInterfaces != null) {
-			for (int i = 0; i < superInterfacesLength; i++) {
-				interfaceNames[i] =
-					CharOperation.concatWith(superInterfaces[i].getParameterizedTypeName(), '.');
-			}
-		}
+		
 		int kind = TypeDeclaration.kind(typeDeclaration.modifiers);
 		char[] implicitSuperclassName = TypeConstants.CharArray_JAVA_LANG_OBJECT;
 		if (isInRange) {
@@ -1375,15 +1344,6 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 				case TypeDeclaration.CLASS_DECL :
 					if (superclassName != null)
 						implicitSuperclassName = superclassName;
-					break;
-				case TypeDeclaration.INTERFACE_DECL :
-					implicitSuperclassName = TypeConstants.CharArray_JAVA_LANG_OBJECT;
-					break;
-				case TypeDeclaration.ENUM_DECL :
-					implicitSuperclassName = TypeConstants.CharArray_JAVA_LANG_ENUM;
-					break;
-				case TypeDeclaration.ANNOTATION_TYPE_DECL :
-					implicitSuperclassName = TypeConstants.CharArray_JAVA_LANG_ANNOTATION_ANNOTATION;
 					break;
 			}
 		}

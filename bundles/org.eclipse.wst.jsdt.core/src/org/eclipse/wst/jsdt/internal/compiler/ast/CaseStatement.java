@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CaseStatement extends Statement implements ICaseStatement {
 
 	public Expression constantExpression;
-	public boolean isEnumConstant;
 
 	public CaseStatement(Expression constantExpression, int sourceEnd, int sourceStart) {
 		this.constantExpression = constantExpression;
@@ -94,7 +93,6 @@ public class CaseStatement extends Statement implements ICaseStatement {
 		if (constantExpression.isConstantValueOfTypeAssignableToType(caseType, switchExpressionType)
 				|| caseType.isCompatibleWith(switchExpressionType)) {
 			if (caseType.isEnum()) {
-				this.isEnumConstant = true;
 				if (((this.constantExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT) != 0) {
 					scope.problemReporter().enumConstantsCannotBeSurroundedByParenthesis(this.constantExpression);
 				}

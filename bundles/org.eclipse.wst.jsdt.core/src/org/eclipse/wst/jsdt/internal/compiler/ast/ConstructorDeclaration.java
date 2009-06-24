@@ -43,15 +43,6 @@ public ConstructorDeclaration(CompilationResult compilationResult){
 	super(compilationResult);
 }
 
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration#analyseCode(org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope, org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext, org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo)
- * @deprecated use instead {@link #analyseCode(ClassScope, InitializationFlowContext, FlowInfo, int)}
- */
-public void analyseCode(ClassScope classScope, InitializationFlowContext initializerFlowContext, FlowInfo flowInfo) {
-	analyseCode(classScope, initializerFlowContext, flowInfo, FlowInfo.REACHABLE);
-}
-
-
 public FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo flowInfo) {
 	analyseCode((ClassScope)classScope, (InitializationFlowContext)initializationContext, flowInfo, FlowInfo.REACHABLE);
 	return flowInfo;

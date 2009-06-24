@@ -1380,80 +1380,6 @@ private boolean checkNameCompletion() {
 	this.isOrphanCompletionNode = true;
 	return true;
 }
-private boolean checkParemeterizedMethodName() {
-	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_PARAMETERIZED_METHOD_INVOCATION &&
-			topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER) == INSIDE_NAME) {
-		if(this.identifierLengthPtr > -1 && this.genericsLengthPtr > -1 && this.genericsIdentifiersLengthPtr == -1) {
-			CompletionOnMessageSendName m = null;
-			switch (this.invocationType) {
-				case EXPLICIT_RECEIVER:
-				case NO_RECEIVER: // this case occurs with 'bar().foo'
-					if(this.expressionPtr > -1 && this.expressionLengthStack[this.expressionLengthPtr] == 1) {
-						char[] selector = this.identifierStack[this.identifierPtr];
-						long position = this.identifierPositionStack[identifierPtr--];
-						this.identifierLengthPtr--;
-						int end = (int) position;
-						int start = (int) (position >>> 32);
-						m = new CompletionOnMessageSendName(selector, start, end);
-
-						// handle type arguments
-						int length = this.genericsLengthStack[this.genericsLengthPtr--];
-						this.genericsPtr -= length;
-						System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-						intPtr--;
-
-						m.receiver = this.expressionStack[this.expressionPtr--];
-						this.expressionLengthPtr--;
-					}
-					break;
-				case NAME_RECEIVER:
-					if(this.identifierPtr > 0) {
-						char[] selector = this.identifierStack[this.identifierPtr];
-						long position = this.identifierPositionStack[identifierPtr--];
-						this.identifierLengthPtr--;
-						int end = (int) position;
-						int start = (int) (position >>> 32);
-						m = new CompletionOnMessageSendName(selector, start, end);
-
-						// handle type arguments
-						int length = this.genericsLengthStack[this.genericsLengthPtr--];
-						this.genericsPtr -= length;
-						System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-						intPtr--;
-
-						m.receiver = getUnspecifiedReference();
-					}
-					break;
-				case SUPER_RECEIVER:
-					char[] selector = this.identifierStack[this.identifierPtr];
-					long position = this.identifierPositionStack[identifierPtr--];
-					this.identifierLengthPtr--;
-					int end = (int) position;
-					int start = (int) (position >>> 32);
-					m = new CompletionOnMessageSendName(selector, start, end);
-
-					// handle type arguments
-					int length = this.genericsLengthStack[this.genericsLengthPtr--];
-					this.genericsPtr -= length;
-					System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-					intPtr--;
-
-					m.receiver = new SuperReference(start, end);
-					break;
-			}
-
-			if(m != null) {
-				pushOnExpressionStack(m);
-
-				this.assistNode = m;
-				this.lastCheckPoint = this.assistNode.sourceEnd + 1;
-				this.isOrphanCompletionNode = true;
-				return true;
-			}
-		}
-	}
-	return false;
-}
 /**
  * Checks if the completion is in the context of a method and on the type of one of its arguments
  * Returns whether we found a completion node.
@@ -1547,12 +1473,10 @@ private void classHeaderExtendsOrImplements(boolean isInterface) {
 					int count = 0;
 
 
-					if(type.superInterfaces == null) {
-						if(type.superclass == null) {
-							keywords[count++] = Keywords.EXTENDS;
-						}
-						keywords[count++] = Keywords.IMPLEMENTS;
+					if(type.superclass == null) {
+						keywords[count++] = Keywords.EXTENDS;
 					}
+					keywords[count++] = Keywords.IMPLEMENTS;
 
 					System.arraycopy(keywords, 0, keywords = new char[count][], 0, count);
 
@@ -1568,17 +1492,13 @@ private void classHeaderExtendsOrImplements(boolean isInterface) {
 						this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 					}
 				} else {
-					if(type.superInterfaces == null) {
-						CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-							identifierStack[ptr],
-							identifierPositionStack[ptr],
-							Keywords.EXTENDS);
-						completionOnKeyword.canCompleteEmptyToken = true;
-						type.superInterfaces = new TypeReference[]{completionOnKeyword};
-						type.superInterfaces[0].bits |= ASTNode.IsSuperType;
-						this.assistNode = completionOnKeyword;
-						this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
-					}
+					CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
+						identifierStack[ptr],
+						identifierPositionStack[ptr],
+						Keywords.EXTENDS);
+					completionOnKeyword.canCompleteEmptyToken = true;
+					this.assistNode = completionOnKeyword;
+					this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 				}
 			}
 		}
@@ -1639,7 +1559,6 @@ public void completionIdentifierCheck(){
 	// (NB: Put this check before checkNameCompletion() because the selector of the invocation can be on the identifier stack)
 	if (checkInvocation()) return;
 
-	if (checkParemeterizedMethodName()) return;
 	if (checkLabelStatement()) return;
 	if (checkNameCompletion()) return;
 }
@@ -1744,15 +1663,13 @@ protected void consumeClassHeaderExtends() {
 			/* filter out cases where scanner is still inside type header */
 			if (!recoveredType.foundOpeningBrace) {
 				TypeDeclaration type = recoveredType.typeDeclaration;
-				if(type.superInterfaces == null) {
-					type.superclass = new CompletionOnKeyword1(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.IMPLEMENTS);
-					type.superclass.bits |= ASTNode.IsSuperType;
-					this.assistNode = type.superclass;
-					this.lastCheckPoint = type.superclass.sourceEnd + 1;
-				}
+				type.superclass = new CompletionOnKeyword1(
+					identifierStack[ptr],
+					identifierPositionStack[ptr],
+					Keywords.IMPLEMENTS);
+				type.superclass.bits |= ASTNode.IsSuperType;
+				this.assistNode = type.superclass;
+				this.lastCheckPoint = type.superclass.sourceEnd + 1;
 			}
 		}
 	}
@@ -2090,10 +2007,6 @@ protected void consumeInterfaceHeaderName1() {
 
 	classHeaderExtendsOrImplements(true);
 }
-protected void consumeInterfaceHeaderExtends() {
-	super.consumeInterfaceHeaderExtends();
-	popElement(K_EXTENDS_KEYWORD);
-}
 protected void consumeInterfaceType() {
 	pushOnElementStack(K_NEXT_TYPEREF_IS_INTERFACE);
 	super.consumeInterfaceType();
@@ -2104,30 +2017,15 @@ protected void consumeMethodInvocationName() {
 	popElement(K_SELECTOR_INVOCATION_TYPE);
 	super.consumeMethodInvocationName();
 }
-protected void consumeMethodInvocationNameWithTypeArguments() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeMethodInvocationNameWithTypeArguments();
-}
 protected void consumeMethodInvocationPrimary() {
 	popElement(K_SELECTOR_QUALIFIER);
 	popElement(K_SELECTOR_INVOCATION_TYPE);
 	super.consumeMethodInvocationPrimary();
 }
-protected void consumeMethodInvocationPrimaryWithTypeArguments() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeMethodInvocationPrimaryWithTypeArguments();
-}
 protected void consumeMethodInvocationSuper() {
 	popElement(K_SELECTOR_QUALIFIER);
 	popElement(K_SELECTOR_INVOCATION_TYPE);
 	super.consumeMethodInvocationSuper();
-}
-protected void consumeMethodInvocationSuperWithTypeArguments() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeMethodInvocationSuperWithTypeArguments();
 }
 protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	if(this.indexOfAssistIdentifier() < 0) {

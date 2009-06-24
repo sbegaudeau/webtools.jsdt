@@ -111,12 +111,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	// for binary expressions
 	public static final int IsReturnedValue = Bit5;
 
-	// for cast expressions
-	public static final int UnnecessaryCast = Bit15;
-	public static final int DisableUnnecessaryCastCheck = Bit6;
-	public static final int GenerateCheckcast = Bit7;
-	public static final int UnsafeCast = Bit8;
-
 	// for name references
 	public static final int RestrictiveFlagMASK = Bit1|Bit2|Bit3|Bit4;
 
@@ -224,7 +218,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 	// for return statement
 	public static final int IsAnySubRoutineEscaping = Bit30;
-//	public static final int IsSynchronized = Bit31;
 
 	// for synchronized statement
 	public static final int BlockExit = Bit30;

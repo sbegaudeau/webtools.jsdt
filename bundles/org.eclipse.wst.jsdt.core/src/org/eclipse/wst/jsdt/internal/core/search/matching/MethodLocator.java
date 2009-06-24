@@ -310,8 +310,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 }
 void matchReportReference(MessageSend messageSend, MatchLocator locator, MethodBinding methodBinding) throws CoreException {
 
-	// Look if there's a need to special report for parameterized type
-	boolean isParameterized = false;
 	if (this.pattern.hasMethodArguments()) { // binding has no type params, compatible erasure if pattern does
 		match.setRule(SearchPattern.R_ERASURE_MATCH);
 	}
@@ -325,11 +323,7 @@ void matchReportReference(MessageSend messageSend, MatchLocator locator, MethodB
 	int offset = (int) (messageSend.nameSourcePosition >>> 32);
 	match.setOffset(offset);
 	match.setLength(messageSend.sourceEnd - offset + 1);
-	 if (isParameterized && this.pattern.hasMethodArguments())  {
-		locator.reportAccurateParameterizedMethodReference(match, messageSend, messageSend.typeArguments);
-	} else {
-		locator.report(match);
-	}
+	locator.report(match);
 }
 /*
  * Return whether method parameters are equals to pattern ones.

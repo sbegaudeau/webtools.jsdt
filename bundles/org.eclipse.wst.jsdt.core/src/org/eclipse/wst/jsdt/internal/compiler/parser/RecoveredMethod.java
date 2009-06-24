@@ -213,16 +213,7 @@ public RecoveredElement add(TypeDeclaration typeDeclaration, int bracketBalanceV
 		}
 		return methodBody.add(typeDeclaration, bracketBalanceValue, true);
 	}
-	switch (TypeDeclaration.kind(typeDeclaration.modifiers)) {
-		case TypeDeclaration.INTERFACE_DECL :
-		case TypeDeclaration.ANNOTATION_TYPE_DECL :
-			this.updateSourceEndIfNecessary(this.previousAvailableLineEnd(typeDeclaration.declarationSourceStart - 1));
-			if (this.parent == null) {
-				return this; // ignore
-			}
-			// close the constructor
-			return this.parent.add(typeDeclaration, bracketBalanceValue);
-	}
+	
 	if (localTypes == null) {
 		localTypes = new RecoveredType[5];
 		localTypeCount = 0;
@@ -414,15 +405,6 @@ public void updateFromParserState(){
 	}
 }
 public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
-	if(this.parent != null && this.parent instanceof RecoveredType) {
-		int modifiers = ((RecoveredType)this.parent).typeDeclaration.modifiers;
-		if (TypeDeclaration.kind(modifiers) == TypeDeclaration.INTERFACE_DECL) {
-			if (!this.foundOpeningBrace) {
-				this.updateSourceEndIfNecessary(braceStart - 1, braceStart - 1);
-				return this.parent.updateOnClosingBrace(braceStart, braceEnd);
-			}
-		}
-	}
 	RecoveredElement recoveredElement = super.updateOnClosingBrace(braceStart, braceEnd);
 	if (recoveredElement!=this)
 		this.parser().recoverAST(this);

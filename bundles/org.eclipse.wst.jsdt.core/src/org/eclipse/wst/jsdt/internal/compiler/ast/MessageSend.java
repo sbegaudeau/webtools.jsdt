@@ -42,17 +42,11 @@ public class MessageSend extends Expression implements InvocationSite, IFunction
 	public char[] selector;
 	public Expression[] arguments;
 	public MethodBinding binding;							// exact binding resulting from lookup
-//	protected FunctionBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
-//	FunctionBinding syntheticAccessor;						// synthetic accessor for inner-emulation
 	public TypeBinding expectedType;					// for generic method invocation (return type inference)
 
 	public long nameSourcePosition ; //(start<<32)+end
 
 	public TypeBinding actualReceiverType;
-//	public TypeBinding receiverGenericCast; // extra reference type cast to perform on generic receiver
-//	public TypeBinding valueCast; // extra reference type cast to perform on method returned value
-	public TypeReference[] typeArguments;
-	public TypeBinding[] genericTypeArguments;
 
 	
 	public char[] getSelector() {
@@ -128,13 +122,6 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 //		}
 //	}
 //	super.computeConversion(scope, runtimeTimeType, compileTimeType);
-}
-
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
- */
-public TypeBinding[] genericTypeArguments() {
-	return this.genericTypeArguments;
 }
 
 public boolean isSuperAccess() {
@@ -402,7 +389,6 @@ public TypeBinding resolveType(BlockScope scope) {
 			case ProblemReasons.ReceiverTypeNotVisible :
 				// only steal returnType in cases listed above
 				if (closestMatch != null) this.resolvedType = closestMatch.returnType;
-			default :
 		}
 		// record the closest match, for clients who may still need hint about possible method match
 		if (closestMatch != null) {
@@ -508,11 +494,6 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 	if (visitor.visit(this, blockScope)) {
 		if (receiver!=null)
 			receiver.traverse(visitor, blockScope);
-		if (this.typeArguments != null) {
-			for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
-				this.typeArguments[i].traverse(visitor, blockScope);
-			}
-		}
 		if (arguments != null) {
 			int argumentsLength = arguments.length;
 			for (int i = 0; i < argumentsLength; i++)

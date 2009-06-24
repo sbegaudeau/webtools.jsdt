@@ -389,14 +389,6 @@ protected void consumeMethodInvocationName() {
 		this.lastCheckPoint = messageSend.sourceEnd + 1;
 	}
 }
-protected void consumeMethodInvocationNameWithTypeArguments() {
-	super.consumeMethodInvocationNameWithTypeArguments();
-	popElement(K_SELECTOR);
-	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
-	if (messageSend == assistNode){
-		this.lastCheckPoint = messageSend.sourceEnd + 1;
-	}
-}
 protected void consumeMethodInvocationPrimary() {
 	super.consumeMethodInvocationPrimary();
 	popElement(K_SELECTOR);
@@ -405,24 +397,8 @@ protected void consumeMethodInvocationPrimary() {
 		this.lastCheckPoint = messageSend.sourceEnd + 1;
 	}
 }
-protected void consumeMethodInvocationPrimaryWithTypeArguments() {
-	super.consumeMethodInvocationPrimaryWithTypeArguments();
-	popElement(K_SELECTOR);
-	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
-	if (messageSend == assistNode){
-		this.lastCheckPoint = messageSend.sourceEnd + 1;
-	}
-}
 protected void consumeMethodInvocationSuper() {
 	super.consumeMethodInvocationSuper();
-	popElement(K_SELECTOR);
-	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
-	if (messageSend == assistNode){
-		this.lastCheckPoint = messageSend.sourceEnd + 1;
-	}
-}
-protected void consumeMethodInvocationSuperWithTypeArguments() {
-	super.consumeMethodInvocationSuperWithTypeArguments();
 	popElement(K_SELECTOR);
 	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
 	if (messageSend == assistNode){

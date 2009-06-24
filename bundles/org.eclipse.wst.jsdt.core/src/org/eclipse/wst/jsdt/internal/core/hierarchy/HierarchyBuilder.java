@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -169,16 +169,11 @@ public abstract class HierarchyBuilder {
 		// now do the caching
 		switch (TypeDeclaration.kind(type.getModifiers())) {
 			case TypeDeclaration.CLASS_DECL :
-			case TypeDeclaration.ENUM_DECL :
 				if (superclassHandle == null) {
 					this.hierarchy.addRootClass(typeHandle);
 				} else {
 					this.hierarchy.cacheSuperclass(typeHandle, superclassHandle);
 				}
-				break;
-			case TypeDeclaration.INTERFACE_DECL :
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				this.hierarchy.addInterface(typeHandle);
 				break;
 		}
 		if (superinterfaceHandles == null) {
@@ -234,12 +229,6 @@ public abstract class HierarchyBuilder {
 		switch (TypeDeclaration.kind(typeInfo.getModifiers())) {
 			case TypeDeclaration.CLASS_DECL :
 				flag = NameLookup.ACCEPT_CLASSES;
-				break;
-			case TypeDeclaration.INTERFACE_DECL :
-				flag = NameLookup.ACCEPT_INTERFACES;
-				break;
-			case TypeDeclaration.ENUM_DECL :
-				flag = NameLookup.ACCEPT_ENUMS;
 				break;
 			default:
 				//case IGenericType.ANNOTATION :

@@ -2100,7 +2100,6 @@ protected void consumeClassDeclaration() {
 	if (!hasConstructor) {
 		switch(TypeDeclaration.kind(typeDecl.modifiers)) {
 			case TypeDeclaration.CLASS_DECL :
-			case TypeDeclaration.ENUM_DECL :
 				boolean insideFieldInitializer = false;
 				if (this.diet) {
 					for (int i = this.nestedType; i > 0; i--){
@@ -2149,29 +2148,6 @@ protected void consumeClassHeaderExtends() {
 	typeDecl.bodyStart = typeDecl.superclass.sourceEnd + 1;
 	// recovery
 	if (this.currentElement != null){
-		this.lastCheckPoint = typeDecl.bodyStart;
-	}
-}
-protected void consumeClassHeaderImplements() {
-	// ClassHeaderImplements ::= 'implements' InterfaceTypeList
-	int length = this.astLengthStack[this.astLengthPtr--];
-	//super interfaces
-	this.astPtr -= length;
-	// There is a class declaration on the top of stack
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	System.arraycopy(
-		this.astStack,
-		this.astPtr + 1,
-		typeDecl.superInterfaces = new TypeReference[length],
-		0,
-		length);
-	for (int i = 0, max = typeDecl.superInterfaces.length; i < max; i++) {
-		typeDecl.superInterfaces[i].bits |= ASTNode.IsSuperType;
-	}
-	typeDecl.bodyStart = typeDecl.superInterfaces[length-1].sourceEnd + 1;
-	this.listLength = 0; // reset after having read super-interfaces
-	// recovery
-	if (this.currentElement != null) { // is recovering
 		this.lastCheckPoint = typeDecl.bodyStart;
 	}
 }
@@ -3535,28 +3511,6 @@ protected void consumeInterfaceHeader() {
 	// flush the comments related to the interface header
 	this.scanner.commentPtr = -1;
 }
-protected void consumeInterfaceHeaderExtends() {
-	// InterfaceHeaderExtends ::= 'extends' InterfaceTypeList
-	int length = this.astLengthStack[this.astLengthPtr--];
-	//super interfaces
-	this.astPtr -= length;
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	System.arraycopy(
-		this.astStack,
-		this.astPtr + 1,
-		typeDecl.superInterfaces = new TypeReference[length],
-		0,
-		length);
-	for (int i = 0, max = typeDecl.superInterfaces.length; i < max; i++) {
-		typeDecl.superInterfaces[i].bits |= ASTNode.IsSuperType;
-	}
-	typeDecl.bodyStart = typeDecl.superInterfaces[length-1].sourceEnd + 1;
-	this.listLength = 0; // reset after having read super-interfaces
-	// recovery
-	if (this.currentElement != null) {
-		this.lastCheckPoint = typeDecl.bodyStart;
-	}
-}
 protected void consumeInterfaceHeaderName1() {
 	// InterfaceHeaderName ::= Modifiersopt 'interface' 'Identifier'
 	TypeDeclaration typeDecl = new TypeDeclaration(this.compilationUnit.compilationResult);
@@ -4134,28 +4088,6 @@ protected void consumeMethodInvocationName() {
 	}
 	pushOnExpressionStack(m);
 }
-protected void consumeMethodInvocationNameWithTypeArguments() {
-	// FunctionInvocation ::= Name '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
-
-	// when the name is only an identifier...we have a message send to "this" (implicit)
-
-	MessageSend m = newMessageSendWithTypeArguments();
-	m.sourceEnd = this.rParenPos;
-	m.sourceStart =
-		(int) ((m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr]) >>> 32);
-	m.selector = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	// handle type arguments
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-	intPtr--;
-
-	m.receiver = getUnspecifiedReference();
-	m.sourceStart = m.receiver.sourceStart;
-	pushOnExpressionStack(m);
-}
 protected void consumeMethodInvocationPrimary() {
 	//optimize the push/pop
 	//FunctionInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
@@ -4187,27 +4119,6 @@ protected void consumeMethodInvocationPrimary() {
 	m.sourceEnd = this.rParenPos;
 	this.expressionStack[this.expressionPtr] = m;
 }
-protected void consumeMethodInvocationPrimaryWithTypeArguments() {
-	//optimize the push/pop
-	//FunctionInvocation ::= Primary '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
-
-	MessageSend m = newMessageSendWithTypeArguments();
-	m.sourceStart =
-		(int) ((m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr]) >>> 32);
-	m.selector = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	// handle type arguments
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-	intPtr--;
-
-	m.receiver = this.expressionStack[this.expressionPtr];
-	m.sourceStart = m.receiver.sourceStart;
-	m.sourceEnd = this.rParenPos;
-	this.expressionStack[this.expressionPtr] = m;
-}
 protected void consumeMethodInvocationSuper() {
 	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
 
@@ -4217,25 +4128,6 @@ protected void consumeMethodInvocationSuper() {
 	m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr];
 	m.selector = this.identifierStack[this.identifierPtr--];
 	this.identifierLengthPtr--;
-	m.receiver = new SuperReference(m.sourceStart, this.endPosition);
-	pushOnExpressionStack(m);
-}
-protected void consumeMethodInvocationSuperWithTypeArguments() {
-	// FunctionInvocation ::= 'super' '.' TypeArguments 'Identifier' '(' ArgumentListopt ')'
-
-	MessageSend m = newMessageSendWithTypeArguments();
-	intPtr--; // start position of the typeArguments
-	m.sourceEnd = this.rParenPos;
-	m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr];
-	m.selector = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	// handle type arguments
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, m.typeArguments = new TypeReference[length], 0, length);
-	m.sourceStart = this.intStack[this.intPtr--]; // start position of the super keyword
-
 	m.receiver = new SuperReference(m.sourceStart, this.endPosition);
 	pushOnExpressionStack(m);
 }

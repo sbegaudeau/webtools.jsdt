@@ -1971,31 +1971,6 @@ public final class CompletionEngine
 					onlyStatic = true;
 					receiverType = (TypeBinding)qualifiedBinding;
 				}
-				if(receiverType != null && receiverType instanceof ReferenceBinding) {
-					TypeBinding[] typeArgTypes = computeTypesIfCorrect(messageSend.typeArguments);
-					if(typeArgTypes != null) {
-						this.findMethods(
-								this.completionToken,
-								typeArgTypes,
-								null,
-								  (messageSend.receiver!=null)?
-										  (ReferenceBinding)receiverType :null,
-								scope,
-								new ObjectVector(),
-								onlyStatic,
-								false,
-								false,
-								messageSend,
-								scope,
-								false,
-								false,
-								false,
-								null,
-								null,
-								null,
-								false);
-					}
-				}
 			}
 		// Completion on Javadoc nodes
 		} else if ((astNode.bits & ASTNode.InsideJavadoc) != 0) {
@@ -7815,14 +7790,6 @@ public final class CompletionEngine
 			if(typeDeclaration.superclass == astNode) {
 				this.addForbiddenBindings(typeDeclaration.binding);
 				return scope.parent;
-			}
-			TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-			int length = superInterfaces == null ? 0 : superInterfaces.length;
-			for (int i = 0; i < length; i++) {
-				if(superInterfaces[i] == astNode) {
-					this.addForbiddenBindings(typeDeclaration.binding);
-					return scope.parent;
-				}
 			}
 		} else {
 			if (astNodeParent != null && astNodeParent instanceof TryStatement) {

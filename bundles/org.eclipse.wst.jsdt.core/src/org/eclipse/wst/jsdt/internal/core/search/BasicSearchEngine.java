@@ -126,9 +126,6 @@ public class BasicSearchEngine {
 	char convertTypeKind(int typeDeclarationKind) {
 		switch(typeDeclarationKind) {
 			case TypeDeclaration.CLASS_DECL : return IIndexConstants.CLASS_SUFFIX;
-			case TypeDeclaration.INTERFACE_DECL : return IIndexConstants.INTERFACE_SUFFIX;
-			case TypeDeclaration.ENUM_DECL : return IIndexConstants.ENUM_SUFFIX;
-			case TypeDeclaration.ANNOTATION_TYPE_DECL : return IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 			default : return IIndexConstants.TYPE_SUFFIX;
 		}
 	}
@@ -473,24 +470,6 @@ public class BasicSearchEngine {
 			case IIndexConstants.CLASS_SUFFIX :
 				if (typeKind != TypeDeclaration.CLASS_DECL) return false;
 				break;
-			case IIndexConstants.CLASS_AND_INTERFACE_SUFFIX:
-				if (typeKind != TypeDeclaration.CLASS_DECL && typeKind != TypeDeclaration.INTERFACE_DECL) return false;
-				break;
-			case IIndexConstants.CLASS_AND_ENUM_SUFFIX:
-				if (typeKind != TypeDeclaration.CLASS_DECL && typeKind != TypeDeclaration.ENUM_DECL) return false;
-				break;
-			case IIndexConstants.INTERFACE_SUFFIX :
-				if (typeKind != TypeDeclaration.INTERFACE_DECL) return false;
-				break;
-			case IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX:
-				if (typeKind != TypeDeclaration.INTERFACE_DECL && typeKind != TypeDeclaration.ANNOTATION_TYPE_DECL) return false;
-				break;
-			case IIndexConstants.ENUM_SUFFIX :
-				if (typeKind != TypeDeclaration.ENUM_DECL) return false;
-				break;
-			case IIndexConstants.ANNOTATION_TYPE_SUFFIX :
-				if (typeKind != TypeDeclaration.ANNOTATION_TYPE_DECL) return false;
-				break;
 			case IIndexConstants.TYPE_SUFFIX : // nothing
 		}
 
@@ -792,12 +771,8 @@ public class BasicSearchEngine {
 										enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
 									}
 									char[] simpleName = type.getElementName().toCharArray();
-									int kind;
-									if (type.isClass()) {
-										kind = TypeDeclaration.CLASS_DECL;
-									} else /*if (type.isInterface())*/ {
-										kind = TypeDeclaration.INTERFACE_DECL;
-									}
+									int kind = TypeDeclaration.CLASS_DECL;
+									
 									if (match(typeSuffix, packageName, bindingName, matchRule, kind, packageDeclaration, simpleName)) {
 										nameRequestor.acceptBinding(bindingType,type.getFlags(), packageDeclaration, simpleName,   path, null);
 									}
@@ -1216,12 +1191,8 @@ public class BasicSearchEngine {
 								enclosingTypeNames = CharOperation.NO_CHAR_CHAR;
 							}
 							char[] simpleName = type.getElementName().toCharArray();
-							int kind;
-							if (type.isClass()) {
-								kind = TypeDeclaration.CLASS_DECL;
-							} else /*if (type.isInterface())*/ {
-								kind = TypeDeclaration.INTERFACE_DECL;
-							}
+							int kind = TypeDeclaration.CLASS_DECL;
+			
 							if (match(typeSuffix, packageName, typeName, typeMatchRule, kind, packageDeclaration, simpleName)) {
 								if (nameRequestor instanceof TypeNameMatchRequestorWrapper) {
 									((TypeNameMatchRequestorWrapper)nameRequestor).requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, type.getFlags()));

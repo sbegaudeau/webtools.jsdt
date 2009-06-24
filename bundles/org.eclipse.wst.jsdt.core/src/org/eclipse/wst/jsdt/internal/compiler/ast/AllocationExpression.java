@@ -117,7 +117,7 @@ public boolean isTypeAccess() {
  */
 public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) return;
-	ReferenceBinding allocatedTypeErasure = (ReferenceBinding) binding.declaringClass;
+	ReferenceBinding allocatedTypeErasure = binding.declaringClass;
 
 	// perform some emulation work in case there is some and we are inside a local type only
 	if (allocatedTypeErasure.isNestedType()

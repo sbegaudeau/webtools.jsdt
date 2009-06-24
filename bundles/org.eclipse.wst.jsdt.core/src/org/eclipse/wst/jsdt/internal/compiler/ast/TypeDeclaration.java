@@ -51,15 +51,11 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 public class TypeDeclaration extends Statement implements ProblemSeverities, ReferenceContext, ITypeDeclaration {
 	// Type decl kinds
 	public static final int CLASS_DECL = 1;
-	public static final int INTERFACE_DECL = 2;
-	public static final int ENUM_DECL = 3;
-	public static final int ANNOTATION_TYPE_DECL = 4;
 
 	public int modifiers = ClassFileConstants.AccDefault;
 	public int modifiersSourceStart;
 	public char[] name;
 	public TypeReference superclass;
-	public TypeReference[] superInterfaces;
 	public FieldDeclaration[] fields;
 	public AbstractMethodDeclaration[] methods;
 	public TypeDeclaration[] memberTypes;
@@ -79,8 +75,6 @@ public class TypeDeclaration extends Statement implements ProblemSeverities, Ref
 
 	public QualifiedAllocationExpression allocation; // for anonymous only
 	public TypeDeclaration enclosingType; // for member types only
-
-	public FieldBinding enumValuesSyntheticfield; 	// for enum
 
 public TypeDeclaration(CompilationResult compilationResult){
 	this.compilationResult = compilationResult;
@@ -300,13 +294,6 @@ public boolean checkConstructors(Parser parser) {
 						this.methods[i] = m;
 					}
 				} else {
-					switch (kind(this.modifiers)) {
-						case TypeDeclaration.INTERFACE_DECL :
-							// report the problem and continue the parsing
-							parser.problemReporter().interfaceCannotHaveConstructors((ConstructorDeclaration) am);
-							break;
-
-					}
 					hasConstructor = true;
 				}
 			}
@@ -596,23 +583,10 @@ private void internalAnalyseCode(FlowContext flowContext, FlowInfo flowInfo) {
 			}
 		}
 	}
-	// enable enum support ?
-	if (this.binding.isEnum() && !this.binding.isAnonymousType()) {
-		this.enumValuesSyntheticfield = this.binding.addSyntheticFieldForEnumValues();
-	}
 }
 
 public final static int kind(int flags) {
-	switch (flags & (ClassFileConstants.AccInterface|ClassFileConstants.AccAnnotation|ClassFileConstants.AccEnum)) {
-		case ClassFileConstants.AccInterface :
-			return TypeDeclaration.INTERFACE_DECL;
-		case ClassFileConstants.AccInterface|ClassFileConstants.AccAnnotation :
-			return TypeDeclaration.ANNOTATION_TYPE_DECL;
-		case ClassFileConstants.AccEnum :
-			return TypeDeclaration.ENUM_DECL;
-		default :
-			return TypeDeclaration.CLASS_DECL;
-	}
+	return TypeDeclaration.CLASS_DECL;
 }
 
 /*
@@ -690,13 +664,6 @@ public final boolean needClassInitMethod() {
 	if ((this.bits & ASTNode.ContainsAssertion) != 0)
 		return true;
 
-	switch (kind(this.modifiers)) {
-		case TypeDeclaration.INTERFACE_DECL:
-		case TypeDeclaration.ANNOTATION_TYPE_DECL:
-			return this.fields != null; // fields are implicitly statics
-		case TypeDeclaration.ENUM_DECL:
-			return true; // even if no enum constants, need to set $VALUES array
-	}
 	if (this.fields != null) {
 		for (int i = this.fields.length; --i >= 0;) {
 			FieldDeclaration field = this.fields[i];
@@ -790,37 +757,12 @@ public StringBuffer printHeader(int indent, StringBuffer output) {
 		case TypeDeclaration.CLASS_DECL :
 			output.append("class "); //$NON-NLS-1$
 			break;
-		case TypeDeclaration.INTERFACE_DECL :
-			output.append("interface "); //$NON-NLS-1$
-			break;
-		case TypeDeclaration.ENUM_DECL :
-			output.append("enum "); //$NON-NLS-1$
-			break;
-		case TypeDeclaration.ANNOTATION_TYPE_DECL :
-			output.append("@interface "); //$NON-NLS-1$
-			break;
 	}
 	output.append(this.name);
 	
 	if (this.superclass != null) {
 		output.append(" extends ");  //$NON-NLS-1$
 		this.superclass.print(0, output);
-	}
-	if (this.superInterfaces != null && this.superInterfaces.length > 0) {
-		switch (kind(this.modifiers)) {
-			case TypeDeclaration.CLASS_DECL :
-			case TypeDeclaration.ENUM_DECL :
-				output.append(" implements "); //$NON-NLS-1$
-				break;
-			case TypeDeclaration.INTERFACE_DECL :
-			case TypeDeclaration.ANNOTATION_TYPE_DECL :
-				output.append(" extends "); //$NON-NLS-1$
-				break;
-		}
-		for (int i = 0; i < this.superInterfaces.length; i++) {
-			if (i > 0) output.append( ", "); //$NON-NLS-1$
-			this.superInterfaces[i].print(0, output);
-		}
 	}
 	return output;
 }
@@ -1051,11 +993,6 @@ public void traverse(ASTVisitor visitor, CompilationUnitScope unitScope) {
 			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);
-			if (this.superInterfaces != null) {
-				int length = this.superInterfaces.length;
-				for (int i = 0; i < length; i++)
-					this.superInterfaces[i].traverse(visitor, this.scope);
-			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;
 				for (int i = 0; i < length; i++)
@@ -1097,11 +1034,6 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);
-			if (this.superInterfaces != null) {
-				int length = this.superInterfaces.length;
-				for (int i = 0; i < length; i++)
-					this.superInterfaces[i].traverse(visitor, this.scope);
-			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;
 				for (int i = 0; i < length; i++)
@@ -1144,11 +1076,6 @@ public void traverse(ASTVisitor visitor, ClassScope classScope) {
 			}
 			if (this.superclass != null)
 				this.superclass.traverse(visitor, this.scope);
-			if (this.superInterfaces != null) {
-				int length = this.superInterfaces.length;
-				for (int i = 0; i < length; i++)
-					this.superInterfaces[i].traverse(visitor, this.scope);
-			}
 			if (this.memberTypes != null) {
 				int length = this.memberTypes.length;
 				for (int i = 0; i < length; i++)

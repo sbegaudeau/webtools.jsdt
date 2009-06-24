@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,7 +175,6 @@ public void recordSuperType(char[] superTypeName, char[] superQualification, cha
 	if (superClassOrInterface == IIndexConstants.CLASS_SUFFIX){
 		// interfaces are indexed as having superclass references to Object by default,
 		// this is an artifact used for being able to query them only.
-		if (TypeDeclaration.kind(this.modifiers) == TypeDeclaration.INTERFACE_DECL) return;
 		char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
 		CharOperation.replace(encodedName, '.', '/');
 		this.superclass = encodedName;
@@ -199,12 +198,6 @@ public String toString() {
 	switch (TypeDeclaration.kind(this.modifiers)) {
 		case TypeDeclaration.CLASS_DECL :
 			buffer.append("class "); //$NON-NLS-1$
-			break;
-		case TypeDeclaration.INTERFACE_DECL :
-			buffer.append("interface "); //$NON-NLS-1$
-			break;
-		case TypeDeclaration.ENUM_DECL :
-			buffer.append("enum "); //$NON-NLS-1$
 			break;
 	}
 	if (this.name != null) {

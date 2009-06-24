@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,15 +33,6 @@ public class CompletionOnMessageSendName extends MessageSend {
 		if (this.actualReceiverType == null || this.actualReceiverType.isBaseType() || this.actualReceiverType.isArrayType())
 			throw new CompletionNodeFound();
 
-		// resolve type arguments
-		if (this.typeArguments != null) {
-			int length = this.typeArguments.length;
-			this.genericTypeArguments = new TypeBinding[length];
-			for (int i = 0; i < length; i++) {
-				this.genericTypeArguments[i] = this.typeArguments[i].resolveType(scope, true /* check bounds*/);
-			}
-		}
-
 		if(this.receiver instanceof NameReference) {
 			throw new CompletionNodeFound(this, ((NameReference)this.receiver).binding, scope);
 		} else if(this.receiver instanceof MessageSend) {
@@ -54,16 +45,6 @@ public class CompletionOnMessageSendName extends MessageSend {
 
 		output.append("<CompleteOnMessageSendName:"); //$NON-NLS-1$
 		if (receiver!=null && receiver.isImplicitThis()) receiver.printExpression(0, output).append('.');
-		if (this.typeArguments != null) {
-			output.append('<');
-			int max = typeArguments.length - 1;
-			for (int j = 0; j < max; j++) {
-				typeArguments[j].print(0, output);
-				output.append(", ");//$NON-NLS-1$
-			}
-			typeArguments[max].print(0, output);
-			output.append('>');
-		}
 		output.append(selector).append('(');
 		return output.append(")>"); //$NON-NLS-1$
 	}

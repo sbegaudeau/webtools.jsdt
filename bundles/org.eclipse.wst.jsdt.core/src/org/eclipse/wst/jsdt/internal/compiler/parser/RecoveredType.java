@@ -38,8 +38,6 @@ public class RecoveredType extends RecoveredStatement implements TerminalTokens 
 	public boolean preserveContent = false;	// only used for anonymous types
 	public int bodyEnd;
 
-	public boolean insideEnumConstantPart = false;
-
 	public int pendingTypeParametersStart;
 
 public RecoveredType(TypeDeclaration typeDeclaration, RecoveredElement parent, int bracketBalance){
@@ -51,7 +49,6 @@ public RecoveredType(TypeDeclaration typeDeclaration, RecoveredElement parent, i
 	} else {
 		this.foundOpeningBrace = !bodyStartsAtHeaderEnd();
 	}
-	this.insideEnumConstantPart = TypeDeclaration.kind(typeDeclaration.modifiers) == TypeDeclaration.ENUM_DECL;
 	if(this.foundOpeningBrace) {
 		this.bracketBalance++;
 	}
@@ -82,8 +79,6 @@ public RecoveredElement add(AbstractMethodDeclaration methodDeclaration, int bra
 	}
 	RecoveredMethod element = new RecoveredMethod(methodDeclaration, this, bracketBalanceValue, this.recoveringParser);
 	methods[methodCount++] = element;
-
-	this.insideEnumConstantPart = false;
 
 	/* consider that if the opening brace was not found, it is there */
 	if (!foundOpeningBrace){
@@ -155,8 +150,6 @@ public RecoveredElement add(TypeDeclaration memberTypeDeclaration, int bracketBa
 		return this.parent.add(memberTypeDeclaration, bracketBalanceValue);
 	}
 
-	this.insideEnumConstantPart = false;
-
 	if ((memberTypeDeclaration.bits & ASTNode.IsAnonymousType) != 0){
 		if (this.methodCount > 0) {
 			// add it to the last method body
@@ -204,15 +197,10 @@ public int bodyEnd(){
 	return bodyEnd;
 }
 public boolean bodyStartsAtHeaderEnd(){
-	if (typeDeclaration.superInterfaces == null){
-		if (typeDeclaration.superclass == null){
-			return typeDeclaration.bodyStart == typeDeclaration.sourceEnd+1;
-		} else {
-			return typeDeclaration.bodyStart == typeDeclaration.superclass.sourceEnd+1;
-		}
+	if (typeDeclaration.superclass == null){
+		return typeDeclaration.bodyStart == typeDeclaration.sourceEnd+1;
 	} else {
-		return typeDeclaration.bodyStart
-				== typeDeclaration.superInterfaces[typeDeclaration.superInterfaces.length-1].sourceEnd+1;
+		return typeDeclaration.bodyStart == typeDeclaration.superclass.sourceEnd+1;
 	}
 }
 /*
@@ -400,8 +388,7 @@ public TypeDeclaration updatedTypeDeclaration(){
 		}
 		typeDeclaration.methods = methodDeclarations;
 	} else {
-		int kind = TypeDeclaration.kind(typeDeclaration.modifiers);
-		if (!hasConstructor && kind != TypeDeclaration.INTERFACE_DECL && kind != TypeDeclaration.ANNOTATION_TYPE_DECL) {// if was already reduced, then constructor
+		if (!hasConstructor) {// if was already reduced, then constructor
 			boolean insideFieldInitializer = false;
 			RecoveredElement parentElement = this.parent;
 			while (parentElement != null){
@@ -449,11 +436,6 @@ public void updateFromParserState(){
 						canConsume = false;
 					}
 				}
-			}
-			if(canConsume) {
-				parser.consumeClassHeaderImplements();
-				// will reset typeListLength to zero
-				// thus this check will only be performed on first errorCheck after class X implements Y,Z,
 			}
 		}
 	}

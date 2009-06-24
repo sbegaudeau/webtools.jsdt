@@ -226,7 +226,6 @@ public class SourceTypeConverter {
 					QualifiedAllocationExpression expression = new QualifiedAllocationExpression(localType);
 					expression.type = localType.superclass;
 					localType.superclass = null;
-					localType.superInterfaces = null;
 					localType.allocation = expression;
 					statements[i] = expression;
 				} else {
@@ -299,7 +298,6 @@ public class SourceTypeConverter {
 		QualifiedAllocationExpression expression = new QualifiedAllocationExpression(anonymousLocalTypeDeclaration);
 		expression.type = anonymousLocalTypeDeclaration.superclass;
 		anonymousLocalTypeDeclaration.superclass = null;
-		anonymousLocalTypeDeclaration.superInterfaces = null;
 		anonymousLocalTypeDeclaration.allocation = expression;
 		if (enumConstant != null) {
 			anonymousLocalTypeDeclaration.modifiers &= ~ClassFileConstants.AccEnum;
@@ -374,7 +372,6 @@ public class SourceTypeConverter {
 						QualifiedAllocationExpression expression = new QualifiedAllocationExpression(localType);
 						expression.type = localType.superclass;
 						localType.superclass = null;
-						localType.superInterfaces = null;
 						localType.allocation = expression;
 						statements[i] = expression;
 					} else {
@@ -426,15 +423,7 @@ public class SourceTypeConverter {
 			type.superclass = createTypeReference(typeInfo.getSuperclassName(), start, end);
 			type.superclass.bits |= ASTNode.IsSuperType;
 		}
-		char[][] interfaceNames = typeInfo.getInterfaceNames();
-		int interfaceCount = interfaceNames == null ? 0 : interfaceNames.length;
-		if (interfaceCount > 0) {
-			type.superInterfaces = new TypeReference[interfaceCount];
-			for (int i = 0; i < interfaceCount; i++) {
-				type.superInterfaces[i] = createTypeReference(interfaceNames[i], start, end);
-				type.superInterfaces[i].bits |= ASTNode.IsSuperType;
-			}
-		}
+
 		/* convert member types */
 		if ((this.flags & MEMBER_TYPE) != 0) {
 			SourceType[] sourceMemberTypes = typeInfo.getMemberTypeHandles();
@@ -483,22 +472,19 @@ public class SourceTypeConverter {
 			int extraConstructor = 0;
 			int methodCount = 0;
 			int kind = TypeDeclaration.kind(type.modifiers);
-			boolean isAbstract = kind == TypeDeclaration.INTERFACE_DECL || kind == TypeDeclaration.ANNOTATION_TYPE_DECL;
-			if (!isAbstract) {
-				extraConstructor = needConstructor ? 1 : 0;
-				for (int i = 0; i < sourceMethodCount; i++) {
-					if (sourceMethods[i].isConstructor()) {
-						if (needConstructor) {
-							extraConstructor = 0; // Does not need the extra constructor since one constructor already exists.
-							methodCount++;
-						}
-					} else if (needMethod) {
+
+			extraConstructor = needConstructor ? 1 : 0;
+			for (int i = 0; i < sourceMethodCount; i++) {
+				if (sourceMethods[i].isConstructor()) {
+					if (needConstructor) {
+						extraConstructor = 0; // Does not need the extra constructor since one constructor already exists.
 						methodCount++;
 					}
+				} else if (needMethod) {
+					methodCount++;
 				}
-			} else {
-				methodCount = needMethod ? sourceMethodCount : 0;
 			}
+			
 			type.methods = new AbstractMethodDeclaration[methodCount + extraConstructor];
 			if (extraConstructor != 0) { // add default constructor in first position
 				type.methods[0] = type.createDefaultConstructor(false, false);
@@ -514,7 +500,7 @@ public class SourceTypeConverter {
 				}
 				if ((isConstructor && needConstructor) || (!isConstructor && needMethod)) {
 					AbstractMethodDeclaration method = convert(sourceMethod, methodInfo, compilationResult);
-					if (isAbstract || method.isAbstract()) { // fix-up flag
+					if (method.isAbstract()) { // fix-up flag
 						method.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
 					}
 					type.methods[extraConstructor + index++] = method;

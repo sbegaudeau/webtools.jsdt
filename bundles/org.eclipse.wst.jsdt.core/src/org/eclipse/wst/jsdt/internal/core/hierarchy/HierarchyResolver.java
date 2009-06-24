@@ -407,16 +407,6 @@ private void remember(IType type, ReferenceBinding typeBinding) {
 
 		// simple super interface names
 		char[][] superInterfaceNames = null;
-		TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-		if (superInterfaces != null) {
-			int length = superInterfaces.length;
-			superInterfaceNames = new char[length][];
-			for (int i = 0; i < length; i++) {
-				TypeReference superInterface = superInterfaces[i];
-				char[][] typeName = superInterface.getTypeName();
-				superInterfaceNames[i] = typeName[typeName.length-1];
-			}
-		}
 
 		HierarchyType hierarchyType = new HierarchyType(
 			type,

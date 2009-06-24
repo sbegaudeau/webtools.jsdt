@@ -488,37 +488,6 @@ public boolean isClass() throws JavaScriptModelException {
 }
 
 /**
- * @see IType#isEnum()
- * @since 3.0
- */
-public boolean isEnum() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ENUM_DECL;
-}
-
-/**
- * @see IType
- */
-public boolean isInterface() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	switch (TypeDeclaration.kind(info.getModifiers())) {
-		case TypeDeclaration.INTERFACE_DECL:
-		case TypeDeclaration.ANNOTATION_TYPE_DECL: // annotation is interface too
-			return true;
-	}
-	return false;
-}
-
-/**
- * @see IType#isAnnotation()
- * @since 3.0
- */
-public boolean isAnnotation() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL;
-}
-
-/**
  * @see IType#isLocal()
  */
 public boolean isLocal() {
@@ -789,26 +758,15 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 			toStringName(buffer);
 		}
 	} else {
-		try {
-			if (this.isEnum()) {
-				buffer.append("enum "); //$NON-NLS-1$
-			} else if (this.isAnnotation()) {
-				buffer.append("@interface "); //$NON-NLS-1$
-			} else if (this.isInterface()) {
-				buffer.append("interface "); //$NON-NLS-1$
-			} else {
-				buffer.append("class "); //$NON-NLS-1$
-			}
-			String elementName = getElementName();
-			if (elementName.length() == 0) {
-				buffer.append("<anonymous #"); //$NON-NLS-1$
-				buffer.append(this.occurrenceCount);
-				buffer.append(">"); //$NON-NLS-1$
-			} else {
-				toStringName(buffer);
-			}
-		} catch (JavaScriptModelException e) {
-			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
+		buffer.append("class "); //$NON-NLS-1$
+		
+		String elementName = getElementName();
+		if (elementName.length() == 0) {
+			buffer.append("<anonymous #"); //$NON-NLS-1$
+			buffer.append(this.occurrenceCount);
+			buffer.append(">"); //$NON-NLS-1$
+		} else {
+			toStringName(buffer);
 		}
 	}
 }

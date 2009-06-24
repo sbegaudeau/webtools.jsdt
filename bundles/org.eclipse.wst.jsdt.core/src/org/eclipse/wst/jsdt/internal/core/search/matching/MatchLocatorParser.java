@@ -264,32 +264,14 @@ protected void consumeMethodInvocationName() {
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
 }
-protected void consumeMethodInvocationNameWithTypeArguments() {
-	super.consumeMethodInvocationNameWithTypeArguments();
-
-	// this is always a MessageSend
-	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
-}
 protected void consumeMethodInvocationPrimary() {
 	super.consumeMethodInvocationPrimary();
 
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
 }
-protected void consumeMethodInvocationPrimaryWithTypeArguments() {
-	super.consumeMethodInvocationPrimaryWithTypeArguments();
-
-	// this is always a MessageSend
-	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
-}
 protected void consumeMethodInvocationSuper() {
 	super.consumeMethodInvocationSuper();
-
-	// this is always a MessageSend
-	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
-}
-protected void consumeMethodInvocationSuperWithTypeArguments() {
-	super.consumeMethodInvocationSuperWithTypeArguments();
 
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);

@@ -662,36 +662,6 @@ public boolean isClass() throws JavaScriptModelException {
 
 }
 
-/**
- * @see IType#isEnum()
- * @since 3.0
- */
-public boolean isEnum() throws JavaScriptModelException {
-	IBinaryType info = (IBinaryType) getElementInfo();
-	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ENUM_DECL;
-}
-
-/*
- * @see IType#isInterface()
- */
-public boolean isInterface() throws JavaScriptModelException {
-	IBinaryType info = (IBinaryType) getElementInfo();
-	switch (TypeDeclaration.kind(info.getModifiers())) {
-		case TypeDeclaration.INTERFACE_DECL:
-		case TypeDeclaration.ANNOTATION_TYPE_DECL: // annotation is interface too
-			return true;
-	}
-	return false;
-}
-/**
- * @see IType#isAnnotation()
- * @since 3.0
- */
-public boolean isAnnotation() throws JavaScriptModelException {
-	IBinaryType info = (IBinaryType) getElementInfo();
-	return TypeDeclaration.kind(info.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL;
-}
-
 /*
  * @see IType#isLocal()
  */
@@ -893,20 +863,8 @@ protected void toStringInfo(int tab, StringBuffer buffer, Object info, boolean s
 	} else if (info == NO_INFO) {
 		toStringName(buffer);
 	} else {
-		try {
-			if (this.isAnnotation()) {
-				buffer.append("@interface "); //$NON-NLS-1$
-			} else if (this.isEnum()) {
-				buffer.append("enum "); //$NON-NLS-1$
-			} else if (this.isInterface()) {
-				buffer.append("interface "); //$NON-NLS-1$
-			} else {
-				buffer.append("class "); //$NON-NLS-1$
-			}
-			toStringName(buffer);
-		} catch (JavaScriptModelException e) {
-			buffer.append("<JavaScriptModelException in toString of " + getElementName()); //$NON-NLS-1$
-		}
+		buffer.append("class "); //$NON-NLS-1$
+		toStringName(buffer);
 	}
 }
 protected void toStringName(StringBuffer buffer) {
@@ -921,18 +879,7 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaScriptMode
 	final int indexOfStartOfClassData = contents.indexOf(JavadocConstants.START_OF_CLASS_DATA);
 	if (indexOfStartOfClassData == -1) throw new JavaScriptModelException(new JavaModelStatus(IJavaScriptModelStatusConstants.UNKNOWN_JSDOC_FORMAT, this));
 	int indexOfNextSummary = contents.indexOf(JavadocConstants.NESTED_CLASS_SUMMARY);
-	if (this.isEnum() && indexOfNextSummary == -1) {
-		// try to find enum constant summary start
-		indexOfNextSummary = contents.indexOf(JavadocConstants.ENUM_CONSTANT_SUMMARY);
-	}
-	if (this.isAnnotation() && indexOfNextSummary == -1) {
-		// try to find required enum constant summary start
-		indexOfNextSummary = contents.indexOf(JavadocConstants.ANNOTATION_TYPE_REQUIRED_MEMBER_SUMMARY);
-		if (indexOfNextSummary == -1) {
-			// try to find optional enum constant summary start
-			indexOfNextSummary = contents.indexOf(JavadocConstants.ANNOTATION_TYPE_OPTIONAL_MEMBER_SUMMARY);
-		}
-	}
+	
 	if (indexOfNextSummary == -1) {
 		// try to find field summary start
 		indexOfNextSummary = contents.indexOf(JavadocConstants.FIELD_SUMMARY);
