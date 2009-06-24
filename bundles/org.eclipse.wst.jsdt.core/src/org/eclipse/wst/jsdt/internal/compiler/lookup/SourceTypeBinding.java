@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -1486,31 +1485,6 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 	if (methodDecl==null)
 		methodDecl = method.sourceMethod();
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
-
-	if (JavaScriptCore.IS_ECMASCRIPT4)
-	{
-		TypeReference[] exceptionTypes = methodDecl.thrownExceptions;
-		if (exceptionTypes != null) {
-			int size = exceptionTypes.length;
-			method.thrownExceptions = new ReferenceBinding[size];
-			int count = 0;
-			ReferenceBinding resolvedExceptionType;
-			for (int i = 0; i < size; i++) {
-				resolvedExceptionType = (ReferenceBinding) exceptionTypes[i].resolveType(methodDecl.scope, true /* check bounds*/);
-				if (resolvedExceptionType == null)
-					continue;
-				if (resolvedExceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
-					methodDecl.scope.problemReporter().cannotThrowType(exceptionTypes[i], resolvedExceptionType);
-					continue;
-				}
-				if ((resolvedExceptionType.modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0)
-					method.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-				method.thrownExceptions[count++] = resolvedExceptionType;
-			}
-			if (count < size)
-				System.arraycopy(method.thrownExceptions, 0, method.thrownExceptions = new ReferenceBinding[count], 0, count);
-		}
-	}
 
 	boolean foundArgProblem = false;
 	Argument[] arguments = methodDecl.arguments;

@@ -429,16 +429,6 @@ public long getAnnotationTagBits() {
 public Object getDefaultValue() {
 	MethodBinding originalMethod = this.original();
 	if ((originalMethod.tagBits & TagBits.DefaultValueResolved) == 0) {
-		//The method has not been resolved nor has its class been resolved.
-		//It can only be from a source type within compilation units to process.
-		if (originalMethod.declaringClass instanceof SourceTypeBinding) {
-			SourceTypeBinding sourceType = (SourceTypeBinding) originalMethod.declaringClass;
-			if (sourceType.scope != null) {
-				AbstractMethodDeclaration methodDeclaration = originalMethod.sourceMethod();
-				if (methodDeclaration != null  && methodDeclaration.isAnnotationMethod())
-					methodDeclaration.resolve(sourceType.scope);
-			}
-		}
 		originalMethod.tagBits |= TagBits.DefaultValueResolved;
 	}
 	return null;

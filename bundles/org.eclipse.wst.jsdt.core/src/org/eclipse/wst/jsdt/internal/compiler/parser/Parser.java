@@ -2258,126 +2258,6 @@ protected void consumeClassInstanceCreationExpressionQualified() {
 	this.expressionStack[this.expressionPtr] = qae;
 	qae.sourceStart = qae.enclosingInstance.sourceStart;
 }
-protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments() {
-	// ClassInstanceCreationExpression ::= Primary '.' 'new' TypeArguments SimpleName '(' ArgumentListopt ')' ClassBodyopt
-	// ClassInstanceCreationExpression ::= ClassInstanceCreationExpressionName 'new' TypeArguments SimpleName '(' ArgumentListopt ')' ClassBodyopt
-
-	QualifiedAllocationExpression alloc;
-	int length;
-	if (((length = this.astLengthStack[this.astLengthPtr--]) == 1) && (this.astStack[this.astPtr] == null)) {
-		//NO ClassBody
-		this.astPtr--;
-		alloc = new QualifiedAllocationExpression();
-		alloc.sourceEnd = this.endPosition; //the position has been stored explicitly
-
-		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-			this.expressionPtr -= length;
-			System.arraycopy(
-				this.expressionStack,
-				this.expressionPtr + 1,
-				alloc.arguments = new Expression[length],
-				0,
-				length);
-		}
-		alloc.type = getTypeReference(0);
-
-		length = this.genericsLengthStack[this.genericsLengthPtr--];
-		this.genericsPtr -= length;
-		System.arraycopy(this.genericsStack, this.genericsPtr + 1, alloc.typeArguments = new TypeReference[length], 0, length);
-		intPtr--;
-
-		//the default constructor with the correct number of argument
-		//will be created and added by the TC (see createsInternalConstructorWithBinding)
-		alloc.sourceStart = this.intStack[this.intPtr--];
-		pushOnExpressionStack(alloc);
-	} else {
-		dispatchDeclarationInto(length);
-		TypeDeclaration anonymousTypeDeclaration = (TypeDeclaration)this.astStack[this.astPtr];
-		anonymousTypeDeclaration.declarationSourceEnd = this.endStatementPosition;
-		anonymousTypeDeclaration.bodyEnd = this.endStatementPosition;
-		if (length == 0 && !containsComment(anonymousTypeDeclaration.bodyStart, anonymousTypeDeclaration.bodyEnd)) {
-			anonymousTypeDeclaration.bits |= ASTNode.UndocumentedEmptyBlock;
-		}
-		this.astPtr--;
-		this.astLengthPtr--;
-
-		QualifiedAllocationExpression allocationExpression = anonymousTypeDeclaration.allocation;
-		if (allocationExpression != null) {
-			allocationExpression.sourceEnd = this.endStatementPosition;
-			// handle type arguments
-			length = this.genericsLengthStack[this.genericsLengthPtr--];
-			this.genericsPtr -= length;
-			System.arraycopy(this.genericsStack, this.genericsPtr + 1, allocationExpression.typeArguments = new TypeReference[length], 0, length);
-			allocationExpression.sourceStart = intStack[intPtr--];
-		}
-
-		// mark initializers with local type mark if needed
-		markInitializersWithLocalType(anonymousTypeDeclaration);
-	}
-
-	this.expressionLengthPtr--;
-	QualifiedAllocationExpression qae =
-		(QualifiedAllocationExpression) this.expressionStack[this.expressionPtr--];
-	qae.enclosingInstance = this.expressionStack[this.expressionPtr];
-	this.expressionStack[this.expressionPtr] = qae;
-	qae.sourceStart = qae.enclosingInstance.sourceStart;
-}
-protected void consumeClassInstanceCreationExpressionWithTypeArguments() {
-	// ClassInstanceCreationExpression ::= 'new' TypeArguments ClassType '(' ArgumentListopt ')' ClassBodyopt
-	AllocationExpression alloc;
-	int length;
-	if (((length = this.astLengthStack[this.astLengthPtr--]) == 1)
-		&& (this.astStack[this.astPtr] == null)) {
-		//NO ClassBody
-		this.astPtr--;
-		alloc = new AllocationExpression();
-		alloc.sourceEnd = this.endPosition; //the position has been stored explicitly
-
-		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-			this.expressionPtr -= length;
-			System.arraycopy(
-				this.expressionStack,
-				this.expressionPtr + 1,
-				alloc.arguments = new Expression[length],
-				0,
-				length);
-		}
-		alloc.type = getTypeReference(0);
-
-		length = this.genericsLengthStack[this.genericsLengthPtr--];
-		this.genericsPtr -= length;
-		System.arraycopy(this.genericsStack, this.genericsPtr + 1, alloc.typeArguments = new TypeReference[length], 0, length);
-		intPtr--;
-
-		//the default constructor with the correct number of argument
-		//will be created and added by the TC (see createsInternalConstructorWithBinding)
-		alloc.sourceStart = this.intStack[this.intPtr--];
-		pushOnExpressionStack(alloc);
-	} else {
-		dispatchDeclarationInto(length);
-		TypeDeclaration anonymousTypeDeclaration = (TypeDeclaration)this.astStack[this.astPtr];
-		anonymousTypeDeclaration.declarationSourceEnd = this.endStatementPosition;
-		anonymousTypeDeclaration.bodyEnd = this.endStatementPosition;
-		if (length == 0 && !containsComment(anonymousTypeDeclaration.bodyStart, anonymousTypeDeclaration.bodyEnd)) {
-			anonymousTypeDeclaration.bits |= ASTNode.UndocumentedEmptyBlock;
-		}
-		this.astPtr--;
-		this.astLengthPtr--;
-
-		QualifiedAllocationExpression allocationExpression = anonymousTypeDeclaration.allocation;
-		if (allocationExpression != null) {
-			allocationExpression.sourceEnd = this.endStatementPosition;
-			// handle type arguments
-			length = this.genericsLengthStack[this.genericsLengthPtr--];
-			this.genericsPtr -= length;
-			System.arraycopy(this.genericsStack, this.genericsPtr + 1, allocationExpression.typeArguments = new TypeReference[length], 0, length);
-			allocationExpression.sourceStart = intStack[intPtr--];
-		}
-
-		// mark initializers with local type mark if needed
-		markInitializersWithLocalType(anonymousTypeDeclaration);
-	}
-}
 protected void consumeClassOrInterface() {
 	this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr] += this.identifierLengthStack[this.identifierLengthPtr];
 	pushOnGenericsLengthStack(0); // handle type arguments
@@ -2710,10 +2590,6 @@ protected void consumeEmptyClassBodyDeclarationsopt() {
 }
 protected void consumeEmptyMethodHeaderDefaultValue() {
 	// DefaultValueopt ::= $empty
-	AbstractMethodDeclaration method = (AbstractMethodDeclaration)this.astStack[this.astPtr];
-	if(method.isAnnotationMethod()) { //'method' can be a FunctionDeclaration when recovery is started
-		pushOnExpressionStackLengthStack(0);
-	}
 	this.recordStringLiterals = true;
 }
 protected void consumeEmptyDimsopt() {
@@ -3086,75 +2962,6 @@ protected void consumeEnumConstantHeaderName() {
 	// javadoc
 	enumConstant.javadoc = this.javadoc;
 	this.javadoc = null;
-}
-protected void consumeEnumConstantHeader() {
-   FieldDeclaration enumConstant = (FieldDeclaration) this.astStack[this.astPtr];
-   boolean foundOpeningBrace = this.currentToken == TokenNameLBRACE;
-   if (foundOpeningBrace){
-      // qualified allocation expression
-      TypeDeclaration anonymousType = new TypeDeclaration(this.compilationUnit.compilationResult);
-      anonymousType.name = CharOperation.NO_CHAR;
-      anonymousType.bits |= (ASTNode.IsAnonymousType|ASTNode.IsLocalType);
-      final int start = this.scanner.startPosition;
-      anonymousType.declarationSourceStart = start;
-      anonymousType.sourceStart = start;
-      anonymousType.sourceEnd = start; // closing parenthesis
-      anonymousType.modifiers = 0;
-      anonymousType.bodyStart = this.scanner.currentPosition;
-      markEnclosingMemberWithLocalType();
-      pushOnAstStack(anonymousType);
-      QualifiedAllocationExpression allocationExpression = new QualifiedAllocationExpression(anonymousType);
-      allocationExpression.enumConstant = enumConstant;
-
-      // fill arguments if needed
-      int length;
-      if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-         this.expressionPtr -= length;
-         System.arraycopy(
-               this.expressionStack,
-               this.expressionPtr + 1,
-               allocationExpression.arguments = new Expression[length],
-               0,
-               length);
-      }
-      enumConstant.initialization = allocationExpression;
-   } else {
-      AllocationExpression allocationExpression = new AllocationExpression();
-      allocationExpression.enumConstant = enumConstant;
-      // fill arguments if needed
-      int length;
-      if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-         this.expressionPtr -= length;
-         System.arraycopy(
-               this.expressionStack,
-               this.expressionPtr + 1,
-               allocationExpression.arguments = new Expression[length],
-               0,
-               length);
-      }
-      enumConstant.initialization = allocationExpression;
-   }
-
-   // recovery
-   if (this.currentElement != null) {
-	  if(foundOpeningBrace) {
-	  	TypeDeclaration anonymousType = (TypeDeclaration) this.astStack[this.astPtr];
-	  	this.currentElement = this.currentElement.add(anonymousType, 0);
-      	this.lastCheckPoint = anonymousType.bodyStart;
-        this.lastIgnoredToken = -1;
-        this.currentToken = 0; // opening brace already taken into account
-	  } else {
-	  	  if(this.currentToken == TokenNameSEMICOLON) {
-		  	RecoveredType currentType = this.currentRecoveryType();
-			if(currentType != null) {
-				currentType.insideEnumConstantPart = false;
-			}
-		  }
-		  this.lastCheckPoint = this.scanner.startPosition; // force to restart at this exact position
-	      this.lastIgnoredToken = -1;
-	      this.restartRecovery = true;
-	  }
-   }
 }
 protected void consumeEnumConstantNoClassBody() {
 	// set declarationEnd and declarationSourceEnd
@@ -4305,25 +4112,6 @@ protected void consumeMethodHeaderRightParen() {
 				this.lastIgnoredToken = -1;
 			}
 		}
-	}
-}
-protected void consumeMethodHeaderThrowsClause() {
-	// MethodHeaderThrowsClause ::= 'throws' ClassTypeList
-	int length = this.astLengthStack[this.astLengthPtr--];
-	this.astPtr -= length;
-	AbstractMethodDeclaration md = (AbstractMethodDeclaration) this.astStack[this.astPtr];
-	System.arraycopy(
-		this.astStack,
-		this.astPtr + 1,
-		md.thrownExceptions = new TypeReference[length],
-		0,
-		length);
-	md.sourceEnd = md.thrownExceptions[length-1].sourceEnd;
-	md.bodyStart = md.thrownExceptions[length-1].sourceEnd + 1;
-	this.listLength = 0; // reset this.listLength after having read all thrown exceptions
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = md.bodyStart;
 	}
 }
 protected void consumeMethodInvocationName() {
@@ -6931,7 +6719,6 @@ public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, Co
 	m.statements = c.statements;
 	m.modifiers = c.modifiers;
 	m.arguments = c.arguments;
-	m.thrownExceptions = c.thrownExceptions;
 	m.explicitDeclarations = c.explicitDeclarations;
 	m.returnType = null;
 	m.javadoc = c.javadoc;
@@ -9264,14 +9051,8 @@ private void reportSyntaxErrorsForSkippedMethod(ProgramElement[] statements){
 			{
 				AbstractMethodDeclaration method = (AbstractMethodDeclaration)statements[i] ;
 					if(method.errorInSignature) {
-						if(method.isAnnotationMethod()) {
-							DiagnoseParser diagnoseParser = new DiagnoseParser(this, TokenNameQUESTION, method.declarationSourceStart, method.declarationSourceEnd, this.options);
-							diagnoseParser.diagnoseParse(this.options.performStatementsRecovery);
-						} else {
-							DiagnoseParser diagnoseParser = new DiagnoseParser(this, TokenNameDIVIDE, method.declarationSourceStart, method.declarationSourceEnd, this.options);
-							diagnoseParser.diagnoseParse(this.options.performStatementsRecovery);
-						}
-
+						DiagnoseParser diagnoseParser = new DiagnoseParser(this, TokenNameDIVIDE, method.declarationSourceStart, method.declarationSourceEnd, this.options);
+						diagnoseParser.diagnoseParse(this.options.performStatementsRecovery);
 					}
 //				}
 			}

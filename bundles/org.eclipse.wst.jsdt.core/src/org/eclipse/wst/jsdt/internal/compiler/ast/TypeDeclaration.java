@@ -905,8 +905,6 @@ public void resolve() {
 		}
 		this.maxFieldCount = 0;
 		int lastVisibleFieldID = -1;
-		boolean hasEnumConstants = false;
-		boolean hasEnumConstantsWithoutBody = false;
 
 		if (this.memberTypes != null) {
 			for (int i = 0, count = this.memberTypes.length; i < count; i++) {
@@ -917,10 +915,6 @@ public void resolve() {
 			for (int i = 0, count = this.fields.length; i < count; i++) {
 				FieldDeclaration field = this.fields[i];
 				switch(field.getKind()) {
-					case AbstractVariableDeclaration.ENUM_CONSTANT:
-						hasEnumConstants = true;
-						if (!(field.initialization instanceof QualifiedAllocationExpression))
-							hasEnumConstantsWithoutBody = true;
 					case AbstractVariableDeclaration.FIELD:
 						FieldBinding fieldBinding = field.binding;
 						if (fieldBinding == null) {

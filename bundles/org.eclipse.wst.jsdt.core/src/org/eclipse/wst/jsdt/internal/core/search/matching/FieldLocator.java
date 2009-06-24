@@ -72,7 +72,6 @@ public int match(FieldDeclaration node, MatchingNodeSet nodeSet) {
 	if (this.pattern.findDeclarations) {
 		switch (node.getKind()) {
 			case AbstractVariableDeclaration.FIELD :
-			case AbstractVariableDeclaration.ENUM_CONSTANT :
 				if (matchesName(this.pattern.name, node.name))
 					if (matchesTypeReference(((FieldPattern)this.pattern).typeSimpleName, node.type))
 						declarationsLevel = ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH;

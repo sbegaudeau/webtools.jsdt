@@ -578,20 +578,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 
 		// If no throws tags then report a problem for each method thrown exception
 		int boundExceptionLength = (md.binding == null) ? 0 : md.binding.thrownExceptions.length;
-		int thrownExceptionLength = md.thrownExceptions == null ? 0 : md.thrownExceptions.length;
 		if (throwsTagsLength == 0) {
-			if (reportMissing) {
-				for (int i = 0; i < boundExceptionLength; i++) {
-					ReferenceBinding exceptionBinding = md.binding.thrownExceptions[i];
-					if (exceptionBinding != null && exceptionBinding.isValidBinding()) { // flag only valid class name
-						int j=i;
-						while (j<thrownExceptionLength && exceptionBinding != md.thrownExceptions[j].resolvedType) j++;
-						if (j<thrownExceptionLength) {
-							methScope.problemReporter().javadocMissingThrowsTag(md.thrownExceptions[j], md.binding.modifiers);
-						}
-					}
-				}
-			}
 		} else {
 			int maxRef = 0;
 			TypeReference[] typeReferences = new TypeReference[throwsTagsLength];
@@ -621,15 +608,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 						}
 					}
 				}
-				if (!found && reportMissing) {
-					if (exceptionBinding != null && exceptionBinding.isValidBinding()) { // flag only valid class name
-						int k=i;
-						while (k<thrownExceptionLength && exceptionBinding != md.thrownExceptions[k].resolvedType) k++;
-						if (k<thrownExceptionLength) {
-							methScope.problemReporter().javadocMissingThrowsTag(md.thrownExceptions[k], md.binding.modifiers);
-						}
-					}
-				}
 			}
 
 			// Verify additional @throws tags
@@ -638,12 +616,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 				if (typeRef != null) {
 					boolean compatible = false;
 					// thrown exceptions subclasses are accepted
-					for (int j = 0; j<thrownExceptionLength && !compatible; j++) {
-						TypeBinding exceptionBinding = md.thrownExceptions[j].resolvedType;
-						if (exceptionBinding != null) {
-							compatible = typeRef.resolvedType.isCompatibleWith(exceptionBinding);
-						}
-					}
 
 					//  If not compatible only complain on unchecked exception
 					if (!compatible && !typeRef.resolvedType.isUncheckedException(false)) {

@@ -341,11 +341,7 @@ public void updateFromParserState(){
 						}
 					}
 				}
-				if (canConsume){
-					parser.consumeMethodHeaderThrowsClause();
-					// will reset typeListLength to zero
-					// thus this check will only be performed on first errorCheck after void foo() throws X, Y,
-				} else {
+				if (!canConsume){
 					parser.listLength = 0;
 				}
 			} else {
@@ -418,13 +414,6 @@ public void updateFromParserState(){
 	}
 }
 public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
-	if(this.methodDeclaration.isAnnotationMethod()) {
-		this.updateSourceEndIfNecessary(braceStart, braceEnd);
-		if(!this.foundOpeningBrace && this.parent != null) {
-			return this.parent.updateOnClosingBrace(braceStart, braceEnd);
-		}
-		return this;
-	}
 	if(this.parent != null && this.parent instanceof RecoveredType) {
 		int modifiers = ((RecoveredType)this.parent).typeDeclaration.modifiers;
 		if (TypeDeclaration.kind(modifiers) == TypeDeclaration.INTERFACE_DECL) {

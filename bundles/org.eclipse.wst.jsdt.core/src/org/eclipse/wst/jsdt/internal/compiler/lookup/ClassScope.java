@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -67,7 +66,6 @@ public class ClassScope extends Scope {
 		for (int i = 0; i < size; i++) {
 			switch (fields[i].getKind()) {
 				case AbstractVariableDeclaration.FIELD:
-				case AbstractVariableDeclaration.ENUM_CONSTANT:
 					count++;
 			}
 		}
@@ -454,16 +452,6 @@ public class ClassScope extends Scope {
 						definesAbstractMethod = methods[i].isAbstract();
 					if (!definesAbstractMethod) break checkAbstractEnum; // all methods have bodies
 					boolean needAbstractBit = false;
-					for (int i = 0; i < fieldsLength; i++) {
-						FieldDeclaration fieldDecl = fields[i];
-						if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-							if (fieldDecl.initialization instanceof QualifiedAllocationExpression) {
-								needAbstractBit = true;
-							} else {
-								break checkAbstractEnum;
-							}
-						}
-					}
 					// tag this enum as abstract since an abstract method must be implemented AND all enum constants define an anonymous body
 					// as a result, each of its anonymous constants will see it as abstract and must implement each inherited abstract method
 					if (needAbstractBit) {
@@ -471,21 +459,14 @@ public class ClassScope extends Scope {
 					}
 				}
 				// final if no enum constant with anonymous body
-				checkFinalEnum: {
-					TypeDeclaration typeDeclaration = this.referenceContext;
-					FieldDeclaration[] fields = typeDeclaration.fields;
-					if (fields != null) {
-						for (int i = 0, fieldsLength = fields.length; i < fieldsLength; i++) {
-							FieldDeclaration fieldDecl = fields[i];
-							if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-								if (fieldDecl.initialization instanceof QualifiedAllocationExpression) {
-									break checkFinalEnum;
-								}
-							}
-						}
+				TypeDeclaration typeDeclaration = this.referenceContext;
+				FieldDeclaration[] fields = typeDeclaration.fields;
+				if (fields != null) {
+					for (int i = 0, fieldsLength = fields.length; i < fieldsLength; i++) {
 					}
-					modifiers |= ClassFileConstants.AccFinal;
 				}
+				modifiers |= ClassFileConstants.AccFinal;
+				
 			}
 		} else {
 			// detect abnormal cases for classes
@@ -574,11 +555,6 @@ public class ClassScope extends Scope {
 					problemReporter().illegalModifierForInterfaceField(fieldDecl);
 			}
 			fieldBinding.modifiers = modifiers;
-			return;
-		} else if (fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-			// set the modifiers
-			final int IMPLICIT_MODIFIERS = ClassFileConstants.AccPublic | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccEnum;
-			fieldBinding.modifiers|= IMPLICIT_MODIFIERS;
 			return;
 		}
 

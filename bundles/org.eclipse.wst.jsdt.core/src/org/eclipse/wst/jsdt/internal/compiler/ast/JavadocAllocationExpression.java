@@ -158,11 +158,6 @@ public class JavadocAllocationExpression extends AllocationExpression implements
 	}
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
-			if (this.typeArguments != null) {
-				for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
-					this.typeArguments[i].traverse(visitor, scope);
-				}
-			}
 			if (this.type != null) { // enum constant scenario
 				this.type.traverse(visitor, scope);
 			}
@@ -175,11 +170,6 @@ public class JavadocAllocationExpression extends AllocationExpression implements
 	}
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		if (visitor.visit(this, scope)) {
-			if (this.typeArguments != null) {
-				for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
-					this.typeArguments[i].traverse(visitor, scope);
-				}
-			}
 			if (this.type != null) { // enum constant scenario
 				this.type.traverse(visitor, scope);
 			}

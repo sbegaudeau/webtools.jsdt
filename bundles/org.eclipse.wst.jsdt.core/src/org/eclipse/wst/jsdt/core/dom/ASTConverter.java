@@ -356,13 +356,6 @@ class ASTConverter {
 		}
 		else
 			end= methodDeclaration.sourceStart;
-		org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference[] thrownExceptions = methodDeclaration.thrownExceptions;
-		if (thrownExceptions != null) {
-			int thrownExceptionsLength = thrownExceptions.length;
-			for (int i = 0; i < thrownExceptionsLength; i++) {
-				methodDecl.thrownExceptions().add(convert(thrownExceptions[i]));
-			}
-		}
 		org.eclipse.wst.jsdt.internal.compiler.ast.Argument[] parameters = methodDeclaration.arguments;
 		if (parameters != null) {
 			int parametersLength = parameters.length;
@@ -493,17 +486,6 @@ class ASTConverter {
 		ClassInstanceCreation classInstanceCreation = new ClassInstanceCreation(this.ast);
 		if (this.resolveBindings) {
 			recordNodes(classInstanceCreation, expression);
-		}
-		if (expression.typeArguments != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					classInstanceCreation.setFlags(classInstanceCreation.getFlags() | ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					for (int i = 0, max = expression.typeArguments.length; i < max; i++) {
-						classInstanceCreation.typeArguments().add(convertType(expression.typeArguments[i]));
-					}
-			}
 		}
 		if (expression.type!=null) {
 			switch (this.ast.apiLevel) {
@@ -2202,17 +2184,6 @@ class ASTConverter {
 					recordNodes(argument, arguments[i]);
 				}
 				classInstanceCreation.arguments().add(argument);
-			}
-		}
-		if (allocation.typeArguments != null) {
-			switch(this.ast.apiLevel) {
-				case AST.JLS2_INTERNAL :
-					classInstanceCreation.setFlags(classInstanceCreation.getFlags() | ASTNode.MALFORMED);
-					break;
-				case AST.JLS3 :
-					for (int i = 0, max = allocation.typeArguments.length; i < max; i++) {
-						classInstanceCreation.typeArguments().add(convertType(allocation.typeArguments[i]));
-					}
 			}
 		}
 		if (allocation.anonymousType != null) {

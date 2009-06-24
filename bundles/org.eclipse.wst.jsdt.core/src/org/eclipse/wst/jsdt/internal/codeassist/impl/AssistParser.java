@@ -325,15 +325,6 @@ protected void consumeEnterMemberValue() {
 	super.consumeEnterMemberValue();
 	pushOnElementStack(K_ATTRIBUTE_VALUE_DELIMITER, this.identifierPtr);
 }
-protected void consumeEnumConstantHeader() {
-	if(this.currentToken == TokenNameLBRACE) {
-		popElement(K_ENUM_CONSTANT_DELIMITER);
-		pushOnElementStack(K_ENUM_CONSTANT_DELIMITER, WITH_BODY);
-		pushOnElementStack(K_FIELD_INITIALIZER_DELIMITER);
-		pushOnElementStack(K_TYPE_DELIMITER);
-	}
-	super.consumeEnumConstantHeader();
-}
 protected void consumeEnumConstantHeaderName() {
 	super.consumeEnumConstantHeaderName();
 	pushOnElementStack(K_ENUM_CONSTANT_DELIMITER);

@@ -199,11 +199,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 				for (int i = 0; i < argumentLength; i++)
 					arguments[i].traverse(visitor, scope);
 			}
-			if (thrownExceptions != null) {
-				int thrownExceptionsLength = thrownExceptions.length;
-				for (int i = 0; i < thrownExceptionsLength; i++)
-					thrownExceptions[i].traverse(visitor, scope);
-			}
 			if (statements != null) {
 				int statementsLength = statements.length;
 				for (int i = 0; i < statementsLength; i++)
@@ -223,11 +218,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 					int argumentLength = arguments.length;
 					for (int i = 0; i < argumentLength; i++)
 						arguments[i].traverse(visitor, scope);
-				}
-				if (thrownExceptions != null) {
-					int thrownExceptionsLength = thrownExceptions.length;
-					for (int i = 0; i < thrownExceptionsLength; i++)
-						thrownExceptions[i].traverse(visitor, scope);
 				}
 				if (statements != null) {
 					int statementsLength = statements.length;

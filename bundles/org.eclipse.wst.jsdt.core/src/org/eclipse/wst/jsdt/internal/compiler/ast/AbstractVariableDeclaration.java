@@ -57,18 +57,8 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 
 	public static final int FIELD = 1;
 	public static final int INITIALIZER = 2;
-	public static final int ENUM_CONSTANT = 3;
 	public static final int LOCAL_VARIABLE = 4;
 	public static final int PARAMETER = 5;
-	public static final int TYPE_PARAMETER = 6;
-
-
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
-	 */
-	public TypeBinding[] genericTypeArguments() {
-		return null;
-	}
 
 	/**
 	 * Returns the constant kind of this variable declaration
@@ -91,12 +81,7 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {
 		printAsExpression(indent, output);
-		switch(getKind()) {
-			case ENUM_CONSTANT:
-				return output.append(',');
-			default:
-				return output.append(';');
-		}
+		return output.append(';');
 	}
 
 	public StringBuffer printAsExpression(int indent, StringBuffer output) {
@@ -118,17 +103,10 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 			type.print(0, output).append(' ');
 		}
 		output.append(this.name);
-		switch(getKind()) {
-			case ENUM_CONSTANT:
-				if (initialization != null) {
-					initialization.printExpression(indent, output);
-				}
-				break;
-			default:
-				if (initialization != null) {
-					output.append(" = "); //$NON-NLS-1$
-					initialization.printExpression(indent, output);
-				}
+
+		if (initialization != null) {
+			output.append(" = "); //$NON-NLS-1$
+			initialization.printExpression(indent, output);
 		}
 	}
 
@@ -181,6 +159,4 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 	{
 		return this.initialization;
 	}
-
-
 }

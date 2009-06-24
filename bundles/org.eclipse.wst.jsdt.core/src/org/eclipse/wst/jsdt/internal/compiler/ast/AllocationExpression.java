@@ -42,9 +42,6 @@ public class AllocationExpression extends Expression implements InvocationSite, 
 	public MethodBinding binding;							// exact binding resulting from lookup
 	protected MethodBinding codegenBinding;	// actual binding used for code generation (if no synthetic accessor)
 	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
-	public TypeReference[] typeArguments;	
-	public TypeBinding[] genericTypeArguments;
-	public FieldDeclaration enumConstant; // for enum constant initializations
     public Expression member;
 	public boolean isShort;
 	
@@ -77,8 +74,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			flowInfo.unconditionalCopy(),
 			currentScope);
 	}
-//	manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
-//	manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 	
 	return flowInfo;
 }
@@ -103,13 +98,6 @@ public void checkCapturedLocalInitializationIfNecessary(ReferenceBinding checked
 
 public Expression enclosingInstance() {
 	return null;
-}
-
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
- */
-public TypeBinding[] genericTypeArguments() {
-	return this.genericTypeArguments;
 }
 
 public boolean isSuperAccess() {
@@ -166,20 +154,9 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 }
 
 public StringBuffer printExpression(int indent, StringBuffer output) {
-//	if (this.type != null) { // type null for enum constant initializations
-		output.append("new "); //$NON-NLS-1$
-		member.print(indent, output);
-//	}
-	if (typeArguments != null) {
-		output.append('<');
-		int max = typeArguments.length - 1;
-		for (int j = 0; j < max; j++) {
-			typeArguments[j].print(0, output);
-			output.append(", ");//$NON-NLS-1$
-		}
-		typeArguments[max].print(0, output);
-		output.append('>');
-	}
+	output.append("new "); //$NON-NLS-1$
+	member.print(indent, output);
+	
 	if (type != null) { // type null for enum constant initializations
 		type.printExpression(0, output); 
 	}
@@ -214,22 +191,6 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.resolvedType = this.type.resolveType(scope, true /* check bounds*/);
 	}
 	// will check for null after args are resolved
-
-	// resolve type arguments (for generic constructor call)
-	if (this.typeArguments != null) {
-		int length = this.typeArguments.length;
-		boolean argHasError = false; // typeChecks all arguments
-		this.genericTypeArguments = new TypeBinding[length];
-		for (int i = 0; i < length; i++) {
-			if ((this.genericTypeArguments[i] = this.typeArguments[i].resolveType(scope, true /* check bounds*/)) == null) {
-				argHasError = true;
-			}
-		}
-		if (argHasError) {
-			return null;
-		}
-	}
-	
 	// buffering the arguments' types
 	boolean argsContainCast = false;
 	TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
@@ -306,11 +267,6 @@ public void setFieldIndex(int i) {
 
 public void traverse(ASTVisitor visitor, BlockScope scope) {
 	if (visitor.visit(this, scope)) {
-		if (this.typeArguments != null) {
-			for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
-				this.typeArguments[i].traverse(visitor, scope);
-			}
-		}
 		if (this.member!=null)
 			this.member.traverse(visitor, scope);
 		else if (this.type != null) { // enum constant scenario

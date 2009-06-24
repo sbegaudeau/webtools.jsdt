@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  * Internal field structure for parsing recovery
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
@@ -132,17 +131,6 @@ public FieldDeclaration updatedFieldDeclaration(){
 				}
 			}
 			if (this.anonymousTypeCount > 0) fieldDeclaration.bits |= ASTNode.HasLocalType;
-		} else if(fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-			// fieldDeclaration is an enum constant
-			for (int i = 0; i < this.anonymousTypeCount; i++){
-				RecoveredType recoveredType = anonymousTypes[i];
-				TypeDeclaration typeDeclaration = recoveredType.typeDeclaration;
-				if(typeDeclaration.declarationSourceEnd == 0) {
-					typeDeclaration.declarationSourceEnd = this.fieldDeclaration.declarationSourceEnd;
-					typeDeclaration.bodyEnd = this.fieldDeclaration.declarationSourceEnd;
-				}
-				recoveredType.updatedTypeDeclaration();
-			}
 		}
 	}
 	return fieldDeclaration;
@@ -157,12 +145,7 @@ public RecoveredElement updateOnClosingBrace(int braceStart, int braceEnd){
 	if (bracketBalance > 0){ // was an array initializer
 		bracketBalance--;
 		if (bracketBalance == 0) {
-			if(fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT) {
-				updateSourceEndIfNecessary(braceEnd - 1);
-				return parent;
-			} else {
-				alreadyCompletedFieldInitialization = true;
-			}
+			alreadyCompletedFieldInitialization = true;
 		}
 		return this;
 	} else if (bracketBalance == 0) {
@@ -184,11 +167,6 @@ public RecoveredElement updateOnOpeningBrace(int braceStart, int braceEnd){
 		&& !alreadyCompletedFieldInitialization){
 		bracketBalance++;
 		return null; // no update is necessary	(array initializer)
-	}
-	if (fieldDeclaration.declarationSourceEnd == 0
-		&& fieldDeclaration.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT){
-		bracketBalance++;
-		return null; // no update is necessary	(enum constant)
 	}
 	// might be an array initializer
 	this.updateSourceEndIfNecessary(braceStart - 1, braceEnd - 1);

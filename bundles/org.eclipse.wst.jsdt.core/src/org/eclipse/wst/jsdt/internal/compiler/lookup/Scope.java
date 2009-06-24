@@ -180,11 +180,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 	 */
 	protected final MethodBinding computeCompatibleMethod(MethodBinding method, TypeBinding[] arguments, InvocationSite invocationSite) {
 
-		TypeBinding[] genericTypeArguments = invocationSite.genericTypeArguments();
 		TypeBinding[] parameters = method.parameters;
 		if (parameters == arguments
 //			&& (method.returnType.tagBits & TagBits.HasTypeVariable) == 0
-			&& genericTypeArguments == null)
+				)
 				return method;
 
 		int argLength = arguments.length;
@@ -1409,9 +1408,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			unitScope.recordTypeReferences(argumentTypes);
 			MethodBinding methodBinding = receiverType.getExactConstructor(argumentTypes);
 			if (methodBinding != null && methodBinding.canBeSeenBy(invocationSite, this)) {
-			    // targeting a non generic constructor with type arguments ?
-			    if (invocationSite.genericTypeArguments() != null)
-			    	methodBinding = computeCompatibleMethod(methodBinding, argumentTypes, invocationSite);
 				return methodBinding;
 			}
 			MethodBinding[] methods = receiverType.getMethods(TypeConstants.INIT);
@@ -2907,7 +2903,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		for (int i = 0; i < visibleSize; i++)
 			compatibilityLevels[i] = parameterCompatibilityLevel(visible[i], argumentTypes);
 
-		boolean useTiebreakMethod = invocationSite.genericTypeArguments() == null;
 		MethodBinding[] moreSpecific = new MethodBinding[visibleSize];
 		int count = 0;
 		for (int level = 0, max = VARARGS_COMPATIBLE; level <= max; level++) {
@@ -2916,7 +2911,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				max = level; // do not examine further categories, will either return mostSpecific or report ambiguous case
 				MethodBinding current = visible[i];
 				MethodBinding original = current.original();
-				MethodBinding tiebreakMethod = useTiebreakMethod ? current.tiebreakMethod() : current;
+				MethodBinding tiebreakMethod = current.tiebreakMethod();
 				for (int j = 0; j < visibleSize; j++) {
 					if (i == j || compatibilityLevels[j] != level) continue;
 					MethodBinding next = visible[j];

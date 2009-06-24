@@ -303,7 +303,6 @@ public class SourceTypeConverter {
 		anonymousLocalTypeDeclaration.allocation = expression;
 		if (enumConstant != null) {
 			anonymousLocalTypeDeclaration.modifiers &= ~ClassFileConstants.AccEnum;
-			expression.enumConstant = enumConstant;
 			expression.type = null;
 		}
 		return expression;

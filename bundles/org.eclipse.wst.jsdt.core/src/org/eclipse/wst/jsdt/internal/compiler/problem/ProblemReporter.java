@@ -2086,13 +2086,6 @@ public void invalidConstructor(Statement statement, MethodBinding targetConstruc
 
 	int sourceStart = statement.sourceStart;
 	int sourceEnd = statement.sourceEnd;
-	if (statement instanceof AllocationExpression) {
-		AllocationExpression allocation = (AllocationExpression)statement;
-		if (allocation.enumConstant != null) {
-			sourceStart = allocation.enumConstant.sourceStart;
-			sourceEnd = allocation.enumConstant.sourceEnd;
-		}
-	}
 
 	int id = IProblem.UndefinedConstructor; //default...
     MethodBinding shownConstructor = targetConstructor;

@@ -197,19 +197,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 				return this.resolvedType = receiverType;
 			}
 		}
-		// resolve type arguments (for generic constructor call)
-		if (this.typeArguments != null) {
-			int length = this.typeArguments.length;
-			this.genericTypeArguments = new TypeBinding[length];
-			for (int i = 0; i < length; i++) {
-				TypeReference typeReference = this.typeArguments[i];
-				TypeBinding argType = typeReference.resolveType(scope, true /* check bounds*/);
-				if (argType == null) {
-					return null; // error already reported
-				}
-				this.genericTypeArguments[i] = argType;
-			}
-		}
 
 		// will check for null after args are resolved
 		TypeBinding[] argumentTypes = Binding.NO_PARAMETERS;
@@ -329,11 +316,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		if (visitor.visit(this, scope)) {
 			if (this.enclosingInstance != null)
 				this.enclosingInstance.traverse(visitor, scope);
-			if (this.typeArguments != null) {
-				for (int i = 0, typeArgumentsLength = this.typeArguments.length; i < typeArgumentsLength; i++) {
-					this.typeArguments[i].traverse(visitor, scope);
-				}
-			}
 			if (this.type != null) // case of enum constant
 				this.type.traverse(visitor, scope);
 			if (this.arguments != null) {

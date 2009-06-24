@@ -2263,17 +2263,13 @@ protected void consumeMethodHeaderRightParen() {
 				RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
 				/* filter out cases where scanner is still inside type header */
 				if (!recoveredMethod.foundOpeningBrace) {
-					AbstractMethodDeclaration method = recoveredMethod.methodDeclaration;
-					if(method.thrownExceptions == null) {
-						CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-							identifierStack[ptr],
-							identifierPositionStack[ptr],
-							Keywords.THROWS);
-						method.thrownExceptions = new TypeReference[]{completionOnKeyword};
-						recoveredMethod.foundOpeningBrace = true;
-						this.assistNode = completionOnKeyword;
-						this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
-					}
+					CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
+						identifierStack[ptr],
+						identifierPositionStack[ptr],
+						Keywords.THROWS);
+					recoveredMethod.foundOpeningBrace = true;
+					this.assistNode = completionOnKeyword;
+					this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 				}
 			}
 		}
@@ -2295,17 +2291,13 @@ protected void consumeMethodHeaderExtendedDims() {
 			RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
 			/* filter out cases where scanner is still inside type header */
 			if (!recoveredMethod.foundOpeningBrace) {
-				AbstractMethodDeclaration method = recoveredMethod.methodDeclaration;
-				if(method.thrownExceptions == null) {
-					CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-						identifierStack[ptr],
-						identifierPositionStack[ptr],
-						Keywords.THROWS);
-					method.thrownExceptions = new TypeReference[]{completionOnKeyword};
-					recoveredMethod.foundOpeningBrace = true;
-					this.assistNode = completionOnKeyword;
-					this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
-				}
+				CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
+					identifierStack[ptr],
+					identifierPositionStack[ptr],
+					Keywords.THROWS);
+				recoveredMethod.foundOpeningBrace = true;
+				this.assistNode = completionOnKeyword;
+				this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
 			}
 		}
 	}

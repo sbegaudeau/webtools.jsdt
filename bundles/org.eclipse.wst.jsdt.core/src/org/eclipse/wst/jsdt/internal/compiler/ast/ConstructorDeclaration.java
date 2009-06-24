@@ -301,11 +301,6 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 			for (int i = 0; i < argumentLength; i++)
 				this.arguments[i].traverse(visitor, this.scope);
 		}
-		if (this.thrownExceptions != null) {
-			int thrownExceptionsLength = this.thrownExceptions.length;
-			for (int i = 0; i < thrownExceptionsLength; i++)
-				this.thrownExceptions[i].traverse(visitor, this.scope);
-		}
 		if (this.constructorCall != null)
 			this.constructorCall.traverse(visitor, this.scope);
 		if (this.statements != null) {

@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -56,7 +54,6 @@ public abstract class AbstractMethodDeclaration
 	public int modifiers;
 	public int modifiersSourceStart;
 	public Argument[] arguments;
-	public TypeReference[] thrownExceptions;
 	public Statement[] statements;
 	public int explicitDeclarations;
 	public MethodBinding binding;
@@ -139,47 +136,6 @@ public abstract class AbstractMethodDeclaration
 		}
 	}
 
-	/**
-	 * Record the thrown exception type bindings in the corresponding type references.
-	 */
-	public void bindThrownExceptions() {
-
-		if (this.thrownExceptions != null
-			&& this.binding != null
-			&& this.binding.thrownExceptions != null) {
-			int thrownExceptionLength = this.thrownExceptions.length;
-			int length = this.binding.thrownExceptions.length;
-			if (length == thrownExceptionLength) {
-				for (int i = 0; i < length; i++) {
-					this.thrownExceptions[i].resolvedType = this.binding.thrownExceptions[i];
-				}
-			} else {
-				int bindingIndex = 0;
-				for (int i = 0; i < thrownExceptionLength && bindingIndex < length; i++) {
-					TypeReference thrownException = this.thrownExceptions[i];
-					ReferenceBinding thrownExceptionBinding = this.binding.thrownExceptions[bindingIndex];
-					char[][] bindingCompoundName = thrownExceptionBinding.compoundName;
-					if (bindingCompoundName == null) continue; // skip problem case
-					if (thrownException instanceof SingleTypeReference) {
-						// single type reference
-						int lengthName = bindingCompoundName.length;
-						char[] thrownExceptionTypeName = thrownException.getTypeName()[0];
-						if (CharOperation.equals(thrownExceptionTypeName, bindingCompoundName[lengthName - 1])) {
-							thrownException.resolvedType = thrownExceptionBinding;
-							bindingIndex++;
-						}
-					} else {
-						// qualified type reference
-						if (CharOperation.equals(thrownException.getTypeName(), bindingCompoundName)) {
-							thrownException.resolvedType = thrownExceptionBinding;
-							bindingIndex++;
-						}
-					}
-				}
-			}
-		}
-	}
-
 	public CompilationResult compilationResult() {
 
 		return this.compilationResult;
@@ -196,11 +152,6 @@ public abstract class AbstractMethodDeclaration
 		if (this.binding != null)
 			return this.binding.isAbstract();
 		return (this.modifiers & ClassFileConstants.AccAbstract) != 0;
-	}
-
-	public boolean isAnnotationMethod() {
-
-		return false;
 	}
 
 	public boolean isClinit() {
@@ -263,19 +214,7 @@ public abstract class AbstractMethodDeclaration
 		}
 		printIndent(tab, output);
 		printModifiers(this.modifiers, output);
-//		if (this.annotations != null) printAnnotations(this.annotations, output);
 
-//		TypeParameter[] typeParams = typeParameters();
-//		if (typeParams != null) {
-//			output.append('<');
-//			int max = typeParams.length - 1;
-//			for (int j = 0; j < max; j++) {
-//				typeParams[j].print(0, output);
-//				output.append(", ");//$NON-NLS-1$
-//			}
-//			typeParams[max].print(0, output);
-//			output.append('>');
-//		}
 		output.append("function "); //$NON-NLS-1$
 		if (this.selector!=null)
 			output.append(this.selector);
@@ -287,13 +226,6 @@ public abstract class AbstractMethodDeclaration
 			}
 		}
 		output.append(')');
-//		if (this.thrownExceptions != null) {
-//			output.append(" throws "); //$NON-NLS-1$
-//			for (int i = 0; i < this.thrownExceptions.length; i++) {
-//				if (i > 0) output.append(", "); //$NON-NLS-1$
-//				this.thrownExceptions[i].print(0, output);
-//			}
-//		}
 		printBody(tab + 1, output);
 		return output;
 	}
@@ -360,8 +292,6 @@ public abstract class AbstractMethodDeclaration
 
 		try {
 			bindArguments();
-			if (JavaScriptCore.IS_ECMASCRIPT4)
-				bindThrownExceptions();
 			resolveJavadoc();
 			resolveStatements();
 		} catch (AbortMethod e) {	// ========= abort on fatal error =============

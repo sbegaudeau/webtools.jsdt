@@ -126,7 +126,6 @@ public RecoveredElement add(FieldDeclaration fieldDeclaration, int bracketBalanc
 	RecoveredField element;
 	switch (fieldDeclaration.getKind()) {
 		case AbstractVariableDeclaration.FIELD:
-		case AbstractVariableDeclaration.ENUM_CONSTANT:
 			element = new RecoveredField(fieldDeclaration, this, bracketBalanceValue);
 			break;
 		case AbstractVariableDeclaration.INITIALIZER:

@@ -371,43 +371,11 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 	}
 }
 
-protected void consumeClassInstanceCreationExpressionQualifiedWithTypeArguments() {
-	boolean previousFlag = reportReferenceInfo;
-	reportReferenceInfo = false; // not to see the type reference reported in super call to getTypeReference(...)
-	super.consumeClassInstanceCreationExpressionQualifiedWithTypeArguments();
-	reportReferenceInfo = previousFlag;
-	if (reportReferenceInfo){
-		AllocationExpression alloc = (AllocationExpression)expressionStack[expressionPtr];
-		TypeReference typeRef = alloc.type;
-		requestor.acceptConstructorReference(
-			typeRef instanceof SingleTypeReference
-				? ((SingleTypeReference) typeRef).token
-				: CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.'),
-			alloc.arguments == null ? 0 : alloc.arguments.length,
-			alloc.sourceStart);
-	}
-}
 protected void consumeClassHeaderName1() {
 	int currentAstPtr = this.astPtr;
 	super.consumeClassHeaderName1();
 	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
 		rememberCategories();
-}
-protected void consumeClassInstanceCreationExpressionWithTypeArguments() {
-	boolean previousFlag = reportReferenceInfo;
-	reportReferenceInfo = false; // not to see the type reference reported in super call to getTypeReference(...)
-	super.consumeClassInstanceCreationExpressionWithTypeArguments();
-	reportReferenceInfo = previousFlag;
-	if (reportReferenceInfo){
-		AllocationExpression alloc = (AllocationExpression)expressionStack[expressionPtr];
-		TypeReference typeRef = alloc.type;
-		requestor.acceptConstructorReference(
-			typeRef instanceof SingleTypeReference
-				? ((SingleTypeReference) typeRef).token
-				: CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.'),
-			alloc.arguments == null ? 0 : alloc.arguments.length,
-			alloc.sourceStart);
-	}
 }
 protected void consumeConstructorHeaderName() {
 	long selectorSourcePositions = this.identifierPositionStack[this.identifierPtr];
@@ -1201,17 +1169,6 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				&& scanner.eofPosition >= fieldDeclaration.declarationSourceEnd;
 
 	switch(fieldDeclaration.getKind()) {
-		case AbstractVariableDeclaration.ENUM_CONSTANT:
-			// accept constructor reference for enum constant
-			if (fieldDeclaration.initialization instanceof AllocationExpression) {
-				AllocationExpression alloc = (AllocationExpression) fieldDeclaration.initialization;
-				requestor.acceptConstructorReference(
-					declaringType.name,
-					alloc.arguments == null ? 0 : alloc.arguments.length,
-					alloc.sourceStart);
-			}
-			// fall through next case
-		//$FALL-THROUGH$
 		case AbstractVariableDeclaration.FIELD:
 		case AbstractVariableDeclaration.LOCAL_VARIABLE:
 			int fieldEndPosition = this.sourceEnds.get(fieldDeclaration);
@@ -1398,15 +1355,11 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			// remember deprecation so as to not lose it below
 			boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
-			boolean isEnumInit = typeDeclaration.allocation != null && typeDeclaration.allocation.enumConstant != null;
 			char[] superclassName;
-			if (isEnumInit) {
-				currentModifiers |= ClassFileConstants.AccEnum;
-				superclassName = declaringType.name;
-			} else {
-				TypeReference superclass = typeDeclaration.superclass;
-				superclassName = superclass != null ? CharOperation.concatWith(superclass.getParameterizedTypeName(), '.') : null;
-			}
+			
+			TypeReference superclass = typeDeclaration.superclass;
+			superclassName = superclass != null ? CharOperation.concatWith(superclass.getParameterizedTypeName(), '.') : null;
+			
 			ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 			typeInfo.declarationStart = typeDeclaration.declarationSourceStart;
 			typeInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;

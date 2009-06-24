@@ -73,7 +73,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
@@ -676,7 +675,6 @@ protected IJavaScriptElement createHandle(FieldDeclaration fieldDeclaration, Typ
 
 	switch (fieldDeclaration.getKind()) {
 		case AbstractVariableDeclaration.FIELD :
-		case AbstractVariableDeclaration.ENUM_CONSTANT :
 			return ((IType) parent).getField(new String(fieldDeclaration.name));
 	}
 	if (type.isBinary()) {
@@ -1937,45 +1935,8 @@ protected void reportAccurateParameterizedTypeReference(SearchMatch match, TypeR
  * A token is valid if it has an accuracy which is not -1.
  */
 protected void reportAccurateEnumConstructorReference(SearchMatch match, FieldDeclaration field, AllocationExpression allocation) throws CoreException {
-	// Verify that field declaration is really an enum constant
-	if (allocation == null || allocation.enumConstant == null) {
-		report(match);
-		return;
-	}
-
-	// Get scan area
-	int sourceStart = match.getOffset()+match.getLength();
-	if (allocation.arguments != null && allocation.arguments.length > 0) {
-		sourceStart = allocation.arguments[allocation.arguments.length-1].sourceEnd+1;
-	}
-	int sourceEnd = field.declarationSourceEnd;
-	if (allocation instanceof QualifiedAllocationExpression) {
-		QualifiedAllocationExpression qualifiedAllocation = (QualifiedAllocationExpression) allocation;
-		if (qualifiedAllocation.anonymousType != null) {
-			sourceEnd = qualifiedAllocation.anonymousType.sourceStart - 1;
-		}
-	}
-
-	// Scan to find last closing parenthesis
-	Scanner scanner = this.parser.scanner;
-	scanner.setSource(this.currentPossibleMatch.getContents());
-	scanner.resetTo(sourceStart, sourceEnd);
-	try {
-		int token = scanner.getNextToken();
-		while (token != TerminalTokens.TokenNameEOF) {
-			if (token == TerminalTokens.TokenNameRPAREN) {
-				sourceEnd = scanner.getCurrentTokenEndPosition();
-			}
-			token = scanner.getNextToken();
-		}
-	}
-	catch (InvalidInputException iie) {
-		// give up
-	}
-
-	// Report match
-	match.setLength(sourceEnd-match.getOffset()+1);
 	report(match);
+	return;
 }
 /**
  * Finds the accurate positions of each valid token in the source and
@@ -2393,13 +2354,6 @@ protected void reportMatching(FieldDeclaration field, FieldDeclaration[] otherFi
 					for (int i = 0, l = nodes.length; i < l; i++) {
 						ASTNode node = nodes[i];
 						Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
-						if (node instanceof TypeDeclaration) {
-							// use field declaration to report match (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=88174)
-							AllocationExpression allocation = ((TypeDeclaration)node).allocation;
-							if (allocation != null && allocation.enumConstant != null) {
-								node = field;
-							}
-						}
 						// Set block scope for initializer in case there would have other local and other elements to report
 						BlockScope blockScope = null;
 						if (field.getKind() == AbstractVariableDeclaration.INITIALIZER) {
@@ -2504,13 +2458,6 @@ protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFi
 					for (int i = 0, l = nodes.length; i < l; i++) {
 						ASTNode node = nodes[i];
 						Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
-						if (node instanceof TypeDeclaration) {
-							// use field declaration to report match (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=88174)
-							AllocationExpression allocation = ((TypeDeclaration)node).allocation;
-							if (allocation != null && allocation.enumConstant != null) {
-								node = field;
-							}
-						}
 						// Set block scope for initializer in case there would have other local and other elements to report
 						BlockScope blockScope = null;
 						this.patternLocator.matchReportReference(node, enclosingElement, field.binding, blockScope, level.intValue(), this);
