@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -129,109 +128,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 		}
 		return null;
-	}
-
-   // 5.1.10
-	public static ReferenceBinding[] greaterLowerBound(ReferenceBinding[] types) {
-		if (types == null) return null;
-		int length = types.length;
-		if (length == 0) return null;
-		ReferenceBinding[] result = types;
-		int removed = 0;
-		for (int i = 0; i < length; i++) {
-			ReferenceBinding iType = result[i];
-			if (iType == null) continue;
-			for (int j = 0; j < length; j++) {
-				if (i == j) continue;
-				ReferenceBinding jType = result[j];
-				if (jType == null) continue;
-				if (iType.isCompatibleWith(jType)) { // if Vi <: Vj, Vj is removed
-					if (result == types) { // defensive copy
-						System.arraycopy(result, 0, result = new ReferenceBinding[length], 0, length);
-					}
-					result[j] = null;
-					removed ++;
-				}
-			}
-		}
-		if (removed == 0) return result;
-		if (length == removed) return null;
-		ReferenceBinding[] trimmedResult = new ReferenceBinding[length - removed];
-		for (int i = 0, index = 0; i < length; i++) {
-			ReferenceBinding iType = result[i];
-			if (iType != null) {
-				trimmedResult[index++] = iType;
-			}
-		}
-		return trimmedResult;
-	}
-
-	// 5.1.10
-	public static TypeBinding[] greaterLowerBound(TypeBinding[] types) {
-		if (types == null) return null;
-		int length = types.length;
-		if (length == 0) return null;
-		TypeBinding[] result = types;
-		int removed = 0;
-		for (int i = 0; i < length; i++) {
-			TypeBinding iType = result[i];
-			if (iType == null) continue;
-			for (int j = 0; j < length; j++) {
-				if (i == j) continue;
-				TypeBinding jType = result[j];
-				if (jType == null) continue;
-				if (iType.isCompatibleWith(jType)) { // if Vi <: Vj, Vj is removed
-					if (result == types) { // defensive copy
-						System.arraycopy(result, 0, result = new TypeBinding[length], 0, length);
-					}
-					result[j] = null;
-					removed ++;
-				}
-			}
-		}
-		if (removed == 0) return result;
-		if (length == removed) return null;
-		TypeBinding[] trimmedResult = new TypeBinding[length - removed];
-		for (int i = 0, index = 0; i < length; i++) {
-			TypeBinding iType = result[i];
-			if (iType != null) {
-				trimmedResult[index++] = iType;
-			}
-		}
-		return trimmedResult;
-	}
-
-	/**
-	 * Returns an array of types, where original types got substituted given a substitution.
-	 * Only allocate an array if anything is different.
-	 */
-	public static ReferenceBinding[] substitute(Substitution substitution, ReferenceBinding[] originalTypes) {
-		if (originalTypes == null) return null;
-	    ReferenceBinding[] substitutedTypes = originalTypes;
-	    for (int i = 0, length = originalTypes.length; i < length; i++) {
-	        ReferenceBinding originalType = originalTypes[i];
-	    
-	        if (substitutedTypes != originalTypes) {
-	            substitutedTypes[i] = originalType;
-	        }
-	    }
-	    return substitutedTypes;
-	}
-
-	/**
-	 * Returns an array of types, where original types got substituted given a substitution.
-	 * Only allocate an array if anything is different.
-	 */
-	public static TypeBinding[] substitute(Substitution substitution, TypeBinding[] originalTypes) {
-		if (originalTypes == null) return null;
-	    TypeBinding[] substitutedTypes = originalTypes;
-	    for (int i = 0, length = originalTypes.length; i < length; i++) {
-	        TypeBinding originalType = originalTypes[i];
-	        if (substitutedTypes != originalTypes) {
-	            substitutedTypes[i] = originalType;
-	        }
-	    }
-	    return substitutedTypes;
 	}
 
 	protected Scope(int kind, Scope parent) {
@@ -1896,12 +1792,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return unitScope.environment.getResolvedType(JAVA_IO_SERIALIZABLE, this);
 	}
 
-	public final ReferenceBinding getJavaLangAnnotationAnnotation() {
-		CompilationUnitScope unitScope = compilationUnitScope();
-		unitScope.recordQualifiedReference(JAVA_LANG_ANNOTATION_ANNOTATION);
-		return unitScope.environment.getResolvedType(JAVA_LANG_ANNOTATION_ANNOTATION, this);
-	}
-
 	public final ReferenceBinding getJavaLangAssertionError() {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		unitScope.recordQualifiedReference(JAVA_LANG_ASSERTIONERROR);
@@ -1918,11 +1808,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		unitScope.recordQualifiedReference(JAVA_LANG_CLONEABLE);
 		return unitScope.environment.getResolvedType(JAVA_LANG_CLONEABLE, this);
-	}
-	public final ReferenceBinding getJavaLangEnum() {
-		CompilationUnitScope unitScope = compilationUnitScope();
-		unitScope.recordQualifiedReference(JAVA_LANG_ENUM);
-		return unitScope.environment.getResolvedType(JAVA_LANG_ENUM, this);
 	}
 
 	public final ReferenceBinding getJavaLangIterable() {
@@ -2712,90 +2597,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		mec = mec.leafComponentType();
 
 		return mec; // should be caught by no invocation check
-	}
-
-	// 15.12.2
-	/**
-	 * Returns VoidBinding if types have no intersection (e.g. 2 unrelated interfaces), or null if
-	 * no common supertype (e.g. List<String> and List<Exception>), or the intersection type if possible
-	 */
-	public TypeBinding lowerUpperBound(TypeBinding[] types) {
-		int typeLength = types.length;
-		if (typeLength == 1) {
-			TypeBinding type = types[0];
-			return type == null ? TypeBinding.VOID : type;
-		}
-		return lowerUpperBound(types, new ArrayList(1));
-	}
-
-	// 15.12.2
-	private TypeBinding lowerUpperBound(TypeBinding[] types, List lubStack) {
-
-		int typeLength = types.length;
-		if (typeLength == 1) {
-			TypeBinding type = types[0];
-			return type == null ? TypeBinding.VOID : type;
-		}
-		// cycle detection
-		int stackLength = lubStack.size();
-		nextLubCheck: for (int i = 0; i < stackLength; i++) {
-			TypeBinding[] lubTypes = (TypeBinding[])lubStack.get(i);
-			int lubTypeLength = lubTypes.length;
-			if (lubTypeLength < typeLength) continue nextLubCheck;
-			nextTypeCheck:	for (int j = 0; j < typeLength; j++) {
-				TypeBinding type = types[j];
-				if (type == null) continue nextTypeCheck; // ignore
-				for (int k = 0; k < lubTypeLength; k++) {
-					TypeBinding lubType = lubTypes[k];
-					if (lubType == null) continue; // ignore
-					if (lubType == type || lubType.isEquivalentTo(type)) continue nextTypeCheck; // type found, jump to next one
-				}
-				continue nextLubCheck; // type not found in current lubTypes
-			}
-			// all types are included in some lub, cycle detected - stop recursion by answering special value (int)
-			return TypeBinding.INT;
-		}
-
-		lubStack.add(types);
-		Map invocations = new HashMap(1);
-		TypeBinding[] mecs = minimalErasedCandidates(types, invocations);
-		if (mecs == null) return null;
-		int length = mecs.length;
-		if (length == 0) return TypeBinding.VOID;
-		int count = 0;
-		TypeBinding firstBound = null;
-		int commonDim = -1;
-		for (int i = 0; i < length; i++) {
-			TypeBinding mec = mecs[i];
-			if (mec == null) continue;
-			mec = leastContainingInvocation(mec, invocations.get(mec), lubStack);
-			if (mec == null) return null;
-			int dim = mec.dimensions();
-			if (commonDim == -1) {
-				commonDim = dim;
-			} else if (dim != commonDim) { // not all types have same dimension
-				return null;
-			}
-			if (firstBound == null && !mec.leafComponentType().isInterface()) firstBound = mec.leafComponentType();
-			mecs[count++] = mec; // recompact them to the front
-		}
-		switch (count) {
-			case 0 : return TypeBinding.VOID;
-			case 1 : return mecs[0];
-			case 2 :
-				if ((commonDim == 0 ? mecs[1].id : mecs[1].leafComponentType().id) == T_JavaLangObject) return mecs[0];
-				if ((commonDim == 0 ? mecs[0].id : mecs[0].leafComponentType().id) == T_JavaLangObject) return mecs[1];
-		}
-		TypeBinding[] otherBounds = new TypeBinding[count - 1];
-		int rank = 0;
-		for (int i = 0; i < count; i++) {
-			TypeBinding mec = commonDim == 0 ? mecs[i] : mecs[i].leafComponentType();
-			if (mec.isInterface()) {
-				otherBounds[rank++] = mec;
-			}
-		}
-		TypeBinding intersectionType = null;
-		return commonDim == 0 ? intersectionType : environment().createArrayType(intersectionType, commonDim);
 	}
 
 	public MethodScope methodScope() {
