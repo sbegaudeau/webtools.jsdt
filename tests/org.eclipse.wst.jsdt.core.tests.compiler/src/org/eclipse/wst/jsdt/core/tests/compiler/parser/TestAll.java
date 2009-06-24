@@ -55,9 +55,6 @@ public static Test suite() {
 	/* source element parser tests */
 	testClasses.add(SourceElementParserTest.class);
 
-	/* document element parser tests */
-	testClasses.add(DocumentElementParserTest.class);
-
 	/* syntax error diagnosis tests */
 	testClasses.add(SyntaxErrorTest.class);
 	testClasses.add(DualParseSyntaxErrorTest.class);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ public class SourceMethod implements ISourceMethod {
 	private int nameSourceEnd;
 	private char[][] argumentTypeNames;
 	private char[][] argumentNames;
-	private char[][] exceptionTypeNames;
 	private char[] source;
 	private String explicitConstructorCall;
 	private int numberOfMemberMethods;
@@ -41,7 +40,6 @@ public SourceMethod(
 	int nameSourceEnd,
 	char[][] argumentTypeNames,
 	char[][] argumentNames,
-	char[][] exceptionTypeNames,
 	char[] source) {
 
 	this.declarationStart = declarationStart;
@@ -52,7 +50,6 @@ public SourceMethod(
 	this.nameSourceEnd = nameSourceEnd;
 	this.argumentTypeNames = argumentTypeNames;
 	this.argumentNames = argumentNames;
-	this.exceptionTypeNames = exceptionTypeNames;
 	this.source = source;
 }
 public String displayModifiers() {
@@ -120,9 +117,6 @@ public int getDeclarationSourceEnd() {
 public int getDeclarationSourceStart() {
 	return declarationStart;
 }
-public char[][] getExceptionTypeNames() {
-	return exceptionTypeNames;
-}
 public int getModifiers() {
 	return modifiers;
 }
@@ -183,12 +177,6 @@ public String toString(int tab) {
 		}
 	}
 	buffer.append(") ");
-	if (exceptionTypeNames != null) {
-		buffer.append("throws ");
-		for (int i = 0, max = exceptionTypeNames.length; i < max; i++) {
-			buffer.append(exceptionTypeNames[i]).append(", ");
-		}
-	}
 	buffer.append("{");
 	if (explicitConstructorCall != null) {
 		buffer.append("\n").append(tabString(tab+1)).append(explicitConstructorCall).append(tabString(tab)).append("}");

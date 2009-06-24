@@ -12,10 +12,9 @@ package org.eclipse.wst.jsdt.core.tests.compiler.parser;
 
 import java.util.Locale;
 
-import junit.framework.Test;
-
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
@@ -23,7 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
-import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 
 public class SourceElementParserTest extends AbstractCompilerTest implements ISourceElementRequestor {
 	private  SourceUnit currentUnit;
@@ -41,12 +39,6 @@ public SourceElementParserTest(String testName) {
 public SourceElementParserTest(String testName, char[] source) {
 	super(testName);
 	this.source = source;
-}
-static {
-//	TESTS_NUMBERS = new int[] { 99662 };	
-}
-public static Test suite() {
-	return buildAllCompliancesTestSuite(SourceElementParserTest.class);
 }
 /**
  * acceptConstructorReference method comment.
@@ -279,7 +271,6 @@ protected void enterAbtractMethod(MethodInfo methodInfo) {
 							methodInfo.nameSourceEnd, 
 							methodInfo.parameterTypes, 
 							methodInfo.parameterNames, 
-							methodInfo.exceptionTypes,
 							source)); 
 		memberMethod.parent = currentMethod;
 		currentMethod = memberMethod; 
@@ -298,7 +289,6 @@ protected void enterAbtractMethod(MethodInfo methodInfo) {
 						methodInfo.nameSourceEnd, 
 						methodInfo.parameterTypes, 
 						methodInfo.parameterNames, 
-						methodInfo.exceptionTypes,
 						source)); 
 		
 	}
@@ -315,7 +305,6 @@ protected void enterAbtractMethod(MethodInfo methodInfo) {
 						methodInfo.nameSourceEnd, 
 						methodInfo.parameterTypes, 
 						methodInfo.parameterNames, 
-						methodInfo.exceptionTypes,
 						source)); 
 
 	}
@@ -443,7 +432,6 @@ public void test01() {
 			+ "}\n"
 			+ "var h;\n"
 			+ "var i ;\n"
-//			+ "var i = { 0, 1 };\n"
 			+ "\n"
 			+ "function bar" + "\\" + "u0065(){}\n"
 			+ "function truc(){}\n"
@@ -459,16 +447,6 @@ public void test01() {
 
 	String testName = "test01: full parse";
 	fullParse(s,testName);
-
-//	assertEquals(
-//		"Invalid class declarationSourceStart ", 
-//		52, 
-//		currentType.getDeclarationSourceStart()); 
-
-//	assertEquals(
-//		"Invalid class declarationSourceEnd ", 
-//		178, 
-//		currentType.getDeclarationSourceEnd()); 
 
 	currentUnit.toString();
 	SourceField[] fields = currentUnit.getFields();
@@ -523,11 +501,6 @@ public void test02() {
 		"Invalid class declarationSourceStart ", 
 		0, 
 		currentUnit.getDeclarationSourceStart()); 
-
-//	assertEquals(
-//		"Invalid class declarationSourceEnd ", 
-//		40, 
-//		currentUnit.getDeclarationSourceEnd());
 
 	assertEquals(
 		"Invalid source " + testName, 
