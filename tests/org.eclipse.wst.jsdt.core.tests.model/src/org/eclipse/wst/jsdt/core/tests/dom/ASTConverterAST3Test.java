@@ -3808,10 +3808,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertNotNull("Cannot be null", methodBinding);
 		assertTrue("Canonical method binding", methodBinding1 == methodBinding); //$NON-NLS-1$
 		assertTrue("declaring class is canonical", typeBinding == methodBinding1.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding[] exceptionTypes = methodBinding1.getExceptionTypes();
-		assertNotNull("No exception types", exceptionTypes); //$NON-NLS-1$
-		assertEquals("One exception", 1, exceptionTypes.length); //$NON-NLS-1$
-		assertEquals("wrong name for exception", "IOException", exceptionTypes[0].getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		assertEquals("wrong modifier", Modifier.NONE, methodBinding1.getModifiers()); //$NON-NLS-1$
 		assertEquals("wrong name for method", "foo", methodBinding1.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		ITypeBinding[] parameters = methodBinding1.getParameterTypes();
@@ -3836,9 +3832,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertNotNull("Cannot be null", methodBinding);		
 		assertTrue("Canonical method binding", methodBinding2 == methodBinding); //$NON-NLS-1$
 		assertTrue("declaring class is canonical", typeBinding == methodBinding2.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding[] exceptionTypes2 = methodBinding2.getExceptionTypes();
-		assertNotNull("No exception types", exceptionTypes2); //$NON-NLS-1$
-		assertEquals("No exception", 0, exceptionTypes2.length); //$NON-NLS-1$
 		assertEquals("wrong modifier", Modifier.PUBLIC | Modifier.STATIC, methodBinding2.getModifiers()); //$NON-NLS-1$
 		assertEquals("wrong name for method", "main", methodBinding2.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		ITypeBinding[] parameters2 = methodBinding2.getParameterTypes();
@@ -3863,9 +3856,6 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		assertNotNull("Cannot be null", methodBinding);		
 		assertTrue("Canonical method binding", methodBinding3 == methodBinding); //$NON-NLS-1$
 		assertTrue("declaring class is canonical", typeBinding == methodBinding3.getDeclaringClass()); //$NON-NLS-1$
-		ITypeBinding[] exceptionTypes3 = methodBinding3.getExceptionTypes();
-		assertNotNull("No exception types", exceptionTypes3); //$NON-NLS-1$
-		assertEquals("No exception", 1, exceptionTypes3.length); //$NON-NLS-1$
 		assertEquals("wrong modifier", Modifier.PRIVATE, methodBinding3.getModifiers()); //$NON-NLS-1$
 		assertEquals("wrong name for method", "bar", methodBinding3.getName()); //$NON-NLS-1$ //$NON-NLS-2$
 		ITypeBinding[] parameters3 = methodBinding3.getParameterTypes();
