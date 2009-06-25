@@ -189,11 +189,10 @@ public class LocalCorrectionsSubProcessor {
 			FunctionDeclaration methodDecl= (FunctionDeclaration) decl;
 			IFunctionBinding binding= methodDecl.resolveBinding();
 			if (binding != null) {
-				ITypeBinding[] methodExceptions= binding.getExceptionTypes();
 				ArrayList unhandledExceptions= new ArrayList(uncaughtExceptions.length);
 				for (int i= 0; i < uncaughtExceptions.length; i++) {
 					ITypeBinding curr= uncaughtExceptions[i];
-					if (!canRemoveException(curr, methodExceptions)) {
+					if (!canRemoveException(curr, null)) {
 						unhandledExceptions.add(curr);
 					}
 				}

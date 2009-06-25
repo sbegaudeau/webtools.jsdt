@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -90,23 +90,19 @@ public int resolveLevel(Binding binding) {
 			if (!type.isClass()) return IMPOSSIBLE_MATCH;
 			break;
 		case CLASS_AND_INTERFACE_SUFFIX:
-			if (!(type.isClass() || (type.isInterface() && !type.isAnnotationType()))) return IMPOSSIBLE_MATCH;
+			if (!(type.isClass())) return IMPOSSIBLE_MATCH;
 			break;
 		case CLASS_AND_ENUM_SUFFIX:
-			if (!(type.isClass() || type.isEnum())) return IMPOSSIBLE_MATCH;
+			if (!(type.isClass())) return IMPOSSIBLE_MATCH;
 			break;
 		case INTERFACE_SUFFIX:
-			if (!type.isInterface() || type.isAnnotationType()) return IMPOSSIBLE_MATCH;
-			break;
+			return IMPOSSIBLE_MATCH;
 		case INTERFACE_AND_ANNOTATION_SUFFIX:
-			if (!(type.isInterface() || type.isAnnotationType())) return IMPOSSIBLE_MATCH;
-			break;
+			return IMPOSSIBLE_MATCH;
 		case ENUM_SUFFIX:
-			if (!type.isEnum()) return IMPOSSIBLE_MATCH;
-			break;
+			return IMPOSSIBLE_MATCH;
 		case ANNOTATION_TYPE_SUFFIX:
-			if (!type.isAnnotationType()) return IMPOSSIBLE_MATCH;
-			break;
+			return IMPOSSIBLE_MATCH;
 		case TYPE_SUFFIX : // nothing
 	}
 

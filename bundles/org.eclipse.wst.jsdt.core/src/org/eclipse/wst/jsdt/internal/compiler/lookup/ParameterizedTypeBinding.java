@@ -105,11 +105,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	public char[] computeUniqueKey(boolean isLeaf) {
 	    StringBuffer sig = new StringBuffer(10);
 	    ReferenceBinding enclosing;
-		if (isMemberType() && ((enclosing = enclosingType()).isParameterizedType())) {
-		    char[] typeSig = enclosing.computeUniqueKey(false/*not a leaf*/);
-		    for (int i = 0; i < typeSig.length-1; i++) sig.append(typeSig[i]); // copy all but trailing semicolon
-		    sig.append('.').append(sourceName());
-		} else if(this.type.isLocalType()){
+		if(this.type.isLocalType()){
 			LocalTypeBinding localTypeBinding = (LocalTypeBinding) this.type;
 			enclosing = localTypeBinding.enclosingType();
 			ReferenceBinding temp;
@@ -231,14 +227,10 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 	public char[] genericTypeSignature() {
 	    if (this.genericTypeSignature == null) {
 		    StringBuffer sig = new StringBuffer(10);
-			if (this.isMemberType() && this.enclosingType().isParameterizedType()) {
-			    char[] typeSig = this.enclosingType().genericTypeSignature();
-			    for (int i = 0; i < typeSig.length-1; i++) sig.append(typeSig[i]); // copy all but trailing semicolon
-			    sig.append('.').append(this.sourceName());
-			} else {
-			    char[] typeSig = this.type.signature();
-			    for (int i = 0; i < typeSig.length-1; i++) sig.append(typeSig[i]); // copy all but trailing semicolon
-			}
+			
+		    char[] typeSig = this.type.signature();
+		    for (int i = 0; i < typeSig.length-1; i++) sig.append(typeSig[i]); // copy all but trailing semicolon
+			
 			if (this.arguments != null) {
 			    sig.append('<');
 			    for (int i = 0, length = this.arguments.length; i < length; i++) {
@@ -462,10 +454,6 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 			this.arguments = someArguments;
 			for (int i = 0, length = someArguments.length; i < length; i++) {
 				TypeBinding someArgument = someArguments[i];
-				boolean isWildcardArgument = someArgument.isWildcard();
-				if (isWildcardArgument) {
-					this.tagBits |= TagBits.HasDirectWildcard;
-				}
 				
 				this.tagBits |= TagBits.IsBoundParameterizedType;
 			    this.tagBits |= someArgument.tagBits & TagBits.HasTypeVariable;
@@ -714,9 +702,7 @@ public class ParameterizedTypeBinding extends ReferenceBinding implements Substi
 		if (isStatic() && isNestedType()) buffer.append("static "); //$NON-NLS-1$
 		if (isFinal()) buffer.append("final "); //$NON-NLS-1$
 
-		if (isEnum()) buffer.append("enum "); //$NON-NLS-1$
-		else if (isAnnotationType()) buffer.append("@interface "); //$NON-NLS-1$
-		else if (isClass()) buffer.append("class "); //$NON-NLS-1$
+		if (isClass()) buffer.append("class "); //$NON-NLS-1$
 		else buffer.append("interface "); //$NON-NLS-1$
 		buffer.append(this.debugName());
 

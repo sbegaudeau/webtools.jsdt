@@ -234,14 +234,6 @@ public class ExceptionOccurrencesFinder extends ASTVisitor implements IOccurrenc
 	}
 	
 	private boolean matches(IFunctionBinding binding) {
-		if (binding == null)
-			return false;
-		ITypeBinding[] exceptions= binding.getExceptionTypes();
-		for (int i = 0; i < exceptions.length; i++) {
-			ITypeBinding exception= exceptions[i];
-			if(matches(exception))
-				return true;
-		}
 		return false;
 	}
 

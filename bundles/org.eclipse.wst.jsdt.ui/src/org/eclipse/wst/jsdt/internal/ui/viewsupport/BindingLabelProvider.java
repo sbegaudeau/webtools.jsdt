@@ -228,18 +228,6 @@ public class BindingLabelProvider extends LabelProvider {
 		}
 		buffer.append(')');
 		
-		if ((flags & JavaScriptElementLabels.M_EXCEPTIONS) != 0) {
-			ITypeBinding[] exceptions= binding.getExceptionTypes();
-			if (exceptions.length > 0) {
-				buffer.append(" throws "); //$NON-NLS-1$
-				for (int index= 0; index < exceptions.length; index++) {
-					if (index > 0) {
-						buffer.append(JavaScriptElementLabels.COMMA_STRING);
-					}
-					getTypeLabel(exceptions[index], (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);
-				}
-			}
-		}
 		if (((flags & JavaScriptElementLabels.M_APP_RETURNTYPE) != 0) && !binding.isConstructor()) {
 			buffer.append(JavaScriptElementLabels.DECL_STRING);
 			getTypeLabel(binding.getReturnType(), (flags & JavaScriptElementLabels.T_TYPE_PARAMETERS), buffer);

@@ -1096,7 +1096,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						throw new SelectionNodeFound(constructorDeclaration.binding);
 					} else {
 						if (constructorDeclaration.scope != null) {
-							throw new SelectionNodeFound(new MethodBinding(constructorDeclaration.modifiers, constructorDeclaration.selector, null, null, null, constructorDeclaration.scope.referenceType().binding));
+							throw new SelectionNodeFound(new MethodBinding(constructorDeclaration.modifiers, constructorDeclaration.selector, null, null, constructorDeclaration.scope.referenceType().binding));
 						}
 					}
 				}
@@ -1126,7 +1126,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						throw new SelectionNodeFound(methodDeclaration.binding);
 					} else {
 						if (methodDeclaration.scope != null) {
-							throw new SelectionNodeFound(new MethodBinding(methodDeclaration.modifiers, methodDeclaration.selector, null, null, null, methodDeclaration.scope.referenceType().binding));
+							throw new SelectionNodeFound(new MethodBinding(methodDeclaration.modifiers, methodDeclaration.selector, null, null, methodDeclaration.scope.referenceType().binding));
 						}
 					}
 				}

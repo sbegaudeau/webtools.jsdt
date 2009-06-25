@@ -79,16 +79,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			flowInfo = this.anonymousType.analyseCode(currentScope, flowContext, flowInfo);
 		}
 
-		// record some dependency information for exception types
-		ReferenceBinding[] thrownExceptions;
-		if (((thrownExceptions = this.binding.thrownExceptions).length) != 0) {
-			// check exception handling
-			flowContext.checkExceptionHandlers(
-				thrownExceptions,
-				this,
-				flowInfo.unconditionalCopy(),
-				currentScope);
-		}
 		manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
 		manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 		return flowInfo;
@@ -188,10 +178,9 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			hasError = true;
 		} else if (((ReferenceBinding) receiverType).isFinal()) {
 			if (this.anonymousType != null) {
-				if (!receiverType.isEnum()) {
-					scope.problemReporter().anonymousClassCannotExtendFinalClass(this.type, receiverType);
-					hasError = true;
-				}
+				scope.problemReporter().anonymousClassCannotExtendFinalClass(this.type, receiverType);
+				hasError = true;
+				
 			} else if (!receiverType.canBeInstantiated()) {
 				scope.problemReporter().cannotInstantiate(this.type, receiverType);
 				return this.resolvedType = receiverType;
@@ -272,13 +261,10 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			receiverType = new ProblemReferenceBinding(receiverType.sourceName(), (ReferenceBinding)receiverType, ProblemReasons.IllegalSuperTypeVariable);
 			scope.problemReporter().invalidType(this, receiverType);
 			return null;
-		} else if (this.type != null && receiverType.isEnum()) { // tolerate enum constant body
-			scope.problemReporter().cannotInstantiate(this.type, receiverType);
-			return this.resolvedType = receiverType;
 		}
 		// anonymous type scenario
 		// an anonymous class inherits from java.lang.Object when declared "after" an interface
-		this.superTypeBinding = receiverType.isInterface() ? scope.getJavaLangObject() : (ReferenceBinding) receiverType;
+		this.superTypeBinding = (ReferenceBinding) receiverType;
 		// insert anonymous type in scope
 		scope.addAnonymousType(this.anonymousType, (ReferenceBinding) receiverType);
 		this.anonymousType.resolve(scope);

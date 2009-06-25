@@ -251,9 +251,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 						break;
 					case INACCURATE_MATCH:
 						match = locator.newFieldReferenceMatch(element, elementBinding, SearchMatch.A_INACCURATE, -1, -1, reference);
-						if (fieldBinding.type != null && fieldBinding.type.isParameterizedType() && this.pattern.hasTypeArguments()) {
-							updateMatch((ParameterizedTypeBinding) fieldBinding.type, this.pattern.getTypeArguments(), locator);
-						}
 						matches[indexOfFirstFieldBinding] = match;
 						break;
 				}
@@ -274,9 +271,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 							break;
 						case INACCURATE_MATCH:
 							match = locator.newFieldReferenceMatch(element, elementBinding, SearchMatch.A_INACCURATE, -1, -1, reference);
-							if (otherBinding.type != null && otherBinding.type.isParameterizedType() && this.pattern.hasTypeArguments()) {
-								updateMatch((ParameterizedTypeBinding) otherBinding.type, this.pattern.getTypeArguments(), locator);
-							}
 							matches[i] = match;
 							break;
 					}
@@ -442,9 +436,6 @@ protected int resolveLevel(NameReference nameRef) {
 protected int resolveLevelForType(TypeBinding typeBinding) {
 	FieldPattern fieldPattern = (FieldPattern) this.pattern;
 	TypeBinding fieldTypeBinding = typeBinding;
-	if (fieldTypeBinding != null && fieldTypeBinding.isParameterizedType()) {
-		fieldTypeBinding = typeBinding;
-	}
 	return resolveLevelForType(
 			fieldPattern.typeSimpleName,
 			fieldPattern.typeQualification,

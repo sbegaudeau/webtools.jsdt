@@ -648,15 +648,6 @@ public class IntroduceFactoryRefactoring extends ScriptableRefactoring {
 			argDecl.setType(argType);
 			argDecls.add(argDecl);
 		}
-
-		ITypeBinding[] ctorExcepts= fCtorBinding.getExceptionTypes();
-		List exceptions= newMethod.thrownExceptions();
-
-		for(int i=0; i < ctorExcepts.length; i++) {
-			String excName= fImportRewriter.addImport(ctorExcepts[i]);
-
-			exceptions.add(ASTNodeFactory.newName(ast, excName));
-		}
 	}
 
 	/**

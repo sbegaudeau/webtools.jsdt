@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import java.util.ArrayList;
-
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -27,8 +24,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -320,131 +315,31 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 			}
 
 		default:
-			if (expressionType.isInterface()) {
-				switch (castType.kind()) {
-					case Binding.ARRAY_TYPE :
-						// ( ARRAY ) INTERFACE
-						switch (expressionType.id) {
-							case T_JavaLangCloneable :
-							case T_JavaIoSerializable :
-								tagAsNeedCheckCast();
-								return true;
-							default :
-								return false;
-						}
+			switch (castType.kind()) {
+				case Binding.ARRAY_TYPE :
+					// ( ARRAY ) CLASS
+					if (expressionType.id == TypeIds.T_JavaLangObject) { // potential runtime error
+						if (use15specifics) checkUnsafeCast(scope, castType, expressionType, expressionType, true);
+						tagAsNeedCheckCast();
+						return true;
+					}
+					return false;
 
-					default :
-						if (castType.isInterface()) {
-							// ( INTERFACE ) INTERFACE
-							ReferenceBinding interfaceType = (ReferenceBinding) expressionType;
-							TypeBinding match = interfaceType.findSuperTypeWithSameErasure(castType);
-							if (match != null) {
-								return checkUnsafeCast(scope, castType, interfaceType, match, false);
-							}
-							tagAsNeedCheckCast();
-							match = castType.findSuperTypeWithSameErasure(interfaceType);
-							if (match != null) {
-								return checkUnsafeCast(scope, castType, interfaceType, match, true);
-							}
-							if (use15specifics) {
-								checkUnsafeCast(scope, castType, expressionType, null /*no match*/, true);
-								// ensure there is no collision between both interfaces: i.e. I1 extends List<String>, I2 extends List<Object>
-								if (interfaceType.hasIncompatibleSuperType((ReferenceBinding)castType))
-									return false;
-							} else {
-								// pre1.5 semantics - no covariance allowed (even if 1.5 compliant, but 1.4 source)
-								MethodBinding[] castTypeMethods = getAllInheritedMethods((ReferenceBinding) castType);
-								MethodBinding[] expressionTypeMethods = getAllInheritedMethods((ReferenceBinding) expressionType);
-								int exprMethodsLength = expressionTypeMethods.length;
-								for (int i = 0, castMethodsLength = castTypeMethods.length; i < castMethodsLength; i++) {
-									for (int j = 0; j < exprMethodsLength; j++) {
-										if ((castTypeMethods[i].returnType != expressionTypeMethods[j].returnType)
-												&& (CharOperation.equals(castTypeMethods[i].selector, expressionTypeMethods[j].selector))
-												&& castTypeMethods[i].areParametersEqual(expressionTypeMethods[j])) {
-											return false;
-
-										}
-									}
-								}
-							}
-							return true;
-						} else {
-							// ( CLASS ) INTERFACE
-							if (castType.id == TypeIds.T_JavaLangObject) { // no runtime error
-								tagAsUnnecessaryCast(scope, castType);
-								return true;
-							}
-							// can only be a downcast
-							tagAsNeedCheckCast();
-							TypeBinding match = castType.findSuperTypeWithSameErasure(expressionType);
-							if (match != null) {
-								return checkUnsafeCast(scope, castType, expressionType, match, true);
-							}
-							if (((ReferenceBinding) castType).isFinal()) {
-								// no subclass for castType, thus compile-time check is invalid
-								return false;
-							}
-							if (use15specifics) {
-								checkUnsafeCast(scope, castType, expressionType, null /*no match*/, true);
-								// ensure there is no collision between both interfaces: i.e. I1 extends List<String>, I2 extends List<Object>
-								if (((ReferenceBinding)castType).hasIncompatibleSuperType((ReferenceBinding) expressionType)) {
-									return false;
-								}
-							}
-							return true;
-						}
-				}
-			} else {
-				switch (castType.kind()) {
-					case Binding.ARRAY_TYPE :
-						// ( ARRAY ) CLASS
-						if (expressionType.id == TypeIds.T_JavaLangObject) { // potential runtime error
-							if (use15specifics) checkUnsafeCast(scope, castType, expressionType, expressionType, true);
-							tagAsNeedCheckCast();
-							return true;
-						}
-						return false;
-
-					default :
-						if (castType.isInterface()) {
-							// ( INTERFACE ) CLASS
-							ReferenceBinding refExprType = (ReferenceBinding) expressionType;
-							TypeBinding match = refExprType.findSuperTypeWithSameErasure(castType);
-							if (match != null) {
-								return checkUnsafeCast(scope, castType, expressionType, match, false);
-							}
-							// unless final a subclass may implement the interface ==> no check at compile time
-							if (refExprType.isFinal()) {
-								return false;
-							}
-							tagAsNeedCheckCast();
-							match = castType.findSuperTypeWithSameErasure(expressionType);
-							if (match != null) {
-								return checkUnsafeCast(scope, castType, expressionType, match, true);
-							}
-							if (use15specifics) {
-								checkUnsafeCast(scope, castType, expressionType, null /*no match*/, true);
-								// ensure there is no collision between both interfaces: i.e. I1 extends List<String>, I2 extends List<Object>
-								if (refExprType.hasIncompatibleSuperType((ReferenceBinding) castType))
-									return false;
-							}
-							return true;
-						} else {
-							// ( CLASS ) CLASS
-							TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
-							if (match != null) {
-								if (expression != null && castType.id == TypeIds.T_JavaLangString) this.constant = expression.constant; // (String) cst is still a constant
-								return checkUnsafeCast(scope, castType, expressionType, match, false);
-							}
-							match = castType.findSuperTypeWithSameErasure(expressionType);
-							if (match != null) {
-								tagAsNeedCheckCast();
-								return checkUnsafeCast(scope, castType, expressionType, match, true);
-							}
-							return false;
-						}
-				}
+				default :
+					// ( CLASS ) CLASS
+					TypeBinding match = expressionType.findSuperTypeWithSameErasure(castType);
+					if (match != null) {
+						if (expression != null && castType.id == TypeIds.T_JavaLangString) this.constant = expression.constant; // (String) cst is still a constant
+						return checkUnsafeCast(scope, castType, expressionType, match, false);
+					}
+					match = castType.findSuperTypeWithSameErasure(expressionType);
+					if (match != null) {
+						tagAsNeedCheckCast();
+						return checkUnsafeCast(scope, castType, expressionType, match, true);
+					}
+					return false;
 			}
+			
 	}
 }
 
@@ -477,14 +372,6 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 		if (match == castType) {
 			if (!isNarrowing) tagAsUnnecessaryCast(scope, castType);
 			return true;
-		}
-		if (match != null && (
-				castType.isBoundParameterizedType()
-				|| 	expressionType.isBoundParameterizedType())) {
-
-			if (match.isProvablyDistinctFrom(isNarrowing ? expressionType : castType, 0)) {
-				return false;
-			}
 		}
 		if (!isNarrowing) tagAsUnnecessaryCast(scope, castType);
 		return true;
@@ -543,20 +430,6 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 ////				    scope.problemReporter().unsafeRawExpression(this, compileTimeType, runtimeTimeType);
 ////				}
 //		}
-	}
-
-	private MethodBinding[] getAllInheritedMethods(ReferenceBinding binding) {
-		ArrayList collector = new ArrayList();
-		getAllInheritedMethods0(binding, collector);
-		return (MethodBinding[]) collector.toArray(new MethodBinding[collector.size()]);
-	}
-
-	private void getAllInheritedMethods0(ReferenceBinding binding, ArrayList collector) {
-		if (!binding.isInterface()) return;
-		MethodBinding[] methodBindings = binding.methods();
-		for (int i = 0, max = methodBindings.length; i < max; i++) {
-			collector.add(methodBindings[i]);
-		}
 	}
 
 	public boolean isCompactableOperation() {

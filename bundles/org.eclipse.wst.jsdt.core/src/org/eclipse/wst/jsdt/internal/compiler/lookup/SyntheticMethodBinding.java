@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 			this.targetWriteField = targetField;
 			this.kind = FieldWriteAccess;
 		}
-		this.thrownExceptions = Binding.NO_EXCEPTIONS;
 		this.declaringClass = declaringSourceType;
 
 		// check for method collision
@@ -155,7 +154,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 		this.targetReadField = targetField;
 		this.targetEnumType = enumBinding;
 		this.kind = SwitchTable;
-		this.thrownExceptions = Binding.NO_EXCEPTIONS;
 		this.declaringClass = declaringSourceType;
 
 		if (declaringSourceType.isStrictfp()) {
@@ -228,7 +226,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 		this.tagBits |= (TagBits.AnnotationResolved | TagBits.DeprecatedAnnotationResolved);
 	    this.returnType = overridenMethodToBridge.returnType;
 	    this.parameters = overridenMethodToBridge.parameters;
-	    this.thrownExceptions = overridenMethodToBridge.thrownExceptions;
 	    this.targetMethod = targetMethod;
 	    this.kind = BridgeMethod;
 		SyntheticMethodBinding[] knownAccessMethods = declaringClass.syntheticMethods();
@@ -244,7 +241,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 	    this.selector = selector;
 	    this.modifiers = ClassFileConstants.AccPublic | ClassFileConstants.AccStatic;
 		this.tagBits |= (TagBits.AnnotationResolved | TagBits.DeprecatedAnnotationResolved);
-	    this.thrownExceptions = Binding.NO_EXCEPTIONS;
 		if (selector == TypeConstants.VALUES) {
 		    this.returnType = declaringEnum.scope.createArrayType(declaringEnum, 1);
 		    this.parameters = Binding.NO_PARAMETERS;
@@ -288,7 +284,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 			accessedConstructor.parameters.length);
 		parameters[accessedConstructor.parameters.length] =
 			accessedConstructor.declaringClass;
-		this.thrownExceptions = accessedConstructor.thrownExceptions;
 		this.declaringClass = sourceType;
 
 		// check for method collision
@@ -367,7 +362,6 @@ public class SyntheticMethodBinding extends MethodBinding {
 			this.parameters[0] = declaringSourceType;
 			System.arraycopy(accessedMethod.parameters, 0, this.parameters, 1, accessedMethod.parameters.length);
 		}
-		this.thrownExceptions = accessedMethod.thrownExceptions;
 		this.declaringClass = declaringSourceType;
 
 		// check for method collision

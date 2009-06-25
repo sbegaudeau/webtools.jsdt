@@ -245,21 +245,8 @@ private boolean matchOverriddenMethod(ReferenceBinding type, MethodBinding metho
 	if (type == null || this.pattern.selector == null) return false;
 
 	// matches superclass
-	if (!type.isInterface() && !CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
+	if (!CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
 		ReferenceBinding superClass = type.superclass();
-		if (superClass.isParameterizedType()) {
-			MethodBinding[] methods = superClass.getMethods(this.pattern.selector);
-			int length = methods.length;
-			for (int i = 0; i<length; i++) {
-				if (methods[i].areParametersEqual(method)) {
-					if (matchMethod == null) {
-						if (methodParametersEqualsPattern(methods[i].original())) return true;
-					} else {
-						if (methods[i].original().areParametersEqual(matchMethod)) return true;
-					}
-				}
-			}
-		}
 		if (matchOverriddenMethod(superClass, method, matchMethod)) {
 			return true;
 		}
@@ -561,14 +548,14 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 
 	int level = resolveLevelForType(qualifiedPattern, type);
 	if (level != IMPOSSIBLE_MATCH) {
-		if (!type.isAbstract() && !type.isInterface()) { // if concrete class, then method is overridden
+		if (!type.isAbstract()) { // if concrete class, then method is overridden
 			level |= OVERRIDDEN_METHOD_FLAVOR;
 		}
 		return level;
 	}
 
 	// matches superclass
-	if (!type.isInterface() && !CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
+	if (!CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
 		level = resolveLevelAsSubtype(qualifiedPattern, type.superclass(), argumentTypes);
 		if (level != IMPOSSIBLE_MATCH) {
 			if (argumentTypes != null) {
@@ -590,7 +577,7 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 								// this method is already overridden on a super class, current match is impossible
 								return IMPOSSIBLE_MATCH;
 							}
-							if (!method.isAbstract() && !type.isInterface()) {
+							if (!method.isAbstract()) {
 								// store the fact that the method is overridden
 								level |= OVERRIDDEN_METHOD_FLAVOR;
 							}

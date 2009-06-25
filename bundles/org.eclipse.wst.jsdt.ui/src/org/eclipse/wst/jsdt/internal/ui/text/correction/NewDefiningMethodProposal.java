@@ -14,21 +14,19 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
-import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 
@@ -118,21 +116,4 @@ public class NewDefiningMethodProposal extends AbstractMethodCompletionProposal 
 	protected Type getNewMethodType(ASTRewrite rewrite) throws CoreException {
 		return getImportRewrite().addImport(fMethod.getReturnType(), rewrite.getAST());
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.text.correction.AbstractMethodCompletionProposal#addNewExceptions(org.eclipse.wst.jsdt.core.dom.AST, java.util.List)
-	 */
-	protected void addNewExceptions(ASTRewrite rewrite, List exceptions) throws CoreException {
-		AST ast= rewrite.getAST();
-		ImportRewrite importRewrite= getImportRewrite();
-		ITypeBinding[] bindings= fMethod.getExceptionTypes();
-		for (int i= 0; i < bindings.length; i++) {
-			String typeName= importRewrite.addImport(bindings[i]);
-			Name newNode= ASTNodeFactory.newName(ast, typeName);
-			exceptions.add(newNode);
-
-			addLinkedPosition(rewrite.track(newNode), false, "exc_type_" + i); //$NON-NLS-1$
-		}
-	}
-
 }

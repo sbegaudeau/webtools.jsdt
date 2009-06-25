@@ -220,13 +220,6 @@ public Constant constant() {
 	}
 	return fieldConstant;
 }
-/**
- * X<T> t   -->  LX<TT;>;
- */
-public char[] genericSignature() {
-    if ((this.modifiers & ExtraCompilerModifiers.AccGenericSignature) == 0) return null;
-    return this.type.genericTypeSignature();
-}
 
 public final int getAccessFlags() {
 	return modifiers & ExtraCompilerModifiers.AccJustFlag;

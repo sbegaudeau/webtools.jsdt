@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,8 +56,6 @@ public TypeBinding resolveType(BlockScope scope) {
 		this.resolvedType = ((SingleTypeReference) type).resolveTypeEnclosing(scope, (ReferenceBinding) enclosingType);
 		if (!(this.resolvedType instanceof ReferenceBinding))
 			throw new CompletionNodeFound(); // no need to continue if its an array or base type
-		if (this.resolvedType.isInterface()) // handle the anonymous class definition case
-			this.resolvedType = scope.getJavaLangObject();
 	} else {
 		this.resolvedType = type.resolveType(scope, true /* check bounds*/);
 		if (!(this.resolvedType instanceof ReferenceBinding))

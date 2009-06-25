@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CaseStatement extends Statement implements ICaseStatement {
@@ -84,28 +80,14 @@ public class CaseStatement extends Statement implements ICaseStatement {
 		}
 		// add into the collection of cases of the associated switch statement
 		switchStatement.cases[switchStatement.caseCount++] = this;
-		// tag constant name with enum type for privileged access to its members
-		if (switchExpressionType != null && switchExpressionType.isEnum() && (constantExpression instanceof SingleNameReference)) {
-			((SingleNameReference) constantExpression).setActualReceiverType((ReferenceBinding)switchExpressionType);
-		}
+		
 		TypeBinding caseType = constantExpression.resolveType(scope);
 		if (caseType == null || switchExpressionType == null) return Constant.NotAConstant;
 		if (constantExpression.isConstantValueOfTypeAssignableToType(caseType, switchExpressionType)
 				|| caseType.isCompatibleWith(switchExpressionType)) {
-			if (caseType.isEnum()) {
-				if (((this.constantExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT) != 0) {
-					scope.problemReporter().enumConstantsCannotBeSurroundedByParenthesis(this.constantExpression);
-				}
-
-				if (constantExpression instanceof NameReference
-						&& (constantExpression.bits & RestrictiveFlagMASK) == Binding.FIELD) {
-					NameReference reference = (NameReference) constantExpression;
-					FieldBinding field = reference.fieldBinding();
-					return IntConstant.fromValue(field.original().id + 1); // (ordinal value + 1) zero should not be returned see bug 141810
-				}
-			} else {
-				return constantExpression.constant;
-			}
+			
+			return constantExpression.constant;
+			
 		} else if (scope.isBoxingCompatibleWith(caseType, switchExpressionType)
 						|| (caseType.isBaseType()  // narrowing then boxing ?
 								&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing

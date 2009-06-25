@@ -639,7 +639,6 @@ public SyntheticMethodBinding addSyntheticMethod(MethodBinding targetMethod, boo
  * Record the fact that bridge methods need to be generated to override certain inherited methods
  */
 public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMethodToBridge, MethodBinding targetMethod) {
-	if (isInterface()) return null; // only classes & enums get bridge methods
 	// targetMethod may be inherited
 	if (inheritedMethodToBridge.returnType == targetMethod.returnType
 		&& inheritedMethodToBridge.areParameterErasuresEqual(targetMethod)) {
@@ -1315,10 +1314,6 @@ public MethodBinding[] methods() {
 					} else if (!method.areParametersEqual(method2)) { // prior to 1.5, parameter identity meant a collision case
 						continue nextSibling;
 					}
-					boolean isEnumSpecialMethod = isEnum()
-							&& (CharOperation.equals(selector,
-									TypeConstants.VALUEOF) || CharOperation
-									.equals(selector, TypeConstants.VALUES));
 					// report duplicate
 					if (methodDecl == null) {
 						methodDecl = method.sourceMethod(); // cannot be retrieved after binding is lost & may still be null if method is special
@@ -1695,9 +1690,7 @@ public String toString() {
 	if (isStatic() && isNestedType()) buffer.append("static "); //$NON-NLS-1$
 	if (isFinal()) buffer.append("final "); //$NON-NLS-1$
 
-	if (isEnum()) buffer.append("enum "); //$NON-NLS-1$
-	else if (isAnnotationType()) buffer.append("@interface "); //$NON-NLS-1$
-	else if (isClass()) buffer.append("class "); //$NON-NLS-1$
+	if (isClass()) buffer.append("class "); //$NON-NLS-1$
 	else buffer.append("interface "); //$NON-NLS-1$
 	buffer.append((this.compoundName != null) ? CharOperation.toString(this.compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 

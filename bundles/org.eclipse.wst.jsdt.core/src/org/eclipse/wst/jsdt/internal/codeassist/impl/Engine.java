@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -339,10 +339,7 @@ public abstract class Engine implements ITypeRequestor {
 			int oldMod = methodBinding.modifiers;
 			//TODO remove the next line when method from binary type will be able to generate generic siganute
 			methodBinding.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-			result = methodBinding.genericSignature();
-			if(result == null) {
-				result = methodBinding.signature();
-			}
+			result = methodBinding.signature();
 			methodBinding.modifiers = oldMod;
 		}
 		if (result != null) {

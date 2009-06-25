@@ -1008,18 +1008,6 @@ public class Bindings {
 			if (!overridableErasure.isSubTypeCompatible(overriddenErasure) || !overridableErasure.getKey().equals(overriddenErasure.getKey()))
 				return false;
 		}
-		ITypeBinding[] overriddenExceptions= overridden.getExceptionTypes();
-		ITypeBinding[] overridableExceptions= overridable.getExceptionTypes();
-		boolean checked= false;
-		for (int index= 0; index < overriddenExceptions.length; index++) {
-			checked= false;
-			for (int offset= 0; offset < overridableExceptions.length; offset++) {
-				if (overriddenExceptions[index].isSubTypeCompatible(overridableExceptions[offset]))
-					checked= true;
-			}
-			if (!checked)
-				return false;
-		}
 		return true;
 	}
 	

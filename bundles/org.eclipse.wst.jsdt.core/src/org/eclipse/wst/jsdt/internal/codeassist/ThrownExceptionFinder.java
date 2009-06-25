@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007 IBM Corporation and others.
+ * Copyright (c) 2007, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
@@ -51,31 +50,16 @@ public class ThrownExceptionFinder extends ASTVisitor {
 	}
 
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
-		if (messageSend.binding != null) {
-			this.endVisitMethodInvocation(messageSend.binding);
-		}
 		super.endVisit(messageSend, scope);
 	}
 
 	public void endVisit(AllocationExpression allocationExpression, BlockScope scope) {
-		if (allocationExpression.binding != null) {
-			this.endVisitMethodInvocation(allocationExpression.binding);
-		}
 		super.endVisit(allocationExpression, scope);
 	}
 
 	public void endVisit(ThrowStatement throwStatement, BlockScope scope) {
 		this.acceptException((ReferenceBinding)throwStatement.exception.resolvedType);
 		super.endVisit(throwStatement, scope);
-	}
-
-
-	private void endVisitMethodInvocation(MethodBinding methodBinding) {
-		ReferenceBinding[] thrownExceptionBindings = methodBinding.thrownExceptions;
-		int length = thrownExceptionBindings == null ? 0 : thrownExceptionBindings.length;
-		for (int i = 0; i < length; i++) {
-			this.acceptException(thrownExceptionBindings[i]);
-		}
 	}
 
 	public boolean visit(TypeDeclaration typeDeclaration, CompilationUnitScope scope) {

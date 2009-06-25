@@ -1813,13 +1813,8 @@ public void importProblem(ImportReference importRef, Binding expectedImport) {
 }
 public void incompatibleExceptionInThrowsClause(SourceTypeBinding type, MethodBinding currentMethod, MethodBinding inheritedMethod, ReferenceBinding exceptionType) {
 	if (type == currentMethod.declaringClass) {
-		int id;
-		if (currentMethod.declaringClass.isInterface()
-				&& !inheritedMethod.isPublic()){ // interface inheriting Object protected method
-			id = IProblem.IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod;
-		} else {
-			id = IProblem.IncompatibleExceptionInThrowsClause;
-		}
+		int id = IProblem.IncompatibleExceptionInThrowsClause;
+		
 		this.handle(
 			// Exception %1 is not compatible with throws clause in %2
 			// 9.4.4 - The type of exception in the throws clause is incompatible.
@@ -1887,12 +1882,9 @@ public void incompatibleReturnType(MethodBinding currentMethod, MethodBinding in
 
 	int id;
 	final ReferenceBinding declaringClass = currentMethod.declaringClass;
-	if (declaringClass.isInterface()
-			&& !inheritedMethod.isPublic()){ // interface inheriting Object protected method
-		id = IProblem.IncompatibleReturnTypeForNonInheritedInterfaceMethod;
-	} else {
-		id = IProblem.IncompatibleReturnType;
-	}
+	
+	id = IProblem.IncompatibleReturnType;
+	
 	AbstractMethodDeclaration method = currentMethod.sourceMethod();
 	int sourceStart = 0;
 	int sourceEnd = 0;
@@ -3570,8 +3562,6 @@ public void needToEmulateMethodAccess(
 	if (method.isConstructor()) {
 		int severity = computeSeverity(IProblem.NeedToEmulateConstructorAccess);
 		if (severity == ProblemSeverities.Ignore) return;
-		if (method.declaringClass.isEnum())
-			return; // tolerate emulation for enum constructors, which can only be made private
 		this.handle(
 			IProblem.NeedToEmulateConstructorAccess,
 			new String[] {

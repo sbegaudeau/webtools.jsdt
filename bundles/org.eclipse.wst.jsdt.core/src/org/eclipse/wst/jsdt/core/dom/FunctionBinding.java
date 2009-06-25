@@ -43,7 +43,6 @@ class FunctionBinding implements IFunctionBinding {
 	private org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding binding;
 	private BindingResolver resolver;
 	private ITypeBinding[] parameterTypes;
-	private ITypeBinding[] exceptionTypes;
 	private String name;
 	private ITypeBinding declaringClass;
 	private ITypeBinding returnType;
@@ -144,30 +143,7 @@ class FunctionBinding implements IFunctionBinding {
 	public Object getDefaultValue() {
 		return null;
 	}
-
-	/**
-	 * @see IFunctionBinding#getExceptionTypes()
-	 */
-	public ITypeBinding[] getExceptionTypes() {
-		if (this.exceptionTypes != null) {
-			return exceptionTypes;
-		}
-		org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[] exceptions = this.binding.thrownExceptions;
-		int length = exceptions == null ? 0 : exceptions.length;
-		if (length == 0) {
-			return this.exceptionTypes = NO_TYPE_BINDINGS;
-		}
-		ITypeBinding[] exTypes = new ITypeBinding[length];
-		for (int i = 0; i < length; i++) {
-			ITypeBinding typeBinding = this.resolver.getTypeBinding(exceptions[i]);
-			if (typeBinding == null) {
-				return this.exceptionTypes = NO_TYPE_BINDINGS;
-			}
-			exTypes[i] = typeBinding;
-		}
-		return this.exceptionTypes = exTypes;
-	}
-
+	
 	public IJavaScriptElement getJavaElement() {
 		JavaElement element = getUnresolvedJavaElement();
 		if (element == null)

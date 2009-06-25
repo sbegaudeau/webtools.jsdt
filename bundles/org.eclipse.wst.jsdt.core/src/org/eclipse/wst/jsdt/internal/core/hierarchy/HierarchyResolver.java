@@ -573,12 +573,8 @@ private void reportHierarchy(IType focus, CompilationUnitDeclaration parsedUnit,
 			continue; // ignore types outside of hierarchy
 		}
 
-		IType superclass;
-		if (typeBinding.isInterface()){ // do not connect interfaces to Object
-			superclass = null;
-		} else {
-			superclass = findSuperClass(suppliedType, typeBinding);
-		}
+		IType superclass = findSuperClass(suppliedType, typeBinding);
+		
 		IType[] superinterfaces = new IType[0];// findSuperInterfaces(suppliedType, typeBinding);
 
 		this.builder.connect(suppliedType, this.builder.getHandle(suppliedType, typeBinding), superclass, superinterfaces);

@@ -361,7 +361,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					return problemMethod; // can be null
 				concreteMatch = candidates[0];
 			}
-			compilationUnitScope().recordTypeReferences(concreteMatch.thrownExceptions);
 			return concreteMatch;
 		}
 		// no need to check for visibility - interface methods are public
@@ -402,25 +401,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding exactMethod = (receiverType!=null) ?
 			receiverType.getExactMethod(selector, argumentTypes, unitScope) :
 				unitScope.referenceContext.compilationUnitBinding.getExactMethod(selector, argumentTypes, unitScope);
-		if (exactMethod != null && !exactMethod.isBridge()) {
-			// must find both methods for this case: <S extends A> void foo() {}  and  <N extends B> N foo() { return null; }
-			// or find an inherited method when the exact match is to a bridge method
-			unitScope.recordTypeReferences(exactMethod.thrownExceptions);
-			// special treatment for Object.getClass() in 1.5 mode (substitute parameterized return type)
-			if (receiverType!=null && receiverType.isInterface() || exactMethod.canBeSeenBy(receiverType, invocationSite, this)) {
-//				if (receiverType.id != T_JavaLangObject
-//					&& argumentTypes == Binding.NO_PARAMETERS
-//				    && CharOperation.equals(selector, GETCLASS)
-//				    && exactMethod.returnType.isParameterizedType()/*1.5*/) {
-//						return ParameterizedMethodBinding.instantiateGetClass(receiverType, exactMethod, this);
-//			    }
-//				// targeting a generic method could find an exact match with variable return type
-//				if (invocationSite.genericTypeArguments() != null) {
-//					exactMethod = computeCompatibleMethod(exactMethod, argumentTypes, invocationSite);
-//				}
-				return exactMethod;
-			}
-		}
 		return null;
 	}
 
@@ -526,9 +506,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		// we could hold onto the not visible field for extra error reporting
 		while (keepLooking) {
 			
-			ReferenceBinding sourceType = currentType.isParameterizedType()
-				? ((ParameterizedTypeBinding) currentType).genericType()
-				: currentType;
+			ReferenceBinding sourceType = currentType;
 			if (sourceType.isHierarchyBeingConnected())
 				return null; // looking for an undefined member type in its own superclass ref
 			((SourceTypeBinding) sourceType).classScope.connectTypeHierarchy();
@@ -592,15 +570,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				methodBinding= new ProblemMethodBinding(selector, argumentTypes, ProblemReasons.NotFound);
 			return methodBinding;
 		}
-		boolean receiverTypeIsInterface = receiverType.isInterface();
-
-		if (receiverTypeIsInterface) {
-			unitScope.recordTypeReference(receiverType);
-			MethodBinding[] receiverMethods = receiverType.getMethods(selector);
-			if (receiverMethods.length > 0)
-				found.addAll(receiverMethods);
-			currentType = getJavaLangObject();
-		}
 
 		// superclass lookup
 		long complianceLevel = compilerOptions().complianceLevel;
@@ -612,15 +581,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			MethodBinding[] currentMethods = currentType.getMethods(selector);
 			int currentLength = currentMethods.length;
 			if (currentLength > 0) {
-				if (isCompliant14 && (receiverTypeIsInterface || found.size > 0)) {
+				if (isCompliant14 && (found.size > 0)) {
 					nextMethod: for (int i = 0, l = currentLength; i < l; i++) { // currentLength can be modified inside the loop
 						MethodBinding currentMethod = currentMethods[i];
 						if (currentMethod == null) continue nextMethod;
-						if (receiverTypeIsInterface && !currentMethod.isPublic()) { // only public methods from Object are visible to interface receiverTypes
-							currentLength--;
-							currentMethods[i] = null;
-							continue nextMethod;
-						}
 
 						// if 1.4 compliant, must filter out redundant protected methods from superclasses
 						// protected method need to be checked only - default access is already dealt with in #canBeSeen implementation
@@ -672,7 +636,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding[] candidates = null;
 		int candidatesCount = 0;
 		MethodBinding problemMethod = null;
-		boolean searchForDefaultAbstractMethod = isCompliant14 && ! receiverTypeIsInterface && (receiverType.isAbstract() || receiverType.isTypeVariable());
+		boolean searchForDefaultAbstractMethod = isCompliant14 && (receiverType.isAbstract() || receiverType.isTypeVariable());
 		if (foundSize > 0) {
 			// argument type compatibility check
 			for (int i = 0; i < foundSize; i++) {
@@ -684,7 +648,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							// return the single visible match now
 							if (searchForDefaultAbstractMethod)
 								return findDefaultAbstractMethod(receiverType, selector, argumentTypes, invocationSite, classHierarchyStart, found, compatibleMethod);
-							unitScope.recordTypeReferences(compatibleMethod.thrownExceptions);
 							return compatibleMethod;
 						}
 						if (candidatesCount == 0)
@@ -752,49 +715,40 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 		// tiebreak using visibility check
 		int visiblesCount = 0;
-		if (receiverTypeIsInterface) {
-			if (candidatesCount == 1) {
-				unitScope.recordTypeReferences(candidates[0].thrownExceptions);
-				return candidates[0];
-			}
-			visiblesCount = candidatesCount;
-		} else {
-			for (int i = 0; i < candidatesCount; i++) {
-				MethodBinding methodBinding = candidates[i];
-				if (methodBinding.canBeSeenBy(receiverType, invocationSite,
-						this)) {
-					if (visiblesCount != i) {
-						candidates[i] = null;
-						candidates[visiblesCount] = methodBinding;
-					}
-					visiblesCount++;
+		
+		for (int i = 0; i < candidatesCount; i++) {
+			MethodBinding methodBinding = candidates[i];
+			if (methodBinding.canBeSeenBy(receiverType, invocationSite,
+					this)) {
+				if (visiblesCount != i) {
+					candidates[i] = null;
+					candidates[visiblesCount] = methodBinding;
 				}
+				visiblesCount++;
+			}
 
-			}
-			if (visiblesCount == 1) {
-				if (searchForDefaultAbstractMethod)
-					return findDefaultAbstractMethod(receiverType, selector,
-							argumentTypes, invocationSite, classHierarchyStart,
-							found, candidates[0]);
-				unitScope.recordTypeReferences(candidates[0].thrownExceptions);
-				return candidates[0];
-			}
-			if (visiblesCount == 0) {
-				MethodBinding interfaceMethod = findDefaultAbstractMethod(
-						receiverType, selector, argumentTypes, invocationSite,
-						classHierarchyStart, found, null);
-				if (interfaceMethod != null)
-					return interfaceMethod;
-				return new ProblemMethodBinding(candidates[0],
-						candidates[0].selector, candidates[0].parameters,
-						ProblemReasons.NotVisible);
-			}
 		}
+		if (visiblesCount == 1) {
+			if (searchForDefaultAbstractMethod)
+				return findDefaultAbstractMethod(receiverType, selector,
+						argumentTypes, invocationSite, classHierarchyStart,
+						found, candidates[0]);
+			return candidates[0];
+		}
+		if (visiblesCount == 0) {
+			MethodBinding interfaceMethod = findDefaultAbstractMethod(
+					receiverType, selector, argumentTypes, invocationSite,
+					classHierarchyStart, found, null);
+			if (interfaceMethod != null)
+				return interfaceMethod;
+			return new ProblemMethodBinding(candidates[0],
+					candidates[0].selector, candidates[0].parameters,
+					ProblemReasons.NotVisible);
+		}
+		
 		if (complianceLevel <= ClassFileConstants.JDK1_3) {
 			ReferenceBinding declaringClass = candidates[0].declaringClass;
-			return !declaringClass.isInterface()
-				? mostSpecificClassMethodBinding(candidates, visiblesCount, invocationSite)
-				: mostSpecificInterfaceMethodBinding(candidates, visiblesCount, invocationSite);
+			return mostSpecificClassMethodBinding(candidates, visiblesCount, invocationSite);
 		}
 
 		MethodBinding mostSpecificMethod = mostSpecificMethodBinding(candidates, visiblesCount, argumentTypes, invocationSite, receiverType);
@@ -837,14 +791,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 								CLONE,
 								methodBinding.returnType,
 								argumentTypes,
-								null,
 								object);
 			            }
 			            break;
 			        case 'g':
-			            if (CharOperation.equals(selector, GETCLASS) && methodBinding.returnType.isParameterizedType()/*1.5*/) {
-							return null;
-			            }
 			            break;
 			    }
 			}
@@ -1413,7 +1363,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			MethodBinding[] methods = receiverType.getMethods(TypeConstants.INIT);
 			if (methods == Binding.NO_METHODS)
 			{
-				return new MethodBinding(0, TypeConstants.INIT, TypeBinding.UNKNOWN, null, null,receiverType);
+				return new MethodBinding(0, TypeConstants.INIT, TypeBinding.UNKNOWN, null,receiverType);
  
 			}
 			MethodBinding[] compatible = new MethodBinding[methods.length];
@@ -2755,7 +2705,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				TypeBinding erasedSuperType = erasedSuperTypes[j];
 				if (erasedSuperType == null) continue nextSuperType;
 				TypeBinding match;
-				if (erasedSuperType == otherType || erasedSuperType.id == T_JavaLangObject && otherType.isInterface()) {
+				if (erasedSuperType == otherType) {
 					match = erasedSuperType;
 				} else {
 					if (erasedSuperType.isArrayType()) {
@@ -2803,16 +2753,11 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					TypeBinding otherType = erasedSuperTypes[j];
 					if (otherType == null) continue nextOtherType;
 					if (erasedSuperType instanceof ReferenceBinding) {
-						if (otherType.id == T_JavaLangObject && erasedSuperType.isInterface()) continue nextOtherType; // keep Object for an interface
 						if (erasedSuperType.findSuperTypeWithSameErasure(otherType) != null) {
 							erasedSuperTypes[j] = null; // discard non minimal supertype
 							remaining--;
 						}
 					} else if (erasedSuperType.isArrayType()) {
-					if (otherType.isArrayType() // keep Object[...] for an interface array (same dimensions)
-							&& otherType.leafComponentType().id == T_JavaLangObject
-							&& otherType.dimensions() == erasedSuperType.dimensions()
-							&& erasedSuperType.leafComponentType().isInterface()) continue nextOtherType;
 						if (erasedSuperType.findSuperTypeWithSameErasure(otherType) != null) {
 							erasedSuperTypes[j] = null; // discard non minimal supertype
 							remaining--;
@@ -2848,7 +2793,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				if (!visible[j].areParametersCompatibleWith(method.parameters))
 					continue nextVisible;
 			}
-			compilationUnitScope().recordTypeReferences(method.thrownExceptions);
 			return method;
 		}
 			return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
@@ -2891,7 +2835,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				if (!visible[j].areParametersCompatibleWith(method.parameters))
 					continue nextVisible;
 			}
-			compilationUnitScope().recordTypeReferences(method.thrownExceptions);
 			return method;
 		}
 			return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
@@ -2946,7 +2889,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		if (count == 1) {
 			for (int i = 0; i < visibleSize; i++) {
 				if (moreSpecific[i] != null) {
-					compilationUnitScope().recordTypeReferences(visible[i].thrownExceptions);
 					return visible[i];
 				}
 			}
@@ -3010,31 +2952,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							// 15.12.2
 							continue nextSpecific; // choose original2 instead
 						}
-						if (original.thrownExceptions != original2.thrownExceptions) {
-							if (mostSpecificExceptions == null)
-								mostSpecificExceptions = original.thrownExceptions;
-							if (possibleMethods == null)
-								possibleMethods = new SimpleSet(3);
-							int mostSpecificLength = mostSpecificExceptions.length;
-							int original2Length = original2.thrownExceptions.length;
-							SimpleSet temp = new SimpleSet(mostSpecificLength);
-							nextException : for (int t = 0; t < mostSpecificLength; t++) {
-								ReferenceBinding exception = mostSpecificExceptions[t];
-								for (int s = 0; s < original2Length; s++) {
-									if (exception.isCompatibleWith(original2.thrownExceptions[s])) {
-										possibleMethods.add(current);
-										temp.add(exception);
-										continue nextException;
-									} else if (original2.thrownExceptions[s].isCompatibleWith(exception)) {
-										possibleMethods.add(next);
-										temp.add(original2.thrownExceptions[s]);
-										continue nextException;
-									}
-								}
-							}
-							mostSpecificExceptions = temp.elementSize == 0 ? Binding.NO_EXCEPTIONS : new ReferenceBinding[temp.elementSize];
-							temp.asArray(mostSpecificExceptions);
-						}
 					}
 				}
 				if (mostSpecificExceptions != null) {
@@ -3043,10 +2960,9 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					nextMethod : for (int p = 0, vLength = values.length; p < vLength; p++) {
 						MethodBinding possible = (MethodBinding) values[p];
 						if (possible == null) continue nextMethod;
-						ReferenceBinding[] itsExceptions = possible.thrownExceptions;
-						if (itsExceptions.length == exceptionLength) {
+						if (0 == exceptionLength) {
 							nextException : for (int e = 0; e < exceptionLength; e++) {
-								ReferenceBinding exception = itsExceptions[e];
+								ReferenceBinding exception = null;
 								for (int f = 0; f < exceptionLength; f++)
 									if (exception == mostSpecificExceptions[f]) continue nextException;
 								continue nextMethod;

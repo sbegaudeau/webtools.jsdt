@@ -798,8 +798,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
     	        fLinkedProposalModel.getPositionGroup(KEY_FIELD_NAME_EXT + i, true).addPosition(astRewrite.track(fieldNameNode), false);
 			}
 		}
-
-		addExceptionsToNewConstructor(newConstructor);
 		
 		if (doAddComments()) {
 			try {
@@ -898,17 +896,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
                 return false;
         }
         return true;
-    }
-
-    private void addExceptionsToNewConstructor(FunctionDeclaration newConstructor) {
-        IFunctionBinding constructorBinding= getSuperConstructorBinding();
-        if (constructorBinding == null)
-            return;
-        ITypeBinding[] exceptions= constructorBinding.getExceptionTypes();
-        for (int i= 0; i < exceptions.length; i++) {
-            Name exceptionTypeName= fAnonymousInnerClassNode.getAST().newName(Bindings.getNameComponents(exceptions[i]));
-            newConstructor.thrownExceptions().add(exceptionTypeName);
-        }
     }
 
     private SingleVariableDeclaration newParameterDeclaration(AST ast, ImportRewrite importRewrite, String paramName, ITypeBinding paramType) {

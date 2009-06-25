@@ -85,9 +85,6 @@ class TypeBinding implements ITypeBinding {
 	 *  
 	 */
 	public String getBinaryName() {
-		if (this.binding.isCapture()) {
-			return null; // no binary name for capture binding
-		}
  		char[] constantPoolName = this.binding.constantPoolName();
 		if (constantPoolName == null) return null;
 		char[] dotSeparated = CharOperation.replaceOnCopy(constantPoolName, '/', '.');
@@ -365,15 +362,8 @@ class TypeBinding implements ITypeBinding {
 				return getUnresolvedJavaElement(typeBinding);
 			case Binding.BASE_TYPE :
 				return null;
-			default :
-				if (typeBinding.isCapture())
-					return null;
 		}
-		ReferenceBinding referenceBinding;
-		if (typeBinding.isParameterizedType())
-			referenceBinding = (ReferenceBinding) typeBinding;
-		else
-			referenceBinding = (ReferenceBinding) typeBinding;
+		ReferenceBinding referenceBinding = (ReferenceBinding) typeBinding;
 		char[] fileName = referenceBinding.getFileName();
 		if (referenceBinding.isLocalType() || referenceBinding.isAnonymousType()) {
 			// local or anonymous type
@@ -607,10 +597,6 @@ class TypeBinding implements ITypeBinding {
 			case Binding.ARRAY_TYPE :
 			case Binding.BASE_TYPE :
 				return null;
-			default:
-				// no superclass for interface types (interface | annotation type)
-				if (this.binding.isInterface())
-					return null;
 		}
 		ReferenceBinding superclass = null;
 		try {
@@ -693,7 +679,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isClass()
 	 */
 	public boolean isClass() {
-		return this.binding.isClass() && !this.binding.isTypeVariable() && !this.binding.isWildcard();
+		return this.binding.isClass() && !this.binding.isTypeVariable();
 	}
 
 	/*
@@ -734,16 +720,7 @@ class TypeBinding implements ITypeBinding {
 	public boolean isFromSource() {
 		if (isClass()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			if (referenceBinding.isParameterizedType()) {
-				ParameterizedTypeBinding parameterizedTypeBinding = (ParameterizedTypeBinding) referenceBinding;
-				org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding erasure = parameterizedTypeBinding;
-				if (erasure instanceof ReferenceBinding) {
-					return !((ReferenceBinding) erasure).isBinaryBinding();
-				}
-				return false;
-			} else {
-				return !referenceBinding.isBinaryBinding();
-			}
+			return !referenceBinding.isBinaryBinding();
 		}
 		return false;
 	}
@@ -835,7 +812,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isTypeVariable()
 	 */
 	public boolean isTypeVariable() {
-		return this.binding.isTypeVariable() && !this.binding.isCapture();
+		return this.binding.isTypeVariable();
 	}
 
 	private boolean shouldBeRemoved(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {

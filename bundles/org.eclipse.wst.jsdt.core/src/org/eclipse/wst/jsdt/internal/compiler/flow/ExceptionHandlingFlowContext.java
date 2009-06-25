@@ -54,7 +54,7 @@ public ExceptionHandlingFlowContext(
 	super(parent, associatedNode);
 	this.isMethodContext = scope == scope.methodScope();
 	this.handledExceptions = handledExceptions;
-	int count = handledExceptions.length, cacheSize = (count / ExceptionHandlingFlowContext.BitCacheSize) + 1;
+	int count = 0, cacheSize = (count / ExceptionHandlingFlowContext.BitCacheSize) + 1;
 	this.isReached = new int[cacheSize]; // none is reached by default
 	this.isNeeded = new int[cacheSize]; // none is needed by default
 	this.initsOnExceptions = new UnconditionalFlowInfo[count];

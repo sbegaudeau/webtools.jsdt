@@ -483,24 +483,7 @@ protected void matchReportReference(QualifiedTypeReference qTypeRef, IJavaScript
 }
 void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding, MatchLocator locator) throws CoreException {
 
-	// Look if there's a need to special report for parameterized type
-	if (refBinding.isParameterizedType()) {
-
-		// See whether it is necessary to report or not
-		if (match.getRule() == 0) return; // impossible match
-		boolean report = (this.isErasureMatch && match.isErasure()) || (this.isEquivalentMatch && match.isEquivalent()) || match.isExact();
-		if (!report) return;
-
-		// Make a special report for parameterized types if necessary
-		 if (refBinding.isParameterizedType() && this.pattern.hasTypeArguments())  {
-			TypeReference typeRef = null;
-			TypeReference[] typeArguments = null;
-			if (typeRef != null) {
-				locator.reportAccurateParameterizedTypeReference(match, typeRef, lastIndex, typeArguments);
-				return;
-			}
-		}
-	} else if (this.pattern.hasTypeArguments()) { // binding has no type params, compatible erasure if pattern does
+	if (this.pattern.hasTypeArguments()) { // binding has no type params, compatible erasure if pattern does
 		match.setRule(SearchPattern.R_ERASURE_MATCH);
 	}
 

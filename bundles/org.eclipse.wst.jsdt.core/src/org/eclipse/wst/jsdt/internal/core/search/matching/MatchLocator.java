@@ -1386,13 +1386,7 @@ protected IType lookupType(ReferenceBinding typeBinding) {
 	char[] sourceName = typeBinding.qualifiedSourceName();
 	String typeName = new String(sourceName);
 	int acceptFlag = 0;
-	if (typeBinding.isAnnotationType()) {
-		acceptFlag = NameLookup.ACCEPT_ANNOTATIONS;
-	} else if (typeBinding.isEnum()) {
-		acceptFlag = NameLookup.ACCEPT_ENUMS;
-	} else if (typeBinding.isInterface()) {
-		acceptFlag = NameLookup.ACCEPT_INTERFACES;
-	} else if (typeBinding.isClass()) {
+	if (typeBinding.isClass()) {
 		acceptFlag = NameLookup.ACCEPT_CLASSES;
 	}
 	if (pkgs != null) {

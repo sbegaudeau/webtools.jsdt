@@ -176,7 +176,6 @@ public MethodDeclaration addMissingAbstractMethodFor(MethodBinding methodBinding
 			methodBinding.selector,
 			methodBinding.returnType,
 			argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
-			methodBinding.thrownExceptions, //exceptions
 			this.binding); //declaringClass
 
 	methodDeclaration.scope = new MethodScope(this.scope, methodDeclaration, true);
@@ -403,7 +402,6 @@ public MethodBinding createDefaultConstructorWithBinding(MethodBinding inherited
 	constructor.binding = new MethodBinding(
 			constructor.modifiers, //methodDeclaration
 			argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
-			inheritedConstructorBinding.thrownExceptions, //exceptions
 			sourceType); //declaringClass
 
 	constructor.binding.modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
@@ -795,13 +793,7 @@ public void resolve() {
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=101476
     		CompilationUnitScope compilationUnitScope = this.scope.compilationUnitScope();
 			MethodBinding methodBinding = sourceType.getExactMethod(TypeConstants.WRITEREPLACE, new TypeBinding[0], compilationUnitScope);
-   			ReferenceBinding[] throwsExceptions;
-			needSerialVersion =
-				methodBinding == null
-    				|| !methodBinding.isValidBinding()
-    				|| methodBinding.returnType.id != TypeIds.T_JavaLangObject
-    				|| (throwsExceptions = methodBinding.thrownExceptions).length != 1
-    				|| throwsExceptions[0].id != TypeIds.T_JavaIoObjectStreamException;
+			needSerialVersion = true;
     		if (needSerialVersion) {
     			// check the presence of an implementation of the methods
     			// private void writeObject(java.io.ObjectOutputStream out) throws IOException
@@ -811,22 +803,12 @@ public void resolve() {
     			TypeBinding argumentTypeBinding = this.scope.getType(TypeConstants.JAVA_IO_OBJECTOUTPUTSTREAM, 3);
      			if (argumentTypeBinding.isValidBinding()) {
             		methodBinding = sourceType.getExactMethod(TypeConstants.WRITEOBJECT, new TypeBinding[] { argumentTypeBinding }, compilationUnitScope);
-            		hasWriteObjectMethod = methodBinding != null
-            				&& methodBinding.isValidBinding()
-            				&& methodBinding.modifiers == ClassFileConstants.AccPrivate
-            				&& methodBinding.returnType == TypeBinding.VOID
-            				&& (throwsExceptions = methodBinding.thrownExceptions).length == 1
-            				&& throwsExceptions[0].id == TypeIds.T_JavaIoException;
+            		hasWriteObjectMethod = false;
     			}
     			argumentTypeBinding = this.scope.getType(TypeConstants.JAVA_IO_OBJECTINPUTSTREAM, 3);
      			if (argumentTypeBinding.isValidBinding()) {
             		methodBinding = sourceType.getExactMethod(TypeConstants.READOBJECT, new TypeBinding[] { argumentTypeBinding }, compilationUnitScope);
-            		hasReadObjectMethod = methodBinding != null
-            				&& methodBinding.isValidBinding()
-            				&& methodBinding.modifiers == ClassFileConstants.AccPrivate
-            				&& methodBinding.returnType == TypeBinding.VOID
-            				&& (throwsExceptions = methodBinding.thrownExceptions).length == 1
-            				&& throwsExceptions[0].id == TypeIds.T_JavaIoException;
+            		hasReadObjectMethod = false;
     			}
     			needSerialVersion = !hasWriteObjectMethod || !hasReadObjectMethod;
     		}

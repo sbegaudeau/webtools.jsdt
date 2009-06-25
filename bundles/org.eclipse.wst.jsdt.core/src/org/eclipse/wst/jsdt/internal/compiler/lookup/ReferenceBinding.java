@@ -524,14 +524,7 @@ public boolean detectAnnotationCycle() {
 	if ((this.tagBits & TagBits.BeginAnnotationCheck) != 0) return true; // in the middle of checking its methods
 
 	this.tagBits |= TagBits.BeginAnnotationCheck;
-	MethodBinding[] currentMethods = methods();
 	boolean inCycle = false; // check each method before failing
-	for (int i = 0, l = currentMethods.length; i < l; i++) {
-		TypeBinding returnType = currentMethods[i].returnType.leafComponentType();
-		if (returnType.isAnnotationType() && ((ReferenceBinding) returnType).detectAnnotationCycle()) {
-			inCycle = true;
-		}
-	}
 	if (inCycle)
 		return true;
 	this.tagBits |= TagBits.EndAnnotationCheck;
@@ -722,9 +715,6 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 	switch (otherType.kind()) {
 		case Binding.TYPE :
 			ReferenceBinding otherReferenceType = (ReferenceBinding) otherType;
-			if (this.isInterface())  // Explicit conversion from an interface
-										// to a class is not allowed
-				return false;
 			if(Arrays.equals(this.compoundName,otherReferenceType.compoundName) && Arrays.equals(this.fileName, otherReferenceType.fileName)) {
 				return true;
 			}

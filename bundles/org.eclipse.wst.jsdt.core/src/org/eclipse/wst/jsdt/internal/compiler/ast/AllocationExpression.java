@@ -47,9 +47,6 @@ public class AllocationExpression extends Expression implements InvocationSite, 
 	
 	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-	// check captured variables are initialized in current context (26134)
-//	checkCapturedLocalInitializationIfNecessary((ReferenceBinding)this.binding.declaringClass.erasure(), currentScope, flowInfo);
-
 	if (this.member!=null)
 		flowInfo =
 			this.member
@@ -63,16 +60,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 					.analyseCode(currentScope, flowContext, flowInfo)
 					.unconditionalInits();
 		}
-	}
-	// record some dependency information for exception types
-	ReferenceBinding[] thrownExceptions;
-	if (this.binding != null && this.binding.thrownExceptions != null && (thrownExceptions = this.binding.thrownExceptions).length != 0) {
-		// check exception handling
-		flowContext.checkExceptionHandlers(
-			thrownExceptions,
-			this,
-			flowInfo.unconditionalCopy(),
-			currentScope);
 	}
 	
 	return flowInfo;

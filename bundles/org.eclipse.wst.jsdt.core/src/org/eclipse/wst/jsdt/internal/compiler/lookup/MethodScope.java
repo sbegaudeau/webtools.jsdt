@@ -101,13 +101,7 @@ public class MethodScope extends BlockScope {
 
 		// check for abnormal modifiers
 		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccStatic | ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStrictfp);
-		if (declaringClass.isEnum() && !((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
-			if ((((AbstractMethodDeclaration) referenceContext).modifiers & ClassFileConstants.AccStrictfp) != 0) {
-				// must check the parse node explicitly
-				problemReporter().illegalModifierForMethod((AbstractMethodDeclaration) referenceContext);
-			}
-			modifiers |= ClassFileConstants.AccPrivate; // enum constructor is implicitly private
-		} else if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
+		if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
 			problemReporter().illegalModifierForMethod((AbstractMethodDeclaration) referenceContext);
 			modifiers &= ~ExtraCompilerModifiers.AccJustFlag | ~UNEXPECTED_MODIFIERS;
 		} else if ((((AbstractMethodDeclaration) referenceContext).modifiers & ClassFileConstants.AccStrictfp) != 0) {
@@ -234,7 +228,7 @@ public class MethodScope extends BlockScope {
 		if (method.isConstructor() || isConstructor) {
 			if (method.isDefaultConstructor() || isConstructor)
 				modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
-			methodBinding = new MethodBinding(modifiers, null, null, declaringClass);
+			methodBinding = new MethodBinding(modifiers, null, declaringClass);
 			checkAndSetModifiersForConstructor(methodBinding);
 		} else {
 //			if (declaringClass.isInterface()) // interface or annotation type
@@ -254,11 +248,11 @@ public class MethodScope extends BlockScope {
 			if (isLocal && method.selector!=null)
 			{
 				methodBinding =
-					new LocalFunctionBinding(modifiers, name,returnType, null, null, declaringClass);
+					new LocalFunctionBinding(modifiers, name,returnType, null, declaringClass);
 			}
 			else	// not local method
 				methodBinding =
-					new MethodBinding(modifiers, name,returnType, null, null, declaringClass);
+					new MethodBinding(modifiers, name,returnType, null, declaringClass);
 			if (method.inferredMethod!=null)
 			{
 				methodBinding.tagBits |= TagBits.IsInferredType;

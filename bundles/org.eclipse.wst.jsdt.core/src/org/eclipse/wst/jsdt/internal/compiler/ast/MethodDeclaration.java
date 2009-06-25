@@ -71,7 +71,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 				new ExceptionHandlingFlowContext(
 					initializationContext,
 					this,
-					binding.thrownExceptions,
+					null,
 					scope,
 					FlowInfo.DEAD_END);
 

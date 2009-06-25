@@ -33,7 +33,7 @@ public ThrowStatement(Expression exception, int sourceStart, int sourceEnd) {
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	this.exception.analyseCode(currentScope, flowContext, flowInfo);
 	// need to check that exception thrown is actually caught somewhere
-	flowContext.checkExceptionHandlers(this.exceptionType, this, flowInfo, currentScope);
+	//flowContext.checkExceptionHandlers(this.exceptionType, this, flowInfo, currentScope);
 	return FlowInfo.DEAD_END;
 }
 

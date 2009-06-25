@@ -83,7 +83,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 			new ExceptionHandlingFlowContext(
 				initializerFlowContext.parent,
 				this,
-				this.binding.thrownExceptions,
+				null,
 				this.scope,
 				FlowInfo.DEAD_END);
 		initializerFlowContext.checkInitializerExceptions(
@@ -99,7 +99,6 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 				if ((size = computedExceptions.size()) > 0){
 					ReferenceBinding[] actuallyThrownExceptions;
 					computedExceptions.toArray(actuallyThrownExceptions = new ReferenceBinding[size]);
-					this.binding.thrownExceptions = actuallyThrownExceptions;
 				}
 			}
 		}

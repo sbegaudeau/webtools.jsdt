@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -68,11 +67,6 @@ static Object convertMemberValue(Object binaryValue, LookupEnvironment env) {
 public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironment environment, boolean convertGenericToRawType) {
 	if (type instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) type).resolve(environment, convertGenericToRawType);
-	if (JavaScriptCore.IS_ECMASCRIPT4)
-	{
-		if (type.isParameterizedType())
-			return ((ParameterizedTypeBinding) type).resolve();
-	}
 
 	return type;
 }
@@ -713,8 +707,6 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 		method.returnType = resolveType(method.returnType, this.environment, null, 0);
 	for (int i = method.parameters.length; --i >= 0;)
 		method.parameters[i] = resolveType(method.parameters[i], this.environment, null, 0);
-	for (int i = method.thrownExceptions.length; --i >= 0;)
-		method.thrownExceptions[i] = resolveType(method.thrownExceptions[i], this.environment, true);
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
 }
@@ -746,9 +738,7 @@ public String toString() {
 	if (isStatic() && isNestedType()) buffer.append("static "); //$NON-NLS-1$
 	if (isFinal()) buffer.append("final "); //$NON-NLS-1$
 
-	if (isEnum()) buffer.append("enum "); //$NON-NLS-1$
-	else if (isAnnotationType()) buffer.append("@interface "); //$NON-NLS-1$
-	else if (isClass()) buffer.append("class "); //$NON-NLS-1$
+	if (isClass()) buffer.append("class "); //$NON-NLS-1$
 	else buffer.append("interface "); //$NON-NLS-1$
 	buffer.append((compoundName != null) ? CharOperation.toString(compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 

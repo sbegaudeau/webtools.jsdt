@@ -139,7 +139,6 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 		}
 		
 		addNewParameters(rewrite, takenNames, decl.parameters());
-		addNewExceptions(rewrite, decl.thrownExceptions());
 
 		Block body= ast.newBlock();
 		String placeHolder= CodeGeneration.getMethodBodyContent(getCompilationUnit(), fSenderBinding.getName(), newNameNode.getIdentifier(), isConstructor(), bodyStatement, String.valueOf('\n'));
@@ -193,7 +192,6 @@ public abstract class AbstractMethodCompletionProposal extends LinkedCorrectionP
 
 	protected abstract void addNewModifiers(ASTRewrite rewrite, ASTNode targetTypeDecl, List exceptions);
 	protected abstract void addNewParameters(ASTRewrite rewrite, List takenNames, List params) throws CoreException;
-	protected abstract void addNewExceptions(ASTRewrite rewrite, List exceptions) throws CoreException;
 
 	protected abstract SimpleName getNewName(ASTRewrite rewrite);
 	protected abstract Type getNewMethodType(ASTRewrite rewrite) throws CoreException;

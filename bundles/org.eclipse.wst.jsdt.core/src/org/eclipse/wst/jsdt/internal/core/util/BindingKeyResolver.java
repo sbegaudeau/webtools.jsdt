@@ -135,9 +135,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 	 	for (int i = 0, methodLength = methods.length; i < methodLength; i++) {
 			MethodBinding method = methods[i];
 			if (CharOperation.equals(selector, method.selector) || (selector.length == 0 && method.isConstructor())) {
-				char[] methodSignature = method.genericSignature();
-				if (methodSignature == null)
-					methodSignature = method.signature();
+				char[] methodSignature = method.signature();
 				if (CharOperation.equals(signature, methodSignature)) {
 					this.typeBinding = null;
 					this.methodBinding = method;

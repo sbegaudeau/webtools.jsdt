@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.SwitchFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -104,10 +103,6 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 			}
 
 			final TypeBinding resolvedTypeBinding = this.expression.resolvedType;
-			if (caseCount > 0 && resolvedTypeBinding.isEnum()) {
-				final SourceTypeBinding sourceTypeBinding = this.scope.classScope().referenceContext.binding;
-				this.synthetic = sourceTypeBinding.addSyntheticMethodForSwitchEnum(resolvedTypeBinding);
-			}
 			// if no default case, then record it may jump over the block directly to the end
 			if (defaultCase == null) {
 				// only retain the potential initializations

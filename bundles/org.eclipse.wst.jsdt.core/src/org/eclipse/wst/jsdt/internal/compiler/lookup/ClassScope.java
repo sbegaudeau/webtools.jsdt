@@ -43,11 +43,9 @@ public class ClassScope extends Scope {
 	void buildAnonymousTypeBinding(SourceTypeBinding enclosingType, ReferenceBinding supertype) {
 		LocalTypeBinding anonymousType = buildLocalType(enclosingType, enclosingType.fPackage);
 		SourceTypeBinding sourceType = getReferenceBinding();
-		if (supertype.isInterface()) {
-			sourceType.superclass = getJavaLangObject();
-		} else {
-			sourceType.superclass = supertype;
-		}
+		
+		sourceType.superclass = supertype;
+		
 		connectMemberTypes();
 		buildFieldsAndMethods();
 		anonymousType.faultInTypesForFieldsAndMethods();
@@ -78,8 +76,6 @@ public class ClassScope extends Scope {
 		for (int i = 0; i < size; i++) {
 			FieldDeclaration field = fields[i];
 			if (field.getKind() == AbstractVariableDeclaration.INITIALIZER) {
-				if (getReferenceBinding().isInterface())
-					problemReporter().interfaceCannotHaveInitializers(getReferenceBinding(), field);
 			} else {
 				//FieldBinding fieldBinding = new FieldBinding(field.name, null, field.modifiers | ExtraCompilerModifiers.AccUnresolved, getReferenceBinding());
 				FieldBinding fieldBinding = new FieldBinding(field.binding,  getReferenceBinding());
@@ -322,22 +318,9 @@ public class ClassScope extends Scope {
 		if (isMemberType) {
 			modifiers |= (enclosingType.modifiers & (ExtraCompilerModifiers.AccGenericSignature|ClassFileConstants.AccStrictfp));
 			// checks for member types before local types to catch local members
-			if (enclosingType.isInterface())
-				modifiers |= ClassFileConstants.AccPublic;
-			if (sourceType.isEnum()) {
-				if (!enclosingType.isStatic())
-					problemReporter().nonStaticContextForEnumMemberType(sourceType);
-				else
-					modifiers |= ClassFileConstants.AccStatic;
-			}
 			if (enclosingType.isViewedAsDeprecated() && !sourceType.isDeprecated())
 				modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 		} else if (sourceType.isLocalType()) {
-			if (sourceType.isEnum()) {
-				problemReporter().illegalLocalTypeDeclaration(referenceContext);
-				sourceType.modifiers = 0;
-				return;
-			}
 			if (sourceType.isAnonymousType()) {
 			    modifiers |= ClassFileConstants.AccFinal;
 			    // set AccEnum flag for anonymous body of enum constants
@@ -473,38 +456,24 @@ public class ClassScope extends Scope {
 
 		if (isMemberType) {
 			// test visibility modifiers inconsistency, isolate the accessors bits
-			if (enclosingType.isInterface()) {
-				if ((realModifiers & (ClassFileConstants.AccProtected | ClassFileConstants.AccPrivate)) != 0) {
-					problemReporter().illegalVisibilityModifierForInterfaceMemberType(sourceType);
+			
+			int accessorBits = realModifiers & (ClassFileConstants.AccPublic | ClassFileConstants.AccProtected | ClassFileConstants.AccPrivate);
+			if ((accessorBits & (accessorBits - 1)) > 1) {
+				problemReporter().illegalVisibilityModifierCombinationForMemberType(sourceType);
 
-					// need to keep the less restrictive
-					if ((realModifiers & ClassFileConstants.AccProtected) != 0)
+				// need to keep the less restrictive so disable Protected/Private as necessary
+				if ((accessorBits & ClassFileConstants.AccPublic) != 0) {
+					if ((accessorBits & ClassFileConstants.AccProtected) != 0)
 						modifiers &= ~ClassFileConstants.AccProtected;
-					if ((realModifiers & ClassFileConstants.AccPrivate) != 0)
+					if ((accessorBits & ClassFileConstants.AccPrivate) != 0)
 						modifiers &= ~ClassFileConstants.AccPrivate;
-				}
-			} else {
-				int accessorBits = realModifiers & (ClassFileConstants.AccPublic | ClassFileConstants.AccProtected | ClassFileConstants.AccPrivate);
-				if ((accessorBits & (accessorBits - 1)) > 1) {
-					problemReporter().illegalVisibilityModifierCombinationForMemberType(sourceType);
-
-					// need to keep the less restrictive so disable Protected/Private as necessary
-					if ((accessorBits & ClassFileConstants.AccPublic) != 0) {
-						if ((accessorBits & ClassFileConstants.AccProtected) != 0)
-							modifiers &= ~ClassFileConstants.AccProtected;
-						if ((accessorBits & ClassFileConstants.AccPrivate) != 0)
-							modifiers &= ~ClassFileConstants.AccPrivate;
-					} else if ((accessorBits & ClassFileConstants.AccProtected) != 0 && (accessorBits & ClassFileConstants.AccPrivate) != 0) {
-						modifiers &= ~ClassFileConstants.AccPrivate;
-					}
+				} else if ((accessorBits & ClassFileConstants.AccProtected) != 0 && (accessorBits & ClassFileConstants.AccPrivate) != 0) {
+					modifiers &= ~ClassFileConstants.AccPrivate;
 				}
 			}
-
+			
 			// static modifier test
-			if ((realModifiers & ClassFileConstants.AccStatic) == 0) {
-				if (enclosingType.isInterface())
-					modifiers |= ClassFileConstants.AccStatic;
-			} else if (!enclosingType.isStatic()) {
+			if (!enclosingType.isStatic()) {
 				// error the enclosing type of a static field must be static or a top-level type
 				problemReporter().illegalStaticModifierForMemberType(sourceType);
 			}
@@ -525,20 +494,6 @@ public class ClassScope extends Scope {
 		final ReferenceBinding declaringClass = fieldBinding.declaringClass;
 		if ((modifiers & ExtraCompilerModifiers.AccAlternateModifierProblem) != 0)
 			problemReporter().duplicateModifierForField(declaringClass, fieldDecl);
-
-		if (declaringClass.isInterface()) {
-			final int IMPLICIT_MODIFIERS = ClassFileConstants.AccPublic | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal;
-			// set the modifiers
-			modifiers |= IMPLICIT_MODIFIERS;
-
-			// and then check that they are the only ones
-			if ((modifiers & ExtraCompilerModifiers.AccJustFlag) != IMPLICIT_MODIFIERS) {
-				if ((declaringClass.modifiers  & ClassFileConstants.AccAnnotation) == 0)
-					problemReporter().illegalModifierForInterfaceField(fieldDecl);
-			}
-			fieldBinding.modifiers = modifiers;
-			return;
-		}
 
 		// after this point, tests on the 16 bits reserved.
 		int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
@@ -767,8 +722,6 @@ public class ClassScope extends Scope {
 				return false; // error case caught in resolveSuperType()
 			// abstract class X<K,V> implements java.util.Map<K,V>
 			//    static abstract class M<K,V> implements Entry<K,V>
-			if (superType.isParameterizedType())
-				superType = ((ParameterizedTypeBinding) superType).genericType();
 			compilationUnitScope().recordSuperTypeReference(superType); // to record supertypes
 			return detectHierarchyCycle(getReferenceBinding(), (ReferenceBinding) superType, reference);
 		}
@@ -814,8 +767,6 @@ public class ClassScope extends Scope {
 					superType.tagBits |= TagBits.HierarchyHasProblems;
 					return true;
 				}
-				if (parentType.isParameterizedType())
-					parentType = ((ParameterizedTypeBinding) parentType).genericType();
 				hasCycle |= detectHierarchyCycle(sourceType, parentType, reference);
 				if ((parentType.tagBits & TagBits.HierarchyHasProblems) != 0) {
 					sourceType.tagBits |= TagBits.HierarchyHasProblems;

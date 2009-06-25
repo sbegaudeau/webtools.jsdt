@@ -148,16 +148,6 @@ public interface IFunctionBinding extends IBinding {
 	public ITypeBinding getReturnType();
 
 	/**
-	 * Returns a list of type bindings representing the types of the exceptions thrown
-	 * by this method or constructor. Returns an array of length 0 if this method
-	 * throws no exceptions. The resulting types are in no particular order.
-	 *
-	 * @return a list of type bindings for exceptions
-	 *   thrown by this method or constructor
-	 */
-	public ITypeBinding[] getExceptionTypes();
-
-	/**
 	 * Returns the binding for the method declaration corresponding to this
 	 * method binding. For parameterized methods ({@link #isParameterizedMethod()})
 	 * and raw methods ({@link #isRawMethod()}), this method returns the binding

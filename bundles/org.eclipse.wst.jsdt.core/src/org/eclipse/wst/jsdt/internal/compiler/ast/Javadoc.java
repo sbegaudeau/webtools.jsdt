@@ -577,7 +577,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 		}
 
 		// If no throws tags then report a problem for each method thrown exception
-		int boundExceptionLength = (md.binding == null) ? 0 : md.binding.thrownExceptions.length;
 		if (throwsTagsLength == 0) {
 		} else {
 			int maxRef = 0;
@@ -592,21 +591,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 				if (typeBinding != null && typeBinding.isValidBinding() && typeBinding.isClass()) {
 					// accept only valid class binding
 					typeReferences[maxRef++] = typeRef;
-				}
-			}
-
-			// Look for undocumented thrown exception
-			for (int i = 0; i < boundExceptionLength; i++) {
-				ReferenceBinding exceptionBinding = md.binding.thrownExceptions[i];
-				boolean found = false;
-				for (int j = 0; j < maxRef && !found; j++) {
-					if (typeReferences[j] != null) {
-						TypeBinding typeBinding = typeReferences[j].resolvedType;
-						if (exceptionBinding == typeBinding) {
-							found = true;
-							typeReferences[j] = null;
-						}
-					}
 				}
 			}
 

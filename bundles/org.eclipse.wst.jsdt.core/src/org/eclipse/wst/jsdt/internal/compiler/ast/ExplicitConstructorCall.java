@@ -81,18 +81,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 							.unconditionalInits();
 				}
 			}
-
-			ReferenceBinding[] thrownExceptions;
-			if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
-				// check exceptions
-				flowContext.checkExceptionHandlers(
-					thrownExceptions,
-					(accessMode == ImplicitSuper)
-						? (ASTNode) currentScope.methodScope().referenceContext
-						: (ASTNode) this,
-					flowInfo,
-					currentScope);
-			}
 			manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
 			manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 			return flowInfo;

@@ -82,19 +82,10 @@ boolean areReturnTypesCompatible0(MethodBinding one, MethodBinding two) {
 	// short is compatible with int, but as far as covariance is concerned, its not
 	if (one.returnType.isBaseType()) return false;
 
-	if (!one.declaringClass.isInterface()) {
-		if (one.declaringClass.id == TypeIds.T_JavaLangObject)
-			return two.returnType.isCompatibleWith(one.returnType); // interface methods inherit from Object
-		return one.returnType.isCompatibleWith(two.returnType);
-	}
-
-	// check for methods from Object, every interface inherits from Object
-	if (two.declaringClass.id == TypeIds.T_JavaLangObject)
-		return one.returnType.isCompatibleWith(two.returnType);
-
-	// unrelated interfaces... one must be a subtype of the other
-	return one.returnType.isCompatibleWith(two.returnType)
-		|| two.returnType.isCompatibleWith(one.returnType);
+	
+	if (one.declaringClass.id == TypeIds.T_JavaLangObject)
+		return two.returnType.isCompatibleWith(one.returnType); // interface methods inherit from Object
+	return one.returnType.isCompatibleWith(two.returnType);
 }
 boolean areTypesEqual(TypeBinding one, TypeBinding two) {
 	if (one == two) return true;
@@ -132,9 +123,6 @@ void checkAbstractMethod(MethodBinding abstractMethod) {
 	}
 }
 void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] methods, int length, MethodBinding[] allInheritedMethods) {
-	if (this.type.isAnnotationType()) { // annotation cannot override any method
-		return; // do not repoort against subsequent inherited methods
-	}
 	CompilerOptions options = type.scope.compilerOptions();
 	// need to find the overridden methods to avoid blaming this type for issues which are already reported against a supertype
 	// but cannot ignore an overridden inherited method completely when it comes to checking for bridge methods
@@ -149,11 +137,8 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 
 			// want to tag currentMethod even if return types are not equal
 			if (inheritedMethod.isAbstract()) {
-				if (inheritedMethod.declaringClass.isInterface()) {
-					currentMethod.modifiers |= ExtraCompilerModifiers.AccImplementing;
-				} else {
-					currentMethod.modifiers |= ExtraCompilerModifiers.AccImplementing | ExtraCompilerModifiers.AccOverriding;
-				}
+				currentMethod.modifiers |= ExtraCompilerModifiers.AccImplementing | ExtraCompilerModifiers.AccOverriding;
+				
 //			with the above change an abstract method is tagged as implementing the inherited abstract method
 //			if (!currentMethod.isAbstract() && inheritedMethod.isAbstract()) {
 //				if ((currentMethod.modifiers & CompilerModifiers.AccOverriding) == 0)
@@ -171,8 +156,6 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 				
 			}
 
-			if (currentMethod.thrownExceptions != Binding.NO_EXCEPTIONS)
-				checkExceptions(currentMethod, inheritedMethod);
 			if (inheritedMethod.isFinal())
 				problemReporter(currentMethod).finalMethodCannotBeOverridden(currentMethod, inheritedMethod);
 			if (!isAsVisible(currentMethod, inheritedMethod))
@@ -203,27 +186,6 @@ void checkConcreteInheritedMethod(MethodBinding concreteMethod, MethodBinding[] 
 		if (index < length)
 			problemReporter().inheritedMethodReducesVisibility(type, concreteMethod, abstractMethods);
 	}
-	if (concreteMethod.thrownExceptions != Binding.NO_EXCEPTIONS)
-		for (int i = abstractMethods.length; --i >= 0;)
-			checkExceptions(concreteMethod, abstractMethods[i]);
-}
-/*
-"8.4.4"
-Verify that newExceptions are all included in inheritedExceptions.
-Assumes all exceptions are valid and throwable.
-Unchecked exceptions (compatible with runtime & error) are ignored (see the spec on pg. 203).
-*/
-void checkExceptions(MethodBinding newMethod, MethodBinding inheritedMethod) {
-	ReferenceBinding[] newExceptions = resolvedExceptionTypesFor(newMethod);
-	ReferenceBinding[] inheritedExceptions = resolvedExceptionTypesFor(inheritedMethod);
-	for (int i = newExceptions.length; --i >= 0;) {
-		ReferenceBinding newException = newExceptions[i];
-		int j = inheritedExceptions.length;
-		while (--j > -1 && !isSameClassOrSubclassOf(newException, inheritedExceptions[j])){/*empty*/}
-		if (j == -1)
-			if (!newException.isUncheckedException(false))
-				problemReporter(newMethod).incompatibleExceptionInThrowsClause(this.type, newMethod, inheritedMethod, newException);
-	}
 }
 void checkForBridgeMethod(MethodBinding currentMethod, MethodBinding inheritedMethod, MethodBinding[] allInheritedMethods) {
 	// no op before 1.5
@@ -245,14 +207,14 @@ void checkInheritedMethods(MethodBinding[] methods, int length) {
 	}
 
 	MethodBinding concreteMethod = null;
-	if (!type.isInterface()) {  // ignore concrete methods for interfaces
-		for (int i = length; --i >= 0;) {  // Remember that only one of the methods can be non-abstract
-			if (!methods[i].isAbstract()) {
-				concreteMethod = methods[i];
-				break;
-			}
+	
+	for (int i = length; --i >= 0;) {  // Remember that only one of the methods can be non-abstract
+		if (!methods[i].isAbstract()) {
+			concreteMethod = methods[i];
+			break;
 		}
 	}
+	
 	if (concreteMethod == null) {
 		if (!this.type.isAbstract()) {
 			for (int i = length; --i >= 0;) {
@@ -285,11 +247,6 @@ boolean checkInheritedReturnTypes(MethodBinding[] methods, int length) {
 	if (index == 0)
 		return true;
 
-	// All inherited methods do NOT have the same vmSignature
-	if (this.type.isInterface())
-		for (int i = length; --i >= 0;)
-			if (methods[i].declaringClass.id == TypeIds.T_JavaLangObject)
-				return false; // do not complain since the super interface already got blamed
 	problemReporter().inheritedMethodsHaveIncompatibleReturnTypes(this.type, methods, length);
 	return false;
 }
@@ -403,9 +360,7 @@ void checkPackagePrivateAbstractMethod(MethodBinding abstractMethod) {
 	problemReporter().abstractMethodCannotBeOverridden(this.type, abstractMethod);
 }
 void computeInheritedMethods() {
-	ReferenceBinding superclass = this.type.isInterface()
-		? this.type.scope.getJavaLangObject() // check interface methods against Object
-		: this.type.superclass(); // class or enum
+	ReferenceBinding superclass = this.type.superclass(); // class or enum
 	computeInheritedMethods(superclass, null);
 }
 /*
@@ -563,37 +518,23 @@ int[] findOverriddenInheritedMethods(MethodBinding[] methods, int length) {
 	int[] toSkip = null;
 	int i = 0;
 	ReferenceBinding declaringClass = methods[i].declaringClass;
-	if (!declaringClass.isInterface()) {
-		// in the first pass, skip overridden methods from superclasses
-		// only keep methods from the closest superclass, all others from higher superclasses can be skipped
-		// NOTE: methods were added in order by walking up the superclass hierarchy
-		ReferenceBinding declaringClass2 = methods[++i].declaringClass;
-		while (declaringClass == declaringClass2) {
-			if (++i == length) return null;
-			declaringClass2 = methods[i].declaringClass;
-		}
-		if (!declaringClass2.isInterface()) {
-			// skip all methods from different superclasses
-			toSkip = new int[length];
-			do {
-				toSkip[i] = -1;
-				if (++i == length) return toSkip;
-				declaringClass2 = methods[i].declaringClass;
-			} while (!declaringClass2.isInterface());
-		}
+	
+	// in the first pass, skip overridden methods from superclasses
+	// only keep methods from the closest superclass, all others from higher superclasses can be skipped
+	// NOTE: methods were added in order by walking up the superclass hierarchy
+	ReferenceBinding declaringClass2 = methods[++i].declaringClass;
+	while (declaringClass == declaringClass2) {
+		if (++i == length) return null;
+		declaringClass2 = methods[i].declaringClass;
 	}
-	// in the second pass, skip overridden methods from superinterfaces
-	// NOTE: superinterfaces can appear in 'random' order
-	nextMethod : for (; i < length; i++) {
-		if (toSkip != null && toSkip[i] == -1) continue nextMethod;
-		declaringClass = methods[i].declaringClass;
-		for (int j = i + 1; j < length; j++) {
-			if (toSkip != null && toSkip[j] == -1) continue;
-			ReferenceBinding declaringClass2 = methods[j].declaringClass;
-			if (declaringClass == declaringClass2) continue;
-		}
-	}
-	return toSkip;
+	
+	// skip all methods from different superclasses
+	toSkip = new int[length];
+	do {
+		toSkip[i] = -1;
+		if (++i == length) return toSkip;
+		declaringClass2 = methods[i].declaringClass;
+	} while (true);
 }
 boolean isAsVisible(MethodBinding newMethod, MethodBinding inheritedMethod) {
 	if (inheritedMethod.modifiers == newMethod.modifiers) return true;
@@ -626,7 +567,7 @@ boolean mustImplementAbstractMethod(ReferenceBinding declaringClass) {
 	return superclass.isAbstract();		// if it is a concrete class then we have already reported problem against it
 }
 boolean mustImplementAbstractMethods() {
-	return !this.type.isInterface() && !this.type.isAbstract();
+	return !this.type.isAbstract();
 }
 ProblemReporter problemReporter() {
 	return this.type.scope.problemReporter();
@@ -650,18 +591,6 @@ ProblemReporter problemReporter(MethodBinding currentMethod) {
 boolean reportIncompatibleReturnTypeError(MethodBinding currentMethod, MethodBinding inheritedMethod) {
 	problemReporter(currentMethod).incompatibleReturnType(currentMethod, inheritedMethod);
 	return true;
-}
-ReferenceBinding[] resolvedExceptionTypesFor(MethodBinding method) {
-	ReferenceBinding[] exceptions = method.thrownExceptions;
-	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
-		return exceptions;
-
-	if (!(method.declaringClass instanceof BinaryTypeBinding))
-		return Binding.NO_EXCEPTIONS; // safety check
-
-	for (int i = exceptions.length; --i >= 0;)
-		exceptions[i] = BinaryTypeBinding.resolveType(exceptions[i], this.environment, true);
-	return exceptions;
 }
 void verify(SourceTypeBinding someType) {
 	this.type = someType;

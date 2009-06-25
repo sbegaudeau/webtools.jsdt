@@ -115,7 +115,7 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 	if (binding.declaration!=null && binding.declaration.initialization instanceof FunctionExpression) {
 
 		MethodBinding methodBinding=
-			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null, null,this.enclosingTypeBinding());
+			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null,this.enclosingTypeBinding());
 		methodBinding.createFunctionTypeBinding(this);
 		addLocalMethod(methodBinding);
 
@@ -294,7 +294,7 @@ public MethodBinding findMethod(char[] methodName,TypeBinding[]argumentTypes, bo
 			}
 			else	
 			 binding = new MethodBinding(ClassFileConstants.AccPublic,
-					methodName,TypeBinding.UNKNOWN,null,null,variable.declaringScope.enclosingTypeBinding());
+					methodName,TypeBinding.UNKNOWN,null,variable.declaringScope.enclosingTypeBinding());
 			
 			addLocalMethod(binding);
 			return binding;

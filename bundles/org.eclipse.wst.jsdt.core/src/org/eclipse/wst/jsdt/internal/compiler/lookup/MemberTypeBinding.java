@@ -19,7 +19,6 @@ public MemberTypeBinding(char[][] compoundName, ClassScope scope, SourceTypeBind
 }
 void checkSyntheticArgsAndFields() {
 	if (this.isStatic()) return;
-	if (this.isInterface()) return;
 	this.addSyntheticArgumentAndField(this.enclosingType);
 }
 /* Answer the receiver's constant pool name.

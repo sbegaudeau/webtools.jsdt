@@ -43,7 +43,6 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.ChangeDescription;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.InsertDescription;
-import org.eclipse.wst.jsdt.internal.ui.text.correction.ChangeMethodSignatureProposal.RemoveDescription;
 import org.eclipse.wst.jsdt.ui.text.java.IInvocationContext;
 import org.eclipse.wst.jsdt.ui.text.java.IProblemLocation;
 
@@ -264,19 +263,10 @@ public class TypeMismatchSubProcessor {
 
 		IJavaScriptUnit cu= context.getCompilationUnit();
 
-		ITypeBinding[] methodExceptions= methodDeclBinding.getExceptionTypes();
-		ITypeBinding[] definedExceptions= overridden.getExceptionTypes();
-
 		ArrayList undeclaredExceptions= new ArrayList();
 		{
-			ChangeDescription[] changes= new ChangeDescription[methodExceptions.length];
+			ChangeDescription[] changes= new ChangeDescription[0];
 
-			for (int i= 0; i < methodExceptions.length; i++) {
-				if (!isDeclaredException(methodExceptions[i], definedExceptions)) {
-					changes[i]= new RemoveDescription();
-					undeclaredExceptions.add(methodExceptions[i]);
-				}
-			}
 			String label= Messages.format(CorrectionMessages.TypeMismatchSubProcessor_removeexceptions_description, methodDeclBinding.getName());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_REMOVE);
 			proposals.add(new ChangeMethodSignatureProposal(label, cu, astRoot, methodDeclBinding, null, changes, 8, image));
@@ -288,10 +278,10 @@ public class TypeMismatchSubProcessor {
 			targetCu= ASTResolving.findCompilationUnitForBinding(cu, astRoot, declaringType);
 		}
 		if (targetCu != null) {
-			ChangeDescription[] changes= new ChangeDescription[definedExceptions.length + undeclaredExceptions.size()];
+			ChangeDescription[] changes= new ChangeDescription[undeclaredExceptions.size()];
 
 			for (int i= 0; i < undeclaredExceptions.size(); i++) {
-				changes[i + definedExceptions.length]= new InsertDescription((ITypeBinding) undeclaredExceptions.get(i), ""); //$NON-NLS-1$
+				changes[i]= new InsertDescription((ITypeBinding) undeclaredExceptions.get(i), ""); //$NON-NLS-1$
 			}
 			IFunctionBinding overriddenDecl= overridden.getMethodDeclaration();
 			String[] args= {  declaringType.getName(), overridden.getName() };
@@ -300,15 +290,5 @@ public class TypeMismatchSubProcessor {
 			proposals.add(new ChangeMethodSignatureProposal(label, targetCu, astRoot, overriddenDecl, null, changes, 7, image));
 		}
 	}
-
-	private static boolean isDeclaredException(ITypeBinding curr, ITypeBinding[] declared) {
-		for (int i= 0; i < declared.length; i++) {
-			if (Bindings.isSuperType(declared[i], curr)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 
 }

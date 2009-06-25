@@ -76,13 +76,6 @@ public final class StubUtility2 {
 
 		List parameters= createParameters(unit, imports, ast, binding, decl, null);
 
-		List thrownExceptions= decl.thrownExceptions();
-		ITypeBinding[] excTypes= binding.getExceptionTypes();
-		for (int i= 0; i < excTypes.length; i++) {
-			String excTypeName= imports.addImport(excTypes[i]);
-			thrownExceptions.add(ASTNodeFactory.newName(ast, excTypeName));
-		}
-
 		Block body= ast.newBlock();
 		decl.setBody(body);
 
@@ -130,13 +123,6 @@ public final class StubUtility2 {
 		if (superConstructor != null) {
 
 			createParameters(unit, imports, ast, superConstructor, decl, null);
-
-			List thrownExceptions= decl.thrownExceptions();
-			ITypeBinding[] excTypes= superConstructor.getExceptionTypes();
-			for (int i= 0; i < excTypes.length; i++) {
-				String excTypeName= imports.addImport(excTypes[i]);
-				thrownExceptions.add(ASTNodeFactory.newName(ast, excTypeName));
-			}
 		}
 
 		Block body= ast.newBlock();
@@ -240,13 +226,6 @@ public final class StubUtility2 {
 			parameters.add(varDecl);
 		}
 
-		List thrownExceptions= decl.thrownExceptions();
-		ITypeBinding[] excTypes= methodBinding.getExceptionTypes();
-		for (int i= 0; i < excTypes.length; i++) {
-			String excTypeName= imports.addImport(excTypes[i]);
-			thrownExceptions.add(ASTNodeFactory.newName(ast, excTypeName));
-		}
-
 		Block body= ast.newBlock();
 		decl.setBody(body);
 
@@ -317,13 +296,6 @@ public final class StubUtility2 {
 
 		List parameters= createParameters(unit, imports, ast, binding, decl, context);
 
-		List thrownExceptions= decl.thrownExceptions();
-		ITypeBinding[] excTypes= binding.getExceptionTypes();
-		for (int i= 0; i < excTypes.length; i++) {
-			String excTypeName= imports.addImport(excTypes[i], context);
-			thrownExceptions.add(ASTNodeFactory.newName(ast, excTypeName));
-		}
-
 		String delimiter= StubUtility.getLineDelimiterUsed(unit);
 		if (!deferred) {
 			Map options= unit.getJavaScriptProject().getOptions(true);
@@ -391,11 +363,6 @@ public final class StubUtility2 {
 		decl.setReturnType2(createTypeNode(importRewrite, binding.getReturnType(), ast));
 
 		List parameters= createParameters(unit, importRewrite, ast, binding, decl);
-
-		List thrownExceptions= decl.thrownExceptions();
-		ITypeBinding[] excTypes= binding.getExceptionTypes();
-		for (int index= 0; index < excTypes.length; index++)
-			thrownExceptions.add(ASTNodeFactory.newName(ast, importRewrite != null ? importRewrite.addImport(excTypes[index]) : excTypes[index].getQualifiedName()));
 
 		String delimiter= StubUtility.getLineDelimiterUsed(unit);
 		if (!deferred) {

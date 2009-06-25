@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
@@ -79,18 +78,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			flowInfo = arguments[i].analyseCode(currentScope, flowContext, flowInfo).unconditionalInits();
 		}
 	}
-	ReferenceBinding[] thrownExceptions;
-	if (JavaScriptCore.IS_ECMASCRIPT4)
-	{
-		if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
-		// must verify that exceptions potentially thrown by this expression are caught in the method
-			flowContext.checkExceptionHandlers(thrownExceptions, this, flowInfo.copy(), currentScope);
-		// TODO (maxime) the copy above is needed because of a side effect into
-		//               checkExceptionHandlers; consider protecting there instead of here;
-		//               NullReferenceTest#test0510
-		}
-	}
-//	manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 	return flowInfo;
 }
 /**

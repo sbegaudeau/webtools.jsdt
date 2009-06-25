@@ -21,7 +21,6 @@ public class MethodBinding extends Binding {
 	public char[] selector;
 	public TypeBinding returnType;
 	public TypeBinding[] parameters;
-	public ReferenceBinding[] thrownExceptions;
 	public ReferenceBinding declaringClass;
 	char[] signature;
 	public long tagBits;
@@ -33,12 +32,11 @@ public class MethodBinding extends Binding {
 protected MethodBinding() {
 	// for creating problem or synthetic method
 }
-public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, TypeBinding[] parameters, ReferenceBinding[] thrownExceptions, ReferenceBinding declaringClass) {
+public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, TypeBinding[] parameters, ReferenceBinding declaringClass) {
 	this.modifiers = modifiers;
 	this.selector = selector;
 	this.returnType = returnType;
 	this.parameters = (parameters == null || parameters.length == 0) ? Binding.NO_PARAMETERS : parameters;
-	this.thrownExceptions = (thrownExceptions == null || thrownExceptions.length == 0) ? Binding.NO_EXCEPTIONS : thrownExceptions;
 	this.declaringClass = declaringClass;
 
 	// propagate the strictfp & deprecated modifiers
@@ -48,8 +46,8 @@ public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, Typ
 				this.modifiers |= ClassFileConstants.AccStrictfp;
 	}
 }
-public MethodBinding(int modifiers, TypeBinding[] parameters, ReferenceBinding[] thrownExceptions, ReferenceBinding declaringClass) {
-	this(modifiers, TypeConstants.INIT, TypeBinding.UNKNOWN, parameters, thrownExceptions, declaringClass);
+public MethodBinding(int modifiers, TypeBinding[] parameters, ReferenceBinding declaringClass) {
+	this(modifiers, TypeConstants.INIT, TypeBinding.UNKNOWN, parameters, declaringClass);
 }
 // special API used to change method declaring class for runtime visibility check
 public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declaringClass) {
@@ -57,7 +55,6 @@ public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declar
 	this.selector = initialMethodBinding.selector;
 	this.returnType = initialMethodBinding.returnType;
 	this.parameters = initialMethodBinding.parameters;
-	this.thrownExceptions = initialMethodBinding.thrownExceptions;
 	this.declaringClass = declaringClass;
 }
 /* Answer true if the argument types & the receiver's parameters have the same erasure
@@ -293,27 +290,10 @@ public char[] computeUniqueKey(boolean isLeaf) {
 		(this.selector == TypeConstants.INIT || this.selector==null) ? 0 : this.selector.length;
 
 	// generic signature
-	char[] sig = genericSignature();
-	boolean isGeneric = sig != null;
-	if (!isGeneric) sig = signature();
+	char[] sig = signature();
 	int signatureLength = sig.length;
 
-	// thrown exceptions
-	int thrownExceptionsLength = this.thrownExceptions.length;
-	int thrownExceptionsSignatureLength = 0;
-	char[][] thrownExceptionsSignatures = null;
-	boolean addThrownExceptions = thrownExceptionsLength > 0 && (!isGeneric || CharOperation.lastIndexOf('^', sig) < 0);
-	if (addThrownExceptions) {
-		thrownExceptionsSignatures = new char[thrownExceptionsLength][];
-		for (int i = 0; i < thrownExceptionsLength; i++) {
-			if (this.thrownExceptions[i] != null) {
-				thrownExceptionsSignatures[i] = this.thrownExceptions[i].signature();
-				thrownExceptionsSignatureLength += thrownExceptionsSignatures[i].length + 1;	// add one char for separator
-			}
-		}
-	}
-
-	char[] uniqueKey = new char[declaringLength + 1 + selectorLength + signatureLength + thrownExceptionsSignatureLength];
+	char[] uniqueKey = new char[declaringLength + 1 + selectorLength + signatureLength];
 	int index = 0;
 	System.arraycopy(declaringKey, 0, uniqueKey, index, declaringLength);
 	index = declaringLength;
@@ -322,18 +302,6 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	  System.arraycopy(this.selector, 0, uniqueKey, index, selectorLength);
 	index += selectorLength;
 	System.arraycopy(sig, 0, uniqueKey, index, signatureLength);
-	if (thrownExceptionsSignatureLength > 0) {
-		index += signatureLength;
-		for (int i = 0; i < thrownExceptionsLength; i++) {
-			char[] thrownExceptionSignature = thrownExceptionsSignatures[i];
-			if (thrownExceptionSignature != null) {
-				uniqueKey[index++] = '|';
-				int length = thrownExceptionSignature.length;
-				System.arraycopy(thrownExceptionSignature, 0, uniqueKey, index, length);
-				index += length;
-			}
-		}
-	}
 
 	return uniqueKey;
 }
@@ -352,44 +320,6 @@ public TypeBinding constantPoolDeclaringClass() {
 */
 public final char[] constantPoolName() {
 	return selector;
-}
-/**
- *<typeParam1 ... typeParamM>(param1 ... paramN)returnType thrownException1 ... thrownExceptionP
- * T foo(T t) throws X<T>   --->   (TT;)TT;LX<TT;>;
- * void bar(X<T> t)   -->   (LX<TT;>;)V
- * <T> void bar(X<T> t)   -->  <T:Ljava.lang.Object;>(LX<TT;>;)V
- */
-public char[] genericSignature() {
-	if ((this.modifiers & ExtraCompilerModifiers.AccGenericSignature) == 0) return null;
-	StringBuffer sig = new StringBuffer(10);
-	
-	sig.append('(');
-	for (int i = 0, length = this.parameters.length; i < length; i++) {
-		sig.append(this.parameters[i].genericTypeSignature());
-	}
-	sig.append(')');
-	if (this.returnType != null)
-		sig.append(this.returnType.genericTypeSignature());
-
-	// only append thrown exceptions if any is generic/parameterized
-	boolean needExceptionSignatures = false;
-	int length = this.thrownExceptions.length;
-	for (int i = 0; i < length; i++) {
-		if((this.thrownExceptions[i].modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
-			needExceptionSignatures = true;
-			break;
-		}
-	}
-	if (needExceptionSignatures) {
-		for (int i = 0; i < length; i++) {
-			sig.append('^');
-			sig.append(this.thrownExceptions[i].genericTypeSignature());
-		}
-	}
-	int sigLength = sig.length();
-	char[] genericSignature = new char[sigLength];
-	sig.getChars(0, sigLength, genericSignature, 0);
-	return genericSignature;
 }
 ///**
 // * @param index the index of the parameter of interest
@@ -737,18 +667,6 @@ public String toString() {
 	}
 	s += ") "; //$NON-NLS-1$
 
-	if (thrownExceptions != null) {
-		if (thrownExceptions != Binding.NO_EXCEPTIONS) {
-			s += "throws "; //$NON-NLS-1$
-			for (int i = 0, length = thrownExceptions.length; i < length; i++) {
-				if (i  > 0)
-					s += ", "; //$NON-NLS-1$
-				s += (thrownExceptions[i] != null) ? thrownExceptions[i].debugName() : "NULL TYPE"; //$NON-NLS-1$
-			}
-		}
-	} else {
-		s += "NULL THROWN EXCEPTIONS"; //$NON-NLS-1$
-	}
 	return s;
 }
 /**
@@ -766,7 +684,7 @@ public void createFunctionTypeBinding(Scope scope)
 
 public MethodBinding createNamedMethodBinding(char [] name)
 {
-	MethodBinding newBinding=new MethodBinding(this.modifiers,name, this.returnType, this.parameters, this.thrownExceptions, this.declaringClass);
+	MethodBinding newBinding=new MethodBinding(this.modifiers,name, this.returnType, this.parameters, this.declaringClass);
 	newBinding.functionTypeBinding=this.functionTypeBinding;
 	newBinding.tagBits=this.tagBits;
 	newBinding.signature=this.signature;

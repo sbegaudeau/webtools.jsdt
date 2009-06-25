@@ -864,7 +864,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 			info.mergeArgument(getFlowInfo(arg), fFlowContext);
 		}
 		info.mergeReceiver(getFlowInfo(receiver), fFlowContext);
-		info.mergeExceptions(binding, fFlowContext);
 	}
 	
 	private void endVisitIncDecOperation(Expression node, Expression operand) {

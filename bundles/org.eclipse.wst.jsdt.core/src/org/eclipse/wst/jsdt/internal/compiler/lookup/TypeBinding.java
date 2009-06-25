@@ -196,21 +196,11 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 		    if (this == otherType || (!isTypeVariable() && !isIntersectionType() && this == otherType)) return this;
 
 		    ReferenceBinding currentType = (ReferenceBinding)this;
-		    if (!otherType.isInterface()) {
-				while ((currentType = currentType.superclass()) != null) {
-					if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType == otherType)) return currentType;
-				}
-				return null;
-		    }
-			ReferenceBinding[] interfacesToVisit = null;
-			int nextPosition = 0;
-			do {
-			} while ((currentType = currentType.superclass()) != null);
-
-			for (int i = 0; i < nextPosition; i++) {
-				currentType = interfacesToVisit[i];
-					return currentType;
+		   
+			while ((currentType = currentType.superclass()) != null) {
+				if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType == otherType)) return currentType;
 			}
+			return null;
 	}
 	return null;
 }
@@ -238,10 +228,6 @@ public char[] genericTypeSignature() {
 
 public abstract PackageBinding getPackage();
 
-public boolean isAnnotationType() {
-	return false;
-}
-
 public final boolean isAnonymousType() {
 	return (this.tagBits & TagBits.IsAnonymousType) != 0;
 }
@@ -268,21 +254,6 @@ public  boolean isBasicType() {
 	return id <=TypeIds.T_last_basic;
 }
 
-
-/**
- *  Returns true if parameterized type AND not of the form List<?>
- */
-public boolean isBoundParameterizedType() {
-	return (this.tagBits & TagBits.IsBoundParameterizedType) != 0;
-}
-
-/**
- * Returns true if the type is the capture of some wildcard
- */
-public boolean isCapture() {
-	return false;
-}
-
 public boolean isClass() {
 	return false;
 }
@@ -290,10 +261,6 @@ public boolean isClass() {
 /* Answer true if the receiver type can be assigned to the argument type (right)
  */
 public abstract boolean isCompatibleWith(TypeBinding right);
-
-public boolean isEnum() {
-	return false;
-}
 
 /**
  * Returns true if a type is identical to another one,
@@ -315,10 +282,6 @@ public boolean isGenericType() {
  */
 public final boolean isHierarchyInconsistent() {
 	return (this.tagBits & TagBits.HierarchyHasProblems) != 0;
-}
-
-public boolean isInterface() {
-	return false;
 }
 
 /**
@@ -364,13 +327,6 @@ public final boolean isNumericType() {
 	default:
 		return false;
 	}
-}
-
-/**
- * Returns true if the type is parameterized, e.g. List<String>
- */
-public boolean isParameterizedType() {
-	return false;
 }
 
 /**
@@ -452,13 +408,6 @@ public boolean isTypeVariable() {
  * Returns true if the type is a subclass of java.lang.Error or java.lang.RuntimeException
  */
 public boolean isUncheckedException(boolean includeSupertype) {
-	return false;
-}
-
-/**
- * Returns true if the type is a wildcard
- */
-public boolean isWildcard() {
 	return false;
 }
 

@@ -68,10 +68,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 			// do not report class if expected types are only interfaces
 			return;
 		}
-		if (referenceBinding.isInterface() && this.pattern.typeSuffix == IIndexConstants.CLASS_SUFFIX) {
-			// do not report interface if expected types are only classes
-			return;
-		}
 	}
 	super.matchReportReference(reference, element, elementBinding, accuracy, locator);
 }

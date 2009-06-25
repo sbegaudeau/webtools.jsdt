@@ -793,9 +793,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 		// Return type
 		intermediary.setReturnType2(imRewrite.getImportRewrite().addImport(fTargetMethodBinding.getReturnType(), ast));
 
-		// Exceptions
-		copyExceptions(intermediary, imRewrite);
-
 		// Body
 		FunctionInvocation invocation= imRewrite.getAST().newFunctionInvocation();
 		invocation.setName(imRewrite.getAST().newSimpleName(fTargetMethod.getElementName()));
@@ -866,14 +863,6 @@ public class IntroduceIndirectionRefactoring extends ScriptableRefactoring {
 
 			newElement.setType(rew.getImportRewrite().addImport(typeBinding, rew.getAST()));
 			intermediary.parameters().add(newElement);
-		}
-	}
-
-	private void copyExceptions(FunctionDeclaration intermediary, CompilationUnitRewrite imRewrite) {
-		ITypeBinding[] exceptionTypes= fTargetMethodBinding.getExceptionTypes();
-		for (int i= 0; i < exceptionTypes.length; i++) {
-			final String qualifiedName= imRewrite.getImportRewrite().addImport(exceptionTypes[i]);
-			intermediary.thrownExceptions().add(ASTNodeFactory.newName(imRewrite.getAST(), qualifiedName));
 		}
 	}
 
