@@ -412,7 +412,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 				for (int j = end; j > i; j--) {
 					MethodBinding method2 = this.methods[j];
 					boolean paramsMatch = isSource15
-						? method1.areParameterErasuresEqual(method2)
+						? method1.areParametersEqual(method2)
 						: method1.areParametersEqual(method2);
 					if (paramsMatch) {
 						methods();
@@ -541,7 +541,7 @@ public MethodBinding[] getMethods(char[] selector) {
 		MethodBinding method = result[i];
 		for (int j = length; j > i; j--) {
 			boolean paramsMatch = isSource15
-				? method.areParameterErasuresEqual(result[j])
+				? method.areParametersEqual(result[j])
 				: method.areParametersEqual(result[j]);
 			if (paramsMatch) {
 				methods();
@@ -655,7 +655,7 @@ public MethodBinding[] methods() {
 							// duplicates regardless of return types
 						} else if (method.returnType == subMethod.returnType
 								&& (equalParams || method
-										.areParameterErasuresEqual(method2))) {
+										.areParametersEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
 						} else if (pLength > 0) {
 							// check to see if the erasure of either method is equal to the other

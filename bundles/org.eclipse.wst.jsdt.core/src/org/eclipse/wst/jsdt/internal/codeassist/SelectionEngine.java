@@ -58,7 +58,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MemberTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
@@ -720,9 +719,6 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	 * local.
 	 */
 	private boolean isLocal(ReferenceBinding binding) {
-		if(binding instanceof ParameterizedTypeBinding) {
-			return isLocal(((ParameterizedTypeBinding)binding).genericType());
-		}
 		if (!(binding instanceof SourceTypeBinding)) return false;
 		if (binding instanceof LocalTypeBinding) return true;
 		if (binding instanceof MemberTypeBinding) {

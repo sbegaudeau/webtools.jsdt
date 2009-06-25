@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -407,8 +406,6 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 		info = locator.getBinaryInfo((org.eclipse.wst.jsdt.internal.core.ClassFile)type.getClassFile(), resource);
 		locator.reportBinaryMemberDeclaration(resource, method, methodBinding, info, SearchMatch.A_ACCURATE);
 	} else {
-		if (declaringClass instanceof ParameterizedTypeBinding)
-			declaringClass = ((ParameterizedTypeBinding) declaringClass).genericType();
 		ClassScope scope = (ClassScope)((SourceTypeBinding) declaringClass).scope;
 		if (scope != null) {
 			TypeDeclaration typeDecl = scope.referenceContext;

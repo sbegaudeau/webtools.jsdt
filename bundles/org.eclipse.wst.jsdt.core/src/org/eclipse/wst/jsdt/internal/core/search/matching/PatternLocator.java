@@ -35,11 +35,9 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
@@ -668,28 +666,11 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 	if (type == null || patternTypeArguments == null || patternTypeArguments.length == 0 || depth >= patternTypeArguments.length) {
 		return level;
 	}
-
-	// if pattern is erasure match (see bug 79790), commute impossible to erasure
-	int impossible = this.isErasureMatch ? ERASURE_MATCH : IMPOSSIBLE_MATCH;
-
-	// pattern has type parameter(s) or type argument(s)
-	if (type.isGenericType()) {
-		// Binding is generic, get its type variable(s)
-		if (type instanceof SourceTypeBinding) {
-			SourceTypeBinding sourceTypeBinding = (SourceTypeBinding) type;
-		} else if (type instanceof BinaryTypeBinding) {
-			BinaryTypeBinding binaryTypeBinding = (BinaryTypeBinding) type;
-		}
-		
-		// TODO (frederic) do we need to verify each parameter?
-		return level; // we can't do better
-	} else {
-		TypeBinding leafType = type.leafComponentType();
-		
-		// Standard types (ie. neither generic nor parameterized nor raw types)
-		// cannot match pattern with type parameters or arguments
-		return (patternTypeArguments[depth]==null || patternTypeArguments[depth].length==0) ? level : IMPOSSIBLE_MATCH;
-	}
+	
+	// Standard types (ie. neither generic nor parameterized nor raw types)
+	// cannot match pattern with type parameters or arguments
+	return (patternTypeArguments[depth]==null || patternTypeArguments[depth].length==0) ? level : IMPOSSIBLE_MATCH;
+	
 }
 public String toString(){
 	return "SearchPattern"; //$NON-NLS-1$

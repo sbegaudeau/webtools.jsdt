@@ -118,10 +118,6 @@ public class MultipleTypeBinding extends ReferenceBinding {
 		
 	}
 
-	public boolean isInterface() {
-		return false;
-	}
-
 	public boolean isSuperclassOf(ReferenceBinding otherType) {
 		for (int i = 0; i < this.types.length ; i++) 
 			if (types[i].isSuperclassOf(otherType))

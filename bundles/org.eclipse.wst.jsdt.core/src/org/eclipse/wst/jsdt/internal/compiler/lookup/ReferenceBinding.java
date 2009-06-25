@@ -538,15 +538,6 @@ public final ReferenceBinding enclosingTypeAt(int relativeDepth) {
 	return current;
 }
 
-public int enumConstantCount() {
-	int count = 0;
-	FieldBinding[] fields = fields();
-	for (int i = 0, length = fields.length; i < length; i++) {
-		if ((fields[i].modifiers & ClassFileConstants.AccEnum) != 0) count++;
-	}
-	return count;
-}
-
 public int fieldCount() {
 	return fields().length;
 }

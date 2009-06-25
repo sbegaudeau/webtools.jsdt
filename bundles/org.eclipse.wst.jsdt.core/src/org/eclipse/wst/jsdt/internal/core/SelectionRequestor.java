@@ -32,10 +32,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -280,13 +278,10 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 }
 public void acceptLocalField(FieldBinding fieldBinding) {
 	IJavaScriptElement res;
-	if(fieldBinding.declaringClass instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)fieldBinding.declaringClass).genericType();
-		res = findLocalElement(localTypeBinding.sourceStart());
-	} else {
-		SourceTypeBinding typeBinding = (SourceTypeBinding)fieldBinding.declaringClass;
-		res = findLocalElement(typeBinding.sourceStart());
-	}
+	
+	SourceTypeBinding typeBinding = (SourceTypeBinding)fieldBinding.declaringClass;
+	res = findLocalElement(typeBinding.sourceStart());
+	
 	if (res != null && res.getElementType() == IJavaScriptElement.TYPE) {
 		IType type = (IType) res;
 		IField field= type.getField(new String(fieldBinding.name));
@@ -360,10 +355,7 @@ public void acceptLocalMethod(MethodBinding methodBinding) {
 }
 public void acceptLocalType(TypeBinding typeBinding) {
 	IJavaScriptElement res =  null;
-	if(typeBinding instanceof ParameterizedTypeBinding) {
-		LocalTypeBinding localTypeBinding = (LocalTypeBinding)((ParameterizedTypeBinding)typeBinding).genericType();
-		res = findLocalElement(localTypeBinding.sourceStart());
-	} else if(typeBinding instanceof SourceTypeBinding) {
+	if(typeBinding instanceof SourceTypeBinding) {
 		res = findLocalElement(((SourceTypeBinding)typeBinding).sourceStart());
 	}
 	if(res != null && res.getElementType() == IJavaScriptElement.TYPE) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -76,9 +75,6 @@ public class JavadocQualifiedTypeReference extends QualifiedTypeReference implem
 		}
 		if (isTypeUseDeprecated(this.resolvedType, scope))
 			reportDeprecatedType(this.resolvedType, scope);
-		if (this.resolvedType instanceof ParameterizedTypeBinding) {
-			this.resolvedType = ((ParameterizedTypeBinding)this.resolvedType).genericType();
-		}
 		return this.resolvedType;
 	}
 

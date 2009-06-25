@@ -70,16 +70,16 @@ public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironm
 
 	return type;
 }
-public static TypeBinding resolveType(TypeBinding type, LookupEnvironment environment, ParameterizedTypeBinding parameterizedType, int rank) {
+public static TypeBinding resolveType(TypeBinding type, LookupEnvironment environment, int rank) {
 	switch (type.kind()) {
 
 		case Binding.ARRAY_TYPE :
-			resolveType(((ArrayBinding) type).leafComponentType, environment, parameterizedType, rank);
+			resolveType(((ArrayBinding) type).leafComponentType, environment, rank);
 			break;
 
 		default:
 			if (type instanceof UnresolvedReferenceBinding)
-				return ((UnresolvedReferenceBinding) type).resolve(environment, parameterizedType == null);
+				return ((UnresolvedReferenceBinding) type).resolve(environment, true);
 	}
 	return type;
 }
@@ -695,7 +695,7 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 	if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return field;
 
-	field.type = resolveType(field.type, this.environment, null, 0);
+	field.type = resolveType(field.type, this.environment, 0);
 	field.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return field;
 }
@@ -704,9 +704,9 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 		return method;
 
 	if (!method.isConstructor())
-		method.returnType = resolveType(method.returnType, this.environment, null, 0);
+		method.returnType = resolveType(method.returnType, this.environment, 0);
 	for (int i = method.parameters.length; --i >= 0;)
-		method.parameters[i] = resolveType(method.parameters[i], this.environment, null, 0);
+		method.parameters[i] = resolveType(method.parameters[i], this.environment, 0);
 	method.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
 	return method;
 }

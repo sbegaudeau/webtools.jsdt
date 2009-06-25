@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
@@ -285,7 +284,7 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
  * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#updateMatch(org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding, char[][][], org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
  *
  */
-protected void updateMatch(ParameterizedTypeBinding parameterizedBinding, char[][][] patternTypeArguments, MatchLocator locator) {
+protected void updateMatch(char[][][] patternTypeArguments, MatchLocator locator) {
 	// We can only refine if locator has an unit scope.
 	if (locator.unitScope == null) return;
 	if (!match.isExact()) {
@@ -314,8 +313,6 @@ protected void reportDeclaration(FieldBinding fieldBinding, MatchLocator locator
 		info = locator.getBinaryInfo((org.eclipse.wst.jsdt.internal.core.ClassFile) type.getClassFile(), resource);
 		locator.reportBinaryMemberDeclaration(resource, field, fieldBinding, info, SearchMatch.A_ACCURATE);
 	} else {
-		if (declaringClass instanceof ParameterizedTypeBinding)
-			declaringClass = ((ParameterizedTypeBinding) declaringClass).genericType();
 		Scope scp = ((SourceTypeBinding) declaringClass).scope;
 		if (scp instanceof ClassScope) {
 			ClassScope scope=(ClassScope)scp;

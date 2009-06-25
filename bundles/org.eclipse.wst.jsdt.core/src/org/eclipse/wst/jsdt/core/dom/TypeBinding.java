@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ParameterizedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -331,8 +330,6 @@ class TypeBinding implements ITypeBinding {
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getTypeDeclaration()
 	 */
 	public ITypeBinding getTypeDeclaration() {
-		if (this.binding instanceof ParameterizedTypeBinding)
-			return this.resolver.getTypeBinding(((ParameterizedTypeBinding)this.binding).genericType());
 		return this;
 	}
 

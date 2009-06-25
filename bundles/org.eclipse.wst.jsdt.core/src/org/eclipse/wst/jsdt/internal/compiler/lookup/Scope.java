@@ -2063,8 +2063,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							}
 							if (memberType.isValidBinding()) {
 								if (sourceType == memberType.enclosingType() || compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4) {
-									if (insideStaticContext && !memberType.isStatic() && sourceType.isGenericType())
-										return new ProblemReferenceBinding(name, memberType, ProblemReasons.NonStaticReferenceInStaticContext);
 									// found a valid type in the 'immediate' scope (ie. not inherited)
 									// OR in 1.4 mode (inherited shadows enclosing)
 									if (foundType == null)
@@ -2945,7 +2943,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 								}
 							}
 						}
-						if (original2 == null || !original.areParameterErasuresEqual(original2))
+						if (original2 == null || !original.areParametersEqual(original2))
 							continue nextSpecific; // current does not override next
 						if (!original.returnType.isCompatibleWith(original2.returnType) &&
 								!original.returnType.isCompatibleWith(original2.returnType)) {

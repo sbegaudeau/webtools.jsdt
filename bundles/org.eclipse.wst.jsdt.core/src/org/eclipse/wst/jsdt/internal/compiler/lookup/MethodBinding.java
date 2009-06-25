@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.oaametadata.Method;
@@ -56,22 +55,6 @@ public MethodBinding(MethodBinding initialMethodBinding, ReferenceBinding declar
 	this.returnType = initialMethodBinding.returnType;
 	this.parameters = initialMethodBinding.parameters;
 	this.declaringClass = declaringClass;
-}
-/* Answer true if the argument types & the receiver's parameters have the same erasure
-*/
-public final boolean areParameterErasuresEqual(MethodBinding method) {
-	TypeBinding[] args = method.parameters;
-	if (parameters == args)
-		return true;
-
-	int length = parameters.length;
-	if (length != args.length)
-		return false;
-
-	for (int i = 0; i < length; i++)
-		if (parameters[i] != args[i] && parameters[i] != args[i])
-			return false;
-	return true;
 }
 /* Answer true if the argument types & the receiver's parameters are equal
 */
@@ -170,7 +153,7 @@ public final boolean canBeSeenBy(InvocationSite invocationSite, Scope scope) {
 			temp = temp.enclosingType();
 		}
 
-		ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass;
+		ReferenceBinding outerDeclaringClass = declaringClass;
 		temp = outerDeclaringClass.enclosingType();
 		while (temp != null) {
 			outerDeclaringClass = temp;
@@ -208,7 +191,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 
 		ReferenceBinding currentType = invocationType;
 		TypeBinding receiverErasure = receiverType;
-		ReferenceBinding declaringErasure = (ReferenceBinding) declaringClass;
+		ReferenceBinding declaringErasure = declaringClass;
 		int depth = 0;
 		do {
 			if (currentType.findSuperTypeWithSameErasure(declaringErasure) != null) {
@@ -249,7 +232,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 				temp = temp.enclosingType();
 			}
 
-			ReferenceBinding outerDeclaringClass = (ReferenceBinding)declaringClass;
+			ReferenceBinding outerDeclaringClass = declaringClass;
 			temp = outerDeclaringClass.enclosingType();
 			while (temp != null) {
 				outerDeclaringClass = temp;
@@ -425,21 +408,6 @@ public final boolean isNative() {
 */
 public final boolean isOverriding() {
 	return (modifiers & ExtraCompilerModifiers.AccOverriding) != 0;
-}
-/*
- * Answer true if the receiver is a "public static void main(String[])" method
- */
-public final boolean isMain() {
-	if (this.selector.length == 4 && CharOperation.equals(this.selector, TypeConstants.MAIN)
-			&& ((this.modifiers & (ClassFileConstants.AccPublic | ClassFileConstants.AccStatic)) != 0)
-			&& TypeBinding.VOID == this.returnType
-			&& this.parameters.length == 1) {
-		TypeBinding paramType = this.parameters[0];
-		if (paramType.dimensions() == 1 && paramType.leafComponentType().id == TypeIds.T_JavaLangString) {
-			return true;
-		}
-	}
-	return false;
 }
 /* Answer true if the receiver has private visibility
 */

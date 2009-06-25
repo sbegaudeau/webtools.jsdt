@@ -274,10 +274,6 @@ public boolean isEquivalentTo(TypeBinding otherType) {
 	return false;
 }
 
-public boolean isGenericType() {
-	return false;
-}
-
 /* Answer true if the receiver's hierarchy has problems (always false for arrays & base types)
  */
 public final boolean isHierarchyInconsistent() {

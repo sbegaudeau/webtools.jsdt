@@ -817,9 +817,6 @@ public void resolve() {
 		if (sourceType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) != null) {
 			ReferenceBinding current = sourceType;
 			checkEnclosedInGeneric : do {
-				if (current.isGenericType()) {
-					break checkEnclosedInGeneric;
-				}
 				if (current.isStatic()) break checkEnclosedInGeneric;
 				if (current.isLocalType()) {
 					NestedTypeBinding nestedType = (NestedTypeBinding) current;

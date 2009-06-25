@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
-import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class SourceTypeBinding extends ReferenceBinding {
@@ -51,9 +50,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 	char[] genericReferenceTypeSignature;
 	
 	public SourceTypeBinding nextType;
-
-	
-	private SimpleLookupTable storedAnnotations = null; // keys are this ReferenceBinding & its fields and methods, value is an AnnotationHolder
 
 public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,  Scope scope) {
 	this.compoundName = compoundName;
@@ -641,7 +637,7 @@ public SyntheticMethodBinding addSyntheticMethod(MethodBinding targetMethod, boo
 public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMethodToBridge, MethodBinding targetMethod) {
 	// targetMethod may be inherited
 	if (inheritedMethodToBridge.returnType == targetMethod.returnType
-		&& inheritedMethodToBridge.areParameterErasuresEqual(targetMethod)) {
+		&& inheritedMethodToBridge.areParametersEqual(targetMethod)) {
 			return null; // do not need bridge method
 	}
 	if (this.synthetics == null)
@@ -657,7 +653,7 @@ public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMe
 				MethodBinding method = (MethodBinding) synthetic;
 				if (CharOperation.equals(inheritedMethodToBridge.selector, method.selector)
 					&& inheritedMethodToBridge.returnType == method.returnType
-					&& inheritedMethodToBridge.areParameterErasuresEqual(method)) {
+					&& inheritedMethodToBridge.areParametersEqual(method)) {
 						return null;
 				}
 			}
@@ -937,7 +933,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 				for (int j = end; j > i; j--) {
 					MethodBinding method2 = this.methods[j];
 					boolean paramsMatch = isSource15
-						? method1.areParameterErasuresEqual(method2)
+						? method1.areParametersEqual(method2)
 						: method1.areParametersEqual(method2);
 					if (paramsMatch) {
 						methods();
@@ -1095,7 +1091,7 @@ private MethodBinding[] getMethods0(char[] selector) {
 		MethodBinding method = result[i];
 		for (int j = length; j > i; j--) {
 			boolean paramsMatch = isSource15
-				? method.areParameterErasuresEqual(result[j])
+				? method.areParametersEqual(result[j])
 				: method.areParametersEqual(result[j]);
 			if (paramsMatch) {
 				methods();
@@ -1294,7 +1290,7 @@ public MethodBinding[] methods() {
 							// duplicates regardless of return types
 						} else if (method.returnType == subMethod.returnType
 								&& (equalParams || method
-										.areParameterErasuresEqual(method2))) {
+										.areParametersEqual(method2))) {
 							// name clash for sure if not duplicates, report as duplicates
 						} else if (pLength > 0) {
 							// check to see if the erasure of either method is equal to the other
@@ -1576,14 +1572,6 @@ public  int sourceStart() {
 		return this.classScope.referenceContext.sourceStart;
 	else
 		return this.classScope.inferredType.sourceStart;
-}
-SimpleLookupTable storedAnnotations(boolean forceInitialize) {
-	if (forceInitialize && this.storedAnnotations == null && this.scope != null) { // scope null when no annotation cached, and type got processed fully (159631)
-		if (!this.scope.environment().globalOptions.storeAnnotations)
-			return null; // not supported during this compile
-		this.storedAnnotations = new SimpleLookupTable(3);
-	}
-	return this.storedAnnotations;
 }
 public ReferenceBinding superclass() {
 	if (this.nextType==null)

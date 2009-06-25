@@ -318,7 +318,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 								superRef = true;
 							}
 							else if (messageSend.arguments != null && methDecl.arguments != null) {
-								superRef = methDecl.binding.areParameterErasuresEqual(messageSend.binding);
+								superRef = methDecl.binding.areParametersEqual(messageSend.binding);
 							}
 						}
 					}
