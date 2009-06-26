@@ -191,9 +191,6 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 				if (this.showSynthetic) {
 					if (match instanceof MethodReferenceMatch) {
 						MethodReferenceMatch methRef = (MethodReferenceMatch) match;
-						if (methRef.isSynthetic()) {
-							line.append(" SYNTHETIC");
-						}
 					}
 				}
 				if (this.showFlavors > 0) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+
 
 
 public class BasicResolveTests extends AbstractRegressionTest {
@@ -1222,6 +1224,59 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			"var count = \"some?string\".substring(4, 3);\n" +
 			"count.substring(4, 3);" 
 		});
+	}
+	
+	public void Xtestbug196377_1() {
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"(function() {\n" +
+							"hasClass();\n" +
+							"function hasClass() {}\n" +
+							"})();"
+					},
+					""
+			);
+	}
+	
+	public void Xtestbug196377_2() {
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"top();" +
+							"function top() {\n" +
+							"inner();\n" +
+							"function inner() {}\n" +
+							"}"
+					},
+					""
+			);
+	}
+	
+	public void testbug196377_3() {
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"top();\n" +
+							"function top() {}\n"
+					},
+					""
+			);
+	}
+	
+	public void testbug196377_4() {
+		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"top(1);\n" +
+							"function top(a) {}\n"
+					},
+					""
+			);
 	}
 
 

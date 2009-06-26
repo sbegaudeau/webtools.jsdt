@@ -28,8 +28,6 @@ public class TestAll extends junit.framework.TestCase {
 	static {
 		/* completion tests */
 		TEST_CLASSES_1_5.addAll(RunCompletionParserTests.TEST_CLASSES_1_5);
-		/* recovery tests */
-		TEST_CLASSES_1_5.add(StatementRecoveryTest_1_5.class);
 	}
 
 public TestAll(String testName) {

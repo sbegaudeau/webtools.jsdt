@@ -28,12 +28,9 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 		if (!ONLY_JAVADOC) {
 			if(false) COMPLETION_SUITES.add(CompletionTests.class);
 			COMPLETION_SUITES.add(CompletionTests2.class);
-			//COMPLETION_SUITES.add(CompletionTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(CompletionContextTests.class);
-			//COMPLETION_SUITES.add(CompletionContextTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(CompletionWithMissingTypesTests.class);
 			if(false) COMPLETION_SUITES.add(CompletionWithMissingTypesTests2.class);
-			//COMPLETION_SUITES.add(CompletionWithMissingTypesTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(SnippetCompletionContextTests.class);
 		}
 		if(false) COMPLETION_SUITES.add(JavadocTypeCompletionModelTest.class);
