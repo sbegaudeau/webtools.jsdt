@@ -13,12 +13,14 @@ package org.eclipse.wst.jsdt.core.tests.rewrite.modifying;
 import java.util.List;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 
 public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 	private static final Class THIS = ASTRewritingModifyingRemoveTest.class;
@@ -31,80 +33,16 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		return new Suite(THIS);
 	}
 	
-	public static Test suite() {
-		if (true) {
-			return allTests();
-		}
-		TestSuite suite= new Suite("one test");
-		suite.addTest(new ASTRewritingModifyingRemoveTest("test0009"));
-		return suite;
-	}
-	
-
-	public void test0001() throws Exception {
-		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0001", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test0001;\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createCU(cu, false);
-		
-		astRoot.recordModifications();
-		
-		astRoot.setPackage(null);
-		
-		String preview = evaluateRewrite(cu, astRoot);
-		
-		buf= new StringBuffer();
-		buf.append("\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		assertEqualString(preview, buf.toString());
-	}
-
-	public void test0002() throws Exception {
-		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0002", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test0002;\n");
-		buf.append("import java.util.*;\n");
-		buf.append("import java.lang.*;\n");
-		buf.append("import java.awt.*;\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createCU(cu, false);
-		
-		astRoot.recordModifications();
-		
-		List imports = astRoot.imports();
-		imports.remove(0);
-		
-		String preview = evaluateRewrite(cu, astRoot);
-		
-		buf= new StringBuffer();
-		buf.append("package test0002;\n");
-		buf.append("import java.lang.*;\n");
-		buf.append("import java.awt.*;\n");
-		buf.append("public class X {\n");
-		buf.append("}\n");
-		assertEqualString(preview, buf.toString());
-	}
-	
 	public void test0003() throws Exception {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0003", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0003;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function Y() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
@@ -113,18 +51,16 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		
 		astRoot.recordModifications();
 		
-		List types = astRoot.types();
-		types.remove(1);
+		List functions = astRoot.statements();
+		functions.remove(1);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0003;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());
@@ -133,15 +69,13 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 	public void test0004() throws Exception {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0004", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test0004;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function Y() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
@@ -152,24 +86,22 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		
 		AST a = astRoot.getAST();
 		
-		List types = astRoot.types();
-		TypeDeclaration typeDeclaration1 = a.newTypeDeclaration();
-		typeDeclaration1.setName(a.newSimpleName("A"));
-		types.add(1, typeDeclaration1);
-		types.remove(1);
+		List functions = astRoot.statements();
+		FunctionDeclaration declaration1 = a.newFunctionDeclaration();
+		declaration1.setName(a.newSimpleName("A"));
+		functions.add(1, declaration1);
+		functions.remove(1);
 		
 		String preview = evaluateRewrite(cu, astRoot);
 		
 		buf= new StringBuffer();
-		buf.append("package test0004;\n");
-		buf.append("\n");
-		buf.append("public class X {\n");
+		buf.append("function X() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Y {\n");
+		buf.append("function Y() {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		buf.append("class Z {\n");
+		buf.append("function Z() {\n");
 		buf.append("\n");
 		buf.append("}\n");
 		assertEqualString(preview, buf.toString());

@@ -13,12 +13,12 @@ package org.eclipse.wst.jsdt.core.tests.rewrite.modifying;
 import java.util.List;
 
 import junit.framework.Test;
-import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 	private static final Class THIS = ASTRewritingModifyingOtherTest.class;
@@ -29,15 +29,6 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 	
 	public static Test allTests() {
 		return new Suite(THIS);
-	}
-	
-	public static Test suite() {
-		if (true) {
-			return allTests();
-		}
-		TestSuite suite= new Suite("one test");
-		suite.addTest(new ASTRewritingModifyingOtherTest("test0009"));
-		return suite;
 	}
 	
 	public void test0000() throws Exception {
