@@ -151,14 +151,6 @@
             class="org.eclipse.wst.jsdt.internal.ui.text.correction.QuickFixProcessor"
             id="org.eclipse.wst.jsdt.ui.text.correction.QuickFixProcessor">
       </quickFixProcessor>
-      <quickFixProcessor
-            name="%spellingQuickFixProcessor"
-            class="org.eclipse.wst.jsdt.internal.ui.text.spelling.WordQuickFixProcessor"
-            id= "org.eclipse.wst.jsdt.ui.text.correction.spelling.QuickFixProcessor">
-            <handledMarkerTypes>
-                <markerType id="org.eclipse.wst.jsdt.internal.spelling"/>
-	        </handledMarkerTypes>
-      </quickFixProcessor>
    </extension>
    <extension
          point="org.eclipse.wst.jsdt.ui.quickAssistProcessors">
@@ -5190,19 +5182,6 @@
 	</extension>
 -->
 
-<!-- no need to provide a global SpellingEngine -->
-<!--
-    <extension point="org.eclipse.ui.workbench.texteditor.spellingEngine">
-        <engine
-              preferencesClass="org.eclipse.wst.jsdt.internal.ui.preferences.SpellingPreferenceBlock"
-              label="%defaultSpellingEngine.label"
-              class="org.eclipse.wst.jsdt.internal.ui.text.spelling.DefaultSpellingEngine"
-              default="true"
-              id="org.eclipse.wst.jsdt.internal.ui.text.spelling.DefaultSpellingEngine">
-        </engine>
-    </extension>
--->
-       
     <extension point="org.eclipse.core.runtime.preferences">
         <initializer class="org.eclipse.wst.jsdt.internal.ui.JavaUIPreferenceInitializer"/>
     </extension>
