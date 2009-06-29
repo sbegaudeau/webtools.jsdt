@@ -21,6 +21,5 @@ public interface ProblemReasons {
 	final int NonStaticReferenceInStaticContext = 7;
 	final int ReceiverTypeNotVisible = 8;
 	final int IllegalSuperTypeVariable = 9;
-	final int InvalidTypeForStaticImport = 14;
 	final int NotAFunction = 15;
 }

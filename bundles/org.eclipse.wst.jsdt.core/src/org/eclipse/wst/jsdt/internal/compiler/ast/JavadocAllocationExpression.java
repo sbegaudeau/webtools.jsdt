@@ -70,7 +70,7 @@ public class JavadocAllocationExpression extends AllocationExpression implements
 				if (argumentTypes[i] == null) {
 					argHasError = true;
 				} else if (!hasTypeVarArgs) {
-					hasTypeVarArgs = argumentTypes[i].isTypeVariable();
+					hasTypeVarArgs = false;
 				}
 			}
 			if (argHasError) {

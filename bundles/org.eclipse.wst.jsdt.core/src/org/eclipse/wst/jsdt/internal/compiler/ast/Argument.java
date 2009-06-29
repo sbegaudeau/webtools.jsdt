@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -119,10 +119,6 @@ public class Argument extends LocalDeclaration implements IArgument {
 			this.type.resolveType(scope, true /* check bounds*/) : javaLangError;
 		if (exceptionType == null) return null;
 		boolean hasError = false;
-		if (exceptionType.isTypeVariable()) {
-			hasError = true;
-			// fall thru to create the variable - avoids additional errors because the variable is missing
-		}
 		if (exceptionType.isArrayType() && ((ArrayBinding) exceptionType).leafComponentType == TypeBinding.VOID) {
 			scope.problemReporter().variableTypeCannotBeVoidArray(this);
 			hasError = true;

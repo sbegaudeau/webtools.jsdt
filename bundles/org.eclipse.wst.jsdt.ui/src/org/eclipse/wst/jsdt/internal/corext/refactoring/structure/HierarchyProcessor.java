@@ -71,7 +71,6 @@ import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
-import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.ModifierRewrite;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
@@ -133,19 +132,6 @@ public abstract class HierarchyProcessor extends SuperTypeRefactoringProcessor {
 
 		public final boolean visit(final SimpleName node) {
 			final ITypeBinding binding= node.resolveTypeBinding();
-			if (binding != null && binding.isTypeVariable()) {
-				String name= null;
-				for (int index= 0; index < fMapping.length; index++) {
-					name= binding.getName();
-					if (fMapping[index].getSourceName().equals(name) && node.getIdentifier().equals(name)) {
-						final FunctionDeclaration declaration= (FunctionDeclaration) ASTNodes.getParent(node, FunctionDeclaration.class);
-						if (declaration != null) {
-							declaration.resolveBinding();
-						}
-						fRewrite.set(node, SimpleName.IDENTIFIER_PROPERTY, fMapping[index].getTargetName(), null);
-					}
-				}
-			}
 			return true;
 		}
 	}

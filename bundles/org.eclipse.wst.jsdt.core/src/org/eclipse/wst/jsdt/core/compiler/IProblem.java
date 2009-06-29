@@ -14,7 +14,6 @@
  *								   ExpressionShouldBeAVariable
  *								   AssignmentHasNoEffect
  *     IBM Corporation - added the following constants
- *								   TooManySyntheticArgumentSlots
  *								   TooManyArrayDimensions
  *								   TooManyBytesForStringConstant
  *								   TooManyMethods
@@ -310,7 +309,6 @@ void setSourceStart(int sourceStart);
 	int BytecodeExceeds64KLimitForClinit = Internal + 64;
 	int TooManyArgumentSlots = Internal + 65;
 	int TooManyLocalVariableSlots = Internal + 66;
-	int TooManySyntheticArgumentSlots = Internal + 67;
 	int TooManyArrayDimensions = Internal + 68;
 	int BytecodeExceeds64KLimitForConstructor = Internal + 69;
 

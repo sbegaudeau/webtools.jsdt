@@ -125,16 +125,6 @@ public char[][] enclosingTypeNames(){
 	System.arraycopy(this.enclosingTypeNames, 0, qualification, 0, this.depth);
 	return qualification;
 }
-private void enterAnnotationType(TypeInfo typeInfo) {
-	char[][] typeNames;
-	if (this.methodDepth > 0) {
-		typeNames = ONE_ZERO_CHAR;
-	} else {
-		typeNames = this.enclosingTypeNames();
-	}
-	this.indexer.addAnnotationTypeDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);
-}
 
 private void enterClass(TypeInfo typeInfo) {
 

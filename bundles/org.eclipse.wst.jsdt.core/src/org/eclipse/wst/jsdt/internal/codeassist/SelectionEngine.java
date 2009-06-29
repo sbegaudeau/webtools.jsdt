@@ -62,7 +62,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
@@ -903,52 +902,6 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		}
 	}
 
-	private void selectStaticFieldFromStaticImport(CompilationUnitDeclaration parsedUnit, char[] lastToken, ReferenceBinding ref) {
-		int fieldLength = lastToken.length;
-		FieldBinding[] fields = ref.fields();
-		next : for (int j = 0; j < fields.length; j++) {
-			FieldBinding field = fields[j];
-
-			if (fieldLength > field.name.length)
-				continue next;
-
-			if (field.isSynthetic())
-				continue next;
-
-			if (!field.isStatic())
-				continue next;
-
-			if (!CharOperation.equals(lastToken, field.name, true))
-				continue next;
-
-			this.selectFrom(field, parsedUnit, false);
-		}
-	}
-
-	private void selectStaticMethodFromStaticImport(CompilationUnitDeclaration parsedUnit, char[] lastToken, ReferenceBinding ref) {
-		int methodLength = lastToken.length;
-		MethodBinding[] methods = ref.methods();
-		next : for (int j = 0; j < methods.length; j++) {
-			MethodBinding method = methods[j];
-
-			if (method.isSynthetic()) continue next;
-
-			if (method.isDefaultAbstract())	continue next;
-
-			if (method.isConstructor()) continue next;
-
-			if (!method.isStatic()) continue next;
-
-			if (methodLength > method.selector.length)
-				continue next;
-
-			if (!CharOperation.equals(lastToken, method.selector, true))
-				continue next;
-
-			this.selectFrom(method, parsedUnit, false);
-		}
-	}
-
 	private void selectFrom(Binding binding, CompilationUnitDeclaration parsedUnit, boolean isDeclaration) {
 		if (binding instanceof ReferenceBinding) {
 			ReferenceBinding typeBinding = (ReferenceBinding) binding;
@@ -979,15 +932,8 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 
 				boolean isValuesOrValueOf = false;
-				if(binding instanceof SyntheticMethodBinding) {
-					SyntheticMethodBinding syntheticMethodBinding = (SyntheticMethodBinding) binding;
-					if(syntheticMethodBinding.kind  == SyntheticMethodBinding.EnumValues
-							|| syntheticMethodBinding.kind  == SyntheticMethodBinding.EnumValueOf) {
-						isValuesOrValueOf =  true;
-					}
-				}
 
-				if(!isValuesOrValueOf && !methodBinding.isSynthetic()) {
+				if(!isValuesOrValueOf) {
 					TypeBinding[] parameterTypes = methodBinding.original().parameters;
 					int length = parameterTypes.length;
 					char[][] parameterPackageNames = new char[length][];

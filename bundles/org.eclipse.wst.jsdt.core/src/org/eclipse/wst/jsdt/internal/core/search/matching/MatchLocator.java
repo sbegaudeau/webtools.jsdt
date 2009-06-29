@@ -1490,7 +1490,6 @@ public SearchMatch newMethodReferenceMatch(
 		int offset,
 		int length,
 		boolean isConstructor,
-		boolean isSynthetic,
 		ASTNode reference) {
 	SearchParticipant participant = getParticipant();
 	IResource resource = this.currentPossibleMatch.resource;
@@ -1498,7 +1497,7 @@ public SearchMatch newMethodReferenceMatch(
 	if (enclosingBinding != null)
 		enclosingElement = ((JavaElement) enclosingElement).resolved(enclosingBinding);
 	boolean isOverridden = (accuracy & PatternLocator.SUPER_INVOCATION_FLAVOR) != 0;
-	return new MethodReferenceMatch(enclosingElement, accuracy, offset, length, isConstructor, isSynthetic, isOverridden, insideDocComment, participant, resource);
+	return new MethodReferenceMatch(enclosingElement, accuracy, offset, length, isConstructor, isOverridden, insideDocComment, participant, resource);
 }
 
 public SearchMatch newPackageReferenceMatch(
@@ -1759,9 +1758,6 @@ protected void report(SearchMatch match) throws CoreException {
 			}
 			if (methodReferenceMatch.isImplicit()) {
 				System.out.print("+IMPLICIT"); //$NON-NLS-1$
-			}
-			if (methodReferenceMatch.isSynthetic()) {
-				System.out.print("+SYNTHETIC"); //$NON-NLS-1$
 			}
 		}
 		System.out.println("\n\tRaw: "+match.isRaw()); //$NON-NLS-1$

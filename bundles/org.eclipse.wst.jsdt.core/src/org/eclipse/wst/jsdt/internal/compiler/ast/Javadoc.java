@@ -476,12 +476,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 				verifyTypeReference(alloc, alloc.type, scope, source15, resolvedType, alloc.binding.modifiers);
 			}
 		}
-
-		// Verify that there's no type variable reference
-		// (javadoc does not accept them and this is not a referenced bug or requested enhancement)
-		if (reference.resolvedType != null && reference.resolvedType.isTypeVariable()) {
-			scope.problemReporter().javadocInvalidReference(reference.sourceStart, reference.sourceEnd);
-		}
 	}
 
 	/*

@@ -779,10 +779,6 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 	if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return field;
 
-	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-		if ((field.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
-			field.modifiers |= ClassFileConstants.AccDeprecated;
-	}
 	if (isViewedAsDeprecated() && !field.isDeprecated())
 		field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 	if (hasRestrictedAccess())
@@ -792,11 +788,7 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 public MethodBinding resolveTypesFor(MethodBinding method) {
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return method;
-
-	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-		if ((method.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
-			method.modifiers |= ClassFileConstants.AccDeprecated;
-	}
+	
 	if (isViewedAsDeprecated() && !method.isDeprecated())
 		method.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 	if (hasRestrictedAccess())

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -21,12 +19,9 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -40,13 +35,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 	public Scope scope;
 	public ClassScope  classScope;
 
-
-	// Synthetics are separated into 5 categories: methods, super methods, fields, class literals, changed declaring type bindings and bridge methods
-	public final static int METHOD_EMUL = 0;
-	public final static int FIELD_EMUL = 1;
-	public final static int CLASS_LITERAL_EMUL = 2;
-	public final static int RECEIVER_TYPE_EMUL = 3;
-	HashMap[] synthetics;
 	char[] genericReferenceTypeSignature;
 	
 	public SourceTypeBinding nextType;
@@ -275,405 +263,6 @@ private void buildMethods() {
 //		}
 //	}
 //}
-/* Add a new synthetic field for <actualOuterLocalVariable>.
-*	Answer the new field or the existing field if one already existed.
-*/
-public FieldBinding addSyntheticFieldForInnerclass(LocalVariableBinding actualOuterLocalVariable) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.FIELD_EMUL] = new HashMap(5);
-
-	FieldBinding synthField = (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get(actualOuterLocalVariable);
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			CharOperation.concat(TypeConstants.SYNTHETIC_OUTER_LOCAL_PREFIX, actualOuterLocalVariable.name),
-			actualOuterLocalVariable.type,
-			ClassFileConstants.AccPrivate | ClassFileConstants.AccFinal | ClassFileConstants.AccSynthetic,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.FIELD_EMUL].size());
-		this.synthetics[SourceTypeBinding.FIELD_EMUL].put(actualOuterLocalVariable, synthField);
-	}
-
-	// ensure there is not already such a field defined by the user
-	boolean needRecheck;
-	int index = 1;
-	do {
-		needRecheck = false;
-		FieldBinding existingField;
-		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.classScope.referenceContext;
-			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-				FieldDeclaration fieldDecl = typeDecl.fields[i];
-				if (fieldDecl.binding == existingField) {
-					synthField.name = CharOperation.concat(
-						TypeConstants.SYNTHETIC_OUTER_LOCAL_PREFIX,
-						actualOuterLocalVariable.name,
-						("$" + String.valueOf(index++)).toCharArray()); //$NON-NLS-1$
-					needRecheck = true;
-					break;
-				}
-			}
-		}
-	} while (needRecheck);
-	return synthField;
-}
-/* Add a new synthetic field for <enclosingType>.
-*	Answer the new field or the existing field if one already existed.
-*/
-public FieldBinding addSyntheticFieldForInnerclass(ReferenceBinding enclosingType) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.FIELD_EMUL] = new HashMap(5);
-
-	FieldBinding synthField = (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get(enclosingType);
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			CharOperation.concat(
-				TypeConstants.SYNTHETIC_ENCLOSING_INSTANCE_PREFIX,
-				String.valueOf(enclosingType.depth()).toCharArray()),
-			enclosingType,
-			ClassFileConstants.AccDefault | ClassFileConstants.AccFinal | ClassFileConstants.AccSynthetic,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.FIELD_EMUL].size());
-		this.synthetics[SourceTypeBinding.FIELD_EMUL].put(enclosingType, synthField);
-	}
-	// ensure there is not already such a field defined by the user
-	boolean needRecheck;
-	do {
-		needRecheck = false;
-		FieldBinding existingField;
-		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.classScope.referenceContext;
-			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-				FieldDeclaration fieldDecl = typeDecl.fields[i];
-				if (fieldDecl.binding == existingField) {
-					if (this.scope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5) {
-						synthField.name = CharOperation.concat(
-							synthField.name,
-							"$".toCharArray()); //$NON-NLS-1$
-						needRecheck = true;
-					} else {
-						this.scope.problemReporter().duplicateFieldInType(this, fieldDecl);
-					}
-					break;
-				}
-			}
-		}
-	} while (needRecheck);
-	return synthField;
-}
-/* Add a new synthetic field for a class literal access.
-*	Answer the new field or the existing field if one already existed.
-*/
-public FieldBinding addSyntheticFieldForClassLiteral(TypeBinding targetType, BlockScope blockScope) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL] == null)
-		this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL] = new HashMap(5);
-
-	// use a different table than FIELDS, given there might be a collision between emulation of X.this$0 and X.class.
-	FieldBinding synthField = (FieldBinding) this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].get(targetType);
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			CharOperation.concat(
-				TypeConstants.SYNTHETIC_CLASS,
-				String.valueOf(this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].size()).toCharArray()),
-			blockScope.getJavaLangClass(),
-			ClassFileConstants.AccDefault | ClassFileConstants.AccStatic | ClassFileConstants.AccSynthetic,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].size());
-		this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].put(targetType, synthField);
-	}
-	// ensure there is not already such a field defined by the user
-	FieldBinding existingField;
-	if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-		TypeDeclaration typeDecl = blockScope.referenceType();
-		for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-			FieldDeclaration fieldDecl = typeDecl.fields[i];
-			if (fieldDecl.binding == existingField) {
-				blockScope.problemReporter().duplicateFieldInType(this, fieldDecl);
-				break;
-			}
-		}
-	}
-	return synthField;
-}
-/* Add a new synthetic field for the emulation of the assert statement.
-*	Answer the new field or the existing field if one already existed.
-*/
-public FieldBinding addSyntheticFieldForAssert(BlockScope blockScope) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.FIELD_EMUL] = new HashMap(5);
-
-	FieldBinding synthField = (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get("assertionEmulation"); //$NON-NLS-1$
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			TypeConstants.SYNTHETIC_ASSERT_DISABLED,
-			TypeBinding.BOOLEAN,
-			ClassFileConstants.AccDefault | ClassFileConstants.AccStatic | ClassFileConstants.AccSynthetic | ClassFileConstants.AccFinal,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.FIELD_EMUL].size());
-		this.synthetics[SourceTypeBinding.FIELD_EMUL].put("assertionEmulation", synthField); //$NON-NLS-1$
-	}
-	// ensure there is not already such a field defined by the user
-	// ensure there is not already such a field defined by the user
-	boolean needRecheck;
-	int index = 0;
-	do {
-		needRecheck = false;
-		FieldBinding existingField;
-		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.classScope.referenceContext;
-			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-				FieldDeclaration fieldDecl = typeDecl.fields[i];
-				if (fieldDecl.binding == existingField) {
-					synthField.name = CharOperation.concat(
-						TypeConstants.SYNTHETIC_ASSERT_DISABLED,
-						("_" + String.valueOf(index++)).toCharArray()); //$NON-NLS-1$
-					needRecheck = true;
-					break;
-				}
-			}
-		}
-	} while (needRecheck);
-	return synthField;
-}
-/* Add a new synthetic field for recording all enum constant values
-*	Answer the new field or the existing field if one already existed.
-*/
-public FieldBinding addSyntheticFieldForEnumValues() {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.FIELD_EMUL] = new HashMap(5);
-
-	FieldBinding synthField = (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get("enumConstantValues"); //$NON-NLS-1$
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			TypeConstants.SYNTHETIC_ENUM_VALUES,
-			this.scope.createArrayType(this,1),
-			ClassFileConstants.AccPrivate | ClassFileConstants.AccStatic | ClassFileConstants.AccSynthetic | ClassFileConstants.AccFinal,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.FIELD_EMUL].size());
-		this.synthetics[SourceTypeBinding.FIELD_EMUL].put("enumConstantValues", synthField); //$NON-NLS-1$
-	}
-	// ensure there is not already such a field defined by the user
-	// ensure there is not already such a field defined by the user
-	boolean needRecheck;
-	int index = 0;
-	do {
-		needRecheck = false;
-		FieldBinding existingField;
-		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.classScope.referenceContext;
-			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-				FieldDeclaration fieldDecl = typeDecl.fields[i];
-				if (fieldDecl.binding == existingField) {
-					synthField.name = CharOperation.concat(
-						TypeConstants.SYNTHETIC_ENUM_VALUES,
-						("_" + String.valueOf(index++)).toCharArray()); //$NON-NLS-1$
-					needRecheck = true;
-					break;
-				}
-			}
-		}
-	} while (needRecheck);
-	return synthField;
-}
-/* Add a new synthetic access method for read/write access to <targetField>.
-	Answer the new method or the existing method if one already existed.
-*/
-public SyntheticMethodBinding addSyntheticMethod(FieldBinding targetField, boolean isReadAccess) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.METHOD_EMUL] = new HashMap(5);
-
-	SyntheticMethodBinding accessMethod = null;
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(targetField);
-	if (accessors == null) {
-		accessMethod = new SyntheticMethodBinding(targetField, isReadAccess, this);
-		this.synthetics[SourceTypeBinding.METHOD_EMUL].put(targetField, accessors = new SyntheticMethodBinding[2]);
-		accessors[isReadAccess ? 0 : 1] = accessMethod;
-	} else {
-		if ((accessMethod = accessors[isReadAccess ? 0 : 1]) == null) {
-			accessMethod = new SyntheticMethodBinding(targetField, isReadAccess, this);
-			accessors[isReadAccess ? 0 : 1] = accessMethod;
-		}
-	}
-	return accessMethod;
-}
-/* Add a new synthetic method the enum type. Selector can either be 'values' or 'valueOf'.
- * char[] constants from TypeConstants must be used: TypeConstants.VALUES/VALUEOF
-*/
-public SyntheticMethodBinding addSyntheticEnumMethod(char[] selector) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.METHOD_EMUL] = new HashMap(5);
-
-	SyntheticMethodBinding accessMethod = null;
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(selector);
-	if (accessors == null) {
-		accessMethod = new SyntheticMethodBinding(this, selector);
-		this.synthetics[SourceTypeBinding.METHOD_EMUL].put(selector, accessors = new SyntheticMethodBinding[2]);
-		accessors[0] = accessMethod;
-	} else {
-		if ((accessMethod = accessors[0]) == null) {
-			accessMethod = new SyntheticMethodBinding(this, selector);
-			accessors[0] = accessMethod;
-		}
-	}
-	return accessMethod;
-}
-/*
- * Add a synthetic field to handle the cache of the switch translation table for the corresponding enum type
- */
-public SyntheticFieldBinding addSyntheticFieldForSwitchEnum(char[] fieldName, String key) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.FIELD_EMUL] = new HashMap(5);
-
-	SyntheticFieldBinding synthField = (SyntheticFieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get(key);
-	if (synthField == null) {
-		synthField = new SyntheticFieldBinding(
-			fieldName,
-			this.scope.createArrayType(TypeBinding.INT,1),
-			ClassFileConstants.AccPrivate | ClassFileConstants.AccStatic | ClassFileConstants.AccSynthetic,
-			this,
-			Constant.NotAConstant,
-			this.synthetics[SourceTypeBinding.FIELD_EMUL].size());
-		this.synthetics[SourceTypeBinding.FIELD_EMUL].put(key, synthField);
-	}
-	// ensure there is not already such a field defined by the user
-	boolean needRecheck;
-	int index = 0;
-	do {
-		needRecheck = false;
-		FieldBinding existingField;
-		if ((existingField = this.getField(synthField.name, true /*resolve*/)) != null) {
-			TypeDeclaration typeDecl = this.classScope.referenceContext;
-			for (int i = 0, max = typeDecl.fields.length; i < max; i++) {
-				FieldDeclaration fieldDecl = typeDecl.fields[i];
-				if (fieldDecl.binding == existingField) {
-					synthField.name = CharOperation.concat(
-						fieldName,
-						("_" + String.valueOf(index++)).toCharArray()); //$NON-NLS-1$
-					needRecheck = true;
-					break;
-				}
-			}
-		}
-	} while (needRecheck);
-	return synthField;
-}
-/* Add a new synthetic method the enum type. Selector can either be 'values' or 'valueOf'.
- * char[] constants from TypeConstants must be used: TypeConstants.VALUES/VALUEOF
-*/
-public SyntheticMethodBinding addSyntheticMethodForSwitchEnum(TypeBinding enumBinding) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.METHOD_EMUL] = new HashMap(5);
-
-	SyntheticMethodBinding accessMethod = null;
-	char[] selector = CharOperation.concat(TypeConstants.SYNTHETIC_SWITCH_ENUM_TABLE, enumBinding.constantPoolName());
-	CharOperation.replace(selector, '/', '$');
-	final String key = new String(selector);
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(key);
-	// first add the corresponding synthetic field
-	if (accessors == null) {
-		// then create the synthetic method
-		final SyntheticFieldBinding fieldBinding = this.addSyntheticFieldForSwitchEnum(selector, key);
-		accessMethod = new SyntheticMethodBinding(fieldBinding, this, enumBinding, selector);
-		this.synthetics[SourceTypeBinding.METHOD_EMUL].put(key, accessors = new SyntheticMethodBinding[2]);
-		accessors[0] = accessMethod;
-	} else {
-		if ((accessMethod = accessors[0]) == null) {
-			final SyntheticFieldBinding fieldBinding = this.addSyntheticFieldForSwitchEnum(selector, key);
-			accessMethod = new SyntheticMethodBinding(fieldBinding, this, enumBinding, selector);
-			accessors[0] = accessMethod;
-		}
-	}
-	return accessMethod;
-}
-/* Add a new synthetic access method for access to <targetMethod>.
- * Must distinguish access method used for super access from others (need to use invokespecial bytecode)
-	Answer the new method or the existing method if one already existed.
-*/
-public SyntheticMethodBinding addSyntheticMethod(MethodBinding targetMethod, boolean isSuperAccess) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null)
-		this.synthetics[SourceTypeBinding.METHOD_EMUL] = new HashMap(5);
-
-	SyntheticMethodBinding accessMethod = null;
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(targetMethod);
-	if (accessors == null) {
-		accessMethod = new SyntheticMethodBinding(targetMethod, isSuperAccess, this);
-		this.synthetics[SourceTypeBinding.METHOD_EMUL].put(targetMethod, accessors = new SyntheticMethodBinding[2]);
-		accessors[isSuperAccess ? 0 : 1] = accessMethod;
-	} else {
-		if ((accessMethod = accessors[isSuperAccess ? 0 : 1]) == null) {
-			accessMethod = new SyntheticMethodBinding(targetMethod, isSuperAccess, this);
-			accessors[isSuperAccess ? 0 : 1] = accessMethod;
-		}
-	}
-	return accessMethod;
-}
-/*
- * Record the fact that bridge methods need to be generated to override certain inherited methods
- */
-public SyntheticMethodBinding addSyntheticBridgeMethod(MethodBinding inheritedMethodToBridge, MethodBinding targetMethod) {
-	// targetMethod may be inherited
-	if (inheritedMethodToBridge.returnType == targetMethod.returnType
-		&& inheritedMethodToBridge.areParametersEqual(targetMethod)) {
-			return null; // do not need bridge method
-	}
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null) {
-		this.synthetics[SourceTypeBinding.METHOD_EMUL] = new HashMap(5);
-	} else {
-		// check to see if there is another equivalent inheritedMethod already added
-		Iterator synthMethods = this.synthetics[SourceTypeBinding.METHOD_EMUL].keySet().iterator();
-		while (synthMethods.hasNext()) {
-			Object synthetic = synthMethods.next();
-			if (synthetic instanceof MethodBinding) {
-				MethodBinding method = (MethodBinding) synthetic;
-				if (CharOperation.equals(inheritedMethodToBridge.selector, method.selector)
-					&& inheritedMethodToBridge.returnType == method.returnType
-					&& inheritedMethodToBridge.areParametersEqual(method)) {
-						return null;
-				}
-			}
-		}
-	}
-
-	SyntheticMethodBinding accessMethod = null;
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(inheritedMethodToBridge);
-	if (accessors == null) {
-		accessMethod = new SyntheticMethodBinding(inheritedMethodToBridge, targetMethod, this);
-		this.synthetics[SourceTypeBinding.METHOD_EMUL].put(inheritedMethodToBridge, accessors = new SyntheticMethodBinding[2]);
-		accessors[1] = accessMethod;
-	} else {
-		if ((accessMethod = accessors[1]) == null) {
-			accessMethod = new SyntheticMethodBinding(inheritedMethodToBridge, targetMethod, this);
-			accessors[1] = accessMethod;
-		}
-	}
-	return accessMethod;
-}
 public int kind() {
 	return Binding.TYPE;
 }
@@ -781,26 +370,6 @@ public FieldBinding[] fields() {
 		return this.fields;
 }
 
-/**
- * Compute the tagbits for standard annotations. For source types, these could require
- * lazily resolving corresponding annotation nodes, in case of forward references.
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
- */
-public long getAnnotationTagBits() {
-//	if ((this.tagBits & TagBits.AnnotationResolved) == 0 && this.scope != null) {
-//		TypeDeclaration typeDecl = this.classScope.referenceContext;
-//		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
-//		try {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
-//			ASTNode.resolveAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
-//		} finally {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
-//		}
-//		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0)
-//			this.modifiers |= ClassFileConstants.AccDeprecated;
-//	}
-	return this.tagBits;
-}
 public MethodBinding[] getDefaultAbstractMethods() {
 	int count = 0;
 	for (int i = this.methods.length; --i >= 0;)
@@ -1101,66 +670,6 @@ private MethodBinding[] getMethods0(char[] selector) {
 	}
 	return result;
 }
-/* Answer the synthetic field for <actualOuterLocalVariable>
-*	or null if one does not exist.
-*/
-public FieldBinding getSyntheticField(LocalVariableBinding actualOuterLocalVariable) {
-	if (this.synthetics == null || this.synthetics[SourceTypeBinding.FIELD_EMUL] == null) return null;
-	return (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get(actualOuterLocalVariable);
-}
-/* Answer the synthetic field for <targetEnclosingType>
-*	or null if one does not exist.
-*/
-public FieldBinding getSyntheticField(ReferenceBinding targetEnclosingType, boolean onlyExactMatch) {
-
-	if (this.synthetics == null || this.synthetics[SourceTypeBinding.FIELD_EMUL] == null) return null;
-	FieldBinding field = (FieldBinding) this.synthetics[SourceTypeBinding.FIELD_EMUL].get(targetEnclosingType);
-	if (field != null) return field;
-
-	// type compatibility : to handle cases such as
-	// class T { class M{}}
-	// class S extends T { class N extends M {}} --> need to use S as a default enclosing instance for the super constructor call in N().
-	if (!onlyExactMatch){
-		Iterator accessFields = this.synthetics[SourceTypeBinding.FIELD_EMUL].values().iterator();
-		while (accessFields.hasNext()) {
-			field = (FieldBinding) accessFields.next();
-			if (CharOperation.prefixEquals(TypeConstants.SYNTHETIC_ENCLOSING_INSTANCE_PREFIX, field.name)
-				&& field.type.findSuperTypeWithSameErasure(targetEnclosingType) != null)
-					return field;
-		}
-	}
-	return null;
-}
-/*
- * Answer the bridge method associated for an  inherited methods or null if one does not exist
- */
-public SyntheticMethodBinding getSyntheticBridgeMethod(MethodBinding inheritedMethodToBridge) {
-	if (this.synthetics == null) return null;
-	if (this.synthetics[SourceTypeBinding.METHOD_EMUL] == null) return null;
-	SyntheticMethodBinding[] accessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(inheritedMethodToBridge);
-	if (accessors == null) return null;
-	return accessors[1];
-}
-
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#initializeDeprecatedAnnotationTagBits()
- */
-public void initializeDeprecatedAnnotationTagBits() {
-//	if ((this.tagBits & TagBits.DeprecatedAnnotationResolved) == 0) {
-//		TypeDeclaration typeDecl = this.classScope.referenceContext;
-//		boolean old = typeDecl.staticInitializerScope.insideTypeAnnotation;
-//		try {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = true;
-//			ASTNode.resolveDeprecatedAnnotations(typeDecl.staticInitializerScope, typeDecl.annotations, this);
-//			this.tagBits |= TagBits.DeprecatedAnnotationResolved;
-//		} finally {
-//			typeDecl.staticInitializerScope.insideTypeAnnotation = old;
-//		}
-//		if ((this.tagBits & TagBits.AnnotationDeprecated) != 0) {
-//			this.modifiers |= ClassFileConstants.AccDeprecated;
-//		}
-//	}
-}
 
 /**
  * Returns true if a type is identical to another one,
@@ -1185,40 +694,14 @@ public ReferenceBinding[] memberTypes() {
 
 }
 public FieldBinding getUpdatedFieldBinding(FieldBinding targetField, ReferenceBinding newDeclaringClass) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL] == null)
-		this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL] = new HashMap(5);
-
-	Hashtable fieldMap = (Hashtable) this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL].get(targetField);
-	if (fieldMap == null) {
-		fieldMap = new Hashtable(5);
-		this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL].put(targetField, fieldMap);
-	}
-	FieldBinding updatedField = (FieldBinding) fieldMap.get(newDeclaringClass);
-	if (updatedField == null){
-		updatedField = new FieldBinding(targetField, newDeclaringClass);
-		fieldMap.put(newDeclaringClass, updatedField);
-	}
+	Hashtable fieldMap = new Hashtable(5);
+	FieldBinding updatedField = new FieldBinding(targetField, newDeclaringClass);
+	fieldMap.put(newDeclaringClass, updatedField);
 	return updatedField;
 }
 public MethodBinding getUpdatedMethodBinding(MethodBinding targetMethod, ReferenceBinding newDeclaringClass) {
-	if (this.synthetics == null)
-		this.synthetics = new HashMap[4];
-	if (this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL] == null)
-		this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL] = new HashMap(5);
-
-	Hashtable methodMap = (Hashtable) this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL].get(targetMethod);
-	if (methodMap == null) {
-		methodMap = new Hashtable(5);
-		this.synthetics[SourceTypeBinding.RECEIVER_TYPE_EMUL].put(targetMethod, methodMap);
-	}
-	MethodBinding updatedMethod = (MethodBinding) methodMap.get(newDeclaringClass);
-	if (updatedMethod == null){
-		updatedMethod = new MethodBinding(targetMethod, newDeclaringClass);
-		updatedMethod.createFunctionTypeBinding(scope);
-		methodMap.put(newDeclaringClass, updatedMethod);
-	}
+	MethodBinding updatedMethod = new MethodBinding(targetMethod, newDeclaringClass);
+	updatedMethod.createFunctionTypeBinding(scope);
 	return updatedMethod;
 }
 public boolean hasMemberTypes() {
@@ -1404,10 +887,6 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 	if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return field;
 
-	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-		if ((field.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
-			field.modifiers |= ClassFileConstants.AccDeprecated;
-	}
 	if (isViewedAsDeprecated() && !field.isDeprecated())
 		field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 	if (hasRestrictedAccess())
@@ -1464,10 +943,6 @@ public MethodBinding resolveTypesFor(MethodBinding method,AbstractMethodDeclarat
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return method;
 
-	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
-		if ((method.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
-			method.modifiers |= ClassFileConstants.AccDeprecated;
-	}
 	if (isViewedAsDeprecated() && !method.isDeprecated())
 		method.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 	if (hasRestrictedAccess())
@@ -1580,87 +1055,6 @@ public ReferenceBinding superclass() {
 		return this.superclass;
 	return this.nextType.superclass();
 
-}
-// TODO (philippe) could be a performance issue since some senders are building the list just to count them
-public SyntheticMethodBinding[] syntheticMethods() {
-
-	if (this.synthetics == null || this.synthetics[SourceTypeBinding.METHOD_EMUL] == null || this.synthetics[SourceTypeBinding.METHOD_EMUL].size() == 0) return null;
-
-	// difficult to compute size up front because of the embedded arrays so assume there is only 1
-	int index = 0;
-	SyntheticMethodBinding[] bindings = new SyntheticMethodBinding[1];
-	Iterator fieldsOrMethods = this.synthetics[SourceTypeBinding.METHOD_EMUL].keySet().iterator();
-	while (fieldsOrMethods.hasNext()) {
-
-		Object fieldOrMethod = fieldsOrMethods.next();
-
-		if (fieldOrMethod instanceof MethodBinding) {
-
-			SyntheticMethodBinding[] methodAccessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(fieldOrMethod);
-			int numberOfAccessors = 0;
-			if (methodAccessors[0] != null) numberOfAccessors++;
-			if (methodAccessors[1] != null) numberOfAccessors++;
-			if (index + numberOfAccessors > bindings.length)
-				System.arraycopy(bindings, 0, (bindings = new SyntheticMethodBinding[index + numberOfAccessors]), 0, index);
-			if (methodAccessors[0] != null)
-				bindings[index++] = methodAccessors[0]; // super access
-			if (methodAccessors[1] != null)
-				bindings[index++] = methodAccessors[1]; // normal access or bridge
-
-		} else {
-
-			SyntheticMethodBinding[] fieldAccessors = (SyntheticMethodBinding[]) this.synthetics[SourceTypeBinding.METHOD_EMUL].get(fieldOrMethod);
-			int numberOfAccessors = 0;
-			if (fieldAccessors[0] != null) numberOfAccessors++;
-			if (fieldAccessors[1] != null) numberOfAccessors++;
-			if (index + numberOfAccessors > bindings.length)
-				System.arraycopy(bindings, 0, (bindings = new SyntheticMethodBinding[index + numberOfAccessors]), 0, index);
-			if (fieldAccessors[0] != null)
-				bindings[index++] = fieldAccessors[0]; // read access
-			if (fieldAccessors[1] != null)
-				bindings[index++] = fieldAccessors[1]; // write access
-		}
-	}
-
-	// sort them in according to their own indexes
-	int length;
-	SyntheticMethodBinding[] sortedBindings = new SyntheticMethodBinding[length = bindings.length];
-	for (int i = 0; i < length; i++){
-		SyntheticMethodBinding binding = bindings[i];
-		sortedBindings[binding.index] = binding;
-	}
-	return sortedBindings;
-}
-/**
- * Answer the collection of synthetic fields to append into the classfile
- */
-public FieldBinding[] syntheticFields() {
-
-	if (this.synthetics == null) return null;
-
-	int fieldSize = this.synthetics[SourceTypeBinding.FIELD_EMUL] == null ? 0 : this.synthetics[SourceTypeBinding.FIELD_EMUL].size();
-	int literalSize = this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL] == null ? 0 :this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].size();
-	int totalSize = fieldSize + literalSize;
-	if (totalSize == 0) return null;
-	FieldBinding[] bindings = new FieldBinding[totalSize];
-
-	// add innerclass synthetics
-	if (this.synthetics[SourceTypeBinding.FIELD_EMUL] != null){
-		Iterator elements = this.synthetics[SourceTypeBinding.FIELD_EMUL].values().iterator();
-		for (int i = 0; i < fieldSize; i++) {
-			SyntheticFieldBinding synthBinding = (SyntheticFieldBinding) elements.next();
-			bindings[synthBinding.index] = synthBinding;
-		}
-	}
-	// add class literal synthetics
-	if (this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL] != null){
-		Iterator elements = this.synthetics[SourceTypeBinding.CLASS_LITERAL_EMUL].values().iterator();
-		for (int i = 0; i < literalSize; i++) {
-			SyntheticFieldBinding synthBinding = (SyntheticFieldBinding) elements.next();
-			bindings[fieldSize+synthBinding.index] = synthBinding;
-		}
-	}
-	return bindings;
 }
 public String toString() {
     StringBuffer buffer = new StringBuffer(30);

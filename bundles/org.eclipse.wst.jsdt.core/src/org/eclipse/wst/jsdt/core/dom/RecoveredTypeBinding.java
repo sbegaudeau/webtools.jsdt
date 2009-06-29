@@ -537,13 +537,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
-		return false;
-	}
-
 	private String getTypeNameFrom(Type type) {
 		if (type == null) return Util.EMPTY_STRING;
 		switch(type.getNodeType0()) {

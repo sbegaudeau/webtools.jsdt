@@ -36,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -250,7 +249,6 @@ public void analyseCode(ClassScope currentScope, FlowContext flowContext, FlowIn
 			LocalTypeBinding localType = (LocalTypeBinding) this.binding;
 			localType.setConstantPoolName(currentScope.compilationUnitScope().computeConstantPoolName(localType));
 		}
-		manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
 		updateMaxFieldCount(); // propagate down the max field count
 		internalAnalyseCode(flowContext, flowInfo);
 	} catch (AbortType e) {
@@ -600,19 +598,9 @@ public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, Fl
 	NestedTypeBinding nestedType = (NestedTypeBinding) this.binding;
 
 	MethodScope methodScope = currentScope.methodScope();
-	if (!methodScope.isStatic && !methodScope.isConstructorCall){
-		nestedType.addSyntheticArgumentAndField(nestedType.enclosingType());
-	}
+
 	// add superclass enclosing instance arg for anonymous types (if necessary)
 	if (nestedType.isAnonymousType()) {
-		ReferenceBinding superclassBinding = (ReferenceBinding)nestedType.superclass;
-		if (superclassBinding.enclosingType() != null && !superclassBinding.isStatic()) {
-			if (!superclassBinding.isLocalType()
-					|| ((NestedTypeBinding)superclassBinding).getSyntheticField(superclassBinding.enclosingType(), true) != null){
-
-				nestedType.addSyntheticArgument(superclassBinding.enclosingType());
-			}
-		}
 		// From 1.5 on, provide access to enclosing instance synthetic constructor argument when declared inside constructor call
 		// only for direct anonymous type
 		//public class X {
@@ -624,32 +612,7 @@ public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, Fl
 		//}
 		if (!methodScope.isStatic && methodScope.isConstructorCall && currentScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5) {
 			ReferenceBinding enclosing = nestedType.enclosingType();
-			if (enclosing.isNestedType()) {
-				NestedTypeBinding nestedEnclosing = (NestedTypeBinding)enclosing;
-//					if (nestedEnclosing.findSuperTypeErasingTo(nestedEnclosing.enclosingType()) == null) { // only if not inheriting
-					SyntheticArgumentBinding syntheticEnclosingInstanceArgument = nestedEnclosing.getSyntheticArgument(nestedEnclosing.enclosingType(), true);
-					if (syntheticEnclosingInstanceArgument != null) {
-						nestedType.addSyntheticArgumentAndField(syntheticEnclosingInstanceArgument);
-					}
-				}
-//				}
 		}
-	}
-}
-
-/**
- * Access emulation for a local member type
- * force to emulation of access to direct enclosing instance.
- * By using the initializer scope, we actually only request an argument emulation, the
- * field is not added until actually used. However we will force allocations to be qualified
- * with an enclosing instance.
- *
- * Local member cannot be static.
- */
-public void manageEnclosingInstanceAccessIfNecessary(ClassScope currentScope, FlowInfo flowInfo) {
-	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
-	NestedTypeBinding nestedType = (NestedTypeBinding) this.binding;
-	nestedType.addSyntheticArgumentAndField(this.binding.enclosingType());
 	}
 }
 

@@ -2994,7 +2994,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			this.preferences.insert_space_after_comma_in_constructor_declaration_parameters,
 			this.preferences.alignment_for_parameters_in_constructor_declaration);
 
-		if (!constructorDeclaration.isNative() && !constructorDeclaration.isAbstract()) {
+		if (!constructorDeclaration.isAbstract()) {
 			/*
 			 * Method body
 			 */
@@ -3921,7 +3921,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			 }
 		}
 
-		if (!methodDeclaration.isNative() && !methodDeclaration.isAbstract() && ((methodDeclaration.modifiers & ExtraCompilerModifiers.AccSemicolonBody) == 0)) {
+		if (!methodDeclaration.isAbstract() && ((methodDeclaration.modifiers & ExtraCompilerModifiers.AccSemicolonBody) == 0)) {
 			/*
 			 * Method body
 			 */

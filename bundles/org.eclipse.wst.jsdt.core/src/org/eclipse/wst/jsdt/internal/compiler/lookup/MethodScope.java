@@ -50,9 +50,6 @@ public class MethodScope extends BlockScope {
 	public long[] definiteInits = new long[4];
 	public long[][] extraDefiniteInits = new long[4][];
 
-	// inner-emulation
-	public SyntheticArgumentBinding[] extraSyntheticArguments;
-
 
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
 

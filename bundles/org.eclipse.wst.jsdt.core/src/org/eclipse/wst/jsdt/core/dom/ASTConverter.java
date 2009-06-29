@@ -444,7 +444,7 @@ class ASTConverter {
 			}
 		} else {
 			// syntax error in this method declaration
-			if (!methodDeclaration.isNative() && !methodDeclaration.isAbstract()) {
+			if (!methodDeclaration.isAbstract()) {
 				start = retrieveStartBlockPosition(methodDeclaration.sourceStart, declarationSourceEnd);
 				end = methodDeclaration.bodyEnd;
 				// try to get the best end position

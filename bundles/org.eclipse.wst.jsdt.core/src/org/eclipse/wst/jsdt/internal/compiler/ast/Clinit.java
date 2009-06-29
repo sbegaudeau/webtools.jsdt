@@ -30,9 +30,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 
 public class Clinit extends AbstractMethodDeclaration  {
 
-	private FieldBinding assertionSyntheticFieldBinding = null;
-	private FieldBinding classLiteralSyntheticField = null;
-
 	public Clinit(CompilationResult compilationResult) {
 		super(compilationResult);
 		modifiers = 0;
@@ -126,16 +123,11 @@ public class Clinit extends AbstractMethodDeclaration  {
 
 	public void setAssertionSupport(FieldBinding assertionSyntheticFieldBinding, boolean needClassLiteralField) {
 
-		this.assertionSyntheticFieldBinding = assertionSyntheticFieldBinding;
-
 		// we need to add the field right now, because the field infos are generated before the methods
 		if (needClassLiteralField) {
 			SourceTypeBinding sourceType =
 				this.scope.outerMostClassScope().enclosingSourceType();
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=22334
-			if (!sourceType.isBaseType()) {
-				this.classLiteralSyntheticField = sourceType.addSyntheticFieldForClassLiteral(sourceType, scope);
-			}
 		}
 	}
 	public int getASTType() {

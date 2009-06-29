@@ -229,12 +229,6 @@ public void emulateOuterAccess(LocalVariableBinding outerLocalVariable) {
 		if (!currentType.isLocalType()) {
 			return;
 		}
-		// must also add a synthetic field if we're not inside a constructor
-		if (!currentMethodScope.isInsideInitializerOrConstructor()) {
-			currentType.addSyntheticArgumentAndField(outerLocalVariable);
-		} else {
-			currentType.addSyntheticArgument(outerLocalVariable);
-		}
 	}
 }
 
@@ -661,21 +655,6 @@ public VariableBinding[] getEmulationPath(LocalVariableBinding outerLocalVariabl
 		return new VariableBinding[] { outerLocalVariable };
 		// implicit this is good enough
 	}
-	// use synthetic constructor arguments if possible
-	if (currentMethodScope.isInsideInitializerOrConstructor()
-		&& (sourceType.isNestedType())) {
-		SyntheticArgumentBinding syntheticArg;
-		if ((syntheticArg = ((NestedTypeBinding) sourceType).getSyntheticArgument(outerLocalVariable)) != null) {
-			return new VariableBinding[] { syntheticArg };
-		}
-	}
-	// use a synthetic field then
-	if (!currentMethodScope.isStatic) {
-		FieldBinding syntheticField;
-		if ((syntheticField = sourceType.getSyntheticField(outerLocalVariable)) != null) {
-			return new VariableBinding[] { syntheticField };
-		}
-	}
 	return null;
 }
 
@@ -709,19 +688,6 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 		return null;
 	}
 	boolean insideConstructor = currentMethodScope.isInsideInitializerOrConstructor();
-	// use synthetic constructor arguments if possible
-	if (insideConstructor) {
-		SyntheticArgumentBinding syntheticArg;
-		if ((syntheticArg = ((NestedTypeBinding) sourceType).getSyntheticArgument(targetEnclosingType, onlyExactMatch)) != null) {
-			// reject allocation and super constructor call
-			if (denyEnclosingArgInConstructorCall
-					&& currentMethodScope.isConstructorCall
-					&& (sourceType == targetEnclosingType || (!onlyExactMatch && sourceType.findSuperTypeWithSameErasure(targetEnclosingType) != null))) {
-				return BlockScope.NoEnclosingInstanceInConstructorCall;
-			}
-			return new Object[] { syntheticArg };
-		}
-	}
 
 	// use a direct synthetic field then
 	if (currentMethodScope.isStatic) {
@@ -731,34 +697,17 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 		ReferenceBinding enclosingType = sourceType.enclosingType();
 		if (enclosingType.isNestedType()) {
 			NestedTypeBinding nestedEnclosingType = (NestedTypeBinding) enclosingType;
-			SyntheticArgumentBinding enclosingArgument = nestedEnclosingType.getSyntheticArgument(nestedEnclosingType.enclosingType(), onlyExactMatch);
-			if (enclosingArgument != null) {
-				FieldBinding syntheticField = sourceType.getSyntheticField(enclosingArgument);
-				if (syntheticField != null) {
-					if (syntheticField.type == targetEnclosingType || (!onlyExactMatch && ((ReferenceBinding)syntheticField.type).findSuperTypeWithSameErasure(targetEnclosingType) != null))
-						return new Object[] { syntheticField };
-				}
-			}
 		}
-	}
-	FieldBinding syntheticField = sourceType.getSyntheticField(targetEnclosingType, onlyExactMatch);
-	if (syntheticField != null) {
-		if (currentMethodScope.isConstructorCall){
-			return BlockScope.NoEnclosingInstanceInConstructorCall;
-		}
-		return new Object[] { syntheticField };
 	}
 
 	// could be reached through a sequence of enclosing instance link (nested members)
 	Object[] path = new Object[2]; // probably at least 2 of them
 	ReferenceBinding currentType = sourceType.enclosingType();
 	if (insideConstructor) {
-		path[0] = ((NestedTypeBinding) sourceType).getSyntheticArgument(currentType, onlyExactMatch);
 	} else {
 		if (currentMethodScope.isConstructorCall){
 			return BlockScope.NoEnclosingInstanceInConstructorCall;
 		}
-		path[0] = sourceType.getSyntheticField(currentType, onlyExactMatch);
 	}
 	if (path[0] != null) { // keep accumulating
 
@@ -780,16 +729,7 @@ public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean o
 				}
 			}
 
-			syntheticField = ((NestedTypeBinding) currentType).getSyntheticField(currentEnclosingType, onlyExactMatch);
-			if (syntheticField == null) break;
-
-			// append inside the path
-			if (count == path.length) {
-				System.arraycopy(path, 0, (path = new Object[count + 1]), 0, count);
-			}
-			// private access emulation is necessary since synthetic field is private
-			path[count++] = ((SourceTypeBinding) syntheticField.declaringClass).addSyntheticMethod(syntheticField, true);
-			currentType = currentEnclosingType;
+			break;
 		}
 		if (currentType == targetEnclosingType
 			|| (!onlyExactMatch && currentType.findSuperTypeWithSameErasure(targetEnclosingType) != null)) {
@@ -835,26 +775,6 @@ public ProblemReporter problemReporter() {
 	if (scope==null)
 		scope=compilationUnitScope();
 	return scope.problemReporter();
-}
-
-/*
- * Code responsible to request some more emulation work inside the invocation type, so as to supply
- * correct synthetic arguments to any allocation of the target type.
- */
-public void propagateInnerEmulation(ReferenceBinding targetType, boolean isEnclosingInstanceSupplied) {
-	// no need to propagate enclosing instances, they got eagerly allocated already.
-
-	SyntheticArgumentBinding[] syntheticArguments;
-	if ((syntheticArguments = targetType.syntheticOuterLocalVariables()) != null) {
-		for (int i = 0, max = syntheticArguments.length; i < max; i++) {
-			SyntheticArgumentBinding syntheticArg = syntheticArguments[i];
-			// need to filter out the one that could match a supplied enclosing instance
-			if (!(isEnclosingInstanceSupplied
-				&& (syntheticArg.type == targetType.enclosingType()))) {
-				this.emulateOuterAccess(syntheticArg.actualOuterLocalVariable);
-			}
-		}
-	}
 }
 
 /* Answer the reference type of this scope.

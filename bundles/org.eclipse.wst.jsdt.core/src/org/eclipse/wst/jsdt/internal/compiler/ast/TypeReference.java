@@ -19,8 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -119,11 +117,6 @@ public TypeBinding resolveSuperType(ClassScope scope) {
 	// assumes the implementation of resolveType(ClassScope) will call back to detect cycles
 	if (resolveType(scope) == null) return null;
 
-	if (this.resolvedType.isTypeVariable()) {
-		this.resolvedType = new ProblemReferenceBinding(getTypeName(), (ReferenceBinding) this.resolvedType, ProblemReasons.IllegalSuperTypeVariable);
-		reportInvalidType(scope);
-		return null;
-	}
 	return this.resolvedType;
 }
 

@@ -219,7 +219,7 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 	}
 
 	// Create search match
-	match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, true, isSynthetic, reference);
+	match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, true, reference);
 
 	if (this.pattern.hasConstructorArguments()) { // binding has no type params, compatible erasure if pattern does
 		match.setRule(SearchPattern.R_ERASURE_MATCH);
@@ -253,15 +253,13 @@ public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement ele
 			if (methods != null) {
 				for (int i = 0, max = methods.length; i < max; i++) {
 					AbstractMethodDeclaration method = methods[i];
-					boolean synthetic = method.isDefaultConstructor() && method.sourceStart < type.bodyStart;
-					match = locator.newMethodReferenceMatch(element, binding, accuracy, offset, length, method.isConstructor(), synthetic, method);
+					match = locator.newMethodReferenceMatch(element, binding, accuracy, offset, length, method.isConstructor(), method);
 				}
 			}
 		} else if (reference instanceof ConstructorDeclaration) {
 			ConstructorDeclaration constructor = (ConstructorDeclaration) reference;
 			ExplicitConstructorCall call = constructor.constructorCall;
-			boolean synthetic = call != null && call.isImplicitSuper();
-			match = locator.newMethodReferenceMatch(element, binding, accuracy, offset, length, constructor.isConstructor(), synthetic, constructor);
+			match = locator.newMethodReferenceMatch(element, binding, accuracy, offset, length, constructor.isConstructor(), constructor);
 		}
 	}
 	if (match != null) {

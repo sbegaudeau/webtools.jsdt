@@ -472,8 +472,6 @@ public final class StubUtility2 {
 		ITypeBinding normalized= Bindings.normalizeTypeBinding(binding);
 		if (normalized == null)
 			return ast.newSimpleType(ast.newSimpleName("invalid")); //$NON-NLS-1$
-		else if (normalized.isTypeVariable())
-			return ast.newSimpleType(ast.newSimpleName(binding.getName()));
 		else if (normalized.isArray())
 			return ast.newArrayType(createTypeNode(normalized.getElementType(), ast), normalized.getDimensions());
 		String qualified= Bindings.getRawQualifiedName(normalized);
@@ -536,44 +534,22 @@ public final class StubUtility2 {
 
 	private static void getDelegatableMethods(AST ast, List tuples, List methods, IVariableBinding fieldBinding, ITypeBinding typeBinding, ITypeBinding binding) {
 		boolean match= false;
-		if (typeBinding.isTypeVariable()) {
-			ITypeBinding[] typeBounds= new ITypeBinding[] { ast.resolveWellKnownType("java.lang.Object") }; //$NON-NLS-1$
-			for (int index= 0; index < typeBounds.length; index++) {
-				IFunctionBinding[] candidates= getDelegateCandidates(typeBounds[index], binding);
-				for (int candidate= 0; candidate < candidates.length; candidate++) {
-					match= false;
-					final IFunctionBinding methodBinding= candidates[candidate];
-					for (int offset= 0; offset < methods.size() && !match; offset++) {
-						if (Bindings.areOverriddenMethods((IFunctionBinding) methods.get(offset), methodBinding))
-							match= true;
-					}
-					if (!match) {
-						tuples.add(new IBinding[] { fieldBinding, methodBinding });
-						methods.add(methodBinding);
-					}
-				}
-				final ITypeBinding superclass= typeBounds[index].getSuperclass();
-				if (superclass != null)
-					getDelegatableMethods(ast, tuples, methods, fieldBinding, superclass, binding);
+		IFunctionBinding[] candidates= getDelegateCandidates(typeBinding, binding);
+		for (int index= 0; index < candidates.length; index++) {
+			match= false;
+			final IFunctionBinding methodBinding= candidates[index];
+			for (int offset= 0; offset < methods.size() && !match; offset++) {
+				if (Bindings.areOverriddenMethods((IFunctionBinding) methods.get(offset), methodBinding))
+					match= true;
 			}
-		} else {
-			IFunctionBinding[] candidates= getDelegateCandidates(typeBinding, binding);
-			for (int index= 0; index < candidates.length; index++) {
-				match= false;
-				final IFunctionBinding methodBinding= candidates[index];
-				for (int offset= 0; offset < methods.size() && !match; offset++) {
-					if (Bindings.areOverriddenMethods((IFunctionBinding) methods.get(offset), methodBinding))
-						match= true;
-				}
-				if (!match) {
-					tuples.add(new IBinding[] { fieldBinding, methodBinding });
-					methods.add(methodBinding);
-				}
+			if (!match) {
+				tuples.add(new IBinding[] { fieldBinding, methodBinding });
+				methods.add(methodBinding);
 			}
-			final ITypeBinding superclass= typeBinding.getSuperclass();
-			if (superclass != null)
-				getDelegatableMethods(ast, tuples, methods, fieldBinding, superclass, binding);
 		}
+		final ITypeBinding superclass= typeBinding.getSuperclass();
+		if (superclass != null)
+			getDelegatableMethods(ast, tuples, methods, fieldBinding, superclass, binding);
 	}
 
 	private static IFunctionBinding[] getDelegateCandidates(ITypeBinding binding, ITypeBinding hierarchy) {

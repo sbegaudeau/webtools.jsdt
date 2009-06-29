@@ -141,13 +141,13 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 	ReferenceBinding reference = (ReferenceBinding) this;
 
     // do not allow type variables to match with erasures for free
-    if (reference.id == wellKnownErasureID || (!isTypeVariable() && !isIntersectionType()  && this.id == wellKnownErasureID)) return reference;
+    if (reference.id == wellKnownErasureID || (this.id == wellKnownErasureID)) return reference;
 
     ReferenceBinding currentType = reference;
     // iterate superclass to avoid recording interfaces if searched supertype is class
     if (erasureIsClass) {
 		while ((currentType = currentType.superclass()) != null) {
-			if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.id == wellKnownErasureID))
+			if (currentType.id == wellKnownErasureID || (currentType.id == wellKnownErasureID))
 				return currentType;
 		}
 		return null;
@@ -159,7 +159,7 @@ public ReferenceBinding findSuperTypeErasingTo(int wellKnownErasureID, boolean e
 
 	for (int i = 0; i < nextPosition; i++) {
 		currentType = interfacesToVisit[i];
-		if (currentType.id == wellKnownErasureID || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType.id == wellKnownErasureID))
+		if (currentType.id == wellKnownErasureID || (currentType.id == wellKnownErasureID))
 			return currentType;
 	}
 	return null;
@@ -193,12 +193,12 @@ public TypeBinding findSuperTypeWithSameErasure(TypeBinding otherType) {
 			return arrayType.environment().createArrayType(leafSuperType, arrayType.dimensions);
 
 		case Binding.TYPE :
-		    if (this == otherType || (!isTypeVariable() && !isIntersectionType() && this == otherType)) return this;
+		    if (this == otherType || (this == otherType)) return this;
 
 		    ReferenceBinding currentType = (ReferenceBinding)this;
 		   
 			while ((currentType = currentType.superclass()) != null) {
-				if (currentType == otherType || (!currentType.isTypeVariable() && !currentType.isIntersectionType() && currentType == otherType)) return currentType;
+				if (currentType == otherType || (currentType == otherType)) return currentType;
 			}
 			return null;
 	}
@@ -287,13 +287,6 @@ public boolean isIntersectingWith(TypeBinding otherType) {
 	return this == otherType;
 }
 
-/**
- * Returns true if the current type denotes an intersection type: Number & Comparable<?>
- */
-public boolean isIntersectionType() {
-	return false;
-}
-
 public final boolean isLocalType() {
 	return (this.tagBits & TagBits.IsLocalType) != 0;
 }
@@ -373,34 +366,6 @@ public boolean isTypeArgumentContainedBy(TypeBinding otherType) {
 }
 
 /**
- * Returns false if two given types could not intersect as argument types:
- * List<Throwable> & List<Runnable> --> false
- * List<? extends Throwable> & List<? extends Runnable> --> true
- * List<? extends String> & List<? extends Runnable> --> false
- */
-public boolean isTypeArgumentIntersecting(TypeBinding otherArgument) {
-	if (this == otherArgument)
-		return true;
-	switch (kind()) {
-
-	default:
-		switch (otherArgument.kind()) {
-
-			// OTHER TYPE & OTHER TYPE
-		default:
-			return false;
-		}
-	}
-}
-
-/**
- * Returns true if the type was declared as a type variable
- */
-public boolean isTypeVariable() {
-	return false;
-}
-
-/**
  * Returns true if the type is a subclass of java.lang.Error or java.lang.RuntimeException
  */
 public boolean isUncheckedException(boolean includeSupertype) {
@@ -433,7 +398,6 @@ public boolean needsUncheckedConversion(TypeBinding targetType) {
 	TypeBinding match = currentType.findSuperTypeWithSameErasure(targetType);
 	if (!(match instanceof ReferenceBinding))
 		return false;
-	ReferenceBinding compatible = (ReferenceBinding) match;
 	return false;
 }
 

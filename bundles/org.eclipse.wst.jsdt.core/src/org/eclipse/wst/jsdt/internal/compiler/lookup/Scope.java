@@ -401,6 +401,14 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding exactMethod = (receiverType!=null) ?
 			receiverType.getExactMethod(selector, argumentTypes, unitScope) :
 				unitScope.referenceContext.compilationUnitBinding.getExactMethod(selector, argumentTypes, unitScope);
+		if (exactMethod != null && !exactMethod.isBridge()) {
+			// must find both methods for this case: <S extends A> void foo() {}  and  <N extends B> N foo() { return null; }
+			// or find an inherited method when the exact match is to a bridge method
+			// special treatment for Object.getClass() in 1.5 mode (substitute parameterized return type)
+			if (exactMethod.canBeSeenBy(receiverType, invocationSite, this)) {
+				return exactMethod;
+			}
+		}
 		return null;
 	}
 
@@ -636,7 +644,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding[] candidates = null;
 		int candidatesCount = 0;
 		MethodBinding problemMethod = null;
-		boolean searchForDefaultAbstractMethod = isCompliant14 && (receiverType.isAbstract() || receiverType.isTypeVariable());
+		boolean searchForDefaultAbstractMethod = isCompliant14 && (receiverType.isAbstract());
 		if (foundSize > 0) {
 			// argument type compatibility check
 			for (int i = 0; i < foundSize; i++) {
@@ -2041,48 +2049,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						break;
 					case CLASS_SCOPE :
 						SourceTypeBinding sourceType = ((ClassScope) scope).getReferenceBinding();
-						if (scope == this && (sourceType.tagBits & TagBits.TypeVariablesAreConnected) == 0) {
-							// type variables take precedence over the source type, ex. class X <X> extends X == class X <Y> extends Y
-							// but not when we step out to the enclosing type
-							if (CharOperation.equals(name, sourceType.sourceName))
-								return sourceType;
-							insideStaticContext |= sourceType.isStatic();
-							break;
-						}
-						// member types take precedence over type variables
 						
-						// 6.5.5.1 - member types have precedence over top-level type in same unit
-						ReferenceBinding memberType = findMemberType(name, sourceType);
-						if (memberType != null) { // skip it if we did not find anything
-							if (memberType.problemId() == ProblemReasons.Ambiguous) {
-								if (foundType == null || foundType.problemId() == ProblemReasons.NotVisible)
-									// supercedes any potential InheritedNameHidesEnclosingName problem
-									return memberType;
-								// make the user qualify the type, likely wants the first inherited type
-								return new ProblemReferenceBinding(name,(ReferenceBinding) foundType, ProblemReasons.InheritedNameHidesEnclosingName);
-							}
-							if (memberType.isValidBinding()) {
-								if (sourceType == memberType.enclosingType() || compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4) {
-									// found a valid type in the 'immediate' scope (ie. not inherited)
-									// OR in 1.4 mode (inherited shadows enclosing)
-									if (foundType == null)
-										return memberType;
-									// if a valid type was found, complain when another is found in an 'immediate' enclosing type (ie. not inherited)
-									if (foundType.isValidBinding() && foundType != memberType)
-										return new ProblemReferenceBinding(name, (ReferenceBinding)foundType, ProblemReasons.InheritedNameHidesEnclosingName);
-								}
-							}
-							if (foundType == null || (foundType.problemId() == ProblemReasons.NotVisible && memberType.problemId() != ProblemReasons.NotVisible))
-								// only remember the memberType if its the first one found or the previous one was not visible & memberType is...
-								foundType = memberType;
-						}
-						
-						insideStaticContext |= sourceType.isStatic();
-						if (CharOperation.equals(sourceType.sourceName, name)) {
-							if (foundType != null && foundType != sourceType && foundType.problemId() != ProblemReasons.NotVisible)
-								return new ProblemReferenceBinding(name, (ReferenceBinding)foundType, ProblemReasons.InheritedNameHidesEnclosingName);
+						// type variables take precedence over the source type, ex. class X <X> extends X == class X <Y> extends Y
+						// but not when we step out to the enclosing type
+						if (CharOperation.equals(name, sourceType.sourceName))
 							return sourceType;
-						}
+						insideStaticContext |= sourceType.isStatic();
 						break;
 					case COMPILATION_UNIT_SCOPE :
 						break done;
@@ -2504,7 +2476,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					if (methodScope.initializedField != null && methodScope.initializedField.isViewedAsDeprecated())
 						return true;
 					if (type != null) {
-						type.initializeDeprecatedAnnotationTagBits(); // may not have been resolved until then
 						if (type.isViewedAsDeprecated())
 							return true;
 					}
@@ -2523,7 +2494,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				if (unit.types != null && unit.types.length > 0) {
 					SourceTypeBinding type = unit.types[0].binding;
 					if (type != null) {
-						type.initializeDeprecatedAnnotationTagBits(); // may not have been resolved until then
 						if (type.isViewedAsDeprecated())
 							return true;
 					}

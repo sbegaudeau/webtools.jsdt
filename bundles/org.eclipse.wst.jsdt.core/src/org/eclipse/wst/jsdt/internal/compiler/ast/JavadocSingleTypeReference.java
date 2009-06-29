@@ -76,10 +76,6 @@ public class JavadocSingleTypeReference extends SingleTypeReference implements I
 			} else {
 				if (this.resolvedType.problemId() == ProblemReasons.NonStaticReferenceInStaticContext) {
 					ReferenceBinding closestMatch = ((ProblemReferenceBinding)this.resolvedType).closestMatch();
-					if (closestMatch != null && closestMatch.isTypeVariable()) {
-						this.resolvedType = closestMatch; // ignore problem as we want report specific javadoc one instead
-						return this.resolvedType;
-					}
 				}
 				reportInvalidType(scope);
 			}

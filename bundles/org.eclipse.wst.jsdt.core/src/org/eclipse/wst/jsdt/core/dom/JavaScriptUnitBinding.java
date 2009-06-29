@@ -171,7 +171,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 				ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 				org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding[] methods = referenceBinding.methods();
 				int length = methods.length;
-//				int removeSyntheticsCounter = 0;
 				IFunctionBinding[] newMethods = new IFunctionBinding[length];
 				for (int i = 0; i < length; i++) {
 					org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding = methods[i];
@@ -179,9 +178,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 						newMethods[i] = this.resolver.getMethodBinding(methodBinding);
 //					}
 				}
-//				if (removeSyntheticsCounter != length) {
-//					System.arraycopy(newMethods, 0, (newMethods = new IFunctionBinding[removeSyntheticsCounter]), 0, removeSyntheticsCounter);
-//				}
 				return newMethods;
 		} catch (RuntimeException e) {
 			/* in case a method cannot be resolvable due to missing jars on the includepath
@@ -738,13 +734,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 	 * @see ITypeBinding#isSubTypeCompatible(ITypeBinding)
 	 */
 	public boolean isSubTypeCompatible(ITypeBinding type) {
-		return false;
-	}
-
-	/**
-	 * @see IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
 		return false;
 	}
 

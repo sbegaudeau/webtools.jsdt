@@ -17,10 +17,6 @@ public MemberTypeBinding(char[][] compoundName, ClassScope scope, SourceTypeBind
 	super(compoundName, scope, enclosingType);
 	this.tagBits |= TagBits.MemberTypeMask;
 }
-void checkSyntheticArgsAndFields() {
-	if (this.isStatic()) return;
-	this.addSyntheticArgumentAndField(this.enclosingType);
-}
 /* Answer the receiver's constant pool name.
 *
 * NOTE: This method should only be used during/after code gen.

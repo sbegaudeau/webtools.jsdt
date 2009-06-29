@@ -841,17 +841,6 @@ public class PromoteTempToFieldRefactoring extends ScriptableRefactoring {
 					fLocalReferencesToEnclosing.add(node);
 				}
 			}
-			if (typeBinding != null && typeBinding.isTypeVariable()) {
-				if (node.isDeclaration()) {
-					fLocalDefinitions.add(typeBinding);
-				} else if (! fLocalDefinitions.contains(typeBinding)) {
-					if (fMethodTypeVariables.contains(typeBinding)) {
-						fLocalReferencesToEnclosing.add(node);
-					} else {
-						fClassTypeVariablesUsed= true;
-					}
-				}
-			}
 			IBinding binding= node.resolveBinding();
 			if (binding != null && binding.getKind() == IBinding.VARIABLE && ! ((IVariableBinding)binding).isField()) {
 				if (node.isDeclaration()) {

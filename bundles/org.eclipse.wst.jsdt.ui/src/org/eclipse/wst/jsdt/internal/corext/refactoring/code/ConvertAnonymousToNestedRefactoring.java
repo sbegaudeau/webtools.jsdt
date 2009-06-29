@@ -116,10 +116,6 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		public final boolean visit(final SimpleName node) {
 			Assert.isNotNull(node);
 			final ITypeBinding binding= node.resolveTypeBinding();
-			if (binding != null && binding.isTypeVariable() && !fBindings.containsKey(binding.getKey())) {
-				fBindings.put(binding.getKey(), binding);
-				fFound.add(binding);
-			}
 			return true;
 		}
 

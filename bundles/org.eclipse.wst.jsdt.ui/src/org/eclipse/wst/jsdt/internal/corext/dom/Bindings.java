@@ -758,7 +758,7 @@ public class Bindings {
 			return false;
 		}
 			
-		if (type.isPrimitive() || type.isTypeVariable()) {
+		if (type.isPrimitive()) {
 			return type.getName().equals(Signature.toString(candidate));
 		} else {
 			type= type.getErasure();
@@ -878,7 +878,7 @@ public class Bindings {
 			return EMPTY; 
 		}
 		
-		if (binding.isPrimitive() || binding.isNullType() || binding.isTypeVariable()) {
+		if (binding.isPrimitive() || binding.isNullType()) {
 			return binding.getName();
 		}
 		

@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -37,7 +36,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	public Expression qualification;
 	public MethodBinding binding;							// exact binding resulting from lookup
 	protected MethodBinding codegenBinding;		// actual binding used for code generation (if no synthetic accessor)
-	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
 	public int accessMode;
 	public TypeReference[] typeArguments;
 	public TypeBinding[] genericTypeArguments;
@@ -119,7 +117,7 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	 * exact need.
 	 */
 	void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
-		ReferenceBinding superTypeErasure = (ReferenceBinding) binding.declaringClass;
+		ReferenceBinding superTypeErasure = binding.declaringClass;
 
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
 		// perform some emulation work in case there is some and we are inside a local type only
@@ -128,9 +126,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 
 			if (superTypeErasure.isLocalType()) {
 				((LocalTypeBinding) superTypeErasure).addInnerEmulationDependent(currentScope, qualification != null);
-			} else {
-				// locally propagate, since we already now the desired shape for sure
-				currentScope.propagateInnerEmulation(superTypeErasure, qualification != null);
 			}
 		}
 		}
@@ -149,9 +144,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			if ((declaringClass.tagBits & TagBits.IsLocalType) != 0 	&& currentScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4) {
 				// constructor will not be dumped as private, no emulation required thus
 				this.codegenBinding.tagBits |= TagBits.ClearPrivateModifier;
-			} else {
-				syntheticAccessor = ((SourceTypeBinding) declaringClass).addSyntheticMethod(this.codegenBinding, isSuperAccess());
-				currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
 			}
 		}
 		}

@@ -13,22 +13,18 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ClassLiteralAccess extends Expression  {
 
 	public TypeReference type;
 	public TypeBinding targetType;
-	FieldBinding syntheticField;
 
 	public ClassLiteralAccess(int sourceEnd, TypeReference type) {
 		this.type = type;
@@ -42,13 +38,6 @@ public class ClassLiteralAccess extends Expression  {
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
 
-		// if reachable, request the addition of a synthetic field for caching the class descriptor
-		SourceTypeBinding sourceType = currentScope.outerMostClassScope().enclosingSourceType();
-		// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=22334
-		if (!sourceType.isBaseType()
-				&& currentScope.compilerOptions().sourceLevel < ClassFileConstants.JDK1_5) {
-			syntheticField = sourceType.addSyntheticFieldForClassLiteral(targetType, currentScope);
-		}
 		return flowInfo;
 	}
 

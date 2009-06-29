@@ -8228,8 +8228,6 @@ public void parse(MethodDeclaration md, CompilationUnitDeclaration unit) {
 
 	if (md.isAbstract())
 		return;
-	if (md.isNative())
-		return;
 	if ((md.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0)
 		return;
 

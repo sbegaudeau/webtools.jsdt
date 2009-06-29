@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
@@ -789,7 +788,7 @@ public class ASTResolving {
 	}
 
 	public static IJavaScriptUnit findCompilationUnitForBinding(IJavaScriptUnit cu, JavaScriptUnit astRoot, ITypeBinding binding) throws JavaScriptModelException {
-		if (binding == null || !binding.isFromSource() || binding.isTypeVariable()) {
+		if (binding == null || !binding.isFromSource()) {
 			return null;
 		}
 		ASTNode node= astRoot.findDeclaringNode(binding.getTypeDeclaration());
@@ -864,33 +863,6 @@ public class ASTResolving {
 		return (String[]) res.toArray(new String[res.size()]);
 	}
 
-	private static boolean isVariableDefinedInContext(IBinding binding, ITypeBinding typeVariable) {
-		if (binding.getKind() == IBinding.VARIABLE) {
-			IVariableBinding var= (IVariableBinding) binding;
-			binding= var.getDeclaringMethod();
-			if (binding == null) {
-				binding= var.getDeclaringClass();
-			}
-		}
-		if (binding instanceof IFunctionBinding) {
-			if (binding == typeVariable.getDeclaringMethod()) {
-				return true;
-			}
-			binding= ((IFunctionBinding) binding).getDeclaringClass();
-		}
-
-		while (binding instanceof ITypeBinding) {
-			if (binding == typeVariable.getDeclaringClass()) {
-				return true;
-			}
-			if (Modifier.isStatic(binding.getModifiers())) {
-				break;
-			}
-			binding= ((ITypeBinding) binding).getDeclaringClass();
-		}
-		return false;
-	}
-
 	public static boolean isUseableTypeInContext(ITypeBinding[] binding, IBinding context, boolean noWildcards) {
 		for (int i= 0; i < binding.length; i++) {
 			if (!isUseableTypeInContext(binding[i], context, noWildcards)) {
@@ -910,9 +882,6 @@ public class ASTResolving {
 		}
 		if (type.isPrimitive()) {
 			return true;
-		}
-		if (type.isTypeVariable()) {
-			return isVariableDefinedInContext(context, type);
 		}
 		return true;
 	}

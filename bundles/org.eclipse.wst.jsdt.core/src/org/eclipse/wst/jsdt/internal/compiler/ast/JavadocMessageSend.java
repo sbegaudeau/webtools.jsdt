@@ -77,7 +77,7 @@ public class JavadocMessageSend extends MessageSend implements IJsDocMessageSend
 				if (argumentTypes[i] == null) {
 					argHasError = true;
 				} else if (!hasArgsTypeVar) {
-					hasArgsTypeVar = argumentTypes[i].isTypeVariable();
+					hasArgsTypeVar = false;
 				}
 			}
 			if (argHasError) {

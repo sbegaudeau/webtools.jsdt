@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.FieldPattern;
@@ -27,14 +26,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 	public AbstractIndexer(SearchDocument document) {
 		this.document = document;
 	}
-	public void addAnnotationTypeDeclaration(int modifiers, char[] packageName, char[] name, char[][] enclosingTypeNames, boolean secondary) {
-		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
-
-		addIndexEntry(
-			SUPER_REF,
-			SuperTypeReferencePattern.createIndexKey(
-				modifiers, packageName, name, enclosingTypeNames, null, ANNOTATION_TYPE_SUFFIX, CharOperation.concatWith(TypeConstants.JAVA_LANG_ANNOTATION_ANNOTATION, '.'), ANNOTATION_TYPE_SUFFIX));
-	}
+	
 	public void addClassDeclaration(
 			int modifiers,
 			char[] packageName,

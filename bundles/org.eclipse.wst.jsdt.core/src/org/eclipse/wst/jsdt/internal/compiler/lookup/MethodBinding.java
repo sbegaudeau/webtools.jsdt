@@ -41,7 +41,7 @@ public MethodBinding(int modifiers, char[] selector, TypeBinding returnType, Typ
 	// propagate the strictfp & deprecated modifiers
 	if (this.declaringClass != null) {
 		if (this.declaringClass.isStrictfp())
-			if (!(isNative() || isAbstract()))
+			if (!(isAbstract()))
 				this.modifiers |= ClassFileConstants.AccStrictfp;
 	}
 }
@@ -319,24 +319,6 @@ public final int getAccessFlags() {
 }
 
 /**
- * Compute the tagbits for standard annotations. For source types, these could require
- * lazily resolving corresponding annotation nodes, in case of forward references.
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
- */
-public long getAnnotationTagBits() {
-	MethodBinding originalMethod = this.original();
-//	if ((originalMethod.tagBits & TagBits.AnnotationResolved) == 0 && originalMethod.declaringClass instanceof SourceTypeBinding) {
-//		ClassScope scope = ((SourceTypeBinding) originalMethod.declaringClass).classScope;
-//		if (scope != null) {
-//			TypeDeclaration typeDecl = scope.referenceContext;
-//			AbstractMethodDeclaration methodDecl = typeDecl.declarationOf(originalMethod);
-//			if (methodDecl != null)
-//				ASTNode.resolveAnnotations(methodDecl.scope, methodDecl.annotations, originalMethod);
-//		}
-//	}
-	return originalMethod.tagBits;
-}
-/**
  * @return the default value for this annotation method or <code>null</code> if there is no default value
  */
 public Object getDefaultValue() {
@@ -397,12 +379,6 @@ public final boolean isImplementing() {
 	return (modifiers & ExtraCompilerModifiers.AccImplementing) != 0;
 }
 
-/* Answer true if the receiver is a native method
-*/
-public final boolean isNative() {
-	return (modifiers & ClassFileConstants.AccNative) != 0;
-}
-
 /* Answer true if the receiver is overriding another method
  * Only set for source methods
 */
@@ -443,18 +419,6 @@ public final boolean isStatic() {
 */
 public final boolean isStrictfp() {
 	return (modifiers & ClassFileConstants.AccStrictfp) != 0;
-}
-
-/* Answer true if the receiver is a synchronized method
-*/
-public final boolean isSynchronized() {
-	return (modifiers & ClassFileConstants.AccSynchronized) != 0;
-}
-
-/* Answer true if the receiver has public visibility
-*/
-public final boolean isSynthetic() {
-	return (modifiers & ClassFileConstants.AccSynthetic) != 0;
 }
 
 /* Answer true if the receiver method has varargs
@@ -546,19 +510,6 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 //		buffer.append(TypeBinding.INT.signature());
 //	}
 	boolean needSynthetics = isConstructor && declaringClass.isNestedType();
-	if (needSynthetics) {
-		// take into account the synthetic argument type signatures as well
-		ReferenceBinding[] syntheticArgumentTypes = declaringClass.syntheticEnclosingInstanceTypes();
-		if (syntheticArgumentTypes != null) {
-			for (int i = 0, count = syntheticArgumentTypes.length; i < count; i++) {
-				buffer.append(syntheticArgumentTypes[i].signature());
-			}
-		}
-
-		if (this instanceof SyntheticMethodBinding) {
-			targetParameters = ((SyntheticMethodBinding)this).targetMethod.parameters;
-		}
-	}
 
 	if (targetParameters != Binding.NO_PARAMETERS) {
 		for (int i = 0; i < targetParameters.length; i++) {
@@ -566,11 +517,6 @@ public final char[] signature() /* (ILjava/lang/Thread;)Ljava/lang/Object; */ {
 		}
 	}
 	if (needSynthetics) {
-		SyntheticArgumentBinding[] syntheticOuterArguments = declaringClass.syntheticOuterLocalVariables();
-		int count = syntheticOuterArguments == null ? 0 : syntheticOuterArguments.length;
-		for (int i = 0; i < count; i++) {
-			buffer.append(syntheticOuterArguments[i].type.signature());
-		}
 		// move the extra padding arguments of the synthetic constructor invocation to the end
 		for (int i = targetParameters.length, extraLength = parameters.length; i < extraLength; i++) {
 			buffer.append(parameters[i].signature());

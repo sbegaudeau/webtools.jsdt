@@ -96,7 +96,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
@@ -135,7 +134,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
@@ -1151,35 +1149,7 @@ public final class CompletionEngine
 		} else {
 			completionName = simpleTypeName;
 		}
-		TypeBinding guessedType = null;
-		if ((modifiers & ClassFileConstants.AccAnnotation) != 0 &&
-				this.assistNodeIsAnnotation &&
-				(this.targetedElement & TagBits.AnnotationTargetMASK) != 0) {
-			char[][] cn = CharOperation.splitOn('.', fullyQualifiedName);
-
-			TypeReference ref;
-			if (cn.length == 1) {
-				ref = new SingleTypeReference(simpleTypeName, 0);
-			} else {
-				ref = new QualifiedTypeReference(cn,new long[cn.length]);
-			}
-
-			switch (scope.kind) {
-				case Scope.METHOD_SCOPE :
-				case Scope.BLOCK_SCOPE :
-					guessedType = ref.resolveType((BlockScope)scope);
-					break;
-				case Scope.CLASS_SCOPE :
-					guessedType = ref.resolveType((ClassScope)scope);
-					break;
-			}
-
-			if (!guessedType.isValidBinding()) return;
-
-			return;
-		}
-
-
+	
 		int relevance = computeBaseRelevance();
 		relevance += computeRelevanceForResolution();
 		relevance += computeRelevanceForInterestingProposal();
@@ -2799,8 +2769,6 @@ public final class CompletionEngine
 				MethodBinding constructor = methods[f];
 				if (constructor != enclosingConstructor && constructor.isConstructor()) {
 
-					if (constructor.isSynthetic()) continue next;
-
 					if (this.options.checkDeprecation &&
 							constructor.isViewedAsDeprecated() &&
 							!scope.isDefinedInSameUnit(constructor.declaringClass))
@@ -2882,8 +2850,6 @@ public final class CompletionEngine
 			next : for (int f = methods.length; --f >= 0;) {
 				MethodBinding constructor = methods[f];
 				if (constructor.isConstructor()) {
-
-					if (constructor.isSynthetic()) continue next;
 
 					if (this.options.checkDeprecation &&
 							constructor.isViewedAsDeprecated() &&
@@ -3128,8 +3094,6 @@ public final class CompletionEngine
 		int fieldLength = fieldName.length;
 		next : for (int f = fields.length; --f >= 0;) {
 			FieldBinding field = fields[f];
-
-			if (field.isSynthetic())	continue next;
 
 			if (onlyStaticFields && !field.isStatic()) continue next;
 
@@ -3849,8 +3813,6 @@ public final class CompletionEngine
 		next : for (int f = fields.length; --f >= 0;) {
 			FieldBinding field = fields[f];
 
-			if (field.isSynthetic())	continue next;
-
 			// only static fields must be proposed
 			if (!field.isStatic()) continue next;
 
@@ -4059,9 +4021,6 @@ public final class CompletionEngine
 			if (fieldLength > field.name.length)
 				continue next;
 
-			if (field.isSynthetic())
-				continue next;
-
 			if (!field.isStatic())
 				continue next;
 
@@ -4111,8 +4070,6 @@ public final class CompletionEngine
 		int methodLength = methodName.length;
 		next : for (int m = methods.length; --m >= 0;) {
 			MethodBinding method = methods[m];
-
-			if (method.isSynthetic()) continue next;
 
 			if (method.isDefaultAbstract())	continue next;
 
@@ -4734,8 +4691,6 @@ public final class CompletionEngine
 		next : for (int f = numberMethods; --f >= 0;) {
 			MethodBinding method = methods[f];
 
-			if (method.isSynthetic()) continue next;
-
 			if (method.isDefaultAbstract())	continue next;
 
 			//if (method.isConstructor()) continue next;
@@ -5015,8 +4970,6 @@ public final class CompletionEngine
 
 			next : for (int f = methods.length; --f >= 0;) {
 				MethodBinding method = methods[f];
-
-				if (method.isSynthetic()) continue next;
 
 				if (method.isDefaultAbstract())	continue next;
 
@@ -5302,8 +5255,6 @@ public final class CompletionEngine
 
 		next : for (int f = methods.length; --f >= 0;) {
 			MethodBinding method = methods[f];
-
-			if (method.isSynthetic()) continue next;
 
 			if (method.isDefaultAbstract())	continue next;
 
@@ -5600,7 +5551,6 @@ public final class CompletionEngine
 		next : for (int f = methods.length; --f >= 0;) {
 
 			MethodBinding method = methods[f];
-			if (method.isSynthetic())	continue next;
 
 			if (method.isDefaultAbstract()) continue next;
 
@@ -5708,8 +5658,6 @@ public final class CompletionEngine
 
 	private void createType(TypeBinding type, StringBuffer completion) {
 		if (type.isBaseType()) {
-			completion.append(type.sourceName());
-		} else if (type.isTypeVariable()) {
 			completion.append(type.sourceName());
 		} else if (type.isArrayType()) {
 			createType(type.leafComponentType(), completion);
@@ -5917,7 +5865,7 @@ public final class CompletionEngine
 			
 			if (notInJavadoc &&
 					hasPotentialDefaultAbstractMethods &&
-					(currentType.isAbstract() || currentType.isTypeVariable() || currentType.isIntersectionType())){
+					(currentType.isAbstract())){
 			} else {
 				hasPotentialDefaultAbstractMethods = false;
 			}
@@ -6295,10 +6243,6 @@ public final class CompletionEngine
 					if(this.expectedTypes[i] instanceof ReferenceBinding) {
 						ReferenceBinding refBinding = (ReferenceBinding)this.expectedTypes[i];
 
-						if(refBinding.isTypeVariable() && assistNodeIsConstructor) {
-							// don't propose type variable if the completion is a constructor ('new |')
-							continue next;
-						}
 						if (this.options.checkDeprecation &&
 								refBinding.isViewedAsDeprecated() &&
 								!scope.isDefinedInSameUnit(refBinding))
@@ -7359,8 +7303,6 @@ public final class CompletionEngine
 		next : for (int f = fields.length; --f >= 0;) {
 			FieldBinding field = fields[f];
 
-			if (field.isSynthetic()) continue next;
-
 			if (onlyStaticFields && !field.isStatic()) continue next;
 
 			if (!field.canBeSeenBy(receiverType, invocationSite, scope)) continue next;
@@ -7559,8 +7501,6 @@ public final class CompletionEngine
 
 			if (!method.isConstructor()) continue nextMethod;
 
-			if (method.isSynthetic()) continue nextMethod;
-
 			if (this.options.checkVisibility && !method.canBeSeenBy(invocationSite, scope)) continue nextMethod;
 
 			TypeBinding[] parameters = method.parameters;
@@ -7595,8 +7535,6 @@ public final class CompletionEngine
 		MethodBinding[] methods = binding.availableMethods();
 		nextMethod : for (int i = 0; i < methods.length; i++) {
 			MethodBinding method = methods[i];
-
-			if (method.isSynthetic()) continue nextMethod;
 
 			if (method.isDefaultAbstract())	continue nextMethod;
 

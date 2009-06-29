@@ -141,8 +141,6 @@ public class CompilationUnitDeclaration
 					types[i].analyseCode(scope);
 				}
 			}
-			// request inner emulation propagation
-			propagateInnerEmulationForAllLocalTypes();
 
 			this.scope.temporaryAnalysisIndex=0;
 			int maxVars=this.scope.localIndex;
@@ -312,22 +310,6 @@ public class CompilationUnitDeclaration
 			}
 		}
 		return output;
-	}
-
-	/*
-	 * Force inner local types to update their innerclass emulation
-	 */
-	public void propagateInnerEmulationForAllLocalTypes() {
-
-		isPropagatingInnerClassEmulation = true;
-		for (int i = 0, max = this.localTypeCount; i < max; i++) {
-
-			LocalTypeBinding localType = localTypes[i];
-			// only propagate for reachable local types
-			if ((localType.classScope.referenceType().bits & IsReachable) != 0) {
-				localType.updateInnerEmulationDependents();
-			}
-		}
 	}
 
 	public void recordStringLiteral(StringLiteral literal) {

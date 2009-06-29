@@ -246,8 +246,6 @@ public class BindingLabelProvider extends LabelProvider {
 			if (inner)
 				return getInnerClassImageDescriptor(binding.getModifiers());
 			return getClassImageDescriptor(binding.getModifiers());
-		} else if (binding.isTypeVariable()) {
-			return JavaPluginImages.DESC_OBJS_TYPEVARIABLE;
 		}
 		// primitive type, wildcard
 		return null;

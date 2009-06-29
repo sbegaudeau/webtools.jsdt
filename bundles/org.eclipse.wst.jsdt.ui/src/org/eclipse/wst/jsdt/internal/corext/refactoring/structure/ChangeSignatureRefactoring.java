@@ -590,10 +590,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 	
 	private void collectTypeVariables(ITypeBinding typeBinding, Set typeVariablesCollector) {
-		if (typeBinding.isTypeVariable()) {
-			typeVariablesCollector.add(typeBinding);
-			
-		} else if (typeBinding.isArray()) {
+		if (typeBinding.isArray()) {
 			collectTypeVariables(typeBinding.getElementType(), typeVariablesCollector);
 			
 		}

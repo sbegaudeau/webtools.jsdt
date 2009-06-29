@@ -182,17 +182,4 @@ public String toString() {
 		return "Local member type : " + new String(sourceName()) + " " + super.toString(); //$NON-NLS-2$ //$NON-NLS-1$
 	return "Local type : " + new String(sourceName()) + " " + super.toString(); //$NON-NLS-2$ //$NON-NLS-1$
 }
-/* Trigger the dependency mechanism forcing the innerclass emulation
-* to be propagated to all dependent source types.
-*/
-
-public void updateInnerEmulationDependents() {
-	if (dependents != null) {
-		for (int i = 0; i < dependents.length; i++) {
-			InnerEmulationDependency dependency = dependents[i];
-			// System.out.println("Updating " + new String(this.readableName()) + " --> " + new String(dependency.scope.enclosingType().readableName()));
-			dependency.scope.propagateInnerEmulation(this, dependency.wasEnclosingInstanceSupplied);
-		}
-	}
-}
 }

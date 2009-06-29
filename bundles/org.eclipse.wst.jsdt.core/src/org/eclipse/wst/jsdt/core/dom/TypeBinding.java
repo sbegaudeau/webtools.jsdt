@@ -676,7 +676,7 @@ class TypeBinding implements ITypeBinding {
 	 * @see ITypeBinding#isClass()
 	 */
 	public boolean isClass() {
-		return this.binding.isClass() && !this.binding.isTypeVariable();
+		return this.binding.isClass();
 	}
 
 	/*
@@ -805,15 +805,8 @@ class TypeBinding implements ITypeBinding {
 		return false;
 	}
 
-	/*
-	 * @see ITypeBinding#isTypeVariable()
-	 */
-	public boolean isTypeVariable() {
-		return this.binding.isTypeVariable();
-	}
-
 	private boolean shouldBeRemoved(org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding methodBinding) {
-		return methodBinding.isDefaultAbstract() || methodBinding.isSynthetic();
+		return methodBinding.isDefaultAbstract();
 	}
 
 	/*

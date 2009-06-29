@@ -87,8 +87,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -1104,14 +1102,6 @@ public void duplicateInitializationOfFinalLocal(LocalVariableBinding local, ASTN
 
 public void duplicateMethodInType( Binding type, AbstractMethodDeclaration methodDecl) {
     MethodBinding method = methodDecl.binding;
-    if ((method.modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0) {
-        // chech it occurs in parameters (the bit is set for return type | params | thrown exceptions
-        for (int i = 0, length = method.parameters.length; i < length; i++) {
-            if ((method.parameters[i].tagBits & TagBits.HasTypeVariable) != 0) {
-                break;
-            }
-        }
-    }
     
 	this.handle(
 		IProblem.DuplicateMethod,
@@ -1792,17 +1782,6 @@ public void importProblem(ImportReference importRef, Binding expectedImport) {
 		String[] arguments = new String[]{CharOperation.toString(tokens)};
 		this.handle(
 		        IProblem.ImportNotFound,
-		        arguments,
-		        arguments,
-		        importRef.sourceStart,
-		        (int) importRef.sourcePositions[tokens.length - 1]);
-		return;
-	}
-	if (expectedImport.problemId() == ProblemReasons.InvalidTypeForStaticImport) {
-		char[][] tokens = importRef.tokens;
-		String[] arguments = new String[]{CharOperation.toString(tokens)};
-		this.handle(
-		        IProblem.InvalidTypeForStaticImport,
 		        arguments,
 		        arguments,
 		        importRef.sourceStart,
@@ -3644,9 +3623,7 @@ private int nodeSourceStart(Binding field, ASTNode node) {
 public void noMoreAvailableSpaceForArgument(LocalVariableBinding local, ASTNode location) {
 	String[] arguments = new String[]{ new String(local.name) };
 	this.handle(
-		local instanceof SyntheticArgumentBinding
-			? IProblem.TooManySyntheticArgumentSlots
-			: IProblem.TooManyArgumentSlots,
+		IProblem.TooManyArgumentSlots,
 		arguments,
 		arguments,
 		ProblemSeverities.Abort | ProblemSeverities.Error | ProblemSeverities.Fatal,

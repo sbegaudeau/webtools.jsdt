@@ -1137,8 +1137,6 @@ public void parseBlockStatements(MethodDeclaration md, CompilationUnitDeclaratio
 
 	if (md.isAbstract())
 		return;
-	if (md.isNative())
-		return;
 	if ((md.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0)
 		return;
 

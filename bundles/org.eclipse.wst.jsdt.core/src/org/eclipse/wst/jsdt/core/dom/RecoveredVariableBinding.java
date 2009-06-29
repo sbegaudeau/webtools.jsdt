@@ -123,9 +123,6 @@ class RecoveredVariableBinding implements IVariableBinding {
 		return true;
 	}
 
-	public boolean isSynthetic() {
-		return false;
-	}
 	public boolean isGlobal() {
 		// TODO Auto-generated method stub
 		return false;

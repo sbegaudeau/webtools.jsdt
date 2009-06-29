@@ -131,8 +131,6 @@ public class ClassScope extends Scope {
 		buildMethods();
 
 		SourceTypeBinding sourceType = getReferenceBinding();
-		if (sourceType.isMemberType() && !sourceType.isLocalType())
-			 ((MemberTypeBinding) sourceType).checkSyntheticArgsAndFields();
 
 		ReferenceBinding[] memberTypes = sourceType.memberTypes;
 		for (int i = 0, length = memberTypes.length; i < length; i++)
@@ -671,7 +669,6 @@ public class ClassScope extends Scope {
 			//noProblems &= connectSuperInterfaces();
 			sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //			noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
-			sourceType.tagBits |= TagBits.TypeVariablesAreConnected;
 			if (noProblems && sourceType.isHierarchyInconsistent())
 				problemReporter().hierarchyHasProblems(sourceType);
 		}
@@ -709,7 +706,6 @@ public class ClassScope extends Scope {
 //		noProblems &= connectSuperInterfaces();
 		sourceType.tagBits |= TagBits.EndHierarchyCheck;
 //		noProblems &= connectTypeVariables(referenceContext.typeParameters, false);
-		sourceType.tagBits |= TagBits.TypeVariablesAreConnected;
 		if (noProblems && sourceType.isHierarchyInconsistent())
 			problemReporter().hierarchyHasProblems(sourceType);
 	}
@@ -718,8 +714,6 @@ public class ClassScope extends Scope {
 		if (!(superType instanceof ReferenceBinding)) return false;
 
 		if (reference == this.superTypeReference) { // see findSuperType()
-			if (superType.isTypeVariable())
-				return false; // error case caught in resolveSuperType()
 			// abstract class X<K,V> implements java.util.Map<K,V>
 			//    static abstract class M<K,V> implements Entry<K,V>
 			compilationUnitScope().recordSuperTypeReference(superType); // to record supertypes

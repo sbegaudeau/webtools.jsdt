@@ -623,25 +623,6 @@ public interface ITypeBinding extends IBinding {
 	 */
 	public boolean isTopLevel();
 
-	/**
-	 * Returns whether this type binding represents a type variable.
-	 * Type variables bindings carry the type variable's bounds.
-     * <p>
-     * Note that type variables are distinct from capture bindings
-     * (even though capture bindings are often depicted as synthetic
-     * type variables); as such, {@link #isTypeVariable()} answers
-     * <code>false</code> for capture bindings, and
-     * {@link #isCapture()} answers <code>false</code> for type variables.
-     * </p>
-	 *
-	 * @return <code>true</code> if this type binding is for a type variable,
-	 *   and <code>false</code> otherwise
-	 * @see #getName()
-	 * @see #getTypeBounds()
-	 *  
-	 */
-	public boolean isTypeVariable();
-
 	public boolean isCompilationUnit();
 
 }

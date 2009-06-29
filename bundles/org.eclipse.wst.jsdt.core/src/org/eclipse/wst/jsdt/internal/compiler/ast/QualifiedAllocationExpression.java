@@ -22,8 +22,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -59,14 +57,7 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		if (this.enclosingInstance != null) {
 			flowInfo = this.enclosingInstance.analyseCode(currentScope, flowContext, flowInfo);
 		}
-
-		// check captured variables are initialized in current context (26134)
-		ReferenceBinding allocatedType = this.superTypeBinding == null ? this.binding.declaringClass : this.superTypeBinding;
-		checkCapturedLocalInitializationIfNecessary(
-			(ReferenceBinding) allocatedType,
-			currentScope,
-			flowInfo);
-
+	
 		// process arguments
 		if (this.arguments != null) {
 			for (int i = 0, count = this.arguments.length; i < count; i++) {
@@ -80,7 +71,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		}
 
 		manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
-		manageSyntheticAccessIfNecessary(currentScope, flowInfo);
 		return flowInfo;
 	}
 
@@ -105,7 +95,7 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 	public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
 
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
-		ReferenceBinding allocatedTypeErasure = (ReferenceBinding) this.binding.declaringClass;
+		ReferenceBinding allocatedTypeErasure = this.binding.declaringClass;
 
 		// perform some extra emulation work in case there is some and we are inside a local type only
 		if (allocatedTypeErasure.isNestedType()
@@ -113,9 +103,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 
 			if (allocatedTypeErasure.isLocalType()) {
 				((LocalTypeBinding) allocatedTypeErasure).addInnerEmulationDependent(currentScope, this.enclosingInstance != null);
-			} else {
-				// locally propagate, since we already now the desired shape for sure
-				currentScope.propagateInnerEmulation(allocatedTypeErasure, this.enclosingInstance != null);
 			}
 		}
 		}
@@ -257,11 +244,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			return this.resolvedType = receiverType;
 		}
 
-		if (receiverType.isTypeVariable()) {
-			receiverType = new ProblemReferenceBinding(receiverType.sourceName(), (ReferenceBinding)receiverType, ProblemReasons.IllegalSuperTypeVariable);
-			scope.problemReporter().invalidType(this, receiverType);
-			return null;
-		}
 		// anonymous type scenario
 		// an anonymous class inherits from java.lang.Object when declared "after" an interface
 		this.superTypeBinding = (ReferenceBinding) receiverType;

@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
-import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 
 public class MethodVerifier {
 	SourceTypeBinding type;
@@ -458,12 +457,9 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 	}
 	if (nextPosition == 0) return;
 
-	SimpleSet skip = findSuperinterfaceCollisions(superclass, superInterfaces);
 	for (int i = 0; i < nextPosition; i++) {
 		superType = interfacesToVisit[i];
 		if (superType.isValidBinding()) {
-			if (skip != null && skip.includes(superType)) continue;
-
 			MethodBinding[] methods = superType.unResolvedMethods();
 			for (int m = methods.length; --m >= 0;) { // Interface methods are all abstract public
 				MethodBinding inheritedMethod = methods[m];
@@ -506,9 +502,6 @@ MethodBinding computeSubstituteMethod(MethodBinding inheritedMethod, MethodBindi
 }
 public boolean doesMethodOverride(MethodBinding method, MethodBinding inheritedMethod) {
 	return areParametersEqual(method, inheritedMethod);
-}
-SimpleSet findSuperinterfaceCollisions(ReferenceBinding superclass, ReferenceBinding[] superInterfaces) {
-	return null; // noop in 1.4
 }
 int[] findOverriddenInheritedMethods(MethodBinding[] methods, int length) {
 	// NOTE assumes length > 1

@@ -224,12 +224,7 @@ class SourceAnalyzer  {
 		public boolean visit(SimpleName node) {
 			addReferencesToName(node);
 			IBinding binding= node.resolveBinding();
-			if (binding instanceof ITypeBinding) {
-				ITypeBinding type= (ITypeBinding)binding;
-				if (type.isTypeVariable()) {
-					addTypeVariableReference(type, node);
-				}
-			} else if (binding instanceof IVariableBinding) {
+			if (binding instanceof IVariableBinding) {
 				IVariableBinding vb= (IVariableBinding)binding;
 				if (vb.isField() && ! isStaticallyImported(node)) {
 					Name topName= ASTNodes.getTopMostName(node);

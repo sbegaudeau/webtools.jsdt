@@ -128,7 +128,7 @@ public abstract class AbstractMethodDeclaration
 					compilationUnitBinding.resolveTypesFor(this.binding,this);
 				}
 			}
-			boolean used = this.binding.isAbstract() || this.binding.isNative();
+			boolean used = this.binding.isAbstract();
 			for (int i = 0, length = this.arguments.length; i < length && i < this.binding.parameters.length; i++) {
 				IArgument argument = this.arguments[i];
 				argument.bind(this.scope, this.binding.parameters[i], used);
@@ -177,13 +177,6 @@ public abstract class AbstractMethodDeclaration
 	public boolean isMethod() {
 
 		return false;
-	}
-
-	public boolean isNative() {
-
-		if (this.binding != null)
-			return this.binding.isNative();
-		return (this.modifiers & ClassFileConstants.AccNative) != 0;
 	}
 
 	public boolean isStatic() {

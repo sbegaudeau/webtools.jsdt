@@ -345,10 +345,6 @@ public class ChangeTypeRefactoring extends ScriptableRefactoring {
 				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ChangeTypeRefactoring_insideLocalTypesNotSupported); 
 			}
 			
-			if (fSelectionTypeBinding.isTypeVariable()){
-				return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ChangeTypeRefactoring_typeParametersNotSupported); 
-			}
-			
 			pm.worked(1);
 
 			if (fSelectedType != null){ // if invoked from unit test, compute valid types here

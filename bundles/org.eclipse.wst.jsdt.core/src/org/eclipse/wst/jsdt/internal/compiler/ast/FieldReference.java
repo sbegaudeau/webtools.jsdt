@@ -33,7 +33,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -145,17 +144,6 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 	// set the generic cast after the fact, once the type expectation is fully known (no need for strict cast)
 	if (this.binding != null && this.binding.isValidBinding()) {
 		FieldBinding originalBinding = this.binding.original();
-		TypeBinding originalType = originalBinding.type;
-	    // extra cast needed if method return type is type variable
-		if (originalBinding != this.binding
-				&& originalType != this.binding.type
-				&& runtimeTimeType.id != T_JavaLangObject
-				&& (originalType.tagBits & TagBits.HasTypeVariable) != 0) {
-//	    	TypeBinding targetType = (!compileTimeType.isBaseType() && runtimeTimeType.isBaseType())
-//	    		? compileTimeType  // unboxing: checkcast before conversion
-//	    		: runtimeTimeType;
-//	        this.genericCast = originalBinding.type.genericCast(targetType);
-		}
 	}
 	super.computeConversion(scope, runtimeTimeType, compileTimeType);
 }

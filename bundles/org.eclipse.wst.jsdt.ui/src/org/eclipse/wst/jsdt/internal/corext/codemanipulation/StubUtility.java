@@ -308,9 +308,6 @@ public class StubUtility {
 		String[] result= new String[typeBindings.length];
 		for (int i= 0; i < result.length; i++) {
 			ITypeBinding curr= typeBindings[i];
-			if (curr.isTypeVariable()) {
-				curr= curr.getErasure(); // in Javadoc only use type variable erasure
-			}
 			curr= curr.getTypeDeclaration(); // no parameterized types
 			result[i]= curr.getQualifiedName();
 		}

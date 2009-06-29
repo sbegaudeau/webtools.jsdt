@@ -46,7 +46,6 @@ import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
@@ -696,11 +695,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 					variable,
 					FlowInfo.READ,
 					fFlowContext));
-			}
-		} else if (binding instanceof ITypeBinding) {
-			ITypeBinding type= (ITypeBinding)binding;
-			if (type.isTypeVariable()) {
-				setFlowInfo(node, new TypeVariableFlowInfo(type, fFlowContext));
 			}
 		}
 	}

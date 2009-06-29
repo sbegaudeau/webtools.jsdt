@@ -509,7 +509,7 @@ public final class ImportRewrite {
 	 * when an import could be added or was already known. It is fully qualified, if an import conflict prevented the import.
 	 */
 	public String addImport(ITypeBinding binding, ImportRewriteContext context) {
-		if (binding.isPrimitive() || binding.isTypeVariable()) {
+		if (binding.isPrimitive()) {
 			return binding.getName();
 		}
 
@@ -532,16 +532,6 @@ public final class ImportRewrite {
 			return str;
 		}
 		return getRawName(normalizedBinding);
-	}
-
-	private boolean containsNestedCapture(ITypeBinding binding, boolean isNested) {
-		if (binding == null || binding.isPrimitive() || binding.isTypeVariable()) {
-			return false;
-		}
-		if (binding.isArray()) {
-			return containsNestedCapture(binding.getElementType(), true);
-		}
-		return false;
 	}
 
 	private static ITypeBinding normalizeTypeBinding(ITypeBinding binding) {
@@ -604,11 +594,6 @@ public final class ImportRewrite {
 		ITypeBinding normalizedBinding= normalizeTypeBinding(binding);
 		if (normalizedBinding == null) {
 			return ast.newSimpleType(ast.newSimpleName("invalid")); //$NON-NLS-1$
-		}
-
-		if (normalizedBinding.isTypeVariable()) {
-			// no import
-			return ast.newSimpleType(ast.newSimpleName(binding.getName()));
 		}
 
 		if (normalizedBinding.isArray()) {

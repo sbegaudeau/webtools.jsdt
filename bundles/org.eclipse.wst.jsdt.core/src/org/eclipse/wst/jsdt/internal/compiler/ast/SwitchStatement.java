@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.SwitchFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
@@ -39,9 +38,6 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 	public final static int CASE = 0;
 	public final static int FALLTHROUGH = 1;
 	public final static int ESCAPING = 2;
-
-
-	public SyntheticMethodBinding synthetic; // use for switch on enums types
 
 	// for local variables table attributes
 	int preSwitchInitStateIndex = -1;

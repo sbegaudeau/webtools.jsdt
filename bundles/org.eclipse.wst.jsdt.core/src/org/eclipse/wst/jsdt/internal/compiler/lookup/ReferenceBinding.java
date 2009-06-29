@@ -460,35 +460,6 @@ public void computeId() {
 					this.id = TypeIds.T_JavaLangReflectMethod;
 				}
 				return;
-			} else if (CharOperation.equals(packageName, TypeConstants.ANNOTATION)) {
-				switch (typeName[0]) {
-					case 'A' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_ANNOTATION[3]))
-							this.id = TypeIds.T_JavaLangAnnotationAnnotation;
-						return;
-					case 'D' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_DOCUMENTED[3]))
-							this.id = TypeIds.T_JavaLangAnnotationDocumented;
-						return;
-					case 'E' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_ELEMENTTYPE[3]))
-							this.id = TypeIds.T_JavaLangAnnotationElementType;
-						return;
-					case 'I' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_INHERITED[3]))
-							this.id = TypeIds.T_JavaLangAnnotationInherited;
-						return;
-					case 'R' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_RETENTION[3]))
-							this.id = TypeIds.T_JavaLangAnnotationRetention;
-						else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_RETENTIONPOLICY[3]))
-							this.id = TypeIds.T_JavaLangAnnotationRetentionPolicy;
-						return;
-					case 'T' :
-						if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ANNOTATION_TARGET[3]))
-							this.id = TypeIds.T_JavaLangAnnotationTarget;
-						return;
-				}
 			}
 			break;
 	}
@@ -519,17 +490,6 @@ public final int depth() {
 		depth++;
 	return depth;
 }
-public boolean detectAnnotationCycle() {
-	if ((this.tagBits & TagBits.EndAnnotationCheck) != 0) return false; // already checked
-	if ((this.tagBits & TagBits.BeginAnnotationCheck) != 0) return true; // in the middle of checking its methods
-
-	this.tagBits |= TagBits.BeginAnnotationCheck;
-	boolean inCycle = false; // check each method before failing
-	if (inCycle)
-		return true;
-	this.tagBits |= TagBits.EndAnnotationCheck;
-	return false;
-}
 
 public final ReferenceBinding enclosingTypeAt(int relativeDepth) {
 	ReferenceBinding current = this;
@@ -548,12 +508,6 @@ public FieldBinding[] fields() {
 
 public final int getAccessFlags() {
 	return this.modifiers & ExtraCompilerModifiers.AccJustFlag;
-}
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
- */
-public long getAnnotationTagBits() {
-	return this.tagBits;
 }
 public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 	return null;
@@ -854,8 +808,7 @@ public final boolean isUsed() {
 /* Answer true if the receiver is deprecated (or any of its enclosing types)
 */
 public boolean isViewedAsDeprecated() {
-	return (this.modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0
-	|| (this.getPackage().tagBits & TagBits.AnnotationDeprecated) != 0;
+	return (this.modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0;
 }
 public ReferenceBinding[] memberTypes() {
 	return Binding.NO_MEMBER_TYPES;
@@ -919,17 +872,6 @@ public char[] sourceName() {
 
 public ReferenceBinding superclass() {
 	return null;
-}
-public ReferenceBinding[] syntheticEnclosingInstanceTypes() {
-	if (isStatic()) return null;
-
-	ReferenceBinding enclosingType = enclosingType();
-	if (enclosingType == null)
-		return null;
-	return new ReferenceBinding[] {enclosingType};
-}
-public SyntheticArgumentBinding[] syntheticOuterLocalVariables() {
-	return null;		// is null if no enclosing instances are required
 }
 public InferredType getInferredType() {
 

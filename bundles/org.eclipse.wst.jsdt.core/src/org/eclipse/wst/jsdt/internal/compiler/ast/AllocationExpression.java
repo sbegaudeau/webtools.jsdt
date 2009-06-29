@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -22,16 +21,11 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 
@@ -41,7 +35,6 @@ public class AllocationExpression extends Expression implements InvocationSite, 
 	public Expression[] arguments;
 	public MethodBinding binding;							// exact binding resulting from lookup
 	protected MethodBinding codegenBinding;	// actual binding used for code generation (if no synthetic accessor)
-	MethodBinding syntheticAccessor;						// synthetic accessor for inner-emulation
     public Expression member;
 	public boolean isShort;
 	
@@ -63,24 +56,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	}
 	
 	return flowInfo;
-}
-
-public void checkCapturedLocalInitializationIfNecessary(ReferenceBinding checkedType, BlockScope currentScope, FlowInfo flowInfo) {
-	if (checkedType.isLocalType() 
-			&& !checkedType.isAnonymousType()
-			&& !currentScope.isDefinedInType(checkedType)) { // only check external allocations
-		NestedTypeBinding nestedType = (NestedTypeBinding) checkedType;
-		SyntheticArgumentBinding[] syntheticArguments = nestedType.syntheticOuterLocalVariables();
-		if (syntheticArguments != null) 
-			for (int i = 0, count = syntheticArguments.length; i < count; i++){
-				SyntheticArgumentBinding syntheticArgument = syntheticArguments[i];
-				LocalVariableBinding targetLocal;
-				if ((targetLocal = syntheticArgument.actualOuterLocalVariable) == null) continue;
-				if (targetLocal.declaration != null && !flowInfo.isDefinitelyAssigned(targetLocal)){
-					currentScope.problemReporter().uninitializedLocalVariable(targetLocal, this);
-				}
-			}
-	}
 }
 
 public Expression enclosingInstance() {
@@ -113,29 +88,6 @@ public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, Fl
 		if (allocatedTypeErasure.isLocalType()) {
 			((LocalTypeBinding) allocatedTypeErasure).addInnerEmulationDependent(currentScope, false);
 			// request cascade of accesses
-		} else {
-			// locally propagate, since we already now the desired shape for sure
-			currentScope.propagateInnerEmulation(allocatedTypeErasure, false);
-			// request cascade of accesses
-		}
-	}
-}
-
-public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
-	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) return;
-	// if constructor from parameterized type got found, use the original constructor at codegen time
-	this.codegenBinding = this.binding.original();
-
-	ReferenceBinding declaringClass;
-	if (this.codegenBinding.isPrivate() && currentScope.enclosingSourceType() != (declaringClass = this.codegenBinding.declaringClass)) {
-
-		// from 1.4 on, local type constructor can lose their private flag to ease emulation
-		if ((declaringClass.tagBits & TagBits.IsLocalType) != 0 	&& currentScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4) {
-			// constructor will not be dumped as private, no emulation required thus
-			this.codegenBinding.tagBits |= TagBits.ClearPrivateModifier;
-		} else {
-			syntheticAccessor = ((SourceTypeBinding) declaringClass).addSyntheticMethod(this.codegenBinding, isSuperAccess());
-			currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
 		}
 	}
 }
@@ -192,7 +144,7 @@ public TypeBinding resolveType(BlockScope scope) {
 				argumentTypes[i]=TypeBinding.UNKNOWN;
 			}
 		}
-//		if (argHasError) {
+		if (argHasError) {
 //			if (this.resolvedType instanceof ReferenceBinding) {
 //				// record a best guess, for clients who need hint about possible contructor match
 //				TypeBinding[] pseudoArgs = new TypeBinding[length];
@@ -201,7 +153,7 @@ public TypeBinding resolveType(BlockScope scope) {
 //				this.binding = scope.findMethod((ReferenceBinding) this.resolvedType, TypeConstants.INIT, pseudoArgs, this);
 //			}
 //			return this.resolvedType;
-//		}
+		}
 	}
 	if (this.resolvedType == null || this.resolvedType.isAnyType()|| this.resolvedType instanceof ProblemReferenceBinding)
 	{

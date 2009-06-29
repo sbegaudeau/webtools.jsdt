@@ -225,38 +225,6 @@ public final int getAccessFlags() {
 	return modifiers & ExtraCompilerModifiers.AccJustFlag;
 }
 
-/**
- * Compute the tagbits for standard annotations. For source types, these could require
- * lazily resolving corresponding annotation nodes, in case of forward references.
- * @see org.eclipse.wst.jsdt.internal.compiler.lookup.Binding#getAnnotationTagBits()
- */
-public long getAnnotationTagBits() {
-	FieldBinding originalField = this.original();
-	if ((originalField.tagBits & TagBits.AnnotationResolved) == 0 && originalField.declaringClass instanceof SourceTypeBinding) {
-		ClassScope scope = ((SourceTypeBinding) originalField.declaringClass).classScope;
-		if (scope == null) { // synthetic fields do not have a scope nor any annotations
-			this.tagBits |= (TagBits.AnnotationResolved | TagBits.DeprecatedAnnotationResolved);
-			return 0;
-		}
-//		TypeDeclaration typeDecl = scope.referenceContext;
-//		FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
-//		if (fieldDecl != null) {
-//			MethodScope initializationScope = isStatic() ? typeDecl.staticInitializerScope : typeDecl.initializerScope;
-//			FieldBinding previousField = initializationScope.initializedField;
-//			int previousFieldID = initializationScope.lastVisibleFieldID;
-//			try {
-//				initializationScope.initializedField = originalField;
-//				initializationScope.lastVisibleFieldID = originalField.id;
-//				ASTNode.resolveAnnotations(initializationScope, fieldDecl.annotations, originalField);
-//			} finally {
-//				initializationScope.initializedField = previousField;
-//				initializationScope.lastVisibleFieldID = previousFieldID;
-//			}
-//		}
-	}
-	return originalField.tagBits;
-}
-
 
 /* Answer true if the receiver has default visibility
 */
@@ -300,29 +268,11 @@ public final boolean isPublic() {
 public final boolean isStatic() {
 	return (modifiers & ClassFileConstants.AccStatic) != 0;
 }
-/* Answer true if the receiver is not defined in the source of the declaringClass
-*/
-
-public final boolean isSynthetic() {
-	return (modifiers & ClassFileConstants.AccSynthetic) != 0;
-}
-/* Answer true if the receiver is a transient field
-*/
-
-public final boolean isTransient() {
-	return (modifiers & ClassFileConstants.AccTransient) != 0;
-}
 /* Answer true if the receiver's declaring type is deprecated (or any of its enclosing types)
 */
 
 public final boolean isViewedAsDeprecated() {
 	return (modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0;
-}
-/* Answer true if the receiver is a volatile field
-*/
-
-public final boolean isVolatile() {
-	return (modifiers & ClassFileConstants.AccVolatile) != 0;
 }
 /**
  * Returns the original field (as opposed to parameterized instances)

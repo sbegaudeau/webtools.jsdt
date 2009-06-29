@@ -271,7 +271,7 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 			reportDeclaration(methodBinding, locator, declPattern.knownMethods);
 		}
 	} else {
-		match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, false /*not constructor*/, false/*not synthetic*/, reference);
+		match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, false /*not constructor*/, reference);
 		if (this.pattern.findReferences && reference instanceof MessageSend) {
 			IJavaScriptElement focus = ((InternalSearchPattern) this.pattern).focus;
 			// verify closest match if pattern was bound

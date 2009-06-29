@@ -359,14 +359,6 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 		public final boolean visit(final SimpleName node) {
 			Assert.isNotNull(node);
 			final IBinding binding= node.resolveBinding();
-			if (binding instanceof ITypeBinding) {
-				final ITypeBinding type= (ITypeBinding) binding;
-				if (!fBindings.contains(type.getKey()) && type.isTypeVariable()) {
-					fResult.add(node);
-					fStatus.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_type_variables, JavaStatusContext.create(fMethod.getJavaScriptUnit(), node)));
-					return false;
-				}
-			}
 			return true;
 		}
 	}
@@ -1244,7 +1236,7 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 			monitor.beginTask("", 1); //$NON-NLS-1$
 			monitor.setTaskName(RefactoringCoreMessages.MoveInstanceMethodProcessor_checking);
 			final ITypeBinding binding= fTarget.getType();
-			if (binding == null || binding.isTypeVariable())
+			if (binding == null)
 				status.merge(RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.MoveInstanceMethodProcessor_no_generic_targets, JavaStatusContext.create(fMethod)));
 		} finally {
 			monitor.done();

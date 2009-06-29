@@ -93,13 +93,6 @@ class PackageBinding implements IPackageBinding {
 		return false;
 	}
 
-	/**
-	 * @see IBinding#isSynthetic()
-	 */
-	public boolean isSynthetic() {
-		return false;
-	}
-
 	/*
 	 * @see IBinding#getJavaElement()
 	 */

@@ -64,7 +64,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 //				return flowInfo;
 
 			// may be in a non necessary <clinit> for innerclass with static final constant fields
-			if (binding.isAbstract() || binding.isNative())
+			if (binding.isAbstract())
 				return flowInfo;
 
 			ExceptionHandlingFlowContext methodContext =
