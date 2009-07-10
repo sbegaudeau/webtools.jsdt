@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
@@ -314,16 +313,13 @@ public class ClassScope extends Scope {
 		ReferenceBinding enclosingType = sourceType.enclosingType();
 		boolean isMemberType = sourceType.isMemberType();
 		if (isMemberType) {
-			modifiers |= (enclosingType.modifiers & (ExtraCompilerModifiers.AccGenericSignature|ClassFileConstants.AccStrictfp));
+			modifiers |= (enclosingType.modifiers & (ClassFileConstants.AccStrictfp));
 			// checks for member types before local types to catch local members
 			if (enclosingType.isViewedAsDeprecated() && !sourceType.isDeprecated())
 				modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 		} else if (sourceType.isLocalType()) {
 			if (sourceType.isAnonymousType()) {
 			    modifiers |= ClassFileConstants.AccFinal;
-			    // set AccEnum flag for anonymous body of enum constants
-			    if (referenceContext.allocation.type == null)
-			    	modifiers |= ClassFileConstants.AccEnum;
 			}
 			Scope scope = this;
 			do {
@@ -369,89 +365,25 @@ public class ClassScope extends Scope {
 		// after this point, tests on the 16 bits reserved.
 		int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
 
-		if ((realModifiers & ClassFileConstants.AccInterface) != 0) { // interface and annotation type
-			// detect abnormal cases for interfaces
-			if (isMemberType) {
-				final int UNEXPECTED_MODIFIERS =
-					~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStatic | ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccStrictfp | ClassFileConstants.AccAnnotation);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
-					if ((realModifiers & ClassFileConstants.AccAnnotation) == 0)
-						problemReporter().illegalModifierForMemberInterface(sourceType);
-				}
-				/*
-				} else if (sourceType.isLocalType()) { //interfaces cannot be defined inside a method
-					int unexpectedModifiers = ~(AccAbstract | AccInterface | AccStrictfp);
-					if ((realModifiers & unexpectedModifiers) != 0)
-						problemReporter().illegalModifierForLocalInterface(sourceType);
-				*/
-			} else {
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccStrictfp | ClassFileConstants.AccAnnotation);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
-					if ((realModifiers & ClassFileConstants.AccAnnotation) == 0)
-						problemReporter().illegalModifierForInterface(sourceType);
-				}
-			}
-			modifiers |= ClassFileConstants.AccAbstract;
-		} else if ((realModifiers & ClassFileConstants.AccEnum) != 0) {
-			// detect abnormal cases for enums
-			if (!sourceType.isAnonymousType()) {
-				checkAbstractEnum: {
-					// does define abstract methods ?
-					if ((referenceContext.bits & ASTNode.HasAbstractMethods) != 0) {
-						modifiers |= ClassFileConstants.AccAbstract;
-						break checkAbstractEnum;
-					}
-					// body of enum constant must implement any inherited abstract methods
-					// enum type needs to implement abstract methods if one of its constants does not supply a body
-					TypeDeclaration typeDeclaration = this.referenceContext;
-					FieldDeclaration[] fields = typeDeclaration.fields;
-					int fieldsLength = fields == null ? 0 : fields.length;
-					if (fieldsLength == 0) break checkAbstractEnum; // has no constants so must implement the method itself
-					AbstractMethodDeclaration[] methods = typeDeclaration.methods;
-					int methodsLength = methods == null ? 0 : methods.length;
-					// TODO (kent) cannot tell that the superinterfaces are empty or that their methods are implemented
-					boolean definesAbstractMethod = false;
-					for (int i = 0; i < methodsLength && !definesAbstractMethod; i++)
-						definesAbstractMethod = methods[i].isAbstract();
-					if (!definesAbstractMethod) break checkAbstractEnum; // all methods have bodies
-					boolean needAbstractBit = false;
-					// tag this enum as abstract since an abstract method must be implemented AND all enum constants define an anonymous body
-					// as a result, each of its anonymous constants will see it as abstract and must implement each inherited abstract method
-					if (needAbstractBit) {
-						modifiers |= ClassFileConstants.AccAbstract;
-					}
-				}
-				// final if no enum constant with anonymous body
-				TypeDeclaration typeDeclaration = this.referenceContext;
-				FieldDeclaration[] fields = typeDeclaration.fields;
-				if (fields != null) {
-					for (int i = 0, fieldsLength = fields.length; i < fieldsLength; i++) {
-					}
-				}
-				modifiers |= ClassFileConstants.AccFinal;
-				
-			}
+		// detect abnormal cases for classes
+		if (isMemberType) { // includes member types defined inside local types
+			final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStatic | ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
+			if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
+				problemReporter().illegalModifierForMemberClass(sourceType);
+		} else if (sourceType.isLocalType()) {
+			final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
+			if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
+				problemReporter().illegalModifierForLocalClass(sourceType);
 		} else {
-			// detect abnormal cases for classes
-			if (isMemberType) { // includes member types defined inside local types
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStatic | ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForMemberClass(sourceType);
-			} else if (sourceType.isLocalType()) {
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForLocalClass(sourceType);
-			} else {
-				final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
-				if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
-					problemReporter().illegalModifierForClass(sourceType);
-			}
-
-			// check that Final and Abstract are not set together
-			if ((realModifiers & (ClassFileConstants.AccFinal | ClassFileConstants.AccAbstract)) == (ClassFileConstants.AccFinal | ClassFileConstants.AccAbstract))
-				problemReporter().illegalModifierCombinationFinalAbstractForClass(sourceType);
+			final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract | ClassFileConstants.AccFinal | ClassFileConstants.AccStrictfp);
+			if ((realModifiers & UNEXPECTED_MODIFIERS) != 0)
+				problemReporter().illegalModifierForClass(sourceType);
 		}
 
+		// check that Final and Abstract are not set together
+		if ((realModifiers & (ClassFileConstants.AccFinal | ClassFileConstants.AccAbstract)) == (ClassFileConstants.AccFinal | ClassFileConstants.AccAbstract))
+			problemReporter().illegalModifierCombinationFinalAbstractForClass(sourceType);
+		
 		if (isMemberType) {
 			// test visibility modifiers inconsistency, isolate the accessors bits
 			
@@ -495,7 +427,7 @@ public class ClassScope extends Scope {
 
 		// after this point, tests on the 16 bits reserved.
 		int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
-		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccFinal | ClassFileConstants.AccStatic | ClassFileConstants.AccTransient | ClassFileConstants.AccVolatile);
+		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccFinal | ClassFileConstants.AccStatic);
 		if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
 			problemReporter().illegalModifierForField(declaringClass, fieldDecl);
 			modifiers &= ~ExtraCompilerModifiers.AccJustFlag | ~UNEXPECTED_MODIFIERS;
@@ -516,7 +448,7 @@ public class ClassScope extends Scope {
 			}
 		}
 
-		if ((realModifiers & (ClassFileConstants.AccFinal | ClassFileConstants.AccVolatile)) == (ClassFileConstants.AccFinal | ClassFileConstants.AccVolatile))
+		if ((realModifiers & (ClassFileConstants.AccFinal)) == (ClassFileConstants.AccFinal))
 			problemReporter().illegalModifierCombinationFinalVolatileForField(declaringClass, fieldDecl);
 
 		if (fieldDecl.initialization == null && (modifiers & ClassFileConstants.AccFinal) != 0)
@@ -589,8 +521,6 @@ public class ClassScope extends Scope {
 			if (superclass != null) { // is null if a cycle was detected cycle or a problem
 				if (!superclass.isClass()) {
 					problemReporter().superclassMustBeAClass(sourceType, superclassRef, superclass);
-				} else if (superclass.isFinal()) {
-					problemReporter().classExtendFinalClass(sourceType, superclassRef, superclass);
 				} else {
 					// only want to reach here when no errors are reported
 					sourceType.superclass = superclass;

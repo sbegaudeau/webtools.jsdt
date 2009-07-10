@@ -677,28 +677,6 @@ protected void finishedWith(String sourceLocator, CompilationResult result, char
 	super.finishedWith(sourceLocator, result, mainTypeName, definedTypeNames, duplicateTypeNames);
 }
 
-protected void processAnnotationResults(ValidationParticipantResult[] results) {
-	for (int i = results.length; --i >= 0;) {
-		ValidationParticipantResult result = results[i];
-		if (result == null) continue;
-
-		IFile[] deletedGeneratedFiles = result.deletedFiles;
-		if (deletedGeneratedFiles != null)
-			deleteGeneratedFiles(deletedGeneratedFiles);
-
-		IFile[] addedGeneratedFiles = result.addedFiles;
-		if (addedGeneratedFiles != null) {
-			for (int j = addedGeneratedFiles.length; --j >= 0;) {
-				SourceFile sourceFile = findSourceFile(addedGeneratedFiles[j], true);
-				if (sourceFile != null && !sourceFiles.contains(sourceFile))
-					this.sourceFiles.add(sourceFile);
-			}
-		}
-
-		recordParticipantResult(result);
-	}
-}
-
 //protected void removeClassFile(IPath typePath, IContainer outputFolder) throws CoreException {
 //	if (typePath.lastSegment().indexOf('$') == -1) { // is not a nested type
 //		newState.removeQualifiedTypeName(typePath.toString());

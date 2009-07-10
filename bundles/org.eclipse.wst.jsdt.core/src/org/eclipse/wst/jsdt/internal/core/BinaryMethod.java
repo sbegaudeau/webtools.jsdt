@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -177,9 +176,7 @@ public String[] getParameterNames() throws JavaScriptModelException {
 	if (paramCount != 0) {
 		// don't try to look for javadoc for synthetic methods
 		int modifiers = this.getFlags();
-		if ((modifiers & ClassFileConstants.AccSynthetic) != 0) {
-			return this.parameterNames = getRawParameterNames(paramCount);
-		}
+
 		String javadocContents = null;
 		IType declaringType = this.getDeclaringType();
 		PerProjectInfo projectInfo = JavaModelManager.getJavaModelManager().getPerProjectInfoCheckExistence(this.getJavaScriptProject().getProject());

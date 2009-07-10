@@ -302,10 +302,6 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 				default:
 					// ( CLASS/INTERFACE ) ARRAY
 					switch (castType.id) {
-						case T_JavaLangCloneable :
-						case T_JavaIoSerializable :
-							tagAsNeedCheckCast();
-							return true;
 						case T_JavaLangObject :
 							tagAsUnnecessaryCast(scope, castType);
 							return true;

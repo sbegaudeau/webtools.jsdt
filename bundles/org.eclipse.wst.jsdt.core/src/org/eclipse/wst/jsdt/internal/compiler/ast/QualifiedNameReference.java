@@ -60,16 +60,6 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 	switch (this.bits & ASTNode.RestrictiveFlagMASK) {
 		case Binding.FIELD : // reading a field
 			lastFieldBinding = (FieldBinding) this.binding;
-			// check if final blank field
-			if (lastFieldBinding.isBlankFinal()
-				    && this.otherBindings != null // the last field binding is only assigned
-	 				&& currentScope.allowBlankFinalFieldAssignment(lastFieldBinding)) {
-				if (!flowInfo.isDefinitelyAssigned(lastFieldBinding)) {
-					currentScope.problemReporter().uninitializedBlankFinalField(
-						lastFieldBinding,
-						this);
-				}
-			}
 			break;
 		case Binding.LOCAL :
 			// first binding is a local variable
@@ -100,12 +90,6 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 	}
 
 	if (isCompound) {
-		if (otherBindingsCount == 0
-				&& lastFieldBinding.isBlankFinal()
-				&& currentScope.allowBlankFinalFieldAssignment(lastFieldBinding)
-				&& (!flowInfo.isDefinitelyAssigned(lastFieldBinding))) {
-			currentScope.problemReporter().uninitializedBlankFinalField(lastFieldBinding, this);
-		}
 		TypeBinding lastReceiverType;
 		switch (otherBindingsCount) {
 			case 0 :
@@ -128,27 +112,6 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 				.unconditionalInits();
 	}
 
-	// the last field access is a write access
-	if (lastFieldBinding.isFinal()) {
-		// in a context where it can be assigned?
-		if (otherBindingsCount == 0
-				&& this.indexOfFirstFieldBinding == 1
-				&& lastFieldBinding.isBlankFinal()
-				&& !isCompound
-				&& currentScope.allowBlankFinalFieldAssignment(lastFieldBinding)) {
-			if (flowInfo.isPotentiallyAssigned(lastFieldBinding)) {
-				currentScope.problemReporter().duplicateInitializationOfBlankFinalField(lastFieldBinding, this);
-			} else {
-				flowContext.recordSettingFinal(lastFieldBinding, this, flowInfo);
-			}
-			flowInfo.markAsDefinitelyAssigned(lastFieldBinding);
-		} else {
-			currentScope.problemReporter().cannotAssignToFinalField(lastFieldBinding, this);
-			if (otherBindingsCount == 0 && currentScope.allowBlankFinalFieldAssignment(lastFieldBinding)) { // pretend it got assigned
-				flowInfo.markAsDefinitelyAssigned(lastFieldBinding);
-			}
-		}
-	}
 	// equivalent to valuesRequired[maxOtherBindings]
 	TypeBinding lastReceiverType;
 	switch (otherBindingsCount) {
@@ -178,16 +141,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	boolean complyTo14 = currentScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4;
 	switch (this.bits & ASTNode.RestrictiveFlagMASK) {
 		case Binding.FIELD : // reading a field
-			if (this.indexOfFirstFieldBinding == 1) { // was an implicit reference to the first field binding
-				FieldBinding fieldBinding = (FieldBinding) this.binding;
-
-				// check if reading a final blank field
-				if (fieldBinding.isBlankFinal()
-						&& currentScope.allowBlankFinalFieldAssignment(fieldBinding)
-						&& !flowInfo.isDefinitelyAssigned(fieldBinding)) {
-					currentScope.problemReporter().uninitializedBlankFinalField(fieldBinding, this);
-				}
-			}
 			break;
 		case Binding.LOCAL : // reading a local variable
 			LocalVariableBinding localBinding;
@@ -343,7 +296,6 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 	TypeBinding type = ((VariableBinding) this.binding).type;
 	int index = this.indexOfFirstFieldBinding;
 	if (index == length) { //	restrictiveFlag == FIELD
-		this.constant = ((FieldBinding) this.binding).constant();
 		// perform capture conversion if read access
 		return type;
 	}
@@ -351,9 +303,7 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 	int otherBindingsLength = length - index;
 	this.otherCodegenBindings = this.otherBindings = new FieldBinding[otherBindingsLength];
 	this.otherDepths = new int[otherBindingsLength];
-
-	// fill the first constant (the one of the binding)
-	this.constant = ((VariableBinding) this.binding).constant();
+	
 	// save first depth, since will be updated by visibility checks of other bindings
 	int firstDepth = (this.bits & ASTNode.DepthMASK) >> ASTNode.DepthSHIFT;
 	// iteration on each field
@@ -383,10 +333,6 @@ public TypeBinding getOtherFieldBindings(BlockScope scope) {
 			// only last field is actually a write access if any
 			if (isFieldUseDeprecated(field, scope, (this.bits & ASTNode.IsStrictlyAssigned) !=0 && index+1 == length)) {
 				scope.problemReporter().deprecatedField(field, this);
-			}
-			// constant propagation can only be performed as long as the previous one is a constant too.
-			if (this.constant != Constant.NotAConstant) {
-				this.constant = field.constant();
 			}
 
 			if (field.isStatic()) {
@@ -436,10 +382,10 @@ public Constant optimizedBooleanConstant() {
 			switch (this.bits & ASTNode.RestrictiveFlagMASK) {
 				case Binding.FIELD : // reading a field
 				if (this.otherBindings == null)
-					return ((FieldBinding)this.binding).constant();
+					return Constant.NotAConstant;
 				// fall thru
 			case Binding.LOCAL : // reading a local variable
-				return this.otherBindings[this.otherBindings.length-1].constant();
+				return Constant.NotAConstant;
 		}
 	}
 	return Constant.NotAConstant;
@@ -520,7 +466,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			case Binding.VARIABLE : //============only variable===========
 			case Binding.TYPE | Binding.VARIABLE :
 				if (this.binding instanceof LocalVariableBinding) {
-					if (!((LocalVariableBinding) this.binding).isFinal() && ((this.bits & ASTNode.DepthMASK) != 0))
+					if (((this.bits & ASTNode.DepthMASK) != 0))
 						scope.problemReporter().cannotReferToNonFinalOuterLocal(
 							(LocalVariableBinding) this.binding,
 							this);

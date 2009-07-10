@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -366,7 +365,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		// no need to check for visibility - interface methods are public
 		if (compilerOptions().complianceLevel >= ClassFileConstants.JDK1_4)
 			return mostSpecificMethodBinding(candidates, candidatesCount, argumentTypes, invocationSite, receiverType);
-		return mostSpecificInterfaceMethodBinding(candidates, candidatesCount, invocationSite);
+		return null;
 	}
 
 	// Internal use only
@@ -792,15 +791,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (argumentTypes == Binding.NO_PARAMETERS) {
 			    switch (selector[0]) {
 			        case 'c':
-			            if (CharOperation.equals(selector, CLONE)) {
-							return new UpdatedMethodBinding(
-								compilerOptions().targetJDK >= ClassFileConstants.JDK1_4 ? (TypeBinding)receiverType : (TypeBinding)object, // remember its array type for codegen purpose on target>=1.4.0
-								(methodBinding.modifiers & ~ClassFileConstants.AccProtected) | ClassFileConstants.AccPublic,
-								CLONE,
-								methodBinding.returnType,
-								argumentTypes,
-								object);
-			            }
 			            break;
 			        case 'g':
 			            break;
@@ -1740,12 +1730,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return new ProblemMethodBinding(selector, argumentTypes, ProblemReasons.NotFound);
 	}
 
-	public final ReferenceBinding getJavaIoSerializable() {
-		CompilationUnitScope unitScope = compilationUnitScope();
-		unitScope.recordQualifiedReference(JAVA_IO_SERIALIZABLE);
-		return unitScope.environment.getResolvedType(JAVA_IO_SERIALIZABLE, this);
-	}
-
 	public final ReferenceBinding getJavaLangAssertionError() {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		unitScope.recordQualifiedReference(JAVA_LANG_ASSERTIONERROR);
@@ -1756,12 +1740,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		unitScope.recordQualifiedReference(JAVA_LANG_CLASS);
 		return unitScope.environment.getResolvedType(JAVA_LANG_CLASS, this);
-	}
-
-	public final ReferenceBinding getJavaLangCloneable() {
-		CompilationUnitScope unitScope = compilationUnitScope();
-		unitScope.recordQualifiedReference(JAVA_LANG_CLONEABLE);
-		return unitScope.environment.getResolvedType(JAVA_LANG_CLONEABLE, this);
 	}
 
 	public final ReferenceBinding getJavaLangIterable() {
@@ -2502,17 +2480,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return false;
 	}
 
-	private TypeBinding leastContainingInvocation(TypeBinding mec, Object invocationData, List lubStack) {
-		if (invocationData == null) return mec; // no alternate invocation
-		if (invocationData instanceof TypeBinding) { // only one invocation, simply return it (array only allocated if more than one)
-			return (TypeBinding) invocationData;
-		}
-
-		mec = mec.leafComponentType();
-
-		return mec; // should be caught by no invocation check
-	}
-
 	public MethodScope methodScope() {
 		Scope scope = this;
 		do {
@@ -2585,17 +2552,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					case T_long:
 					case T_float:
 					case T_double:
-						TypeBinding superType = getJavaIoSerializable();
-						if (!typesToVisit.contains(superType)) {
-							typesToVisit.add(superType);
-							max++;
-						}
-						superType = getJavaLangCloneable();
-						if (!typesToVisit.contains(superType)) {
-							typesToVisit.add(superType);
-							max++;
-						}
-						superType = getJavaLangObject();
+						TypeBinding superType = getJavaLangObject();
 						if (!typesToVisit.contains(superType)) {
 							typesToVisit.add(superType);
 							max++;
@@ -2756,48 +2713,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				break; // cannot answer a method farther up the hierarchy than the first method found
 
 			if (!method.isStatic()) previous = method; // no ambiguity for static methods
-			for (int j = 0; j < visibleSize; j++) {
-				if (i == j) continue;
-				if (!visible[j].areParametersCompatibleWith(method.parameters))
-					continue nextVisible;
-			}
-			return method;
-		}
-			return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
-	}
-
-	// Internal use only
-	/* All methods in visible are acceptable matches for the method in question...
-	* Since the receiver type is an interface, we ignore the possibility that 2 inherited
-	* but unrelated superinterfaces may define the same method in acceptable but
-	* not identical ways... we just take the best match that we find since any class which
-	* implements the receiver interface MUST implement all signatures for the method...
-	* in which case the best match is correct.
-	*
-	* NOTE: This is different than javac... in the following example, the message send of
-	* bar(X) in class Y is supposed to be ambiguous. But any class which implements the
-	* interface I MUST implement both signatures for bar. If this class was the receiver of
-	* the message send instead of the interface I, then no problem would be reported.
-	*
-	interface I1 {
-		void bar(J j);
-	}
-	interface I2 {
-	//	void bar(J j);
-		void bar(Object o);
-	}
-	interface I extends I1, I2 {}
-	interface J {}
-
-	class X implements J {}
-
-	class Y extends X {
-		public void foo(I i, X x) { i.bar(x); }
-	}
-	*/
-	protected final MethodBinding mostSpecificInterfaceMethodBinding(MethodBinding[] visible, int visibleSize, InvocationSite invocationSite) {
-		nextVisible : for (int i = 0; i < visibleSize; i++) {
-			MethodBinding method = visible[i];
 			for (int j = 0; j < visibleSize; j++) {
 				if (i == j) continue;
 				if (!visible[j].areParametersCompatibleWith(method.parameters))

@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 
 public class ValidationParticipantResult {
 	protected SourceFile sourceFile;
-	protected boolean hasAnnotations; // only set during processAnnotations
 	protected IFile[] addedFiles; // added/changed generated source files that need to be compiled
 	protected IFile[] deletedFiles; // previously generated source files that should be deleted
 	protected CategorizedProblem[] problems; // new problems to report against this compilationUnit
@@ -25,16 +24,13 @@ public class ValidationParticipantResult {
 
 protected ValidationParticipantResult(SourceFile sourceFile) {
 	this.sourceFile = sourceFile;
-	this.hasAnnotations = false;
 	this.addedFiles = null;
 	this.deletedFiles = null;
 	this.problems = null;
 	this.dependencies = null;
 }
 
-void reset(boolean detectedAnnotations) {
-	// called prior to processAnnotations
-	this.hasAnnotations = detectedAnnotations;
+void reset() {
 	this.addedFiles = null;
 	this.deletedFiles = null;
 	this.problems = null;

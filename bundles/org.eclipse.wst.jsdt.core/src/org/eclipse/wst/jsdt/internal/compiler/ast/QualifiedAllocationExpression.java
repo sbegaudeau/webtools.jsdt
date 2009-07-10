@@ -163,15 +163,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 		}
 		if (receiverType == null) {
 			hasError = true;
-		} else if (((ReferenceBinding) receiverType).isFinal()) {
-			if (this.anonymousType != null) {
-				scope.problemReporter().anonymousClassCannotExtendFinalClass(this.type, receiverType);
-				hasError = true;
-				
-			} else if (!receiverType.canBeInstantiated()) {
-				scope.problemReporter().cannotInstantiate(this.type, receiverType);
-				return this.resolvedType = receiverType;
-			}
 		}
 
 		// will check for null after args are resolved

@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 
 /**
@@ -166,18 +165,6 @@ public void enterCompilationUnit() {
 public void enterConstructor(MethodInfo methodInfo) {
 	this.indexer.addConstructorDeclaration(methodInfo.name, methodInfo.parameterTypes);
 	this.methodDepth++;
-}
-private void enterEnum(TypeInfo typeInfo) {
-	// eliminate possible qualifications, given they need to be fully resolved again
-	char[][] typeNames;
-	if (this.methodDepth > 0) {
-		typeNames = ONE_ZERO_CHAR;
-	} else {
-		typeNames = this.enclosingTypeNames();
-	}
-	char[] superclass = typeInfo.superclass == null ? CharOperation.concatWith(TypeConstants.JAVA_LANG_ENUM, '.'): typeInfo.superclass;
-	this.indexer.addEnumDeclaration(typeInfo.modifiers, packageName, typeInfo.name, typeNames, superclass, typeInfo.secondary);
-	this.pushTypeName(typeInfo.name);
 }
 /**
  * @see ISourceElementRequestor#enterField(FieldInfo)

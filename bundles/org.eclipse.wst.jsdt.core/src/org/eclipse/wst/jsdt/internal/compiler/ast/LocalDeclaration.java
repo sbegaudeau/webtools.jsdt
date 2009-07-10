@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -214,7 +213,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			else
 				scope.compilationUnitScope().addLocalVariable(binding);
 		}
-		this.binding.setConstant(Constant.NotAConstant);
 		// allow to recursivelly target the binding....
 		// the correct constant is harmed if correctly computed at the end of this method
 
@@ -287,13 +285,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			if (this.binding == Assignment.getDirectBinding(this.initialization)) {
 				scope.problemReporter().assignmentHasNoEffect(this, this.name);
 			}
-			// change the constant in the binding when it is final
-			// (the optimization of the constant propagation will be done later on)
-			// cast from constant actual type to variable type
-			binding.setConstant(
-				binding.isFinal()
-					? initialization.constant.castTo((variableType.id << 4) + initialization.constant.typeID())
-					: Constant.NotAConstant);
 		}
 		// Resolve Javadoc comment if one is present
 		if (this.javadoc != null) {

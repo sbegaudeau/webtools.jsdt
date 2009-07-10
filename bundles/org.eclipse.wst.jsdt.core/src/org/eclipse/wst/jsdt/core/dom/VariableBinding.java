@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,13 +13,10 @@ package org.eclipse.wst.jsdt.core.dom;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.util.IModifierConstants;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 
@@ -48,28 +45,6 @@ class VariableBinding implements IVariableBinding {
 	 *  
 	 */
 	public Object getConstantValue() {
-		Constant c = this.binding.constant();
-		if (c == null || c == Constant.NotAConstant) return null;
-		switch (c.typeID()) {
-			case TypeIds.T_boolean:
-				return Boolean.valueOf(c.booleanValue());
-			case TypeIds.T_byte:
-				return new Byte(c.byteValue());
-			case TypeIds.T_char:
-				return new Character(c.charValue());
-			case TypeIds.T_double:
-				return new Double(c.doubleValue());
-			case TypeIds.T_float:
-				return new Float(c.floatValue());
-			case TypeIds.T_int:
-				return new Integer(c.intValue());
-			case TypeIds.T_long:
-				return new Long(c.longValue());
-			case TypeIds.T_short:
-				return new Short(c.shortValue());
-			case TypeIds.T_JavaLangString:
-				return c.stringValue();
-		}
 		return null;
 	}
 
@@ -144,9 +119,6 @@ class VariableBinding implements IVariableBinding {
 		if (isField()) {
 			return ((FieldBinding) this.binding).getAccessFlags() & VALID_MODIFIERS;
 		}
-		if (binding.isFinal()) {
-			return IModifierConstants.ACC_FINAL;
-		}
 		return Modifier.NONE;
 	}
 
@@ -203,7 +175,7 @@ class VariableBinding implements IVariableBinding {
 			sourceStart = node.getStartPosition();
 			sourceLength = node.getLength();
 		}
-		char[] typeSig = this.binding.type.genericTypeSignature();
+		char[] typeSig = this.binding.type.signature();
 		return new LocalVariable(method, localVar.getName().getIdentifier(), sourceStart, sourceStart+sourceLength-1, nameStart, nameStart+nameLength-1, new String(typeSig));
 	}
 

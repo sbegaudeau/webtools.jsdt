@@ -110,7 +110,7 @@ public final class ASTProvider {
 	 * Tells whether this class is in debug mode.
 	 * 
 	 */
-	private static final boolean DEBUG= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.ui/debug/ASTProvider"));  //$NON-NLS-1$//$NON-NLS-2$
+	private static final boolean DEBUG= true || "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.ui/debug/ASTProvider"));  //$NON-NLS-1$//$NON-NLS-2$
 
 
 	/**

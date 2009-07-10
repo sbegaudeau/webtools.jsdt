@@ -282,9 +282,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					}
 					return;
 				}
-			} else if (receiverType.id == T_JavaLangEnum) {
-				// TODO (philippe) get rid of once well-known binding is available
-				argumentTypes = new TypeBinding[] { scope.getJavaLangString(), TypeBinding.INT };
 			}
 			if ((binding = scope.getConstructor(receiverType, argumentTypes, this)).isValidBinding()) {
 				if (isMethodUseDeprecated(this.binding, scope, this.accessMode != ImplicitSuper))

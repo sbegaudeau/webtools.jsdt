@@ -59,13 +59,6 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 		if (isCompound) { // check the variable part is initialized if blank final
 			switch (bits & RestrictiveFlagMASK) {
 				case Binding.FIELD : // reading a field
-					FieldBinding fieldBinding;
-					if ((fieldBinding = (FieldBinding) binding).isBlankFinal()
-							&& currentScope.allowBlankFinalFieldAssignment(fieldBinding)) {
-						if (!flowInfo.isDefinitelyAssigned(fieldBinding)) {
-							currentScope.problemReporter().uninitializedBlankFinalField(fieldBinding, this);
-						}
-					}
 					manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
 					break;
 				case Binding.LOCAL : // reading a local variable
@@ -89,21 +82,6 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 			case Binding.FIELD : // assigning to a field
 				manageSyntheticAccessIfNecessary(currentScope, flowInfo, false /*write-access*/);
 
-				FieldBinding fieldBinding = (FieldBinding) binding;
-				// check if assigning a final field
-				if (fieldBinding.isFinal()) {
-					// inside a context where allowed
-					if (!isCompound && fieldBinding.isBlankFinal() && currentScope.allowBlankFinalFieldAssignment(fieldBinding)) {
-						if (flowInfo.isPotentiallyAssigned(fieldBinding)) {
-							currentScope.problemReporter().duplicateInitializationOfBlankFinalField(fieldBinding, this);
-						} else {
-							flowContext.recordSettingFinal(fieldBinding, this, flowInfo);
-						}
-						flowInfo.markAsDefinitelyAssigned(fieldBinding);
-					} else {
-						currentScope.problemReporter().cannotAssignToFinalField(fieldBinding, this);
-					}
-				}
 				break;
 			case Binding.LOCAL : // assigning to a local variable
 				LocalVariableBinding localBinding = (LocalVariableBinding) binding;
@@ -112,21 +90,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				} else {
 					bits &= ~FirstAssignmentToLocal;
 				}
-				if (localBinding.isFinal()) {
-					if ((bits & DepthMASK) == 0) {
-						// tolerate assignment to final local in unreachable code (45674)
-						if ((isReachable && isCompound) || !localBinding.isBlankFinal()){
-							currentScope.problemReporter().cannotAssignToFinalLocal(localBinding, this);
-						} else if (flowInfo.isPotentiallyAssigned(localBinding)) {
-							currentScope.problemReporter().duplicateInitializationOfFinalLocal(localBinding, this);
-						} else {
-							flowContext.recordSettingFinal(localBinding, this, flowInfo);
-						}
-					} else {
-						currentScope.problemReporter().cannotAssignToFinalOuterLocal(localBinding, this);
-					}
-				}
-				else /* avoid double diagnostic */ if ((localBinding.tagBits & TagBits.IsArgument) != 0) {
+				if ((localBinding.tagBits & TagBits.IsArgument) != 0) {
 					currentScope.problemReporter().parameterAssignment(localBinding, this);
 				}
 				flowInfo.markAsDefinitelyAssigned(localBinding);
@@ -144,14 +108,7 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				if (valueRequired) {
 					manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
 				}
-				FieldBinding fieldBinding = (FieldBinding) binding;
 
-				// check if reading a final blank field
-				if (fieldBinding.isBlankFinal() && currentScope.allowBlankFinalFieldAssignment(fieldBinding)) {
-					if (!flowInfo.isDefinitelyAssigned(fieldBinding)) {
-						currentScope.problemReporter().uninitializedBlankFinalField(fieldBinding, this);
-					}
-				}
 				break;
 			case Binding.LOCAL : // reading a local variable
 			case Binding.LOCAL | Binding.TYPE :
@@ -194,7 +151,6 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				}
 			}
 		}
-		this.constant = fieldBinding.constant();
 
 		if (isFieldUseDeprecated(fieldBinding, scope, (this.bits & IsStrictlyAssigned) !=0))
 			scope.problemReporter().deprecatedField(fieldBinding, this);
@@ -408,7 +364,6 @@ public int nullStatus(FlowInfo flowInfo) {
 		{
 			LocalDeclaration localDeclaration = new LocalDeclaration(this.token,this.sourceEnd,this.sourceEnd);
 			LocalVariableBinding localBinding=new LocalVariableBinding(localDeclaration,TypeBinding.UNKNOWN,0,false);
-			localBinding.setConstant(Constant.NotAConstant);
 		    scope.compilationUnitScope().addLocalVariable(localBinding);
 			this.binding=localBinding;
 		}
@@ -454,11 +409,9 @@ public int nullStatus(FlowInfo flowInfo) {
 										fieldType=variable.type=TypeBinding.ANY;
 								}
 							}
-							if ((this.bits & IsStrictlyAssigned) == 0) {
-								constant = variable.constant();
-							} else {
-								constant = Constant.NotAConstant;
-							}
+						
+							constant = Constant.NotAConstant;
+							
 
 							return this.resolvedType = fieldType;
 						}

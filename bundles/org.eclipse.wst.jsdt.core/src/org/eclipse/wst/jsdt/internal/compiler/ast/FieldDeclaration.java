@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -69,7 +68,6 @@ public FlowInfo analyseCode(MethodScope initializationScope, FlowContext flowCon
 	if (this.binding != null
 			&& this.binding.isValidBinding()
 			&& this.binding.isStatic()
-			&& this.binding.constant() == Constant.NotAConstant
 			&& this.binding.declaringClass.isNestedType()
 			&& !this.binding.declaringClass.isStatic()) {
 		initializationScope.problemReporter().unexpectedStaticModifierForField(
@@ -169,11 +167,7 @@ public void resolve(MethodScope initializationScope) {
 
 //		resolveAnnotations(initializationScope, this.annotations, this.binding);
 		// the resolution of the initialization hasn't been done
-		if (this.initialization == null) {
-			this.binding.setConstant(Constant.NotAConstant);
-		} else {
-			// break dead-lock cycles by forcing constant to NotAConstant
-			this.binding.setConstant(Constant.NotAConstant);
+		if (this.initialization != null) {
 
 			TypeBinding fieldType = this.binding.type;
 			TypeBinding initializationType;
@@ -201,11 +195,6 @@ public void resolve(MethodScope initializationScope) {
 				} else {
 					initializationScope.problemReporter().typeMismatchError(initializationType, fieldType, this);
 				}
-				if (this.binding.isFinal()){ // cast from constant actual type to variable type
-					this.binding.setConstant(this.initialization.constant.castTo((this.binding.type.id << 4) + this.initialization.constant.typeID()));
-				}
-			} else {
-				this.binding.setConstant(Constant.NotAConstant);
 			}
 			// check for assignment with no effect
 			if (this.binding == Assignment.getDirectBinding(this.initialization)) {
@@ -226,8 +215,6 @@ public void resolve(MethodScope initializationScope) {
 	} finally {
 		initializationScope.initializedField = previousField;
 		initializationScope.lastVisibleFieldID = previousFieldID;
-		if (this.binding.constant() == null)
-			this.binding.setConstant(Constant.NotAConstant);
 	}
 }
 

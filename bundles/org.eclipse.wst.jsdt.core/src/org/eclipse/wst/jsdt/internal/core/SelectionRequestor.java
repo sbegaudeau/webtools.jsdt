@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.ISelectionRequestor;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
@@ -164,18 +163,8 @@ protected void acceptBinaryMethod(
  */
 public void acceptType(char[] packageName, 		char[] fileName,char[] typeName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 	int acceptFlags = 0;
-	int kind = modifiers & (ClassFileConstants.AccInterface|ClassFileConstants.AccEnum|ClassFileConstants.AccAnnotation);
+	int kind = 0;
 	switch (kind) {
-		case ClassFileConstants.AccAnnotation:
-		case ClassFileConstants.AccAnnotation|ClassFileConstants.AccInterface:
-			acceptFlags = NameLookup.ACCEPT_ANNOTATIONS;
-			break;
-		case ClassFileConstants.AccEnum:
-			acceptFlags = NameLookup.ACCEPT_ENUMS;
-			break;
-		case ClassFileConstants.AccInterface:
-			acceptFlags = NameLookup.ACCEPT_INTERFACES;
-			break;
 		default:
 			acceptFlags = NameLookup.ACCEPT_CLASSES;
 			break;

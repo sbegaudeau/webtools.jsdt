@@ -79,17 +79,12 @@ public class MethodScope extends BlockScope {
 //		if (((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
 		if ((methodBinding.modifiers&ExtraCompilerModifiers.AccIsDefaultConstructor)>0) {
 			// certain flags are propagated from declaring class onto constructor
-			final int DECLARING_FLAGS = ClassFileConstants.AccEnum|ClassFileConstants.AccPublic|ClassFileConstants.AccProtected;
+			final int DECLARING_FLAGS = ClassFileConstants.AccPublic|ClassFileConstants.AccProtected;
 			final int VISIBILITY_FLAGS = ClassFileConstants.AccPrivate|ClassFileConstants.AccPublic|ClassFileConstants.AccProtected;
 			int flags;
 			if ((flags = declaringClass.modifiers & DECLARING_FLAGS) != 0) {
-				if ((flags & ClassFileConstants.AccEnum) != 0) {
-					modifiers &= ~VISIBILITY_FLAGS;
-					modifiers |= ClassFileConstants.AccPrivate; // default constructor is implicitly private in enum
-				} else {
-					modifiers &= ~VISIBILITY_FLAGS;
-					modifiers |= flags; // propagate public/protected
-				}
+				modifiers &= ~VISIBILITY_FLAGS;
+				modifiers |= flags; // propagate public/protected
 			}
 		}
 
@@ -154,7 +149,7 @@ public class MethodScope extends BlockScope {
 
 		// check for abnormal modifiers
 		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected
-			| ClassFileConstants.AccAbstract | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccSynchronized | ClassFileConstants.AccNative | ClassFileConstants.AccStrictfp);
+			| ClassFileConstants.AccAbstract | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccNative | ClassFileConstants.AccStrictfp);
 		if ((realModifiers & UNEXPECTED_MODIFIERS) != 0) {
 			problemReporter().illegalModifierForMethod((AbstractMethodDeclaration) referenceContext);
 			modifiers &= ~ExtraCompilerModifiers.AccJustFlag | ~UNEXPECTED_MODIFIERS;
@@ -178,7 +173,7 @@ public class MethodScope extends BlockScope {
 
 		// check for modifiers incompatible with abstract modifier
 		if ((modifiers & ClassFileConstants.AccAbstract) != 0) {
-			int incompatibleWithAbstract = ClassFileConstants.AccPrivate | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccSynchronized | ClassFileConstants.AccNative | ClassFileConstants.AccStrictfp;
+			int incompatibleWithAbstract = ClassFileConstants.AccPrivate | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccNative | ClassFileConstants.AccStrictfp;
 			if ((modifiers & incompatibleWithAbstract) != 0)
 				problemReporter().illegalAbstractModifierCombinationForMethod(declaringClass, (AbstractMethodDeclaration) referenceContext);
 			if (!methodBinding.declaringClass.isAbstract())

@@ -13,12 +13,11 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 
 public final class ArrayBinding extends ReferenceBinding {
 	// creation and initialization of the length field
 	// the declaringClass of this field is intentionally set to null so it can be distinguished.
-	public static final FieldBinding ArrayLength = new FieldBinding(TypeConstants.LENGTH, TypeBinding.INT, ClassFileConstants.AccPublic | ClassFileConstants.AccFinal, null, Constant.NotAConstant);
+	public static final FieldBinding ArrayLength = new FieldBinding(TypeConstants.LENGTH, TypeBinding.INT, ClassFileConstants.AccPublic | ClassFileConstants.AccFinal, null);
 
 	public TypeBinding leafComponentType;
 	public int dimensions;
@@ -91,7 +90,7 @@ public char[] genericTypeSignature() {
     if (this.genericTypeSignature == null) {
 		char[] brackets = new char[dimensions];
 		for (int i = dimensions - 1; i >= 0; i--) brackets[i] = '[';
-		this.genericTypeSignature = CharOperation.concat(brackets, leafComponentType.genericTypeSignature());
+		this.genericTypeSignature = CharOperation.concat(brackets, leafComponentType.signature());
     }
     return this.genericTypeSignature;
 }
@@ -131,8 +130,6 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 	//However, if it did, the type checking support would go here.
 	switch (otherType.leafComponentType().id) {
 	    case TypeIds.T_JavaLangObject :
-	    case TypeIds.T_JavaLangCloneable :
-	    case TypeIds.T_JavaIoSerializable :
 	        return true;
 	}
 	return false;

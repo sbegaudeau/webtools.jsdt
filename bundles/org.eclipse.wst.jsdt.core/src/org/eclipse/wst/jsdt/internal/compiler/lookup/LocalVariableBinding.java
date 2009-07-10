@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 
 public class LocalVariableBinding extends VariableBinding {
@@ -37,7 +36,7 @@ public class LocalVariableBinding extends VariableBinding {
 	// if declaration slot is not positionned, the variable will not be listed in attribute
 	// note that the name of a variable should be chosen so as not to conflict with user ones (usually starting with a space char is all needed)
 	public LocalVariableBinding(char[] name, TypeBinding type, int modifiers, boolean isArgument) {
-		super(name, type, modifiers, isArgument ? Constant.NotAConstant : null);
+		super(name, type, modifiers);
 		if (isArgument) this.tagBits |= TagBits.IsArgument;
 	}
 

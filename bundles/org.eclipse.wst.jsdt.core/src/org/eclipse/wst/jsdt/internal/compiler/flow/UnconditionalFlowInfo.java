@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.flow;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -708,8 +707,7 @@ final public boolean isDefinitelyNonNull(LocalVariableBinding local) {
 			(this.tagBits & NULL_FLAG_MASK) == 0) {
 		return false;
 	}
-	if ((local.type.tagBits & TagBits.IsBaseType) != 0 ||
-			local.constant() != Constant.NotAConstant) { // String instances
+	if ((local.type.tagBits & TagBits.IsBaseType) != 0) { // String instances
 		return true;
 	}
 	int position =  getLocalID(local);
@@ -810,10 +808,6 @@ final public boolean isPotentiallyAssigned(FieldBinding field) {
 }
 
 final public boolean isPotentiallyAssigned(LocalVariableBinding local) {
-	// final constants are inlined, and thus considered as always initialized
-	if (local.constant() != Constant.NotAConstant) {
-		return true;
-	}
 	return isPotentiallyAssigned( getLocalID(local));
 }
 

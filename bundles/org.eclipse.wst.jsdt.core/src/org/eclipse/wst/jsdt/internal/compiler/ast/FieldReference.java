@@ -93,28 +93,6 @@ public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowCont
 	}
 	manageSyntheticAccessIfNecessary(currentScope, flowInfo, false /*write-access*/);
 
-	// check if assigning a final field
-	if (binding!=null && binding.isFinal()) {
-		// in a context where it can be assigned?
-		if (binding.isBlankFinal()
-			&& !isCompound
-			&& receiver.isThis()
-			&& !(receiver instanceof QualifiedThisReference)
-			&& ((receiver.bits & ParenthesizedMASK) == 0) // (this).x is forbidden
-			&& currentScope.allowBlankFinalFieldAssignment(binding)) {
-			if (flowInfo.isPotentiallyAssigned(binding)) {
-				currentScope.problemReporter().duplicateInitializationOfBlankFinalField(
-					binding,
-					this);
-			} else {
-				flowContext.recordSettingFinal(binding, this, flowInfo);
-			}
-			flowInfo.markAsDefinitelyAssigned(binding);
-		} else {
-			// assigning a final field outside an initializer or constructor or wrong reference
-			currentScope.problemReporter().cannotAssignToFinalField(binding, this);
-		}
-	}
 	return flowInfo;
 }
 
@@ -245,7 +223,7 @@ public Constant optimizedBooleanConstant() {
 	switch (this.resolvedType.id) {
 		case T_boolean :
 		case T_JavaLangBoolean :
-			return this.constant != Constant.NotAConstant ? this.constant : this.binding.constant();
+			return Constant.NotAConstant;
 		default :
 			return Constant.NotAConstant;
 	}
@@ -441,7 +419,7 @@ if( this.isPrototype() ){
 			scope.problemReporter().deprecatedField(fieldBinding, this);
 		}
 		boolean isImplicitThisRcv = receiver.isImplicitThis();
-		constant = isImplicitThisRcv ? fieldBinding.constant() : Constant.NotAConstant;
+		constant = Constant.NotAConstant;
 		if (fieldBinding.isStatic()) {
 			// static field accessed through receiver? legal but unoptimal (optional warning)
 			if (!(isImplicitThisRcv

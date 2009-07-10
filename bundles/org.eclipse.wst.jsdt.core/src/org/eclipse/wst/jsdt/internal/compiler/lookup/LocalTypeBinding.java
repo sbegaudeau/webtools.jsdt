@@ -120,7 +120,7 @@ public char[] genericTypeSignature() {
 		else
 			setConstantPoolName(sourceName());
 	}
-	return super.genericTypeSignature();
+	return super.signature();
 }
 
 public char[] readableName() /*java.lang.Object,  p.X<T> */ {

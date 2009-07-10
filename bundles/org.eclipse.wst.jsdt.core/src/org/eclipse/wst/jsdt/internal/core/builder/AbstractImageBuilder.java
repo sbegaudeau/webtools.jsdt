@@ -65,9 +65,7 @@ protected ArrayList problemSourceFiles;
 protected boolean compiledAllAtOnce;
 
 private boolean inCompiler;
-
 protected boolean keepStoringProblemMarkers;
-protected SimpleSet filesWithAnnotations = null;
 
 public static int MAX_AT_ONCE = 2000; // best compromise between space used and speed
 public final static String[] JAVA_PROBLEM_MARKER_ATTRIBUTE_NAMES = {
@@ -209,10 +207,6 @@ protected void cleanUp() {
 * if they are affected by the changes.
 */
 protected void compile(SourceFile[] units) {
-	if (this.filesWithAnnotations != null && this.filesWithAnnotations.elementSize > 0)
-		// will add files that have annotations in acceptResult() & then processAnnotations() before exitting this method
-		this.filesWithAnnotations.clear();
-
 	// notify validationParticipants which source files are about to be compiled
 	BuildContext[] participantResults = this.javaBuilder.participants == null ? null : notifyParticipants(units);
 	if (participantResults != null && participantResults.length > units.length) {

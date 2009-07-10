@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -143,7 +142,6 @@ public class Argument extends LocalDeclaration implements IArgument {
 //		resolveAnnotations(scope, this.annotations, this.binding);
 
 		scope.addLocalVariable(binding);
-		binding.setConstant(Constant.NotAConstant);
 		if (hasError) return null;
 		return exceptionType;
 	}

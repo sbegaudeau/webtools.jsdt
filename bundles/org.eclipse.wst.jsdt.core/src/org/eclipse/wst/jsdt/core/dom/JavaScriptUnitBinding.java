@@ -353,17 +353,12 @@ class JavaScriptUnitBinding implements ITypeBinding {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
 			// clear the AccAbstract, AccAnnotation and the AccInterface bits
-			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccAnnotation);
+			return accessFlags & ~(ClassFileConstants.AccAbstract);
 		} else if (isInterface()) {
 			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
 			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
 			// clear the AccAbstract and the AccInterface bits
-			return accessFlags & ~(ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface);
-		} else if (isEnum()) {
-			ReferenceBinding referenceBinding = (ReferenceBinding) this.binding;
-			final int accessFlags = referenceBinding.getAccessFlags() & VALID_MODIFIERS;
-			// clear the AccEnum bits
-			return accessFlags & ~ClassFileConstants.AccEnum;
+			return accessFlags & ~(ClassFileConstants.AccAbstract);
 		} else {
 			return 0;
 		}

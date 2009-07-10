@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,9 +45,6 @@ public PackageBinding(char[] topLevelPackageName, LookupEnvironment environment)
 
 public PackageBinding(LookupEnvironment environment) {
 	this(CharOperation.NO_CHAR_CHAR, null, environment);
-}
-private void addNotFoundPackage(char[] simpleName) {
-	knownPackages.put(simpleName, LookupEnvironment.TheNotFoundPackage);
 }
 //private void addNotFoundType(char[] simpleName) {
 //	if (knownBindings[Binding.TYPE] == null)
@@ -124,16 +121,11 @@ private PackageBinding findPackage(char[] name) {
 PackageBinding getPackage(char[] name) {
 	PackageBinding binding = getPackage0(name);
 	if (binding != null) {
-		if (binding == LookupEnvironment.TheNotFoundPackage)
-			return null;
-		else
-			return binding;
+		return binding;
 	}
 	if ((binding = findPackage(name)) != null)
 		return binding;
 
-	// not found so remember a problem package binding in the cache for future lookups
-	addNotFoundPackage(name);
 	return null;
 }
 /* Answer the subpackage named name if it exists in the cache.
@@ -250,7 +242,7 @@ public Binding getTypeOrPackage(char[] name, int mask) {
 		return typeBinding;
 
 	PackageBinding packageBinding = getPackage0(name);
-	if (packageBinding != null && packageBinding != LookupEnvironment.TheNotFoundPackage)
+	if (packageBinding != null)
 		return packageBinding;
 
 	if (typeBinding == null && mask!=Binding.PACKAGE) { // have not looked for it before
@@ -268,7 +260,6 @@ public Binding getTypeOrPackage(char[] name, int mask) {
 	if (packageBinding == null) { // have not looked for it before
 		if ((packageBinding = findPackage(name)) != null)
 			return packageBinding;
-		addNotFoundPackage(name);
 	}
 
 	return null;

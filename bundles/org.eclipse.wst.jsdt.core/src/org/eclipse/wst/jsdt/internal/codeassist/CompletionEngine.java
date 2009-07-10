@@ -1157,25 +1157,8 @@ public final class CompletionEngine
 		relevance += computeRelevanceForCaseMatching(this.completionToken, simpleTypeName);
 		relevance += computeRelevanceForExpectingType(packageName, simpleTypeName);
 		relevance += computeRelevanceForQualification(isQualified);
-
-		int kind = modifiers & (ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation);
-		switch (kind) {
-			case ClassFileConstants.AccAnnotation:
-			case ClassFileConstants.AccAnnotation | ClassFileConstants.AccInterface:
-				relevance += computeRelevanceForAnnotation();
-				relevance += computeRelevanceForInterface();
-				break;
-			case ClassFileConstants.AccEnum:
-				relevance += computeRelevanceForEnum();
-				break;
-			case ClassFileConstants.AccInterface:
-				relevance += computeRelevanceForInterface();
-				break;
-			default:
-				relevance += computeRelevanceForClass();
-				relevance += computeRelevanceForException(simpleTypeName);
-				break;
-		}
+		relevance += computeRelevanceForClass();
+		relevance += computeRelevanceForException(simpleTypeName);
 
 		this.noProposal = false;
 		if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
@@ -1820,8 +1803,7 @@ public final class CompletionEngine
 						allocExpression,
 						false);
 			}
-			if (!this.requestor.isIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION)
-					&& !ref.isFinal()){
+			if (!this.requestor.isIgnored(CompletionProposal.ANONYMOUS_CLASS_DECLARATION)){
 				findAnonymousType(
 					ref,
 					argTypes,
@@ -4315,28 +4297,19 @@ public final class CompletionEngine
 			boolean canBeMethod = true;
 			boolean canBeType = true;
 			if((modifiers & ClassFileConstants.AccNative) != 0
-				|| (modifiers & ClassFileConstants.AccStrictfp) != 0
-				|| (modifiers & ClassFileConstants.AccSynchronized) != 0) {
+				|| (modifiers & ClassFileConstants.AccStrictfp) != 0) {
 				canBeField = false;
 				canBeType = false;
 			}
 
-			if((modifiers & ClassFileConstants.AccTransient) != 0
-				|| (modifiers & ClassFileConstants.AccVolatile) != 0) {
-				canBeMethod = false;
-				canBeType = false;
-			}
 
 			if(canBeField) {
 				// transient
-				if((modifiers & ClassFileConstants.AccTransient) == 0) {
-					keywords[count++] = Keywords.TRANSIENT;
-				}
+				keywords[count++] = Keywords.TRANSIENT;
+				
 
 				// volatile
-				if((modifiers & ClassFileConstants.AccVolatile) == 0) {
-					keywords[count++] = Keywords.VOLATILE;
-				}
+				keywords[count++] = Keywords.VOLATILE;
 			}
 
 			if(canBeMethod) {
@@ -4351,9 +4324,8 @@ public final class CompletionEngine
 				}
 
 				// synchronized
-				if((modifiers & ClassFileConstants.AccSynchronized) == 0) {
-					keywords[count++] = Keywords.SYNCHRONIZED;
-				}
+				keywords[count++] = Keywords.SYNCHRONIZED;
+				
 			}
 
 			if(canBeType) {

@@ -20,10 +20,11 @@ public abstract class Binding {
 	public static final int VARIABLE = FIELD | LOCAL;
 	public static final int TYPE = ASTNode.Bit3;
 	public static final int METHOD = ASTNode.Bit4;
-	public static final int PACKAGE = ASTNode.Bit5;
+	public static final int PACKAGE = ASTNode.Bit15;
 	public static final int IMPORT = ASTNode.Bit6;
 	public static final int ARRAY_TYPE = TYPE | ASTNode.Bit7;
 	public static final int BASE_TYPE = TYPE | ASTNode.Bit8;
+	public static final int GLOBAL = ASTNode.Bit9;
 	public static final int COMPILATION_UNIT = ASTNode.Bit14;
 
 	public static final int BASIC_BINDINGS_MASK= METHOD|TYPE|VARIABLE;

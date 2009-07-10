@@ -56,7 +56,7 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 
 
 	public char[] genericTypeSignature() {
-		return functionTypeBinding.genericTypeSignature();
+		return functionTypeBinding.signature();
 	}
 
 

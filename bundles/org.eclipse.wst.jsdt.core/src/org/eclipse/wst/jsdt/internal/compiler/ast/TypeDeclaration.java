@@ -21,7 +21,6 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -744,38 +743,7 @@ public void resolve() {
 		if ((this.bits & ASTNode.UndocumentedEmptyBlock) != 0) {
 			this.scope.problemReporter().undocumentedEmptyBlock(this.bodyStart-1, this.bodyEnd);
 		}
-		boolean needSerialVersion =
-						this.scope.compilerOptions().getSeverity(CompilerOptions.MissingSerialVersion) != ProblemSeverities.Ignore
-						&& sourceType.isClass()
-						&& !sourceType.isAbstract()
-						&& sourceType.findSuperTypeErasingTo(TypeIds.T_JavaIoExternalizable, false /*Serializable is not a class*/) == null
-						&& sourceType.findSuperTypeErasingTo(TypeIds.T_JavaIoSerializable, false /*Serializable is not a class*/) != null;
 
-		if (needSerialVersion) {
-			// if Object writeReplace() throws java.io.ObjectStreamException is present, then no serialVersionUID is needed
-			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=101476
-    		CompilationUnitScope compilationUnitScope = this.scope.compilationUnitScope();
-			MethodBinding methodBinding = sourceType.getExactMethod(TypeConstants.WRITEREPLACE, new TypeBinding[0], compilationUnitScope);
-			needSerialVersion = true;
-    		if (needSerialVersion) {
-    			// check the presence of an implementation of the methods
-    			// private void writeObject(java.io.ObjectOutputStream out) throws IOException
-    			// private void readObject(java.io.ObjectInputStream out) throws IOException
-    			boolean hasWriteObjectMethod = false;
-    			boolean hasReadObjectMethod = false;
-    			TypeBinding argumentTypeBinding = this.scope.getType(TypeConstants.JAVA_IO_OBJECTOUTPUTSTREAM, 3);
-     			if (argumentTypeBinding.isValidBinding()) {
-            		methodBinding = sourceType.getExactMethod(TypeConstants.WRITEOBJECT, new TypeBinding[] { argumentTypeBinding }, compilationUnitScope);
-            		hasWriteObjectMethod = false;
-    			}
-    			argumentTypeBinding = this.scope.getType(TypeConstants.JAVA_IO_OBJECTINPUTSTREAM, 3);
-     			if (argumentTypeBinding.isValidBinding()) {
-            		methodBinding = sourceType.getExactMethod(TypeConstants.READOBJECT, new TypeBinding[] { argumentTypeBinding }, compilationUnitScope);
-            		hasReadObjectMethod = false;
-    			}
-    			needSerialVersion = !hasWriteObjectMethod || !hasReadObjectMethod;
-    		}
-		}
 		// generics (and non static generic members) cannot extend Throwable
 		if (sourceType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) != null) {
 			ReferenceBinding current = sourceType;
@@ -807,12 +775,6 @@ public void resolve() {
 							this.ignoreFurtherInvestigation = true;
 							continue;
 						}
-						if (needSerialVersion
-								&& ((fieldBinding.modifiers & (ClassFileConstants.AccStatic | ClassFileConstants.AccFinal)) == (ClassFileConstants.AccStatic | ClassFileConstants.AccFinal))
-								&& CharOperation.equals(TypeConstants.SERIALVERSIONUID, fieldBinding.name)
-								&& TypeBinding.LONG == fieldBinding.type) {
-							needSerialVersion = false;
-						}
 						this.maxFieldCount++;
 						lastVisibleFieldID = field.binding.id;
 						break;
@@ -823,9 +785,6 @@ public void resolve() {
 				}
 				field.resolve(field.isStatic() ? this.staticInitializerScope : this.initializerScope);
 			}
-		}
-		if (needSerialVersion) {
-			this.scope.problemReporter().missingSerialVersion(this);
 		}
 
 		int missingAbstractMethodslength = this.missingAbstractMethods == null ? 0 : this.missingAbstractMethods.length;

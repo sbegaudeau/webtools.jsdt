@@ -14,28 +14,25 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 
 public class FieldBinding extends VariableBinding {
 	public ReferenceBinding declaringClass;
 protected FieldBinding() {
-	super(null, null, 0, null);
+	super(null, null, 0);
 	// for creating problem field
 }
-public FieldBinding(char[] name, TypeBinding type, int modifiers, ReferenceBinding declaringClass, Constant constant) {
-	super(name, type, modifiers, constant);
+public FieldBinding(char[] name, TypeBinding type, int modifiers, ReferenceBinding declaringClass) {
+	super(name, type, modifiers);
 	this.declaringClass = declaringClass;
 }
 public FieldBinding(InferredAttribute field, TypeBinding type, int modifiers, ReferenceBinding declaringClass) {
-	this(field.name, type, modifiers, declaringClass, null);
+	this(field.name, type, modifiers, declaringClass);
 	field.binding = this; // record binding in declaration
 }
 // special API used to change field declaring class for runtime visibility check
 public FieldBinding(FieldBinding initialFieldBinding, ReferenceBinding declaringClass) {
-	super(initialFieldBinding.name, initialFieldBinding.type, initialFieldBinding.modifiers, initialFieldBinding.constant());
+	super(initialFieldBinding.name, initialFieldBinding.type, initialFieldBinding.modifiers);
 	this.declaringClass = declaringClass;
 	this.id = initialFieldBinding.id;
 }
@@ -187,38 +184,6 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	uniqueKey[index++] = ')';
 	System.arraycopy(returnTypeKey, 0, uniqueKey, index, returnTypeLength);
 	return uniqueKey;
-}
-
-public Constant constant() {
-	Constant fieldConstant = this.constant;
-	if (fieldConstant == null) {
-		if (this.isFinal()) {
-			//The field has not been yet type checked.
-			//It also means that the field is not coming from a class that
-			//has already been compiled. It can only be from a class within
-			//compilation units to process. Thus the field is NOT from a BinaryTypeBinbing
-			FieldBinding originalField = this.original();
-			if (originalField.declaringClass instanceof SourceTypeBinding) {
-				SourceTypeBinding sourceType = (SourceTypeBinding) originalField.declaringClass;
-				if (sourceType.scope != null) {
-					TypeDeclaration typeDecl = sourceType.classScope.referenceContext;
-					FieldDeclaration fieldDecl = typeDecl.declarationOf(originalField);
-					fieldDecl.resolve(originalField.isStatic() //side effect on binding
-							? typeDecl.staticInitializerScope
-							: typeDecl.initializerScope);
-					fieldConstant = originalField.constant();
-				} else {
-					fieldConstant = Constant.NotAConstant; // shouldn't occur per construction (paranoid null check)
-				}
-			} else {
-				fieldConstant = Constant.NotAConstant; // shouldn't occur per construction (paranoid null check)
-			}
-		} else {
-			fieldConstant = Constant.NotAConstant;
-		}
-		this.constant = fieldConstant;
-	}
-	return fieldConstant;
 }
 
 public final int getAccessFlags() {

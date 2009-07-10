@@ -2600,7 +2600,7 @@ protected void consumeEmptyInternalCompilationUnit() {
 		// create a fake interface declaration
 		TypeDeclaration declaration = new TypeDeclaration(compilationUnit.compilationResult);
 		declaration.name = TypeConstants.PACKAGE_INFO_NAME;
-		declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
+		declaration.modifiers = ClassFileConstants.AccDefault;
 		this.compilationUnit.types[0] = declaration;
 		declaration.javadoc = this.compilationUnit.javadoc;
 	}
@@ -3018,57 +3018,6 @@ protected void consumeEnumHeader() {
 
 	// flush the comments related to the enum header
 	this.scanner.commentPtr = -1;
-}
-protected void consumeEnumHeaderName() {
-	// EnumHeaderName ::= Modifiersopt 'enum' Identifier
-	TypeDeclaration enumDeclaration = new TypeDeclaration(this.compilationUnit.compilationResult);
-	if (this.nestedMethod[this.nestedType] == 0) {
-		if (this.nestedType != 0) {
-			enumDeclaration.bits |= ASTNode.IsMemberType;
-		}
-	} else {
-		// Record that the block has a declaration for local types
-//		markEnclosingMemberWithLocalType();
-		blockReal();
-	}
-	//highlight the name of the type
-	long pos = this.identifierPositionStack[this.identifierPtr];
-	enumDeclaration.sourceEnd = (int) pos;
-	enumDeclaration.sourceStart = (int) (pos >>> 32);
-	enumDeclaration.name = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	//compute the declaration source too
-	// 'class' and 'interface' push two int positions: the beginning of the class token and its end.
-	// we want to keep the beginning position but get rid of the end position
-	// it is only used for the ClassLiteralAccess positions.
-	enumDeclaration.declarationSourceStart = this.intStack[this.intPtr--];
-	this.intPtr--; // remove the end position of the class token
-
-	enumDeclaration.modifiersSourceStart = this.intStack[this.intPtr--];
-	enumDeclaration.modifiers = this.intStack[this.intPtr--] | ClassFileConstants.AccEnum;
-	if (enumDeclaration.modifiersSourceStart >= 0) {
-		enumDeclaration.declarationSourceStart = enumDeclaration.modifiersSourceStart;
-	}
-	this.expressionLengthPtr--;
-	
-//	if (this.currentToken == TokenNameLBRACE) {
-//		enumDeclaration.bodyStart = this.scanner.currentPosition;
-//	}
-	enumDeclaration.bodyStart = enumDeclaration.sourceEnd + 1;
-	pushOnAstStack(enumDeclaration);
-
-	this.listLength = 0; // will be updated when reading super-interfaces
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = enumDeclaration.bodyStart;
-		this.currentElement = this.currentElement.add(enumDeclaration, 0);
-		this.lastIgnoredToken = -1;
-	}
-	// javadoc
-	enumDeclaration.javadoc = this.javadoc;
-	this.javadoc = null;
 }
 protected void consumeEqualityExpression(int op) {
 	// EqualityExpression ::= EqualityExpression '==' RelationalExpression
@@ -3510,61 +3459,6 @@ protected void consumeInterfaceHeader() {
 	}
 	// flush the comments related to the interface header
 	this.scanner.commentPtr = -1;
-}
-protected void consumeInterfaceHeaderName1() {
-	// InterfaceHeaderName ::= Modifiersopt 'interface' 'Identifier'
-	TypeDeclaration typeDecl = new TypeDeclaration(this.compilationUnit.compilationResult);
-
-	if (this.nestedMethod[this.nestedType] == 0) {
-		if (this.nestedType != 0) {
-			typeDecl.bits |= ASTNode.IsMemberType;
-		}
-	} else {
-		// Record that the block has a declaration for local types
-		typeDecl.bits |= ASTNode.IsLocalType;
-		markEnclosingMemberWithLocalType();
-		blockReal();
-	}
-
-	//highlight the name of the type
-	long pos = this.identifierPositionStack[this.identifierPtr];
-	typeDecl.sourceEnd = (int) pos;
-	typeDecl.sourceStart = (int) (pos >>> 32);
-	typeDecl.name = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	//compute the declaration source too
-	// 'class' and 'interface' push two int positions: the beginning of the class token and its end.
-	// we want to keep the beginning position but get rid of the end position
-	// it is only used for the ClassLiteralAccess positions.
-	typeDecl.declarationSourceStart = this.intStack[this.intPtr--];
-	this.intPtr--; // remove the end position of the class token
-	typeDecl.modifiersSourceStart = this.intStack[this.intPtr--];
-	typeDecl.modifiers = this.intStack[this.intPtr--] | ClassFileConstants.AccInterface;
-	if (typeDecl.modifiersSourceStart >= 0) {
-		typeDecl.declarationSourceStart = typeDecl.modifiersSourceStart;
-	}
-
-	// Store secondary info
-	if ((typeDecl.bits & ASTNode.IsMemberType) == 0 && (typeDecl.bits & ASTNode.IsLocalType) == 0) {
-		if (this.compilationUnit != null && !CharOperation.equals(typeDecl.name, this.compilationUnit.getMainTypeName())) {
-			typeDecl.bits |= ASTNode.IsSecondaryType;
-		}
-	}
-	this.expressionLengthPtr--;
-	
-	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
-	pushOnAstStack(typeDecl);
-	this.listLength = 0; // will be updated when reading super-interfaces
-	// recovery
-	if (this.currentElement != null){ // is recovering
-		this.lastCheckPoint = typeDecl.bodyStart;
-		this.currentElement = this.currentElement.add(typeDecl, 0);
-		this.lastIgnoredToken = -1;
-	}
-	// javadoc
-	typeDecl.javadoc = this.javadoc;
-	this.javadoc = null;
 }
 protected void consumeInterfaceMemberDeclarations() {
 	// InterfaceMemberDeclarations ::= InterfaceMemberDeclarations InterfaceMemberDeclaration
@@ -6148,11 +6042,9 @@ protected void consumeToken(int type) {
 			pushOnExpressionStackLengthStack(0);
 			break;
 		case TokenNametransient :
-			checkAndSetModifiers(ClassFileConstants.AccTransient);
 			pushOnExpressionStackLengthStack(0);
 			break;
 		case TokenNamevolatile :
-			checkAndSetModifiers(ClassFileConstants.AccVolatile);
 			pushOnExpressionStackLengthStack(0);
 			break;
 		case TokenNamestatic :

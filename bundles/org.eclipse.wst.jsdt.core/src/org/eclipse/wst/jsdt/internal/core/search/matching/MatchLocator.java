@@ -47,7 +47,6 @@ import org.eclipse.wst.jsdt.core.search.LocalVariableDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.LocalVariableReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.MethodReferenceMatch;
-import org.eclipse.wst.jsdt.core.search.PackageDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.PackageReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
@@ -1302,75 +1301,6 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 		this.bindings = null;
 	}
 }
-/**
- * Locates the package declarations corresponding to this locator's pattern.
- */
-public void locatePackageDeclarations(SearchParticipant participant) throws CoreException {
-	locatePackageDeclarations(this.pattern, participant);
-}
-/**
- * Locates the package declarations corresponding to the search pattern.
- */
-protected void locatePackageDeclarations(SearchPattern searchPattern, SearchParticipant participant) throws CoreException {
-	if (searchPattern instanceof OrPattern) {
-		SearchPattern[] patterns = ((OrPattern) searchPattern).patterns;
-		for (int i = 0, length = patterns.length; i < length; i++)
-			locatePackageDeclarations(patterns[i], participant);
-	} else if (searchPattern instanceof PackageDeclarationPattern) {
-		IJavaScriptElement focus = ((InternalSearchPattern) searchPattern).focus;
-		if (focus != null) {
-			if (encloses(focus)) {
-				SearchMatch match = new PackageDeclarationMatch(focus.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT), SearchMatch.A_ACCURATE, -1, -1, participant, focus.getResource());
-				report(match);
-			}
-			return;
-		}
-		PackageDeclarationPattern pkgPattern = (PackageDeclarationPattern) searchPattern;
-		boolean isWorkspaceScope = this.scope == JavaModelManager.getJavaModelManager().getWorkspaceScope();
-		IPath[] scopeProjectsAndJars =  isWorkspaceScope ? null : this.scope.enclosingProjectsAndJars();
-		int scopeLength = isWorkspaceScope ? 0 : scopeProjectsAndJars.length;
-		IJavaScriptProject[] projects = JavaModelManager.getJavaModelManager().getJavaModel().getJavaScriptProjects();
-		SimpleSet packages = new SimpleSet();
-		for (int i = 0, length = projects.length; i < length; i++) {
-			IJavaScriptProject javaProject = projects[i];
-			// Verify that project belongs to the scope
-			if (!isWorkspaceScope) {
-				boolean found = false;
-				for (int j=0; j<scopeLength; j++) {
-					if (javaProject.getPath().equals(scopeProjectsAndJars[j])) {
-						found = true;
-						break;
-					}
-				}
-				if (!found) continue;
-			}
-			// Get all project package fragment names
-			this.nameLookup = ((JavaProject) projects[i]).newNameLookup(this.workingCopies);
-			IPackageFragment[] packageFragments = this.nameLookup.findPackageFragments(new String(pkgPattern.pkgName), true, true);
-			int pLength = packageFragments == null ? 0 : packageFragments.length;
-			// Report matches avoiding duplicate names
-			for (int p=0; p<pLength; p++) {
-				IPackageFragment fragment = packageFragments[p];
-				if (packages.addIfNotIncluded(fragment) == null) continue;
-				if (encloses(fragment)) {
-					IResource resource = fragment.getResource();
-					if (resource == null) // case of a file in an external jar
-						resource = javaProject.getProject();
-					try {
-						if (encloses(fragment)) {
-							SearchMatch match = new PackageDeclarationMatch(fragment, SearchMatch.A_ACCURATE, -1, -1, participant, resource);
-							report(match);
-						}
-					} catch (JavaScriptModelException e) {
-						throw e;
-					} catch (CoreException e) {
-						throw new JavaScriptModelException(e);
-					}
-				}
-			}
-		}
-	}
-}
 //*/
 protected IType lookupType(ReferenceBinding typeBinding) {
 	if (typeBinding == null) return null;
@@ -1431,8 +1361,6 @@ public SearchMatch newDeclarationMatch(
 		SearchParticipant participant,
 		IResource resource) {
 	switch (element.getElementType()) {
-		case IJavaScriptElement.PACKAGE_FRAGMENT:
-			return new PackageDeclarationMatch(element, accuracy, offset, length, participant, resource);
 		case IJavaScriptElement.TYPE:
 			return new TypeDeclarationMatch(binding == null ? element : ((JavaElement) element).resolved(binding), accuracy, offset, length, participant, resource);
 		case IJavaScriptElement.FIELD:
@@ -1441,8 +1369,6 @@ public SearchMatch newDeclarationMatch(
 			return new MethodDeclarationMatch(binding == null ? element : ((JavaElement) element).resolved(binding), accuracy, offset, length, participant, resource);
 		case IJavaScriptElement.LOCAL_VARIABLE:
 			return new LocalVariableDeclarationMatch(element, accuracy, offset, length, participant, resource);
-		case IJavaScriptElement.PACKAGE_DECLARATION:
-			return new PackageDeclarationMatch(element, accuracy, offset, length, participant, resource);
 		default:
 			return null;
 	}

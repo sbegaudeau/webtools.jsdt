@@ -255,14 +255,10 @@ public class SourceTypeConverter {
 		field.declarationSourceStart = fieldInfo.getDeclarationSourceStart();
 		field.declarationSourceEnd = fieldInfo.getDeclarationSourceEnd();
 		int modifiers = fieldInfo.getModifiers();
-		boolean isEnumConstant = (modifiers & ClassFileConstants.AccEnum) != 0;
-		if (isEnumConstant) {
-			field.modifiers = modifiers & ~ClassFileConstants.AccEnum; // clear AccEnum bit onto AST (binding will add it)
-		} else {
-			field.modifiers = modifiers;
-			field.type = createTypeReference(fieldInfo.getTypeName(), start, end);
-		}
 
+		field.modifiers = modifiers;
+		field.type = createTypeReference(fieldInfo.getTypeName(), start, end);
+		
 		/* conversion of field constant */
 		if ((this.flags & FIELD_INITIALIZATION) != 0) {
 			char[] initializationSource = fieldInfo.getInitializationSource();
@@ -279,14 +275,14 @@ public class SourceTypeConverter {
 			IJavaScriptElement[] children = fieldInfo.getChildren();
 			int childrenLength = children.length;
 			if (childrenLength == 1) {
-				field.initialization = convert(children[0], isEnumConstant ? field : null, compilationResult);
+				field.initialization = convert(children[0], null, compilationResult);
 			} else if (childrenLength > 1) {
 				ArrayInitializer initializer = new ArrayInitializer();
 				field.initialization = initializer;
 				Expression[] expressions = new Expression[childrenLength];
 				initializer.expressions = expressions;
 				for (int i = 0; i < childrenLength; i++) {
-					expressions[i] = convert(children[i], isEnumConstant ? field : null, compilationResult);
+					expressions[i] = convert(children[i], null, compilationResult);
 				}
 			}
 		}
@@ -300,7 +296,6 @@ public class SourceTypeConverter {
 		anonymousLocalTypeDeclaration.superclass = null;
 		anonymousLocalTypeDeclaration.allocation = expression;
 		if (enumConstant != null) {
-			anonymousLocalTypeDeclaration.modifiers &= ~ClassFileConstants.AccEnum;
 			expression.type = null;
 		}
 		return expression;

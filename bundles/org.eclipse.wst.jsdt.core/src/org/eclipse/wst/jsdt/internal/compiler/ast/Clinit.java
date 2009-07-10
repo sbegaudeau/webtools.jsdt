@@ -59,18 +59,7 @@ public class Clinit extends AbstractMethodDeclaration  {
 
 			// check missing blank final field initializations
 			flowInfo = flowInfo.mergedWith(staticInitializerFlowContext.initsOnReturn);
-			FieldBinding[] fields = scope.enclosingSourceType().fields();
-			for (int i = 0, count = fields.length; i < count; i++) {
-				FieldBinding field;
-				if ((field = fields[i]).isStatic()
-					&& field.isFinal()
-					&& (!flowInfo.isDefinitelyAssigned(fields[i]))) {
-					scope.problemReporter().uninitializedBlankFinalField(
-						field,
-						scope.referenceType().declarationOf(field.original()));
-					// can complain against the field decl, since only one <clinit>
-				}
-			}
+			
 			// check static initializers thrown exceptions
 			staticInitializerFlowContext.checkInitializerExceptions(
 				scope,

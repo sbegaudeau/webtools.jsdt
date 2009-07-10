@@ -170,7 +170,7 @@ public MethodBinding[] availableMethods() {
 /* Answer true if the receiver can be instantiated
 */
 public boolean canBeInstantiated() {
-	return (this.modifiers & (ClassFileConstants.AccAbstract | ClassFileConstants.AccInterface | ClassFileConstants.AccEnum | ClassFileConstants.AccAnnotation)) == 0;
+	return (this.modifiers & (ClassFileConstants.AccAbstract)) == 0;
 }
 /* Answer true if the receiver is visible to the invocationPackage.
 */
@@ -188,28 +188,6 @@ public final boolean canBeSeenBy(ReferenceBinding receiverType, ReferenceBinding
 	if (isPublic()) return true;
 
 	if (invocationType == this && invocationType == receiverType) return true;
-
-	if (isProtected()) {
-		// answer true if the invocationType is the declaringClass or they are in the same package
-		// OR the invocationType is a subclass of the declaringClass
-		//    AND the invocationType is the invocationType or its subclass
-		//    OR the type is a static method accessed directly through a type
-		//    OR previous assertions are true for one of the enclosing type
-		if (invocationType == this) return true;
-		if (invocationType.fPackage == this.fPackage) return true;
-
-		ReferenceBinding currentType = invocationType;
-		ReferenceBinding declaringClass = enclosingType(); // protected types always have an enclosing one
-		if (declaringClass == invocationType) return true;
-		if (declaringClass == null) return false; // could be null if incorrect top-level protected type
-		//int depth = 0;
-		do {
-			if (currentType.findSuperTypeWithSameErasure(declaringClass) != null) return true;
-			//depth++;
-			currentType = currentType.enclosingType();
-		} while (currentType != null);
-		return false;
-	}
 
 	if (isPrivate()) {
 		// answer true if the receiverType is the receiver or its enclosingType
@@ -264,26 +242,6 @@ public final boolean canBeSeenBy(Scope scope) {
 	if (invocationType == null) // static import call
 		return !isPrivate() && scope.getCurrentPackage() == this.fPackage;
 
-	if (isProtected()) {
-		// answer true if the invocationType is the declaringClass or they are in the same package
-		// OR the invocationType is a subclass of the declaringClass
-		//    AND the invocationType is the invocationType or its subclass
-		//    OR the type is a static method accessed directly through a type
-		//    OR previous assertions are true for one of the enclosing type
-		if (invocationType.fPackage == this.fPackage) return true;
-
-		ReferenceBinding currentType = invocationType;
-		ReferenceBinding declaringClass = enclosingType(); // protected types always have an enclosing one
-		if (declaringClass == null) return false; // could be null if incorrect top-level protected type
-		// int depth = 0;
-		do {
-			if (declaringClass == invocationType) return true;
-			if (declaringClass.isSuperclassOf(currentType)) return true;
-			// depth++;
-			currentType = currentType.enclosingType();
-		} while (currentType != null);
-		return false;
-	}
 	if (isPrivate()) {
 		// answer true if the receiver and the invocationType have a common enclosingType
 		// already know they are not the identical type
@@ -469,7 +427,7 @@ public void computeId() {
  */
 public char[] computeUniqueKey(boolean isLeaf) {
 	if (!isLeaf) return signature();
-	return genericTypeSignature();
+	return signature();
 }
 /* Answer the receiver's constant pool name.
 *
@@ -613,7 +571,7 @@ public final boolean isBinaryBinding() {
 }
 
 public boolean isClass() {
-	return (this.modifiers & (ClassFileConstants.AccInterface | ClassFileConstants.AccAnnotation | ClassFileConstants.AccEnum)) == 0;
+	return true;
 }
 
 /**
@@ -690,13 +648,6 @@ public final boolean isDeprecated() {
 }
 
 /**
- * Answer true if the receiver is final and cannot be subclassed
- */
-public final boolean isFinal() {
-	return (this.modifiers & ClassFileConstants.AccFinal) != 0;
-}
-
-/**
  * Returns true if the type hierarchy is being connected
  */
 public boolean isHierarchyBeingConnected() {
@@ -711,13 +662,6 @@ public final boolean isPrivate() {
 }
 
 /**
- * Answer true if the receiver has protected visibility
- */
-public final boolean isProtected() {
-	return (this.modifiers & ClassFileConstants.AccProtected) != 0;
-}
-
-/**
  * Answer true if the receiver has public visibility
  */
 public final boolean isPublic() {
@@ -728,7 +672,7 @@ public final boolean isPublic() {
  * Answer true if the receiver is a static member type (or toplevel)
  */
 public final boolean isStatic() {
-	return (this.modifiers & (ClassFileConstants.AccStatic | ClassFileConstants.AccInterface)) != 0 || (this.tagBits & TagBits.IsNestedType) == 0;
+	return (this.modifiers & (ClassFileConstants.AccStatic)) != 0 || (this.tagBits & TagBits.IsNestedType) == 0;
 }
 /**
  * Answer true if all float operations must adher to IEEE 754 float/double rules

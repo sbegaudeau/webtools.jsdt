@@ -223,7 +223,6 @@ void cachePartsFrom(ISourceType binaryType, boolean needFieldsAndMethods) {
 			wrapper.start++; // skip '<'
 			wrapper.start++; // skip '>'
 			this.tagBits |=  TagBits.HasUnresolvedTypeVariables;
-			this.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 		}
 
 		// attempt to find the superclass if it exists in the cache (otherwise - resolve it when requested)
@@ -263,8 +262,7 @@ private void createFields(ISourceField[] iFields, long sourceLevel) {
 						((SourceField)binaryField).getElementName ().toCharArray(),
 						type,
 						binaryField.getModifiers() | ExtraCompilerModifiers.AccUnresolved,
-						this,
-						null);//binaryField.getConstant());
+						this);
 //				if (firstAnnotatedFieldIndex < 0
 //						&& this.environment.globalOptions.storeAnnotations
 //						&& binaryField.getAnnotations() != null) {
@@ -277,8 +275,6 @@ private void createFields(ISourceField[] iFields, long sourceLevel) {
 					field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 				if (hasRestrictedAccess)
 					field.modifiers |= ExtraCompilerModifiers.AccRestrictedAccess;
-				if (fieldSignature != null)
-					field.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 				this.fields[i] = field;
 			}
 			// second pass for reifying annotations, since may refer to fields being constructed (147875)
@@ -439,14 +435,7 @@ private void createMethods(ISourceMethod[] iMethods, long sourceLevel) {
 			&& this.environment.globalOptions.complianceLevel >= ClassFileConstants.JDK1_5;
 		for (int i = total; --i >= 0;) {
 			ISourceMethod method = iMethods[i];
-			if ((method.getModifiers() & ClassFileConstants.AccSynthetic) != 0) {
-				if (keepBridgeMethods && (method.getModifiers() & ClassFileConstants.AccBridge) != 0)
-					continue; // want to see bridge methods as real methods
-				// discard synthetics methods
-				if (toSkip == null) toSkip = new int[iMethods.length];
-				toSkip[i] = -1;
-				total--;
-			} else if (iClinit == -1) {
+			if (iClinit == -1) {
 				char[] methodName =((SourceMethod)method).getElementName().toCharArray();
 				if (methodName.length == 8 && methodName[0] == '<') {
 					// discard <clinit>
@@ -732,11 +721,9 @@ public String toString() {
 
 	if (isDeprecated()) buffer.append("deprecated "); //$NON-NLS-1$
 	if (isPublic()) buffer.append("public "); //$NON-NLS-1$
-	if (isProtected()) buffer.append("protected "); //$NON-NLS-1$
 	if (isPrivate()) buffer.append("private "); //$NON-NLS-1$
 	if (isAbstract() && isClass()) buffer.append("abstract "); //$NON-NLS-1$
 	if (isStatic() && isNestedType()) buffer.append("static "); //$NON-NLS-1$
-	if (isFinal()) buffer.append("final "); //$NON-NLS-1$
 
 	if (isClass()) buffer.append("class "); //$NON-NLS-1$
 	else buffer.append("interface "); //$NON-NLS-1$

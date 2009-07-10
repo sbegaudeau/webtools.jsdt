@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
-import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.CompoundNameVector;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -81,7 +80,6 @@ class DeclarationVisitor extends ASTVisitor
 		LocalVariableBinding binding = new LocalVariableBinding(localDeclaration, type, 0, false);
 		localDeclaration.binding=binding;
 		addLocalVariable(binding);
-		binding.setConstant(Constant.NotAConstant);
 		return false;
 	}
 

@@ -46,7 +46,7 @@ public MetatdataTypeBinding(char[][] compoundName, PackageBinding fPackage, Clas
   
 
 private void buildFields() {
-	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, TypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this,null);
+	FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE, TypeBinding.UNKNOWN, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
 	Property[] classFields = this.classData.getFields();
 	int size = classFields.length;
 	if (size == 0) {
@@ -68,7 +68,7 @@ private void buildFields() {
 			modifiers|=ClassFileConstants.AccStatic;
 			TypeBinding fieldTypeBinding = libraryScope.resolveType(field.dataType);
 			
-			FieldBinding fieldBinding = new  FieldBinding(fieldName, fieldTypeBinding, modifiers | ExtraCompilerModifiers.AccUnresolved, this, null);
+			FieldBinding fieldBinding = new  FieldBinding(fieldName, fieldTypeBinding, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
 			fieldBinding.id = count;
 			// field's type will be resolved when needed for top level types
 //			checkAndSetModifiersForField(fieldBinding, field);
@@ -816,8 +816,6 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 				foundArgProblem = true;
 			} else {
 				TypeBinding leafType = parameterType.leafComponentType();
-			    if (leafType instanceof ReferenceBinding && (((ReferenceBinding) leafType).modifiers & ExtraCompilerModifiers.AccGenericSignature) != 0)
-					method.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 				newParameters[i] = parameterType;
 			}
 		}
@@ -870,11 +868,9 @@ public String toString() {
     buffer.append(")\n"); //$NON-NLS-1$
 	if (isDeprecated()) buffer.append("deprecated "); //$NON-NLS-1$
 	if (isPublic()) buffer.append("public "); //$NON-NLS-1$
-	if (isProtected()) buffer.append("protected "); //$NON-NLS-1$
 	if (isPrivate()) buffer.append("private "); //$NON-NLS-1$
 	if (isAbstract() && isClass()) buffer.append("abstract "); //$NON-NLS-1$
 	if (isStatic() && isNestedType()) buffer.append("static "); //$NON-NLS-1$
-	if (isFinal()) buffer.append("final "); //$NON-NLS-1$
 
 	if (isClass()) buffer.append("class "); //$NON-NLS-1$
 	else buffer.append("interface "); //$NON-NLS-1$

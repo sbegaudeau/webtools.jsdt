@@ -34,7 +34,6 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 	final static int BUILD_TYPE_HIERARCHY = 1;
 	final static int CHECK_AND_SET_IMPORTS = 2;
 	final static int CONNECT_TYPE_HIERARCHY = 3;
-	static final ProblemPackageBinding TheNotFoundPackage = new ProblemPackageBinding(CharOperation.NO_CHAR, NotFound);
 	static final ProblemReferenceBinding TheNotFoundType = new ProblemReferenceBinding(CharOperation.NO_CHAR, null, NotFound);
 
 	/**
@@ -178,6 +177,9 @@ void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int m
 
 }
 
+Binding askForBinding(GlobalBinding globalBinding, char[] name, int mask) {
+	return null;
+}
 Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	if (packageBinding == null) {
 		if (defaultPackage == null)
@@ -522,7 +524,7 @@ public BinaryTypeBinding createBinaryTypeFrom(ISourceType binaryType, PackageBin
 
 public PackageBinding createPackage(char[][] compoundName) {
 	PackageBinding packageBinding = getPackage0(compoundName[0]);
-	if (packageBinding == null || packageBinding == TheNotFoundPackage) {
+	if (packageBinding == null) {
 		packageBinding = new PackageBinding(compoundName[0], this);
 		//knownPackages.put(compoundName[0], packageBinding);
 
@@ -541,7 +543,7 @@ public PackageBinding createPackage(char[][] compoundName) {
 			return null;
 
 		PackageBinding parent = packageBinding;
-		if ((packageBinding = parent.getPackage0(compoundName[i])) == null || packageBinding == TheNotFoundPackage) {
+		if ((packageBinding = parent.getPackage0(compoundName[i])) == null) {
 			// if the package is unknown, check to see if a type exists which would collide with the new package
 			// catches the case of a package statement of: package java.lang.Object;
 			// since the package can be added after a set of source files have already been compiled,
@@ -580,11 +582,11 @@ public ReferenceBinding getCachedType(char[][] compoundName) {
 	}
 
 	PackageBinding packageBinding = getPackage0(compoundName[0]);
-	if (packageBinding == null || packageBinding == TheNotFoundPackage)
+	if (packageBinding == null)
 		return null;
 
 	for (int i = 1, packageLength = compoundName.length - 1; i < packageLength; i++)
-		if ((packageBinding = packageBinding.getPackage0(compoundName[i])) == null || packageBinding == TheNotFoundPackage)
+		if ((packageBinding = packageBinding.getPackage0(compoundName[i])) == null)
 			return null;
 	return packageBinding.getType0(compoundName[compoundName.length - 1]);
 }
@@ -628,8 +630,6 @@ PackageBinding getTopLevelPackage(char[] name) {
 //}
 	PackageBinding packageBinding = getPackage0(name);
 	if (packageBinding != null) {
-		if (packageBinding == TheNotFoundPackage)
-			return null;
 		return packageBinding;
 	}
 
@@ -638,7 +638,6 @@ PackageBinding getTopLevelPackage(char[] name) {
 		return packageBinding;
 	}
 
-	knownPackages.put(name, TheNotFoundPackage); // saves asking the oracle next time
 	return null;
 }
 /* Answer the type corresponding to the compoundName.
@@ -655,21 +654,17 @@ public ReferenceBinding getType(char[][] compoundName) {
 
 		if ((referenceBinding = defaultPackage.getType0(compoundName[0])) == null) {
 			PackageBinding packageBinding = getPackage0(compoundName[0]);
-			if (packageBinding != null && packageBinding != TheNotFoundPackage)
+			if (packageBinding != null)
 				return null; // collides with a known package... should not call this method in such a case
 			referenceBinding = askForType(defaultPackage, compoundName[0]);
 		}
 	} else {
 		PackageBinding packageBinding = getPackage0(compoundName[0]);
-		if (packageBinding == TheNotFoundPackage)
-			return null;
 
 		if (packageBinding != null) {
 			for (int i = 1, packageLength = compoundName.length - 1; i < packageLength; i++) {
 				if ((packageBinding = packageBinding.getPackage0(compoundName[i])) == null)
 					break;
-				if (packageBinding == TheNotFoundPackage)
-					return null;
 			}
 		}
 

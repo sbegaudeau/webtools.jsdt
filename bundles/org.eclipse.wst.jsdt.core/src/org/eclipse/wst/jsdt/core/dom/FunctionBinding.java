@@ -207,9 +207,9 @@ class FunctionBinding implements IFunctionBinding {
 			int declaringIndex = isInnerBinaryTypeConstructor ? 1 : 0;
 			String[] parameterSignatures = new String[declaringIndex + length];
 			if (isInnerBinaryTypeConstructor)
-				parameterSignatures[0] = new String(enclosingType.genericTypeSignature()).replace('/', '.');
+				parameterSignatures[0] = new String(enclosingType.signature()).replace('/', '.');
 			for (int i = 0;  i < length; i++) {
-				parameterSignatures[declaringIndex + i] = new String(parameters[i].genericTypeSignature()).replace('/', '.');
+				parameterSignatures[declaringIndex + i] = new String(parameters[i].signature()).replace('/', '.');
 			}
 			IFunction result = declaringType.getFunction(selector, parameterSignatures);
 			if (isBinary)

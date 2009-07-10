@@ -465,12 +465,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 			output.append("static "); //$NON-NLS-1$
 		if ((modifiers & ClassFileConstants.AccFinal) != 0)
 			output.append("final "); //$NON-NLS-1$
-		if ((modifiers & ClassFileConstants.AccSynchronized) != 0)
-			output.append("synchronized "); //$NON-NLS-1$
-		if ((modifiers & ClassFileConstants.AccVolatile) != 0)
-			output.append("volatile "); //$NON-NLS-1$
-		if ((modifiers & ClassFileConstants.AccTransient) != 0)
-			output.append("transient "); //$NON-NLS-1$
 		if ((modifiers & ClassFileConstants.AccNative) != 0)
 			output.append("native "); //$NON-NLS-1$
 		if ((modifiers & ClassFileConstants.AccAbstract) != 0)

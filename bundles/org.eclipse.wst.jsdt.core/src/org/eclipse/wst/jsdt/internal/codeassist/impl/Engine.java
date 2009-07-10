@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportConflictBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
@@ -333,12 +332,10 @@ public abstract class Engine implements ITypeRequestor {
 		char[] result = null;
 		if ((binding.kind() & Binding.TYPE) != 0 || (binding.kind() & Binding.COMPILATION_UNIT) != 0) {
 			TypeBinding typeBinding = (TypeBinding)binding;
-			result = typeBinding.genericTypeSignature();
+			result = typeBinding.signature();
 		} else if ((binding.kind() & Binding.METHOD) != 0) {
 			MethodBinding methodBinding = (MethodBinding)binding;
 			int oldMod = methodBinding.modifiers;
-			//TODO remove the next line when method from binary type will be able to generate generic siganute
-			methodBinding.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
 			result = methodBinding.signature();
 			methodBinding.modifiers = oldMod;
 		}

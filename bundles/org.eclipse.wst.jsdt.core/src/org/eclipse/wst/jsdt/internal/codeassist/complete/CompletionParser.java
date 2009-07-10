@@ -1693,7 +1693,7 @@ protected void consumeCompilationUnit() {
 			this.compilationUnit.types = new TypeDeclaration[1];
 			TypeDeclaration declaration = new TypeDeclaration(compilationUnit.compilationResult);
 			declaration.name = FAKE_TYPE_NAME;
-			declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
+			declaration.modifiers = ClassFileConstants.AccDefault;
 			this.compilationUnit.types[0] = declaration;
 		}
 	}
@@ -1807,9 +1807,6 @@ protected void consumeEnterVariable() {
 			}
 		}
 	}
-}
-protected void consumeEnumHeaderName() {
-	super.consumeEnumHeaderName();
 }
 protected void consumeEqualityExpression(int op) {
 	super.consumeEqualityExpression(op);
@@ -2001,11 +1998,6 @@ protected void consumeInstanceOfExpressionWithName() {
 	if(assistNode != null && exp.type == assistNode) {
 		assistNodeParent = exp;
 	}
-}
-protected void consumeInterfaceHeaderName1() {
-	super.consumeInterfaceHeaderName1();
-
-	classHeaderExtendsOrImplements(true);
 }
 protected void consumeInterfaceType() {
 	pushOnElementStack(K_NEXT_TYPEREF_IS_INTERFACE);

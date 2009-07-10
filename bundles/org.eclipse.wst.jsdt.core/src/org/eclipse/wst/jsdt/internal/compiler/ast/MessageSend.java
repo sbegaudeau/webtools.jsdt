@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -429,18 +428,12 @@ public TypeBinding resolveType(BlockScope scope) {
 	if (isMethodUseDeprecated(binding, scope, true))
 		scope.problemReporter().deprecatedMethod(binding, this);
 
-	// from 1.5 compliance on, array#clone() returns the array type (but binding still shows Object)
-	if (actualReceiverType!=null && actualReceiverType.isArrayType()
-			&& this.binding.parameters == Binding.NO_PARAMETERS
-			&& compilerOptions.complianceLevel >= ClassFileConstants.JDK1_5
-			&& CharOperation.equals(this.binding.selector, CLONE)) {
-		this.resolvedType = actualReceiverType;
-	} else {
-		TypeBinding returnType = this.binding.returnType;
-		if (returnType == null)
-			returnType=TypeBinding.UNKNOWN;
-		this.resolvedType = returnType;
-	}
+	
+	TypeBinding returnType = this.binding.returnType;
+	if (returnType == null)
+		returnType=TypeBinding.UNKNOWN;
+	this.resolvedType = returnType;
+	
 	if (receiver!=null && receiver.isSuper() && compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {
 		final ReferenceContext referenceContext = scope.methodScope().referenceContext;
 		if (referenceContext instanceof AbstractMethodDeclaration) {

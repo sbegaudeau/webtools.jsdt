@@ -73,88 +73,6 @@ public void build() {
 	}
 }
 
-
-//protected void cleanOutputFolders(boolean copyBack) throws CoreException {
-//	boolean deleteAll = JavaScriptCore.CLEAN.equals(
-//		javaBuilder.javaProject.getOption(JavaScriptCore.CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER, true));
-//	if (deleteAll) {
-//		if (this.javaBuilder.participants != null)
-//			for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++)
-//				this.javaBuilder.participants[i].cleanStarting(this.javaBuilder.javaProject);
-//
-//		ArrayList visited = new ArrayList(sourceLocations.length);
-//		for (int i = 0, l = sourceLocations.length; i < l; i++) {
-//			notifier.subTask(Messages.bind(Messages.build_cleaningOutput, this.javaBuilder.currentProject.getName()));
-//			ClasspathMultiDirectory sourceLocation = sourceLocations[i];
-//			if (sourceLocation.hasIndependentOutputFolder) {
-//				IContainer outputFolder = sourceLocation.binaryFolder;
-//				if (!visited.contains(outputFolder)) {
-//					visited.add(outputFolder);
-//					IResource[] members = outputFolder.members();
-//					for (int j = 0, m = members.length; j < m; j++) {
-//						IResource member = members[j];
-//						if (!member.isDerived()) {
-//							member.accept(
-//								new IResourceVisitor() {
-//									public boolean visit(IResource resource) throws CoreException {
-//										resource.setDerived(true);
-//										return resource.getType() != IResource.FILE;
-//									}
-//								}
-//							);
-//						}
-//						member.delete(IResource.FORCE, null);
-//					}
-//				}
-//				notifier.checkCancel();
-//				if (copyBack)
-//					copyExtraResourcesBack(sourceLocation, true);
-//			} else {
-//				boolean isOutputFolder = sourceLocation.sourceFolder.equals(sourceLocation.binaryFolder);
-//				final char[][] exclusionPatterns =
-//					isOutputFolder
-//						? sourceLocation.exclusionPatterns
-//						: null; // ignore exclusionPatterns if output folder == another source folder... not this one
-//				final char[][] inclusionPatterns =
-//					isOutputFolder
-//						? sourceLocation.inclusionPatterns
-//						: null; // ignore inclusionPatterns if output folder == another source folder... not this one
-//				sourceLocation.binaryFolder.accept(
-//					new IResourceProxyVisitor() {
-//						public boolean visit(IResourceProxy proxy) throws CoreException {
-//							if (proxy.getType() == IResource.FILE) {
-//								if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
-//									IResource resource = proxy.requestResource();
-//									if (exclusionPatterns != null || inclusionPatterns != null)
-//										if (Util.isExcluded(resource.getFullPath(), inclusionPatterns, exclusionPatterns, false))
-//											return false;
-//									resource.delete(IResource.FORCE, null);
-//								}
-//								return false;
-//							}
-//							if (exclusionPatterns != null && inclusionPatterns == null) // must walk children if inclusionPatterns != null
-//								if (Util.isExcluded(proxy.requestFullPath(), null, exclusionPatterns, true))
-//									return false;
-//							notifier.checkCancel();
-//							return true;
-//						}
-//					},
-//					IResource.NONE
-//				);
-//				notifier.checkCancel();
-//			}
-//			notifier.checkCancel();
-//		}
-//	} else if (copyBack) {
-//		for (int i = 0, l = sourceLocations.length; i < l; i++) {
-//			ClasspathMultiDirectory sourceLocation = sourceLocations[i];
-//			if (sourceLocation.hasIndependentOutputFolder)
-//				copyExtraResourcesBack(sourceLocation, false);
-//			notifier.checkCancel();
-//		}
-//	}
-//}
-//
 protected void cleanUp() {
 	this.incrementalBuilder = null;
 	this.secondaryTypes = null;
@@ -177,14 +95,6 @@ protected IResource findOriginalResource(IPath partialPath) {
 		}
 	}
 	return null;
-}
-
-protected void processAnnotationResults(ValidationParticipantResult[] results) {
-	// to compile the compilation participant results, we need to incrementally recompile all affected types
-	// whenever the generated types are initially added or structurally changed
-	if (this.incrementalBuilder == null)
-		this.incrementalBuilder = new IncrementalImageBuilder(this);
-	this.incrementalBuilder.processAnnotationResults(results);
 }
 
 protected void rebuildTypesAffectedBySecondaryTypes() {

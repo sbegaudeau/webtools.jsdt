@@ -151,17 +151,6 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 		if ((this.constructorCall != null)
 			&& (this.constructorCall.accessMode != ExplicitConstructorCall.This)) {
 			flowInfo = flowInfo.mergedWith(constructorContext.initsOnReturn);
-			FieldBinding[] fields = this.binding.declaringClass.fields();
-			for (int i = 0, count = fields.length; i < count; i++) {
-				FieldBinding field;
-				if ((!(field = fields[i]).isStatic())
-					&& field.isFinal()
-					&& (!flowInfo.isDefinitelyAssigned(fields[i]))) {
-					this.scope.problemReporter().uninitializedBlankFinalField(
-						field,
-						this.isDefaultConstructor ? (ASTNode) this.scope.referenceType() : this);
-				}
-			}
 		}
 		// check unreachable catch blocks
 		constructorContext.complainIfUnusedExceptionHandlers(this);

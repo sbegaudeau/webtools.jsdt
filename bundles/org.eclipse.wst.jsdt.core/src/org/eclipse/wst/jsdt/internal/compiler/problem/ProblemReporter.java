@@ -1267,19 +1267,6 @@ public void expressionShouldBeAVariable(Expression expression) {
 }
 public void fieldHiding(FieldDeclaration fieldDecl, Binding hiddenVariable) {
 	FieldBinding field = fieldDecl.binding;
-	if (CharOperation.equals(TypeConstants.SERIALVERSIONUID, field.name)
-			&& field.isStatic()
-			&& field.isFinal()
-			&& TypeBinding.LONG == field.type) {
-				return; // do not report unused serialVersionUID field
-	}
-	if (CharOperation.equals(TypeConstants.SERIALPERSISTENTFIELDS, field.name)
-			&& field.isStatic()
-			&& field.isFinal()
-			&& field.type.dimensions() == 1
-			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTSTREAMFIELD, field.type.leafComponentType().readableName())) {
-				return; // do not report unused serialPersistentFields field
-	}
 	boolean isLocal = hiddenVariable instanceof LocalVariableBinding;
 	int severity = computeSeverity(isLocal ? IProblem.FieldHidingLocalVariable : IProblem.FieldHidingField);
 	if (severity == ProblemSeverities.Ignore) return;
@@ -1511,11 +1498,6 @@ public void illegalLocalTypeDeclaration(TypeDeclaration typeDeclaration) {
 	if (isRecoveredName(typeDeclaration.name)) return;
 
 	int problemID = 0;
-	if ((typeDeclaration.modifiers & ClassFileConstants.AccEnum) != 0) {
-		problemID = IProblem.CannotDefineEnumInLocalType;
-	} else if ((typeDeclaration.modifiers & ClassFileConstants.AccInterface) != 0) {
-		problemID = IProblem.CannotDefineInterfaceInLocalType;
-	}
 	if (problemID != 0) {
 		String[] arguments = new String[] {new String(typeDeclaration.name)};
 		this.handle(
@@ -4947,19 +4929,6 @@ public void unusedPrivateField(FieldDeclaration fieldDecl) {
 
 	FieldBinding field = fieldDecl.binding;
 
-	if (CharOperation.equals(TypeConstants.SERIALVERSIONUID, field.name)
-			&& field.isStatic()
-			&& field.isFinal()
-			&& TypeBinding.LONG == field.type) {
-				return; // do not report unused serialVersionUID field
-	}
-	if (CharOperation.equals(TypeConstants.SERIALPERSISTENTFIELDS, field.name)
-			&& field.isStatic()
-			&& field.isFinal()
-			&& field.type.dimensions() == 1
-			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTSTREAMFIELD, field.type.leafComponentType().readableName())) {
-				return; // do not report unused serialPersistentFields field
-	}
 	this.handle(
 			IProblem.UnusedPrivateField,
 		new String[] {
@@ -4984,24 +4953,6 @@ public void unusedPrivateMethod(AbstractMethodDeclaration methodDecl) {
 	if(methodSelector == null)
 		methodSelector = methodDecl.getSafeName();
 
-	// no report for serialization support 'void readObject(ObjectInputStream)'
-	if (!method.isStatic()
-			&& TypeBinding.VOID == method.returnType
-			&& method.parameters.length == 1
-			&& method.parameters[0].dimensions() == 0
-			&& CharOperation.equals(methodSelector, TypeConstants.READOBJECT)
-			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTINPUTSTREAM, method.parameters[0].readableName())) {
-		return;
-	}
-	// no report for serialization support 'void writeObject(ObjectOutputStream)'
-	if (!method.isStatic()
-			&& TypeBinding.VOID == method.returnType
-			&& method.parameters.length == 1
-			&& method.parameters[0].dimensions() == 0
-			&& CharOperation.equals(methodSelector, TypeConstants.WRITEOBJECT)
-			&& CharOperation.equals(TypeConstants.CharArray_JAVA_IO_OBJECTOUTPUTSTREAM, method.parameters[0].readableName())) {
-		return;
-	}
 	// no report for serialization support 'Object readResolve()'
 	if (!method.isStatic()
 			&& TypeIds.T_JavaLangObject == method.returnType.id

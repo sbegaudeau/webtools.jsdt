@@ -29,13 +29,6 @@ public interface IModifierConstants {
 	int ACC_SUPER        = 0x0020;
 
 	/**
-	 * Indicates a bridge method (added in J2SE 1.5).
-	 *  
-	 */
-	int ACC_BRIDGE       = 0x0040;
-	int ACC_TRANSIENT    = 0x0080;
-
-	/**
 	 * Indicates a variable arity method (added in J2SE 1.5).
 	 *  
 	 */
