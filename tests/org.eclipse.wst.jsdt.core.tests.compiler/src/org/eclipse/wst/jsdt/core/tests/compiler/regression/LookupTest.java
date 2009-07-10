@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,11 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import junit.framework.Test;
+
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
-
-import junit.framework.Test;
 /**
  * Name Lookup within Inner Classes
  * Creation date: (8/2/00 12:04:53 PM)
@@ -1630,34 +1626,6 @@ public void test047() {
 			"    }\n" + 
 			"}\n"	},
 		"String: Hello world");
-}
-// 73740 - missing serialVersionUID diagnosis shouldn't trigger load of Serializable
-public void test048() {
-	this.runConformTest(
-		new String[] {
-			"X.java", //---------------------------
-			"public class X {\n" + 
-			"   public static void main(String[] args) {\n"+
-			"		System.out.println(\"SUCCESS\");\n"+
-			"   }\n"+
-			"}\n",
-		},
-		"SUCCESS",
-		Util.concatWithClassLibs(OUTPUT_DIR, true/*output in front*/),
-		false, // do not flush output
-		null,  // vm args
-		null, // options
-		new ICompilerRequestor() {
-			public void acceptResult(CompilationResult result) {
-				assertNotNull("missing reference information",result.simpleNameReferences);
-				char[] serializable = TypeConstants.JAVA_IO_SERIALIZABLE[2];
-				for (int i = 0, length = result.simpleNameReferences.length; i < length; i++) {
-					char[] name = result.simpleNameReferences[i];
-					if (CharOperation.equals(name, serializable))
-						assertTrue("should not contain reference to Serializable", false);
-				}
-			}
-		});		
 }
 // 76682 - ClassCastException in qualified name computeConversion
 public void test049() {

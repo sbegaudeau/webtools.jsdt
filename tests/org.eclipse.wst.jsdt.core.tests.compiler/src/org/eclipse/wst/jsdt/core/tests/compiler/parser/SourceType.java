@@ -115,8 +115,6 @@ public String displayModifiers() {
 		buffer.append("abstract ");
 	if ((this.modifiers & ClassFileConstants.AccNative) != 0)
 		buffer.append("native ");
-	if ((this.modifiers & ClassFileConstants.AccSynchronized) != 0)
-		buffer.append("synchronized ");
 	return buffer.toString().trim();
 }
 public String getActualName() {
@@ -200,10 +198,7 @@ public boolean isBinaryType() {
 	return false;
 }
 public boolean isClass() {
-	return (modifiers & ClassFileConstants.AccInterface) == 0;
-}
-public boolean isInterface() {
-	return (modifiers & ClassFileConstants.AccInterface) == ClassFileConstants.AccInterface;
+	return true;
 }
 public void setDeclarationSourceEnd(int position) {
 	declarationEnd = position;
@@ -247,7 +242,7 @@ public String toString(int tab) {
 	if (displayModifiers != null) {
 		buffer.append(displayModifiers).append(" ");
 	}
-	buffer.append(isInterface() ? "interface " : "class ").append(name).append(" ");
+	buffer.append("class ").append(name).append(" ");
 	if (superclassName != null) {
 		buffer.append("extends ").append(superclassName).append(" ");
 	}

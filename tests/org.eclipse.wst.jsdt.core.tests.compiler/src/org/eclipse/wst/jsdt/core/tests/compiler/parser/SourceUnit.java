@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -100,8 +100,6 @@ public String displayModifiers() {
 		buffer.append("abstract ");
 	if ((this.modifiers & ClassFileConstants.AccNative) != 0)
 		buffer.append("native ");
-	if ((this.modifiers & ClassFileConstants.AccSynchronized) != 0)
-		buffer.append("synchronized ");
 	return buffer.toString().trim();
 }
 public String getActualName() {
@@ -188,10 +186,7 @@ public boolean isBinaryType() {
 	return false;
 }
 public boolean isClass() {
-	return (modifiers & ClassFileConstants.AccInterface) == 0;
-}
-public boolean isInterface() {
-	return (modifiers & ClassFileConstants.AccInterface) == ClassFileConstants.AccInterface;
+	return true;
 }
 public void setDeclarationSourceEnd(int position) {
 	declarationEnd = position;

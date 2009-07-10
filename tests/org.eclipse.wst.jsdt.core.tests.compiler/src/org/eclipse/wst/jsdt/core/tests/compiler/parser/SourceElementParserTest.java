@@ -172,8 +172,6 @@ public static String displayModifiers(int modifiers) {
 		buffer.append("abstract ");
 	if ((modifiers & ClassFileConstants.AccNative) != 0)
 		buffer.append("native ");
-	if ((modifiers & ClassFileConstants.AccSynchronized) != 0)
-		buffer.append("synchronized ");
 	return buffer.toString();
 }
 public void enterType(TypeInfo typeInfo) {

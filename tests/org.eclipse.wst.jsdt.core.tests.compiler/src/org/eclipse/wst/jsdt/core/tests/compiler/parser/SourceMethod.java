@@ -71,8 +71,6 @@ public String displayModifiers() {
 		buffer.append("abstract ");
 	if ((this.modifiers & ClassFileConstants.AccNative) != 0)
 		buffer.append("native ");
-	if ((this.modifiers & ClassFileConstants.AccSynchronized) != 0)
-		buffer.append("synchronized ");
 	if (buffer.toString().trim().equals(""))
 		return null;
 	return buffer.toString().trim();
