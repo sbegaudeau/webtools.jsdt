@@ -2537,7 +2537,7 @@ class ASTConverter {
 		final long[] positions = importReference.sourcePositions;
 		if (length > 1) {
 			importDeclaration.setName(setQualifiedNameNameAndSourceRanges(tokens, positions, importReference));
-		} else {
+		} else if(length == 1) {
 			final SimpleName name = new SimpleName(this.ast);
 			name.internalSetIdentifier(new String(tokens[0]));
 			final int start = (int)(positions[0]>>>32);
