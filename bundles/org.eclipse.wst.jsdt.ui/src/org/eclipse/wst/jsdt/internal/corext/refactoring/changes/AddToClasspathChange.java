@@ -80,7 +80,7 @@ public class AddToClasspathChange extends JDTChange {
 	public boolean validateClasspath() throws JavaScriptModelException {
 		IJavaScriptProject javaProject= getJavaProject();
 		IIncludePathEntry[] newClasspathEntries= getNewClasspathEntries();
-		return JavaScriptConventions.validateClasspath(javaProject, newClasspathEntries, null).isOK();
+		return JavaScriptConventions.validateClasspath(javaProject, newClasspathEntries).isOK();
 	}
 	
 	private IIncludePathEntry[] getNewClasspathEntries() throws JavaScriptModelException{

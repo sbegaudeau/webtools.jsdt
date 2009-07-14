@@ -31,9 +31,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.compiler.IScanner;
-import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
@@ -42,7 +39,6 @@ import org.eclipse.wst.jsdt.internal.corext.codemanipulation.AddCustomConstructo
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.CodeGenerationSettings;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility2;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
-import org.eclipse.wst.jsdt.internal.corext.dom.TokenScanner;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -284,21 +280,8 @@ public class GenerateNewConstructorUsingFieldsAction extends SelectionDispatchAc
 		ArrayList fields= new ArrayList();
 		for (int index= 0; index < candidates.length; index++) {
 			boolean isStatic= Flags.isStatic(candidates[index].getFlags());
-			boolean isFinal= Flags.isFinal(candidates[index].getFlags());
 			if (!isStatic) {
-				if (isFinal) {
-					try {
-						// Do not add final fields which have been set in the <clinit>
-						IScanner scanner= ToolFactory.createScanner(true, false, false, false);
-						scanner.setSource(candidates[index].getSource().toCharArray());
-						TokenScanner tokenScanner= new TokenScanner(scanner);
-						tokenScanner.getTokenStartOffset(ITerminalSymbols.TokenNameEQUAL, 0);
-					} catch (JavaScriptModelException e) {
-					} catch (CoreException e) {
-						fields.add(candidates[index]);
-					}
-				} else
-					fields.add(candidates[index]);
+				fields.add(candidates[index]);
 			}
 		}
 		if (fields.isEmpty()) {

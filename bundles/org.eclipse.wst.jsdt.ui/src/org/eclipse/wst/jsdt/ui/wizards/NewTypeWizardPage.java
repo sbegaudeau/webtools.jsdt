@@ -245,8 +245,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	public int F_PRIVATE = Flags.AccPrivate;
 	/** Static access flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_STATIC = Flags.AccStatic;
-	/** Final access flag. See The JavaScript Virtual Machine Specification for more details. */
-	public int F_FINAL = Flags.AccFinal;
 	/** Abstract property flag. See The JavaScript Virtual Machine Specification for more details. */
 	public int F_ABSTRACT = Flags.AccAbstract;
 
@@ -1156,9 +1154,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 		if (fOtherMdfButtons.isSelected(ABSTRACT_INDEX)) {	
 			mdf+= F_ABSTRACT;
 		}
-		if (fOtherMdfButtons.isSelected(FINAL_INDEX)) {	
-			mdf+= F_FINAL;
-		}
 		if (fOtherMdfButtons.isSelected(STATIC_INDEX)) {	
 			mdf+= F_STATIC;
 		}
@@ -1186,9 +1181,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 		if (Flags.isAbstract(modifiers)) {
 			fOtherMdfButtons.setSelection(ABSTRACT_INDEX, true);
 		}
-		if (Flags.isFinal(modifiers)) {
-			fOtherMdfButtons.setSelection(FINAL_INDEX, true);
-		}		
 		if (Flags.isStatic(modifiers)) {
 			fOtherMdfButtons.setSelection(STATIC_INDEX, true);
 		}
@@ -1701,9 +1693,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	protected IStatus modifiersChanged() {
 		StatusInfo status= new StatusInfo();
 		int modifiers= getModifiers();
-		if (Flags.isFinal(modifiers) && Flags.isAbstract(modifiers)) {
-			status.setError(NewWizardMessages.NewTypeWizardPage_error_ModifiersFinalAndAbstract); 
-		}
 		return status;
 	}
 	

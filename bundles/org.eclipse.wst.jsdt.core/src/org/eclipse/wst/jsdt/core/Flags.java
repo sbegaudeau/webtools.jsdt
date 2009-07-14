@@ -50,10 +50,6 @@ public final class Flags {
 	 * Static access flag. 
 	 */
 	public static final int AccStatic = ClassFileConstants.AccStatic;
-	/*
-	 * Final access flag. 
-	 */
-	public static final int AccFinal = ClassFileConstants.AccFinal;
 	/**
 	 * Abstract property flag. 
 	 *
@@ -105,15 +101,6 @@ public final class Flags {
 	 */
 	public static boolean isDeprecated(int flags) {
 		return (flags & AccDeprecated) != 0;
-	}
-	/*
-	 * Returns whether the given integer includes the <code>final</code> modifier.
-	 *
-	 * @param flags the flags
-	 * @return <code>true</code> if the <code>final</code> modifier is included
-	 */
-	public static boolean isFinal(int flags) {
-		return (flags & AccFinal) != 0;
 	}
 	/*
 	 * Returns whether the given integer does not include one of the
@@ -216,8 +203,6 @@ public final class Flags {
 			sb.append("static "); //$NON-NLS-1$
 		if (isAbstract(flags))
 			sb.append("abstract "); //$NON-NLS-1$
-		if (isFinal(flags))
-			sb.append("final "); //$NON-NLS-1$
 
 		int len = sb.length();
 		if (len == 0)

@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.NamingConventions;
@@ -559,8 +558,6 @@ public final class StubUtility2 {
 			final int modifiers= typeMethods[index].getModifiers();
 			if (!typeMethods[index].isConstructor() && !Modifier.isStatic(modifiers) && (Modifier.isPublic(modifiers))) {
 				IFunctionBinding result= Bindings.findOverriddenMethodInHierarchy(hierarchy, typeMethods[index]);
-				if (result != null && Flags.isFinal(result.getModifiers()))
-					continue;
 				ITypeBinding[] parameterBindings= typeMethods[index].getParameterTypes();
 				boolean upper= false;
 				if (!upper)

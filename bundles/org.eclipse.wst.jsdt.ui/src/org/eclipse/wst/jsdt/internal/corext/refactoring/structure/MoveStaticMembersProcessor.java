@@ -454,8 +454,6 @@ public final class MoveStaticMembersProcessor extends MoveProcessor implements I
 		int flags= member.getFlags();
 		switch (member.getElementType()) {
 			case IJavaScriptElement.FIELD:
-				if (!(Flags.isPublic(flags) && Flags.isStatic(flags) && Flags.isFinal(flags)))
-					return false;
 				VariableDeclarationFragment declaration= ASTNodeSearchUtil.getFieldDeclarationFragmentNode((IField) member, fSource.getRoot());
 				if (declaration != null)
 					return declaration.getInitializer() != null;

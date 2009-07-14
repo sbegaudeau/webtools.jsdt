@@ -68,7 +68,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 	 */
 	public Change perform(IProgressMonitor pm) throws CoreException {
 		pm.beginTask("", 2); //$NON-NLS-1$
-		fCUnit.becomeWorkingCopy(null, new SubProgressMonitor(pm,1));
+		fCUnit.becomeWorkingCopy(new SubProgressMonitor(pm,1));
 		try {
 			return super.perform(new SubProgressMonitor(pm,1));
 		} finally {

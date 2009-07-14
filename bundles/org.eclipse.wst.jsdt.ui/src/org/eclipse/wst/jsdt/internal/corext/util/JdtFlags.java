@@ -58,7 +58,7 @@ public class JdtFlags {
 			return true;
 		if (isAnonymousType(member))	
 			return true;
-		return Flags.isFinal(member.getFlags());
+		return false;
 	}
 
 	public static boolean isPackageVisible(IMember member) throws JavaScriptModelException{

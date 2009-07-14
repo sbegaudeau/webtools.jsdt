@@ -375,55 +375,6 @@ public static String createMethodSignature(String[] parameterTypes, String retur
 }
 
 /**
- * Creates a new type parameter signature with the given name and bounds.
- *
- * @param typeParameterName the type parameter name
- * @param boundSignatures the signatures of associated bounds or empty array if none
- * @return the encoded type parameter signature
- *
- *  
- */
-public static char[] createTypeParameterSignature(char[] typeParameterName, char[][] boundSignatures) {
-	int length = boundSignatures.length;
-	if (length == 0) {
-		return CharOperation.append(typeParameterName, C_COLON); // param signature with no bounds still gets trailing colon
-	}
-	int boundsSize = 0;
-	for (int i = 0; i < length; i++) {
-		boundsSize += boundSignatures[i].length + 1;
-	}
-	int nameLength = typeParameterName.length;
-	char[] result = new char[nameLength + boundsSize];
-	System.arraycopy(typeParameterName, 0, result, 0, nameLength);
-	int index = nameLength;
-	for (int i = 0; i < length; i++) {
-		result[index++] = C_COLON;
-		int boundLength = boundSignatures[i].length;
-		System.arraycopy(boundSignatures[i], 0, result, index, boundLength);
-		index += boundLength;
-	}
-	return result;
-}
-
-/**
- * Creates a new type parameter signature with the given name and bounds.
- *
- * @param typeParameterName the type parameter name
- * @param boundSignatures the signatures of associated bounds or empty array if none
- * @return the encoded type parameter signature
- *
- *  
- */
-public static String createTypeParameterSignature(String typeParameterName, String[] boundSignatures) {
-	int length = boundSignatures.length;
-	char[][] boundSignatureChars = new char[length][];
-	for (int i = 0; i < length; i++) {
-		boundSignatureChars[i] = boundSignatures[i].toCharArray();
-	}
-	return new String(createTypeParameterSignature(typeParameterName.toCharArray(), boundSignatureChars));
-}
-
-/**
  * Creates a new type signature from the given type name encoded as a character
  * array. The type name may contain primitive types, array types or parameterized types.
  * This method is equivalent to
@@ -998,67 +949,6 @@ public static char[] getTypeVariable(char[] formalTypeParameterSignature) throws
 		throw new IllegalArgumentException();
 	}
 	return CharOperation.subarray(formalTypeParameterSignature, 0, p);
-}
-
-/**
- * Extracts the class and interface bounds from the given formal type
- * parameter signature. The class bound, if present, is listed before
- * the interface bounds. The signature is expected to be dot-based.
- *
- * @param formalTypeParameterSignature the formal type parameter signature
- * @return the (possibly empty) list of type signatures for the bounds
- * @exception IllegalArgumentException if the signature is syntactically
- *   incorrect
- *  
- */
-public static char[][] getTypeParameterBounds(char[] formalTypeParameterSignature) throws IllegalArgumentException {
-	int p1 = CharOperation.indexOf(C_COLON, formalTypeParameterSignature);
-	if (p1 < 0) {
-		// no ":" means can't be a formal type parameter signature
-		throw new IllegalArgumentException();
-	}
-	if (p1 == formalTypeParameterSignature.length - 1) {
-		// no class or interface bounds
-		return CharOperation.NO_CHAR_CHAR;
-	}
-	int p2 = CharOperation.indexOf(C_COLON, formalTypeParameterSignature, p1 + 1);
-	char[] classBound;
-	if (p2 < 0) {
-		// no interface bounds
-		classBound = CharOperation.subarray(formalTypeParameterSignature, p1 + 1, formalTypeParameterSignature.length);
-		return new char[][] {classBound};
-	}
-	if (p2 == p1 + 1) {
-		// no class bound, but 1 or more interface bounds
-		classBound = null;
-	} else {
-		classBound = CharOperation.subarray(formalTypeParameterSignature, p1 + 1, p2);
-	}
-	char[][] interfaceBounds = CharOperation.splitOn(C_COLON, formalTypeParameterSignature, p2 + 1, formalTypeParameterSignature.length);
-	if (classBound == null) {
-		return interfaceBounds;
-	}
-	int resultLength = interfaceBounds.length + 1;
-	char[][] result = new char[resultLength][];
-	result[0] = classBound;
-	System.arraycopy(interfaceBounds, 0, result, 1, interfaceBounds.length);
-	return result;
-}
-
-/**
- * Extracts the class and interface bounds from the given formal type
- * parameter signature. The class bound, if present, is listed before
- * the interface bounds. The signature is expected to be dot-based.
- *
- * @param formalTypeParameterSignature the formal type parameter signature
- * @return the (possibly empty) list of type signatures for the bounds
- * @exception IllegalArgumentException if the signature is syntactically
- *   incorrect
- *  
- */
-public static String[] getTypeParameterBounds(String formalTypeParameterSignature) throws IllegalArgumentException {
-	char[][] bounds = getTypeParameterBounds(formalTypeParameterSignature.toCharArray());
-	return CharOperation.toStrings(bounds);
 }
 
 /**

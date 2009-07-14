@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -400,8 +400,7 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 		//fBinFolderNameLabel.setEnabled(useFolders);		
 		if (useFolders) {
 			String srcName= fSrcFolderNameText.getText();
-			String binName= ""; //$NON-NLS-1$
-			if (srcName.length() + binName.length() == 0) {
+			if (srcName.length() == 0) {
 				updateStatus(new StatusInfo(IStatus.ERROR,  PreferencesMessages.NewJavaProjectPreferencePage_folders_error_namesempty)); 
 				return;
 			}
@@ -418,17 +417,8 @@ public class NewJavaProjectPreferencePage extends PreferencePage implements IWor
 					return;
 				}
 			}
-			IPath binPath= dmy.getFullPath().append(binName);
-//			if (binName.length() != 0) {
-//				status= workspace.validatePath(binPath.toString(), IResource.FOLDER);
-//				if (!status.isOK()) {
-//					String message= Messages.format(PreferencesMessages.NewJavaProjectPreferencePage_folders_error_invalidbinname, status.getMessage()); 
-//					updateStatus(new StatusInfo(IStatus.ERROR, message));
-//					return;
-//				}
-//			}
 			IIncludePathEntry entry= JavaScriptCore.newSourceEntry(srcPath);
-			status= JavaScriptConventions.validateClasspath(JavaScriptCore.create(dmy), new IIncludePathEntry[] { entry }, binPath);
+			status= JavaScriptConventions.validateClasspath(JavaScriptCore.create(dmy), new IIncludePathEntry[] { entry });
 			if (!status.isOK()) {
 				String message= PreferencesMessages.NewJavaProjectPreferencePage_folders_error_invalidcp; 
 				updateStatus(new StatusInfo(IStatus.ERROR, message));

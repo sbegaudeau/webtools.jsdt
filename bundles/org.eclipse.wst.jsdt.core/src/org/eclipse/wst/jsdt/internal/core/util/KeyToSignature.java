@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.core.util;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 /*
@@ -28,7 +27,6 @@ public class KeyToSignature extends BindingKeyParser {
 	public StringBuffer signature = new StringBuffer();
 	private int kind;
 	private ArrayList arguments = new ArrayList();
-	private ArrayList typeParameters = new ArrayList();
 	private ArrayList thrownExceptions = new ArrayList();
 	private int mainTypeStart = -1;
 	private int mainTypeEnd;
@@ -147,27 +145,7 @@ public class KeyToSignature extends BindingKeyParser {
 		if (this.mainTypeStart != -1) {
 			this.signature.replace(this.mainTypeStart, this.mainTypeEnd, ""); //$NON-NLS-1$
 		}
-		// parameter types
-		int length = this.typeParameters.size();
-		if (length > 0) {
-			StringBuffer typeParametersSig = new StringBuffer();
-			typeParametersSig.append('<');
-			for (int i = 0; i < length; i++) {
-				char[] typeParameterSig = Signature.createTypeParameterSignature(
-						(char[]) this.typeParameters.get(i),
-						new char[][]{ ObjectSignature });
-				typeParametersSig.append(typeParameterSig);
-				// TODO (jerome) add type parameter bounds in binding key
-			}
-			typeParametersSig.append('>');
-			this.signature.insert(this.typeSigStart, typeParametersSig);
-			this.typeParameters = new ArrayList();
-		}
 		this.signature.append(';');
-	}
-
-	public void consumeTypeParameter(char[] typeParameterName) {
-		this.typeParameters.add(typeParameterName);
 	}
 
 	public void consumeTypeVariable(char[] position, char[] typeVariableName) {

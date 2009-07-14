@@ -276,7 +276,7 @@ public class ParameterGuesser {
 				thisPkg= new String();
 				thisType= fEnclosingTypeName;
 			}
-			addVariable(Variable.FIELD, thisPkg.toCharArray(), thisType.toCharArray(), "this".toCharArray(), new char[] {'.'}, getFieldDescriptor(Flags.AccPublic | Flags.AccFinal)); //$NON-NLS-1$
+			addVariable(Variable.FIELD, thisPkg.toCharArray(), thisType.toCharArray(), "this".toCharArray(), new char[] {'.'}, getFieldDescriptor(Flags.AccPublic)); //$NON-NLS-1$
 			addVariable(Variable.FIELD, NO_TRIGGERS, "boolean".toCharArray(), "true".toCharArray(), NO_TRIGGERS, null);  //$NON-NLS-1$//$NON-NLS-2$
 			addVariable(Variable.FIELD, NO_TRIGGERS, "boolean".toCharArray(), "false".toCharArray(), NO_TRIGGERS, null);  //$NON-NLS-1$//$NON-NLS-2$
 
@@ -345,9 +345,6 @@ public class ParameterGuesser {
 
 			if (Flags.isStatic(modifiers))
 				flags |= JavaScriptElementImageDescriptor.STATIC;
-
-			if (Flags.isFinal(modifiers))
-				flags |= JavaScriptElementImageDescriptor.FINAL;
 
 			if (Flags.isAbstract(modifiers))
 				flags |= JavaScriptElementImageDescriptor.ABSTRACT;

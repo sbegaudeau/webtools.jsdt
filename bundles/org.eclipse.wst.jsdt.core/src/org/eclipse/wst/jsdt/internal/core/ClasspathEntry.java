@@ -1243,18 +1243,13 @@ public class ClasspathEntry implements IIncludePathEntry {
 	}
 
 	/**
-	 * Validate a given classpath and output location for a project, using the following rules:
+	 * Validate a given classpath for a project, using the following rules:
 	 * <ul>
 	 *   <li> Classpath entries cannot collide with each other; that is, all entry paths must be unique.
-	 *   <li> The project output location path cannot be null, must be absolute and located inside the project.
-	 *   <li> Specific output locations (specified on source entries) can be null, if not they must be located inside the project,
 	 *   <li> A project entry cannot refer to itself directly (that is, a project cannot prerequisite itself).
      *   <li> Classpath entries or output locations cannot coincidate or be nested in each other, except for the following scenarii listed below:
-	 *      <ul><li> A source folder can coincidate with its own output location, in which case this output can then contain library archives.
-	 *                     However, a specific output location cannot coincidate with any library or a distinct source folder than the one referring to it. </li>
-	 *              <li> A source/library folder can be nested in any source folder as long as the nested folder is excluded from the enclosing one. </li>
-	 * 			<li> An output location can be nested in a source folder, if the source folder coincidates with the project itself, or if the output
-	 * 					location is excluded from the source folder. </li>
+	 *      <ul>
+	 *          <li> A source/library folder can be nested in any source folder as long as the nested folder is excluded from the enclosing one. </li>
 	 *      </ul>
 	 * </ul>
 	 *
@@ -1267,28 +1262,15 @@ public class ClasspathEntry implements IIncludePathEntry {
 	 *  <p>
 	 * @param javaProject the given java project
 	 * @param rawClasspath a given classpath
-	 * @param projectOutputLocation a given output location
 	 * @return a status object with code <code>IStatus.OK</code> if
 	 *		the given classpath and output location are compatible, otherwise a status
 	 *		object indicating what is wrong with the classpath or output location
 	 */
-	public static IJavaScriptModelStatus validateClasspath(IJavaScriptProject javaProject, IIncludePathEntry[] rawClasspath, IPath projectOutputLocation) {
+	public static IJavaScriptModelStatus validateClasspath(IJavaScriptProject javaProject, IIncludePathEntry[] rawClasspath) {
 
 		IProject project = javaProject.getProject();
 		IPath projectPath= project.getFullPath();
 		String projectName = javaProject.getElementName();
-
-		/* validate output location */
-//		if (projectOutputLocation == null) {
-//			return new JavaModelStatus(IJavaScriptModelStatusConstants.NULL_PATH);
-//		}
-//		if (projectOutputLocation.isAbsolute()) {
-//			if (!projectPath.isPrefixOf(projectOutputLocation)) {
-//				return new JavaModelStatus(IJavaScriptModelStatusConstants.PATH_OUTSIDE_PROJECT, javaProject, projectOutputLocation.toString());
-//			}
-//		} else {
-//			return new JavaModelStatus(IJavaScriptModelStatusConstants.RELATIVE_PATH, projectOutputLocation);
-//		}
 
 		boolean hasSource = false;
 		boolean hasLibFolder = false;
@@ -1306,11 +1288,6 @@ public class ClasspathEntry implements IIncludePathEntry {
 			return e.getJavaScriptModelStatus();
 		}
 		int length = classpath.length;
-
-		int outputCount = 1;
-		IPath[] outputLocations	= new IPath[length+1];
-		boolean[] allowNestingInOutputLocations = new boolean[length+1];
-		outputLocations[0] = projectOutputLocation;
 
 		// retrieve and check output locations
 		IPath potentialNestedOutput = null; // for error reporting purpose
@@ -1330,51 +1307,19 @@ public class ClasspathEntry implements IIncludePathEntry {
 					sourceEntryCount++;
 			}
 		}
-		// check nesting across output locations
-//		for (int i = 1 /*no check for default output*/ ; i < outputCount; i++) {
-//		    IPath customOutput = outputLocations[i];
-//		    int index;
-//			// check nesting
-//			if ((index = Util.indexOfEnclosingPath(customOutput, outputLocations, outputCount)) != -1 && index != i) {
-//				if (index == 0) {
-//					// custom output is nested in project's output: need to check if all source entries have a custom
-//					// output before complaining
-//					if (potentialNestedOutput == null) potentialNestedOutput = customOutput;
-//				} else {
-//					return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {customOutput.makeRelative().toString(), outputLocations[index].makeRelative().toString()}));
-//				}
-//			}
-//		}
-//		// allow custom output nesting in project's output if all source entries have a custom output
-//		if (sourceEntryCount <= outputCount-1) {
-//		    allowNestingInOutputLocations[0] = true;
-//		} else if (potentialNestedOutput != null) {
-//			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_INCLUDEPATH, Messages.bind(Messages.classpath_cannotNestOutputInOutput, new String[] {potentialNestedOutput.makeRelative().toString(), outputLocations[0].makeRelative().toString()}));
-//		}
 
 		for (int i = 0 ; i < length; i++) {
 			IIncludePathEntry resolvedEntry = classpath[i];
 			IPath path = resolvedEntry.getPath();
-			int index;
 			switch(resolvedEntry.getEntryKind()){
 
 				case IIncludePathEntry.CPE_SOURCE :
 					hasSource = true;
-					if ((index = Util.indexOfMatchingPath(path, outputLocations, outputCount)) != -1){
-						allowNestingInOutputLocations[index] = true;
-					}
 					break;
-
 				case IIncludePathEntry.CPE_LIBRARY:
 					hasLibFolder |= !org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(path.lastSegment());
-					if ((index = Util.indexOfMatchingPath(path, outputLocations, outputCount)) != -1){
-						allowNestingInOutputLocations[index] = true;
-					}
 					break;
 			}
-		}
-		if (!hasSource && !hasLibFolder) { // if no source and no lib folder, then allowed
-			for (int i = 0; i < outputCount; i++) allowNestingInOutputLocations[i] = true;
 		}
 
 		HashSet pathes = new HashSet(length);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,9 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
@@ -218,7 +217,7 @@ public class SearchUtil {
 			} catch (JavaScriptModelException ex) {
 				return false;
 			}
-			return field.isBinary() && Flags.isStatic(flags) && Flags.isFinal(flags) && isPrimitiveOrString(field);
+			return false;
 		}
 		return false;
 	}

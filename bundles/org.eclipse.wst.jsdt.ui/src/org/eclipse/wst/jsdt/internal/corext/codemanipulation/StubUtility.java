@@ -1164,9 +1164,7 @@ public class StubUtility {
 	}
 		 
 	public static String[] getFieldNameSuggestions(IJavaScriptProject project, String baseName, int dimensions, int modifiers, String[] excluded) {
-		if (Flags.isFinal(modifiers) && Flags.isStatic(modifiers)) {
-			return getVariableNameSuggestions(CONSTANT_FIELD, project, baseName, dimensions, new ExcludedCollection(excluded), true);
-		} else if (Flags.isStatic(modifiers)) {
+		if (Flags.isStatic(modifiers)) {
 			return getVariableNameSuggestions(STATIC_FIELD, project, baseName, dimensions, new ExcludedCollection(excluded), true);
 		}
 		return getVariableNameSuggestions(INSTANCE_FIELD, project, baseName, dimensions, new ExcludedCollection(excluded), true);

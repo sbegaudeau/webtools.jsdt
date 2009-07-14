@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,25 +18,23 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Expression;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
-import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
 import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
@@ -94,11 +92,8 @@ class AccessAnalyzer extends ASTVisitor {
 		fGetter= refactoring.getGetterName();
 		fSetter= refactoring.getSetterName();
 		fEncapsulateDeclaringClass= refactoring.getEncapsulateDeclaringClass();
-		try {
-			fIsFieldFinal= Flags.isFinal(refactoring.getField().getFlags());
-		} catch (JavaScriptModelException e) {
-			// assume non final field
-		}
+		fIsFieldFinal= false;
+		
 		fStatus= new RefactoringStatus();
 	}
 

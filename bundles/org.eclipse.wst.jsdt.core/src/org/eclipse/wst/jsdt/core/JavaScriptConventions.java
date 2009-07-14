@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.StringTokenizer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
 public final class JavaScriptConventions {
 
 	private static final char DOT= '.';
-//	private static final String PACKAGE_INFO = new String(TypeConstants.PACKAGE_INFO_NAME);
 	private static final Scanner SCANNER = new Scanner(false /*comment*/, true /*whitespace*/, false /*nls*/, ClassFileConstants.JDK1_3 /*sourceLevel*/, null/*taskTag*/, null/*taskPriorities*/, true /*taskCaseSensitive*/);
 
 	private JavaScriptConventions() {
@@ -497,18 +495,12 @@ public final class JavaScriptConventions {
 	}
 
 	/**
-	 * Validate a given includepath and output location for a project, using the following rules:
+	 * Validate a given includepath location for a project, using the following rules:
 	 * <ul>
 	 *   <li> Includepath entries cannot collide with each other; that is, all entry paths must be unique.
-	 *   <li> The project output location path cannot be null, must be absolute and located inside the project.
-	 *   <li> Specific output locations (specified on source entries) can be null, if not they must be located inside the project,
 	 *   <li> A project entry cannot refer to itself directly (that is, a project cannot prerequisite itself).
-     *   <li> Includepath entries or output locations cannot coincidate or be nested in each other, except for the following scenarii listed below:
-	 *      <ul><li> A source folder can coincidate with its own output location, in which case this output can then contain library archives.
-	 *                     However, a specific output location cannot coincidate with any library or a distinct source folder than the one referring to it. </li>
+     *   <li> Includepath entries cannot coincidate or be nested in each other, except for the following scenarii listed below:
 	 *              <li> A source/library folder can be nested in any source folder as long as the nested folder is excluded from the enclosing one. </li>
-	 * 			<li> An output location can be nested in a source folder, if the source folder coincidates with the project itself, or if the output
-	 * 					location is excluded from the source folder.
 	 *      </ul>
 	 * </ul>
 	 *
@@ -521,14 +513,13 @@ public final class JavaScriptConventions {
 	 *  <p>
 	 * @param javaProject the given javaScript project
 	 * @param rawClasspath the given includepath
-	 * @param projectOutputLocation the given output location
 	 * @return a status object with code <code>IStatus.OK</code> if
-	 *		the given includepath and output location are compatible, otherwise a status
-	 *		object indicating what is wrong with the includepath or output location
+	 *		the given includepath are compatible, otherwise a status
+	 *		object indicating what is wrong with the includepath
 	 */
-	public static IJavaScriptModelStatus validateClasspath(IJavaScriptProject javaProject, IIncludePathEntry[] rawClasspath, IPath projectOutputLocation) {
+	public static IJavaScriptModelStatus validateClasspath(IJavaScriptProject javaProject, IIncludePathEntry[] rawClasspath) {
 
-		return ClasspathEntry.validateClasspath(javaProject, rawClasspath, projectOutputLocation);
+		return ClasspathEntry.validateClasspath(javaProject, rawClasspath);
 	}
 
 	/**

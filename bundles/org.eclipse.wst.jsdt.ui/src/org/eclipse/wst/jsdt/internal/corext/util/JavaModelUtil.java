@@ -705,25 +705,21 @@ public final class JavaModelUtil {
 			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_6);
 			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_6);
 			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
-			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
 		} else if (JavaScriptCore.VERSION_1_5.equals(compliance)) {
 			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
 			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
 			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
 			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
-			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
 		} else if (JavaScriptCore.VERSION_1_4.equals(compliance)) {
 			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_4);
 			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
 			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_2);
 			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.WARNING);
-			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.WARNING);
 		} else if (JavaScriptCore.VERSION_1_3.equals(compliance)) {
 			map.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_3);
 			map.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
 			map.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
 			map.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.IGNORE);
-			map.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.IGNORE);
 		} else {
 			throw new IllegalArgumentException("Unsupported compliance: " + compliance); //$NON-NLS-1$
 		}

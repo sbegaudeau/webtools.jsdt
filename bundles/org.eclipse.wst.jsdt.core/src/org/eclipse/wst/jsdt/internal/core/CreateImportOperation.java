@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -140,14 +140,6 @@ protected void initializeDefaultPosition() {
 		if (types.length > 0) {
 			createBefore(types[0]);
 			return;
-		}
-		IJavaScriptElement[] children = cu.getChildren();
-		//look for the package declaration
-		for (int i = 0; i < children.length; i++) {
-			if (children[i].getElementType() == IJavaScriptElement.PACKAGE_DECLARATION) {
-				createAfter(children[i]);
-				return;
-			}
 		}
 	} catch (JavaScriptModelException e) {
 		// cu doesn't exit: ignore

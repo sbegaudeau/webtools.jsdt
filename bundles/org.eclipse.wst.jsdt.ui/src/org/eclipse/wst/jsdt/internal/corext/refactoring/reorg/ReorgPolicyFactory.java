@@ -2998,10 +2998,9 @@ public final class ReorgPolicyFactory {
 			final int fields= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.FIELD).size();
 			final int methods= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.METHOD).size();
 			final int initializers= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.INITIALIZER).size();
-			final int packages= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.PACKAGE_DECLARATION).size();
 			final int container= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.IMPORT_CONTAINER).size();
 			final int imp= ReorgUtils.getElementsOfType(fJavaElements, IJavaScriptElement.IMPORT_DECLARATION).size();
-			final int length= types + fields + methods + initializers + packages + container + imp;
+			final int length= types + fields + methods + initializers + container + imp;
 			if (length == types)
 				return ONLY_TYPES;
 			else if (length == fields)
@@ -3010,8 +3009,6 @@ public final class ReorgPolicyFactory {
 				return ONLY_METHODS;
 			else if (length == initializers)
 				return ONLY_INITIALIZERS;
-			else if (length == packages)
-				return ONLY_PACKAGE_DECLARATIONS;
 			else if (length == container)
 				return ONLY_IMPORT_CONTAINERS;
 			else if (length == imp)
@@ -3135,8 +3132,6 @@ public final class ReorgPolicyFactory {
 					if (ReorgUtils.hasElementsOfType(getJavaElements(), types0))
 						return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_cannot);
 					break;
-				case IJavaScriptElement.PACKAGE_DECLARATION:
-					return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.ReorgPolicyFactory_package_decl);
 
 				case IJavaScriptElement.IMPORT_CONTAINER:
 					if (ReorgUtils.hasElementsNotOfType(getJavaElements(), IJavaScriptElement.IMPORT_DECLARATION))
@@ -3154,7 +3149,7 @@ public final class ReorgPolicyFactory {
 					return recursiveVerifyDestination(destination.getParent());
 
 				case IJavaScriptElement.TYPE:
-					int[] types1= new int[] { IJavaScriptElement.IMPORT_DECLARATION, IJavaScriptElement.IMPORT_CONTAINER, IJavaScriptElement.PACKAGE_DECLARATION};
+					int[] types1= new int[] { IJavaScriptElement.IMPORT_DECLARATION, IJavaScriptElement.IMPORT_CONTAINER};
 					if (ReorgUtils.hasElementsOfType(getJavaElements(), types1))
 						return recursiveVerifyDestination(destination.getParent());
 					break;

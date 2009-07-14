@@ -82,10 +82,6 @@ public class StubCreator {
 		fBuffer.append(Signature.toString(signature));
 		fBuffer.append(" "); //$NON-NLS-1$
 		fBuffer.append(field.getElementName());
-		if (Flags.isFinal(field.getFlags())) {
-			fBuffer.append("="); //$NON-NLS-1$
-			appendExpression(signature);
-		}
 		fBuffer.append(";"); //$NON-NLS-1$
 	}
 

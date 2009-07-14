@@ -693,7 +693,7 @@ public class ClasspathModifier {
 		try {
 			IIncludePathEntry[] entries= convert(newEntries);
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, null);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries);
 			if (!status.isOK())
 				throw new JavaScriptModelException(status);
 
@@ -712,7 +712,7 @@ public class ClasspathModifier {
 		try {
 			IIncludePathEntry[] entries= convert(cpProject.getCPListElements());
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(cpProject.getJavaProject(), entries, null);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(cpProject.getJavaProject(), entries);
 			if (!status.isOK())
 				throw new JavaScriptModelException(status);
 
@@ -996,7 +996,7 @@ public class ClasspathModifier {
 
 			IIncludePathEntry[] entries= convert(existingEntries);
 
-			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries, null);
+			IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(project, entries);
 			if (!status.isOK()) {
 				rootStatus.setError(status.getMessage());
 				throw new CoreException(rootStatus);

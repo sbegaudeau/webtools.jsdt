@@ -450,7 +450,6 @@ public class JavaScriptElementLabels {
 				break;
 			case IJavaScriptElement.IMPORT_CONTAINER:
 			case IJavaScriptElement.IMPORT_DECLARATION:
-			case IJavaScriptElement.PACKAGE_DECLARATION:
 				getDeclarationLabel(element, flags, buf);
 				break;
 			case IJavaScriptElement.JAVASCRIPT_PROJECT:

@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
@@ -215,10 +214,7 @@ public final class RefactoringAvailabilityTester {
 	}
 
 	public static boolean isDelegateCreationAvailable(final IField field) throws JavaScriptModelException {
-		return field.exists() && (Flags.isStatic(field.getFlags()) && Flags.isFinal(field.getFlags()) /*
-																					 * &&
-																					 * hasInitializer(field)
-																					 */);
+		return false;
 	}
 
 	public static boolean isDeleteAvailable(final IJavaScriptElement element) throws JavaScriptModelException {

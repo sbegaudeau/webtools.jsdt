@@ -128,8 +128,6 @@ public class JavaScriptElementComparator extends ViewerComparator {
 						}
 					case IJavaScriptElement.TYPE :
 						return getMemberCategory(MembersOrderPreferenceCache.TYPE_INDEX);
-					case IJavaScriptElement.PACKAGE_DECLARATION :
-						return PACKAGE_DECL;
 					case IJavaScriptElement.IMPORT_CONTAINER :
 						return IMPORT_CONTAINER;
 					case IJavaScriptElement.IMPORT_DECLARATION :

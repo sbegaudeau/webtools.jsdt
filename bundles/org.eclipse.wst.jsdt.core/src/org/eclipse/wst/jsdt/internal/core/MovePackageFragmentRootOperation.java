@@ -87,7 +87,7 @@ public class MovePackageFragmentRootOperation extends CopyPackageFragmentRootOpe
 			if (newCPIndex < newClasspath.length) {
 				System.arraycopy(newClasspath, 0, newClasspath = new IIncludePathEntry[newCPIndex], 0, newCPIndex);
 			}
-			IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(project, newClasspath, null);
+			IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(project, newClasspath);
 			if (status.isOK())
 				project.setRawIncludepath(newClasspath, progressMonitor);
 			// don't update classpath if status is not ok to avoid JavaScriptModelException (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=129991)

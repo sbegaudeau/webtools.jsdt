@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,31 +61,6 @@ void acceptField(
 	char[] name,
 	char[] typePackageName,
 	char[] typeName,
-	char[] correctionName,
-	int modifiers,
-	int correctionStart,
-	int correctionEnd);
-/**
- * Notification of an interface correction.
- *
- * @param packageName Declaring package name of the interface.
- * @param interfaceName Name of the interface.
- * @param correctionName The correction for the interface.
- *   Can include ';' for imported interfaces.
- * @param modifiers The modifiers of the interface.
- * @param correctionStart The start position of insertion of the correction of the interface.
- * @param correctionEnd The end position of insertion of the correction of the interface.
- *
- * NOTE - All package and type names are presented in their readable form:
- *    Package names are in the form "a.b.c".
- *    Nested type names are in the qualified form "A.M".
- *    The default package is represented by an empty array.
- * 
- * <b>This Method only applies to ECMAScript 4 which is not yet supported</b>
- */
-void acceptInterface(
-	char[] packageName,
-	char[] interfaceName,
 	char[] correctionName,
 	int modifiers,
 	int correctionStart,

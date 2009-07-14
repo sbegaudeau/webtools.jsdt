@@ -152,9 +152,6 @@ public class HierarchyLabelProvider extends AppearanceAwareLabelProvider {
 		ImageDescriptor desc= JavaElementImageProvider.getTypeImageDescriptor(isInner, false, flags, isDifferentScope(type));
 
 		int adornmentFlags= 0;
-		if (Flags.isFinal(flags)) {
-			adornmentFlags |= JavaScriptElementImageDescriptor.FINAL;
-		}
 		if (Flags.isAbstract(flags)) {
 			adornmentFlags |= JavaScriptElementImageDescriptor.ABSTRACT;
 		}

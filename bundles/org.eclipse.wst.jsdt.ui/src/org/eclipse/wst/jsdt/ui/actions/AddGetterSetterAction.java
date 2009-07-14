@@ -587,9 +587,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 	private void setOperationStatusFields(AddGetterSetterOperation op) {
 		// Set the status fields corresponding to the visibility and modifiers set
 		int flags= fVisibility;
-		if (fFinal) {
-			flags|= Flags.AccFinal;
-		}
+
 		op.setSort(fSort);
 		op.setVisibility(flags);
 	}
@@ -725,12 +723,12 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 			
 			List l= new ArrayList(2);
 			if (GetterSetterUtil.getGetter(field) == null) {
-				l.add(new GetterSetterEntry(field, true, Flags.isFinal(flags)));
+				l.add(new GetterSetterEntry(field, true, false));
 				incNumEntries();
 			}
 
 			if (GetterSetterUtil.getSetter(field) == null) {
-				l.add(new GetterSetterEntry(field, false, Flags.isFinal(flags)));
+				l.add(new GetterSetterEntry(field, false, false));
 				incNumEntries();
 			}
 

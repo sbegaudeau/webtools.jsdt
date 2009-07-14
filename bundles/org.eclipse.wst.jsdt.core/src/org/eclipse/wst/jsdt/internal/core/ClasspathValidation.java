@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
@@ -53,11 +52,9 @@ public class ClasspathValidation {
 
 		// use synchronized block to ensure consistency
 		IIncludePathEntry[] rawClasspath;
-		IPath outputLocation;
 		IJavaScriptModelStatus status;
 		synchronized (perProjectInfo) {
 			rawClasspath = perProjectInfo.rawClasspath;
-			outputLocation = perProjectInfo.outputLocation;
 			status = perProjectInfo.rawClasspathStatus; // status has been set during POST_CHANGE
 		}
 
@@ -69,7 +66,7 @@ public class ClasspathValidation {
 		// update resolved classpath problems
 		this.project.flushClasspathProblemMarkers(false/*cycle*/, false/*format*/);
 
-		if (rawClasspath != JavaProject.INVALID_CLASSPATH && outputLocation != null) {
+		if (rawClasspath != JavaProject.INVALID_CLASSPATH) {
 		 	for (int i = 0; i < rawClasspath.length; i++) {
 				status = ClasspathEntry.validateClasspathEntry(this.project, rawClasspath[i], false/*src attach*/, true /*recurse in container*/);
 				if (!status.isOK()) {
@@ -78,7 +75,7 @@ public class ClasspathValidation {
 					this.project.createClasspathProblemMarker(status);
 				}
 			 }
-			status = ClasspathEntry.validateClasspath(this.project, rawClasspath, outputLocation);
+			status = ClasspathEntry.validateClasspath(this.project, rawClasspath);
 			if (!status.isOK())
 				this.project.createClasspathProblemMarker(status);
 		 }

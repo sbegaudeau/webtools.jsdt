@@ -1005,8 +1005,7 @@ public class PasteAction extends SelectionDispatchAction{
 						elementType == IJavaScriptElement.METHOD;
 			}
 			private static boolean canPasteToCu(int elementType) {
-				return	elementType == IJavaScriptElement.PACKAGE_DECLARATION ||
-						elementType == IJavaScriptElement.TYPE ||
+				return	elementType == IJavaScriptElement.TYPE ||
 						elementType == IJavaScriptElement.IMPORT_DECLARATION;
 			}
 			PasteTypedSourcesRefactoring(TypedSource[] sources){
@@ -1096,7 +1095,7 @@ public class PasteAction extends SelectionDispatchAction{
 				final IType ancestor= getAncestorType(destination);
 				if (ancestor != null)
 					return ASTNodeSearchUtil.getAbstractTypeDeclarationNode(ancestor, unit);
-				if (kind == IJavaScriptElement.TYPE || kind == IJavaScriptElement.PACKAGE_DECLARATION || kind == IJavaScriptElement.IMPORT_DECLARATION || kind == IJavaScriptElement.IMPORT_CONTAINER)
+				if (kind == IJavaScriptElement.TYPE || kind == IJavaScriptElement.IMPORT_DECLARATION || kind == IJavaScriptElement.IMPORT_CONTAINER)
 					return unit;
 				return null;	
 			}
@@ -1108,8 +1107,6 @@ public class PasteAction extends SelectionDispatchAction{
 				switch(source.getType()){
 					case IJavaScriptElement.TYPE:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.TYPE_DECLARATION);
-					case IJavaScriptElement.PACKAGE_DECLARATION:
-						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.PACKAGE_DECLARATION);
 					case IJavaScriptElement.IMPORT_DECLARATION:
 						return rewrite.createStringPlaceholder(source.getSource(), ASTNode.IMPORT_DECLARATION);
 					default: Assert.isTrue(false, String.valueOf(source.getType()));

@@ -68,7 +68,6 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
-import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 
@@ -88,10 +87,8 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 	
 	private IJavaScriptProject fCurrJProject;
 	private IIncludePathEntry[] fEntries;
-	private IPath fOutputLocation;
 	
 	private IIncludePathEntry[] fNewEntries;
-	private IPath fNewOutputLocation;	
 	
 	private boolean fIsProjectAsSourceFolder;
 	
@@ -356,22 +353,9 @@ public class NewSourceFolderWizardPage extends NewElementWizardPage {
 				}
 					
 				fNewEntries= (IIncludePathEntry[]) newEntries.toArray(new IIncludePathEntry[newEntries.size()]);
-				fNewOutputLocation= fOutputLocation;
 
-				IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
+				IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJProject, fNewEntries);
 				if (!status.isOK()) {
-					if (fOutputLocation.equals(projPath)) {
-						fNewOutputLocation= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-						IStatus status2= JavaScriptConventions.validateClasspath(fCurrJProject, fNewEntries, fNewOutputLocation);
-						if (status2.isOK()) {
-							if (fIsProjectAsSourceFolder) {
-								fRootStatus.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceSFandOL, fNewOutputLocation.makeRelative().toString())); 
-							} else {
-								fRootStatus.setInfo(Messages.format(NewWizardMessages.NewSourceFolderWizardPage_warning_ReplaceOL, fNewOutputLocation.makeRelative().toString())); 
-							}
-							return;
-						}
-					}
 					fRootStatus.setError(status.getMessage());
 					return;
 				} else if (fIsProjectAsSourceFolder) {

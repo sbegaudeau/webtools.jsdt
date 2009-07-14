@@ -24,15 +24,6 @@ package org.eclipse.wst.jsdt.core;
  */
 public interface IField extends IMember {
 /**
- * Returns the constant value associated with this field
- * or <code>null</code> if this field has none.
- *
- * @return  the constant value associated with this field or <code>null</code> if this field has none.
- * @exception JavaScriptModelException if this element does not exist or if an
- *      exception occurs while accessing its corresponding resource
- */
-public Object getConstant() throws JavaScriptModelException;
-/**
  * Returns the simple name of this field.
  * @return the simple name of this field.
  */

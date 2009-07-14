@@ -508,14 +508,6 @@ public class JavaDocLocations {
 					appendTypePath(imp, pathBuffer);
 				}
 				break;
-			case IJavaScriptElement.PACKAGE_DECLARATION :
-				IJavaScriptElement pack= element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
-				if (pack != null) {
-					appendPackageSummaryPath((IPackageFragment) pack, pathBuffer);
-				} else {
-					return null;
-				}
-				break;
 			default :
 				return null;
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 	private static final Key PREF_SOURCE_COMPATIBILITY= getJDTCoreKey(JavaScriptCore.COMPILER_SOURCE);
 	private static final Key PREF_COMPLIANCE= getJDTCoreKey(JavaScriptCore.COMPILER_COMPLIANCE);
 	private static final Key PREF_PB_ASSERT_AS_IDENTIFIER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER);
-	private static final Key PREF_PB_ENUM_AS_IDENTIFIER= getJDTCoreKey(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER);
 	
 	private static final Key INTR_DEFAULT_COMPLIANCE= getJDTUIKey("internal.default.compliance"); //$NON-NLS-1$
 
@@ -112,7 +111,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 		
 		fRememberedUserCompliance= new String[] { // caution: order depends on IDX_* constants
 			getValue(PREF_PB_ASSERT_AS_IDENTIFIER),
-			getValue(PREF_PB_ENUM_AS_IDENTIFIER),
 			getValue(PREF_SOURCE_COMPATIBILITY),
 			getValue(PREF_CODEGEN_TARGET_PLATFORM),
 			getValue(PREF_COMPLIANCE),
@@ -125,7 +123,7 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 				PREF_LOCAL_VARIABLE_ATTR, PREF_LINE_NUMBER_ATTR, PREF_SOURCE_FILE_ATTR, PREF_CODEGEN_UNUSED_LOCAL,
 				PREF_CODEGEN_INLINE_JSR_BYTECODE,
 				PREF_COMPLIANCE, PREF_SOURCE_COMPATIBILITY,
-				PREF_CODEGEN_TARGET_PLATFORM, PREF_PB_ASSERT_AS_IDENTIFIER, PREF_PB_ENUM_AS_IDENTIFIER
+				PREF_CODEGEN_TARGET_PLATFORM, PREF_PB_ASSERT_AS_IDENTIFIER
 			};
 	}
 		
@@ -348,9 +346,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 			} else if (PREF_CODEGEN_TARGET_PLATFORM.equals(changedKey)) {
 				updateInlineJSREnableState();
 				fComplianceStatus= validateCompliance();
-			} else if (PREF_PB_ENUM_AS_IDENTIFIER.equals(changedKey) ||
-					PREF_PB_ASSERT_AS_IDENTIFIER.equals(changedKey)) {
-				fComplianceStatus= validateCompliance();
 			} else {
 				return;
 			}
@@ -456,9 +451,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 			
 			boolean isLessThan14= VERSION_1_3.equals(compatibility);
 			updateRememberedComplianceOption(PREF_PB_ASSERT_AS_IDENTIFIER, IDX_ASSERT_AS_IDENTIFIER, isLessThan14);
-		
-			boolean isLessThan15= isLessThan14 || VERSION_1_4.equals(compatibility);
-			updateRememberedComplianceOption(PREF_PB_ENUM_AS_IDENTIFIER, IDX_ENUM_AS_IDENTIFIER, isLessThan15);
 		}
 	}
 	
@@ -521,7 +513,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 				}
 				
 				fRememberedUserCompliance[IDX_ASSERT_AS_IDENTIFIER]= getValue(PREF_PB_ASSERT_AS_IDENTIFIER);
-				fRememberedUserCompliance[IDX_ENUM_AS_IDENTIFIER]= getValue(PREF_PB_ENUM_AS_IDENTIFIER);
 				fRememberedUserCompliance[IDX_SOURCE_COMPATIBILITY]= getValue(PREF_SOURCE_COMPATIBILITY);
 				fRememberedUserCompliance[IDX_CODEGEN_TARGET_PLATFORM]= getValue(PREF_CODEGEN_TARGET_PLATFORM);
 				fRememberedUserCompliance[IDX_COMPLIANCE]= oldComplianceLevel;
@@ -551,7 +542,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 		} else {
 			if (rememberOld && complianceLevel.equals(fRememberedUserCompliance[IDX_COMPLIANCE])) {
 				assertAsId= fRememberedUserCompliance[IDX_ASSERT_AS_IDENTIFIER];
-				enumAsId= fRememberedUserCompliance[IDX_ENUM_AS_IDENTIFIER];
 				source= fRememberedUserCompliance[IDX_SOURCE_COMPATIBILITY];
 				target= fRememberedUserCompliance[IDX_CODEGEN_TARGET_PLATFORM];
 			} else {
@@ -561,7 +551,6 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 			}
 		}
 		setValue(PREF_PB_ASSERT_AS_IDENTIFIER, assertAsId);
-		setValue(PREF_PB_ENUM_AS_IDENTIFIER, enumAsId);
 		setValue(PREF_SOURCE_COMPATIBILITY, source);
 		setValue(PREF_CODEGEN_TARGET_PLATFORM, target);
 		updateControls();
@@ -576,22 +565,18 @@ public class ComplianceConfigurationBlock extends OptionsConfigurationBlock {
 		Object complianceLevel= getValue(PREF_COMPLIANCE);
 		if ((VERSION_1_3.equals(complianceLevel)
 				&& IGNORE.equals(getValue(PREF_PB_ASSERT_AS_IDENTIFIER))
-				&& IGNORE.equals(getValue(PREF_PB_ENUM_AS_IDENTIFIER))
 				&& VERSION_1_3.equals(getValue(PREF_SOURCE_COMPATIBILITY))
 				&& VERSION_1_1.equals(getValue(PREF_CODEGEN_TARGET_PLATFORM)))
 			|| (VERSION_1_4.equals(complianceLevel)
 				&& WARNING.equals(getValue(PREF_PB_ASSERT_AS_IDENTIFIER))
-				&& WARNING.equals(getValue(PREF_PB_ENUM_AS_IDENTIFIER))
 				&& VERSION_1_3.equals(getValue(PREF_SOURCE_COMPATIBILITY))
 				&& VERSION_1_2.equals(getValue(PREF_CODEGEN_TARGET_PLATFORM)))
 			|| (VERSION_1_5.equals(complianceLevel)
 				&& ERROR.equals(getValue(PREF_PB_ASSERT_AS_IDENTIFIER))
-				&& ERROR.equals(getValue(PREF_PB_ENUM_AS_IDENTIFIER))
 				&& VERSION_1_5.equals(getValue(PREF_SOURCE_COMPATIBILITY))
 				&& VERSION_1_5.equals(getValue(PREF_CODEGEN_TARGET_PLATFORM)))
 			|| (VERSION_1_6.equals(complianceLevel)
 				&& ERROR.equals(getValue(PREF_PB_ASSERT_AS_IDENTIFIER))
-				&& ERROR.equals(getValue(PREF_PB_ENUM_AS_IDENTIFIER))
 				&& VERSION_1_6.equals(getValue(PREF_SOURCE_COMPATIBILITY))
 				&& VERSION_1_6.equals(getValue(PREF_CODEGEN_TARGET_PLATFORM)))) {
 			return DEFAULT_CONF;

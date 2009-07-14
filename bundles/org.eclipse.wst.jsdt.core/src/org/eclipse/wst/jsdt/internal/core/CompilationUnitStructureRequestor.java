@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -400,18 +399,6 @@ public void exitField(int initializationStart, int declarationEnd, int declarati
 	info.setSourceRangeEnd(declarationSourceEnd);
 	setChildren(info);
 
-	// remember initializer source if field is a constant
-	if (initializationStart != -1) {
-		int flags = info.flags;
-		if (Flags.isStatic(flags) && Flags.isFinal(flags)) {
-			int length = declarationEnd - initializationStart;
-			if (length > 0) {
-				char[] initializer = new char[length];
-				System.arraycopy(this.parser.scanner.source, initializationStart, initializer, 0, length);
-				info.initializationSource = initializer;
-			}
-		}
-	}
 	this.handleStack.pop();
 }
 /**

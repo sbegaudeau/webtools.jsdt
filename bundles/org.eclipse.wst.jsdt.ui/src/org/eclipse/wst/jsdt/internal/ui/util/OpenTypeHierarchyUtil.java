@@ -98,8 +98,6 @@ public class OpenTypeHierarchyUtil {
 					if (((IPackageFragment)elem).containsJavaResources())
 						return new IJavaScriptElement[] {elem};
 					break;
-				case IJavaScriptElement.PACKAGE_DECLARATION:
-					return new IJavaScriptElement[] { elem.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT) };
 				case IJavaScriptElement.IMPORT_DECLARATION:	
 					IImportDeclaration decl= (IImportDeclaration) elem;
 					if (decl.isOnDemand()) {

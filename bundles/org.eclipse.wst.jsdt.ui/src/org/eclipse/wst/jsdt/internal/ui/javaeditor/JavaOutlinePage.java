@@ -240,8 +240,6 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 				private ElementChangedListener fListener;
 
 				protected boolean matches(IJavaScriptElement element) {
-					if (element.getElementType() == IJavaScriptElement.PACKAGE_DECLARATION)
-						return true;
 					if (element.getElementType() == IJavaScriptElement.METHOD) {
 						String name= element.getElementName();
 						return (name != null && name.indexOf('<') >= 0);

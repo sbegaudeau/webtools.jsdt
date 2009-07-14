@@ -178,7 +178,6 @@ public class ProblemsLabelDecorator implements ILabelDecorator, ILightweightLabe
 					case IJavaScriptElement.JAVASCRIPT_UNIT:
 					case IJavaScriptElement.CLASS_FILE:
 						return getErrorTicksFromMarkers(element.getResource(), IResource.DEPTH_ONE, null);
-					case IJavaScriptElement.PACKAGE_DECLARATION:
 					case IJavaScriptElement.IMPORT_DECLARATION:
 					case IJavaScriptElement.IMPORT_CONTAINER:
 					case IJavaScriptElement.TYPE:

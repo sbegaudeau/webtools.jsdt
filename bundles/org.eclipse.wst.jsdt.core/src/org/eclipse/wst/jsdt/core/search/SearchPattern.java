@@ -1510,7 +1510,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 						maskedLimitTo,
 						matchRule);
 			break;
-		case IJavaScriptElement.PACKAGE_DECLARATION :
 		case IJavaScriptElement.PACKAGE_FRAGMENT :
 			searchPattern = createPackagePattern(element.getElementName(), maskedLimitTo, matchRule);
 			break;

@@ -193,9 +193,6 @@ public class JavaElementImageProvider {
 				}
 				case IJavaScriptElement.LOCAL_VARIABLE:
 					return JavaPluginImages.DESC_OBJS_LOCAL_VARIABLE;				
-
-				case IJavaScriptElement.PACKAGE_DECLARATION:
-					return JavaPluginImages.DESC_OBJS_PACKDECL;
 				
 				case IJavaScriptElement.IMPORT_DECLARATION:
 					return JavaPluginImages.DESC_OBJS_IMPDECL;
@@ -327,7 +324,7 @@ public class JavaElementImageProvider {
 				int modifiers= member.getFlags();
 				if (Flags.isAbstract(modifiers) && confirmAbstract(member))
 					flags |= JavaScriptElementImageDescriptor.ABSTRACT;
-				if (Flags.isFinal(modifiers) || isInterfaceOrAnnotationField(member) || isEnumConstant(member, modifiers))
+				if (isInterfaceOrAnnotationField(member) || isEnumConstant(member, modifiers))
 					flags |= JavaScriptElementImageDescriptor.FINAL;
 				if (Flags.isStatic(modifiers) || isInterfaceOrAnnotationFieldOrType(member) || isEnumConstant(member, modifiers))
 					flags |= JavaScriptElementImageDescriptor.STATIC;

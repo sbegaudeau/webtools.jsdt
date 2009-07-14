@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,25 +23,23 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.ModifierRewrite;
 import org.eclipse.wst.jsdt.internal.corext.dom.NodeFinder;
 import org.eclipse.wst.jsdt.internal.corext.util.CodeFormatterUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
@@ -200,13 +198,6 @@ public final class AddGetterSetterOperation implements IWorkspaceRunnable {
 			if (sibling instanceof IFunction)
 				insertion= ASTNodes.getParent(NodeFinder.perform(fASTRoot, ((IFunction) fInsert).getNameRange()), FunctionDeclaration.class);
 			addNewAccessor(type, field, GetterSetterUtil.getSetterStub(field, name, fSettings.createComments, fVisibility | (field.getFlags() & Flags.AccStatic)), rewrite, insertion);
-			if (Flags.isFinal(field.getFlags())) {
-				ASTNode fieldDecl= ASTNodes.getParent(NodeFinder.perform(fASTRoot, field.getNameRange()), FieldDeclaration.class);
-				if (fieldDecl != null) {
-					ModifierRewrite.create(astRewrite, fieldDecl).setModifiers(0, Modifier.FINAL, null);
-				}
-			}
-			
 		}
 	}
 

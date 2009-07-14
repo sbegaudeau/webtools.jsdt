@@ -117,7 +117,6 @@ public class GetterSetterUtil {
 		String argname= StubUtility.suggestArgumentName(project, accessorName, EMPTY);
 
 		boolean isStatic= Flags.isStatic(flags);
-		boolean isFinal= Flags.isFinal(flags);
 
 		String lineDelim= "\n"; // Use default line delimiter, as generated stub has to be formatted anyway //$NON-NLS-1$
 		StringBuffer buf= new StringBuffer();
@@ -132,8 +131,6 @@ public class GetterSetterUtil {
 		buf.append(' ');	
 		if (isStatic)
 			buf.append("static "); //$NON-NLS-1$
-		if (isFinal)
-			buf.append("final "); //$NON-NLS-1$				
 			
 		buf.append("void "); //$NON-NLS-1$
 		buf.append(setterName);
@@ -175,7 +172,6 @@ public class GetterSetterUtil {
 		IType parentType= field.getDeclaringType();
 		
 		boolean isStatic= Flags.isStatic(flags);
-		boolean isFinal= Flags.isFinal(flags);
 		
 		String typeName= Signature.toString(field.getTypeSignature());
 		String accessorName = NamingConventions.removePrefixAndSuffixForFieldName(field.getJavaScriptProject(), fieldName, field.getFlags());
@@ -194,8 +190,6 @@ public class GetterSetterUtil {
 		buf.append(' ');			
 		if (isStatic)
 			buf.append("static "); //$NON-NLS-1$
-		if (isFinal)
-			buf.append("final "); //$NON-NLS-1$
 			
 		buf.append(typeName);
 		buf.append(' ');

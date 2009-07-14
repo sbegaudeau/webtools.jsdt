@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,7 +120,6 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 			case IJavaScriptElement.JAVASCRIPT_PROJECT:
 			case IJavaScriptElement.PACKAGE_FRAGMENT:
-			case IJavaScriptElement.PACKAGE_DECLARATION:
 			case IJavaScriptElement.IMPORT_DECLARATION:	
 			case IJavaScriptElement.CLASS_FILE:
 			case IJavaScriptElement.JAVASCRIPT_UNIT:
@@ -224,9 +223,6 @@ public class OpenTypeHierarchyAction extends SelectionDispatchAction {
 						return ok;
 					}
 					return createStatus(ActionMessages.OpenTypeHierarchyAction_messages_no_java_resources); 
-				case IJavaScriptElement.PACKAGE_DECLARATION:
-					result.add(elem.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT));
-					return ok;
 				case IJavaScriptElement.IMPORT_DECLARATION:	
 					IImportDeclaration decl= (IImportDeclaration) elem;
 					if (decl.isOnDemand()) {

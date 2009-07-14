@@ -102,14 +102,6 @@ public interface IJavaScriptElement extends IAdaptable, ILookupScope{
 	int INITIALIZER = 10;
 
 	/**
-	 * Constant representing a package declaration within a compilation unit.
-	 * A JavaScript element with this type can be safely cast to {@link IPackageDeclaration}.
-	 * 
-	 * <b>This type only applies to ECMAScript 4 which is not yet supported</b>
-	 */
-	int PACKAGE_DECLARATION = 11;
-
-	/**
 	 * Constant representing all import declarations within a compilation unit.
 	 * A JavaScript element with this type can be safely cast to {@link IImportContainer}.
 	 * 

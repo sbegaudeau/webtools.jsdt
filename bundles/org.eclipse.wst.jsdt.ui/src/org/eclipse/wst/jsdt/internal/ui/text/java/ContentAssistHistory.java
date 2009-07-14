@@ -424,7 +424,7 @@ public final class ContentAssistHistory {
 	}
 
 	private boolean isCacheableLHS(IType type) throws JavaScriptModelException {
-		return !Flags.isFinal(type.getFlags()) && !UNCACHEABLE.contains(type.getFullyQualifiedName());
+		return !UNCACHEABLE.contains(type.getFullyQualifiedName());
 	}
 	
 	private boolean isCacheableRHS(IType type) throws JavaScriptModelException {

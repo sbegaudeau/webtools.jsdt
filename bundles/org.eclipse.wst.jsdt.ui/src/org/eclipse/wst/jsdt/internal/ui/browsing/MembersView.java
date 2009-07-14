@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -208,7 +208,6 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 			case IJavaScriptElement.METHOD:
 			case IJavaScriptElement.INITIALIZER:
 			case IJavaScriptElement.FIELD:
-			case IJavaScriptElement.PACKAGE_DECLARATION:
 			case IJavaScriptElement.IMPORT_CONTAINER:
 				return je;
 			case IJavaScriptElement.IMPORT_DECLARATION:
@@ -251,7 +250,6 @@ public class MembersView extends JavaBrowsingPart implements IPropertyChangeList
 				return findInputForJavaElement(((IClassFile)je).getType());
 			case IJavaScriptElement.IMPORT_DECLARATION:
 				return findInputForJavaElement(je.getParent());
-			case IJavaScriptElement.PACKAGE_DECLARATION:
 			case IJavaScriptElement.IMPORT_CONTAINER:
 				IJavaScriptElement parent= je.getParent();
 				if (parent instanceof IJavaScriptUnit) {

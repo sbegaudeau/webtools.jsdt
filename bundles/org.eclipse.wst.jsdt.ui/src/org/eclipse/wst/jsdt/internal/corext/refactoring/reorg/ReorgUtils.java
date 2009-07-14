@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,11 +176,6 @@ public class ReorgUtils {
 				return new String[]{element.getElementName()};
 			case IJavaScriptElement.METHOD:
 				return new String[]{element.getElementName()};
-			case IJavaScriptElement.PACKAGE_DECLARATION:
-				if (JavaElementUtil.isDefaultPackage(element))
-					return new String[0];
-				else
-					return new String[]{element.getElementName()};
 			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				return new String[]{element.getElementName()};
 			case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
@@ -220,8 +215,6 @@ public class ReorgUtils {
 					return RefactoringCoreMessages.ReorgUtils_10; 
 				else
 					return RefactoringCoreMessages.ReorgUtils_11; 
-			case IJavaScriptElement.PACKAGE_DECLARATION:
-				return RefactoringCoreMessages.ReorgUtils_12; 
 			case IJavaScriptElement.PACKAGE_FRAGMENT:
 				if (JavaElementUtil.isDefaultPackage(element))
 					return RefactoringCoreMessages.ReorgUtils_13; 

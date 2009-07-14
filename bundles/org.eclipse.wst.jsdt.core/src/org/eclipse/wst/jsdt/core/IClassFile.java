@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * Represents an entire non-editable JavaScript file.
@@ -29,50 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 */
 
 public interface IClassFile extends ITypeRoot {
-
-/**
- * Changes this  file handle into a working copy. A new {@link IBuffer} is
- * created using the given owner. Uses the primary owner if <code>null</code> is
- * specified.
- * <p>
- * When switching to working copy mode, problems are reported to the given
- * {@link IProblemRequestor}. Note that once in working copy mode, the given
- * {@link IProblemRequestor} is ignored. Only the original {@link IProblemRequestor}
- * is used to report subsequent problems.
- * </p>
- * <p>
- * Once in working copy mode, changes to this working copy or its children are done in memory.
- * Only the new buffer is affected.
- * </p>
- * <p>
- * Using {@link IJavaScriptUnit#commitWorkingCopy(boolean, IProgressMonitor)} on the working copy
- * will throw a <code>JavaScriptModelException</code> as a file is implicitly read-only.
- * </p>
- * <p>
- * If this file was already in working copy mode, an internal counter is incremented and no
- * other action is taken on this working copy. To bring this working copy back into the original mode
- * (where it reflects the underlying resource), {@link IJavaScriptUnit#discardWorkingCopy} must be call as many
- * times as {@link #becomeWorkingCopy(IProblemRequestor, WorkingCopyOwner, IProgressMonitor)}.
- * </p>
- * <p>
- * The primary javaScript unit of a file's working copy does not exist if the file is not
- * in working copy mode (<code>classFileWorkingCopy.getPrimary().exists() == false</code>).
- * </p>
- *
- * @param problemRequestor a requestor which will get notified of problems detected during
- * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
- * 	that the client is not interested in problems.
- * @param owner the given {@link WorkingCopyOwner}, or <code>null</code> for the primary owner
- * @param monitor a progress monitor used to report progress while opening this compilation unit
- * 	or <code>null</code> if no progress should be reported
- * @return a working copy for this file
- * @throws JavaScriptModelException if this javaScript unit could not become a working copy.
- * @see IJavaScriptUnit#discardWorkingCopy()
- * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
- * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
- * 	as well as the problem requestor returned by the working copy owner (if not null).
- */
-IJavaScriptUnit becomeWorkingCopy(IProblemRequestor problemRequestor, WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaScriptModelException;
 
 /**
  * Returns the bytes contained in this  file.

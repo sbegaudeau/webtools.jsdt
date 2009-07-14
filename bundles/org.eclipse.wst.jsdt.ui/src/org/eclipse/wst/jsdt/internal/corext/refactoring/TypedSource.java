@@ -100,8 +100,7 @@ public class TypedSource {
 				|| 	type == IJavaScriptElement.IMPORT_CONTAINER
 				|| 	type == IJavaScriptElement.IMPORT_DECLARATION
 				|| 	type == IJavaScriptElement.INITIALIZER
-				|| 	type == IJavaScriptElement.METHOD
-				|| 	type == IJavaScriptElement.PACKAGE_DECLARATION;
+				|| 	type == IJavaScriptElement.METHOD;
 	}
 	
 	

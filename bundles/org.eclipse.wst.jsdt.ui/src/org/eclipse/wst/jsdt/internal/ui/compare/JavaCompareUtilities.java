@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,8 +92,6 @@ class JavaCompareUtilities {
 			return getImageDescriptor("obj16/compare_method.gif"); //$NON-NLS-1$			
 		case IJavaScriptElement.FIELD:
 			return getImageDescriptor("obj16/compare_field.gif"); //$NON-NLS-1$
-		case IJavaScriptElement.PACKAGE_DECLARATION:
-			return JavaPluginImages.DESC_OBJS_PACKDECL;
 		case IJavaScriptElement.IMPORT_DECLARATION:
 			return JavaPluginImages.DESC_OBJS_IMPDECL;
 		case IJavaScriptElement.IMPORT_CONTAINER:
@@ -164,9 +162,6 @@ class JavaCompareUtilities {
 			int pos= id.lastIndexOf(INITIALIZER);
 			if (pos >= 0)
 				sb.append(id.substring(pos));
-			break;
-		case IJavaScriptElement.PACKAGE_DECLARATION:
-			sb.append(PACKAGEDECLARATION);
 			break;
 		case IJavaScriptElement.IMPORT_CONTAINER:
 			sb.append(IMPORT_CONTAINER);

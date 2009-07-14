@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -172,7 +172,7 @@ public class CUPositionCompletionProcessor implements IContentAssistProcessor, I
 			 * has no dispose() lifecycle method. A workaround could be to pass in a WorkingCopyOwner
 			 * and dispose the owner's working copies from the caller's dispose().
 			 */
-			cu= fCompletionContextRequestor.getOriginalCu().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, null, new NullProgressMonitor());
+			cu= fCompletionContextRequestor.getOriginalCu().getWorkingCopy(new WorkingCopyOwner() {/*subclass*/}, new NullProgressMonitor());
 			cu.getBuffer().setContents(cuString);
 			int cuPrefixLength= fCompletionContextRequestor.getBeforeString().length();
 			fCompletionRequestor.setOffsetReduction(cuPrefixLength);

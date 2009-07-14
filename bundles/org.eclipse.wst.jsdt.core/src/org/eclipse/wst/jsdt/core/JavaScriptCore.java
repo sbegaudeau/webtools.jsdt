@@ -311,22 +311,12 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_SYNTHETIC_ACCESS_EMULATION = PLUGIN_ID + ".compiler.problem.syntheticAccessEmulation"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
 	public static final String COMPILER_PB_NON_NLS_STRING_LITERAL = PLUGIN_ID + ".compiler.problem.nonExternalizedStringLiteral"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
 	public static final String COMPILER_PB_ASSERT_IDENTIFIER = PLUGIN_ID + ".compiler.problem.assertIdentifier"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
-	public static final String COMPILER_PB_ENUM_IDENTIFIER = PLUGIN_ID + ".compiler.problem.enumIdentifier"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
@@ -452,11 +442,6 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_MISSING_SERIAL_VERSION = PLUGIN_ID + ".compiler.problem.missingSerialVersion"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
 	public static final String COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST = PLUGIN_ID + ".compiler.problem.varargsArgumentNeedCast"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
@@ -467,27 +452,12 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_ANNOTATION_SUPER_INTERFACE = PLUGIN_ID + ".compiler.problem.annotationSuperInterface"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
 	public static final String COMPILER_PB_MISSING_OVERRIDE_ANNOTATION = PLUGIN_ID + ".compiler.problem.missingOverrideAnnotation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
 	public static final String COMPILER_PB_MISSING_DEPRECATED_ANNOTATION = PLUGIN_ID + ".compiler.problem.missingDeprecatedAnnotation"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
-	public static final String COMPILER_PB_INCOMPLETE_ENUM_SWITCH = PLUGIN_ID + ".compiler.problem.incompleteEnumSwitch"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @deprecated use {@link #COMPILER_PB_NULL_REFERENCE} instead
-	 */
-	public static final String COMPILER_PB_INCONSISTENT_NULL_CHECK = PLUGIN_ID + ".compiler.problem.inconsistentNullCheck"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
@@ -3974,35 +3944,30 @@ public final class JavaScriptCore extends Plugin {
 				options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
 				options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
 				options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.IGNORE);
-				options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.IGNORE);
 				break;
 			case ClassFileConstants.MAJOR_VERSION_1_4:
 				options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_4);
 				options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
 				options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_2);
 				options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.WARNING);
-				options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.WARNING);
 				break;
 			case ClassFileConstants.MAJOR_VERSION_1_5:
 				options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
 				options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
 				options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
 				options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
-				options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
 				break;
 			case ClassFileConstants.MAJOR_VERSION_1_6:
 				options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_6);
 				options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_6);
 				options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_6);
 				options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
-				options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
 				break;
 			case ClassFileConstants.MAJOR_VERSION_1_7:
 				options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_7);
 				options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_7);
 				options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_7);
 				options.put(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
-				options.put(JavaScriptCore.COMPILER_PB_ENUM_IDENTIFIER, JavaScriptCore.ERROR);
 		}
 	}
 
