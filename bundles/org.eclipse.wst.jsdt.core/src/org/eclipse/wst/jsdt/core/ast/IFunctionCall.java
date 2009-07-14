@@ -24,10 +24,7 @@ package org.eclipse.wst.jsdt.core.ast;
  */
 
 public interface IFunctionCall extends IExpression{
-
-	public IExpression getReciever();
 	public char[] getSelector();
 	public IExpression[] getArguments();
 	public IExpression getReceiver();
-	
 }

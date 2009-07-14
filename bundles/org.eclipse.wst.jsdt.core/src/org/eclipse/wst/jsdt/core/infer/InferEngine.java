@@ -1484,7 +1484,7 @@ public class InferEngine extends ASTVisitor {
 			namesChars[i]=names[i].toCharArray();
 		}
 		if (names.length>1)
-			return isMatch(messageSend.getReciever(), namesChars, namesChars.length-2);
+			return isMatch(messageSend.getReceiver(), namesChars, namesChars.length-2);
 		return true;
 	}
 
@@ -1494,7 +1494,7 @@ public class InferEngine extends ASTVisitor {
 			return false;
 
 		if (names.length>1)
-			return isMatch(messageSend.getReciever(), names, names.length-2);
+			return isMatch(messageSend.getReceiver(), names, names.length-2);
 		return true;
 	}
 

@@ -51,10 +51,6 @@ public class MessageSend extends Expression implements InvocationSite, IFunction
 		return this.selector;
 	}
 	
-	public IExpression getReciever() {
-		return this.receiver;
-	}
-	
 	public IExpression[] getArguments() {
 		return this.arguments;
 	}
