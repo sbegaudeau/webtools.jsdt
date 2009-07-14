@@ -1213,14 +1213,6 @@ public void emptyControlFlowStatement(int sourceStart, int sourceEnd) {
 		sourceStart,
 		sourceEnd);
 }
-public void enumConstantsCannotBeSurroundedByParenthesis(Expression expression) {
-	this.handle(
-		IProblem.EnumConstantsCannotBeSurroundedByParenthesis,
-		NoArgument,
-		NoArgument,
-		expression.sourceStart,
-		expression.sourceEnd);
-}
 public void errorNoMethodFor(MessageSend messageSend, TypeBinding recType, TypeBinding[] params) {
 	StringBuffer buffer = new StringBuffer();
 	StringBuffer shortBuffer = new StringBuffer();
@@ -1304,16 +1296,6 @@ public void finallyMustCompleteNormally(Block finallyBlock) {
 		NoArgument,
 		finallyBlock.sourceStart,
 		finallyBlock.sourceEnd);
-}
-public void finalMethodCannotBeOverridden(MethodBinding currentMethod, MethodBinding inheritedMethod) {
-	this.handle(
-		// Cannot override the final method from %1
-		// 8.4.3.3 - Final methods cannot be overridden or hidden.
-		IProblem.FinalMethodCannotBeOverridden,
-		new String[] {new String(inheritedMethod.declaringClass.readableName())},
-		new String[] {new String(inheritedMethod.declaringClass.shortReadableName())},
-		currentMethod.sourceStart(),
-		currentMethod.sourceEnd());
 }
 public void forbiddenReference(FieldBinding field, ASTNode location,
 		String messageTemplate, int problemId) {
@@ -1628,17 +1610,6 @@ public void illegalModifierForMethod(AbstractMethodDeclaration methodDecl) {
 		},
 		methodDecl.sourceStart,
 		methodDecl.sourceEnd);
-}
-public void illegalModifierForVariable(LocalDeclaration localDecl, boolean complainAsArgument) {
-	String[] arguments = new String[] {new String(localDecl.name)};
-	this.handle(
-		complainAsArgument
-			? IProblem.IllegalModifierForArgument
-			: IProblem.IllegalModifierForVariable,
-		arguments,
-		arguments,
-		localDecl.sourceStart,
-		localDecl.sourceEnd);
 }
 public void illegalPrimitiveOrArrayTypeForEnclosingInstance(TypeBinding enclosingType, ASTNode location) {
 	this.handle(
@@ -2000,16 +1971,6 @@ public void innerTypesCannotDeclareStaticInitializers(ReferenceBinding innerType
 		new String[] {new String(innerType.shortReadableName())},
 		initializer.sourceStart,
 		initializer.sourceStart);
-}
-public void interfaceCannotHaveConstructors(ConstructorDeclaration constructor) {
-	this.handle(
-		IProblem.InterfaceCannotHaveConstructors,
-		NoArgument,
-		NoArgument,
-		constructor.sourceStart,
-		constructor.sourceEnd,
-		constructor,
-		constructor.compilationResult());
 }
 public void interfaceCannotHaveInitializers(SourceTypeBinding type, FieldDeclaration fieldDecl) {
 	String[] arguments = new String[] {new String(type.sourceName())};
@@ -2606,14 +2567,6 @@ public void invalidTypeForCollection(Expression expression) {
 			NoArgument,
 			expression.sourceStart,
 			expression.sourceEnd);
-}
-public void invalidTypeReference(Expression expression) {
-	this.handle(
-		IProblem.InvalidTypeExpression,
-		NoArgument,
-		NoArgument,
-		expression.sourceStart,
-		expression.sourceEnd);
 }
 public void invalidTypeToSynchronize(Expression expression, TypeBinding type) {
 	this.handle(
@@ -4236,45 +4189,6 @@ public void referenceMustBeArrayTypeAt(TypeBinding arrayType, ArrayReference arr
 }
 public void reset() {
 	this.positionScanner = null;
-}
-private int retrieveClosingAngleBracketPosition(int start) {
-	if (this.referenceContext == null) return start;
-	CompilationResult compilationResult = this.referenceContext.compilationResult();
-	if (compilationResult == null) return start;
-	ICompilationUnit compilationUnit = compilationResult.getCompilationUnit();
-	if (compilationUnit == null) return start;
-	char[] contents = compilationUnit.getContents();
-	if (contents.length == 0) return start;
-	if (this.positionScanner == null) {
-		this.positionScanner = new Scanner(false, false, false, this.options.sourceLevel, this.options.complianceLevel, null, null, false);
-		this.positionScanner.returnOnlyGreater = true;
-	}
-	this.positionScanner.setSource(contents);
-	this.positionScanner.resetTo(start, contents.length);
-	int end = start;
-	int count = 0;
-	try {
-		int token;
-		loop: while ((token = this.positionScanner.getNextToken()) != TerminalTokens.TokenNameEOF) {
-			switch(token) {
-				case TerminalTokens.TokenNameLESS:
-					count++;
-					break;
-				case TerminalTokens.TokenNameGREATER:
-					count--;
-					if (count == 0) {
-						end = this.positionScanner.currentPosition - 1;
-						break loop;
-					}
-					break;
-				case TerminalTokens.TokenNameLBRACE :
-					break loop;
-			}
-		}
-	} catch(InvalidInputException e) {
-		// ignore
-	}
-	return end;
 }
 private int retrieveEndingPositionAfterOpeningParenthesis(int sourceStart, int sourceEnd, int numberOfParen) {
 	if (this.referenceContext == null) return sourceEnd;

@@ -110,9 +110,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.DuplicateFinalLocalInitialization:
 			case IProblem.FinalFieldAssignment:
 			case IProblem.DuplicateBlankFinalFieldInitialization:
-			//case IProblem.AnonymousClassCannotExtendFinalClass:
-			//case IProblem.ClassExtendFinalClass:
-			case IProblem.FinalMethodCannotBeOverridden:
 			case IProblem.InheritedMethodReducesVisibility:
 			case IProblem.MethodReducesVisibility:
 			//case IProblem.OverridingNonVisibleMethod:
@@ -135,10 +132,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.IllegalModifierForMemberInterface:
 			case IProblem.IllegalModifierForMemberClass:
 			case IProblem.IllegalModifierForLocalClass:
-			case IProblem.IllegalModifierForArgument:
 			case IProblem.IllegalModifierForField:
 			case IProblem.IllegalModifierForMethod:
-			case IProblem.IllegalModifierForVariable:
 			case IProblem.UnexpectedStaticModifierForField:
 			case IProblem.IllegalModifierCombinationFinalVolatileForField:
 			case IProblem.IllegalVisibilityModifierForInterfaceMemberType:
@@ -313,9 +308,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.OverridingNonVisibleMethod:
 				ModifierCorrectionSubProcessor.addChangeOverriddenModfierProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_VISIBLE);
 				break;
-			case IProblem.FinalMethodCannotBeOverridden:
-				ModifierCorrectionSubProcessor.addChangeOverriddenModfierProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_NON_FINAL);
-				break;
 			case IProblem.CannotOverrideAStaticMethodWithAnInstanceMethod:
 				ModifierCorrectionSubProcessor.addChangeOverriddenModfierProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_NON_STATIC);
 				break;
@@ -329,10 +321,8 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.IllegalModifierForMemberInterface:
 			case IProblem.IllegalModifierForMemberClass:
 			case IProblem.IllegalModifierForLocalClass:
-			case IProblem.IllegalModifierForArgument:
 			case IProblem.IllegalModifierForField:
 			case IProblem.IllegalModifierForMethod:
-			case IProblem.IllegalModifierForVariable:
 			case IProblem.IllegalVisibilityModifierForInterfaceMemberType:
 			case IProblem.UnexpectedStaticModifierForMethod:
 				ModifierCorrectionSubProcessor.addRemoveInvalidModfiersProposal(context, problem, proposals, 5);

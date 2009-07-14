@@ -346,9 +346,6 @@ public class ModifierCorrectionSubProcessor {
 				case IProblem.IllegalModifierForLocalClass:
 					excludedModifiers= ~(Modifier.ABSTRACT | Modifier.FINAL | Modifier.STRICTFP);
 					break;
-				case IProblem.IllegalModifierForArgument:
-					excludedModifiers= ~Modifier.FINAL;
-					break;
 				case IProblem.IllegalModifierForField:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC |  Modifier.FINAL | Modifier.VOLATILE | Modifier.TRANSIENT);
 					break;
@@ -357,9 +354,6 @@ public class ModifierCorrectionSubProcessor {
 					if (((IFunctionBinding) binding).isConstructor()) {
 						excludedModifiers |= Modifier.STATIC;
 					}
-					break;
-				case IProblem.IllegalModifierForVariable:
-					excludedModifiers= ~Modifier.FINAL;
 					break;
 				default:
 					Assert.isTrue(false, "not supported"); //$NON-NLS-1$

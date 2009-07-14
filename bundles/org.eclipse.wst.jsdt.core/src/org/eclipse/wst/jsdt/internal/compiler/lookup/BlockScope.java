@@ -180,10 +180,6 @@ private void checkAndSetModifiersForVariable(LocalVariableBinding varBinding) {
 	}
 	int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
 
-	int unexpectedModifiers = ~ClassFileConstants.AccFinal;
-	if ((realModifiers & unexpectedModifiers) != 0 && varBinding.declaration != null){
-		problemReporter().illegalModifierForVariable(varBinding.declaration, this instanceof MethodScope);
-	}
 	varBinding.modifiers = modifiers;
 }
 

@@ -429,7 +429,6 @@ void setSourceStart(int sourceStart);
 	int AssignmentHasNoEffect = Internal + 178;
 	int PossibleAccidentalBooleanAssignment = Internal + 179;
 	int SuperfluousSemicolon = Internal + 180;
-	int UnnecessaryArgumentCast = Internal + TypeRelated + 182;
 	int UnnecessaryInstanceof = Internal + TypeRelated + 183;
 	int FinallyMustCompleteNormally = Internal + 184;
 	int UnusedMethodDeclaredThrownException = Internal + 185;
@@ -457,13 +456,11 @@ void setSourceStart(int sourceStart);
 	int ThisInStaticContext = Internal + 200;
 	int StaticMethodRequested = Internal + MethodRelated + 201;
 	int IllegalDimension = Internal + 202;
-	int InvalidTypeExpression = Internal + 203;
 	int ParsingError = Syntax + Internal + 204;
 	int ParsingErrorNoSuggestion = Syntax + Internal + 205;
 	int InvalidUnaryExpression = Syntax + Internal + 206;
 
 	// syntax errors
-	int InterfaceCannotHaveConstructors = Syntax + Internal + 207;
 	int ArrayConstantsOnlyInArrayInitializers = Syntax + Internal + 208;
 	int ParsingErrorOnKeyword = Syntax + Internal + 209;
 	int ParsingErrorOnKeywordNoSuggestion = Syntax + Internal + 210;
@@ -556,7 +553,6 @@ void setSourceStart(int sourceStart);
 
 	// method related problems
 	int DuplicateMethod = MethodRelated + 355;
-	int IllegalModifierForArgument = MethodRelated + 356;
 	int DuplicateModifierForMethod = MethodRelated + 357;
 	int IllegalModifierForMethod = MethodRelated + 358;
 	int IllegalModifierForInterfaceMethod = MethodRelated + 359;
@@ -575,15 +571,11 @@ void setSourceStart(int sourceStart);
 
 	int ImportNotFound =  ImportRelated + 389 + ProblemReasons.NotFound; // ImportRelated + 390
 
-	int InvalidTypeForStaticImport =  ImportRelated + 391;
-
 	// local variable related problems
 	int DuplicateModifierForVariable = MethodRelated + 395;
-	int IllegalModifierForVariable = MethodRelated + 396;
 
 	// method verifier problems
 	int AbstractMethodMustBeImplemented = MethodRelated + 400;
-	int FinalMethodCannotBeOverridden = MethodRelated + 401;
 	int IncompatibleExceptionInThrowsClause = MethodRelated + 402;
 	int IncompatibleExceptionInInheritedMethodThrowsClause = MethodRelated + 403;
 	int IncompatibleReturnType = MethodRelated + 404;
@@ -619,7 +611,6 @@ void setSourceStart(int sourceStart);
 
 	// 1.5 features
 	int UseEnumAsAnIdentifier = Internal + 441;
-	int EnumConstantsCannotBeSurroundedByParenthesis = Syntax + Internal + 442;
 
 	// detected task
 	int Task = Internal + 450;

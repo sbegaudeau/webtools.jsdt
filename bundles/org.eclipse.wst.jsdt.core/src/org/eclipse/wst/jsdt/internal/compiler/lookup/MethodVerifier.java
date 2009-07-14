@@ -155,8 +155,6 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 				
 			}
 
-			if (inheritedMethod.isFinal())
-				problemReporter(currentMethod).finalMethodCannotBeOverridden(currentMethod, inheritedMethod);
 			if (!isAsVisible(currentMethod, inheritedMethod))
 				problemReporter(currentMethod).visibilityConflict(currentMethod, inheritedMethod);
 			if (options.reportDeprecationWhenOverridingDeprecatedMethod && inheritedMethod.isViewedAsDeprecated()) {
