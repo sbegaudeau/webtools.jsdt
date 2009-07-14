@@ -155,7 +155,7 @@ protected void removeClasspathEntries(IIncludePathEntry[] entries) throws JavaSc
 public void setUp() throws Exception {
 	super.setUp();
 	this.problemRequestor =  new ProblemRequestor();
-	this.workingCopy = getCompilationUnit("Reconciler/src/p1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+	this.workingCopy = getCompilationUnit("Reconciler/src/p1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 	this.problemRequestor.initialize(this.workingCopy.getSource().toCharArray());
 	startDeltas();
 }
@@ -226,7 +226,7 @@ private void setUpWorkingCopy(String path, String contents) throws JavaScriptMod
 }
 private void setUpWorkingCopy(String path, String contents, WorkingCopyOwner owner) throws JavaScriptModelException {
 	this.workingCopy.discardWorkingCopy();
-	this.workingCopy = getCompilationUnit(path).getWorkingCopy(owner, this.problemRequestor, null);
+	this.workingCopy = getCompilationUnit(path).getWorkingCopy(owner, null);
 	setWorkingCopyContents(contents);
 	this.workingCopy.makeConsistent(null);
 }
@@ -1468,7 +1468,7 @@ public void testMethodWithError04() throws CoreException {
 	this.workingCopy.discardWorkingCopy();
 	IJavaScriptUnit x = getCompilationUnit("Reconciler", "src", "p1", "X.js");
 	this.problemRequestor = myPbRequestor;
-	this.workingCopy = x.getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+	this.workingCopy = x.getWorkingCopy(new WorkingCopyOwner() {}, null);
 
 	String contents =
 		"package p1;\n" +
@@ -1549,7 +1549,7 @@ public void testMethodWithError05() throws CoreException {
 	
 		IJavaScriptUnit compilationUnit = getCompilationUnit("Reconciler", "src", "tests", "AbstractSearchableSource.js");
 		ProblemRequestor pbReq =  new ProblemRequestor();
-		IJavaScriptUnit wc = compilationUnit.getWorkingCopy(new WorkingCopyOwner() {}, pbReq, null);
+		IJavaScriptUnit wc = compilationUnit.getWorkingCopy(new WorkingCopyOwner() {}, null);
 		pbReq.initialize(contents.toCharArray());
 		startDeltas();
 		wc.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
@@ -1592,7 +1592,7 @@ public void testMethodWithError06() throws CoreException {
 		);
 		this.problemRequestor =  new ProblemRequestor();
 		this.problemRequestor.initialize(contents.toCharArray());
-		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1626,7 +1626,7 @@ public void testMethodWithError07() throws CoreException {
 		);
 		this.problemRequestor =  new ProblemRequestor();
 		this.problemRequestor.initialize(contents.toCharArray());
-		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 
 		// Close working copy
 		JavaModelManager.getJavaModelManager().removeInfoAndChildren((CompilationUnit)workingCopy); // use a back door as working copies cannot be closed
@@ -1674,7 +1674,7 @@ public void testMethodWithError08() throws CoreException {
 		);
 		this.problemRequestor =  new ProblemRequestor();
 		this.problemRequestor.initialize(contents.toCharArray());
-		this.workingCopy = getCompilationUnit("Reconciler/src/p2/X01.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler/src/p2/X01.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 
 		// Close working copy
 		JavaModelManager.getJavaModelManager().removeInfoAndChildren((CompilationUnit)workingCopy); // use a back door as working copies cannot be closed
@@ -1701,7 +1701,7 @@ public void testMethodWithError09() throws CoreException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
 	IJavaScriptUnit workingCopy1 = null;
 	try {
-		workingCopy1 = getCompilationUnit("/Reconciler/src/p1/X1.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler/src/p1/X1.js").getWorkingCopy(owner, null);
 		workingCopy1.getBuffer().setContents(
 			"package p1;\n" +
 			"public abstract class X1 {\n" +
@@ -1711,7 +1711,7 @@ public void testMethodWithError09() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler/src/p/X.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler/src/p/X.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package p;\n" +
 			"public class X extends p1.X1 {\n" +
@@ -1741,7 +1741,7 @@ public void testMethodWithError10() throws CoreException {
 	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
-		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null);
 		workingCopy1.getBuffer().setContents(
 			"package test.cheetah;\n"+
 			"import java.util.List;\n"+
@@ -1753,7 +1753,7 @@ public void testMethodWithError10() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package test.cheetah;\n"+
 			"import java.util.Stack;\n"+
@@ -1787,7 +1787,7 @@ public void testMethodWithError11() throws CoreException {
 	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
-		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null);
 		workingCopy1.getBuffer().setContents(
 			"package test.cheetah;\n"+
 			"import java.util.*;\n"+
@@ -1800,7 +1800,7 @@ public void testMethodWithError11() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package test.cheetah;\n"+
 			"import java.util.*;\n"+
@@ -1836,7 +1836,7 @@ public void testMethodWithError12() throws CoreException {
 	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
-		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null);
 		workingCopy1.getBuffer().setContents(
 			"package test.cheetah;\n"+
 			"import java.util.*;\n"+
@@ -1849,7 +1849,7 @@ public void testMethodWithError12() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler15/src/test/cheetah/NestedGenericsTest.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package test.cheetah;\n"+
 			"import java.util.*;\n"+
@@ -1884,7 +1884,7 @@ public void testMethodWithError13() throws CoreException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
 	IJavaScriptUnit workingCopy1 = null;
 	try {
-		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null);
 		createFolder("/Reconciler15/src/test");
 		workingCopy1.getBuffer().setContents(
 			"package test;\n"+
@@ -1899,7 +1899,7 @@ public void testMethodWithError13() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler15/src/test/Y.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler15/src/test/Y.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package test;\n"+
 			"public class Y {\n"+
@@ -1936,7 +1936,7 @@ public void testMethodWithError14() throws CoreException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
 	IJavaScriptUnit workingCopy1 = null;
 	try {
-		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null, null);
+		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null);
 		createFolder("/Reconciler15/src/test");
 		workingCopy1.getBuffer().setContents(
 			"package test;\n"+
@@ -1947,7 +1947,7 @@ public void testMethodWithError14() throws CoreException {
 		workingCopy1.makeConsistent(null);
 		
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler15/src/test/Y.js").getWorkingCopy(owner, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler15/src/test/Y.js").getWorkingCopy(owner, null);
 		setWorkingCopyContents(
 			"package test;\n"+
 			"public class Y {\n"+
@@ -2733,7 +2733,7 @@ public void testTypeWithDollarName() throws CoreException {
 			contents
 		);
 		this.problemRequestor =  new ProblemRequestor();
-		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y$Z.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y$Z.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		
 		this.problemRequestor.initialize(contents.toCharArray());
 		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
@@ -2893,7 +2893,7 @@ public void testBug36032a() throws CoreException, InterruptedException {
 		// Get compilation unit and reconcile it
 		char[] sourceChars = source.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopy = getCompilationUnit("/P/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, problemRequestor, null);
+		this.workingCopy = getCompilationUnit("/P/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		this.workingCopy.getBuffer().setContents(source);
 		this.workingCopy.reconcile(AST.JLS3, true, null, null);
 		assertNoProblem(sourceChars, this.workingCopy);
@@ -2948,7 +2948,7 @@ public void testBug36032b() throws CoreException, InterruptedException {
 		// Get compilation unit and reconcile it
 		char[] sourceChars = source.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopy = getCompilationUnit("/P/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("/P/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		this.workingCopy.getBuffer().setContents(source);
 		this.workingCopy.reconcile(AST.JLS3, true, null, null);
 		assertNoProblem(sourceChars, this.workingCopy);
@@ -3023,7 +3023,7 @@ public void testBug36032c() throws CoreException, InterruptedException {
 		// Get compilation unit and reconcile it => expect no error
 		char[] sourceChars = source.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopy = getCompilationUnit("/P2/test/Test2.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopy = getCompilationUnit("/P2/test/Test2.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		this.workingCopy.getBuffer().setContents(source);
 		this.workingCopy.reconcile(AST.JLS3, true, null, null);
 		assertNoProblem(sourceChars, this.workingCopy);
@@ -3061,12 +3061,12 @@ public void testBug118823() throws CoreException, InterruptedException, IOExcept
 		// Get first working copy and verify that there's no error
 		char[] sourceChars = source.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourceChars, this.workingCopies[0]);
 
 		// Get second working copy and verify that there's one error (missing secondary type)
 		this.problemRequestor.initialize(source2.toCharArray());
-		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertEquals("Working copy should not find secondary type 'Secondary'!", 1, this.problemRequestor.problemCount);
 		assertProblems("Working copy should have problem!",
 			"----------\n" +
@@ -3142,12 +3142,12 @@ public void testBug118823b() throws CoreException, InterruptedException {
 		// Get first working copy and verify that there's no error
 		char[] sourceChars = source1.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourceChars, this.workingCopies[0]);
 
 		// Get second working copy and verify that there's one error (missing secondary type)
 		this.problemRequestor.initialize(source2.toCharArray());
-		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertEquals("Working copy should not find secondary type 'Secondary'!", 1, this.problemRequestor.problemCount);
 		assertProblems("Working copy should have problem!",
 			"----------\n" +
@@ -3211,12 +3211,12 @@ public void testBug118823c() throws CoreException, InterruptedException {
 		// Get first working copy and verify that there's no error
 		char[] sourceChars = source1.toCharArray();
 		this.problemRequestor.initialize(sourceChars);
-		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[0] = getCompilationUnit("/P1/Test.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourceChars, this.workingCopies[0]);
 
 		// Get second working copy and verify that there's one error (missing secondary type)
 		this.problemRequestor.initialize(source2.toCharArray());
-		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[1] = getCompilationUnit("/P2/A.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertEquals("Working copy should not find secondary type 'Secondary'!", 1, this.problemRequestor.problemCount);
 		assertProblems("Working copy should have problem!",
 			"----------\n" +
@@ -3306,17 +3306,17 @@ public void test1001() throws CoreException, InterruptedException, IOException {
 
 		// Get first working copy and verify that there's no error
 		this.problemRequestor.initialize(sourcesAsCharArrays[0]);
-		this.workingCopies[0] = getCompilationUnit("/P1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[0] = getCompilationUnit("/P1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourcesAsCharArrays[0], this.workingCopies[0]);
 
 		// Get second working copy and verify that there's no error
 		this.problemRequestor.initialize(sourcesAsCharArrays[1]);
-		this.workingCopies[1] = getCompilationUnit("/P2/I.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[1] = getCompilationUnit("/P2/I.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourcesAsCharArrays[1], this.workingCopies[1]);
 
 		// Get third working copy and verify that all expected errors are here
 		this.problemRequestor.initialize(sourcesAsCharArrays[2]);
-		this.workingCopies[2] = getCompilationUnit("/P3/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[2] = getCompilationUnit("/P3/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertProblems("Working copy should have problems:",
 			"----------\n" + 
 			"1. ERROR in /P3/Y.java (at line 1)\n" + 
@@ -3380,17 +3380,17 @@ public void test1002() throws CoreException, InterruptedException, IOException {
 
 		// Get first working copy and verify that there's no error
 		this.problemRequestor.initialize(sourcesAsCharArrays[0]);
-		this.workingCopies[0] = getCompilationUnit("/P1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[0] = getCompilationUnit("/P1/X.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourcesAsCharArrays[0], this.workingCopies[0]);
 
 		// Get second working copy and verify that there's no error
 		this.problemRequestor.initialize(sourcesAsCharArrays[1]);
-		this.workingCopies[1] = getCompilationUnit("/P2/I.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[1] = getCompilationUnit("/P2/I.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertNoProblem(sourcesAsCharArrays[1], this.workingCopies[1]);
 
 		// Get third working copy and verify that all expected errors are here
 		this.problemRequestor.initialize(sourcesAsCharArrays[2]);
-		this.workingCopies[2] = getCompilationUnit("/P3/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
+		this.workingCopies[2] = getCompilationUnit("/P3/Y.js").getWorkingCopy(new WorkingCopyOwner() {}, null);
 		assertProblems("Working copy should have problems:",
 			"----------\n" + 
 			"1. ERROR in /P3/Y.java (at line 1)\n" + 

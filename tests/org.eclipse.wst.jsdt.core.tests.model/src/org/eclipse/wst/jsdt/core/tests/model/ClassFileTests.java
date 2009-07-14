@@ -561,7 +561,7 @@ public void testVarargs() throws JavaScriptModelException {
  */
 public void testWorkingCopy01() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(null, null);
 	assertElementDescendants(
 		"Unexpected children", 
 		"[Working copy] X.class\n" + 
@@ -580,7 +580,7 @@ public void testWorkingCopy02() throws CoreException {
 		attachSource(this.jarRoot, null, null);
 		IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
 		assertNull("Should not have source attached", clazz.getSource());
-		this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+		this.workingCopy = clazz.getWorkingCopy(null, null);
 		assertElementDescendants(
 			"Unexpected children", 
 			"[Working copy] X.class\n" + 
@@ -599,7 +599,7 @@ public void testWorkingCopy02() throws CoreException {
  */
 public void testWorkingCopy03() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(null, null);
 	this.workingCopy.getBuffer().setContents(
 		"package workingcopy;\n" +
 		"public class X {\n" + 
@@ -622,7 +622,7 @@ public void testWorkingCopy03() throws CoreException {
  */
 public void testWorkingCopy04() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(null, null);
 	this.workingCopy.getBuffer().setContents(
 		"package workingcopy;\n" +
 		"public class X {\n" + 
@@ -647,7 +647,7 @@ public void testWorkingCopy04() throws CoreException {
  */
 public void testWorkingCopy05() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(null, null);
 	this.workingCopy.createType(
 		"class Y {\n" + 
 		"}",
@@ -670,7 +670,7 @@ public void testWorkingCopy05() throws CoreException {
 public void testWorkingCopy06() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, owner, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(owner, null);
 	IJavaScriptUnit primary = this.workingCopy.getPrimary();
 	assertEquals("Unexpected owner of primary working copy", null, primary.getOwner());
 }
@@ -681,7 +681,7 @@ public void testWorkingCopy06() throws CoreException {
 public void testWorkingCopy07() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, owner, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(owner, null);
 	this.workingCopy.getBuffer().setContents(
 		"package workingcopy;\n" +
 		"public class X {\n" + 
@@ -706,7 +706,7 @@ public void testWorkingCopy07() throws CoreException {
 public void testWorkingCopy08() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, owner, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(owner, null);
 	this.workingCopy.getBuffer().setContents(
 		"package workingcopy;\n" +
 		"public class X {\n" + 
@@ -720,7 +720,7 @@ public void testWorkingCopy08() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
 		ProblemRequestor problemRequestor = new ProblemRequestor();
-		copy = cu.getWorkingCopy(owner, problemRequestor, null/*no prpgress*/);
+		copy = cu.getWorkingCopy(owner, null/*no prpgress*/);
 		copy.getBuffer().setContents(
 			"public class Y {\n" +
 			"  void foo(workingcopy.X x) {\n" +
@@ -747,7 +747,7 @@ public void testWorkingCopy08() throws CoreException {
 public void testWorkingCopy09() throws CoreException {
 	IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("X.class");
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, owner, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(owner, null);
 	this.workingCopy.getBuffer().setContents(	"");
 	this.workingCopy.makeConsistent(null);
 	
@@ -755,7 +755,7 @@ public void testWorkingCopy09() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
 		ProblemRequestor problemRequestor = new ProblemRequestor();
-		copy = cu.getWorkingCopy(owner, problemRequestor, null/*no prpgress*/);
+		copy = cu.getWorkingCopy(owner, null/*no prpgress*/);
 		copy.getBuffer().setContents(
 			"public class Y {\n" +
 			"  workingcopy.X x;\n" +
@@ -785,7 +785,7 @@ public void testWorkingCopy10() throws CoreException {
 		attachSource(this.jarRoot, null, null);
 		IClassFile clazz = this.jarRoot.getPackageFragment("workingcopy").getClassFile("Y.class");
 		assertNull("Should not have source attached", clazz.getSource());
-		this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+		this.workingCopy = clazz.getWorkingCopy(null, null);
 		assertSourceEquals(
 			"Unexpected source", 
 			"package workingcopy;\n" + 
@@ -810,7 +810,7 @@ public void testWorkingCopy10() throws CoreException {
 public void testWorkingCopy11() throws CoreException {
 	IPackageFragment pkg = this.jarRoot.getPackageFragment("workingcopy");
 	IClassFile clazz = pkg.getClassFile("X.class");
-	this.workingCopy = clazz.becomeWorkingCopy(null/*no problem requestor*/, null/*primary owner*/, null/*no progress*/);
+	this.workingCopy = clazz.getWorkingCopy(null, null);
 	this.workingCopy.getBuffer().setContents(	"");
 	this.workingCopy.makeConsistent(null);
 	

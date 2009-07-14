@@ -110,21 +110,7 @@ public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] des
 					assertTrue("The original element must not exist", !element.exists());
 			}
 			assertTrue("Moved element should exist", moved.exists());
-	
-			IJavaScriptElement container = destinations[i];
-			if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
-				if (container.getElementName().equals("")) {
-					// default package
-					if (moved.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
-						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
-						for (int j = 0; j < children.length; j++) {
-							if (children[j].getElementType() == IJavaScriptElement.PACKAGE_DECLARATION) {
-								assertTrue("Should not find package decl", false);
-							}
-						}
-					}
-				}
-			}
+
 			IJavaScriptElementDelta destDelta = null;
 			if (isMainType(element, destinations[i]) && names != null && names[i] != null) { //moved/renamed main type to same cu
 				destDelta = getDeltaFor(moved.getParent());
@@ -522,7 +508,7 @@ public void testCopyWorkingCopyDestination() throws CoreException {
 			"}"
 		);
 		copy = getCompilationUnit("/P/src/p2/X.js");
-		copy.becomeWorkingCopy(null, null);
+		copy.becomeWorkingCopy(null);
 	
 		copyPositive(cuSource, pkgDest, null, null, true/*force*/);
 	} finally {
@@ -933,7 +919,7 @@ public void testMoveWorkingCopy2() throws CoreException {
 			"}"
 		);
 		copy = getCompilationUnit("/P/src/p1/X.js");
-		copy.becomeWorkingCopy(null, null);
+		copy.becomeWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");

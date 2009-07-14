@@ -110,7 +110,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		this.workingCopy = getCompilationUnit("P/X.js");
 		assertTrue("should not be in working copy mode", !this.workingCopy.isWorkingCopy());
 		
-		this.workingCopy.becomeWorkingCopy(null, null);
+		this.workingCopy.becomeWorkingCopy(null);
 		assertTrue("should be in working copy mode", this.workingCopy.isWorkingCopy());
 	}
 	
@@ -118,10 +118,10 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	 * Tests that a working copy remains a working copy when becomeWorkingCopy() is called.
 	 */
 	public void testBecomeWorkingCopy2() throws CoreException {
-		this.workingCopy = getCompilationUnit("P/X.js").getWorkingCopy(new TestWorkingCopyOwner(), null, null);
+		this.workingCopy = getCompilationUnit("P/X.js").getWorkingCopy(new TestWorkingCopyOwner(), null);
 		assertTrue("should be in working copy mode", this.workingCopy.isWorkingCopy());
 		
-		this.workingCopy.becomeWorkingCopy(null, null);
+		this.workingCopy.becomeWorkingCopy(null);
 		assertTrue("should still be in working copy mode", this.workingCopy.isWorkingCopy());
 	}
 	
@@ -132,7 +132,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testBecomeWorkingCopy3() throws CoreException {
 		this.workingCopy = getCompilationUnit("P/Y.js");
 
-		this.workingCopy.becomeWorkingCopy(null, null);
+		this.workingCopy.becomeWorkingCopy(null);
 		assertSortedElementsEqual(
 			"Unexpected children of default package",
 			"X.java [in <default> [in <project root> [in P]]]\n" +
@@ -148,14 +148,14 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 
 		// count the number of time isCanceled() is called when converting this source unit
 		CancelCounter counter = new CancelCounter();
-		this.workingCopy.becomeWorkingCopy(null, counter);
+		this.workingCopy.becomeWorkingCopy(counter);
 		this.workingCopy.discardWorkingCopy();
 
 		// throw an OperatonCanceledException at each point isCanceled() is called
 		for (int i = 0; i < counter.count; i++) {
 			boolean gotException = false;
 			try {
-				this.workingCopy.becomeWorkingCopy(null, new Canceler(i));
+				this.workingCopy.becomeWorkingCopy(new Canceler(i));
 			} catch (OperationCanceledException e) {
 				gotException = true;
 			}
@@ -164,7 +164,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		}
 		
 		// last should not throw an OperationCanceledException
-		this.workingCopy.becomeWorkingCopy(null, new Canceler(counter.count));
+		this.workingCopy.becomeWorkingCopy(new Canceler(counter.count));
 	}
 	
 	/*
@@ -178,7 +178,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			String newContents = 
 				"public class Y {\n" +
 				"  void foo() {\n" +
@@ -207,7 +207,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			this.workingCopy.getBuffer().setContents(
 				"public class Y {\n" +
 				"  void foo() {\n" +
@@ -242,7 +242,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			this.workingCopy.getBuffer().setContents(
 				"public class Y {\n" +
 				"  void foo() {\n" +
@@ -306,7 +306,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
 			startDeltas();
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			assertDeltas(
 				"Unexpected delta",
 				"P[*]: {CHILDREN}\n" + 
@@ -330,7 +330,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		try {
 			this.workingCopy = getCompilationUnit("P/Y.js");
 			startDeltas();
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			assertDeltas(
 				"Unexpected delta",
 				"P[*]: {CHILDREN}\n" + 
@@ -384,7 +384,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 
 			startDeltas();
 			this.workingCopy.discardWorkingCopy();
@@ -416,7 +416,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			this.workingCopy.getType("Y").createField("int x;", null, false, null);
 
 			startDeltas();
@@ -444,7 +444,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testDeltaDiscardPrimaryWorkingCopy3() throws CoreException {
 		try {
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 
 			startDeltas();
 			this.workingCopy.discardWorkingCopy();
@@ -468,7 +468,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testDeltaDiscardPrimaryWorkingCopy4() throws CoreException {
 		try {
 			this.workingCopy = getCompilationUnit("P/X.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 
 			this.workingCopy.getBuffer().setContents("/*annotation*/public class X {}");
 			startDeltas();
@@ -492,7 +492,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		IJavaScriptUnit cu = null;
 		try {
 			cu = getCompilationUnit("P/X.js");
-			cu.becomeWorkingCopy(null, null);
+			cu.becomeWorkingCopy(null);
 			assertTrue("should be in working copy mode", cu.isWorkingCopy());
 			
 			cu.discardWorkingCopy();
@@ -512,9 +512,9 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		IJavaScriptUnit cu = null;
 		try {
 			cu = getCompilationUnit("P/X.js");
-			cu.becomeWorkingCopy(null, null);
-			cu.becomeWorkingCopy(null, null);
-			cu.becomeWorkingCopy(null, null);
+			cu.becomeWorkingCopy(null);
+			cu.becomeWorkingCopy(null);
+			cu.becomeWorkingCopy(null);
 			assertTrue("should be in working copy mode", cu.isWorkingCopy());
 			
 			cu.discardWorkingCopy();
@@ -541,9 +541,9 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		try {
 			IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 			TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-			this.workingCopy = cu.getWorkingCopy(owner, null, null);
-			this.workingCopy = cu.getWorkingCopy(owner, null, null);
-			this.workingCopy = cu.getWorkingCopy(owner, null, null);
+			this.workingCopy = cu.getWorkingCopy(owner, null);
+			this.workingCopy = cu.getWorkingCopy(owner, null);
+			this.workingCopy = cu.getWorkingCopy(owner, null);
 			assertTrue("should be in working copy mode", this.workingCopy.isWorkingCopy());
 			assertTrue("should be opened", this.workingCopy.isOpen());
 			assertTrue("should exist", this.workingCopy.exists());
@@ -575,7 +575,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testDiscardWorkingCopy4() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 
 		boolean gotException = false;
 		try {
@@ -604,7 +604,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		IJavaScriptUnit cu = null;
 		try {
 			cu = getCompilationUnit("P/Y.js");
-			cu.becomeWorkingCopy(null, null);
+			cu.becomeWorkingCopy(null);
 			
 			cu.discardWorkingCopy();
 			assertElementsEqual(
@@ -626,7 +626,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		IJavaScriptUnit cu = null;
 		try {
 			cu = getCompilationUnit("P/X.js");
-			cu.becomeWorkingCopy(null, null);
+			cu.becomeWorkingCopy(null);
 			assertResourceNamesEqual(
 				"Unexpected resource",
 				"X.js",
@@ -644,7 +644,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testGetOwner1() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 
 		assertEquals("Unexpected owner", owner, this.workingCopy.getOwner());
 	}
@@ -663,7 +663,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testGetPrimary1() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 
 		assertEquals("Unexpected compilation unit", cu, this.workingCopy.getPrimary());
 	}
@@ -673,7 +673,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	 */
 	public void testGetPrimary2() throws CoreException {
 		this.workingCopy = getCompilationUnit("P/X.js");
-		this.workingCopy.becomeWorkingCopy(null, null);
+		this.workingCopy.becomeWorkingCopy(null);
 
 		assertEquals("Unexpected compilation unit", this.workingCopy, this.workingCopy.getPrimary());
 	}
@@ -685,7 +685,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testGetPrimaryElement1() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 		IJavaScriptElement element = this.workingCopy.getType("X");
 
 		assertEquals("Unexpected element", cu.getType("X"), element.getPrimaryElement());
@@ -696,7 +696,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	 */
 	public void testGetPrimaryElement2() throws CoreException {
 		this.workingCopy = getCompilationUnit("P/X.js");
-		this.workingCopy.becomeWorkingCopy(null, null);
+		this.workingCopy.becomeWorkingCopy(null);
 		IJavaScriptElement element = this.workingCopy.getType("X");
 
 		assertEquals("Unexpected element", element, element.getPrimaryElement());
@@ -736,7 +736,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			
 			// create working copy on existing cu
 			IJavaScriptUnit cu1 = getCompilationUnit("P/X.js");
-			workingCopy11 = cu1.getWorkingCopy(owner1, null, null);
+			workingCopy11 = cu1.getWorkingCopy(owner1, null);
 			assertSortedElementsEqual(
 				"Unexpected working copies (2)",
 				"[Working copy] X.java [in <default> [in <project root> [in P]]]",
@@ -745,7 +745,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			
 			// create working copy on non-existing cu
 			IJavaScriptUnit cu2 = getCompilationUnit("P/Y.js");
-			workingCopy12 = cu2.getWorkingCopy(owner1, null, null);
+			workingCopy12 = cu2.getWorkingCopy(owner1, null);
 			assertSortedElementsEqual(
 				"Unexpected working copies (3)",
 				"[Working copy] X.java [in <default> [in <project root> [in P]]]\n" +
@@ -755,7 +755,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 
 			// create working copy for another owner
 			TestWorkingCopyOwner owner2 = new TestWorkingCopyOwner();
-			workingCopy21 = cu1.getWorkingCopy(owner2, null, null);
+			workingCopy21 = cu1.getWorkingCopy(owner2, null);
 			
 			// owner2 should have the new working copy
 			assertSortedElementsEqual(
@@ -800,9 +800,9 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		try {
 			IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 			TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-			this.workingCopy = cu.getWorkingCopy(owner, null, null);
+			this.workingCopy = cu.getWorkingCopy(owner, null);
 
-			assertEquals("Unexpected working copy", this.workingCopy, cu.getWorkingCopy(owner, null, null));
+			assertEquals("Unexpected working copy", this.workingCopy, cu.getWorkingCopy(owner, null));
 		} finally {
 			if (this.workingCopy != null) {
 				int max = 2;
@@ -823,9 +823,9 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		try {
 			IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 			TestWorkingCopyOwner owner1 = new TestWorkingCopyOwner();
-			workingCopy1 = cu.getWorkingCopy(owner1, null, null);
+			workingCopy1 = cu.getWorkingCopy(owner1, null);
 			TestWorkingCopyOwner owner2 = new TestWorkingCopyOwner();
-			workingCopy2 = cu.getWorkingCopy(owner2, null, null);
+			workingCopy2 = cu.getWorkingCopy(owner2, null);
 
 			assertTrue("working copies should be different", !workingCopy1.equals(workingCopy2));
 		} finally {
@@ -851,7 +851,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 				"}"
 			);
 			WorkingCopyOwner owner = new TestWorkingCopyOwner();
-			this.workingCopy = getCompilationUnit("/P/Y.js").getWorkingCopy(owner, null/*no problem requestor*/, null/*no progress*/);
+			this.workingCopy = getCompilationUnit("/P/Y.js").getWorkingCopy(owner, null/*no progress*/);
 			IType focus = getCompilationUnit("/P/X.js").getType("X");
 			ITypeHierarchy hierarchy = focus.newTypeHierarchy(owner, null/*no progress*/);
 			IType[] subtypes = hierarchy.getSubtypes(focus);
@@ -880,7 +880,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			);
 			createFolder("/P/p2");
 			this.workingCopy = getCompilationUnit("P/p1/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			
 			// ensure the package is open
 			getPackage("/P/p1").open(null);
@@ -1040,14 +1040,14 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		IJavaScriptUnit workingCopy2 = null;
 		try {
 			TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-			workingCopy1 = getCompilationUnit("P/X.js").getWorkingCopy(owner, null, null);
+			workingCopy1 = getCompilationUnit("P/X.js").getWorkingCopy(owner, null);
 			workingCopy1.getBuffer().setContents(
 				"public class X implements I {\n" +
 				"}"
 			);
 			workingCopy1.makeConsistent(null);
 			
-			workingCopy2 = getCompilationUnit("P/I.js").getWorkingCopy(owner, null, null);
+			workingCopy2 = getCompilationUnit("P/I.js").getWorkingCopy(owner, null);
 			workingCopy2.getBuffer().setContents(
 				"public interface I {\n" +
 				"}"
@@ -1078,7 +1078,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	 */
 	public void testParseCompilationUnit2() throws CoreException {
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = getCompilationUnit("P/Y.js").getWorkingCopy(owner, null, null);
+		this.workingCopy = getCompilationUnit("P/Y.js").getWorkingCopy(owner, null);
 		this.workingCopy.getBuffer().setContents(
 			"public class Y {\n" +
 			"}"
@@ -1144,7 +1144,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			
 			// create working copy on Y.java
 			TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-			this.workingCopy = getCompilationUnit("P1/src/Y.js").getWorkingCopy(owner, null, null);
+			this.workingCopy = getCompilationUnit("P1/src/Y.js").getWorkingCopy(owner, null);
 			this.workingCopy.getBuffer().setContents(
 				"public class Y {\n" +
 				"}"
@@ -1178,7 +1178,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testSearch1() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/Y.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 		this.workingCopy.getBuffer().setContents(
 			"public class Y {\n" +
 			"  X field;\n" +
@@ -1209,7 +1209,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 	public void testSearch2() throws CoreException {
 		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		TestWorkingCopyOwner owner = new TestWorkingCopyOwner();
-		this.workingCopy = cu.getWorkingCopy(owner, null, null);
+		this.workingCopy = cu.getWorkingCopy(owner, null);
 		
 		// remove type X
 		this.workingCopy.getBuffer().setContents("");
@@ -1240,7 +1240,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 		try {
 			createFile("/P/Y.js", "");
 			this.workingCopy = getCompilationUnit("P/Y.js");
-			this.workingCopy.becomeWorkingCopy(null, null);
+			this.workingCopy.becomeWorkingCopy(null);
 			
 			// create type Y in working copy
 			this.workingCopy.getBuffer().setContents("public class Y {}");
@@ -1284,7 +1284,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			createFolder("P/p");
 			createFile("/P/p/Y.js", "");
 			primaryWorkingCopy = getCompilationUnit("P/p/Y.js");
-			primaryWorkingCopy.becomeWorkingCopy(null, null);
+			primaryWorkingCopy.becomeWorkingCopy(null);
 			
 			// create type Y in working copy
 			primaryWorkingCopy.getBuffer().setContents(

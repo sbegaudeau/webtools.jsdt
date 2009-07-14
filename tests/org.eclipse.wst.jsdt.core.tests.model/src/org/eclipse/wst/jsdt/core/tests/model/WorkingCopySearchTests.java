@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -183,7 +183,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	public void testAllTypeNames3() throws CoreException {
 		IJavaScriptUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
-			wc.becomeWorkingCopy(null, null);
+			wc.becomeWorkingCopy(null);
 			wc.getBuffer().setContents(
 				"package wc3;\n" +
 				"public class X44884 {\n" +
@@ -222,7 +222,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	public void testAllTypeNames4() throws CoreException {
 		IJavaScriptUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
-			wc.becomeWorkingCopy(null, null);
+			wc.becomeWorkingCopy(null);
 			wc.getBuffer().setContents(
 				"package wc3;\n" +
 				"public class X44884 {\n" +

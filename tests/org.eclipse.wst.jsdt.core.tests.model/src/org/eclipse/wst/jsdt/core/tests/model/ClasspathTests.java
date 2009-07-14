@@ -633,7 +633,7 @@ public void testClasspathValidation01() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = newCP[0];
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have detected duplicate entries on the classpath", 
@@ -656,7 +656,7 @@ public void testClasspathValidation02() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"));
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have detected nested source folders on the classpath", 
@@ -679,7 +679,7 @@ public void testClasspathValidation03() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newLibraryEntry(new Path("/P/src/lib"), null, null);
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have detected library folder nested inside source folder on the classpath", 
@@ -708,7 +708,7 @@ public void testClasspathValidation04() throws CoreException {
 		};
 				
 		// validate classpath
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath);
 		assertStatus(
 			"should not detect external source folder through a variable on the classpath", 
 			"OK",
@@ -746,7 +746,7 @@ public void testClasspathValidation05() throws CoreException {
 		};
 				
 		// validate classpath
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath);
 		assertStatus(
 			"should not have detected external source folder through a container on the classpath", 
 			"OK",
@@ -779,7 +779,7 @@ public void testClasspathValidation06() throws CoreException {
 			JavaScriptCore.newSourceEntry(new Path("/P0/src")),
 		};
 				
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath);
 		assertStatus(
 			"should have detected nested source folder", 
 			"Cannot nest \'P0/src\' inside \'P0\'. To enable the nesting exclude \'src/\' from \'P0\'",
@@ -801,7 +801,7 @@ public void testClasspathValidation07() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")});
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have allowed nested source folders with exclusion on the classpath", 
@@ -824,7 +824,7 @@ public void testClasspathValidation08() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")});
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have allowed nested lib folders with exclusion on the classpath", 
@@ -846,7 +846,7 @@ public void testClasspathValidation15() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")});
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"End exclusion filter \'src\' with / to fully exclude \'P/src\'",
@@ -867,7 +867,7 @@ public void testClasspathValidation19() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/lib/src"));
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have detected library folder nested inside source folder on the classpath", 
@@ -892,7 +892,7 @@ public void testClasspathValidation21() throws CoreException {
 		Map options = new Hashtable(5);
 		options.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.DISABLED);
 		proj.setOptions(options);
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"Inclusion or exclusion patterns are disabled in project P, cannot selectively include or exclude from entry: \'src\'",
@@ -960,7 +960,7 @@ public void testClasspathValidation34() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")}, new IPath[0], null);
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should not have allowed nested source folders with inclusion on the classpath", 
@@ -984,7 +984,7 @@ public void testClasspathValidation35() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")}, new Path[0], null);
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should not have allowed nested lib folders with inclusion on the classpath", 
@@ -1007,7 +1007,7 @@ public void testClasspathValidation36() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")}, new Path[0], null);
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"OK",
@@ -1031,7 +1031,7 @@ public void testClasspathValidation37() throws CoreException {
 		Map options = new Hashtable(5);
 		options.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.DISABLED);
 		proj.setOptions(options);
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"Inclusion or exclusion patterns are disabled in project P, cannot selectively include or exclude from entry: \'src\'",
@@ -1054,7 +1054,7 @@ public void testClasspathValidation42() throws CoreException {
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"));
 		
-		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, null);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP);
 		
 		assertStatus(
 			"should have detected nested source folders on the classpath", 

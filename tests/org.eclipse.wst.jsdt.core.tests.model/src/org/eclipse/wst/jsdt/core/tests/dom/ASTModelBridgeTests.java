@@ -12,16 +12,39 @@ package org.eclipse.wst.jsdt.core.tests.dom;
 
 import java.io.IOException;
 
+import junit.framework.Test;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
+import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaSearchTests;
-
-import junit.framework.Test;
 
 /*
  * Test the bridge between the DOM AST and the Java model.
@@ -129,15 +152,7 @@ public class ASTModelBridgeTests extends AbstractASTTests {
 			}, 
 			"1.5");
 		this.workingCopy = getCompilationUnit("/P/src/X.js").getWorkingCopy(
-			new WorkingCopyOwner() {}, 
-			new IProblemRequestor() {
-				public void acceptProblem(IProblem problem) {}
-				public void beginReporting() {}
-				public void endReporting() {}
-				public boolean isActive() {
-					return true;
-				}
-			}, 
+			new WorkingCopyOwner() {},  
 			null/*no progress*/);
 	}
 	

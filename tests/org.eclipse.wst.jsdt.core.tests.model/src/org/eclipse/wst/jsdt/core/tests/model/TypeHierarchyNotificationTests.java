@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,7 +122,7 @@ public void testAddAnonymousInRegion() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
 		copy = getCompilationUnit("TypeHierarchyNotification", "src", "p3", "A.js");
-		copy.becomeWorkingCopy(null, null);
+		copy.becomeWorkingCopy(null);
 		
 		IRegion region = JavaScriptCore.newRegion();
 		region.add(copy.getParent());
@@ -599,7 +599,7 @@ public void testChangeFocusModifier() throws CoreException {
 			"}"
 		);
 		workingCopy = getCompilationUnit("/P1/p/X.js");
-		workingCopy.becomeWorkingCopy(null/*no pb requestor*/, null/*no progress*/);
+		workingCopy.becomeWorkingCopy(null/*no progress*/);
 		h = workingCopy.getType("X").newTypeHierarchy(null);
 		h.addTypeHierarchyChangedListener(this);
 		
@@ -713,7 +713,7 @@ public void testAddExtendsSourceType2() throws CoreException {
 	IJavaScriptUnit copy = null;
 	try {
 		copy = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "A.js");
-		copy.becomeWorkingCopy(null, null);
+		copy.becomeWorkingCopy(null);
 		
 		IRegion region = JavaScriptCore.newRegion();
 		region.add(copy.getParent());
@@ -754,7 +754,7 @@ public void testAddExtendsSourceType3() throws CoreException {
 	IJavaScriptUnit copy = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "B.js");
 	ITypeHierarchy h = null;
 	try {
-		copy.becomeWorkingCopy(null, null);
+		copy.becomeWorkingCopy(null);
 		h = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "A.js").getType("A").newTypeHierarchy(javaProject, null);
 		h.addTypeHierarchyChangedListener(this);
 

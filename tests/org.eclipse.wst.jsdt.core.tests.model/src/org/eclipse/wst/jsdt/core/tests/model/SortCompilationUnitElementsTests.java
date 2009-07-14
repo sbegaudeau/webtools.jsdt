@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2003,7 +2003,7 @@ public void test033() throws CoreException {
 			"	A, B, C, Z;\n" + 
 			"}";
 		unit = this.getCompilationUnit("/P/src/X.js");
-		unit.becomeWorkingCopy(null, null);
+		unit.becomeWorkingCopy(null);
 		String source = unit.getSource();
 		Document document = new Document(source);
 		CompilerOptions options = new CompilerOptions(unit.getJavaScriptProject().getOptions(true));
@@ -2050,7 +2050,7 @@ public void test034() throws CoreException {
 			"}"
 		);
 		unit = this.getCompilationUnit("/P/src/X.js");
-		unit.becomeWorkingCopy(null, null);
+		unit.becomeWorkingCopy(null);
 		CompilerOptions options = new CompilerOptions(unit.getJavaScriptProject().getOptions(true));
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setCompilerOptions(options.getMap());

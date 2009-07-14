@@ -4131,7 +4131,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 	public void test0538c() throws JavaScriptModelException {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
-			sourceUnit.becomeWorkingCopy(null, null);
+			sourceUnit.becomeWorkingCopy(null);
 			JavaScriptUnit unit = sourceUnit.reconcile(AST.JLS2, false, null, null);
 			assertNull("Unexpected compilation unit", unit);
 			// TODO improve test for AST.JLS3
@@ -4147,7 +4147,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
 			ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			sourceUnit.getBuffer().setContents(
 				"package test0538;\n" +
 				"public class A {\n" +
@@ -4177,7 +4177,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
 			ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			// TODO improve test for AST.JLS3
 			JavaScriptUnit unit = sourceUnit.reconcile(AST.JLS2, true/*force pb detection*/, null, null);
 			ASTNode node = getASTNode(unit, 0);
@@ -4201,7 +4201,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
 			ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			sourceUnit.getBuffer().setContents(
 				"package test0538;\n" +
 				"public class A {\n" +
@@ -4231,7 +4231,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
 		IJavaScriptUnit sourceUnit = getCompilationUnit("Converter", "src", "test0538", "A.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		try {
 			ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			sourceUnit.getBuffer().setContents(
 				"package test0538;\n" +
 				"public class A {\n" +
@@ -4265,7 +4265,7 @@ public class ASTConverterTest2 extends ConverterTestSetup {
                     return false;
                 }
 			};
-			sourceUnit.becomeWorkingCopy(pbRequestor, null);
+			sourceUnit.becomeWorkingCopy(null);
 			sourceUnit.getBuffer().setContents(
 				"package test0538;\n" +
 				"public class A {\n" +

@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.core.tests.rewrite.modifying;
 import java.util.List;
 
 import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -31,6 +32,15 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 	
 	public static Test allTests() {
 		return new Suite(THIS);
+	}
+	
+		public static Test suite() {
+		if (true) {
+			return allTests();
+		}
+		TestSuite suite= new Suite("one test");
+		suite.addTest(new ASTRewritingModifyingRemoveTest("test0009"));
+		return suite;
 	}
 	
 	public void test0003() throws Exception {

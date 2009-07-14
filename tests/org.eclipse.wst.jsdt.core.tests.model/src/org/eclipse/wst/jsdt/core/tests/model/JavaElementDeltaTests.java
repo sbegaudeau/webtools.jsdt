@@ -693,7 +693,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			startDeltas();
 			copy = unit.getWorkingCopy(new WorkingCopyOwner() {
-			}, null, null);
+			}, null);
 			assertDeltas("Unexpected delta", "P[*]: {CHILDREN}\n"
 					+ "	<project root>[*]: {CHILDREN}\n"
 					+ "		<default>[*]: {CHILDREN}\n"
@@ -909,7 +909,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 			createFile("P/X.js", "public class X {\n" + "}");
 			IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 			copy = unit.getWorkingCopy(new WorkingCopyOwner() {
-			}, null, null);
+			}, null);
 			startDeltas();
 			copy.discardWorkingCopy();
 			assertDeltas("Unexpected delta", "P[*]: {CHILDREN}\n"
@@ -968,7 +968,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 
 			// shared working copy creation
 			wc = cu.getWorkingCopy(new WorkingCopyOwner() {
-			}, null, null);
+			}, null);
 			assertEquals("Unexpected delta after creating shared working copy",
 					"P[*]: {CHILDREN}\n" + "	<project root>[*]: {CHILDREN}\n"
 							+ "		<default>[*]: {CHILDREN}\n"
@@ -1052,7 +1052,7 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 
 			// shared working copy creation
 			wc = cu.getWorkingCopy(new WorkingCopyOwner() {
-			}, null, null);
+			}, null);
 			assertEquals("Unexpected delta after creating shared working copy",
 					"", listener.toString());
 			listener.flush();

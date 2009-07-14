@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -165,7 +165,7 @@ public void testReconcileSimpleProject() throws CoreException {
 		IFile file = project.getFile("A.js");
 		wc = JavaScriptCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-		wc.becomeWorkingCopy(pbRequestor, null);
+		wc.becomeWorkingCopy(null);
 		wc.getBuffer().setContents("public class A {}");
 		wc.reconcile(IJavaScriptUnit.NO_AST, true/*force problem detection*/, null, null);
 	} finally {
@@ -187,7 +187,7 @@ public void testReconcileSimpleProject2() throws CoreException {
 		IFile file = project.getFile("A.js");
 		wc = JavaScriptCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
-		wc.becomeWorkingCopy(pbRequestor, null);
+		wc.becomeWorkingCopy(null);
 		wc.reconcile(IJavaScriptUnit.NO_AST, true/*force problem detection*/, null, null);
 	} finally {
 		if (wc != null) {
@@ -359,7 +359,7 @@ public void testReconcileAndCommit3() throws CoreException {
 			"class X {}";
 		IFile file = this.createFile("/SimpleProject/src/native.1/X.js", source);
 		primary = JavaScriptCore.createCompilationUnitFrom(file);
-		primary.becomeWorkingCopy(null, null);
+		primary.becomeWorkingCopy(null);
 		
 		IBuffer workingCopyBuffer = primary.getBuffer();
 		assertTrue("Working copy buffer should not be null", workingCopyBuffer != null);
@@ -397,7 +397,7 @@ public void testReconcileAndCommit4() throws CoreException {
 			"class X {}";
 		IFile file = this.createFile("/SimpleProject/src/native.1/some invalid name.js", source);
 		primary = JavaScriptCore.createCompilationUnitFrom(file);
-		primary.becomeWorkingCopy(null, null);
+		primary.becomeWorkingCopy(null);
 		
 		IBuffer workingCopyBuffer = primary.getBuffer();
 		assertTrue("Working copy buffer should not be null", workingCopyBuffer != null);

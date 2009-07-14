@@ -421,44 +421,6 @@ public void testGetTypeVariable() {
 
 /**
  * @see Signature
- * @since 3.0
- */
-public void testGetTypeParameterBounds() {
-	// tests with 1.5-specific elements
-	String formalTypeParameterSignature = "Hello:";
-	assertEquals("Signature#getTypeParameterBounds is not correct1", 0,
-			Signature.getTypeParameterBounds(formalTypeParameterSignature).length);
-	formalTypeParameterSignature = "Hello::Qi1;:Qi2;";
-	assertEquals("Signature#getTypeParameterBounds is not correct2", 2,
-			Signature.getTypeParameterBounds(formalTypeParameterSignature).length);
-	assertEquals("Signature#getTypeParameterBounds is not correct2a", "Qi1;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[0]);
-	assertEquals("Signature#getTypeParameterBounds is not correct2b", "Qi2;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[1]);
-	formalTypeParameterSignature = "Hello:Qlist<Qstring;>;:Qi1;:Qi2;";
-	assertEquals("Signature#getTypeParameterBounds is not correct3", 3,
-			Signature.getTypeParameterBounds(formalTypeParameterSignature).length);
-	assertEquals("Signature#getTypeParameterBounds is not correct3a", "Qlist<Qstring;>;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[0]);
-	assertEquals("Signature#getTypeParameterBounds is not correct3b", "Qi1;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[1]);
-	assertEquals("Signature#getTypeParameterBounds is not correct3c", "Qi2;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[2]);
-	formalTypeParameterSignature = "Hello:Qi1;";
-	assertEquals("Signature#getTypeParameterBounds is not correct4", 1,
-			Signature.getTypeParameterBounds(formalTypeParameterSignature).length);
-	assertEquals("Signature#getTypeParameterBounds is not correct4a", "Qi1;",
-			Signature.getTypeParameterBounds(formalTypeParameterSignature)[0]);
-	try {
-		Signature.getTypeParameterBounds("");
-		assertTrue("Signature#getTypeParameterBounds is not correct: exception", false);
-	} catch (IllegalArgumentException iae) {
-		// do nothing
-	}
-}
-
-/**
- * @see Signature
  */
 public void testGetSimpleName01() {
 	assertEquals("Signature#getSimpleName is not correct 1", "Object",

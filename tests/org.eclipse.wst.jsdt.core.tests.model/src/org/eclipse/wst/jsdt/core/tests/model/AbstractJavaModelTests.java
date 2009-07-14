@@ -1534,9 +1534,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public IJavaScriptUnit getWorkingCopy(String path, String source, WorkingCopyOwner owner, IProblemRequestor problemRequestor) throws JavaScriptModelException {
 		IJavaScriptUnit workingCopy = getCompilationUnit(path);
 		if (owner != null)
-			workingCopy = workingCopy.getWorkingCopy(owner, problemRequestor, null/*no progress monitor*/);
+			workingCopy = workingCopy.getWorkingCopy(owner, null/*no progress monitor*/);
 		else
-			workingCopy.becomeWorkingCopy(problemRequestor, null/*no progress monitor*/);
+			workingCopy.becomeWorkingCopy(null/*no progress monitor*/);
 		workingCopy.getBuffer().setContents(source);
 		if (problemRequestor instanceof ProblemRequestor)
 			((ProblemRequestor) problemRequestor).initialize(source.toCharArray());

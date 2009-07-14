@@ -603,7 +603,7 @@ public void testEmptyWorkingCopyPotentialSubtype() throws JavaScriptModelExcepti
     IJavaScriptUnit workingCopy = null;
     try {
         workingCopy = getCompilationUnit("/TypeHierarchy/src/q4/Y.js");
-        workingCopy.becomeWorkingCopy(null, null);
+        workingCopy.becomeWorkingCopy(null);
         workingCopy.getBuffer().setContents("");
         workingCopy.makeConsistent(null);
         

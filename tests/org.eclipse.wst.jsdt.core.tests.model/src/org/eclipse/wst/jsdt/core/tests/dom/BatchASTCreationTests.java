@@ -1452,7 +1452,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		try {
 			// primary working copy with no method foo()
 			primaryWorkingCopy = getCompilationUnit("/P/p1/X.js");
-			primaryWorkingCopy.becomeWorkingCopy(null/*no pb requestor*/, null/*no progress*/);
+			primaryWorkingCopy.becomeWorkingCopy(null/*no progress*/);
 			primaryWorkingCopy.getBuffer().setContents(
 				"package p1;\n" +
 				"public class X {\n" +

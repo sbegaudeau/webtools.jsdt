@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -79,13 +79,6 @@ protected void tearDown() throws Exception {
 public void tearDownSuite() throws Exception {
 	this.deleteProject("P");
 	super.tearDownSuite();
-}
-
-private IJavaScriptUnit createWorkingCopy(String source) throws JavaScriptModelException {
-	this.workingCopy = getCompilationUnit("/P/src/p/Y.js").getWorkingCopy(new WorkingCopyOwner(){}, null, null);
-	this.workingCopy.getBuffer().setContents(source);
-	this.workingCopy.makeConsistent(null);
-	return workingCopy;
 }
 /**
  * Create working copy and compute problems.

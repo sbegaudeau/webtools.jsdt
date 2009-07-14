@@ -69,7 +69,7 @@ private static Class[] getAllTestClasses() {
 //		RunJavaSearchTests.class,
 //			
 //		// Working copy tests
-//		WorkingCopyTests.class,
+		WorkingCopyTests.class,
 //		WorkingCopyNotInClasspathTests.class,
 //		HierarchyOnWorkingCopiesTests.class,
 //		

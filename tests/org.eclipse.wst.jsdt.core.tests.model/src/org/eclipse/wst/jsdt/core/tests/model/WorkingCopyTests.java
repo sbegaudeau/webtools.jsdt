@@ -221,7 +221,7 @@ public void testCreation() {
  */
 public void testCustomizedBuffer() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new TestWorkingCopyOwner();
-	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null);
 	try {
 		assertTrue("Unexpected buffer", customizedCopy.getBuffer() instanceof TestBuffer);
 	} finally {
@@ -233,7 +233,7 @@ public void testCustomizedBuffer() throws JavaScriptModelException {
  */
 public void testCustomizedBuffer2() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new TestWorkingCopyOwner();
-	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null);
 	try {
 		customizedCopy.close();
 		customizedCopy.open(null);
@@ -526,7 +526,7 @@ public void testMoveTypeToAnotherWorkingCopy() throws CoreException {
  */
 public void testShared1() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null);
 	try {
 		assertTrue("Should find shared working copy", this.cu.findWorkingCopy(owner) == shared);
 	} finally {
@@ -539,9 +539,9 @@ public void testShared1() throws JavaScriptModelException {
  */
 public void testShared2() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null);
 	try {
-		IJavaScriptUnit shared2 = this.cu.getWorkingCopy(owner, null, null);
+		IJavaScriptUnit shared2 = this.cu.getWorkingCopy(owner, null);
 		assertTrue("Second working copy should be identical to first one", shared2 == shared);
 	} finally {
 		shared.discardWorkingCopy();
