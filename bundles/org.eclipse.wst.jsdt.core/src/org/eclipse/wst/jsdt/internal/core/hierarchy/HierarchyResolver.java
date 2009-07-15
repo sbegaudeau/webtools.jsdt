@@ -850,6 +850,10 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 			char [] pkgName=focus.getPackageFragment().getElementName().toCharArray();
 			char [][]qualifiedName=new char[][]{pkgName,typeName};
 			focusBinaryBinding = this.lookupEnvironment.getCachedType(qualifiedName);
+			if (focusBinaryBinding == null) {
+				qualifiedName=new char[][]{typeName};
+				focusBinaryBinding = this.lookupEnvironment.getCachedType(qualifiedName);
+			}
 			if (focusBinaryBinding == null)
 				return;
 		}
