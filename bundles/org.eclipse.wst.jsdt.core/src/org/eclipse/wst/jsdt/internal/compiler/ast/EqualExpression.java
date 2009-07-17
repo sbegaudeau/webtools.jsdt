@@ -153,15 +153,13 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 	public TypeBinding resolveType(BlockScope scope) {
 
 		constant = Constant.NotAConstant;
-			boolean leftIsCast, rightIsCast;
-			TypeBinding originalLeftType = left.resolveType(scope);
-
-			TypeBinding originalRightType = right.resolveType(scope);
+		TypeBinding originalLeftType = left.resolveType(scope);
+		TypeBinding originalRightType = right.resolveType(scope);
 
 		// always return BooleanBinding
 		if (originalLeftType == null || originalRightType == null){
 			constant = Constant.NotAConstant;
-			return null;
+			return TypeBinding.BOOLEAN;
 		}
 
 		// autoboxing support
@@ -195,10 +193,11 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 			left.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), originalLeftType);
 			right.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 8) & 0x0000F), originalRightType);
 			bits |= operatorSignature & 0xF;
+			// fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=283663
 			if ((operatorSignature & 0x0000F) == T_undefined) {
 				constant = Constant.NotAConstant;
-				scope.problemReporter().invalidOperator(this, leftType, rightType);
-				return null;
+				//scope.problemReporter().invalidOperator(this, leftType, rightType);
+				return TypeBinding.BOOLEAN;
 			}
 
 			computeConstant(leftType, rightType);
