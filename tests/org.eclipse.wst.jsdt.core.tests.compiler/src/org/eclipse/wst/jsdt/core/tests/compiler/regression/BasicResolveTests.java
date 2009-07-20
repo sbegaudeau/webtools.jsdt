@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 
 
@@ -1227,7 +1226,6 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 	
 	public void Xtestbug196377_1() {
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
@@ -1241,7 +1239,6 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 	
 	public void Xtestbug196377_2() {
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
@@ -1256,7 +1253,6 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 	
 	public void testbug196377_3() {
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
@@ -1268,12 +1264,23 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 	
 	public void testbug196377_4() {
-		JavaScriptCore.getPlugin().getPluginPreferences().setValue("semanticValidation", true);
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
 							"top(1);\n" +
 							"function top(a) {}\n"
+					},
+					""
+			);
+	}
+	
+	public void testbug283663() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"var myNum = 3;\n" +
+							"if(myNum === undefined){}\n" +
+							"if(myNum == undefined){}\n"
 					},
 					""
 			);
