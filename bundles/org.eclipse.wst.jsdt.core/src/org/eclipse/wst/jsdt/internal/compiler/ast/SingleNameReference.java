@@ -455,11 +455,14 @@ public int nullStatus(FlowInfo flowInfo) {
 
 	public Binding findBinding(BlockScope scope) {
 		if (this.actualReceiverType != null) {
-			return scope.getField(this.actualReceiverType, token, this);
+			Binding binding = scope.getField(this.actualReceiverType, token, this);
+			if(!(binding instanceof ProblemFieldBinding))
+				return binding;
+			
 		} else {
 			this.actualReceiverType = scope.enclosingSourceType();
-			return  scope.getBinding(token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
 		}
+		return  scope.getBinding(token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
