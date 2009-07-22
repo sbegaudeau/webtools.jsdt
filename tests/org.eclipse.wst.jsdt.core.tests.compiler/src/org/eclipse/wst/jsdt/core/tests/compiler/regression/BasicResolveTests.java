@@ -1285,6 +1285,96 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					""
 			);
 	}
+	
+	public void testbug262728_A() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function top() {\n"+
+							"var x = function() {};\n"+
+							"var x1 = 3;\n"+
+							"inner();\n"+
+							"function inner() {\n"+
+							"var p = x1 + 3;\n"+
+							"x();\n"+
+							"inner2();\n"+
+							"function inner2() {}\n"+
+							"inner2();\n"+
+							"}\n"+
+							"x();\n"+
+							"top();\n"+
+							"}\n"+
+							"top();"
+					},
+					""
+			);
+	}
+	
+	public void testbug262728_B() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function class2() {\n"+
+							"this.publicFunction = function() {\n"+
+							"privateFunction();\n"+
+							"};\n"+
+							"function privateFunction() {\n"+
+							"return null;\n"+
+							"};\n"+
+							"}\n"+
+							"function class1() {\n"+
+							"function privateFunction() {\n"+
+							"return null;\n"+
+							"};\n"+
+							"this.publicFunction = function() {\n"+
+							"privateFunction();\n"+
+							"};\n"+
+							"}"
+					},
+					""
+			);
+	}
+	public void testbug262728_C() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"inner();\n"+
+							"function top() {\n"+
+							"inner();\n"+
+							"function inner(){};\n"+
+							"inner();\n"+
+							"}\n"+
+							"inner();"
+					},
+					"----------\n" + 
+			"1. ERROR in Z.js (at line 1)\n" + 
+			"	inner();\n" + 
+			"	^^^^^\n" + 
+			"The function inner() is undefined\n" + 
+			"----------\n" +
+			"2. ERROR in Z.js (at line 7)\n" + 
+			"	inner();\n" + 
+			"	^^^^^\n" + 
+			"The function inner() is undefined\n" + 
+			"----------\n"
+			);
+	}
+	
+	public void testbug262728_D() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"(function() {\n"+
+							"privateFunction();\n"+
+							"var x;\n"+
+							"function privateFunction() {\n"+
+							"x + 3;\n"+
+							"}\n"+
+							"})();"
+					},
+					""
+			);
+	}
 
 
 }
