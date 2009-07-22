@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
@@ -59,6 +62,7 @@ public abstract class AbstractMethodDeclaration
 	public MethodBinding binding;
 	public boolean ignoreFurtherInvestigation = false;
 	public boolean needFreeReturn = false;
+	public boolean resolveChildStatments = true;
 
 	public Javadoc javadoc;
 
@@ -246,8 +250,6 @@ public abstract class AbstractMethodDeclaration
 	}
 
 	public void resolve(Scope upperScope) {
-
-
 		if (this.scope==null )
 		{
 			this.scope = new MethodScope(upperScope,this, false);
@@ -284,9 +286,11 @@ public abstract class AbstractMethodDeclaration
 		}
 
 		try {
-			bindArguments();
-			resolveJavadoc();
-			resolveStatements();
+			if(resolveChildStatments) {
+				bindArguments();
+				resolveJavadoc();
+				resolveStatements();
+			}
 		} catch (AbortMethod e) {	// ========= abort on fatal error =============
 			this.ignoreFurtherInvestigation = true;
 		}
@@ -304,11 +308,41 @@ public abstract class AbstractMethodDeclaration
 		}
 	}
 
+	// made some changes here to fix https://bugs.eclipse.org/bugs/show_bug.cgi?id=262728
 	public void resolveStatements() {
-
 		if (this.statements != null) {
+			List nonFunctions = null;
+			List functions = null;
 			for (int i = 0, length = this.statements.length; i < length; i++) {
-				this.statements[i].resolve(this.scope);
+				// if this is not a function then skip it, we resolve function declarations first
+				if(!(this.statements[i] instanceof AbstractMethodDeclaration)) {
+					if(nonFunctions == null)
+						nonFunctions = new ArrayList();
+					nonFunctions.add(statements[i]);
+				} else {
+					// if this is a function then resolve it, but store it as well
+					// we need to take a second pass later to resolve its child statements
+					// this step will put the declaration in scope
+					if(functions == null)
+						functions = new ArrayList();
+					functions.add(statements[i]);
+					((AbstractMethodDeclaration)this.statements[i]).resolveChildStatments = false;
+					this.statements[i].resolve(this.scope);
+					((AbstractMethodDeclaration)this.statements[i]).resolveChildStatments = true;
+				}
+			}
+			// now go back and resolve the non-function statements - this makes sure all functions
+			// are in scope in case they are called before being defined in the script file
+			if(nonFunctions != null) {
+				for(int j = 0; j < nonFunctions.size(); j++) {
+					((Statement)nonFunctions.get(j)).resolve(this.scope);
+				}
+			}
+			// now its time to reslove the children statements of the function
+			if(functions != null) {
+				for(int f = 0; f < functions.size(); f++) {
+					((Statement)functions.get(f)).resolve(this.scope);
+				}
 			}
 		} else if ((this.bits & UndocumentedEmptyBlock) != 0) {
 			this.scope.problemReporter().undocumentedEmptyBlock(this.bodyStart-1, this.bodyEnd+1);
