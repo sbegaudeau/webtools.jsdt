@@ -40,20 +40,15 @@
 		<factory 
             class="org.eclipse.wst.jsdt.internal.ui.JavaElementAdapterFactory" 
             adaptableType="org.eclipse.wst.jsdt.core.IJavaScriptElement">
-            
             <adapter type="org.eclipse.core.resources.IResource"/>
-            
             <adapter type="org.eclipse.ui.IPersistableElement"/>
             <adapter type="org.eclipse.ui.IContributorResourceAdapter"/>
             <adapter type="org.eclipse.ui.ide.IContributorResourceAdapter2"/>
             <adapter type="org.eclipse.ui.IContainmentAdapter"/>
-            
             <adapter type="org.eclipse.search.ui.ISearchPageScoreComputer"/>
-            
             <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
             <adapter type="org.eclipse.ui.views.properties.IPropertySource"/>
             <adapter type="org.eclipse.ui.views.tasklist.ITaskListResourceAdapter"/>
-            
             <adapter type="org.eclipse.wst.jsdt.internal.ui.IResourceLocator"/>
             <adapter type="org.eclipse.team.ui.history.IHistoryPageSource"/>
 		</factory>
@@ -106,15 +101,15 @@
 
    </extension>     	
 
-
    <extension
          point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
-      <JsGlobalScopeContainerPage
+		<JsGlobalScopeContainerPage
             name="%defaultJsGlobalScopeContainerPage"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerDefaultPage"
             id="*">
-      </JsGlobalScopeContainerPage>
+		</JsGlobalScopeContainerPage>
    </extension>
+   
    <extension
          point="org.eclipse.wst.jsdt.ui.classpathAttributeConfiguration">
       <classpathAttributeConfiguration
@@ -131,6 +126,7 @@
             id="org.eclipse.wst.jsdt.ui.text.correction.QuickFixProcessor">
       </quickFixProcessor>
    </extension>
+   
    <extension
          point="org.eclipse.wst.jsdt.ui.quickAssistProcessors">
       <quickAssistProcessor
