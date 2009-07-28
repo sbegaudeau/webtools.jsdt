@@ -2920,6 +2920,7 @@ public NameReference createSingleAssistNameReference(char[] assistName, long pos
 				keywords[count++]= Keywords.WHILE;
 				keywords[count++]= Keywords.VAR;
 				keywords[count++]= Keywords.FUNCTION;
+				keywords[count++]= Keywords.DELETE;
 
 //				keywords[count++]= Keywords.FINAL;
 //				keywords[count++]= Keywords.CLASS;
