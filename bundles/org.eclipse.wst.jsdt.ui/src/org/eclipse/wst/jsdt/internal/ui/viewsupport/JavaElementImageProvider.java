@@ -22,17 +22,16 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.Flags;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaWorkbenchAdapter;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementImageDescriptor;
 
@@ -184,12 +183,12 @@ public class JavaElementImageProvider {
 					int flags= method.getFlags();
 //					if (declType.isEnum() && isDefaultFlag(flags) && method.isConstructor())
 //						return JavaPluginImages.DESC_MISC_PRIVATE;
-					return getMethodImageDescriptor(JavaModelUtil.isInterfaceOrAnnotation(declType), flags);				
+					return getMethodImageDescriptor(false, flags);				
 				}
 				case IJavaScriptElement.FIELD: {
 					IMember member= (IMember) element;
 					IType declType= member.getDeclaringType();
-					return getFieldImageDescriptor(JavaModelUtil.isInterfaceOrAnnotation(declType), member.getFlags());
+					return getFieldImageDescriptor(false, member.getFlags());
 				}
 				case IJavaScriptElement.LOCAL_VARIABLE:
 					return JavaPluginImages.DESC_OBJS_LOCAL_VARIABLE;				
@@ -205,8 +204,7 @@ public class JavaElementImageProvider {
 
 					IType declType= type.getDeclaringType();
 					boolean isInner= declType != null;
-					boolean isInInterfaceOrAnnotation= isInner && JavaModelUtil.isInterfaceOrAnnotation(declType);
-					return getTypeImageDescriptor(isInner, isInInterfaceOrAnnotation, type.getFlags(), useLightIcons(renderFlags));
+					return getTypeImageDescriptor(isInner, false, type.getFlags(), useLightIcons(renderFlags));
 				}
 
 				case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT: {
@@ -324,9 +322,7 @@ public class JavaElementImageProvider {
 				int modifiers= member.getFlags();
 				if (Flags.isAbstract(modifiers) && confirmAbstract(member))
 					flags |= JavaScriptElementImageDescriptor.ABSTRACT;
-				if (isInterfaceOrAnnotationField(member) || isEnumConstant(member, modifiers))
-					flags |= JavaScriptElementImageDescriptor.FINAL;
-				if (Flags.isStatic(modifiers) || isInterfaceOrAnnotationFieldOrType(member) || isEnumConstant(member, modifiers))
+				if (Flags.isStatic(modifiers))
 					flags |= JavaScriptElementImageDescriptor.STATIC;
 				
 				if (Flags.isDeprecated(modifiers))
@@ -341,34 +337,9 @@ public class JavaElementImageProvider {
 	private static boolean confirmAbstract(IMember element) throws JavaScriptModelException {
 		// never show the abstract symbol on interfaces or members in interfaces
 		if (element.getElementType() == IJavaScriptElement.TYPE) {
-			return ! JavaModelUtil.isInterfaceOrAnnotation((IType) element);
+			return true;
 		}
-		return ! JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-	}
-	
-	private static boolean isInterfaceOrAnnotationField(IMember element) throws JavaScriptModelException {
-		// always show the final symbol on interface fields
-//		if (element.getElementType() == IJavaScriptElement.FIELD) {
-//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-//		}
-		return false;
-	}	
-	
-	private static boolean isInterfaceOrAnnotationFieldOrType(IMember element) throws JavaScriptModelException {
-		// always show the static symbol on interface fields and types
-//		if (element.getElementType() == IJavaScriptElement.FIELD) {
-//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-//		} else if (element.getElementType() == IJavaScriptElement.TYPE && element.getDeclaringType() != null) {
-//			return JavaModelUtil.isInterfaceOrAnnotation(element.getDeclaringType());
-//		}
-		return false;
-	}	
-	
-	private static boolean isEnumConstant(IMember element, int modifiers) throws JavaScriptModelException {
-//		if (element.getElementType() == IJavaScriptElement.FIELD) {
-//			return Flags.isEnum(modifiers);
-//		}
-		return false;
+		return true;
 	}
 	
 	public static ImageDescriptor getMethodImageDescriptor(boolean isInInterfaceOrAnnotation, int flags) {

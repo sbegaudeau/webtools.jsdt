@@ -16,46 +16,25 @@
    <extension-point id="documentationProvider" name="%documentationProvider" schema="schema/DocumentationProvider.exsd"/>
    <extension-point id="JsGlobalScopeUIInitializer" name="%extension-point.name.1" schema="schema/JsGlobalScopeUIInitializer.exsd"/>
 
-<extension
-	point="org.eclipse.ui.decorators">
-	<decorator
-		label="%OverrideIndicatorLabelDecorator.label"
-		lightweight="true"
-		location="BOTTOM_RIGHT"		
-		state="true"
-		class="org.eclipse.wst.jsdt.ui.OverrideIndicatorLabelDecorator"
-		id="org.eclipse.wst.jsdt.ui.override.decorator">
-		<description>
-			%OverrideIndicatorLabelDecorator.description
-		</description>
-		<enablement>
-			<objectClass
-				name="org.eclipse.wst.jsdt.core.IFunction">
-			</objectClass>
-		</enablement>
-	</decorator>	
-	<decorator
-		label="%InterfaceIndicatorLabelDecorator.label"
-		lightweight="true"
-		location="TOP_LEFT"
-		state="false"
-		class="org.eclipse.wst.jsdt.internal.ui.InterfaceIndicatorLabelDecorator"
-		id="org.eclipse.wst.jsdt.ui.interface.decorator">
-		<description>
-			%InterfaceIndicatorLabelDecorator.description
-		</description>
-		<enablement>
-			<or>
+	<extension
+		point="org.eclipse.ui.decorators">
+		<decorator
+			label="%OverrideIndicatorLabelDecorator.label"
+			lightweight="true"
+			location="BOTTOM_RIGHT"		
+			state="true"
+			class="org.eclipse.wst.jsdt.ui.OverrideIndicatorLabelDecorator"
+			id="org.eclipse.wst.jsdt.ui.override.decorator">
+			<description>
+				%OverrideIndicatorLabelDecorator.description
+			</description>
+			<enablement>
 				<objectClass
-					name="org.eclipse.wst.jsdt.core.IJavaScriptUnit">
+					name="org.eclipse.wst.jsdt.core.IFunction">
 				</objectClass>
-				<objectClass
-					name="org.eclipse.wst.jsdt.core.IClassFile">
-				</objectClass>
-			</or>
-		</enablement>
-	</decorator>
-</extension>
+			</enablement>
+		</decorator>	
+	</extension>
 
    <extension point="org.eclipse.core.runtime.adapters">
 		<factory 

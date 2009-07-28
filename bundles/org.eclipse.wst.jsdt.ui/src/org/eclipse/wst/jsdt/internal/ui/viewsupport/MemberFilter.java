@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 
 /**
  * Filter for the methods viewer.
@@ -79,10 +78,10 @@ public class MemberFilter extends ViewerFilter {
 					return false;
 				}
 				int flags= member.getFlags();
-				if (hasFilter(FILTER_STATIC) && (Flags.isStatic(flags) || isFieldInInterfaceOrAnnotation(member)) && memberType != IJavaScriptElement.TYPE) {
+				if (hasFilter(FILTER_STATIC) && (Flags.isStatic(flags)) && memberType != IJavaScriptElement.TYPE) {
 					return false;
 				}
-				if (hasFilter(FILTER_NONPUBLIC) && !Flags.isPublic(flags) && !isMemberInInterfaceOrAnnotation(member) && !isTopLevelType(member)) {
+				if (hasFilter(FILTER_NONPUBLIC) && !Flags.isPublic(flags) && !isTopLevelType(member)) {
 					return false;
 				}
 			}			
@@ -96,15 +95,6 @@ public class MemberFilter extends ViewerFilter {
 		IJavaScriptElement parent= type.getParent();
 		return parent instanceof IMember && !(parent instanceof IType);
 	}
-	
-	private boolean isMemberInInterfaceOrAnnotation(IMember member) throws JavaScriptModelException {
-		IType parent= member.getDeclaringType();
-		return parent != null && JavaModelUtil.isInterfaceOrAnnotation(parent);
-	}
-	
-	private boolean isFieldInInterfaceOrAnnotation(IMember member) throws JavaScriptModelException {
-		return (member.getElementType() == IJavaScriptElement.FIELD) && JavaModelUtil.isInterfaceOrAnnotation(member.getDeclaringType());
-	}	
 	
 	private boolean isTopLevelType(IMember member) {
 //		IType parent= member.getDeclaringType();

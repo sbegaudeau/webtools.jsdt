@@ -490,10 +490,7 @@ public class RenameFieldProcessor extends JavaRenameProcessor implements IRefere
 	}
 	
 	private static boolean isInstanceField(IField field) throws CoreException{
-		if (JavaModelUtil.isInterfaceOrAnnotation(field.getDeclaringType()))
-			return false;
-		else 
-			return ! JdtFlags.isStatic(field);
+		return ! JdtFlags.isStatic(field);
 	}
 	
 	private RefactoringStatus checkNestedHierarchy(IType type) throws CoreException {

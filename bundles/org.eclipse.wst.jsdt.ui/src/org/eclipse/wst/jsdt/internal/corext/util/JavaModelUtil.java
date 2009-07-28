@@ -327,8 +327,7 @@ public final class JavaModelUtil {
 		}
 		
 		int otherflags= member.getFlags();
-		IType declaringType= member.getDeclaringType();
-		if (Flags.isPublic(otherflags) || (declaringType != null && isInterfaceOrAnnotation(declaringType))) {
+		if (Flags.isPublic(otherflags)) {
 			return true;
 		} else if (Flags.isPrivate(otherflags)) {
 			return false;
@@ -349,18 +348,18 @@ public final class JavaModelUtil {
 		if  (type == IJavaScriptElement.INITIALIZER ||  (type == IJavaScriptElement.METHOD && member.getElementName().startsWith("<"))) { //$NON-NLS-1$
 			return false;
 		}
+		return true;
 		
-		int otherflags= member.getFlags();
-		
-		IType declaringType= member.getDeclaringType();
-		if (Flags.isPublic(otherflags) || (declaringType != null && isInterfaceOrAnnotation(declaringType))) {
-			return true;
-		} else if (Flags.isPrivate(otherflags)) {
-			return false;
-		}		
-		
-		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
-		return (pack != null && pack.equals(otherpack));
+//		int otherflags= member.getFlags();
+//		
+//		if (Flags.isPublic(otherflags)) {
+//			return true;
+//		} else if (Flags.isPrivate(otherflags)) {
+//			return false;
+//		}		
+//		
+//		IPackageFragment otherpack= (IPackageFragment) member.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT);
+//		return (pack != null && pack.equals(otherpack));
 	}
 			
 		
@@ -463,14 +462,6 @@ public final class JavaModelUtil {
 	 */
 	public static boolean isBoolean(IField field) throws JavaScriptModelException{
 		return field.getTypeSignature().equals(Signature.SIG_BOOLEAN);
-	}
-	
-	/**
-	 * @return <code>true</code> iff the type is an interface or an annotation
-	 */
-	public static boolean isInterfaceOrAnnotation(IType type) throws JavaScriptModelException {
-//		return type.isInterface();
-		return false;
 	}
 		
 	/**

@@ -24,12 +24,12 @@ import org.eclipse.ltk.core.refactoring.GroupCategorySet;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
@@ -39,9 +39,9 @@ import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.IExtendedModifier;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.SimpleName;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -59,7 +59,6 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringScopeFactory;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringSearchEngine2;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.SearchResultGroup;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.SearchUtils;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
@@ -644,7 +643,7 @@ public final class MemberVisibilityAdjustor {
 		Assert.isTrue(!member.isBinary() && !member.isReadOnly());
 		boolean adjust= true;
 		final IType declaring= member.getDeclaringType();
-		if (declaring != null && (JavaModelUtil.isInterfaceOrAnnotation(declaring) || declaring.equals(fReferenced)))
+		if (declaring != null && (declaring.equals(fReferenced)))
 			adjust= false;
 		if (adjust && hasLowerVisibility(member.getFlags(), keywordToVisibility(threshold)) && needsVisibilityAdjustment(member, threshold))
 			fAdjustments.put(member, new OutgoingMemberVisibilityAdjustment(member, threshold, RefactoringStatus.createStatus(fVisibilitySeverity, Messages.format(template, new String[] { JavaScriptElementLabels.getTextLabel(member, JavaScriptElementLabels.M_PARAMETER_TYPES | JavaScriptElementLabels.ALL_FULLY_QUALIFIED), getLabel(threshold)}), JavaStatusContext.create(member), null, RefactoringStatusEntry.NO_CODE, null)));
