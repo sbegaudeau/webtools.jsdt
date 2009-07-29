@@ -115,9 +115,6 @@ public class StubUtility {
 	static {
 		VALID_TYPE_BODY_TEMPLATES= new HashSet();
 		VALID_TYPE_BODY_TEMPLATES.add(CodeTemplateContextType.CLASSBODY_ID);
-		VALID_TYPE_BODY_TEMPLATES.add(CodeTemplateContextType.INTERFACEBODY_ID);
-		VALID_TYPE_BODY_TEMPLATES.add(CodeTemplateContextType.ENUMBODY_ID);
-		VALID_TYPE_BODY_TEMPLATES.add(CodeTemplateContextType.ANNOTATIONBODY_ID);
 	}
 	
 	/*
@@ -260,7 +257,7 @@ public class StubUtility {
 	 * Don't use this method directly, use CodeGeneration.
 	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getTypeComment(IJavaScriptUnit, String, String[], String)
 	 */		
-	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelim) throws CoreException {
+	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String lineDelim) throws CoreException {
 		Template template= getCodeTemplate(CodeTemplateContextType.TYPECOMMENT_ID, cu.getJavaScriptProject());
 		if (template == null) {
 			return null;
@@ -292,7 +289,7 @@ public class StubUtility {
 		int[] tagOffsets= position.getOffsets();
 		for (int i= tagOffsets.length - 1; i >= 0; i--) { // from last to first
 			try {
-				insertTag(document, tagOffsets[i], position.getLength(), EMPTY, EMPTY, null, typeParameterNames, false, lineDelim);
+				insertTag(document, tagOffsets[i], position.getLength(), EMPTY, EMPTY, null, false, lineDelim);
 			} catch (BadLocationException e) {
 				throw new CoreException(JavaUIStatus.createError(IStatus.ERROR, e));
 			}
@@ -378,7 +375,7 @@ public class StubUtility {
 	 * Don't use this method directly, use CodeGeneration.
 	 * @see org.eclipse.wst.jsdt.ui.CodeGeneration#getMethodComment(IJavaScriptUnit, String, String, String[], String[], String, String[], IFunction, String)
 	 */
-	public static String getMethodComment(IJavaScriptUnit cu, String typeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IFunction target, boolean delegate, String lineDelimiter) throws CoreException {
+	public static String getMethodComment(IJavaScriptUnit cu, String typeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, IFunction target, boolean delegate, String lineDelimiter) throws CoreException {
 		String templateName= CodeTemplateContextType.METHODCOMMENT_ID;
 		if (retTypeSig == null) {
 			templateName= CodeTemplateContextType.CONSTRUCTORCOMMENT_ID;
@@ -438,7 +435,7 @@ public class StubUtility {
 		int[] tagOffsets= position.getOffsets();
 		for (int i= tagOffsets.length - 1; i >= 0; i--) { // from last to first
 			try {
-				insertTag(document, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, typeParameterNames, false, lineDelimiter);
+				insertTag(document, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, false, lineDelimiter);
 			} catch (BadLocationException e) {
 				throw new CoreException(JavaUIStatus.createError(IStatus.ERROR, e));
 			}
@@ -645,7 +642,7 @@ public class StubUtility {
 		int[] tagOffsets= position.getOffsets();
 		for (int i= tagOffsets.length - 1; i >= 0; i--) { // from last to first
 			try {
-				insertTag(textBuffer, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, new String[0], isDeprecated, lineDelimiter);
+				insertTag(textBuffer, tagOffsets[i], position.getLength(), paramNames, exceptionNames, returnType, isDeprecated, lineDelimiter);
 			} catch (BadLocationException e) {
 				throw new CoreException(JavaUIStatus.createError(IStatus.ERROR, e));
 			}
@@ -673,7 +670,7 @@ public class StubUtility {
 		return null;		
 	}	
 	
-	private static void insertTag(IDocument textBuffer, int offset, int length, String[] paramNames, String[] exceptionNames, String returnType, String[] typeParameterNames, boolean isDeprecated, String lineDelimiter) throws BadLocationException {
+	private static void insertTag(IDocument textBuffer, int offset, int length, String[] paramNames, String[] exceptionNames, String returnType, boolean isDeprecated, String lineDelimiter) throws BadLocationException {
 		IRegion region= textBuffer.getLineInformationOfOffset(offset);
 		if (region == null) {
 			return;
@@ -681,12 +678,6 @@ public class StubUtility {
 		String lineStart= textBuffer.get(region.getOffset(), offset - region.getOffset());
 		
 		StringBuffer buf= new StringBuffer();
-		for (int i= 0; i < typeParameterNames.length; i++) {
-			if (buf.length() > 0) {
-				buf.append(lineDelimiter).append(lineStart);
-			}
-			buf.append("@param <").append(typeParameterNames[i]).append('>'); //$NON-NLS-1$
-		}
 		for (int i= 0; i < paramNames.length; i++) {
 			if (buf.length() > 0) {
 				buf.append(lineDelimiter).append(lineStart);
@@ -697,7 +688,10 @@ public class StubUtility {
 			if (buf.length() > 0) {
 				buf.append(lineDelimiter).append(lineStart);
 			}			
-			buf.append("@return"); //$NON-NLS-1$
+			buf.append("@returns"); //$NON-NLS-1$
+			if(!returnType.equals("any")) { //$NON-NLS-1$
+				buf.append(" {" + returnType + "}");
+			}
 		}
 		if (exceptionNames != null) {
 			for (int i= 0; i < exceptionNames.length; i++) {

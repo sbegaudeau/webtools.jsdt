@@ -2174,18 +2174,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 				type= "class ";  //$NON-NLS-1$
 				templateID= CodeGeneration.CLASS_BODY_TEMPLATE_ID;
 				break;
-			case INTERFACE_TYPE: 
-				type= "interface "; //$NON-NLS-1$
-				templateID= CodeGeneration.INTERFACE_BODY_TEMPLATE_ID;
-				break; 
-			case ENUM_TYPE: 
-				type= "enum "; //$NON-NLS-1$
-				templateID= CodeGeneration.ENUM_BODY_TEMPLATE_ID;
-				break;
-			case ANNOTATION_TYPE: 
-				type= "@interface "; //$NON-NLS-1$
-				templateID= CodeGeneration.ANNOTATION_BODY_TEMPLATE_ID;
-				break;
 		}
 		buf.append(type);
 		buf.append(getTypeName());
@@ -2297,8 +2285,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 					typeName.append(JavaModelUtil.getTypeQualifiedName(getEnclosingType())).append('.');
 				}
 				typeName.append(getTypeNameWithoutParameters());
-				String[] typeParamNames= new String[0];
-				String comment= CodeGeneration.getTypeComment(parentCU, typeName.toString(), typeParamNames, lineDelimiter);
+				String comment= CodeGeneration.getTypeComment(parentCU, typeName.toString(), lineDelimiter);
 				if (comment != null && isValidComment(comment)) {
 					return comment;
 				}

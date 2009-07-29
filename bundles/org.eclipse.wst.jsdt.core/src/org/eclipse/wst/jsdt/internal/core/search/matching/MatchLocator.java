@@ -614,7 +614,7 @@ protected IJavaScriptElement createHandle(AbstractMethodDeclaration method, IJav
 	if (arguments != null) {
 		for (int i = 0; i < argCount; i++) {
 			TypeReference typeRef = arguments[i].type;
-			char[] typeName = typeRef!=null ? CharOperation.concatWith(typeRef.getParameterizedTypeName(), '.')
+			char[] typeName = typeRef!=null ? CharOperation.concatWith(typeRef.getTypeName(), '.')
 					: null;
 			parameterTypeSignatures[i] = Signature.createTypeSignature(typeName, false);
 		}

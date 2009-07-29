@@ -92,13 +92,6 @@ public int dimensions() {
 
 public abstract char[] getLastToken();
 
-/**
- * @return char[][]
- * TODO (jerome) should merge back into #getTypeName()
- */
-public char [][] getParameterizedTypeName(){
-	return getTypeName();
-}
 protected abstract TypeBinding getTypeBinding(Scope scope);
 /**
  * @return char[][]

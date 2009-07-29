@@ -333,7 +333,7 @@ public void checkComment() {
 					JavadocAllocationExpression constructor = (JavadocAllocationExpression) reference;
 					int argCount = constructor.arguments == null ? 0 : constructor.arguments.length;
 					if (constructor.type != null) {
-						char[][] compoundName = constructor.type.getParameterizedTypeName();
+						char[][] compoundName = constructor.type.getTypeName();
 						this.requestor.acceptConstructorReference(compoundName[compoundName.length-1], argCount, constructor.sourceStart);
 						if (!constructor.type.isThis()) {
 							acceptJavadocTypeReference(constructor.type);
@@ -359,7 +359,7 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 			name=Util.getTypeName(alloc.member);
 		}
 		else if (alloc.type!=null)
-			name= CharOperation.concatWith(alloc.type.getParameterizedTypeName(), '.');
+			name= CharOperation.concatWith(alloc.type.getTypeName(), '.');
 
 		if (name!=null && name.length>0)
 			requestor.acceptConstructorReference(name,
@@ -621,7 +621,7 @@ public TypeReference getTypeReference(int dim) {
 			ref.sourceEnd = endPosition;
 		}
 		if (reportReferenceInfo){
-				requestor.acceptTypeReference(ref.getParameterizedTypeName(), ref.sourceStart, ref.sourceEnd);
+				requestor.acceptTypeReference(ref.getTypeName(), ref.sourceStart, ref.sourceEnd);
 		}
 		return ref;
 	} else {
@@ -973,7 +973,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 			argumentNames = new char[argumentLength][];
 			for (int i = 0; i < argumentLength; i++) {
 				if (arguments[i].type!=null)
-					argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+					argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
 				argumentNames[i] = arguments[i].name;
 			}
 		}
@@ -1059,7 +1059,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		argumentNames = new char[argumentLength][];
 		for (int i = 0; i < argumentLength; i++) {
 			if (arguments[i].type!=null)
-				argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+				argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
 			argumentNames[i] = arguments[i].name;
 		}
 		isVarArgs = arguments[argumentLength-1].isVarArgs();
@@ -1125,13 +1125,13 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		// remember deprecation so as to not lose it below
 		boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
-		TypeReference returnType = methodDeclaration instanceof MethodDeclaration
-			? ((MethodDeclaration) methodDeclaration).returnType
+		InferredType returnType = methodDeclaration instanceof MethodDeclaration
+			? ((MethodDeclaration) methodDeclaration).inferredType
 			: null;
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-		methodInfo.returnType = returnType == null ? null : CharOperation.concatWith(returnType.getParameterizedTypeName(), '.');
+		methodInfo.returnType = returnType == null ? null : returnType.getName();
 		methodInfo.name = methodDeclaration.selector;
 		methodInfo.nameSourceStart = methodDeclaration.sourceStart;
 		methodInfo.nameSourceEnd = selectorSourceEnd;
@@ -1193,7 +1193,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 						argumentNames = new char[argumentLength][];
 						for (int i = 0; i < argumentLength; i++) {
 							if (arguments[i].type!=null)
-								argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getParameterizedTypeName(), '.');
+								argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
 							argumentNames[i] = arguments[i].name;
 						}
 //						isVarArgs = arguments[argumentLength-1].isVarArgs();
@@ -1202,7 +1202,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 					methodInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 					methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-					methodInfo.returnType = methodDeclaration.returnType == null ? null : CharOperation.concatWith(methodDeclaration.returnType.getParameterizedTypeName(), '.');
+					methodInfo.returnType = methodDeclaration.returnType == null ? null : CharOperation.concatWith(methodDeclaration.returnType.getTypeName(), '.');
 					methodInfo.name = fieldDeclaration.name;
 					methodInfo.nameSourceStart = fieldDeclaration.sourceStart;
 					methodInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
@@ -1327,7 +1327,7 @@ public void notifySourceElementRequestor(TypeDeclaration typeDeclaration, boolea
 			char[] superclassName;
 			
 			TypeReference superclass = typeDeclaration.superclass;
-			superclassName = superclass != null ? CharOperation.concatWith(superclass.getParameterizedTypeName(), '.') : null;
+			superclassName = superclass != null ? CharOperation.concatWith(superclass.getTypeName(), '.') : null;
 			
 			ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 			typeInfo.declarationStart = typeDeclaration.declarationSourceStart;

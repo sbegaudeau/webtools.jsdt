@@ -244,8 +244,7 @@ public class JavaDocAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy
 	private String createTypeTags(IDocument document, DocumentCommand command, String indentation, String lineDelimiter, IType type)
 		throws CoreException, BadLocationException
 	{
-		String[] typeParamNames= new String[0];
-		String comment= CodeGeneration.getTypeComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), typeParamNames, lineDelimiter);
+		String comment= CodeGeneration.getTypeComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), lineDelimiter);
 		if (comment != null) {
 			boolean javadocComment= comment.startsWith("/**"); //$NON-NLS-1$
 			if (!isFirstComment(document, command, type, javadocComment)) 

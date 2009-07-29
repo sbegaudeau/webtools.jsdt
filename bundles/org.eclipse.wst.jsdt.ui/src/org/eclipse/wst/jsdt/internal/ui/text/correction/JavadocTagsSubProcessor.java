@@ -315,13 +315,8 @@ public class JavadocTagsSubProcessor {
 			}
 		} else if (declaration instanceof AbstractTypeDeclaration) {
 			String typeQualifiedName= Bindings.getTypeQualifiedName(binding);
-			String[] typeParamNames;
-			if (declaration instanceof TypeDeclaration) {
-				typeParamNames= new String[0];
-			} else {
-				typeParamNames= new String[0];
-			}
-			String string= CodeGeneration.getTypeComment(cu, typeQualifiedName, typeParamNames, String.valueOf('\n'));
+			
+			String string= CodeGeneration.getTypeComment(cu, typeQualifiedName, String.valueOf('\n'));
 			if (string != null) {
 				String label= CorrectionMessages.JavadocTagsSubProcessor_addjavadoc_type_description;
 				proposals.add(new AddJavadocCommentProposal(label, cu, 1, declaration.getStartPosition(), string));

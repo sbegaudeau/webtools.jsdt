@@ -35,29 +35,6 @@ public class CodeGeneration {
 	 */
 	public static final String CLASS_BODY_TEMPLATE_ID= CodeTemplateContextType.CLASSBODY_ID;
 	
-	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
-	 * for a new interface type body.
-	 * 
-	 */
-	public static final String INTERFACE_BODY_TEMPLATE_ID= CodeTemplateContextType.INTERFACEBODY_ID;
-	
-	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
-	 * for a new enum type body.
-	 * 
-	 */
-	public static final String ENUM_BODY_TEMPLATE_ID= CodeTemplateContextType.ENUMBODY_ID;
-	
-	/**
-	 * Constant ID for the type kind to be used in {@link #getTypeBody(String, IJavaScriptUnit, String, String)} to get the code template used
-	 * for a new annotation type body.
-	 * 
-	 */
-	public static final String ANNOTATION_BODY_TEMPLATE_ID= CodeTemplateContextType.ANNOTATIONBODY_ID;
-	
-	private static final String[] EMPTY= new String[0];
-	
 	private CodeGeneration() {
 	}
 	
@@ -114,22 +91,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */	
 	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String lineDelimiter) throws CoreException {
-		return StubUtility.getTypeComment(cu, typeQualifiedName, EMPTY, lineDelimiter);
-	}
-	
-	/**
-	 * Returns the content for a new type comment using the 'type comment' code template. The returned content is unformatted and is not indented.
-	 * @param cu The compilation unit where the type is contained. The compilation unit does not need to exist.
-	 * @param typeQualifiedName The name of the type to which the comment is added. For inner types the name must be qualified and include the outer
-	 * types names (dot separated). See {@link org.eclipse.wst.jsdt.core.IType#getTypeQualifiedName(char)}.
-	 * @param typeParameterNames The type parameter names
-	 * @param lineDelimiter The line delimiter to be used.
-	 * @return Returns the new content or <code>null</code> if the code template is undefined or empty. The returned content is unformatted and is not indented.
-	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * 
-	 */	
-	public static String getTypeComment(IJavaScriptUnit cu, String typeQualifiedName, String[] typeParameterNames, String lineDelimiter) throws CoreException {
-		return StubUtility.getTypeComment(cu, typeQualifiedName, typeParameterNames, lineDelimiter);
+		return StubUtility.getTypeComment(cu, typeQualifiedName, lineDelimiter);
 	}
 		
 	/**
@@ -212,35 +174,7 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
 	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, IFunction overridden, String lineDelimiter) throws CoreException {
-		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, EMPTY, overridden, false, lineDelimiter);
-	}
-	
-	/**
-	 * Returns the comment for a method or constructor using the comment code templates (constructor / method / overriding method).
-	 * <code>null</code> is returned if the template is empty.
-	 * <p>The returned string is unformatted and not indented.
-	 * <p>Exception types and return type are in signature notation. e.g. a source method declared as <code>public void foo(String text, int length)</code>
-	 * would return the array <code>{"QString;","I"}</code> as parameter types. See {@link org.eclipse.wst.jsdt.core.Signature}.
-	 * 
-	 * @param cu The compilation unit to which the method belongs. The compilation unit does not need to exist.
-	 * @param declaringTypeName Name of the type to which the method belongs. For inner types the name must be qualified and include the outer
-	 * types names (dot separated). See {@link org.eclipse.wst.jsdt.core.IType#getTypeQualifiedName(char)}.
-	 * @param methodName Name of the method.
-	 * @param paramNames Names of the parameters for the method.
-	 * @param excTypeSig Thrown exceptions (Signature notation).
-	 * @param retTypeSig Return type (Signature notation) or <code>null</code>
-	 * for constructors.
-	 * @param typeParameterNames Names of the type parameters for the method.
-	 * @param overridden The method that will be overridden by the created method or
-	 * <code>null</code> for non-overriding methods. If not <code>null</code>, the method must exist.
-	 * @param lineDelimiter The line delimiter to be used.
-	 * @return Returns the constructed comment or <code>null</code> if
-	 * the comment code template is empty. The returned content is unformatted and not indented (formatting required).
-	 * @throws CoreException Thrown when the evaluation of the code template fails.
-	 * 
-	 */
-	public static String getMethodComment(IJavaScriptUnit cu, String declaringTypeName, String methodName, String[] paramNames, String[] excTypeSig, String retTypeSig, String[] typeParameterNames, IFunction overridden, String lineDelimiter) throws CoreException {
-		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, typeParameterNames, overridden, false, lineDelimiter);
+		return StubUtility.getMethodComment(cu, declaringTypeName, methodName, paramNames, excTypeSig, retTypeSig, overridden, false, lineDelimiter);
 	}
 		
 	/**
@@ -257,12 +191,12 @@ public class CodeGeneration {
 	 * @throws CoreException Thrown when the evaluation of the code template fails.
 	 */
 	public static String getMethodComment(IFunction method, IFunction overridden, String lineDelimiter) throws CoreException {
-		String retType= method.isConstructor() ? null : method.getReturnType();
+		String retType= method.getReturnType();
 		String[] paramNames= method.getParameterNames();
 		
 		String typeName = (method.getDeclaringType()!=null) ? method.getDeclaringType().getElementName() : ""; //$NON-NLS-1$
 		return StubUtility.getMethodComment(method.getJavaScriptUnit(), typeName,
-			method.getElementName(), paramNames, new String[0], retType, new String[0], overridden, false, lineDelimiter);
+			method.getElementName(), paramNames, new String[0], retType, overridden, false, lineDelimiter);
 	}
 	
 	/**

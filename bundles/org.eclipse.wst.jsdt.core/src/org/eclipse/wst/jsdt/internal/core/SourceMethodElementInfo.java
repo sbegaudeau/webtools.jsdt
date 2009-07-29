@@ -26,16 +26,28 @@ public abstract class SourceMethodElementInfo extends MemberElementInfo implemen
 	 * has no parameters.
 	 */
 	protected char[][] argumentNames;
+	
+	/**
+	 * Return type name for this method.
+	 */
+	protected char[] returnType;
 
 
-public char[][] getArgumentNames() {
-	return this.argumentNames;
-}
-public abstract char[] getReturnTypeName();
-
-public abstract boolean isConstructor();
-protected void setArgumentNames(char[][] names) {
-	this.argumentNames = names;
-}
-protected abstract void setReturnType(char[] type);
+	public char[][] getArgumentNames() {
+		return this.argumentNames;
+	}
+	
+	protected void setArgumentNames(char[][] names) {
+		this.argumentNames = names;
+	}
+	
+	public char[] getReturnTypeName() {
+		return this.returnType;
+	}
+	
+	protected void setReturnType(char[] type) {
+		this.returnType = type;
+	}
+	
+	public abstract boolean isConstructor();
 }

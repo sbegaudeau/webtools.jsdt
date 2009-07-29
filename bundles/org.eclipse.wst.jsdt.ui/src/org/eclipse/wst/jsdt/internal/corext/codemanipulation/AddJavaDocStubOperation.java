@@ -63,8 +63,7 @@ public class AddJavaDocStubOperation implements IWorkspaceRunnable {
 	}
 
 	private String createTypeComment(IType type, String lineDelimiter) throws CoreException {
-		String[] typeParameterNames= new String[0];
-		return CodeGeneration.getTypeComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), typeParameterNames, lineDelimiter);
+		return CodeGeneration.getTypeComment(type.getJavaScriptUnit(), type.getTypeQualifiedName('.'), lineDelimiter);
 	}		
 	
 	private String createMethodComment(IFunction meth, String lineDelimiter) throws CoreException {

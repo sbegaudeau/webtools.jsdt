@@ -382,8 +382,7 @@ public abstract class SuperTypeRefactoringProcessor extends RefactoringProcessor
 			String typeComment= null;
 			String fileComment= null;
 			if (fSettings.createComments) {
-				final String[] names= new String[0];
-				typeComment= CodeGeneration.getTypeComment(copy, superName, names, delimiter);
+				typeComment= CodeGeneration.getTypeComment(copy, superName, delimiter);
 				fileComment= CodeGeneration.getFileComment(copy, delimiter);
 			}
 			final StringBuffer buffer= new StringBuffer(64);

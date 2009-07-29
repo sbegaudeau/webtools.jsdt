@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -140,12 +140,6 @@ public class CodeTemplateBlock {
 				return 101;
 			} else if (CodeTemplateContextType.CLASSBODY_ID.equals(id)) {
 				return 102;
-			} else if (CodeTemplateContextType.INTERFACEBODY_ID.equals(id)) {
-				return 103;
-			} else if (CodeTemplateContextType.ENUMBODY_ID.equals(id)) {
-				return 104;
-			} else if (CodeTemplateContextType.ANNOTATIONBODY_ID.equals(id)) {
-				return 105;
 			} else if (CodeTemplateContextType.METHODSTUB_ID.equals(id)) {
 				return 106;
 			} else if (CodeTemplateContextType.CONSTRUCTORSTUB_ID.equals(id)) {
@@ -212,12 +206,6 @@ public class CodeTemplateBlock {
 				return PreferencesMessages.CodeTemplateBlock_newtype_label; 
 			} else if (CodeTemplateContextType.CLASSBODY_ID.equals(id)) {
 				return PreferencesMessages.CodeTemplateBlock_classbody_label; 
-			} else if (CodeTemplateContextType.INTERFACEBODY_ID.equals(id)) {
-				return PreferencesMessages.CodeTemplateBlock_interfacebody_label; 
-			} else if (CodeTemplateContextType.ENUMBODY_ID.equals(id)) {
-				return PreferencesMessages.CodeTemplateBlock_enumbody_label; 
-			} else if (CodeTemplateContextType.ANNOTATIONBODY_ID.equals(id)) {
-				return PreferencesMessages.CodeTemplateBlock_annotationbody_label; 
 			} else if (CodeTemplateContextType.FILECOMMENT_ID.equals(id)) {
 				return PreferencesMessages.CodeTemplateBlock_filecomment_label; 
 			} else if (CodeTemplateContextType.TYPECOMMENT_ID.equals(id)) {

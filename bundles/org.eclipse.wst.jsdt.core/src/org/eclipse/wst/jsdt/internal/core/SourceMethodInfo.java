@@ -14,27 +14,7 @@ package org.eclipse.wst.jsdt.internal.core;
  * Element info for method from source.
  */
 public class SourceMethodInfo extends SourceMethodElementInfo {
-
-	/*
-	 * Return type name for this method. The return type of
-	 * constructors is equivalent to void.
-	 */
-	protected char[] returnType;
-
-	public boolean isAnnotationMethod() {
-		return false;
-	}
-
 	public boolean isConstructor() {
 		return false;
 	}
-
-	public char[] getReturnTypeName() {
-		return this.returnType;
-	}
-
-	protected void setReturnType(char[] type) {
-		this.returnType = type;
-	}
-
 }

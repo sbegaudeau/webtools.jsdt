@@ -2168,7 +2168,7 @@ public class Util {
 	public static String typeSignature(TypeReference type) {
 		if (type==null)
 			return Signature.SIG_ANY;
-		char[][] compoundName = type.getParameterizedTypeName();
+		char[][] compoundName = type.getTypeName();
 		char[] typeName =CharOperation.concatWith(compoundName, '.');
 		String signature = Signature.createTypeSignature(typeName, false/*don't resolve*/);
 		return signature;

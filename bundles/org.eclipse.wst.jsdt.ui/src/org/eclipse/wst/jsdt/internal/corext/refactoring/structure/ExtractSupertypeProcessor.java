@@ -462,8 +462,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 			String typeComment= null;
 			String fileComment= null;
 			if (fSettings.createComments) {
-				final String[] names= new String[0];
-				typeComment= CodeGeneration.getTypeComment(extractedWorkingCopy, fTypeName, names, delimiter);
+				typeComment= CodeGeneration.getTypeComment(extractedWorkingCopy, fTypeName, delimiter);
 				fileComment= CodeGeneration.getFileComment(extractedWorkingCopy, delimiter);
 			}
 			final StringBuffer buffer= new StringBuffer(64);

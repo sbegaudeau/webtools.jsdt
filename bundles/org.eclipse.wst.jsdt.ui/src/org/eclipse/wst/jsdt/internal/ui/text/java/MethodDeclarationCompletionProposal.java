@@ -122,7 +122,7 @@ public class MethodDeclarationCompletionProposal extends JavaTypeCompletionPropo
 
 		StringBuffer buf= new StringBuffer();
 		if (addComments) {
-			String comment= CodeGeneration.getMethodComment(fType.getJavaScriptUnit(), declTypeName, fMethodName, empty, empty, fReturnTypeSig, empty, null, lineDelim);
+			String comment= CodeGeneration.getMethodComment(fType.getJavaScriptUnit(), declTypeName, fMethodName, empty, empty, fReturnTypeSig, null, lineDelim);
 			if (comment != null) {
 				buf.append(comment);
 				buf.append(lineDelim);

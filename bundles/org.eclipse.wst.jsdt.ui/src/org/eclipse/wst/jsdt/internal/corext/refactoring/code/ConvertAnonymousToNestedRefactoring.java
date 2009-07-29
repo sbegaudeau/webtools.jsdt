@@ -568,7 +568,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		updateAndMoveBodyDeclarations(rewrite, bindings, allFieldNames, newBodyDeclarations, newConstructorDecl);
 		
 		if (doAddComments()) {
-			String string= CodeGeneration.getTypeComment(rewrite.getCu(), fClassName, new String[0], StubUtility.getLineDelimiterUsed(fCu));
+			String string= CodeGeneration.getTypeComment(rewrite.getCu(), fClassName, StubUtility.getLineDelimiterUsed(fCu));
 			if (string != null) {
 				JSdoc javadoc= (JSdoc) rewrite.getASTRewrite().createStringPlaceholder(string, ASTNode.JSDOC);
 				newDeclaration.setJavadoc(javadoc);
@@ -798,7 +798,7 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 		if (doAddComments()) {
 			try {
 				String[] allParamNames= (String[]) newParameterNames.toArray(new String[newParameterNames.size()]);
-				String string= CodeGeneration.getMethodComment(fCu, fClassName, fClassName, allParamNames, new String[0], null, new String[0], null, StubUtility.getLineDelimiterUsed(fCu));
+				String string= CodeGeneration.getMethodComment(fCu, fClassName, fClassName, allParamNames, new String[0], null, null, StubUtility.getLineDelimiterUsed(fCu));
 				if (string != null) {
 					JSdoc javadoc= (JSdoc) astRewrite.createStringPlaceholder(string, ASTNode.JSDOC);
 					newConstructor.setJavadoc(javadoc);
