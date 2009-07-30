@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IProgramElement;
@@ -153,14 +155,32 @@ public class CompilationUnitDeclaration
 			FlowContext flowContext = new FlowContext(null, this);
 
 			if (statements != null) {
-				for (int i = 0, count = statements.length; i < count; i++) {
-					if (statements[i] instanceof  AbstractMethodDeclaration)
-					{
-						((AbstractMethodDeclaration)statements[i]).analyseCode(this.scope, null, flowInfo.copy());
+				List functions = null;
+				for (int i = 0, length = this.statements.length; i < length; i++) {
+					// if this is not a function then analyse it
+					if(!(this.statements[i] instanceof AbstractMethodDeclaration)) {
+						flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
+					} else {
+						// if this is a function then store it until all non functions are finished
+						if(functions == null)
+							functions = new ArrayList();
+						functions.add(statements[i]);
 					}
-					else
-					flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
 				}
+				if(functions != null) {
+					for(int f = 0; f < functions.size(); f++) {
+						((Statement)functions.get(f)).analyseCode(this.scope, null, flowInfo.copy());
+					}
+				}
+				
+//				for (int i = 0, count = statements.length; i < count; i++) {
+//					if (statements[i] instanceof  AbstractMethodDeclaration)
+//					{
+//						((AbstractMethodDeclaration)statements[i]).analyseCode(this.scope, null, flowInfo.copy());
+//					}
+//					else
+//					flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
+//				}
 			}
 			this.scope.reportUnusedDeclarations();
 		} catch (AbortCompilationUnit e) {
