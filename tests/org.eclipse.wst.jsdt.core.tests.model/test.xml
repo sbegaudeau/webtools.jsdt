@@ -18,7 +18,7 @@
         value="org.eclipse.wst.jsdt.core.tests.model" />
     <property
         name="classname"
-        value="org.eclipse.wst.jsdt.core.tests.model.JSDTModelTests" />
+        value="org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests" />
     <property
         name="testType"
         value="core-test" />
