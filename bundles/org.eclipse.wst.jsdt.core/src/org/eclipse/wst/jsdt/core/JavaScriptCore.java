@@ -447,11 +447,6 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_AUTOBOXING = PLUGIN_ID + ".compiler.problem.autoboxing"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
 	public static final String COMPILER_PB_MISSING_OVERRIDE_ANNOTATION = PLUGIN_ID + ".compiler.problem.missingOverrideAnnotation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.

@@ -459,36 +459,6 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public static final int JSDOC_TYPE_REF = 16;
 
 	/**
-	 * Completion is a value reference to a static field in a JSdoc text.
-	 * This kind of completion might occur in a context like
-	 * <code>"	* blabla Number.N^ blabla"</code> and complete it to
-	 * <code>"	* blabla {&#64;value Number#NaN } blabla"</code>.
-	 * <p>
-	 * The following additional context information is available
-	 * for this kind of completion proposal at little extra cost:
-	 * <ul>
-	 * <li>{@link #getDeclarationSignature()} -
-	 * the type signature of the type that declares the field that is referenced
-	 * </li>
-	 * <li>{@link #getFlags()} -
-	 * the modifiers flags of the field that is referenced
-	 * </li>
-	 * <li>{@link #getName()} -
-	 * the simple name of the field that is referenced
-	 * </li>
-	 * <li>{@link #getSignature()} -
-	 * the type signature of the field's type (as opposed to the
-	 * signature of the type in which the referenced field
-	 * is declared)
-	 * </li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @see #getKind()
-	 */
-	public static final int JSDOC_VALUE_REF = 17;
-
-	/**
 	 * Completion is a method argument or a class/method type parameter
 	 * in JSdoc param tag.
 	 * <p>
@@ -1937,9 +1907,6 @@ public final class CompletionProposal extends InternalCompletionProposal {
 				break;
 			case CompletionProposal.JSDOC_PARAM_REF :
 				buffer.append("JSDOC_PARAM_REF"); //$NON-NLS-1$
-				break;
-			case CompletionProposal.JSDOC_VALUE_REF :
-				buffer.append("JSDOC_VALUE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.FIELD_IMPORT :
 				buffer.append("FIELD_IMPORT"); //$NON-NLS-1$

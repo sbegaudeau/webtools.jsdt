@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,14 +29,10 @@ public interface JavadocTagConstants {
 	public static final char[] TAG_LINK = "link".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_LINKPLAIN = "linkplain".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_INHERITDOC = "inheritDoc".toCharArray(); //$NON-NLS-1$
-	public static final char[] TAG_VALUE = "value".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_AUTHOR = "author".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_CODE = "code".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_DOC_ROOT = "docRoot".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_LITERAL = "literal".toCharArray(); //$NON-NLS-1$
-//	public static final char[] TAG_SERIAL = "serial".toCharArray(); //$NON-NLS-1$
-//	public static final char[] TAG_SERIAL_DATA = "serialData".toCharArray(); //$NON-NLS-1$
-//	public static final char[] TAG_SERIAL_FIELD = "serialField".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_SINCE = "since".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_VERSION = "version".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_CATEGORY = "category".toCharArray(); //$NON-NLS-1$
@@ -84,7 +80,6 @@ public interface JavadocTagConstants {
 	public static final int TAG_LINK_LENGTH = TAG_LINK.length;
 	public static final int TAG_LINKPLAIN_LENGTH = TAG_LINKPLAIN.length;
 	public static final int TAG_INHERITDOC_LENGTH = TAG_INHERITDOC.length;
-	public static final int TAG_VALUE_LENGTH = TAG_VALUE.length;
 	public static final int TAG_CATEGORY_LENGTH = TAG_CATEGORY.length;
 
 	public static final int TAG_ADDON_LENGTH = TAG_ADDON.length;
@@ -125,7 +120,6 @@ public interface JavadocTagConstants {
 	public static final int TAG_LINK_VALUE = 7;
 	public static final int TAG_LINKPLAIN_VALUE = 8;
 	public static final int TAG_INHERITDOC_VALUE = 9;
-	public static final int TAG_VALUE_VALUE = 10;
 	public static final int TAG_CATEGORY_VALUE = 11;
 
 	public static final int TAG_ADDON_VALUE = 12;
@@ -210,7 +204,7 @@ public interface JavadocTagConstants {
 		// since 1.3
 		{ TAG_DOC_ROOT },
 		// since 1.4
-		{ TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE },
+		{ TAG_INHERITDOC, TAG_LINKPLAIN },
 		// since 1.5
 		{ TAG_CODE, TAG_LITERAL },
 		// since 1.6
@@ -233,7 +227,6 @@ public interface JavadocTagConstants {
 		TAG_LINK,
 		TAG_LINKPLAIN,
 		TAG_DOC_ROOT,
-		TAG_VALUE,
 		TAG_CLASSDECRIPTION,TAG_FILEOVERVIEW,TAG_PROJECT_DESCRIPTION
 	};
 	public static final char[][] CLASS_TAGS = {
@@ -248,7 +241,6 @@ public interface JavadocTagConstants {
 		TAG_LINK,
 		TAG_LINKPLAIN,
 		TAG_DOC_ROOT,
-		TAG_VALUE,
 		TAG_CODE,
 		TAG_LITERAL,
 		TAG_CLASSDECRIPTION,TAG_NAMESPACE, TAG_REQUIRES, TAG_PRIVATE,TAG_CLASS
@@ -263,7 +255,6 @@ public interface JavadocTagConstants {
 		TAG_LINK,
 		TAG_LINKPLAIN,
 		TAG_DOC_ROOT,
-		TAG_VALUE,
 		TAG_CODE,
 		TAG_LITERAL, TAG_MEMBER, TAG_MEMBEROF,TAG_FINAL,TAG_PRIVATE
 	};
@@ -281,7 +272,6 @@ public interface JavadocTagConstants {
 		TAG_LINKPLAIN,
 		TAG_INHERITDOC,
 		TAG_DOC_ROOT,
-		TAG_VALUE,
 		TAG_CODE,
 		TAG_BASE, TAG_LITERAL, TAG_MEMBER, TAG_ADDON,TAG_CONSTRUCTOR,TAG_TYPE
 	};

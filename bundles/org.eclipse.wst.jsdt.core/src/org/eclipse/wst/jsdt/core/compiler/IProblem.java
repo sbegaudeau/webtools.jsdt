@@ -336,7 +336,6 @@ void setSourceStart(int sourceStart);
 	int FieldHidingField = Internal + FieldRelated + 93;
 	int ArgumentHidingLocalVariable = Internal + 94;
 	int ArgumentHidingField = Internal + 95;
-	int MissingSerialVersion = Internal + 96;
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 	int LooseVarDecl = Internal + 97;
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
@@ -633,10 +632,6 @@ void setSourceStart(int sourceStart);
 	 * Javadoc comments
 	 */
 	/**
-	 * Problem warned on duplicated tag.
-	 */
-	int JavadocDuplicateTag = Javadoc + Internal + 464;
-	/**
 	 * Problem signaled on an hidden reference due to a too low visibility level.
 	 */
 	int JavadocHiddenReference = Javadoc + Internal + 465;
@@ -700,14 +695,11 @@ void setSourceStart(int sourceStart);
 	int JavadocInheritedMethodHidesEnclosingName = Javadoc + Internal + 508;
 	int JavadocInheritedFieldHidesEnclosingName = Javadoc + Internal + 509;
 	int JavadocInheritedNameHidesEnclosingTypeName = Javadoc + Internal + 510;
-	int JavadocAmbiguousMethodReference = Javadoc + Internal + 511;
 	int JavadocUnterminatedInlineTag = Javadoc + Internal + 512;
 	int JavadocMalformedSeeReference = Javadoc + Internal + 513;
 	int JavadocMessagePrefix = Internal + 514;
-
 	int JavadocMissingHashCharacter = Javadoc + Internal + 515;
 	int JavadocEmptyReturnTag = Javadoc + Internal + 516;
-	int JavadocInvalidValueReference = Javadoc + Internal + 517;
 	int JavadocUnexpectedText = Javadoc + Internal + 518;
 	int JavadocInvalidParamTagName = Javadoc + Internal + 519;
 
@@ -731,12 +723,6 @@ void setSourceStart(int sourceStart);
 	 */
 	int InvalidEncoding = Internal + 701;
 	int CannotReadSource = Internal + 702;
-
-	/**
-	 * Autoboxing
-	 */
-	int BoxingConversion = Internal + 720;
-	int UnboxingConversion = Internal + 721;
 
 	/**
 	 * External problems -- These are problems defined by other plugins

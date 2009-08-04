@@ -40,7 +40,6 @@ public class JavadocCompletionProposalComputer extends JavaCompletionProposalCom
 		collector.setIgnored(CompletionProposal.JSDOC_FIELD_REF, false);
 		collector.setIgnored(CompletionProposal.JSDOC_METHOD_REF, false);
 		collector.setIgnored(CompletionProposal.JSDOC_PARAM_REF, false);
-		collector.setIgnored(CompletionProposal.JSDOC_VALUE_REF, false);
 		collector.setIgnored(CompletionProposal.TYPE_REF, false);
 		return collector;
 	}

@@ -394,7 +394,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 				return createJavadocLinkTypeProposal(proposal);
 			case CompletionProposal.FIELD_REF:
 			case CompletionProposal.JSDOC_FIELD_REF:
-			case CompletionProposal.JSDOC_VALUE_REF:
 				return createFieldProposal(proposal);
 			case CompletionProposal.METHOD_REF:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
@@ -553,7 +552,6 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.ANONYMOUS_CLASS_DECLARATION:
 			case CompletionProposal.FIELD_REF:
 			case CompletionProposal.JSDOC_FIELD_REF:
-			case CompletionProposal.JSDOC_VALUE_REF:
 				char[] declaration= proposal.getDeclarationSignature();
 				// special methods may not have a declaring type: methods defined on arrays etc.
 				// Currently known: class literals don't have a declaring type - use Object

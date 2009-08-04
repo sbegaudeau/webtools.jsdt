@@ -3225,26 +3225,6 @@ public final class CompletionEngine
 				if(DEBUG) {
 					this.printDebug(proposal);
 				}
-				// Javadoc value completion for static fields
-				if (field.isStatic() && !this.requestor.isIgnored(CompletionProposal.JSDOC_VALUE_REF)) {
-					javadocCompletion = inlineTagCompletion(completion, JavadocTagConstants.TAG_VALUE);
-					CompletionProposal valueProposal = this.createProposal(CompletionProposal.JSDOC_VALUE_REF, this.actualCompletionPosition);
-					valueProposal.setDeclarationSignature(getSignature(field.declaringClass));
-					valueProposal.setSignature(getSignature(field.type));
-					valueProposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
-					valueProposal.setDeclarationTypeName(field.declaringClass.qualifiedSourceName());
-					valueProposal.setPackageName(field.type.qualifiedPackageName());
-					valueProposal.setTypeName(field.type.qualifiedSourceName());
-					valueProposal.setName(field.name);
-					valueProposal.setCompletion(javadocCompletion);
-					valueProposal.setFlags(field.modifiers);
-					valueProposal.setReplaceRange(start - this.offset, this.endPosition - this.offset);
-					valueProposal.setRelevance(relevance+R_VALUE_TAG);
-					this.requestor.accept(valueProposal);
-					if(DEBUG) {
-						this.printDebug(valueProposal);
-					}
-				}
 			}
 		}
 

@@ -141,7 +141,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.IncompatibleExceptionInThrowsClause:
 			case IProblem.NoMessageSendOnArrayType:
 			case IProblem.InvalidOperator:
-			case IProblem.MissingSerialVersion:
 			case IProblem.UnnecessaryElse:
 			case IProblem.SuperclassMustBeAClass:
 			case IProblem.UseAssertAsAnIdentifier:

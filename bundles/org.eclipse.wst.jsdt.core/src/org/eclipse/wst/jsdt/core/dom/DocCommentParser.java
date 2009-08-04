@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -484,17 +484,9 @@ class DocCommentParser extends AbstractCommentParser {
 						}
 					break;
 					case 'v':
-						if (this.sourceLevel >= ClassFileConstants.JDK1_5 && length == TAG_VALUE_LENGTH && CharOperation.equals(TAG_VALUE, tagName)) {
-							this.tagValue = TAG_VALUE_VALUE;
-							if (this.inlineTagStarted) {
-								valid = parseReference();
-							} else {
-								valid = false;
-							}
-						} else {
-							this.tagValue = TAG_OTHERS_VALUE;
-							createTag();
-						}
+						this.tagValue = TAG_OTHERS_VALUE;
+						createTag();
+						
 					break;
 					default:
 						this.tagValue = TAG_OTHERS_VALUE;
@@ -619,9 +611,6 @@ class DocCommentParser extends AbstractCommentParser {
 				break;
 				case TAG_LINKPLAIN_VALUE:
 					seeTag.setTagName(TagElement.TAG_LINKPLAIN);
-				break;
-				case TAG_VALUE_VALUE:
-					seeTag.setTagName(TagElement.TAG_VALUE);
 				break;
 			}
 			TagElement previousTag = null;

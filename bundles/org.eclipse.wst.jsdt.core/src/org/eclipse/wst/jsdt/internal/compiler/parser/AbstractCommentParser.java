@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -543,9 +543,8 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 									this.scanner.currentPosition = this.tokenPreviousPosition;
 									this.currentTokenType = -1;
 									// Signal syntax error
-									if (this.tagValue != TAG_VALUE_VALUE) { // do not report error for @value tag, this will be done after...
-										if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
-									}
+									if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
+									
 									return false;
 								}
 								this.currentTokenType = -1; // do not update line end
@@ -560,9 +559,8 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 										this.scanner.currentPosition = this.tokenPreviousPosition;
 										this.currentTokenType = -1;
 										// Signal syntax error
-										if (this.tagValue != TAG_VALUE_VALUE) { // do not report error for @value tag, this will be done after...
-											if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
-										}
+										if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
+										
 										return false;
 									}
 									consumeToken();
@@ -591,9 +589,8 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		this.scanner.currentPosition = this.tokenPreviousPosition;
 		this.currentTokenType = -1;
 		// Signal syntax error
-		if (this.tagValue != TAG_VALUE_VALUE) { // do not report error for @value tag, this will be done after...
-			if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
-		}
+		if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidSeeUrlReference(start, this.lineEnd);
+		
 		return false;
 	}
 
@@ -942,18 +939,10 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						int start = this.scanner.getCurrentTokenStartPosition();
 						if (parseHref()) {
 							consumeToken();
-							if (this.tagValue == TAG_VALUE_VALUE) {
-								// String reference are not allowed for @value tag
-								if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
-								return null;
-							}
 							// verify end line
 //							if (verifyEndLine(previousPosition))
 //								return true;
 //							if (this.reportProblems) this.sourceParser.problemReporter().javadocUnexpectedText(this.scanner.currentPosition, this.lineEnd);
-						}
-						else if (this.tagValue == TAG_VALUE_VALUE) {
-							if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
 						}
 						expectingRef=false;
 						break;
@@ -1133,11 +1122,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						if (typeRef != null) break nextToken;
 						consumeToken();
 						int start = this.scanner.getCurrentTokenStartPosition();
-						if (this.tagValue == TAG_VALUE_VALUE) {
-							// String reference are not allowed for @value tag
-							if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getTokenEndPosition(), this.sourceParser.modifiers);
-							return false;
-						}
 
 						// verify end line
 						if (verifyEndLine(previousPosition)) {
@@ -1153,17 +1137,9 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						start = this.scanner.getCurrentTokenStartPosition();
 						if (parseHref()) {
 							consumeToken();
-							if (this.tagValue == TAG_VALUE_VALUE) {
-								// String reference are not allowed for @value tag
-								if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
-								return false;
-							}
 							// verify end line
 							if (verifyEndLine(previousPosition)) return true;
 							if (this.reportProblems) this.sourceParser.problemReporter().javadocUnexpectedText(this.scanner.currentPosition, this.lineEnd);
-						}
-						else if (this.tagValue == TAG_VALUE_VALUE) {
-							if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidValueReference(start, getIndexPosition(), this.sourceParser.modifiers);
 						}
 						return false;
 					case TerminalTokens.TokenNameERROR :
@@ -1199,10 +1175,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.index = this.tokenPreviousPosition;
 				this.scanner.currentPosition = this.tokenPreviousPosition;
 				this.currentTokenType = -1;
-				if (this.tagValue == TAG_VALUE_VALUE) {
-					if ((this.kind & DOM_PARSER) != 0) createTag();
-					return true;
-				}
 				if (this.reportProblems) {
 					this.sourceParser.problemReporter().javadocMissingReference(this.tagSourceStart, this.tagSourceEnd, this.sourceParser.modifiers);
 				}
@@ -1215,12 +1187,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.scanner.currentPosition = this.index;
 			}
 			this.currentTokenType = -1;
-
-			// In case of @value, we have an invalid reference (only static field refs are valid for this tag)
-			if (this.tagValue == TAG_VALUE_VALUE) {
-				if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidReference(typeRefStartPosition, this.lineEnd);
-				return false;
-			}
 
 			// Verify that line end does not start with an open parenthese (which could be a constructor reference wrongly written...)
 			// See bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=47215

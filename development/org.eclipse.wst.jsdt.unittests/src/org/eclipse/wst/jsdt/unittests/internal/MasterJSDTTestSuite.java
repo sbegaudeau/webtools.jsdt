@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
-import org.eclipse.wst.jsdt.web.core.tests.translation.AllWebCoreTests;
+import org.eclipse.wst.jsdt.web.core.tests.AllWebCoreTests;
 import org.eclipse.wst.jsdt.web.ui.tests.AllWebUITests;
 import org.osgi.framework.Bundle;
 

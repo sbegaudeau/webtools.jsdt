@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 
 /**
  * Node representing a structured Javadoc comment
@@ -406,24 +405,11 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			// Verify if this is a method reference
 			// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51911
 			if (fieldRef.methodBinding != null) {
-				// cannot refer to method for @value tag
-				if (fieldRef.tagValue == JavadocTagConstants.TAG_VALUE_VALUE) {
-					if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
-					scope.problemReporter().javadocInvalidValueReference(fieldRef.sourceStart, fieldRef.sourceEnd, scopeModifiers);
-				}
-				else if (fieldRef.receiverType != null) {
+				if (fieldRef.receiverType != null) {
 					if (scope.enclosingSourceType().isCompatibleWith(fieldRef.receiverType)) {
 							fieldRef.bits |= ASTNode.SuperAccess;
 						}
 					fieldRef.methodBinding = scope.findMethod((ReferenceBinding)fieldRef.receiverType, fieldRef.token, new TypeBinding[0], fieldRef);
-				}
-			}
-
-			// Verify whether field ref should be static or not (for @value tags)
-			else if (source15 && fieldRef.binding != null && fieldRef.binding.isValidBinding()) {
-				if (fieldRef.tagValue == JavadocTagConstants.TAG_VALUE_VALUE && !fieldRef.binding.isStatic()) {
-					if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
-					scope.problemReporter().javadocInvalidValueReference(fieldRef.sourceStart, fieldRef.sourceEnd, scopeModifiers);
 				}
 			}
 
@@ -447,12 +433,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 		if (reference instanceof JavadocMessageSend) {
 			JavadocMessageSend msgSend = (JavadocMessageSend) reference;
 
-			// tag value
-			if (source15 && msgSend.tagValue == JavadocTagConstants.TAG_VALUE_VALUE) { // cannot refer to method for @value tag
-				if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
-				scope.problemReporter().javadocInvalidValueReference(msgSend.sourceStart, msgSend.sourceEnd, scopeModifiers);
-			}
-
 			// Verify type references
 			if (!hasProblems && msgSend.binding != null && msgSend.binding.isValidBinding() && msgSend.actualReceiverType instanceof ReferenceBinding) {
 				ReferenceBinding resolvedType = (ReferenceBinding) msgSend.actualReceiverType;
@@ -463,12 +443,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 		// Verify that constructor reference are not used for @value tags
 		else if (reference instanceof JavadocAllocationExpression) {
 			JavadocAllocationExpression alloc = (JavadocAllocationExpression) reference;
-
-			// tag value
-			if (source15 && alloc.tagValue == JavadocTagConstants.TAG_VALUE_VALUE) { // cannot refer to method for @value tag
-				if (scopeModifiers == -1) scopeModifiers = scope.getDeclarationModifiers();
-				scope.problemReporter().javadocInvalidValueReference(alloc.sourceStart, alloc.sourceEnd, scopeModifiers);
-			}
 
 			// Verify type references
 			if (!hasProblems && alloc.binding != null && alloc.binding.isValidBinding() && alloc.resolvedType instanceof ReferenceBinding) {

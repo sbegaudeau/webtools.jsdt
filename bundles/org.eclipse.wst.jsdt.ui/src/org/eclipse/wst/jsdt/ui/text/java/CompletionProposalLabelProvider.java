@@ -534,7 +534,6 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.JSDOC_TYPE_REF:
 				return createJavadocTypeProposalLabel(proposal);
 			case CompletionProposal.JSDOC_FIELD_REF:
-			case CompletionProposal.JSDOC_VALUE_REF:
 			case CompletionProposal.JSDOC_BLOCK_TAG:
 			case CompletionProposal.JSDOC_INLINE_TAG:
 			case CompletionProposal.JSDOC_PARAM_REF:
@@ -619,7 +618,6 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.JSDOC_METHOD_REF:
 			case CompletionProposal.JSDOC_TYPE_REF:
 			case CompletionProposal.JSDOC_FIELD_REF:
-			case CompletionProposal.JSDOC_VALUE_REF:
 			case CompletionProposal.JSDOC_BLOCK_TAG:
 			case CompletionProposal.JSDOC_INLINE_TAG:
 			case CompletionProposal.JSDOC_PARAM_REF:

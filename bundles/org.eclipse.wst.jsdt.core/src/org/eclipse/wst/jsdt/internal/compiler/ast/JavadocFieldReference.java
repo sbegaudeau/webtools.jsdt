@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,11 +98,6 @@ public class JavadocFieldReference extends FieldReference implements IJsDocField
 						case 1:
 							// one method binding was found: store binding in specific field
 							this.methodBinding = methodBindings[0];
-							break;
-						default:
-							// several method binding were found: store first binding in specific field and report ambiguous error
-							this.methodBinding = methodBindings[0];
-							scope.problemReporter().javadocAmbiguousMethodReference(this.sourceStart, this.sourceEnd, fieldBinding, scope.getDeclarationModifiers());
 							break;
 					}
 				}

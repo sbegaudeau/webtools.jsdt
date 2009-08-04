@@ -61,7 +61,6 @@ public class JavaTypeCompletionProposalComputer extends JavaCompletionProposalCo
 		collector.setIgnored(CompletionProposal.JSDOC_METHOD_REF, true);
 		collector.setIgnored(CompletionProposal.JSDOC_PARAM_REF, true);
 		collector.setIgnored(CompletionProposal.JSDOC_TYPE_REF, true);
-		collector.setIgnored(CompletionProposal.JSDOC_VALUE_REF, true);
 		
 		collector.setIgnored(CompletionProposal.TYPE_REF, false);
 		return collector;

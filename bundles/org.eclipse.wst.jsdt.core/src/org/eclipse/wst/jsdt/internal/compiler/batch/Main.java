@@ -1903,10 +1903,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 			this.options.put(CompilerOptions.OPTION_ReportRedundantNullCheck,
 					CompilerOptions.IGNORE);
 		}
-	} else if (token.equals("boxing")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportAutoboxing,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("hiding")) { //$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportHiddenCatchBlock,

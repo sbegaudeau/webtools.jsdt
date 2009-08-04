@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,6 @@ public class CompilerOptions {
 	public static final String OPTION_ReportPotentialNullReference = "org.eclipse.wst.jsdt.core.compiler.problem.potentialNullReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportDuplicateLocalVariables = "org.eclipse.wst.jsdt.core.compiler.problem.duplicateLocalVariables"; //$NON-NLS-1$
 	public static final String OPTION_ReportRedundantNullCheck = "org.eclipse.wst.jsdt.core.compiler.problem.redundantNullCheck"; //$NON-NLS-1$
-	public static final String OPTION_ReportAutoboxing = "org.eclipse.wst.jsdt.core.compiler.problem.autoboxing"; //$NON-NLS-1$
 	public static final String OPTION_ReportForbiddenReference =  "org.eclipse.wst.jsdt.core.compiler.problem.forbiddenReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportDiscouragedReference =  "org.eclipse.wst.jsdt.core.compiler.problem.discouragedReference"; //$NON-NLS-1$
 	public static final String OPTION_SuppressWarnings =  "org.eclipse.wst.jsdt.core.compiler.problem.suppressWarnings"; //$NON-NLS-1$
@@ -189,12 +188,9 @@ public class CompilerOptions {
 	public static final long UnnecessaryElse  = ASTNode.Bit30;
 	public static final long UncheckedTypeOperation = ASTNode.Bit31;
 	public static final long FinalParameterBound = ASTNode.Bit32L;
-//TODO: remove	MissingSerialVersion
-	public static final long MissingSerialVersion = ASTNode.Bit33L;
 	public static final long EnumUsedAsAnIdentifier = ASTNode.Bit34L;
 	public static final long ForbiddenReference = ASTNode.Bit35L;
 	public static final long NullReference = ASTNode.Bit37L;
-	public static final long AutoBoxing = ASTNode.Bit38L;
 	public static final long TypeHiding = ASTNode.Bit40L;
 	public static final long DiscouragedReference = ASTNode.Bit44L;
 	public static final long RawTypeReference = ASTNode.Bit46L;
@@ -407,7 +403,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportUndocumentedEmptyBlock, getSeverityString(UndocumentedEmptyBlock));
 		optionsMap.put(OPTION_ReportUnnecessaryTypeCheck, getSeverityString(UnnecessaryTypeCheck));
 		optionsMap.put(OPTION_ReportUnnecessaryElse, getSeverityString(UnnecessaryElse));
-		optionsMap.put(OPTION_ReportAutoboxing, getSeverityString(AutoBoxing));
 		optionsMap.put(OPTION_ReportInvalidJavadoc, getSeverityString(InvalidJavadoc));
 		optionsMap.put(OPTION_ReportInvalidJavadocTagsVisibility, getVisibilityString(this.reportInvalidJavadocTagsVisibility));
 		optionsMap.put(OPTION_ReportInvalidJavadocTags, this.reportInvalidJavadocTags ? ENABLED : DISABLED);
@@ -563,8 +558,6 @@ public class CompilerOptions {
 					return OPTION_ReportDuplicateLocalVariables;
 				case (int)(RedundantNullCheck >>> 32) :
 					return OPTION_ReportRedundantNullCheck;
-				case (int)(AutoBoxing >>> 32) :
-					return OPTION_ReportAutoboxing;
 				case (int)(TypeHiding >>> 32) :
 					return OPTION_ReportTypeParameterHiding;
 				case (int)(DiscouragedReference >>> 32) :
@@ -864,7 +857,6 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportPotentialNullReference)) != null) updateSeverity(PotentialNullReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportDuplicateLocalVariables)) != null) updateSeverity(DuplicateLocalVariables, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportRedundantNullCheck)) != null) updateSeverity(RedundantNullCheck, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportAutoboxing)) != null) updateSeverity(AutoBoxing, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedLabel)) != null) updateSeverity(UnusedLabel, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportParameterAssignment)) != null) updateSeverity(ParameterAssignment, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportFallthroughCase)) != null) updateSeverity(FallthroughCase, optionValue);
@@ -1060,7 +1052,6 @@ public class CompilerOptions {
 		buf.append("\n\t- potential null reference: ").append(getSeverityString(PotentialNullReference)); //$NON-NLS-1$
 		buf.append("\n\t- duplicate local variables: ").append(getSeverityString(DuplicateLocalVariables)); //$NON-NLS-1%
 		buf.append("\n\t- redundant null check: ").append(getSeverityString(RedundantNullCheck)); //$NON-NLS-1$
-		buf.append("\n\t- autoboxing: ").append(getSeverityString(AutoBoxing)); //$NON-NLS-1$
 		buf.append("\n\t- suppress warnings: ").append(this.suppressWarnings ? ENABLED : DISABLED); //$NON-NLS-1$
 		buf.append("\n\t- unused label: ").append(getSeverityString(UnusedLabel)); //$NON-NLS-1$
 		buf.append("\n\t- treat optional error as fatal: ").append(this.treatOptionalErrorAsFatal ? ENABLED : DISABLED); //$NON-NLS-1$
@@ -1155,7 +1146,6 @@ public class CompilerOptions {
 	public static String[] warningOptionNames() {
 		String[] result = {
 			OPTION_ReportAssertIdentifier,
-			OPTION_ReportAutoboxing,
 			OPTION_ReportDeprecation,
 			OPTION_ReportDiscouragedReference,
 			OPTION_ReportEmptyStatement,
@@ -1236,8 +1226,6 @@ public class CompilerOptions {
 		} else {
 			irritantInt = (int)(irritant >>> 32);
 			switch (irritantInt) {
-				case (int)(AutoBoxing >>> 32) :
-					return "boxing"; //$NON-NLS-1$
 				case (int)(TypeHiding >>> 32) :
 					return "hiding"; //$NON-NLS-1$
 				case (int)(RawTypeReference >>> 32):
@@ -1285,10 +1273,6 @@ public class CompilerOptions {
 			case 'a' :
 				if ("all".equals(warningToken)) //$NON-NLS-1$
 					return 0xFFFFFFFFFFFFFFFFl; // suppress all warnings
-				break;
-			case 'b' :
-				if ("boxing".equals(warningToken)) //$NON-NLS-1$
-					return AutoBoxing;
 				break;
 			case 'c' :
 				if ("cast".equals(warningToken)) //$NON-NLS-1$

@@ -222,9 +222,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.UnnecessaryElse:
 			return CompilerOptions.UnnecessaryElse;
 
-		case IProblem.MissingSerialVersion:
-			return CompilerOptions.MissingSerialVersion;
-
 		case IProblem.ForbiddenReference:
 			return CompilerOptions.ForbiddenReference;
 
@@ -248,15 +245,10 @@ public static long getIrritant(int problemID) {
 		case IProblem.NullLocalVariableInstanceofYieldsFalse:
 			return CompilerOptions.RedundantNullCheck;
 
-		case IProblem.BoxingConversion :
-		case IProblem.UnboxingConversion :
-			return CompilerOptions.AutoBoxing;
-
 		case IProblem.UnusedLabel :
 			return CompilerOptions.UnusedLabel;
 
 		case IProblem.JavadocUnexpectedTag:
-		case IProblem.JavadocDuplicateTag:
 		case IProblem.JavadocDuplicateReturnTag:
 		case IProblem.JavadocInvalidThrowsClass:
 		case IProblem.JavadocInvalidSeeReference:
@@ -279,14 +271,12 @@ public static long getIrritant(int problemID) {
 		case IProblem.JavadocDuplicateThrowsClassName:
 		case IProblem.JavadocMissingThrowsClassName:
 		case IProblem.JavadocMissingSeeReference:
-		case IProblem.JavadocInvalidValueReference:
 		case IProblem.JavadocUndefinedField:
 		case IProblem.JavadocAmbiguousField:
 		case IProblem.JavadocUndefinedConstructor:
 		case IProblem.JavadocAmbiguousConstructor:
 		case IProblem.JavadocUndefinedMethod:
 		case IProblem.JavadocAmbiguousMethod:
-		case IProblem.JavadocAmbiguousMethodReference:
 		case IProblem.JavadocParameterMismatch:
 		case IProblem.JavadocUndefinedType:
 		case IProblem.JavadocAmbiguousType:
@@ -400,11 +390,9 @@ public static int getProblemCategory(int severity, int problemID) {
 			switch (irritantInt) {
 				case (int)(CompilerOptions.FinalParameterBound >>> 32):
 				case (int)(CompilerOptions.EnumUsedAsAnIdentifier >>> 32):
-				case (int)(CompilerOptions.AutoBoxing >>> 32):
 				case (int)(CompilerOptions.ParameterAssignment >>> 32):
 					return CategorizedProblem.CAT_CODE_STYLE;
 
-				case (int)(CompilerOptions.MissingSerialVersion >>> 32):
 				case (int)(CompilerOptions.NullReference >>> 32):
 				case (int)(CompilerOptions.PotentialNullReference >>> 32):
 				case (int)(CompilerOptions.DuplicateLocalVariables >>> 32):
@@ -610,15 +598,6 @@ public void attemptToReturnVoidValue(ReturnStatement returnStatement) {
 		NoArgument,
 		returnStatement.sourceStart,
 		returnStatement.sourceEnd);
-}
-public void autoboxing(Expression expression, TypeBinding originalType, TypeBinding convertedType) {
-	if (this.options.getSeverity(CompilerOptions.AutoBoxing) == ProblemSeverities.Ignore) return;
-	this.handle(
-		originalType.isBaseType() ? IProblem.BoxingConversion : IProblem.UnboxingConversion,
-		new String[] { new String(originalType.readableName()), new String(convertedType.readableName()), },
-		new String[] { new String(originalType.shortReadableName()), new String(convertedType.shortReadableName()), },
-		expression.sourceStart,
-		expression.sourceEnd);
 }
 public void cannotAllocateVoidArray(Expression expression) {
 	this.handle(
@@ -857,14 +836,12 @@ public int computeSeverity(int problemID){
 		case IProblem.JavadocDuplicateThrowsClassName:
 		case IProblem.JavadocMissingThrowsClassName:
 		case IProblem.JavadocMissingSeeReference:
-		case IProblem.JavadocInvalidValueReference:
 		case IProblem.JavadocUndefinedField:
 		case IProblem.JavadocAmbiguousField:
 		case IProblem.JavadocUndefinedConstructor:
 		case IProblem.JavadocAmbiguousConstructor:
 		case IProblem.JavadocUndefinedMethod:
 		case IProblem.JavadocAmbiguousMethod:
-		case IProblem.JavadocAmbiguousMethodReference:
 		case IProblem.JavadocParameterMismatch:
 		case IProblem.JavadocUndefinedType:
 		case IProblem.JavadocAmbiguousType:
@@ -2706,20 +2683,6 @@ private boolean isRecoveredName(char[][] qualifiedName) {
 
 	return false;
 }
-public void javadocAmbiguousMethodReference(int sourceStart, int sourceEnd, Binding fieldBinding, int modifiers) {
-	int severity = computeSeverity(IProblem.JavadocAmbiguousMethodReference);
-	if (severity == ProblemSeverities.Ignore) return;
-	if (javadocVisibility(this.options.reportInvalidJavadocTagsVisibility, modifiers)) {
-		String[] arguments = new String[] {new String(fieldBinding.readableName())};
-		handle(
-			IProblem.JavadocAmbiguousMethodReference,
-			arguments,
-			arguments,
-			severity,
-			sourceStart,
-			sourceEnd);
-	}
-}
 
 public void javadocDeprecatedField(FieldBinding field, ASTNode location, int modifiers) {
 	int severity = computeSeverity(IProblem.JavadocUsingDeprecatedField);
@@ -2793,15 +2756,6 @@ public void javadocDuplicatedParamTag(char[] token, int sourceStart, int sourceE
 }
 public void javadocDuplicatedReturnTag(int sourceStart, int sourceEnd){
 	this.handle(IProblem.JavadocDuplicateReturnTag, NoArgument, NoArgument, sourceStart, sourceEnd);
-}
-public void javadocDuplicatedTag(char[] tagName, int sourceStart, int sourceEnd){
-	String[] arguments = new String[] { new String(tagName) };
-	this.handle(
-		IProblem.JavadocDuplicateTag,
-		arguments,
-		arguments,
-		sourceStart,
-		sourceEnd);
 }
 public void javadocDuplicatedThrowsClassName(TypeReference typeReference, int modifiers) {
 	int severity = computeSeverity(IProblem.JavadocDuplicateThrowsClassName);
@@ -3077,10 +3031,6 @@ public void javadocInvalidType(ASTNode location, TypeBinding type, int modifiers
 			location.sourceStart,
 			location.sourceEnd);
 	}
-}
-public void javadocInvalidValueReference(int sourceStart, int sourceEnd, int modifiers) {
-	if (javadocVisibility(this.options.reportInvalidJavadocTagsVisibility, modifiers))
-		this.handle(IProblem.JavadocInvalidValueReference, NoArgument, NoArgument, sourceStart, sourceEnd);
 }
 public void javadocMalformedSeeReference(int sourceStart, int sourceEnd) {
 	this.handle(IProblem.JavadocMalformedSeeReference, NoArgument, NoArgument, sourceStart, sourceEnd);
@@ -3406,16 +3356,6 @@ public void missingSemiColon(Expression expression, int start, int end){
 		NoArgument,
 		start,
 		end);
-}
-
-public void missingSerialVersion(TypeDeclaration typeDecl) {
-	String[] arguments = new String[] {new String(typeDecl.name)};
-	this.handle(
-		IProblem.MissingSerialVersion,
-		arguments,
-		arguments,
-		typeDecl.sourceStart,
-		typeDecl.sourceEnd);
 }
 public void mustDefineDimensionsOrInitializer(ArrayAllocationExpression expression) {
 	this.handle(
