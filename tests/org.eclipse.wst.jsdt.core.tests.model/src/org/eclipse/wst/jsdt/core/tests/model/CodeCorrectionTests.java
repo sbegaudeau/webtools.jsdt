@@ -669,10 +669,6 @@ public class CodeCorrectionTests extends AbstractJavaModelTests {
 				.getWarningToken(IProblem.UsingDeprecatedMethod));
 		assertEquals("wrong token", "deprecation", CorrectionEngine
 				.getWarningToken(IProblem.UsingDeprecatedField));
-		assertEquals("wrong token", "boxing", CorrectionEngine
-				.getWarningToken(IProblem.BoxingConversion));
-		assertEquals("wrong token", "boxing", CorrectionEngine
-				.getWarningToken(IProblem.UnboxingConversion));
 		assertEquals("wrong token", "finally", CorrectionEngine
 				.getWarningToken(IProblem.FinallyMustCompleteNormally));
 		assertEquals("wrong token", "hiding", CorrectionEngine
@@ -731,7 +727,5 @@ public class CodeCorrectionTests extends AbstractJavaModelTests {
 		assertEquals("wrong token", "unqualified-field-access",
 				CorrectionEngine
 						.getWarningToken(IProblem.UnqualifiedFieldAccess));
-		assertEquals("wrong token", "serial", CorrectionEngine
-				.getWarningToken(IProblem.MissingSerialVersion));
 	}
 }

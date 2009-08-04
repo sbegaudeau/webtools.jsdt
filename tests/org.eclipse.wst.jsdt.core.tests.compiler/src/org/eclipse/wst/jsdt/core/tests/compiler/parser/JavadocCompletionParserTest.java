@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -166,12 +166,12 @@ protected void verifyAllTagsCompletion() {
 	char[][] additionalTags = null;
 	if (complianceLevel.equals(COMPLIANCE_1_4)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE
+			TAG_INHERITDOC, TAG_LINKPLAIN
 		};
 	}
 	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE,
+			TAG_INHERITDOC, TAG_LINKPLAIN,
 			TAG_CODE, TAG_LITERAL
 		};
 	}
@@ -219,7 +219,7 @@ public void test003() {
 	verifyCompletionInJavadoc(source, "@v");
 	char[][] allTags = this.complianceLevel.equals(COMPLIANCE_1_3) 
 		? new char[][] { TAG_VERSION }
-		: new char[][] { TAG_VERSION, TAG_VALUE };
+		: new char[][] { TAG_VERSION };
 	verifyCompletionOnJavadocTag(new char[] { 'v' }, allTags, false);
 }
 
@@ -262,12 +262,12 @@ public void test006() {
 	char[][] additionalTags = null;
 	if (complianceLevel.equals(COMPLIANCE_1_4)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE
+			TAG_INHERITDOC, TAG_LINKPLAIN
 		};
 	}
 	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE,
+			TAG_INHERITDOC, TAG_LINKPLAIN,
 			TAG_CODE, TAG_LITERAL
 		};
 	}
@@ -484,12 +484,12 @@ public void test025() {
 	char[][] additionalTags = null;
 	if (complianceLevel.equals(COMPLIANCE_1_4)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE
+			TAG_INHERITDOC, TAG_LINKPLAIN
 		};
 	}
 	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE,
+			TAG_INHERITDOC, TAG_LINKPLAIN,
 			TAG_CODE, TAG_LITERAL
 		};
 	}
@@ -558,12 +558,12 @@ public void test028() {
 	char[][] additionalTags = null;
 	if (complianceLevel.equals(COMPLIANCE_1_4)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE
+			TAG_INHERITDOC, TAG_LINKPLAIN
 		};
 	}
 	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
 		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN, TAG_VALUE,
+			TAG_INHERITDOC, TAG_LINKPLAIN,
 			TAG_CODE, TAG_LITERAL
 		};
 	}

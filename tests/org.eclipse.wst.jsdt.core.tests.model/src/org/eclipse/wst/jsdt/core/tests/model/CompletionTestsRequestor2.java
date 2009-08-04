@@ -283,9 +283,6 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.JSDOC_PARAM_REF :
 				buffer.append("JSDOC_PARAM_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JSDOC_VALUE_REF :
-				buffer.append("JSDOC_VALUE_REF"); //$NON-NLS-1$
-				break;
 			case CompletionProposal.FIELD_IMPORT :
 				buffer.append("FIELD_IMPORT"); //$NON-NLS-1$
 				break;
@@ -435,7 +432,6 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.JSDOC_FIELD_REF:
 			case CompletionProposal.JSDOC_METHOD_REF :
 			case CompletionProposal.JSDOC_PARAM_REF :
-			case CompletionProposal.JSDOC_VALUE_REF :
 			case CompletionProposal.FIELD_IMPORT :
 			case CompletionProposal.METHOD_IMPORT :
 				return new String(proposal.getName());
