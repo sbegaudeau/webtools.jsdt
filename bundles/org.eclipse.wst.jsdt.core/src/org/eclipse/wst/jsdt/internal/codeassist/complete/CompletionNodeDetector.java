@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -142,9 +141,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	public void endVisit(QualifiedNameReference qualifiedNameReference, BlockScope scope) {
 		endVisit(qualifiedNameReference);
 	}
-	public void endVisit(QualifiedSuperReference qualifiedSuperReference, BlockScope scope) {
-		endVisit(qualifiedSuperReference);
-	}
 	public void endVisit(QualifiedThisReference qualifiedThisReference, BlockScope scope) {
 		endVisit(qualifiedThisReference);
 	}
@@ -243,9 +239,6 @@ public class CompletionNodeDetector extends ASTVisitor {
 	}
 	public boolean visit(QualifiedNameReference qualifiedNameReference, BlockScope scope) {
 		return this.visit(qualifiedNameReference);
-	}
-	public boolean visit(QualifiedSuperReference qualifiedSuperReference, BlockScope scope) {
-		return this.visit(qualifiedSuperReference);
 	}
 	public boolean visit(QualifiedThisReference qualifiedThisReference, BlockScope scope) {
 		return this.visit(qualifiedThisReference);

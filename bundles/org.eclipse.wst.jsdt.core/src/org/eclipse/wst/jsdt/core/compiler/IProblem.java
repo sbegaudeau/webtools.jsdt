@@ -257,7 +257,6 @@ void setSourceStart(int sourceStart);
 	/**
 	 * General type related problems
 	 */
-	int ObjectHasNoSuperclass = TypeRelated + 1;
 	int UndefinedType = TypeRelated + 2;
 	int NotVisibleType = TypeRelated + 3;
 	int AmbiguousType = TypeRelated + 4;
@@ -586,15 +585,12 @@ void setSourceStart(int sourceStart);
 	int OverridingNonVisibleMethod = MethodRelated + 410;
 	int AbstractMethodCannotBeOverridden = MethodRelated + 411;
 	int OverridingDeprecatedMethod = MethodRelated + 412;
-	int IncompatibleReturnTypeForNonInheritedInterfaceMethod = MethodRelated + 413;
-	int IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod = MethodRelated + 414;
 	int IllegalVararg = MethodRelated + 415;
 	int OverridingMethodWithoutSuperInvocation = MethodRelated + 416;
 
 	// code snippet support
 	int CodeSnippetMissingClass = Internal + 420;
 	int CodeSnippetMissingMethod = Internal + 421;
-	int CannotUseSuperInCodeSnippet = Internal + 422;
 
 	//constant pool
 	int TooManyConstantsInConstantPool = Internal + 430;

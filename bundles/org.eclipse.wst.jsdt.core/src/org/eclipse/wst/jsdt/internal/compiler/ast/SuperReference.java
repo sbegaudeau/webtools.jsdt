@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,6 @@ public class SuperReference extends ThisReference implements ISuperReference {
 			return null;
 		ReferenceBinding enclosingReceiverType = scope.enclosingReceiverType();
 		if (enclosingReceiverType.id == T_JavaLangObject) {
-			scope.problemReporter().cannotUseSuperInJavaLangObject(this);
 			return null;
 		}
 		return this.resolvedType = enclosingReceiverType.superclass();

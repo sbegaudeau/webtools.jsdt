@@ -79,7 +79,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
@@ -4138,27 +4137,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 
 		if (numberOfParens > 0) {
 			manageClosingParenthesizedExpression(qualifiedNameReference, numberOfParens);
-		}
-		return false;
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(
-		QualifiedSuperReference qualifiedSuperReference,
-		BlockScope scope) {
-
-		final int numberOfParens = (qualifiedSuperReference.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
-		if (numberOfParens > 0) {
-			manageOpeningParenthesizedExpression(qualifiedSuperReference, numberOfParens);
-		}
-		qualifiedSuperReference.qualification.traverse(this, scope);
-		this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
-		this.scribe.printNextToken(TerminalTokens.TokenNamesuper);
-
-		if (numberOfParens > 0) {
-			manageClosingParenthesizedExpression(qualifiedSuperReference, numberOfParens);
 		}
 		return false;
 	}

@@ -1735,10 +1735,6 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 		this.options.put(
 			CompilerOptions.OPTION_ReportNoEffectAssignment,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
-	} else if (token.equals("intfNonInherited") || token.equals("interfaceNonInherited")/*backward compatible*/) { //$NON-NLS-1$ //$NON-NLS-2$
-		this.options.put(
-			CompilerOptions.OPTION_ReportIncompatibleNonInheritedInterfaceMethod,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("charConcat") || token.equals("noImplicitStringConversion")/*backward compatible*/) {//$NON-NLS-1$ //$NON-NLS-2$
 		this.options.put(
 			CompilerOptions.OPTION_ReportNoImplicitStringConversion,

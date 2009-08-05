@@ -1036,7 +1036,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 							constructorCall.arguments == null ? 0 : constructorCall.arguments.length,
 							constructorCall.sourceStart);
 						break;
-					case ExplicitConstructorCall.Super :
 					case ExplicitConstructorCall.ImplicitSuper :
 						requestor.acceptConstructorReference(
 							superTypeNames[nestedTypeIndex-1],
@@ -1099,7 +1098,6 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 							constructorCall.arguments == null ? 0 : constructorCall.arguments.length,
 							constructorCall.sourceStart);
 						break;
-					case ExplicitConstructorCall.Super :
 					case ExplicitConstructorCall.ImplicitSuper :
 						requestor.acceptConstructorReference(
 							superTypeNames[nestedTypeIndex-1],

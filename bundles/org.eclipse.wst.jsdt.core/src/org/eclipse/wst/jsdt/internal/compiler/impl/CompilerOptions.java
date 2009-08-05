@@ -56,7 +56,6 @@ public class CompilerOptions {
 	public static final String OPTION_ReportTypeParameterHiding = "org.eclipse.wst.jsdt.core.compiler.problem.typeParameterHiding"; //$NON-NLS-1$
 	public static final String OPTION_ReportPossibleAccidentalBooleanAssignment = "org.eclipse.wst.jsdt.core.compiler.problem.possibleAccidentalBooleanAssignment"; //$NON-NLS-1$
 	public static final String OPTION_ReportNonExternalizedStringLiteral = "org.eclipse.wst.jsdt.core.compiler.problem.nonExternalizedStringLiteral"; //$NON-NLS-1$
-	public static final String OPTION_ReportIncompatibleNonInheritedInterfaceMethod = "org.eclipse.wst.jsdt.core.compiler.problem.incompatibleNonInheritedInterfaceMethod"; //$NON-NLS-1$
 	public static final String OPTION_ReportUnusedPrivateMember = "org.eclipse.wst.jsdt.core.compiler.problem.unusedPrivateMember"; //$NON-NLS-1$
 	public static final String OPTION_ReportNoImplicitStringConversion = "org.eclipse.wst.jsdt.core.compiler.problem.noImplicitStringConversion"; //$NON-NLS-1$
 	public static final String OPTION_ReportAssertIdentifier = "org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier"; //$NON-NLS-1$
@@ -170,7 +169,6 @@ public class CompilerOptions {
 	public static final long NonStaticAccessToStatic = ASTNode.Bit12;
 	public static final long Task = ASTNode.Bit13;
 	public static final long NoEffectAssignment = ASTNode.Bit14;
-	public static final long IncompatibleNonInheritedInterfaceMethod = ASTNode.Bit15;
 	public static final long UnusedPrivateMember = ASTNode.Bit16;
 	public static final long LocalVariableHiding = ASTNode.Bit17;
 	public static final long FieldHiding = ASTNode.Bit18;
@@ -229,7 +227,6 @@ public class CompilerOptions {
 		| UndefinedField
 		| NonStaticAccessToStatic
 		| NoEffectAssignment
-		| IncompatibleNonInheritedInterfaceMethod
 		| NoImplicitStringConversion
 		| FinallyBlockNotCompleting
 		| AssertUsedAsAnIdentifier
@@ -391,7 +388,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportNoImplicitStringConversion, getSeverityString(NoImplicitStringConversion));
 		optionsMap.put(OPTION_ReportNonStaticAccessToStatic, getSeverityString(NonStaticAccessToStatic));
 		optionsMap.put(OPTION_ReportIndirectStaticAccess, getSeverityString(IndirectStaticAccess));
-		optionsMap.put(OPTION_ReportIncompatibleNonInheritedInterfaceMethod, getSeverityString(IncompatibleNonInheritedInterfaceMethod));
 		optionsMap.put(OPTION_ReportUnusedPrivateMember, getSeverityString(UnusedPrivateMember));
 		optionsMap.put(OPTION_ReportLocalVariableHiding, getSeverityString(LocalVariableHiding));
 		optionsMap.put(OPTION_ReportFieldHiding, getSeverityString(FieldHiding));
@@ -506,8 +502,6 @@ public class CompilerOptions {
 					return OPTION_TaskTags;
 				case (int) NoEffectAssignment :
 					return OPTION_ReportNoEffectAssignment;
-				case (int) IncompatibleNonInheritedInterfaceMethod :
-					return OPTION_ReportIncompatibleNonInheritedInterfaceMethod;
 				case (int) UnusedPrivateMember :
 					return OPTION_ReportUnusedPrivateMember;
 				case (int) LocalVariableHiding :
@@ -841,7 +835,6 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportEnumIdentifier)) != null) updateSeverity(EnumUsedAsAnIdentifier, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportNonStaticAccessToStatic)) != null) updateSeverity(NonStaticAccessToStatic, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportIndirectStaticAccess)) != null) updateSeverity(IndirectStaticAccess, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportIncompatibleNonInheritedInterfaceMethod)) != null) updateSeverity(IncompatibleNonInheritedInterfaceMethod, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUndocumentedEmptyBlock)) != null) updateSeverity(UndocumentedEmptyBlock, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnnecessaryTypeCheck)) != null) updateSeverity(UnnecessaryTypeCheck, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnnecessaryElse)) != null) updateSeverity(UnnecessaryElse, optionValue);
@@ -1002,7 +995,6 @@ public class CompilerOptions {
 		buf.append("\n\t- non externalized string: ").append(getSeverityString(NonExternalizedString)); //$NON-NLS-1$
 		buf.append("\n\t- static access receiver: ").append(getSeverityString(NonStaticAccessToStatic)); //$NON-NLS-1$
 		buf.append("\n\t- indirect static access: ").append(getSeverityString(IndirectStaticAccess)); //$NON-NLS-1$
-		buf.append("\n\t- incompatible non inherited interface method: ").append(getSeverityString(IncompatibleNonInheritedInterfaceMethod)); //$NON-NLS-1$
 		buf.append("\n\t- unused private member: ").append(getSeverityString(UnusedPrivateMember)); //$NON-NLS-1$
 		buf.append("\n\t- local variable hiding another variable: ").append(getSeverityString(LocalVariableHiding)); //$NON-NLS-1$
 		buf.append("\n\t- field hiding another variable: ").append(getSeverityString(FieldHiding)); //$NON-NLS-1$
@@ -1156,7 +1148,6 @@ public class CompilerOptions {
 			OPTION_ReportFinallyBlockNotCompletingNormally,
 			OPTION_ReportForbiddenReference,
 			OPTION_ReportHiddenCatchBlock,
-			OPTION_ReportIncompatibleNonInheritedInterfaceMethod,
 			OPTION_ReportIndirectStaticAccess,
 			OPTION_ReportInvalidJavadoc,
 			OPTION_ReportLocalVariableHiding,

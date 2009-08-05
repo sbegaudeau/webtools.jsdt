@@ -1552,13 +1552,6 @@ class ASTConverter {
 			if (this.resolveBindings) {
 				recordNodes(superFieldAccess, reference);
 			}
-			if (reference.receiver instanceof org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) {
-				Name qualifier = convert((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) reference.receiver);
-				superFieldAccess.setQualifier(qualifier);
-				if (this.resolveBindings) {
-					recordNodes(qualifier, reference.receiver);
-				}
-			}
 			final SimpleName simpleName = new SimpleName(this.ast);
 			simpleName.internalSetIdentifier(new String(reference.token));
 			int sourceStart = (int)(reference.nameSourcePosition>>>32);
@@ -1894,18 +1887,7 @@ class ASTConverter {
 				recordNodes(name, expression);
 			}
 			superMethodInvocation.setName(name);
-			// expression.receiver is either a QualifiedSuperReference or a SuperReference
-			// so the casting cannot fail
-			if (expression.receiver instanceof org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) {
-				Name qualifier = convert((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) expression.receiver);
-				superMethodInvocation.setQualifier(qualifier);
-				if (this.resolveBindings) {
-					recordNodes(qualifier, expression.receiver);
-				}
-				if (qualifier != null) {
-					sourceStart = qualifier.getStartPosition();
-				}
-			}
+			
 			org.eclipse.wst.jsdt.internal.compiler.ast.Expression[] arguments = expression.arguments;
 			if (arguments != null) {
 				int argumentsLength = arguments.length;
@@ -2189,10 +2171,6 @@ class ASTConverter {
 		return setQualifiedNameNameAndSourceRanges(nameReference.tokens, nameReference.sourcePositions, nameReference);
 	}
 
-	public Name convert(org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference reference) {
-		return convert(reference.qualification);
-	}
-
 	public ThisExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference reference) {
 		final ThisExpression thisExpression = new ThisExpression(this.ast);
 		thisExpression.setSourceRange(reference.sourceStart, reference.sourceEnd - reference.sourceStart + 1);
@@ -2373,8 +2351,6 @@ class ASTConverter {
 		if (reference.isImplicitThis()) {
 			// There is no source associated with an implicit this
 			return null;
-		} else if (reference instanceof org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference) reference);
 		} else if (reference instanceof org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference) reference);
 		}  else {

@@ -34,7 +34,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Literal;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
@@ -910,9 +909,6 @@ class DefaultBindingResolver extends BindingResolver {
 		} if (node instanceof SingleNameReference) {
 			SingleNameReference singleNameReference = (SingleNameReference) node;
 			return this.getTypeBinding(singleNameReference.resolvedType);
-		} else if (node instanceof QualifiedSuperReference) {
-			QualifiedSuperReference qualifiedSuperReference = (QualifiedSuperReference) node;
-			return this.getTypeBinding(qualifiedSuperReference.qualification.resolvedType);
 		} else if (node instanceof LocalDeclaration) {
 			IVariableBinding variable = this.getVariableBinding(((LocalDeclaration)node).binding);
 			if (variable == null) return null;
@@ -1166,9 +1162,6 @@ class DefaultBindingResolver extends BindingResolver {
 					}
 	 			}
 			}
-		} else if (node instanceof QualifiedSuperReference) {
-			QualifiedSuperReference qualifiedSuperReference = (QualifiedSuperReference) node;
-			return this.getTypeBinding(qualifiedSuperReference.qualification.resolvedType);
 		} else if (node instanceof LocalDeclaration) {
 			return this.getVariableBinding(((LocalDeclaration)node).binding);
 		} else if (node instanceof JavadocFieldReference) {

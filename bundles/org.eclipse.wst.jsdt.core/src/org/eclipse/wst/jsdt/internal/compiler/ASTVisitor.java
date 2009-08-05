@@ -80,7 +80,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
@@ -388,16 +387,6 @@ public abstract class ASTVisitor {
 	public void endVisit(
 			QualifiedNameReference qualifiedNameReference,
 			ClassScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		BlockScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		ClassScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(
@@ -786,16 +775,6 @@ public abstract class ASTVisitor {
 	public boolean visit(
 			QualifiedNameReference qualifiedNameReference,
 			ClassScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		ClassScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(

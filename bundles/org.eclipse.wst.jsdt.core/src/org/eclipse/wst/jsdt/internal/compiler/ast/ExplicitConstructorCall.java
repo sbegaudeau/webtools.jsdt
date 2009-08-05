@@ -41,7 +41,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 	public TypeBinding[] genericTypeArguments;
 
 	public final static int ImplicitSuper = 1;
-	public final static int Super = 2;
 	public final static int This = 3;
 
 	public VariableBinding[][] implicitArguments;
@@ -216,11 +215,9 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			}
 			// qualification should be from the type of the enclosingType
 			if (qualification != null) {
-				if (accessMode != Super) {
-					scope.problemReporter().unnecessaryEnclosingInstanceSpecification(
-						qualification,
-						receiverType);
-				}
+				scope.problemReporter().unnecessaryEnclosingInstanceSpecification(
+					qualification, receiverType);
+				
 				ReferenceBinding enclosingType = receiverType.enclosingType();
 				if (enclosingType == null) {
 					scope.problemReporter().unnecessaryEnclosingInstanceSpecification(

@@ -38,8 +38,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
@@ -68,7 +66,6 @@ public class SelectionParser extends AssistParser {
 
 	public int selectionStart, selectionEnd;
 
-	public static final char[] SUPER = "super".toCharArray(); //$NON-NLS-1$
 	public static final char[] THIS = "this".toCharArray(); //$NON-NLS-1$
 
 public SelectionParser(ProblemReporter problemReporter) {
@@ -524,9 +521,7 @@ protected void consumeMethodInvocationName() {
 	char[] selector = identifierStack[identifierPtr];
 	int accessMode;
 	if(selector == this.assistIdentifier()) {
-		if(CharOperation.equals(selector, SUPER)) {
-			accessMode = ExplicitConstructorCall.Super;
-		} else if(CharOperation.equals(selector, THIS)) {
+		if(CharOperation.equals(selector, THIS)) {
 			accessMode = ExplicitConstructorCall.This;
 		} else {
 			super.consumeMethodInvocationName();
@@ -744,34 +739,6 @@ protected NameReference getUnspecifiedReference() {
 	}
 
 	int length = identifierLengthStack[identifierLengthPtr];
-	if (CharOperation.equals(assistIdentifier(), SUPER)){
-		Reference reference;
-		if (completionIndex > 0){ // qualified super
-			// discard 'super' from identifier stacks
-			identifierLengthStack[identifierLengthPtr] = completionIndex;
-			int ptr = identifierPtr -= (length - completionIndex);
-			pushOnGenericsLengthStack(0);
-			pushOnGenericsIdentifiersLengthStack(identifierLengthStack[identifierLengthPtr]);
-			reference =
-				new SelectionOnQualifiedSuperReference(
-					getTypeReference(0),
-					(int)(identifierPositionStack[ptr+1] >>> 32),
-					(int) identifierPositionStack[ptr+1]);
-		} else { // standard super
-			identifierPtr -= length;
-			identifierLengthPtr--;
-			reference = new SelectionOnSuperReference((int)(identifierPositionStack[identifierPtr+1] >>> 32), (int) identifierPositionStack[identifierPtr+1]);
-		}
-		pushOnAstStack(reference);
-		this.assistNode = reference;
-		this.lastCheckPoint = reference.sourceEnd + 1;
-		if (!diet || dietInt != 0){
-			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;	// force to restart in recovery mode
-			this.lastIgnoredToken = -1;
-		}
-		this.isOrphanCompletionNode = true;
-		return new SingleNameReference(CharOperation.NO_CHAR, 0); // dummy reference
-	}
 	NameReference nameReference;
 	/* retrieve identifiers subset and whole positions, the completion node positions
 		should include the entire replaced source. */

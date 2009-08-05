@@ -511,11 +511,7 @@ private void buildMoreCompletionContext(Expression expression) {
 			case K_SELECTOR_QUALIFIER :
 				int selector = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER, 2);
 				if(false){// Not Possible selector == THIS_CONSTRUCTOR || selector == SUPER_CONSTRUCTOR) {
-					ExplicitConstructorCall call = new ExplicitConstructorCall(
-						(selector == THIS_CONSTRUCTOR) ?
-							ExplicitConstructorCall.This :
-							ExplicitConstructorCall.Super
-					);
+					ExplicitConstructorCall call = new ExplicitConstructorCall(ExplicitConstructorCall.This);
 					call.arguments = new Expression[] {expression};
 					call.sourceStart = expression.sourceStart;
 					call.sourceEnd = expression.sourceEnd;
@@ -1262,8 +1258,7 @@ private boolean checkInvocation() {
 			int selectorPtr = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER, 2);
 			if (selectorPtr == THIS_CONSTRUCTOR || selectorPtr == SUPER_CONSTRUCTOR) {
 				// creates an explicit constructor call
-				CompletionOnExplicitConstructorCall call = new CompletionOnExplicitConstructorCall(
-					(selectorPtr == THIS_CONSTRUCTOR) ? ExplicitConstructorCall.This : ExplicitConstructorCall.Super);
+				CompletionOnExplicitConstructorCall call = new CompletionOnExplicitConstructorCall(ExplicitConstructorCall.This);
 				call.arguments = arguments;
 				if (invocType == QUALIFIED_ALLOCATION) {
 					call.qualification = this.expressionStack[qualifierExprPtr];
@@ -2279,13 +2274,6 @@ protected void consumePrimaryNoNewArrayName() {
 	this.qualifier = -1;
 
 	super.consumePrimaryNoNewArrayName();
-}
-protected void consumePrimaryNoNewArrayNameSuper() {
-	// this is class literal access, so reset potential receiver
-	this.invocationType = NO_RECEIVER;
-	this.qualifier = -1;
-
-	super.consumePrimaryNoNewArrayNameSuper();
 }
 protected void consumePrimaryNoNewArrayNameThis() {
 	// this is class literal access, so reset potential receiver

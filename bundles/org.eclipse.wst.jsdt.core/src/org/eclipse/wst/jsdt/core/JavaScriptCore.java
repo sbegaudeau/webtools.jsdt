@@ -336,11 +336,6 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
-	public static final String COMPILER_PB_INCOMPATIBLE_NON_INHERITED_INTERFACE_METHOD = PLUGIN_ID + ".compiler.problem.incompatibleNonInheritedInterfaceMethod"; //$NON-NLS-1$
-	/**
-	 * Possible  configurable option ID.
-	 * @see #getDefaultOptions()
-	 */
 	public static final String COMPILER_PB_UNUSED_PRIVATE_MEMBER = PLUGIN_ID + ".compiler.problem.unusedPrivateMember"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.

@@ -227,9 +227,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(IQualifiedNameReference qualifiedNameReference) {
 		// do nothing by default
 	}
-	public void endVisit(IQualifiedSuperReference qualifiedSuperReference) {
-		// do nothing by default
-	}
 	public void endVisit(IQualifiedThisReference qualifiedThisReference) {
 		// do nothing by default
 	}
@@ -505,10 +502,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IQualifiedNameReference qualifiedNameReference) {
-		return true; // do nothing by default, keep traversing
-	}
-
-	public boolean visit(IQualifiedSuperReference qualifiedSuperReference) {
 		return true; // do nothing by default, keep traversing
 	}
 

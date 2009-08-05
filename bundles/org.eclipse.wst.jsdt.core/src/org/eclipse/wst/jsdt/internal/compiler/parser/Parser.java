@@ -96,7 +96,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
@@ -143,7 +142,6 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 	public static final boolean DO_DIET_PARSE=false;
 
 	protected static final int THIS_CALL = ExplicitConstructorCall.This;
-	protected static final int SUPER_CALL = ExplicitConstructorCall.Super;
 
 	public static char asb[] = null;
 	public static char asr[] = null;
@@ -4237,19 +4235,6 @@ protected void consumePrimaryNoNewArrayName() {
 
 	pushOnExpressionStack(
 		new ClassLiteralAccess(this.intStack[this.intPtr--], typeReference));
-}
-protected void consumePrimaryNoNewArrayNameSuper() {
-	// PrimaryNoNewArray ::= Name '.' 'super'
-	// handle type arguments
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-	pushOnGenericsLengthStack(0);
-	TypeReference typeReference = getTypeReference(0);
-
-	pushOnExpressionStack(
-		new QualifiedSuperReference(
-			typeReference,
-			this.intStack[this.intPtr--],
-			this.endPosition));
 }
 protected void consumePrimaryNoNewArrayNameThis() {
 	// PrimaryNoNewArray ::= Name '.' 'this'

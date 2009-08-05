@@ -255,10 +255,6 @@ public void resolveStatements() {
 	if (this.constructorCall != null) {
 		if (sourceType.id == TypeIds.T_JavaLangObject
 				&& this.constructorCall.accessMode != ExplicitConstructorCall.This) {
-			// cannot use super() in java.lang.Object
-			if (this.constructorCall.accessMode == ExplicitConstructorCall.Super) {
-				this.scope.problemReporter().cannotUseSuperInJavaLangObject(this.constructorCall);
-			}
 			this.constructorCall = null;
 		} else {
 			this.constructorCall.resolve(this.scope);

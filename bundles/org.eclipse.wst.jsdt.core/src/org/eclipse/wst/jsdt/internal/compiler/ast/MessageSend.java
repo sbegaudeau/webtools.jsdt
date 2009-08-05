@@ -128,14 +128,6 @@ public void manageSyntheticAccessIfNecessary(BlockScope currentScope, FlowInfo f
 //			return;
 //		}
 
-	} else if (receiver instanceof QualifiedSuperReference){ // qualified super
-
-		// qualified super need emulation always
-//		SourceTypeBinding destinationType = (SourceTypeBinding)(((QualifiedSuperReference)receiver).currentCompatibleType);
-//		syntheticAccessor = destinationType.addSyntheticMethod(this.codegenBinding, isSuperAccess());
-//		currentScope.problemReporter().needToEmulateMethodAccess(this.codegenBinding, this);
-		return;
-
 	} else if (binding.isProtected()){
 
 //		SourceTypeBinding enclosingSourceType;

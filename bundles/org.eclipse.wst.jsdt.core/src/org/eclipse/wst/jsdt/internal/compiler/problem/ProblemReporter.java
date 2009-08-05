@@ -129,9 +129,6 @@ public static long getIrritant(int problemID) {
 
 
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-		case IProblem.IncompatibleReturnTypeForNonInheritedInterfaceMethod :
-		case IProblem.IncompatibleExceptionInThrowsClauseForNonInheritedInterfaceMethod :
-			return CompilerOptions.IncompatibleNonInheritedInterfaceMethod;
 
 		case IProblem.OverridingDeprecatedMethod :
 		case IProblem.UsingDeprecatedType :
@@ -360,7 +357,6 @@ public static int getProblemCategory(int severity, int problemID) {
 				case (int)CompilerOptions.UndefinedField:
 					return CategorizedProblem.CAT_POTENTIAL_PROGRAMMING_PROBLEM;
 
-				case (int)CompilerOptions.IncompatibleNonInheritedInterfaceMethod:
 				case (int)CompilerOptions.LocalVariableHiding:
 				case (int)CompilerOptions.FieldHiding:
 					return CategorizedProblem.CAT_NAME_SHADOWING_CONFLICT;
@@ -737,23 +733,6 @@ public void cannotThrowType(ASTNode exception, TypeBinding expectedType) {
 		new String[] {new String(expectedType.shortReadableName())},
 		exception.sourceStart,
 		exception.sourceEnd);
-}
-public void cannotUseSuperInCodeSnippet(int start, int end) {
-	this.handle(
-		IProblem.CannotUseSuperInCodeSnippet,
-		NoArgument,
-		NoArgument,
-		ProblemSeverities.Error | ProblemSeverities.Abort | ProblemSeverities.Fatal,
-		start,
-		end);
-}
-public void cannotUseSuperInJavaLangObject(ASTNode reference) {
-	this.handle(
-		IProblem.ObjectHasNoSuperclass,
-		NoArgument,
-		NoArgument,
-		reference.sourceStart,
-		reference.sourceEnd);
 }
 public void classExtendFinalClass(SourceTypeBinding type, TypeReference superclass, TypeBinding superTypeBinding) {
 	String name = new String(type.sourceName());

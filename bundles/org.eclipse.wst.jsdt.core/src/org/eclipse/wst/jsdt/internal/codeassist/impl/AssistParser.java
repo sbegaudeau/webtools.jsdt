@@ -1427,11 +1427,7 @@ protected ASTNode wrapWithExplicitConstructorCallIfNeeded(ASTNode ast) {
 	if (ast != null && topKnownElementKind(ASSIST_PARSER) == K_SELECTOR && ast instanceof Expression &&
 			(((selector = topKnownElementInfo(ASSIST_PARSER)) == THIS_CONSTRUCTOR) ||
 			(selector == SUPER_CONSTRUCTOR))) {
-		ExplicitConstructorCall call = new ExplicitConstructorCall(
-			(selector == THIS_CONSTRUCTOR) ?
-				ExplicitConstructorCall.This :
-				ExplicitConstructorCall.Super
-		);
+		ExplicitConstructorCall call = new ExplicitConstructorCall(ExplicitConstructorCall.This);
 		call.arguments = new Expression[] {(Expression)ast};
 		call.sourceStart = ast.sourceStart;
 		call.sourceEnd = ast.sourceEnd;

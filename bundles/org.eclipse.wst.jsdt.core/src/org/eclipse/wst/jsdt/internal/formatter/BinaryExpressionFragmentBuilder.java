@@ -49,7 +49,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -445,16 +444,6 @@ class BinaryExpressionFragmentBuilder
 		BlockScope scope) {
 			this.addRealFragment(qualifiedNameReference);
 			return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(
-			QualifiedSuperReference qualifiedSuperReference,
-			BlockScope scope) {
-		this.addRealFragment(qualifiedSuperReference);
-		return false;
 	}
 
 	/* (non-Javadoc)

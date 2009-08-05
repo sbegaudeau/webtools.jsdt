@@ -78,7 +78,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
@@ -391,16 +390,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 			QualifiedNameReference qualifiedNameReference,
 			ClassScope scope) {
 		visitor.endVisit(qualifiedNameReference);
-	}
-	public void endVisit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		BlockScope scope) {
-		visitor.endVisit(qualifiedSuperReference);
-	}
-	public void endVisit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		ClassScope scope) {
-		visitor.endVisit(qualifiedSuperReference);
 	}
 	public void endVisit(
     		QualifiedThisReference qualifiedThisReference,
@@ -784,16 +773,6 @@ public class DelegateASTVisitor extends ASTVisitor {
 			QualifiedNameReference qualifiedNameReference,
 			ClassScope scope) {
 		return visitor.visit(qualifiedNameReference);
-	}
-	public boolean visit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		BlockScope scope) {
-		return visitor.visit(qualifiedSuperReference);
-	}
-	public boolean visit(
-    		QualifiedSuperReference qualifiedSuperReference,
-    		ClassScope scope) {
-		return visitor.visit(qualifiedSuperReference);
 	}
 	public boolean visit(
 			QualifiedThisReference qualifiedThisReference,
