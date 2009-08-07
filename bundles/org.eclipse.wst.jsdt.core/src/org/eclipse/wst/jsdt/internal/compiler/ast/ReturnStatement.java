@@ -153,7 +153,7 @@ public void resolve(BlockScope scope) {
 		return;
 	}
 	if (this.expression == null) {
-		if (methodType != null) scope.problemReporter().shouldReturn(methodType, this);
+		if (methodType != null && !methodType.isAnyType()) scope.problemReporter().shouldReturn(methodType, this);
 		return;
 	}
 	this.expression.setExpectedType(methodType); // needed in case of generic method invocation
