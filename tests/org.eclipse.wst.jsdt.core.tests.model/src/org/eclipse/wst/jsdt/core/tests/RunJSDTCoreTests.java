@@ -14,6 +14,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.eclipse.wst.jsdt.core.tests.utils.SequenceReaderTests;
+
 /**
  * Runs all JDT Core tests.
  */
@@ -26,6 +28,7 @@ public static Test suite() {
 	suite.addTest(RunDOMTests.suite());
 	suite.addTest(RunFormatterTests.suite());
 	suite.addTest(RunModelTests.suite());
+	suite.addTestSuite(SequenceReaderTests.class);
 	return suite;
 }
 }
