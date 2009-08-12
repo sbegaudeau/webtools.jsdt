@@ -657,7 +657,13 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					System.out.println(parsedUnit.toString());
 				}
 
+				// check for inferred type names in the selection
 				this.parser.inferTypes(parsedUnit, this.compilerOptions);
+				for (int i = 0; i < parsedUnit.inferredTypes.length; i++) {
+					if (parsedUnit.inferredTypes[i] != null && parsedUnit.inferredTypes[i].getNameStart() <= selectionSourceEnd && selectionSourceStart <= parsedUnit.inferredTypes[i].getNameStart() +  parsedUnit.inferredTypes[i].getName().length) {
+						this.requestor.acceptType(CharOperation.NO_CHAR, sourceUnit.getFileName(), parsedUnit.inferredTypes[i].getName(), 0, parsedUnit.inferredTypes[i].isDefinition, CharOperation.NO_CHAR, parsedUnit.inferredTypes[i].sourceStart, parsedUnit.inferredTypes[i].sourceEnd);
+					}
+				}
 				// scan the package & import statements first
 				if (parsedUnit.currentPackage instanceof SelectionOnPackageReference) {
 					char[][] tokens =

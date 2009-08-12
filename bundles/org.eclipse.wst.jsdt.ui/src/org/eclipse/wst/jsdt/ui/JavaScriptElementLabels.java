@@ -499,7 +499,8 @@ public class JavaScriptElementLabels {
 
 			}
 		 
-				
+			if(buf.length() != 0)
+				buf.append(' ');
 			buf.append(method.getDisplayName());
 			
 			// parameters

@@ -929,6 +929,15 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 					}
 				}
 
+				IType[] tTypes = wc.getTypes();
+				String typeNameString = new String(typeName);
+				for (int i = 0; i < tTypes.length && type == null; i++) {
+					ISourceRange range = tTypes[i].getSourceRange();
+					if (range.getOffset() <= start && range.getOffset() + range.getLength() >= end && tTypes[i].getElementName().equals(typeNameString)) {
+						type = tTypes[i];
+					}
+				}
+
 				if(type != null && !type.exists()) {
 					type = null;
 				}

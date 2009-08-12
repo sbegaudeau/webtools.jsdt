@@ -820,9 +820,9 @@ public static int getTypeSignatureKind(char[] typeSignature) {
  *  
  */
 public static int getTypeSignatureKind(String typeSignature) {
-	// need a minimum 1 char
 	if (typeSignature.length() < 1) {
-		throw new IllegalArgumentException();
+		// uknown return type
+		return BASE_TYPE_SIGNATURE;
 	}
 	char c = typeSignature.charAt(0);
 	switch (c) {
@@ -1019,7 +1019,8 @@ public static char[] getReturnType(char[] methodSignature) throws IllegalArgumen
 		return CharOperation.NO_CHAR;
 	int paren = CharOperation.lastIndexOf(C_PARAM_END, methodSignature);
 	if (paren == -1) {
-		throw new IllegalArgumentException();
+		// could not be determined
+		return CharOperation.NO_CHAR;
 	}
 	// there could be thrown exceptions behind, thus scan one type exactly
 	int last = Util.scanTypeSignature(methodSignature, paren+1);

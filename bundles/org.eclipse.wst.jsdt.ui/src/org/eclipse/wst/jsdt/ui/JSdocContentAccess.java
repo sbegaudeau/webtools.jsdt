@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -22,14 +23,15 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.util.SequenceReader;
 import org.eclipse.wst.jsdt.internal.core.MetadataFile;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
@@ -50,7 +52,6 @@ import org.eclipse.wst.jsdt.internal.ui.text.javadoc.OAADocReader;
  * (repeatedly) as the API evolves.
  */
 public class JSdocContentAccess {
-	
 	
 	public static final String EXTENSION_POINT= "documentationProvider"; //$NON-NLS-1$
 
@@ -75,35 +76,51 @@ public class JSdocContentAccess {
 	 * @throws JavaScriptModelException is thrown when the elements javadoc can not be accessed
 	 */
 	public static Reader getContentReader(IMember member, boolean allowInherited) throws JavaScriptModelException {
-		
-		IDocumentationReader docReader = getDocReader(member);
-		if (docReader!=null)
-			return docReader.getContentReader(member, allowInherited);
+		List readers = new ArrayList(2);
+		IDocumentationReader[] docReaders = getDocReaders(member);
+		for (int i = 0; i < docReaders.length; i++) {
+			Reader contentReader = docReaders[i].getContentReader(member, allowInherited);
+			if(contentReader != null) {
+				readers.add(contentReader);
+			}
+		}
 		
 		IOpenable openable = member.getOpenable();
  		if (openable instanceof MetadataFile)
  		{
- 			return new OAADocReader((MetadataFile)openable,member);
+ 			return new OAADocReader((MetadataFile)openable, member);
  		}
 		
 		IBuffer buf= openable.getBuffer();
-		if (buf == null) {
-			return null; // no source attachment found
-		}
-		
-		ISourceRange javadocRange= member.getJSdocRange();
-		if (javadocRange != null) {
-			JavaDocCommentReader reader= new JavaDocCommentReader(buf, javadocRange.getOffset(), javadocRange.getOffset() + javadocRange.getLength() - 1);
-			if (!containsOnlyInheritDoc(reader, javadocRange.getLength())) {
-				reader.reset();
-				return reader;
+		if (buf != null) {
+			// source or attachment found
+			ISourceRange javadocRange= member.getJSdocRange();
+			if(javadocRange == null && member.getElementType() == IJavaScriptElement.TYPE) {
+				IFunction constructor = ((IType) member).getFunction(member.getElementName(), null);
+				if(constructor.exists()) {
+					javadocRange = constructor.getJSdocRange();
+				}
 			}
-		}
+			if (javadocRange != null) {
+				JavaDocCommentReader reader= new JavaDocCommentReader(buf, javadocRange.getOffset(), javadocRange.getOffset() + javadocRange.getLength() - 1);
+				if (!containsOnlyInheritDoc(reader, javadocRange.getLength())) {
+					reader.reset();
+					readers.add(reader);
+				}
+				else if (allowInherited && (member.getElementType() == IJavaScriptElement.METHOD)) {
+					Reader hierarchyDocReader = findDocInHierarchy((IFunction) member);
+					if (hierarchyDocReader != null)
+						readers.add(hierarchyDocReader);
+				}
+			}
 
-		if (allowInherited && (member.getElementType() == IJavaScriptElement.METHOD)) {
-			return findDocInHierarchy((IFunction) member);
 		}
 		
+		if (!readers.isEmpty()) {
+			if (readers.size() == 1)
+				return (Reader) readers.get(0);
+			return new SequenceReader((Reader[]) readers.toArray(new Reader[readers.size()]));
+		}
 		return null;
 	}
 
@@ -146,9 +163,20 @@ public class JSdocContentAccess {
 		Reader contentReader= getContentReader(member, allowInherited);
 		if (contentReader != null)
 		{
-			IDocumentationReader docReader = getDocReader(member); 
-			if (docReader!=null)
-				return docReader.getDocumentation2HTMLReader(contentReader);
+			IDocumentationReader[] docReaders = getDocReaders(member);
+			if (docReaders.length > 0) {
+				List htmlReaders = new ArrayList(docReaders.length);
+				for (int i = 0; i < docReaders.length; i++) {
+					Reader documentation2htmlReader = docReaders[i].getDocumentation2HTMLReader(contentReader);
+					if (documentation2htmlReader != null) {
+						htmlReaders.add(documentation2htmlReader);
+					}
+				}
+				if (!htmlReaders.isEmpty()) {
+					htmlReaders.add(/*0, */new JavaDoc2HTMLTextReader(contentReader));
+					return new SequenceReader((Reader[]) htmlReaders.toArray(new Reader[htmlReaders.size()]));
+				}
+			}
 			return new JavaDoc2HTMLTextReader(contentReader);
 		}
 		
@@ -186,15 +214,17 @@ public class JSdocContentAccess {
 		return null;
 	}		
 
-	private static IDocumentationReader getDocReader(IMember member)
+	private static IDocumentationReader[] getDocReaders(IMember member)
 	{
 		if (docReaders==null)
 			loadExtensions();
+		List readers = new ArrayList(docReaders.length);
 		for (int i = 0; i < docReaders.length; i++) {
-			if (docReaders[i].appliesTo(member))
-				return docReaders[i];
+			if (docReaders[i].appliesTo(member)) {
+				readers.add(docReaders[i]);
+			}
 		}
-		return null;
+		return (IDocumentationReader[]) readers.toArray(new IDocumentationReader[readers.size()]);
 	}
 	
 	
