@@ -37,6 +37,7 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.internal.core.hierarchy;x-internal:=true,
  org.eclipse.wst.jsdt.internal.core.index,
  org.eclipse.wst.jsdt.internal.core.interpret,
+ org.eclipse.wst.jsdt.internal.core.interpret.builtin;x-internal:=true,
  org.eclipse.wst.jsdt.internal.core.search;x-internal:=true,
  org.eclipse.wst.jsdt.internal.core.search.indexing;x-internal:=true,
  org.eclipse.wst.jsdt.internal.core.search.matching;x-internal:=true,
@@ -46,7 +47,8 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.internal.formatter.align;x-internal:=true,
  org.eclipse.wst.jsdt.internal.formatter.comment;x-internal:=true,
  org.eclipse.wst.jsdt.internal.oaametadata,
- org.eclipse.wst.jsdt.launching
+ org.eclipse.wst.jsdt.launching,
+ org.eclipse.wst.jsdt.libraries
 Import-Package: com.ibm.icu.text; version="3.8"
 Bundle-Activator: org.eclipse.wst.jsdt.core.JavaScriptCore
 Require-Bundle: org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",
