@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
@@ -160,15 +159,9 @@ void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 	if (((this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) == OperatorIds.PLUS) {
 		if (leftTypeID == TypeIds.T_JavaLangString) {
 			this.left.computeConversion(scope, leftType, leftType);
-			if (rightType.isArrayType() && ((ArrayBinding) rightType).elementsType() == TypeBinding.CHAR) {
-				scope.problemReporter().signalNoImplicitStringConversionForCharArrayExpression(this.right);
-			}
 		}
 		if (rightTypeID == TypeIds.T_JavaLangString) {
 			this.right.computeConversion(scope, rightType, rightType);
-			if (leftType.isArrayType() && ((ArrayBinding) leftType).elementsType() == TypeBinding.CHAR) {
-				scope.problemReporter().signalNoImplicitStringConversionForCharArrayExpression(this.left);
-			}
 		}
 	}
 
@@ -333,15 +326,9 @@ public TypeBinding resolveType(BlockScope scope) {
 	if (((this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) == OperatorIds.PLUS) {
 		if (leftTypeID == TypeIds.T_JavaLangString) {
 			this.left.computeConversion(scope, leftType, leftType);
-			if (rightType.isArrayType() && ((ArrayBinding) rightType).elementsType() == TypeBinding.CHAR) {
-				scope.problemReporter().signalNoImplicitStringConversionForCharArrayExpression(this.right);
-			}
 		}
 		if (rightTypeID == TypeIds.T_JavaLangString) {
 			this.right.computeConversion(scope, rightType, rightType);
-			if (leftType.isArrayType() && ((ArrayBinding) leftType).elementsType() == TypeBinding.CHAR) {
-				scope.problemReporter().signalNoImplicitStringConversionForCharArrayExpression(this.left);
-			}
 		}
 	}
 

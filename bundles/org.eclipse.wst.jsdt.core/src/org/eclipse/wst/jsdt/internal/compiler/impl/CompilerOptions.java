@@ -57,7 +57,6 @@ public class CompilerOptions {
 	public static final String OPTION_ReportPossibleAccidentalBooleanAssignment = "org.eclipse.wst.jsdt.core.compiler.problem.possibleAccidentalBooleanAssignment"; //$NON-NLS-1$
 	public static final String OPTION_ReportNonExternalizedStringLiteral = "org.eclipse.wst.jsdt.core.compiler.problem.nonExternalizedStringLiteral"; //$NON-NLS-1$
 	public static final String OPTION_ReportUnusedPrivateMember = "org.eclipse.wst.jsdt.core.compiler.problem.unusedPrivateMember"; //$NON-NLS-1$
-	public static final String OPTION_ReportNoImplicitStringConversion = "org.eclipse.wst.jsdt.core.compiler.problem.noImplicitStringConversion"; //$NON-NLS-1$
 	public static final String OPTION_ReportAssertIdentifier = "org.eclipse.wst.jsdt.core.compiler.problem.assertIdentifier"; //$NON-NLS-1$
 	public static final String OPTION_ReportEnumIdentifier = "org.eclipse.wst.jsdt.core.compiler.problem.enumIdentifier"; //$NON-NLS-1$
 	public static final String OPTION_ReportNonStaticAccessToStatic = "org.eclipse.wst.jsdt.core.compiler.problem.staticAccessReceiver"; //$NON-NLS-1$
@@ -162,7 +161,6 @@ public class CompilerOptions {
 	public static final long MaskedCatchBlock = ASTNode.Bit4;
 	public static final long UnusedLocalVariable = ASTNode.Bit5;
 	public static final long UnusedArgument = ASTNode.Bit6;
-	public static final long NoImplicitStringConversion = ASTNode.Bit7;
 //TODO: remove	AccessEmulation
 	public static final long AccessEmulation = ASTNode.Bit8;	
 	public static final long WrongNumberOfArguments = ASTNode.Bit8;
@@ -232,7 +230,6 @@ public class CompilerOptions {
 		| UndefinedField
 		| NonStaticAccessToStatic
 		| NoEffectAssignment
-		| NoImplicitStringConversion
 		| FinallyBlockNotCompleting
 		| AssertUsedAsAnIdentifier
 		| EnumUsedAsAnIdentifier
@@ -390,7 +387,6 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportWrongNumberOfArguments, getSeverityString(WrongNumberOfArguments));
 		optionsMap.put(OPTION_ReportNoEffectAssignment, getSeverityString(NoEffectAssignment));
 		optionsMap.put(OPTION_ReportNonExternalizedStringLiteral, getSeverityString(NonExternalizedString));
-		optionsMap.put(OPTION_ReportNoImplicitStringConversion, getSeverityString(NoImplicitStringConversion));
 		optionsMap.put(OPTION_ReportNonStaticAccessToStatic, getSeverityString(NonStaticAccessToStatic));
 		optionsMap.put(OPTION_ReportIndirectStaticAccess, getSeverityString(IndirectStaticAccess));
 		optionsMap.put(OPTION_ReportUnusedPrivateMember, getSeverityString(UnusedPrivateMember));
@@ -495,8 +491,6 @@ public class CompilerOptions {
 					return OPTION_ReportUnusedLocal;
 				case (int) UnusedArgument :
 					return OPTION_ReportUnusedParameter;
-				case (int) NoImplicitStringConversion :
-					return OPTION_ReportNoImplicitStringConversion;
 				case (int) WrongNumberOfArguments :
 					return OPTION_ReportWrongNumberOfArguments;
 				case (int) NonExternalizedString :
@@ -834,7 +828,6 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedParameter)) != null) updateSeverity(UnusedArgument, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedPrivateMember)) != null) updateSeverity(UnusedPrivateMember, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedDeclaredThrownException)) != null) updateSeverity(UnusedDeclaredThrownException, optionValue);
-		if ((optionValue = optionsMap.get(OPTION_ReportNoImplicitStringConversion)) != null) updateSeverity(NoImplicitStringConversion, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportWrongNumberOfArguments)) != null) updateSeverity(WrongNumberOfArguments, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportLocalVariableHiding)) != null) updateSeverity(LocalVariableHiding, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportFieldHiding)) != null) updateSeverity(FieldHiding, optionValue);
@@ -1170,7 +1163,6 @@ public class CompilerOptions {
 			OPTION_ReportMissingJavadocComments,
 			OPTION_ReportMissingJavadocTags,
 			OPTION_ReportNoEffectAssignment,
-			OPTION_ReportNoImplicitStringConversion,
 			OPTION_ReportNonExternalizedStringLiteral,
 			OPTION_ReportNonStaticAccessToStatic,
 			OPTION_ReportNullReference,

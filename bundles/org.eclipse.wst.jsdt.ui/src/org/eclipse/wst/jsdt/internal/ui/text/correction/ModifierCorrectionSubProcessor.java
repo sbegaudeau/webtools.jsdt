@@ -327,18 +327,11 @@ public class ModifierCorrectionSubProcessor {
 				case IProblem.IllegalModifierForInterfaceMethod:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT);
 					break;
-				case IProblem.IllegalModifierForInterface:
-					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.STRICTFP);
-					break;
 				case IProblem.IllegalModifierForClass:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.FINAL | Modifier.STRICTFP);
 					break;
 				case IProblem.IllegalModifierForInterfaceField:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.FINAL);
-					break;
-				case IProblem.IllegalModifierForMemberInterface:
-				case IProblem.IllegalVisibilityModifierForInterfaceMemberType:
-					excludedModifiers= ~(Modifier.PUBLIC | Modifier.STATIC | Modifier.STRICTFP);
 					break;
 				case IProblem.IllegalModifierForMemberClass:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.ABSTRACT | Modifier.FINAL | Modifier.STRICTFP);

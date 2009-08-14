@@ -149,9 +149,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.ArgumentIsNeverUsed :
 			return CompilerOptions.UnusedArgument;
 
-		case IProblem.NoImplicitStringConversionForCharArrayExpression :
-			return CompilerOptions.NoImplicitStringConversion;
-
 		case IProblem.NeedToEmulateFieldReadAccess :
 		case IProblem.NeedToEmulateFieldWriteAccess :
 		case IProblem.NeedToEmulateMethodAccess :
@@ -355,7 +352,6 @@ public static int getProblemCategory(int severity, int problemID) {
 					return CategorizedProblem.CAT_CODE_STYLE;
 
 				case (int)CompilerOptions.MaskedCatchBlock:
-				case (int)CompilerOptions.NoImplicitStringConversion:
 				case (int)CompilerOptions.NoEffectAssignment:
 				case (int)CompilerOptions.AccidentalBooleanAssign:
 				case (int)CompilerOptions.EmptyStatement:
@@ -1135,18 +1131,6 @@ public void duplicateNestedType(TypeDeclaration typeDecl) {
 		typeDecl.sourceStart,
 		typeDecl.sourceEnd);
 }
-public void duplicateSuperinterface(SourceTypeBinding type, TypeReference reference, ReferenceBinding superType) {
-	this.handle(
-		IProblem.DuplicateSuperInterface,
-		new String[] {
-			new String(superType.readableName()),
-			new String(type.sourceName())},
-		new String[] {
-			new String(superType.shortReadableName()),
-			new String(type.sourceName())},
-		reference.sourceStart,
-		reference.sourceEnd);
-}
 public void duplicateTypes(CompilationUnitDeclaration compUnitDecl, TypeDeclaration typeDecl) {
 	String[] arguments = new String[] {new String(compUnitDecl.getFileName()), new String(typeDecl.name)};
 	this.referenceContext = typeDecl; // report the problem against the type not the entire compilation unit
@@ -1491,15 +1475,6 @@ public void illegalModifierForField(ReferenceBinding type, FieldDeclaration fiel
 		fieldDecl.sourceStart,
 		fieldDecl.sourceEnd);
 }
-public void illegalModifierForInterface(SourceTypeBinding type) {
-	String[] arguments = new String[] {new String(type.sourceName())};
-	this.handle(
-		IProblem.IllegalModifierForInterface,
-		arguments,
-		arguments,
-		type.sourceStart(),
-		type.sourceEnd());
-}
 
 public void illegalModifierForInterfaceField(FieldDeclaration fieldDecl) {
 	String name = new String(fieldDecl.name);
@@ -1545,15 +1520,6 @@ public void illegalModifierForMemberClass(SourceTypeBinding type) {
 	String[] arguments = new String[] {new String(type.sourceName())};
 	this.handle(
 		IProblem.IllegalModifierForMemberClass,
-		arguments,
-		arguments,
-		type.sourceStart(),
-		type.sourceEnd());
-}
-public void illegalModifierForMemberInterface(SourceTypeBinding type) {
-	String[] arguments = new String[] {new String(type.sourceName())};
-	this.handle(
-		IProblem.IllegalModifierForMemberInterface,
 		arguments,
 		arguments,
 		type.sourceStart(),
@@ -1642,15 +1608,6 @@ public void illegalVisibilityModifierCombinationForMethod(ReferenceBinding type,
 		arguments,
 		methodDecl.sourceStart,
 		methodDecl.sourceEnd);
-}
-public void illegalVisibilityModifierForInterfaceMemberType(SourceTypeBinding type) {
-	String[] arguments = new String[] {new String(type.sourceName())};
-	this.handle(
-		IProblem.IllegalVisibilityModifierForInterfaceMemberType,
-		arguments,
-		arguments,
-		type.sourceStart(),
-		type.sourceEnd());
 }
 public void illegalVoidExpression(ASTNode location) {
 	this.handle(
@@ -1935,16 +1892,6 @@ public void innerTypesCannotDeclareStaticInitializers(ReferenceBinding innerType
 		new String[] {new String(innerType.shortReadableName())},
 		initializer.sourceStart,
 		initializer.sourceStart);
-}
-public void interfaceCannotHaveInitializers(SourceTypeBinding type, FieldDeclaration fieldDecl) {
-	String[] arguments = new String[] {new String(type.sourceName())};
-
-	this.handle(
-		IProblem.InterfaceCannotHaveInitializers,
-		arguments,
-		arguments,
-		fieldDecl.sourceStart,
-		fieldDecl.sourceEnd);
 }
 public void invalidBreak(ASTNode location) {
 	this.handle(
@@ -3566,16 +3513,6 @@ public void optionalSemicolon(ASTNode location) {
 	// Do something else
 	System.out.println("Optional Semi"); //$NON-NLS-1$
 }
-
-public void nonStaticContextForEnumMemberType(SourceTypeBinding type) {
-	String[] arguments = new String[] {new String(type.sourceName())};
-	this.handle(
-		IProblem.NonStaticContextForEnumMemberType,
-		arguments,
-		arguments,
-		type.sourceStart(),
-		type.sourceEnd());
-}
 public void noSuchEnclosingInstance(TypeBinding targetType, ASTNode location, boolean isConstructorCall) {
 
 	int id;
@@ -4257,15 +4194,6 @@ public void shouldReturn(TypeBinding returnType, ASTNode location) {
 		location.sourceStart,
 		location.sourceEnd);
 }
-
-public void signalNoImplicitStringConversionForCharArrayExpression(Expression expression) {
-	this.handle(
-		IProblem.NoImplicitStringConversionForCharArrayExpression,
-		NoArgument,
-		NoArgument,
-		expression.sourceStart,
-		expression.sourceEnd);
-}
 public void staticAndInstanceConflict(MethodBinding currentMethod, MethodBinding inheritedMethod) {
 	if (currentMethod.isStatic())
 		this.handle(
@@ -4340,14 +4268,6 @@ public void superfluousSemicolon(int sourceStart, int sourceEnd) {
 		NoArgument,
 		sourceStart,
 		sourceEnd);
-}
-public void superinterfaceMustBeAnInterface(SourceTypeBinding type, TypeReference superInterfaceRef, ReferenceBinding superType) {
-	this.handle(
-		IProblem.SuperInterfaceMustBeAnInterface,
-		new String[] {new String(superType.readableName()), new String(type.sourceName())},
-		new String[] {new String(superType.shortReadableName()), new String(type.sourceName())},
-		superInterfaceRef.sourceStart,
-		superInterfaceRef.sourceEnd);
 }
 private void syntaxError(
 	int id,

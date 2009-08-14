@@ -126,17 +126,14 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.DuplicateMethod:
 			case IProblem.DuplicateNestedType:
 			case IProblem.IllegalModifierForInterfaceMethod:
-			case IProblem.IllegalModifierForInterface:
 			case IProblem.IllegalModifierForClass:
 			case IProblem.IllegalModifierForInterfaceField:
-			case IProblem.IllegalModifierForMemberInterface:
 			case IProblem.IllegalModifierForMemberClass:
 			case IProblem.IllegalModifierForLocalClass:
 			case IProblem.IllegalModifierForField:
 			case IProblem.IllegalModifierForMethod:
 			case IProblem.UnexpectedStaticModifierForField:
 			case IProblem.IllegalModifierCombinationFinalVolatileForField:
-			case IProblem.IllegalVisibilityModifierForInterfaceMemberType:
 			case IProblem.IncompatibleReturnType:
 			case IProblem.IncompatibleExceptionInThrowsClause:
 			case IProblem.NoMessageSendOnArrayType:
@@ -312,17 +309,14 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				break;
 			case IProblem.CannotHideAnInstanceMethodWithAStaticMethod:
 			case IProblem.IllegalModifierForInterfaceMethod:
-			case IProblem.IllegalModifierForInterface:
 			case IProblem.IllegalModifierForClass:
 			case IProblem.IllegalModifierForInterfaceField:
 			case IProblem.UnexpectedStaticModifierForField:
 			case IProblem.IllegalModifierCombinationFinalVolatileForField:
-			case IProblem.IllegalModifierForMemberInterface:
 			case IProblem.IllegalModifierForMemberClass:
 			case IProblem.IllegalModifierForLocalClass:
 			case IProblem.IllegalModifierForField:
 			case IProblem.IllegalModifierForMethod:
-			case IProblem.IllegalVisibilityModifierForInterfaceMemberType:
 			case IProblem.UnexpectedStaticModifierForMethod:
 				ModifierCorrectionSubProcessor.addRemoveInvalidModfiersProposal(context, problem, proposals, 5);
 				break;

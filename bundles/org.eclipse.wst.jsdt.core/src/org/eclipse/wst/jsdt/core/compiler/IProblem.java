@@ -278,12 +278,9 @@ void setSourceStart(int sourceStart);
 	int IllegalEnclosingInstanceSpecification = TypeRelated + 23;
 	int CannotDefineStaticInitializerInLocalType = Internal + 24;
 	int OuterLocalMustBeFinal = Internal + 25;
-	int CannotDefineInterfaceInLocalType = Internal + 26;
 	int IllegalPrimitiveOrArrayTypeForEnclosingInstance = TypeRelated + 27;
 	int EnclosingInstanceInConstructorCall = Internal + 28;
 	int AnonymousClassCannotExtendFinalClass = TypeRelated + 29;
-	int CannotDefineEnumInLocalType = Internal + 31;
-	int NonStaticContextForEnumMemberType = Internal + 32;
 	int TypeHidingType = TypeRelated + 33;
 
 
@@ -291,8 +288,6 @@ void setSourceStart(int sourceStart);
 	int UndefinedName = Internal + FieldRelated + 50;
 	int UninitializedLocalVariable = Internal + 51;
 	int VariableTypeCannotBeVoid = Internal + 52;
-	/** @deprecated - problem is no longer generated, use {@link #CannotAllocateVoidArray} instead */
-	int VariableTypeCannotBeVoidArray = Internal + 53;
 	int CannotAllocateVoidArray = Internal + 54;
 	// local variables
 	int RedefinedLocal = Internal + 55;
@@ -388,7 +383,6 @@ void setSourceStart(int sourceStart);
 
 	// expressions
 	int ArrayReferenceRequired = Internal + 150;
-	int NoImplicitStringConversionForCharArrayExpression = Internal + 151;
 	// constant expressions
 	int StringConstantIsExceedingUtf8Limit = Internal + 152;
 	int NumericValueOutOfRange = Internal + 154;
@@ -509,22 +503,16 @@ void setSourceStart(int sourceStart);
 	// type related problems
 	int DiscouragedReference = TypeRelated + 280;
 
-	int InterfaceCannotHaveInitializers = TypeRelated + 300;
 	int DuplicateModifierForType = TypeRelated + 301;
 	int IllegalModifierForClass = TypeRelated + 302;
-	int IllegalModifierForInterface = TypeRelated + 303;
 	int IllegalModifierForMemberClass = TypeRelated + 304;
-	int IllegalModifierForMemberInterface = TypeRelated + 305;
 	int IllegalModifierForLocalClass = TypeRelated + 306;
 	int ForbiddenReference = TypeRelated + 307;
 	int IllegalModifierCombinationFinalAbstractForClass = TypeRelated + 308;
-	int IllegalVisibilityModifierForInterfaceMemberType = TypeRelated + 309;
 	int IllegalVisibilityModifierCombinationForMemberType = TypeRelated + 310;
 	int IllegalStaticModifierForMemberType = TypeRelated + 311;
 	int SuperclassMustBeAClass = TypeRelated + 312;
 	int ClassExtendFinalClass = TypeRelated + 313;
-	int DuplicateSuperInterface = TypeRelated + 314;
-	int SuperInterfaceMustBeAnInterface = TypeRelated + 315;
 	int HierarchyCircularitySelfReference = TypeRelated + 316;
 	int HierarchyCircularity = TypeRelated + 317;
 	int HidingEnclosingType = TypeRelated + 318;
