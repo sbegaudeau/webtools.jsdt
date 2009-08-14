@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -116,7 +117,9 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 
 				if(!flowInfo.isDefinitelyAssigned(localBinding)) {
 					if (localBinding.declaringScope instanceof MethodScope) {
-						currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
+						// ignore the arguments variable inside a function
+						if(!CharOperation.equals(localBinding.name, new char[]{'a','r','g','u','m','e','n','t','s'}))
+								currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
 					} else if(localBinding.isSameCompilationUnit(currentScope)) {
 						currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
 					}
