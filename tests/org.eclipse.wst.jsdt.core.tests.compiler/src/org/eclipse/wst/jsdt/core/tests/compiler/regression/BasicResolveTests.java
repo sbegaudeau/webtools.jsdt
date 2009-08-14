@@ -1035,7 +1035,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						+"}\n" 
 						+"" 
 				},
-				""
+				"----------\n" + 
+		"1. WARNING in X.js (at line 4)\n" + 
+		"	var dd=ii;\n" + 
+		"	       ^^\n" + 
+		"The local variable ii may not have been initialized\n" + 
+		"----------\n"
 		);
 	}
 	
@@ -1372,7 +1377,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 							"}\n"+
 							"})();"
 					},
-					""
+					"----------\n" + 
+		"1. WARNING in Z.js (at line 5)\n" + 
+		"	x + 3;\n" + 
+		"	^\n" + 
+		"The local variable x may not have been initialized\n" + 
+		"----------\n"
 			);
 	}
 

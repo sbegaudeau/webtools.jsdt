@@ -112,5 +112,47 @@ public class BasicAnalyseTests extends AbstractRegressionTest {
 				""
 		);
 	}
+	
+	public void testBug286029_1() {
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var sub;\n" +
+						"if(!sub) sub = {};" 
+				},
+				""
+		);
+	}
+	
+	public void testBug286029_2() {
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function abc() {\n" +
+						"var sub;\n" +
+						"if(!sub) sub = {};\n" +
+						"}"
+				},
+				"----------\n" + 
+		"1. WARNING in X.js (at line 3)\n" + 
+		"	if(!sub) sub = {};\n" + 
+		"	    ^^^\n" + 
+		"The local variable sub may not have been initialized\n" + 
+		"----------\n"
+		);
+	}
+	
+	public void testBug286029_3() {
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function abc() {\n" +
+						"var sub; sub = {};\n" +
+						"if(!sub) sub = {};\n" +
+						"}"
+				},
+				""
+		);
+	}
 
 }
