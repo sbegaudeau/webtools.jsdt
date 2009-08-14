@@ -627,6 +627,16 @@ public final class JavaScriptCore extends Plugin {
 	 * Possible  configurable option ID.
 	 * @see #getDefaultOptions()
 	 */
+	public static final String COMPILER_PB_UNINITIALIZED_LOCAL_VARIABLE = PLUGIN_ID + ".compiler.problem.uninitializedLocalVariable"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 */
+	public static final String COMPILER_PB_UNINITIALIZED_GLOBAL_VARIABLE = PLUGIN_ID + ".compiler.problem.uninitializedGlobalVariable"; //$NON-NLS-1$
+	/**
+	 * Possible  configurable option ID.
+	 * @see #getDefaultOptions()
+	 */
 	public static final String COMPILER_PB_OVERRIDING_METHOD_WITHOUT_SUPER_INVOCATION = PLUGIN_ID + ".compiler.problem.overridingMethodWithoutSuperInvocation"; //$NON-NLS-1$
 	/**
 	 * Possible  configurable option ID.

@@ -106,6 +106,12 @@ public class ProblemReporter extends ProblemHandler {
 public static long getIrritant(int problemID) {
 	switch(problemID){
 
+		case IProblem.UninitializedLocalVariable:
+			return CompilerOptions.UninitializedLocalVariable;
+			
+		case IProblem.UninitializedGlobalVariable:
+			return CompilerOptions.UninitializedGlobalVariable;
+			
 		case IProblem.MaskedCatch :
 			return CompilerOptions.MaskedCatchBlock;
 
@@ -395,6 +401,8 @@ public static int getProblemCategory(int severity, int problemID) {
 				case (int)(CompilerOptions.RedundantNullCheck >>> 32):
 				case (int)(CompilerOptions.FallthroughCase >>> 32):
 				case (int)(CompilerOptions.OverridingMethodWithoutSuperInvocation >>> 32):
+				case (int)(CompilerOptions.UninitializedLocalVariable >>> 32):
+				case (int)(CompilerOptions.UninitializedGlobalVariable >>> 32):
 					return CategorizedProblem.CAT_POTENTIAL_PROGRAMMING_PROBLEM;
 
 				case (int)(CompilerOptions.TypeHiding >>> 32):
@@ -4526,11 +4534,26 @@ public void uninitializedBlankFinalField(FieldBinding field, ASTNode location) {
 		nodeSourceEnd(field, location));
 }
 public void uninitializedLocalVariable(LocalVariableBinding binding, ASTNode location) {
+	int severity = computeSeverity(IProblem.UninitializedLocalVariable);
+	if (severity == ProblemSeverities.Ignore) return;
 	String[] arguments = new String[] {new String(binding.readableName())};
 	this.handle(
 		IProblem.UninitializedLocalVariable,
 		arguments,
 		arguments,
+		severity,
+		nodeSourceStart(binding, location),
+		nodeSourceEnd(binding, location));
+}
+public void uninitializedGlobalVariable(LocalVariableBinding binding, ASTNode location) {
+	int severity = computeSeverity(IProblem.UninitializedGlobalVariable);
+	if (severity == ProblemSeverities.Ignore) return;
+	String[] arguments = new String[] {new String(binding.readableName())};
+	this.handle(
+		IProblem.UninitializedGlobalVariable,
+		arguments,
+		arguments,
+		severity,
 		nodeSourceStart(binding, location),
 		nodeSourceEnd(binding, location));
 }

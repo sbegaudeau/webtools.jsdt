@@ -81,6 +81,8 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	private static final Key PREF_PB_POTENTIAL_NULL_REFERENCE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_POTENTIAL_NULL_REFERENCE);
 	private static final Key PREF_PB_DUPLICATE_LOCAL_VARIABLES= getJDTCoreKey(JavaScriptCore.COMPILER_PB_DUPLICATE_LOCAL_VARIABLES);
 	private static final Key PREF_PB_REDUNDANT_NULL_CHECK= getJDTCoreKey(JavaScriptCore.COMPILER_PB_REDUNDANT_NULL_CHECK);
+	private static final Key PREF_PB_UNINITIALIZED_LOCAL_VARIABLE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNINITIALIZED_LOCAL_VARIABLE);
+	private static final Key PREF_PB_UNINITIALIZED_GLOBAL_VARIABLE= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNINITIALIZED_GLOBAL_VARIABLE);
 	
 //	private static final Key PREF_15_PB_UNCHECKED_TYPE_OPERATION= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION);
 //	private static final Key PREF_15_PB_FINAL_PARAM_BOUND= getJDTCoreKey(JavaScriptCore.COMPILER_PB_FINAL_PARAMETER_BOUND);
@@ -153,7 +155,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 				PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION_WHEN_OVERRIDING, /*PREF_PB_MISSING_SERIAL_VERSION, */
 				PREF_PB_PARAMETER_ASSIGNMENT, PREF_PB_NULL_REFERENCE, PREF_PB_POTENTIAL_NULL_REFERENCE,
 				PREF_PB_DUPLICATE_LOCAL_VARIABLES,
-				PREF_PB_REDUNDANT_NULL_CHECK, PREF_PB_FALLTHROUGH_CASE,
+				PREF_PB_REDUNDANT_NULL_CHECK, PREF_PB_UNINITIALIZED_LOCAL_VARIABLE, PREF_PB_UNINITIALIZED_GLOBAL_VARIABLE, PREF_PB_FALLTHROUGH_CASE,
 //				PREF_15_PB_UNCHECKED_TYPE_OPERATION, PREF_15_PB_FINAL_PARAM_BOUND, PREF_15_PB_VARARGS_ARGUMENT_NEED_CAST,
 //				PREF_15_PB_AUTOBOXING_PROBLEM, PREF_15_PB_MISSING_OVERRIDE_ANNOTATION, PREF_15_PB_ANNOTATION_SUPER_INTERFACE,
 				/*PREF_15_PB_TYPE_PARAMETER_HIDING, PREF_15_PB_INCOMPLETE_ENUM_SWITCH,*/
@@ -342,6 +344,12 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		
 		label= PreferencesMessages.ProblemSeveritiesConfigurationBlock_pb_duplicate_local_variables;
 		addComboBox(inner, label, PREF_PB_DUPLICATE_LOCAL_VARIABLES, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		
+		label= PreferencesMessages.ProblemSeveritiesconfigurationBlock_pb_uninitialized_local_variable;
+		addComboBox(inner, label, PREF_PB_UNINITIALIZED_LOCAL_VARIABLE, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
+		
+		label= PreferencesMessages.ProblemSeveritiesconfigurationBlock_pb_uninitialized_global_variable;
+		addComboBox(inner, label, PREF_PB_UNINITIALIZED_GLOBAL_VARIABLE, errorWarningIgnore, errorWarningIgnoreLabels, defaultIndent);
 		
 		// --- name_shadowing
 		

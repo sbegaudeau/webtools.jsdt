@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -146,7 +147,10 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			LocalVariableBinding localBinding;
 			if (!flowInfo
 				.isDefinitelyAssigned(localBinding = (LocalVariableBinding) this.binding)) {
-				currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);
+				if(localBinding.declaringScope instanceof CompilationUnitScope)
+					currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+				else
+					currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);
 			}
 			if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
 				localBinding.useFlag = LocalVariableBinding.USED;

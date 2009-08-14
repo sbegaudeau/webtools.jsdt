@@ -338,7 +338,7 @@ void setSourceStart(int sourceStart);
 	/* START -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
 	int LooseVarDecl = Internal + 97;
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
-
+	int UninitializedGlobalVariable = Internal + 98;
 
 	// methods
 	int UndefinedMethod = MethodRelated + 100;

@@ -114,10 +114,14 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 			case Binding.LOCAL | Binding.TYPE :
 				LocalVariableBinding localBinding= (LocalVariableBinding) binding;
 
-				if (localBinding.isSameCompilationUnit(currentScope) &&
-						!flowInfo.isDefinitelyAssigned(localBinding )) {
-					currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);
+				if(!flowInfo.isDefinitelyAssigned(localBinding)) {
+					if (localBinding.declaringScope instanceof MethodScope) {
+						currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
+					} else if(localBinding.isSameCompilationUnit(currentScope)) {
+						currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+					}
 				}
+				
 				if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
 					localBinding.useFlag = LocalVariableBinding.USED;
 				} else if (localBinding.useFlag == LocalVariableBinding.UNUSED) {

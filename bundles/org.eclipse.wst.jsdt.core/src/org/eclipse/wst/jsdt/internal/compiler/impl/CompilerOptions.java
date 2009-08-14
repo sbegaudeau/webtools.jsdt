@@ -97,6 +97,8 @@ public class CompilerOptions {
 	public static final String OPTION_ReportPotentialNullReference = "org.eclipse.wst.jsdt.core.compiler.problem.potentialNullReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportDuplicateLocalVariables = "org.eclipse.wst.jsdt.core.compiler.problem.duplicateLocalVariables"; //$NON-NLS-1$
 	public static final String OPTION_ReportRedundantNullCheck = "org.eclipse.wst.jsdt.core.compiler.problem.redundantNullCheck"; //$NON-NLS-1$
+	public static final String OPTION_ReportUninitializedLocalVariable = "org.eclipse.wst.jsdt.core.compiler.problem.uninitializedLocalVariable"; //$NON-NLS-1$
+	public static final String OPTION_ReportUninitializedGlobalVariable = "org.eclipse.wst.jsdt.core.compiler.problem.uninitializedGlobalVariable"; //$NON-NLS-1$
 	public static final String OPTION_ReportForbiddenReference =  "org.eclipse.wst.jsdt.core.compiler.problem.forbiddenReference"; //$NON-NLS-1$
 	public static final String OPTION_ReportDiscouragedReference =  "org.eclipse.wst.jsdt.core.compiler.problem.discouragedReference"; //$NON-NLS-1$
 	public static final String OPTION_SuppressWarnings =  "org.eclipse.wst.jsdt.core.compiler.problem.suppressWarnings"; //$NON-NLS-1$
@@ -213,6 +215,9 @@ public class CompilerOptions {
 	public static final long OptionalSemicolon = ASTNode.Bit57L;
 
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+	
+	public static final long UninitializedLocalVariable = ASTNode.Bit59L;
+	public static final long UninitializedGlobalVariable = ASTNode.Bit60L;
 
 	// Map: String optionKey --> Long irritant>
 	private static Map OptionToIrritants;
@@ -440,6 +445,8 @@ public class CompilerOptions {
 		optionsMap.put(OPTION_ReportPotentialNullReference, getSeverityString(PotentialNullReference));
 		optionsMap.put(OPTION_ReportDuplicateLocalVariables, getSeverityString(DuplicateLocalVariables));
 		optionsMap.put(OPTION_ReportRedundantNullCheck, getSeverityString(RedundantNullCheck));
+		optionsMap.put(OPTION_ReportUninitializedLocalVariable, getSeverityString(UninitializedLocalVariable));
+		optionsMap.put(OPTION_ReportUninitializedGlobalVariable, getSeverityString(UninitializedGlobalVariable));
 		optionsMap.put(OPTION_SuppressWarnings, this.suppressWarnings ? ENABLED : DISABLED);
 		optionsMap.put(OPTION_ReportParameterAssignment, getSeverityString(ParameterAssignment));
 		optionsMap.put(OPTION_ReportFallthroughCase, getSeverityString(FallthroughCase));
@@ -552,6 +559,10 @@ public class CompilerOptions {
 					return OPTION_ReportDuplicateLocalVariables;
 				case (int)(RedundantNullCheck >>> 32) :
 					return OPTION_ReportRedundantNullCheck;
+				case (int)(UninitializedLocalVariable >>> 32) :
+					return OPTION_ReportUninitializedLocalVariable;
+				case (int)(UninitializedGlobalVariable >>> 32) :
+					return OPTION_ReportUninitializedGlobalVariable;
 				case (int)(TypeHiding >>> 32) :
 					return OPTION_ReportTypeParameterHiding;
 				case (int)(DiscouragedReference >>> 32) :
@@ -850,6 +861,8 @@ public class CompilerOptions {
 		if ((optionValue = optionsMap.get(OPTION_ReportPotentialNullReference)) != null) updateSeverity(PotentialNullReference, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportDuplicateLocalVariables)) != null) updateSeverity(DuplicateLocalVariables, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportRedundantNullCheck)) != null) updateSeverity(RedundantNullCheck, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_ReportUninitializedLocalVariable)) != null) updateSeverity(UninitializedLocalVariable, optionValue);
+		if ((optionValue = optionsMap.get(OPTION_ReportUninitializedGlobalVariable)) != null) updateSeverity(UninitializedGlobalVariable, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportUnusedLabel)) != null) updateSeverity(UnusedLabel, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportParameterAssignment)) != null) updateSeverity(ParameterAssignment, optionValue);
 		if ((optionValue = optionsMap.get(OPTION_ReportFallthroughCase)) != null) updateSeverity(FallthroughCase, optionValue);
@@ -1044,6 +1057,8 @@ public class CompilerOptions {
 		buf.append("\n\t- potential null reference: ").append(getSeverityString(PotentialNullReference)); //$NON-NLS-1$
 		buf.append("\n\t- duplicate local variables: ").append(getSeverityString(DuplicateLocalVariables)); //$NON-NLS-1%
 		buf.append("\n\t- redundant null check: ").append(getSeverityString(RedundantNullCheck)); //$NON-NLS-1$
+		buf.append("\n\t- uninitialized local variable: ").append(getSeverityString(UninitializedLocalVariable)); //$NON-NLS-1$
+		buf.append("\n\t- uninitialized global variable: ").append(getSeverityString(UninitializedGlobalVariable)); //$NON-NLS-1$
 		buf.append("\n\t- suppress warnings: ").append(this.suppressWarnings ? ENABLED : DISABLED); //$NON-NLS-1$
 		buf.append("\n\t- unused label: ").append(getSeverityString(UnusedLabel)); //$NON-NLS-1$
 		buf.append("\n\t- treat optional error as fatal: ").append(this.treatOptionalErrorAsFatal ? ENABLED : DISABLED); //$NON-NLS-1$
@@ -1162,6 +1177,8 @@ public class CompilerOptions {
 			OPTION_ReportPotentialNullReference,
 			OPTION_ReportDuplicateLocalVariables,
 			OPTION_ReportRedundantNullCheck,
+			OPTION_ReportUninitializedLocalVariable,
+			OPTION_ReportUninitializedGlobalVariable,
 			OPTION_ReportUndefinedField,
 			OPTION_ReportParameterAssignment,
 			OPTION_ReportPossibleAccidentalBooleanAssignment,
@@ -1234,6 +1251,10 @@ public class CompilerOptions {
 					return "fallthrough"; //$NON-NLS-1$
 				case (int) (OverridingMethodWithoutSuperInvocation >>> 32) :
 					return "super"; //$NON-NLS-1$
+				case (int) (UninitializedLocalVariable >>> 32) :
+					return "uninitializedLocalVariable";
+				case (int) (UninitializedGlobalVariable >>> 32) :
+					return "uninitializedGlobalVariable";
 			}
 		}
 		return null;
@@ -1309,6 +1330,10 @@ public class CompilerOptions {
 					return UncheckedTypeOperation | RawTypeReference;
 				if ("unqualified-field-access".equals(warningToken)) //$NON-NLS-1$
 					return UnqualifiedFieldAccess;
+				if("uninitializedLocalVariable".equals(warningToken)) //$NON-NLS-1$
+					return UninitializedLocalVariable;
+				if("uninitializedGlobalVariable".equals(warningToken)) //$NON-NLS-1$
+					return UninitializedGlobalVariable;
 				break;
 		}
 		return 0;
