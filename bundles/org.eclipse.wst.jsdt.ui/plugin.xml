@@ -3908,19 +3908,6 @@
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.select.last"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
 
-      <key
-            platform="carbon"
-            sequence="M2+M3+ARROW_DOWN"
-            contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
-            commandId=""
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-      <key
-            platform="carbon"
-            sequence="CTRL+SHIFT+ARROW_DOWN"
-            contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
-            commandId="org.eclipse.wst.jsdt.ui.edit.text.java.select.last"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-
 <!-- source -->
       <key
             sequence="M2+M3+S"
