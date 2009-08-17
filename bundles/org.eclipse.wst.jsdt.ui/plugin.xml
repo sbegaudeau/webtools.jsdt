@@ -5092,6 +5092,7 @@
             category="org.eclipse.wst.jsdt.ui.java"
             class="org.eclipse.wst.jsdt.internal.ui.infoviews.JavadocView"
             id="org.eclipse.wst.jsdt.ui.JavadocView">
+            <description>%JavadocViewDescription</description>
       </view>
    </extension>
 

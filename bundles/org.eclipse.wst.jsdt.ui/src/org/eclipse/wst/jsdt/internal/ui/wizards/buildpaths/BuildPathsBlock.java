@@ -168,45 +168,32 @@ public class BuildPathsBlock {
 		folder.setLayoutData(new GridData(GridData.FILL_BOTH));
 		folder.setFont(composite.getFont());
 		
-		TabItem item= new TabItem(folder, SWT.NONE);
+		TabItem item = null;
 
+		// Libraries tab
         fLibrariesPage= new LibrariesWorkbookPage(fClassPathList, fPageContainer);		
-		//item= new TabItem(folder, SWT.NONE);
+		item= new TabItem(folder, SWT.NONE);
 		item.setText(NewWizardMessages.BuildPathsBlock_tab_scriptimport); 
 		item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_LIBRARY));
 		item.setData(fLibrariesPage);
 		item.setControl(fLibrariesPage.getControl(folder));
-		/* ----START---------- CP ORdering Page ------------- */
-		Image cpoImage= JavaPluginImages.DESC_TOOL_CLASSPATH_ORDER.createImage();
-		composite.addDisposeListener(new ImageDisposer(cpoImage));	
-		
-		ordpage= new ClasspathOrderingWorkbookPage(fClassPathList);
-		
-		/* init super type field with either default or the one defined for the project */
-		ordpage.getSuperField().setValue(getProjectSuperType(fCurrJSProject));
 		
 		
-		item= new TabItem(folder, SWT.NONE);
-		item.setText(NewWizardMessages.BuildPathsBlock_GlobalOrder); 
-		item.setImage(cpoImage);
-		item.setData(ordpage);
-		item.setControl(ordpage.getControl(folder));
-		/* ----END---------- CP ORdering Page ------------- */		
-		
-		
+		// source folders tab
+        if (fUseNewPage) {
+        		fSourceContainerPage= new NewSourceContainerWorkbookPage(fClassPathList, fRunnableContext, this);
+        } else {
+			fSourceContainerPage= new SourceContainerWorkbookPage(fClassPathList);
+        }
 		item= new TabItem(folder, SWT.NONE);
         item.setText(NewWizardMessages.BuildPathsBlock_tab_source); 
         item.setImage(JavaPluginImages.get(JavaPluginImages.IMG_OBJS_PACKFRAG_ROOT));
 		
-        if (fUseNewPage) {
-        		fSourceContainerPage= new NewSourceContainerWorkbookPage(fClassPathList, fRunnableContext, this);
-       
-        } else {
-			fSourceContainerPage= new SourceContainerWorkbookPage(fClassPathList);
-        }
         item.setData(fSourceContainerPage);     
         item.setControl(fSourceContainerPage.getControl(folder));
 		
+        
+        // project dependency tab
 		IWorkbench workbench= JavaScriptPlugin.getDefault().getWorkbench();	
 		Image projectImage= workbench.getSharedImages().getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
 		
@@ -218,10 +205,23 @@ public class BuildPathsBlock {
 		item.setControl(fProjectsPage.getControl(folder));
 		
 		
+		//global supertype tab
+		Image cpoImage= JavaPluginImages.DESC_TOOL_CLASSPATH_ORDER.createImage();
+		composite.addDisposeListener(new ImageDisposer(cpoImage));	
 		
+		ordpage= new ClasspathOrderingWorkbookPage(fClassPathList);
+		
+		/* init super type field with either default or the one defined for the project */
+		ordpage.getSuperField().setValue(getProjectSuperType(fCurrJSProject));
+		
+		item= new TabItem(folder, SWT.NONE);
+		item.setText(NewWizardMessages.BuildPathsBlock_GlobalOrder); 
+		item.setImage(cpoImage);
+		item.setData(ordpage);
+		item.setControl(ordpage.getControl(folder));
+
+				
 		 //a non shared image
-		
-		
 		if (fCurrJSProject != null) {
 			fSourceContainerPage.init(fCurrJSProject);
 			fLibrariesPage.init(fCurrJSProject);
@@ -230,8 +230,10 @@ public class BuildPathsBlock {
 			
 		}
 		
-		folder.setSelection(fPageIndex);
-		fCurrPage= (BuildPathBasePage) folder.getItem(fPageIndex).getData();
+		if(fPageIndex < folder.getItems().length) {
+			folder.setSelection(fPageIndex);
+			fCurrPage= (BuildPathBasePage) folder.getItem(fPageIndex).getData();
+		}
 		folder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				tabChanged(e.item);
