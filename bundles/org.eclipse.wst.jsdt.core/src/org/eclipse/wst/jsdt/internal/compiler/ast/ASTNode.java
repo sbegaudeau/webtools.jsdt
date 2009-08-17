@@ -236,8 +236,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 		super();
 	}
 	private static int checkInvocationArgument(BlockScope scope, Expression argument, TypeBinding parameterType, TypeBinding argumentType, TypeBinding originalParameterType) {
-		argument.computeConversion(scope, parameterType, argumentType);
-
 		TypeBinding checkedParameterType = originalParameterType == null ? parameterType : originalParameterType;
 		if (argumentType != checkedParameterType && argumentType.needsUncheckedConversion(checkedParameterType)) {
 			return INVOCATION_ARGUMENT_UNCHECKED;

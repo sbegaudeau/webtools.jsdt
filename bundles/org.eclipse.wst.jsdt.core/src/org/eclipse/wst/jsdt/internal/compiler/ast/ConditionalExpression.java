@@ -140,7 +140,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 //		LookupEnvironment env = scope.environment();
 //		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
 		TypeBinding conditionType = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
-		condition.computeConversion(scope, TypeBinding.BOOLEAN, conditionType);
 
 		TypeBinding originalValueIfTrueType = valueIfTrue.resolveType(scope);
 		TypeBinding originalValueIfFalseType = valueIfFalse.resolveType(scope);
@@ -196,8 +195,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			constant = condConstant.booleanValue() ? trueConstant : falseConstant;
 		}
 		if (valueIfTrueType == valueIfFalseType) { // harmed the implicit conversion
-			valueIfTrue.computeConversion(scope, valueIfTrueType, originalValueIfTrueType);
-			valueIfFalse.computeConversion(scope, valueIfFalseType, originalValueIfFalseType);
 			if (valueIfTrueType == TypeBinding.BOOLEAN) {
 				this.optimizedIfTrueConstant = valueIfTrue.optimizedBooleanConstant();
 				this.optimizedIfFalseConstant = valueIfFalse.optimizedBooleanConstant();
@@ -220,16 +217,12 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			// (Short x Byte) or (Byte x Short)"
 			if ((valueIfTrueType == TypeBinding.BYTE && valueIfFalseType == TypeBinding.SHORT)
 				|| (valueIfTrueType == TypeBinding.SHORT && valueIfFalseType == TypeBinding.BYTE)) {
-				valueIfTrue.computeConversion(scope, TypeBinding.SHORT, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, TypeBinding.SHORT, originalValueIfFalseType);
 				return this.resolvedType = TypeBinding.SHORT;
 			}
 			// <Byte|Short|Char> x constant(Int)  ---> <Byte|Short|Char>   and reciprocally
 			if ((valueIfTrueType == TypeBinding.BYTE || valueIfTrueType == TypeBinding.SHORT || valueIfTrueType == TypeBinding.CHAR)
 					&& (valueIfFalseType == TypeBinding.INT
 						&& valueIfFalse.isConstantValueOfTypeAssignableToType(valueIfFalseType, valueIfTrueType))) {
-				valueIfTrue.computeConversion(scope, valueIfTrueType, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, valueIfTrueType, originalValueIfFalseType);
 				return this.resolvedType = valueIfTrueType;
 			}
 			if ((valueIfFalseType == TypeBinding.BYTE
@@ -237,35 +230,25 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 					|| valueIfFalseType == TypeBinding.CHAR)
 					&& (valueIfTrueType == TypeBinding.INT
 						&& valueIfTrue.isConstantValueOfTypeAssignableToType(valueIfTrueType, valueIfFalseType))) {
-				valueIfTrue.computeConversion(scope, valueIfFalseType, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, valueIfFalseType, originalValueIfFalseType);
 				return this.resolvedType = valueIfFalseType;
 			}
 			// Manual binary numeric promotion
 			// int
 			if (BaseTypeBinding.isNarrowing(valueIfTrueType.id, T_int)
 					&& BaseTypeBinding.isNarrowing(valueIfFalseType.id, T_int)) {
-				valueIfTrue.computeConversion(scope, TypeBinding.INT, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, TypeBinding.INT, originalValueIfFalseType);
 				return this.resolvedType = TypeBinding.INT;
 			}
 			// long
 			if (BaseTypeBinding.isNarrowing(valueIfTrueType.id, T_long)
 					&& BaseTypeBinding.isNarrowing(valueIfFalseType.id, T_long)) {
-				valueIfTrue.computeConversion(scope, TypeBinding.LONG, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, TypeBinding.LONG, originalValueIfFalseType);
 				return this.resolvedType = TypeBinding.LONG;
 			}
 			// float
 			if (BaseTypeBinding.isNarrowing(valueIfTrueType.id, T_float)
 					&& BaseTypeBinding.isNarrowing(valueIfFalseType.id, T_float)) {
-				valueIfTrue.computeConversion(scope, TypeBinding.FLOAT, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, TypeBinding.FLOAT, originalValueIfFalseType);
 				return this.resolvedType = TypeBinding.FLOAT;
 			}
 			// double
-			valueIfTrue.computeConversion(scope, TypeBinding.DOUBLE, originalValueIfTrueType);
-			valueIfFalse.computeConversion(scope, TypeBinding.DOUBLE, originalValueIfFalseType);
 			return this.resolvedType = TypeBinding.DOUBLE;
 		}
 		// Type references (null null is already tested)
@@ -303,12 +286,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 //		} else {
 			// < 1.5 : one operand must be convertible to the other
 			if (valueIfFalseType.isCompatibleWith(valueIfTrueType)) {
-				valueIfTrue.computeConversion(scope, valueIfTrueType, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, valueIfTrueType, originalValueIfFalseType);
 				return this.resolvedType = (valueIfTrueType != TypeBinding.NULL)?  valueIfTrueType : valueIfFalseType;
 			} else if (valueIfTrueType.isCompatibleWith(valueIfFalseType)) {
-				valueIfTrue.computeConversion(scope, valueIfFalseType, originalValueIfTrueType);
-				valueIfFalse.computeConversion(scope, valueIfFalseType, originalValueIfFalseType);
 				return this.resolvedType = (valueIfFalseType != TypeBinding.NULL)?  valueIfFalseType : valueIfTrueType;
 			}
 //		}

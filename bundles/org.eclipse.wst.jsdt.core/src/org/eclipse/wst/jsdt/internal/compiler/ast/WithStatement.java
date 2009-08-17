@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ public class WithStatement extends Statement implements IWithStatement {
 	public Statement action;
 
 	public WithStatement(Expression condition, Statement action, int s, int e) {
-
 		this.condition = condition;
 		this.action = action;
 		// remember useful empty statement
@@ -35,25 +34,18 @@ public class WithStatement extends Statement implements IWithStatement {
 		sourceEnd = e;
 	}
 
-	public FlowInfo analyseCode(
-		BlockScope currentScope,
-		FlowContext flowContext,
+	public FlowInfo analyseCode( BlockScope currentScope, FlowContext flowContext,
 		FlowInfo flowInfo) {
 
 		flowInfo =
 			condition.analyseCode(currentScope, flowContext, flowInfo);
 
 		if (this.action != null) {
-			// Save info for code gen
-//			thenInitStateIndex =
-//				currentScope.methodScope().recordInitializationStates(thenFlowInfo);
 			if (!action.complainIfUnreachable(flowInfo, currentScope, false)) {
 				flowInfo =
 					this.action.analyseCode(currentScope, flowContext, flowInfo);
 			}
 		}
-
-
 		return flowInfo;
 	}
 
@@ -88,8 +80,8 @@ public class WithStatement extends Statement implements IWithStatement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
+	
 	public int getASTType() {
 		return IASTNode.WITH_STATEMENT;
-	
 	}
 }

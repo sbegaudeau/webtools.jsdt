@@ -170,14 +170,12 @@ public void resolve(BlockScope scope) {
 	if (this.expression.isConstantValueOfTypeAssignableToType(expressionType, methodType)
 			|| expressionType.isCompatibleWith(methodType)) {
 
-		this.expression.computeConversion(scope, methodType, expressionType);
 		return;
 	} else if (scope.isBoxingCompatibleWith(expressionType, methodType)
 						|| (expressionType.isBaseType()  // narrowing then boxing ?
 								&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 								&& !methodType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(expressionType, scope.environment().computeBoxingType(methodType)))) {
-		this.expression.computeConversion(scope, methodType, expressionType);
 	}
 	scope.problemReporter().typeMismatchError(expressionType, methodType, this.expression);
 }

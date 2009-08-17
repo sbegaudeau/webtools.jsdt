@@ -372,61 +372,6 @@ public boolean checkUnsafeCast(Scope scope, TypeBinding castType, TypeBinding ex
 		if (!isNarrowing) tagAsUnnecessaryCast(scope, castType);
 		return true;
 	}
-	/**
-	 * Base types need that the widening is explicitly done by the compiler using some bytecode like i2f.
-	 * Also check unsafe type operations.
-	 */
-	public void computeConversion(Scope scope, TypeBinding runtimeType, TypeBinding compileTimeType) {
-
-//		if (runtimeType == null || compileTimeType == null)
-//			return;
-//		if (this.implicitConversion != 0) return; // already set independantly
-//
-//		// it is possible for a Byte to be unboxed to a byte & then converted to an int
-//		// but it is not possible for a byte to become Byte & then assigned to an Integer,
-//		// or to become an int before boxed into an Integer
-//		if (runtimeType != TypeBinding.NULL && runtimeType.isBaseType()) {
-//			if (!compileTimeType.isBaseType()) {
-//				TypeBinding unboxedType = scope.environment().computeBoxingType(compileTimeType);
-//				this.implicitConversion = TypeIds.UNBOXING;
-//				scope.problemReporter().autoboxing(this, compileTimeType, runtimeType);
-//				compileTimeType = unboxedType;
-//			}
-//		} else if (compileTimeType != TypeBinding.NULL && compileTimeType.isBaseType()) {
-//			TypeBinding boxedType = scope.environment().computeBoxingType(runtimeType);
-//			if (boxedType == runtimeType) // Object o = 12;
-//				boxedType = compileTimeType;
-//			this.implicitConversion = TypeIds.BOXING | (boxedType.id << 4) + compileTimeType.id;
-//			scope.problemReporter().autoboxing(this, compileTimeType, scope.environment().computeBoxingType(boxedType));
-//			return;
-//		} else if (this.constant != Constant.NotAConstant && this.constant.typeID() != TypeIds.T_JavaLangString) {
-//			this.implicitConversion = TypeIds.BOXING;
-//			return;
-//		}
-//		int compileTimeTypeID, runtimeTypeID;
-//		if ((compileTimeTypeID = compileTimeType.id) == TypeIds.NoId) { // e.g. ? extends String  ==> String (103227)
-//			compileTimeTypeID = compileTimeType.erasure().id == TypeIds.T_JavaLangString ? TypeIds.T_JavaLangString : TypeIds.T_JavaLangObject;
-//		}
-//		switch (runtimeTypeID = runtimeType.id) {
-//			case T_byte :
-//			case T_short :
-//			case T_char :
-//				this.implicitConversion |= (TypeIds.T_int << 4) + compileTimeTypeID;
-//				break;
-//			case T_JavaLangString :
-//			case T_float :
-//			case T_boolean :
-//			case T_double :
-//			case T_int : //implicitConversion may result in i2i which will result in NO code gen
-//			case T_long :
-//				this.implicitConversion |= (runtimeTypeID << 4) + compileTimeTypeID;
-//				break;
-//			default : // regular object ref
-////				if (compileTimeType.isRawType() && runtimeTimeType.isBoundParameterizedType()) {
-////				    scope.problemReporter().unsafeRawExpression(this, compileTimeType, runtimeTimeType);
-////				}
-//		}
-	}
 
 	public boolean isCompactableOperation() {
 
@@ -631,7 +576,6 @@ public void markAsNonNull() {
 
 		if (!expressionType.isCompatibleWith(expectedType)) {
 			if (scope.isBoxingCompatibleWith(expressionType, expectedType)) {
-				this.computeConversion(scope, expectedType, expressionType);
 			} else {
 				if (expectedType!=TypeBinding.BOOLEAN || expressionType==TypeBinding.VOID)
 				{

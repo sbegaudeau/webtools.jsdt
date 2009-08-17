@@ -190,8 +190,6 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 			//  0000   0000       0000   0000      0000
 			//  <<16   <<12       <<8    <<4       <<0
 			int operatorSignature = OperatorSignatures[EQUAL_EQUAL][ (leftTypeID << 4) + rightTypeID];
-			left.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), originalLeftType);
-			right.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 8) & 0x0000F), originalRightType);
 			bits |= operatorSignature & 0xF;
 			// fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=283663
 			if ((operatorSignature & 0x0000F) == T_undefined) {
@@ -217,9 +215,6 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 			} else {
 				constant = Constant.NotAConstant;
 			}
-			TypeBinding objectType = scope.getJavaLangObject();
-			left.computeConversion(scope, objectType, leftType);
-			right.computeConversion(scope, objectType, rightType);
 			return this.resolvedType = TypeBinding.BOOLEAN;
 		}
 		constant = Constant.NotAConstant;

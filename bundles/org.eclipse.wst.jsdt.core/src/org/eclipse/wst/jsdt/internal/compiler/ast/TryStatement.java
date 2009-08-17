@@ -31,10 +31,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 public class TryStatement extends SubRoutineStatement implements ITryStatement {
 
-//	private final static char[] SECRET_RETURN_ADDRESS_NAME = " returnAddress".toCharArray(); //$NON-NLS-1$
-//	private final static char[] SECRET_ANY_HANDLER_NAME = " anyExceptionHandler".toCharArray(); //$NON-NLS-1$
-//	private final static char[] SECRET_RETURN_VALUE_NAME = " returnValue".toCharArray(); //$NON-NLS-1$
-
 	public Block tryBlock;
 	public Block[] catchBlocks;
 
@@ -70,9 +66,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	// complete, then only keep this result for the rest of the analysis
 
 	// process the finally block (subroutine) - create a context for the subroutine
-
-//	this.preTryInitStateIndex =
-//		currentScope.methodScope().recordInitializationStates(flowInfo);
 
 	if (this.anyExceptionVariable != null) {
 		this.anyExceptionVariable.useFlag = LocalVariableBinding.USED;

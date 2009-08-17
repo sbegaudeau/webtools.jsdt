@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,8 @@ public class WhileStatement extends Statement implements IWhileStatement {
 
 	public Expression condition;
 	public Statement action;
-	int preCondInitStateIndex = -1;
-	int condIfTrueInitStateIndex = -1;
-	int mergedInitStateIndex = -1;
 
 	public WhileStatement(Expression condition, Statement action, int s, int e) {
-
 		this.condition = condition;
 		this.action = action;
 		// remember useful empty statement
@@ -39,11 +35,8 @@ public class WhileStatement extends Statement implements IWhileStatement {
 		sourceEnd = e;
 	}
 
-	public FlowInfo analyseCode(
-		BlockScope currentScope,
-		FlowContext flowContext,
+	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		FlowInfo flowInfo) {
-
 
 		Constant cst = this.condition.constant;
 		boolean isConditionTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
@@ -53,8 +46,6 @@ public class WhileStatement extends Statement implements IWhileStatement {
 		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
 		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
 
-//		preCondInitStateIndex =
-//			currentScope.methodScope().recordInitializationStates(flowInfo);
 		LoopingFlowContext condLoopContext;
 		FlowInfo condInfo =	flowInfo.nullInfoLessUnconditionalCopy();
 		// we need to collect the contribution to nulls of the coming paths through the
@@ -82,8 +73,6 @@ public class WhileStatement extends Statement implements IWhileStatement {
 				if (isConditionOptimizedTrue){
 					mergedInfo.setReachMode(FlowInfo.UNREACHABLE);
 				}
-//				mergedInitStateIndex =
-//					currentScope.methodScope().recordInitializationStates(mergedInfo);
 				return mergedInfo;
 			}
 		} else {
@@ -103,11 +92,6 @@ public class WhileStatement extends Statement implements IWhileStatement {
 					actionInfo.setReachMode(FlowInfo.UNREACHABLE);
 				}
 			}
-
-			// for computing local var attributes
-//			condIfTrueInitStateIndex =
-//				currentScope.methodScope().recordInitializationStates(
-//					condInfo.initsWhenTrue());
 
 			if (!this.action.complainIfUnreachable(actionInfo, currentScope, false)) {
 				actionInfo = this.action.analyseCode(currentScope, loopingContext, actionInfo);
@@ -148,20 +132,16 @@ public class WhileStatement extends Statement implements IWhileStatement {
 				exitBranch,
 				isConditionOptimizedFalse,
 				!isConditionTrue /*while(true); unreachable(); */);
-//		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
 	}
 
 	public void resolve(BlockScope scope) {
-
-		TypeBinding type = condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
-		condition.computeConversion(scope, type, type);
+		condition.resolveTypeExpecting(scope, TypeBinding.BOOLEAN);
 		if (action != null)
 			action.resolve(scope);
 	}
 
 	public StringBuffer printStatement(int tab, StringBuffer output) {
-
 		printIndent(tab, output).append("while ("); //$NON-NLS-1$
 		condition.printExpression(0, output).append(')');
 		if (action == null)
@@ -171,10 +151,7 @@ public class WhileStatement extends Statement implements IWhileStatement {
 		return output;
 	}
 
-	public void traverse(
-		ASTVisitor visitor,
-		BlockScope blockScope) {
-
+	public void traverse( ASTVisitor visitor, BlockScope blockScope) {
 		if (visitor.visit(this, blockScope)) {
 			condition.traverse(visitor, blockScope);
 			if (action != null)
@@ -182,8 +159,8 @@ public class WhileStatement extends Statement implements IWhileStatement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
+	
 	public int getASTType() {
 		return IASTNode.WHILE_STATEMENT;
-	
 	}
 }

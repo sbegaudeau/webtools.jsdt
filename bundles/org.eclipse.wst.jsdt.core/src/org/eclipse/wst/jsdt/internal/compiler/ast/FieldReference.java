@@ -123,7 +123,6 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 	if (this.binding != null && this.binding.isValidBinding()) {
 		FieldBinding originalBinding = this.binding.original();
 	}
-	super.computeConversion(scope, runtimeTimeType, compileTimeType);
 }
 
 public FieldBinding fieldBinding() {
@@ -414,7 +413,6 @@ if( this.isPrototype() ){
 				}
 			}
 		}
-		this.receiver.computeConversion(scope, this.receiverType, this.receiverType);
 		if (isFieldUseDeprecated(fieldBinding, scope, (this.bits & IsStrictlyAssigned) !=0)) {
 			scope.problemReporter().deprecatedField(fieldBinding, this);
 		}

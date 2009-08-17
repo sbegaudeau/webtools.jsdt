@@ -210,7 +210,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			LocalTypeBinding localType = (LocalTypeBinding) this.binding;
 			localType.setConstantPoolName(currentScope.compilationUnitScope().computeConstantPoolName(localType));
 		}
-		manageEnclosingInstanceAccessIfNecessary(currentScope, flowInfo);
 		updateMaxFieldCount(); // propagate down the max field count
 		internalAnalyseCode(flowContext, flowInfo);
 	} catch (AbortType e) {
@@ -582,37 +581,6 @@ private void internalAnalyseCode(FlowContext flowContext, FlowInfo flowInfo) {
 
 public final static int kind(int flags) {
 	return TypeDeclaration.CLASS_DECL;
-}
-
-/*
- * Access emulation for a local type
- * force to emulation of access to direct enclosing instance.
- * By using the initializer scope, we actually only request an argument emulation, the
- * field is not added until actually used. However we will force allocations to be qualified
- * with an enclosing instance.
- * 15.9.2
- */
-public void manageEnclosingInstanceAccessIfNecessary(BlockScope currentScope, FlowInfo flowInfo) {
-	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) != 0) return;
-	NestedTypeBinding nestedType = (NestedTypeBinding) this.binding;
-
-	MethodScope methodScope = currentScope.methodScope();
-
-	// add superclass enclosing instance arg for anonymous types (if necessary)
-	if (nestedType.isAnonymousType()) {
-		// From 1.5 on, provide access to enclosing instance synthetic constructor argument when declared inside constructor call
-		// only for direct anonymous type
-		//public class X {
-		//	void foo() {}
-		//	class M {
-		//		M(Object o) {}
-		//		M() { this(new Object() { void baz() { foo(); }}); } // access to #foo() indirects through constructor synthetic arg: val$this$0
-		//	}
-		//}
-		if (!methodScope.isStatic && methodScope.isConstructorCall && currentScope.compilerOptions().complianceLevel >= ClassFileConstants.JDK1_5) {
-			ReferenceBinding enclosing = nestedType.enclosingType();
-		}
-	}
 }
 
 /**

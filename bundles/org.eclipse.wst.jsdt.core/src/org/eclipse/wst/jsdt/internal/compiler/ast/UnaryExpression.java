@@ -30,23 +30,18 @@ public class UnaryExpression extends OperatorExpression implements IUnaryExpress
 		this.bits |= operator << OperatorSHIFT; // encode operator
 	}
 
-public FlowInfo analyseCode(
-		BlockScope currentScope,
-		FlowContext flowContext,
+	public FlowInfo analyseCode( BlockScope currentScope, FlowContext flowContext,
 		FlowInfo flowInfo) {
-	this.expression.checkNPE(currentScope, flowContext, flowInfo);
-	if (((bits & OperatorMASK) >> OperatorSHIFT) == NOT) {
-		return this.expression.
-			analyseCode(currentScope, flowContext, flowInfo).
-			asNegatedCondition();
-	} else {
-		return this.expression.
-			analyseCode(currentScope, flowContext, flowInfo);
+		this.expression.checkNPE(currentScope, flowContext, flowInfo);
+		if (((bits & OperatorMASK) >> OperatorSHIFT) == NOT) {
+			return this.expression.analyseCode(currentScope, flowContext, flowInfo).
+				asNegatedCondition();
+		} else {
+			return this.expression.analyseCode(currentScope, flowContext, flowInfo);
+		}
 	}
-}
 
 	public Constant optimizedBooleanConstant() {
-
 		return this.optimizedBooleanConstant == null
 				? this.constant
 				: this.optimizedBooleanConstant;
@@ -58,13 +53,11 @@ public FlowInfo analyseCode(
 		return this.expression.printExpression(0, output);
 	}
 
-	protected final int getOperator()
-	{
+	protected final int getOperator() {
 		return (bits & OperatorMASK) >> OperatorSHIFT;
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {
-
 		TypeBinding expressionType = null;
 		if (getOperator()==TYPEOF && (this.expression instanceof SingleNameReference))
 			expressionType=TypeBinding.UNKNOWN;
@@ -75,13 +68,7 @@ public FlowInfo analyseCode(
 			return null;
 		}
 		int expressionTypeID = expressionType.id;
-		// autoboxing support
-//		boolean use15specifics = scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
-//		if (use15specifics) {
-//			if (!expressionType.isBaseType()) {
-//				expressionTypeID = scope.environment().computeBoxingType(expressionType).id;
-//			}
-//		}
+	
 		if (expressionTypeID > 15) {
 			expressionTypeID=T_JavaLangObject;
 //			this.constant = Constant.NotAConstant;
@@ -115,7 +102,6 @@ public FlowInfo analyseCode(
 		if (tableId>-1)	// not already determined
 		{
 		int operatorSignature = OperatorSignatures[tableId][(expressionTypeID << 4) + expressionTypeID];
-//		this.expression.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), expressionType);
 		this.bits |= operatorSignature & 0xF;
 		switch (operatorSignature & 0xF) { // only switch on possible result type.....
 			case T_boolean :
@@ -164,10 +150,6 @@ public FlowInfo analyseCode(
 					this.optimizedBooleanConstant = BooleanConstant.fromValue(!cst.booleanValue());
 			}
 		}
-//		if (expressionIsCast) {
-//		// check need for operand cast
-//			CastExpression.checkNeedForArgumentCast(scope, tableId, operatorSignature, this.expression, expressionTypeID);
-//		}
 		return this.resolvedType;
 	}
 
@@ -180,8 +162,8 @@ public FlowInfo analyseCode(
 		}
 		visitor.endVisit(this, blockScope);
 	}
+	
 	public int getASTType() {
 		return IASTNode.UNARY_EXPRESSION;
-	
 	}
 }

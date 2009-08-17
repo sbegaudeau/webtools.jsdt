@@ -228,7 +228,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 			if (expectedType != enclosingInstanceType) // must call before computeConversion() and typeMismatchError()
 				scope.compilationUnitScope().recordTypeConversion(expectedType, enclosingInstanceType);
 			if (enclosingInstanceType.isCompatibleWith(expectedType) || scope.isBoxingCompatibleWith(enclosingInstanceType, expectedType)) {
-				this.enclosingInstance.computeConversion(scope, expectedType, enclosingInstanceType);
 				return this.resolvedType = receiverType;
 			}
 			scope.problemReporter().typeMismatchError(enclosingInstanceType, expectedType, this.enclosingInstance);
@@ -260,7 +259,6 @@ public class QualifiedAllocationExpression extends AllocationExpression implemen
 				scope.problemReporter().typeMismatchError(enclosingInstanceType, targetEnclosing, this.enclosingInstance);
 				return this.resolvedType = this.anonymousType.binding;
 			}
-			this.enclosingInstance.computeConversion(scope, targetEnclosing, enclosingInstanceType);
 		}
 		if (this.arguments != null)
 			checkInvocationArguments(scope, null, this.superTypeBinding, inheritedBinding, this.arguments, argumentTypes, argsContainCast, this);

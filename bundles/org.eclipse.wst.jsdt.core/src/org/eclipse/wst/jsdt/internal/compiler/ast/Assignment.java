@@ -191,7 +191,6 @@ public TypeBinding resolveType(BlockScope scope) {
 								&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 								&& !lhsType.isBaseType()
 								&& this.expression.isConstantValueOfTypeAssignableToType(rhsType, scope.environment().computeBoxingType(lhsType)))) {
-		this.expression.computeConversion(scope, lhsType, rhsType);
 		return this.resolvedType;
 	}
 	if (rhsType.isFunctionType() && this.lhs.isTypeReference())

@@ -2830,7 +2830,6 @@ public void javadocInvalidMethod(MessageSend messageSend, MethodBinding method, 
 	if (!javadocVisibility(this.options.reportInvalidJavadocTagsVisibility, modifiers)) return;
 	// set problem id
 	ProblemMethodBinding problemMethod = null;
-	MethodBinding shownMethod = null;
 	int id = IProblem.JavadocUndefinedMethod; //default...
 	switch (method.problemId()) {
 		case ProblemReasons.NotFound :

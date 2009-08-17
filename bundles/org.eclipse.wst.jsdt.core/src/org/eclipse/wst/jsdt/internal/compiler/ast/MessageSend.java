@@ -380,16 +380,6 @@ public TypeBinding resolveType(BlockScope scope) {
 		// the "receiver" must not be a type, in other words, a NameReference that the TC has bound to a Type
 		if (receiverIsType && binding.isValidBinding()) {
 			scope.problemReporter().mustUseAStaticMethod(this, binding);
-		} else {
-			if (receiver!=null)
-				receiver.computeConversion(scope, this.actualReceiverType, this.actualReceiverType);
-			// compute generic cast if necessary
-//			TypeBinding receiverErasure = this.actualReceiverType.erasure();
-//			if (receiverErasure instanceof ReferenceBinding) {
-//				if (receiverErasure.findSuperTypeWithSameErasure(this.binding.declaringClass) == null) {
-//					this.receiverGenericCast = this.binding.declaringClass; // handle indirect inheritance thru variable secondary bound
-//				}
-//			}
 		}
 	} else {
 		if (receiver!=null) {

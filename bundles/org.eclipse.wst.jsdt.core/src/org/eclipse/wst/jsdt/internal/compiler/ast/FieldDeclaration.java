@@ -176,7 +176,6 @@ public void resolve(MethodScope initializationScope) {
 
 				if ((initializationType = this.initialization.resolveTypeExpecting(initializationScope, fieldType)) != null) {
 					((ArrayInitializer) this.initialization).binding = (ArrayBinding) initializationType;
-					this.initialization.computeConversion(initializationScope, fieldType, initializationType);
 				}
 			} else if ((initializationType = this.initialization.resolveType(initializationScope)) != null) {
 
@@ -185,13 +184,11 @@ public void resolve(MethodScope initializationScope) {
 				if (this.initialization.isConstantValueOfTypeAssignableToType(initializationType, fieldType)
 						|| (fieldType.isBaseType() && BaseTypeBinding.isWidening(fieldType.id, initializationType.id))
 						|| initializationType.isCompatibleWith(fieldType)) {
-					this.initialization.computeConversion(initializationScope, fieldType, initializationType);
 				} else if (initializationScope.isBoxingCompatibleWith(initializationType, fieldType)
 									|| (initializationType.isBaseType()  // narrowing then boxing ?
 											&& initializationScope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 											&& !fieldType.isBaseType()
 											&& initialization.isConstantValueOfTypeAssignableToType(initializationType, initializationScope.environment().computeBoxingType(fieldType)))) {
-					this.initialization.computeConversion(initializationScope, fieldType, initializationType);
 				} else {
 					initializationScope.problemReporter().typeMismatchError(initializationType, fieldType, this);
 				}

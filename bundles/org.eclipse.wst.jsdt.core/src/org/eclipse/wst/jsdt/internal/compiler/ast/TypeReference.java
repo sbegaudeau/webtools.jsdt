@@ -82,9 +82,7 @@ public static final TypeReference baseTypeReference(int baseType, int dim) {
 			return new ArrayTypeReference(TypeBinding.LONG.simpleName, dim, 0);
 	}
 }
-public void checkBounds(Scope scope) {
-	// only parameterized type references have bounds
-}
+
 public abstract TypeReference copyDims(int dim);
 public int dimensions() {
 	return 0;

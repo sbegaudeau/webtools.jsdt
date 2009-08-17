@@ -156,14 +156,6 @@ void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 			return;
 		}
 	}
-	if (((this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) == OperatorIds.PLUS) {
-		if (leftTypeID == TypeIds.T_JavaLangString) {
-			this.left.computeConversion(scope, leftType, leftType);
-		}
-		if (rightTypeID == TypeIds.T_JavaLangString) {
-			this.right.computeConversion(scope, rightType, rightType);
-		}
-	}
 
 	// the code is an int
 	// (cast)  left   Op (cast)  right --> result
@@ -175,8 +167,6 @@ void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 	int operator = (this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT;
 	int operatorSignature = OperatorExpression.OperatorSignatures[operator][(leftTypeID << 4) + rightTypeID];
 
-	this.left.computeConversion(scope, 	TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), leftType);
-	this.right.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 8) & 0x0000F), rightType);
 	this.bits |= operatorSignature & 0xF;
 	switch (operatorSignature & 0xF) { // record the current ReturnTypeID
 		// only switch on possible result type.....
@@ -323,14 +313,6 @@ public TypeBinding resolveType(BlockScope scope) {
 			return null;
 		}
 	}
-	if (((this.bits & ASTNode.OperatorMASK) >> ASTNode.OperatorSHIFT) == OperatorIds.PLUS) {
-		if (leftTypeID == TypeIds.T_JavaLangString) {
-			this.left.computeConversion(scope, leftType, leftType);
-		}
-		if (rightTypeID == TypeIds.T_JavaLangString) {
-			this.right.computeConversion(scope, rightType, rightType);
-		}
-	}
 
 	// the code is an int
 	// (cast)  left   Op (cast)  right --> result
@@ -341,8 +323,6 @@ public TypeBinding resolveType(BlockScope scope) {
 	// On the one hand when it is not zero (correct code) we avoid doing the test
 	int operatorSignature = OperatorExpression.OperatorSignatures[operator][(leftTypeID << 4) + rightTypeID];
 
-	this.left.computeConversion(scope, 	TypeBinding.wellKnownType(scope, (operatorSignature >>> 16) & 0x0000F), leftType);
-	this.right.computeConversion(scope, TypeBinding.wellKnownType(scope, (operatorSignature >>> 8) & 0x0000F), rightType);
 	this.bits |= operatorSignature & 0xF;
 	switch (operatorSignature & 0xF) { // record the current ReturnTypeID
 		// only switch on possible result type.....

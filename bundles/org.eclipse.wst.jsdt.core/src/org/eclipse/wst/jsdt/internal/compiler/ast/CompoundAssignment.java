@@ -158,8 +158,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 //				}
 //			}
 //		}
-		this.lhs.computeConversion(scope, TypeBinding.wellKnownType(scope, (result >>> 16) & 0x0000F), originalLhsType);
-		this.expression.computeConversion(scope, TypeBinding.wellKnownType(scope, (result >>> 8) & 0x0000F), originalExpressionType);
 		this.preAssignImplicitConversion =  (unboxedLhs ? BOXING : 0) | (lhsID << 4) | (result & 0x0000F);
 		return this.resolvedType = originalLhsType;
 	}

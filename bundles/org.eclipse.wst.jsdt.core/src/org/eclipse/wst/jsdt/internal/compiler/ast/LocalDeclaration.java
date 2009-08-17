@@ -228,7 +228,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				TypeBinding initializationType = initialization.resolveTypeExpecting(scope, variableType);
 				if (initializationType != null) {
 					((ArrayInitializer) initialization).binding = (ArrayBinding) initializationType;
-					initialization.computeConversion(scope, variableType, initializationType);
 				}
 			} else {
 			    this.initialization.setExpectedType(variableType);

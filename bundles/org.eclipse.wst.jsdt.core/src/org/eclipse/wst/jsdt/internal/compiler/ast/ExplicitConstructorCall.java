@@ -226,7 +226,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 					this.bits |= ASTNode.DiscardEnclosingInstance;
 				} else {
 					TypeBinding qTb = qualification.resolveTypeExpecting(scope, enclosingType);
-					qualification.computeConversion(scope, qTb, qTb);
 				}
 			}
 			// resolve type arguments (for generic constructor call)

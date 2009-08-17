@@ -77,7 +77,6 @@ public FlowInfo analyseCode(
 //		}
 		TypeBinding arrayType = receiver.resolveType(scope);
 		if (arrayType != null) {
-			receiver.computeConversion(scope, arrayType, arrayType);
 			if (arrayType.isArrayType()) {
 				TypeBinding elementType = ((ArrayBinding) arrayType).elementsType();
 				this.resolvedType = elementType;

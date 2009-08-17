@@ -178,7 +178,6 @@ public class ForeachStatement extends Statement implements IForeachStatement {
 		if (elementType != null && collectionType != null) {
 			if (collectionType.isArrayType()) { // for(E e : E[])
 				this.kind = ARRAY;
-				this.collection.computeConversion(scope,collectionType, collectionType);
 				this.collectionElementType = ((ArrayBinding) collectionType).elementsType();
 				if (!collectionElementType.isCompatibleWith(elementType)
 						&& !scope.isBoxingCompatibleWith(collectionElementType, elementType)) {
@@ -211,9 +210,6 @@ public class ForeachStatement extends Statement implements IForeachStatement {
 					this.iteratorReceiverType = collectionType;
 					if (((ReferenceBinding)iteratorReceiverType).findSuperTypeErasingTo(T_JavaLangIterable, false) == null) {
 						this.iteratorReceiverType = iterableType; // handle indirect inheritance thru variable secondary bound
-	   					this.collection.computeConversion(scope, iterableType, collectionType);
-					} else {
-	   					this.collection.computeConversion(scope, collectionType, collectionType);
 					}
 
 			    	

@@ -110,13 +110,11 @@ public class ArrayInitializer extends Expression implements IArrayInitializer {
 				if ((expression.isConstantValueOfTypeAssignableToType(exprType, elementType)
 						|| (elementType.isBaseType() && BaseTypeBinding.isWidening(elementType.id, exprType.id)))
 						|| exprType.isCompatibleWith(elementType)) {
-					expression.computeConversion(scope, elementType, exprType);
 				} else if (scope.isBoxingCompatibleWith(exprType, elementType)
 									|| (exprType.isBaseType()  // narrowing then boxing ?
 											&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
 											&& !elementType.isBaseType()
 											&& expression.isConstantValueOfTypeAssignableToType(exprType, scope.environment().computeBoxingType(elementType)))) {
-					expression.computeConversion(scope, elementType, exprType);
 				} else {
 					scope.problemReporter().typeMismatchError(exprType, elementType, expression);
 					return null;

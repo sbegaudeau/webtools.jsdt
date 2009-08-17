@@ -240,7 +240,6 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 	if (field != null) {
 		FieldBinding originalBinding = field.original();
 	}
-	super.computeConversion(scope, runtimeTimeType, compileTimeType);
 }
 
 /**
