@@ -24,7 +24,4 @@ package org.eclipse.wst.jsdt.core.ast;
  */
 
 public interface IFunctionDeclaration extends IAbstractFunctionDeclaration{
-
-
- 
 }

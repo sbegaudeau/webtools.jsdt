@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.core.ast;
 
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
+
 /**
  * Abstract representation of a Function declaration.  
  * <p>
@@ -26,7 +27,10 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
 
 public interface IAbstractFunctionDeclaration extends IStatement{
 
-	
+	/**
+	 * Set the function arguments
+	 * @param args IArgument[]
+	 */
 	public void setArguments( IArgument[] args);
 
 	/**
@@ -34,6 +38,7 @@ public interface IAbstractFunctionDeclaration extends IStatement{
 	 * @return arguments
 	 */
 	public IArgument[] getArguments();
+	
 	/**
 	 * Get the function jsdoc
 	 * @return jsdoc
@@ -54,22 +59,21 @@ public interface IAbstractFunctionDeclaration extends IStatement{
 	char[] getName();
 
 	/**
-	 * Set the return type
+	 * Set the inferred return type
 	 * 
 	 * @param inferred return type
 	 */
 	void setInferredType(InferredType type);
-
-	/**
-	 * Get the Inferred method associated with this function
-	 * @return
-	 */
-	InferredMethod getInferredMethod();
-
+	
 	/**
 	 * Get the inferred return type for the function
 	 * @return inferred type
 	 */
 	InferredType getInferredType();
 
+	/**
+	 * Get the Inferred method associated with this function
+	 * @return
+	 */
+	InferredMethod getInferredMethod();
 }

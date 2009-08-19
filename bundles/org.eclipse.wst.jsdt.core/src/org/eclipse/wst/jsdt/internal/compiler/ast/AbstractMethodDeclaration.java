@@ -44,8 +44,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
 
-public abstract class AbstractMethodDeclaration
-	extends Statement
+public abstract class AbstractMethodDeclaration extends Statement
 	implements IAbstractFunctionDeclaration,  ProblemSeverities, ReferenceContext {
 
 	public MethodScope scope;
@@ -55,7 +54,6 @@ public abstract class AbstractMethodDeclaration
 	public int declarationSourceStart;
 	public int declarationSourceEnd;
 	public int modifiers;
-	public int modifiersSourceStart;
 	public Argument[] arguments;
 	public Statement[] statements;
 	public int explicitDeclarations;
@@ -109,13 +107,13 @@ public abstract class AbstractMethodDeclaration
 	{
 	 return this.analyseCode((Scope)classScope, initializationContext, info);
 	}
+	
 	public abstract FlowInfo analyseCode(Scope classScope, FlowContext initializationContext, FlowInfo info);
 
-		/**
+	/**
 	 * Bind and add argument's binding into the scope of the method
 	 */
 	public void bindArguments() {
-
 		if (this.arguments != null) {
 			// by default arguments in abstract/native methods are considered to be used (no complaint is expected)
 			if (this.binding == null) {
@@ -144,8 +142,6 @@ public abstract class AbstractMethodDeclaration
 
 		return this.compilationResult;
 	}
-
-
 
 	public boolean hasErrors() {
 		return this.ignoreFurtherInvestigation;
@@ -210,7 +206,6 @@ public abstract class AbstractMethodDeclaration
 			this.javadoc.print(tab, output);
 		}
 		printIndent(tab, output);
-		printModifiers(this.modifiers, output);
 
 		output.append("function "); //$NON-NLS-1$
 		if (this.selector!=null)
@@ -350,7 +345,6 @@ public abstract class AbstractMethodDeclaration
 	}
 
 	public void tagAsHavingErrors() {
-
 		this.ignoreFurtherInvestigation = true;
 	}
 
@@ -368,51 +362,43 @@ public abstract class AbstractMethodDeclaration
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode#isInferred()
 	 */
 	public boolean isInferred() {
-		return this.inferredMethod!=null;
+		return this.inferredMethod != null;
 	}
+	
 	public int getASTType() {
 		return IASTNode.ABSTRACT_FUNCTION_DECLARATION;
 	
 	}
 	
- 
-	public IJsDoc getJsDoc()
-	{
+	public IJsDoc getJsDoc() {
 		return this.javadoc;
 	}
 
-	public IProgramElement[] getStatements()
-	{
+	public IProgramElement[] getStatements() {
 		return this.statements;
 	}
 
-	public char[] getName()
-	{
+	public char[] getName() {
 		return this.selector;
 	}
 
-	public void setInferredType(InferredType type)
-	{
+	public void setInferredType(InferredType type) {
 		this.inferredType=type;
 	}
 
-	public InferredMethod getInferredMethod()
-	{
+	public InferredMethod getInferredMethod() {
 		return this.inferredMethod;
 	}
 
-	public InferredType getInferredType()
-	{
+	public InferredType getInferredType() {
 		return this.inferredType;
 	}
 	
-	public char [] getSafeName()
-	{
-		if (this.selector!=null)
+	public char [] getSafeName() {
+		if(this.selector != null)
 			return this.selector;
-		if (this.inferredMethod!=null && this.inferredMethod.name!=null)
+		if(this.inferredMethod != null && this.inferredMethod.name != null)
 			return this.inferredMethod.name;
 		return new char []{};
-			
 	}
 }
