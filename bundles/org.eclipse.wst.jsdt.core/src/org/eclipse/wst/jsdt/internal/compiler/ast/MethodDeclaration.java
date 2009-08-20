@@ -132,12 +132,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 		parser.parse(this, unit);
 	}
 
-	public StringBuffer printReturnType(int indent, StringBuffer output) {
-
-		if (returnType == null) return output;
-		return returnType.printExpression(0, output).append(' ');
-	}
-
 	public void resolveStatements() {
 
 		// ========= abort on fatal error =============
@@ -192,8 +186,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			if (this.javadoc != null) {
 				this.javadoc.traverse(visitor, scope);
 			}
-			if (returnType != null)
-				returnType.traverse(visitor, scope);
 			if (arguments != null) {
 				int argumentLength = arguments.length;
 				for (int i = 0; i < argumentLength; i++)
@@ -212,8 +204,6 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			BlockScope blockScope) {
 
 			if (visitor.visit(this, blockScope)) {
-				if (returnType != null)
-					returnType.traverse(visitor, scope);
 				if (arguments != null) {
 					int argumentLength = arguments.length;
 					for (int i = 0; i < argumentLength; i++)

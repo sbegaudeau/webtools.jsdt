@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAcces
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSend;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSendName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMethodName;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMethodReturnType;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnPackageReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedNameReference;
@@ -98,7 +97,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
@@ -1310,27 +1308,6 @@ public final class CompletionEngine
 				}
 				if (!this.requestor.isIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION)) {
 					proposeNewMethod(this.completionToken, enclosingType);
-				}
-			}
-		} else if (astNode instanceof CompletionOnMethodReturnType) {
-
-			CompletionOnMethodReturnType method = (CompletionOnMethodReturnType) astNode;
-			SingleTypeReference type = (CompletionOnSingleTypeReference) method.returnType;
-			this.completionToken = type.token;
-			setSourceRange(type.sourceStart, type.sourceEnd);
-			findTypesAndPackages(this.completionToken, scope.parent, new ObjectVector());
-			if (!this.requestor.isIgnored(CompletionProposal.KEYWORD)) {
-				findKeywordsForMember(this.completionToken, method.modifiers);
-			}
-
-			if (method.modifiers == ClassFileConstants.AccDefault) {
-				SourceTypeBinding enclosingType = scope.enclosingSourceType();
-				
-				if (!this.requestor.isIgnored(CompletionProposal.METHOD_DECLARATION)) {
-					findMethods(this.completionToken,null,null,scope.enclosingSourceType(),scope,new ObjectVector(),false,false,true,null,null,false,false,true,null, null, null, false);
-				}
-				if (!this.requestor.isIgnored(CompletionProposal.POTENTIAL_METHOD_DECLARATION)) {
-					proposeNewMethod(this.completionToken, scope.enclosingSourceType());
 				}
 			}
 		} else if (astNode instanceof CompletionOnSingleNameReference) {
