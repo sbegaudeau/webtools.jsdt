@@ -718,15 +718,13 @@ public class InferEngine extends ASTVisitor {
 				if( newType == null ){
 					newType = addType( possibleTypeName ,true);
 				}
+				newType.isDefinition=true;
 
 //				char[] typeName = getTypeName(fieldReference.receiver);
 //				Object object = currentContext.definedMembers.get(typeName);
 //
 //				if (object instanceof Argument)
 //					return false;
-//
-//				InferredType newType = addType(typeName);
-//				newType.isDefinition=true;
 
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 
@@ -786,8 +784,8 @@ public class InferEngine extends ASTVisitor {
 				//create the new type if not found
 				if( newType == null ){
 					newType = addType( possibleTypeName );
-					newType.isDefinition = true;
 				}
+				newType.isDefinition = true;
 
 //				char[] typeName = getTypeName(prototype.receiver);
 //				Object receiverDef = currentContext.definedMembers.get(typeName);
@@ -839,8 +837,8 @@ public class InferEngine extends ASTVisitor {
 				//create the new type if not found
 				if( newType == null ){
 					newType = addType( parentMethod.getName() );
-					newType.isDefinition = true;
 				}
+				newType.isDefinition = true;
 
 				newType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 
