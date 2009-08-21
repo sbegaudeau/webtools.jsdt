@@ -3883,15 +3883,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		//this.scribe.space();
 
 		/*
-		 * Print the method return type
-		 */
-		final TypeReference returnType = methodDeclaration.returnType;
-		final MethodScope methodDeclarationScope = methodDeclaration.scope;
-
-		if (returnType != null) {
-			returnType.traverse(this, methodDeclarationScope);
-		}
-		/*
 		 * Print the method name
 		 */
 		this.scribe.printNextToken(TerminalTokens.TokenNamefunction);
@@ -3920,6 +3911,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			 }
 		}
 
+		final MethodScope methodDeclarationScope = methodDeclaration.scope;
+		
 		if (!methodDeclaration.isAbstract() && ((methodDeclaration.modifiers & ExtraCompilerModifiers.AccSemicolonBody) == 0)) {
 			/*
 			 * Method body

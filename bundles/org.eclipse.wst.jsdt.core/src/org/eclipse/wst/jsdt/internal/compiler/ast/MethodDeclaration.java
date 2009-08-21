@@ -135,36 +135,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 	public void resolveStatements() {
 
 		// ========= abort on fatal error =============
-		if (this.returnType != null && this.binding != null) {
-			this.returnType.resolvedType = this.binding.returnType;
-			// record the return type binding
-		}
-//		// check if method with constructor name
-//		if (CharOperation.equals(this.scope.enclosingSourceType().sourceName, selector)) {
-//			this.scope.problemReporter().methodWithConstructorName(this);
-//		}
+
+		super.resolveStatements();
 
 		final CompilerOptions compilerOptions = this.scope.compilerOptions();
-
-		// by grammatical construction, interface methods are always abstract
-//		switch (TypeDeclaration.kind(this.scope.referenceType().modifiers)) {
-//			case TypeDeclaration.ENUM_DECL :
-//				if (this.selector == TypeConstants.VALUES) break;
-//				if (this.selector == TypeConstants.VALUEOF) break;
-//			case TypeDeclaration.CLASS_DECL :
-//				// if a method has an semicolon body and is not declared as abstract==>error
-//				// native methods may have a semicolon body
-//				if ((this.modifiers & ExtraCompilerModifiers.AccSemicolonBody) != 0) {
-//					if ((this.modifiers & ClassFileConstants.AccNative) == 0)
-//						if ((this.modifiers & ClassFileConstants.AccAbstract) == 0)
-//							this.scope.problemReporter().methodNeedBody(this);
-//				} else {
-//					// the method HAS a body --> abstract native modifiers are forbiden
-//					if (((this.modifiers & ClassFileConstants.AccNative) != 0) || ((this.modifiers & ClassFileConstants.AccAbstract) != 0))
-//						this.scope.problemReporter().methodNeedingNoBody(this);
-//				}
-//		}
-		super.resolveStatements();
 
 		// TagBits.OverridingMethodWithSupercall is set during the resolveStatements() call
 		if (compilerOptions.getSeverity(CompilerOptions.OverridingMethodWithoutSuperInvocation) != ProblemSeverities.Ignore) {
