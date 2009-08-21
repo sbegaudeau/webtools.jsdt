@@ -46,7 +46,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
-import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
@@ -283,11 +282,7 @@ protected void attachOrphanCompletionNode(){
 					int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
 					int info = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER);
 					if(kind == K_BINARY_OPERATOR && info == LESS && this.identifierPtr > -1) {
-						if(this.genericsLengthStack[this.genericsLengthPtr] > 0) {
-							this.consumeTypeArguments();
-						}
 						this.pushOnGenericsStack(orphan);
-						this.consumeTypeArguments();
 						fieldType = getTypeReference(0);
 						this.assistNodeParent = fieldType;
 					} else {
@@ -404,9 +399,6 @@ protected void attachOrphanCompletionNode(){
 			if(this.genericsPtr > -1 && this.genericsLengthPtr > -1 && this.genericsIdentifiersLengthPtr > -1) {
 				int kind = topKnownElementKind(COMPLETION_OR_ASSIST_PARSER);
 				int info = topKnownElementInfo(COMPLETION_OR_ASSIST_PARSER);
-				if(kind == K_BINARY_OPERATOR && info == LESS) {
-					this.consumeTypeArguments();
-				}
 				int numberOfIdentifiers = this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr];
 				int genPtr = this.genericsPtr;
 				done : for(int i = 0; i <= this.identifierLengthPtr && numberOfIdentifiers > 0; i++){
@@ -853,8 +845,6 @@ private void buildMoreGenericsCompletionContext(ASTNode node, boolean consumeTyp
 				}
 				if(info == LESS && node instanceof TypeReference) {
 					if(this.identifierLengthPtr > -1 && this.identifierLengthStack[this.identifierLengthPtr]!= 0) {
-						if (consumeTypeArguments)
-							this.consumeTypeArguments();
 						TypeReference ref = this.getTypeReference(0);
 						if(currentElement instanceof RecoveredType) {
 							currentElement = currentElement.add(new CompletionOnFieldType(ref, false), 0);
@@ -1557,14 +1547,6 @@ public void completionIdentifierCheck(){
 	if (checkLabelStatement()) return;
 	if (checkNameCompletion()) return;
 }
-protected void consumeArrayCreationExpressionWithInitializer() {
-	super.consumeArrayCreationExpressionWithInitializer();
-	popElement(K_ARRAY_CREATION);
-}
-protected void consumeArrayCreationExpressionWithoutInitializer() {
-	super.consumeArrayCreationExpressionWithoutInitializer();
-	popElement(K_ARRAY_CREATION);
-}
 protected void consumeArrayCreationHeader() {
 	// nothing to do
 }
@@ -1587,93 +1569,13 @@ protected void consumeBinaryExpression(int op) {
 		}
 	}
 }
-protected void consumeBinaryExpressionWithName(int op) {
-	super.consumeBinaryExpressionWithName(op);
-	popElement(K_BINARY_OPERATOR);
-
-	if(expressionStack[expressionPtr] instanceof BinaryExpression) {
-		BinaryExpression exp = (BinaryExpression) expressionStack[expressionPtr];
-		if(assistNode != null && exp.right == assistNode) {
-			assistNodeParent = exp;
-		}
-	}
-}
 protected void consumeCaseLabel() {
 	super.consumeCaseLabel();
 	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) != K_SWITCH_LABEL) {
 		pushOnElementStack(K_SWITCH_LABEL);
 	}
 }
-protected void consumeClassBodyDeclaration() {
-	popElement(K_BLOCK_DELIMITER);
-	super.consumeClassBodyDeclaration();
-}
-protected void consumeClassBodyopt() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeClassBodyopt();
-}
-/* (non-Javadoc)
- * @see org.eclipse.jdt.internal.compiler.parser.Parser#consumeClassDeclaration()
- */
-protected void consumeClassDeclaration() {
-	if (this.astPtr >= 0) {
-		int length = this.astLengthStack[this.astLengthPtr];
-		TypeDeclaration typeDeclaration = (TypeDeclaration) this.astStack[this.astPtr-length];
-		this.javadoc = null;
-		CompletionJavadocParser completionJavadocParser = (CompletionJavadocParser)this.javadocParser;
-		completionJavadocParser.allPossibleTags = true;
-		checkComment();
-		if (this.javadoc != null && this.cursorLocation > this.javadoc.sourceStart && this.cursorLocation < this.javadoc.sourceEnd) {
-			// completion is in an orphan javadoc comment => replace in last read declaration to allow completion resolution
-			typeDeclaration.javadoc = this.javadoc;
-		}
-		completionJavadocParser.allPossibleTags = false;
-	}
-	super.consumeClassDeclaration();
-}
 
-protected void consumeClassHeaderName1() {
-	super.consumeClassHeaderName1();
-	classHeaderExtendsOrImplements(false);
-}
-
-protected void consumeClassHeaderExtends() {
-	pushOnElementStack(K_NEXT_TYPEREF_IS_CLASS);
-	super.consumeClassHeaderExtends();
-	popElement(K_NEXT_TYPEREF_IS_CLASS);
-	popElement(K_EXTENDS_KEYWORD);
-
-	if (currentElement != null
-		&& currentToken == TokenNameIdentifier
-		&& this.cursorLocation+1 >= scanner.startPosition
-		&& this.cursorLocation < scanner.currentPosition){
-		this.pushIdentifier();
-
-		int index = -1;
-		/* check if current awaiting identifier is the completion identifier */
-		if ((index = this.indexOfAssistIdentifier()) > -1) {
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
-			RecoveredType recoveredType = (RecoveredType)currentElement;
-			/* filter out cases where scanner is still inside type header */
-			if (!recoveredType.foundOpeningBrace) {
-				TypeDeclaration type = recoveredType.typeDeclaration;
-				type.superclass = new CompletionOnKeyword1(
-					identifierStack[ptr],
-					identifierPositionStack[ptr],
-					Keywords.IMPLEMENTS);
-				type.superclass.bits |= ASTNode.IsSuperType;
-				this.assistNode = type.superclass;
-				this.lastCheckPoint = type.superclass.sourceEnd + 1;
-			}
-		}
-	}
-}
-protected void consumeClassTypeElt() {
-	pushOnElementStack(K_NEXT_TYPEREF_IS_EXCEPTION);
-	super.consumeClassTypeElt();
-	popElement(K_NEXT_TYPEREF_IS_EXCEPTION);
-}
 /* (non-Javadoc)
  * @see org.eclipse.jdt.internal.compiler.parser.Parser#consumeCompilationUnit()
  */
@@ -1699,47 +1601,7 @@ protected void consumeConditionalExpression(int op) {
 	popElement(K_CONDITIONAL_OPERATOR);
 	super.consumeConditionalExpression(op);
 }
-protected void consumeConditionalExpressionWithName(int op) {
-	popElement(K_CONDITIONAL_OPERATOR);
-	super.consumeConditionalExpressionWithName(op);
-}
-protected void consumeConstructorBody() {
-	popElement(K_BLOCK_DELIMITER);
-	super.consumeConstructorBody();
-}
-protected void consumeConstructorHeader() {
-	super.consumeConstructorHeader();
-	pushOnElementStack(K_BLOCK_DELIMITER);
-}
-protected void consumeConstructorHeaderName() {
-
-	/* no need to take action if not inside assist identifiers */
-	if (indexOfAssistIdentifier() < 0) {
-		/* recovering - might be an empty message send */
-		if (this.currentElement != null && this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
-		super.consumeConstructorHeaderName();
-		return;
-	} else {
-			super.consumeConstructorHeaderName();
-	}
-	/* force to start recovering in order to get fake field behavior */
-	if (currentElement == null){
-		this.hasReportedError = true; // do not report any error
-	}
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-	pushOnGenericsLengthStack(0); // handle type arguments
-	this.restartRecovery = AssistParser.STOP_AT_CURSOR;
-	}
-}
-	protected void consumeConstructorHeaderNameWithTypeParameters() {
-		if (this.currentElement != null && this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
-			super.consumeConstructorHeaderNameWithTypeParameters();
-		} else {
-			super.consumeConstructorHeaderNameWithTypeParameters();
-		}
-	}
-
-	protected void consumeDefaultLabel() {
+protected void consumeDefaultLabel() {
 	super.consumeDefaultLabel();
 	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_SWITCH_LABEL) {
 		popElement(K_SWITCH_LABEL);
@@ -1749,15 +1611,6 @@ protected void consumeConstructorHeaderName() {
 protected void consumeDimWithOrWithOutExpr() {
 	// DimWithOrWithOutExpr ::= '[' ']'
 	pushOnExpressionStack(null);
-}
-protected void consumeEnhancedForStatementHeaderInit(boolean hasModifiers) {
-	super.consumeEnhancedForStatementHeaderInit(hasModifiers);
-}
-
-protected void consumeEnterAnonymousClassBody() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeEnterAnonymousClassBody();
 }
 protected void consumeEnterVariable() {
 	identifierPtr--;
@@ -1812,15 +1665,6 @@ protected void consumeEqualityExpression(int op) {
 		assistNodeParent = exp;
 	}
 }
-protected void consumeEqualityExpressionWithName(int op) {
-	super.consumeEqualityExpressionWithName(op);
-	popElement(K_BINARY_OPERATOR);
-
-	BinaryExpression exp = (BinaryExpression) expressionStack[expressionPtr];
-	if(assistNode != null && exp.right == assistNode) {
-		assistNodeParent = exp;
-	}
-}
 protected void consumeExitVariableWithInitialization() {
 	super.consumeExitVariableWithInitialization();
 
@@ -1833,11 +1677,6 @@ protected void consumeExitVariableWithInitialization() {
 	} else if (assistNode != null && assistNode == variable.initialization) {
 		assistNodeParent = variable;
 	}
-}
-protected void consumeExplicitConstructorInvocation(int flag, int recFlag) {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeExplicitConstructorInvocation(flag, recFlag);
 }
 /*
  * Copy of code from superclass with the following change:
@@ -1953,66 +1792,10 @@ protected void consumeInsideCastExpression() {
 
 	pushOnElementStack(K_CAST_STATEMENT);
 }
-protected void consumeInsideCastExpressionLL1() {
-	if(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_PARAMETERIZED_CAST) {
-		popElement(K_PARAMETERIZED_CAST);
-	}
-	if (!this.record) {
-		super.consumeInsideCastExpressionLL1();
-		} else {
-			boolean temp = this.skipRecord;
-			try {
-				this.skipRecord = true;
-				super.consumeInsideCastExpressionLL1();
-				if (this.record) {
-					Expression typeReference = this.expressionStack[this.expressionPtr];
-					if (!isAlreadyPotentialName(typeReference.sourceStart)) {
-						this.addPotentialName(null, typeReference.sourceStart, typeReference.sourceEnd);
-					}
-				}
-			} finally {
-				this.skipRecord = temp;
-			}
-		}
-	pushOnElementStack(K_CAST_STATEMENT);
-}
-protected void consumeInstanceOfExpression() {
-	super.consumeInstanceOfExpression();
-	popElement(K_BINARY_OPERATOR);
-
-	InstanceOfExpression exp = (InstanceOfExpression) expressionStack[expressionPtr];
-	if(assistNode != null && exp.type == assistNode) {
-		assistNodeParent = exp;
-	}
-}
-protected void consumeInstanceOfExpressionWithName() {
-	super.consumeInstanceOfExpressionWithName();
-	popElement(K_BINARY_OPERATOR);
-
-	InstanceOfExpression exp = (InstanceOfExpression) expressionStack[expressionPtr];
-	if(assistNode != null && exp.type == assistNode) {
-		assistNodeParent = exp;
-	}
-}
-protected void consumeInterfaceType() {
-	pushOnElementStack(K_NEXT_TYPEREF_IS_INTERFACE);
-	super.consumeInterfaceType();
-	popElement(K_NEXT_TYPEREF_IS_INTERFACE);
-}
-protected void consumeMethodInvocationName() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeMethodInvocationName();
-}
 protected void consumeMethodInvocationPrimary() {
 	popElement(K_SELECTOR_QUALIFIER);
 	popElement(K_SELECTOR_INVOCATION_TYPE);
 	super.consumeMethodInvocationPrimary();
-}
-protected void consumeMethodInvocationSuper() {
-	popElement(K_SELECTOR_QUALIFIER);
-	popElement(K_SELECTOR_INVOCATION_TYPE);
-	super.consumeMethodInvocationSuper();
 }
 protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 	if(this.indexOfAssistIdentifier() < 0) {
@@ -2128,9 +1911,6 @@ protected void consumeMethodHeaderName(boolean isAnnotationMethod) {
 		}
 	}
 }
-protected void consumeMethodHeaderNameWithTypeParameters( boolean isAnnotationMethod) {
-	super.consumeMethodHeaderNameWithTypeParameters(isAnnotationMethod);
-}
 protected void consumeMethodHeaderRightParen() {
 	super.consumeMethodHeaderRightParen();
 
@@ -2160,47 +1940,10 @@ protected void consumeMethodHeaderRightParen() {
 		}
 	}
 }
-protected void consumeMethodHeaderExtendedDims() {
-	super.consumeMethodHeaderExtendedDims();
-
-	if (currentElement != null
-		&& currentToken == TokenNameIdentifier
-		&& this.cursorLocation+1 >= scanner.startPosition
-		&& this.cursorLocation < scanner.currentPosition){
-		this.pushIdentifier();
-
-		int index = -1;
-		/* check if current awaiting identifier is the completion identifier */
-		if ((index = this.indexOfAssistIdentifier()) > -1) {
-			int ptr = this.identifierPtr - this.identifierLengthStack[this.identifierLengthPtr] + index + 1;
-			RecoveredMethod recoveredMethod = (RecoveredMethod)currentElement;
-			/* filter out cases where scanner is still inside type header */
-			if (!recoveredMethod.foundOpeningBrace) {
-				CompletionOnKeyword1 completionOnKeyword = new CompletionOnKeyword1(
-					identifierStack[ptr],
-					identifierPositionStack[ptr],
-					Keywords.THROWS);
-				recoveredMethod.foundOpeningBrace = true;
-				this.assistNode = completionOnKeyword;
-				this.lastCheckPoint = completionOnKeyword.sourceEnd + 1;
-			}
-		}
-	}
-}
 protected void consumeLabel() {
 	super.consumeLabel();
 	this.pushOnLabelStack(this.identifierStack[this.identifierPtr]);
 	this.pushOnElementStack(K_LABEL, this.labelPtr);
-}
-protected void consumeMemberValueAsName() {
-	if ((indexOfAssistIdentifier()) < 0) {
-		super.consumeMemberValueAsName();
-	} else {
-		super.consumeMemberValueAsName();
-		if(this.topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BETWEEN_ANNOTATION_NAME_AND_RPAREN) {
-			this.restartRecovery = AssistParser.STOP_AT_CURSOR;
-		}
-	}
 }
 protected void consumeMethodBody() {
 	popElement(K_BLOCK_DELIMITER);
@@ -2210,28 +1953,11 @@ protected void consumeMethodHeader() {
 	super.consumeMethodHeader();
 	pushOnElementStack(K_BLOCK_DELIMITER);
 }
-protected void consumeModifiers() {
-	super.consumeModifiers();
-	// save from stack values
-	this.lastModifiersStart = intStack[intPtr];
-	this.lastModifiers = 	intStack[intPtr-1];
-}
-protected void consumeReferenceType() {
-	if (this.identifierLengthStack[this.identifierLengthPtr] > 1) { // reducing a qualified name
-		// potential receiver is being poped, so reset potential receiver
-		this.invocationType = NO_RECEIVER;
-		this.qualifier = -1;
-	}
-	super.consumeReferenceType();
-}
 protected void consumeRestoreDiet() {
 	super.consumeRestoreDiet();
 	if (isInsideMethod()) {
 		popElement(K_LOCAL_INITIALIZER_DELIMITER);
 	}
-}
-protected void consumeSingleTypeImportDeclarationName() {
-	super.consumeSingleTypeImportDeclarationName();
 }
 protected void consumeStatementBreakWithLabel() {
 	super.consumeStatementBreakWithLabel();
@@ -2255,32 +1981,9 @@ protected void consumeStatementSwitch() {
 		popElement(K_BLOCK_DELIMITER);
 	}
 }
-protected void consumeStaticInitializer() {
-	super.consumeStaticInitializer();
-}
 protected void consumeNestedMethod() {
 	super.consumeNestedMethod();
 	if(!(topKnownElementKind(COMPLETION_OR_ASSIST_PARSER) == K_BLOCK_DELIMITER)) pushOnElementStack(K_BLOCK_DELIMITER);
-}
-protected void consumePackageDeclarationName() {
-	super.consumePackageDeclarationName();
-}
-protected void consumePackageDeclarationNameWithModifiers() {
-	super.consumePackageDeclarationNameWithModifiers();
-}
-protected void consumePrimaryNoNewArrayName() {
-	// this is class literal access, so reset potential receiver
-	this.invocationType = NO_RECEIVER;
-	this.qualifier = -1;
-
-	super.consumePrimaryNoNewArrayName();
-}
-protected void consumePrimaryNoNewArrayNameThis() {
-	// this is class literal access, so reset potential receiver
-	this.invocationType = NO_RECEIVER;
-	this.qualifier = -1;
-
-	super.consumePrimaryNoNewArrayNameThis();
 }
 protected void consumePushPosition() {
 	super.consumePushPosition();
@@ -2759,39 +2462,8 @@ protected void consumeToken(int token) {
 		}
 	}
 }
-protected void consumeOnlyTypeArgumentsForCastExpression() {
-	super.consumeOnlyTypeArgumentsForCastExpression();
-	pushOnElementStack(K_PARAMETERIZED_CAST);
-}
 protected void consumeRightParen() {
 	super.consumeRightParen();
-}
-protected void consumeReferenceType1() {
-	super.consumeReferenceType1();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeReferenceType2() {
-	super.consumeReferenceType2();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeReferenceType3() {
-	super.consumeReferenceType3();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeArgumentReferenceType1() {
-	super.consumeTypeArgumentReferenceType1();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeArgumentReferenceType2() {
-	super.consumeTypeArgumentReferenceType2();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeArguments() {
-	super.consumeTypeArguments();
-	popElement(K_BINARY_OPERATOR);
-}
-protected void consumeTypeImportOnDemandDeclarationName() {
-	super.consumeTypeImportOnDemandDeclarationName();
 }
 protected void consumeUnaryExpression(int op) {
 	super.consumeUnaryExpression(op);

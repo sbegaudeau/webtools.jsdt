@@ -292,65 +292,6 @@ public RecoveredElement buildInitialRecoveryState(){
 
 	return element;
 }
-protected void consumeAnnotationTypeDeclarationHeader() {
-	super.consumeAnnotationTypeDeclarationHeader();
-	pushOnElementStack(K_TYPE_DELIMITER);
-}
-protected void consumeClassBodyDeclaration() {
-	popElement(K_METHOD_DELIMITER);
-	super.consumeClassBodyDeclaration();
-}
-protected void consumeClassBodyopt() {
-	super.consumeClassBodyopt();
-	popElement(K_SELECTOR);
-}
-protected void consumeClassHeader() {
-	super.consumeClassHeader();
-	pushOnElementStack(K_TYPE_DELIMITER);
-}
-protected void consumeConstructorBody() {
-	super.consumeConstructorBody();
-	popElement(K_METHOD_DELIMITER);
-}
-protected void consumeConstructorHeader() {
-	super.consumeConstructorHeader();
-	pushOnElementStack(K_METHOD_DELIMITER);
-}
-protected void consumeEnterAnonymousClassBody() {
-	super.consumeEnterAnonymousClassBody();
-	popElement(K_SELECTOR);
-	pushOnElementStack(K_TYPE_DELIMITER);
-}
-protected void consumeEnterMemberValue() {
-	super.consumeEnterMemberValue();
-	pushOnElementStack(K_ATTRIBUTE_VALUE_DELIMITER, this.identifierPtr);
-}
-protected void consumeEnumConstantHeaderName() {
-	super.consumeEnumConstantHeaderName();
-	pushOnElementStack(K_ENUM_CONSTANT_DELIMITER);
-}
-protected void consumeEnumConstantWithClassBody() {
-	popElement(K_TYPE_DELIMITER);
-	popElement(K_FIELD_INITIALIZER_DELIMITER);
-	popElement(K_ENUM_CONSTANT_DELIMITER);
-	super.consumeEnumConstantWithClassBody();
-}
-protected void consumeEnumConstantNoClassBody() {
-	popElement(K_ENUM_CONSTANT_DELIMITER);
-	super.consumeEnumConstantNoClassBody();
-}
-protected void consumeEnumHeader() {
-	super.consumeEnumHeader();
-	pushOnElementStack(K_TYPE_DELIMITER);
-}
-protected void consumeExitMemberValue() {
-	super.consumeExitMemberValue();
-	popElement(K_ATTRIBUTE_VALUE_DELIMITER);
-}
-protected void consumeExplicitConstructorInvocation(int flag, int recFlag) {
-	super.consumeExplicitConstructorInvocation(flag, recFlag);
-	popElement(K_SELECTOR);
-}
 protected void consumeForceNoDiet() {
 	super.consumeForceNoDiet();
 	// if we are not in a method (ie. we are not in a local variable initializer)
@@ -369,10 +310,6 @@ protected void consumeForceNoDiet() {
 
 	}
 }
-protected void consumeInterfaceHeader() {
-	super.consumeInterfaceHeader();
-	pushOnElementStack(K_TYPE_DELIMITER);
-}
 protected void consumeMethodBody() {
 	super.consumeMethodBody();
 	popElement(K_METHOD_DELIMITER);
@@ -381,24 +318,8 @@ protected void consumeMethodHeader() {
 	super.consumeMethodHeader();
 	pushOnElementStack(K_METHOD_DELIMITER);
 }
-protected void consumeMethodInvocationName() {
-	super.consumeMethodInvocationName();
-	popElement(K_SELECTOR);
-	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
-	if (messageSend == assistNode){
-		this.lastCheckPoint = messageSend.sourceEnd + 1;
-	}
-}
 protected void consumeMethodInvocationPrimary() {
 	super.consumeMethodInvocationPrimary();
-	popElement(K_SELECTOR);
-	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
-	if (messageSend == assistNode){
-		this.lastCheckPoint = messageSend.sourceEnd + 1;
-	}
-}
-protected void consumeMethodInvocationSuper() {
-	super.consumeMethodInvocationSuper();
 	popElement(K_SELECTOR);
 	MessageSend messageSend = (MessageSend)expressionStack[expressionPtr];
 	if (messageSend == assistNode){
@@ -436,105 +357,6 @@ protected void consumeOpenFakeBlock() {
 	this.blockStarts[this.realBlockPtr] = -scanner.startPosition;
 }
 
-protected void consumePackageDeclarationName() {
-	// PackageDeclarationName ::= 'package' Name
-	/* build an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	int index;
-
-	/* no need to take action if not inside assist identifiers */
-	if ((index = indexOfAssistIdentifier()) < 0) {
-		super.consumePackageDeclarationName();
-		return;
-	}
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-	int length = identifierLengthStack[identifierLengthPtr];
-	char[][] subset = identifierSubSet(index+1); // include the assistIdentifier
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist node on package statement */
-	ImportReference reference = this.createAssistPackageReference(subset, positions);
-	assistNode = reference;
-	this.lastCheckPoint = reference.sourceEnd + 1;
-	compilationUnit.currentPackage = reference;
-
-	if (currentToken == TokenNameSEMICOLON){
-		reference.declarationSourceEnd = scanner.currentPosition - 1;
-	} else {
-		reference.declarationSourceEnd = (int) positions[length-1];
-	}
-	//endPosition is just before the ;
-	reference.declarationSourceStart = intStack[intPtr--];
-	// flush comments defined prior to import statements
-	reference.declarationSourceEnd = this.flushCommentsDefinedPriorTo(reference.declarationSourceEnd);
-
-	// recovery
-	if (currentElement != null){
-		lastCheckPoint = reference.declarationSourceEnd+1;
-		restartRecovery = AssistParser.STOP_AT_CURSOR; // used to avoid branching back into the regular automaton
-	}
-}
-protected void consumePackageDeclarationNameWithModifiers() {
-	// PackageDeclarationName ::= Modifiers 'package' PushRealModifiers Name
-	/* build an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	int index;
-
-	/* no need to take action if not inside assist identifiers */
-	if ((index = indexOfAssistIdentifier()) < 0) {
-		super.consumePackageDeclarationNameWithModifiers();
-		return;
-	}
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-	int length = identifierLengthStack[identifierLengthPtr];
-	char[][] subset = identifierSubSet(index+1); // include the assistIdentifier
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	this.intPtr--; // we don't need the modifiers start
-	this.intPtr--; // we don't need the package modifiers
-	ImportReference reference = this.createAssistPackageReference(subset, positions);
-
-	/* build specific assist node on package statement */
-	assistNode = reference;
-	this.lastCheckPoint = reference.sourceEnd + 1;
-	compilationUnit.currentPackage = reference;
-
-	if (currentToken == TokenNameSEMICOLON){
-		reference.declarationSourceEnd = scanner.currentPosition - 1;
-	} else {
-		reference.declarationSourceEnd = (int) positions[length-1];
-	}
-	//endPosition is just before the ;
-	reference.declarationSourceStart = intStack[intPtr--];
-	// flush comments defined prior to import statements
-	reference.declarationSourceEnd = this.flushCommentsDefinedPriorTo(reference.declarationSourceEnd);
-
-	// recovery
-	if (currentElement != null){
-		lastCheckPoint = reference.declarationSourceEnd+1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-}
 protected void consumeRestoreDiet() {
 	super.consumeRestoreDiet();
 	// if we are not in a method (ie. we were not in a local variable initializer)
@@ -544,65 +366,6 @@ protected void consumeRestoreDiet() {
 	}
 }
 
-protected void consumeSingleTypeImportDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' Name
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	int index;
-
-	/* no need to take action if not inside assist identifiers */
-	if ((index = indexOfAssistIdentifier()) < 0) {
-		super.consumeSingleTypeImportDeclarationName();
-		return;
-	}
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-	int length = identifierLengthStack[identifierLengthPtr];
-	char[][] subset = identifierSubSet(index+1); // include the assistIdentifier
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist node on import statement */
-	ImportReference reference = this.createAssistImportReference(subset, positions);
-	assistNode = reference;
-	this.lastCheckPoint = reference.sourceEnd + 1;
-
-	pushOnAstStack(reference);
-
-	if (currentToken == TokenNameSEMICOLON){
-		reference.declarationSourceEnd = scanner.currentPosition - 1;
-	} else {
-		reference.declarationSourceEnd = (int) positions[length-1];
-	}
-	//endPosition is just before the ;
-	reference.declarationSourceStart = intStack[intPtr--];
-	// flush comments defined prior to import statements
-	reference.declarationSourceEnd = this.flushCommentsDefinedPriorTo(reference.declarationSourceEnd);
-
-	// recovery
-	if (currentElement != null){
-		lastCheckPoint = reference.declarationSourceEnd+1;
-		currentElement = currentElement.add(reference, 0);
-		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-}
-protected void consumeStaticInitializer() {
-	super.consumeStaticInitializer();
-	popElement(K_METHOD_DELIMITER);
-}
-protected void consumeStaticOnly() {
-	super.consumeStaticOnly();
-	pushOnElementStack(K_METHOD_DELIMITER);
-}
 protected void consumeToken(int token) {
 	super.consumeToken(token);
 
@@ -647,58 +410,6 @@ protected void consumeToken(int token) {
 	this.previousToken = token;
 	if (token == TokenNameIdentifier) {
 		this.previousIdentifierPtr = this.identifierPtr;
-	}
-}
-protected void consumeTypeImportOnDemandDeclarationName() {
-	// TypeImportOnDemandDeclarationName ::= 'import' Name '.' '*'
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	int index;
-
-	/* no need to take action if not inside assist identifiers */
-	if ((index = indexOfAssistIdentifier()) < 0) {
-		super.consumeTypeImportOnDemandDeclarationName();
-		return;
-	}
-	/* retrieve identifiers subset and whole positions, the assist node positions
-		should include the entire replaced source. */
-	int length = identifierLengthStack[identifierLengthPtr];
-	char[][] subset = identifierSubSet(index+1); // include the assistIdentifier
-	identifierLengthPtr--;
-	identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(
-		identifierPositionStack,
-		identifierPtr + 1,
-		positions,
-		0,
-		length);
-
-	/* build specific assist node on import statement */
-	ImportReference reference = this.createAssistImportReference(subset, positions);
-	reference.bits |= ASTNode.OnDemand;
-	assistNode = reference;
-	this.lastCheckPoint = reference.sourceEnd + 1;
-
-	pushOnAstStack(reference);
-
-	if (currentToken == TokenNameSEMICOLON){
-		reference.declarationSourceEnd = scanner.currentPosition - 1;
-	} else {
-		reference.declarationSourceEnd = (int) positions[length-1];
-	}
-	//endPosition is just before the ;
-	reference.declarationSourceStart = intStack[intPtr--];
-	// flush comments defined prior to import statements
-	reference.declarationSourceEnd = this.flushCommentsDefinedPriorTo(reference.declarationSourceEnd);
-
-	// recovery
-	if (currentElement != null){
-		lastCheckPoint = reference.declarationSourceEnd+1;
-		currentElement = currentElement.add(reference, 0);
-		lastIgnoredToken = -1;
-		restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 public abstract ImportReference createAssistImportReference(char[][] tokens, long[] positions);

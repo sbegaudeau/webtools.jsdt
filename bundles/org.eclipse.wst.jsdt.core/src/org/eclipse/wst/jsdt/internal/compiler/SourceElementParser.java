@@ -371,32 +371,6 @@ protected void classInstanceCreation(boolean alwaysQualified, boolean isShort) {
 	}
 }
 
-protected void consumeClassHeaderName1() {
-	int currentAstPtr = this.astPtr;
-	super.consumeClassHeaderName1();
-	if (this.astPtr > currentAstPtr) // if ast node was pushed on the ast stack
-		rememberCategories();
-}
-protected void consumeConstructorHeaderName() {
-	long selectorSourcePositions = this.identifierPositionStack[this.identifierPtr];
-	int selectorSourceEnd = (int) selectorSourcePositions;
-	int currentAstPtr = this.astPtr;
-	super.consumeConstructorHeaderName();
-	if (this.astPtr > currentAstPtr) { // if ast node was pushed on the ast stack
-		this.sourceEnds.put(this.astStack[this.astPtr], selectorSourceEnd);
-		rememberCategories();
-	}
-}
-protected void consumeConstructorHeaderNameWithTypeParameters() {
-	long selectorSourcePositions = this.identifierPositionStack[this.identifierPtr];
-	int selectorSourceEnd = (int) selectorSourcePositions;
-	int currentAstPtr = this.astPtr;
-	super.consumeConstructorHeaderNameWithTypeParameters();
-	if (this.astPtr > currentAstPtr) { // if ast node was pushed on the ast stack
-		this.sourceEnds.put(this.astStack[this.astPtr], selectorSourceEnd);
-		rememberCategories();
-	}
-}
 protected void consumeExitVariableWithInitialization() {
 	// ExitVariableWithInitialization ::= $empty
 	// the scanner is located after the comma or the semi-colon.
@@ -461,25 +435,6 @@ protected void consumeMethodHeaderName(boolean isAnonymousMethod) {
 		rememberCategories();
 	}
 }
-
-/*
- *
- * INTERNAL USE-ONLY
- */
-protected void consumeMethodInvocationName() {
-	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
-	super.consumeMethodInvocationName();
-
-	// when the name is only an identifier...we have a message send to "this" (implicit)
-	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
-	Expression[] args = messageSend.arguments;
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(
-			messageSend.selector,
-			args == null ? 0 : args.length,
-			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
 /*
  *
  * INTERNAL USE-ONLY
@@ -495,91 +450,6 @@ protected void consumeMethodInvocationPrimary() {
 			(int)(messageSend.nameSourcePosition >>> 32));
 	}
 }
-/*
- *
- * INTERNAL USE-ONLY
- */
-protected void consumeMethodInvocationSuper() {
-	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
-	super.consumeMethodInvocationSuper();
-	MessageSend messageSend = (MessageSend) expressionStack[expressionPtr];
-	Expression[] args = messageSend.arguments;
-	if (reportReferenceInfo) {
-		requestor.acceptMethodReference(
-			messageSend.selector,
-			args == null ? 0 : args.length,
-			(int)(messageSend.nameSourcePosition >>> 32));
-	}
-}
-
-protected void consumeSingleTypeImportDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' Name
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = newImportReference(tokens, positions, false));
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	if (reportReferenceInfo) {
-		requestor.acceptTypeReference(impt.tokens, impt.sourceStart, impt.sourceEnd);
-	}
-}
-protected void consumeTypeImportOnDemandDeclarationName() {
-	// TypeImportOnDemandDeclarationName ::= 'import' Name '.' '*'
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = new ImportReference(tokens, positions, true));
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	if (reportReferenceInfo) {
-		requestor.acceptUnknownReference(impt.tokens, impt.sourceStart, impt.sourceEnd);
-	}
-}
 public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, CompilationResult compilationResult) {
 	MethodDeclaration methodDeclaration = super.convertToMethodDeclaration(c, compilationResult);
 	int selectorSourceEnd = this.sourceEnds.removeKey(c);
@@ -592,13 +462,6 @@ public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, Co
 	return methodDeclaration;
 }
 protected CompilationUnitDeclaration endParse(int act) {
-	if (sourceType != null) {
-		switch (TypeDeclaration.kind(sourceType.getModifiers())) {
-			case TypeDeclaration.CLASS_DECL :
-				consumeClassDeclaration();
-				break;
-		}
-	}
 	if (compilationUnit != null) {
 		CompilationUnitDeclaration result = super.endParse(act);
 		return result;

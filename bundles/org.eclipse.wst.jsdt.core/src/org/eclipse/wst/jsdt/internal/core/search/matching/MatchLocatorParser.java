@@ -51,8 +51,6 @@ PatternLocator patternLocator;
 private ASTVisitor localDeclarationVisitor;
 
 public static MatchLocatorParser createParser(ProblemReporter problemReporter, MatchLocator locator) {
-	if ((locator.matchContainer & PatternLocator.COMPILATION_UNIT_CONTAINER) != 0)
-		return new ImportMatchLocatorParser(problemReporter, locator);
 	return new MatchLocatorParser(problemReporter, locator);
 }
 
@@ -224,14 +222,6 @@ protected void consumeAssignment() {
 	super.consumeAssignment();
 	this.patternLocator.match(this.expressionStack[this.expressionPtr], this.nodeSet);
 }
-protected void consumeExplicitConstructorInvocation(int flag, int recFlag) {
-	super.consumeExplicitConstructorInvocation(flag, recFlag);
-	this.patternLocator.match(this.astStack[this.astPtr], this.nodeSet);
-}
-protected void consumeExplicitConstructorInvocationWithTypeArguments(int flag, int recFlag) {
-	super.consumeExplicitConstructorInvocationWithTypeArguments(flag, recFlag);
-	this.patternLocator.match(this.astStack[this.astPtr], this.nodeSet);
-}
 protected void consumeFieldAccess(boolean isSuperAccess) {
 	super.consumeFieldAccess(isSuperAccess);
 
@@ -258,20 +248,8 @@ protected void consumeLocalVariableDeclaration() {
 	// this is always a LocalDeclaration
 	this.patternLocator.match((LocalDeclaration) this.astStack[this.astPtr], this.nodeSet);
 }
-protected void consumeMethodInvocationName() {
-	super.consumeMethodInvocationName();
-
-	// this is always a MessageSend
-	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
-}
 protected void consumeMethodInvocationPrimary() {
 	super.consumeMethodInvocationPrimary();
-
-	// this is always a MessageSend
-	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
-}
-protected void consumeMethodInvocationSuper() {
-	super.consumeMethodInvocationSuper();
 
 	// this is always a MessageSend
 	this.patternLocator.match((MessageSend) this.expressionStack[this.expressionPtr], this.nodeSet);
@@ -283,18 +261,6 @@ protected void consumePrimaryNoNewArray() {
 	intPtr--;
 }
 
-protected void consumePrimaryNoNewArrayWithName() {
-	// PrimaryNoNewArray ::=  PushLPAREN Expression PushRPAREN
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	// pop parenthesis positions (and don't update expression positions
-	// (see http://bugs.eclipse.org/bugs/show_bug.cgi?id=23329)
-	intPtr--;
-	intPtr--;
-}
-protected void consumeTypeArgument() {
-	super.consumeTypeArgument();
-	patternLocator.match((TypeReference)genericsStack[genericsPtr], nodeSet);
-}
 protected void consumeUnaryExpression(int op, boolean post) {
 	super.consumeUnaryExpression(op, post);
 	this.patternLocator.match(this.expressionStack[this.expressionPtr], this.nodeSet);

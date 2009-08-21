@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
@@ -49,7 +48,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
@@ -69,12 +67,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IfStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Initializer;
-import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteralMinValue;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
@@ -94,9 +90,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.PrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral;
@@ -1434,9 +1428,6 @@ protected void classInstanceCreation(boolean isQualified, boolean isShort) {
 protected void concatExpressionLists() {
 	this.expressionLengthStack[--this.expressionLengthPtr]++;
 }
-protected void concatGenericsLists() {
-	this.genericsLengthStack[this.genericsLengthPtr - 1] += this.genericsLengthStack[this.genericsLengthPtr--];
-}
 protected void concatNodeLists() {
 	/*
 	 * This is a case where you have two sublists into the this.astStack that you want
@@ -1453,100 +1444,12 @@ protected void concatNodeLists() {
 
 	this.astLengthStack[this.astLengthPtr - 1] += this.astLengthStack[this.astLengthPtr--];
 }
-protected void consumeAdditionalBound() {
-	pushOnGenericsStack(getTypeReference(this.intStack[this.intPtr--]));
-}
-protected void consumeAdditionalBound1() {
-	// nothing to be done.
-	// The reference type1 is consumed by consumeReferenceType1 method.
-}
-protected void consumeAdditionalBoundList() {
-	concatGenericsLists();
-}
-protected void consumeAdditionalBoundList1() {
-	concatGenericsLists();
-}
-protected void consumeAllocationHeader() {
-	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
-
-	// ClassBodyopt produces a null item on the astStak if it produces NO class body
-	// An empty class body produces a 0 on the length stack.....
-
-	if (this.currentElement == null){
-		return; // should never occur, this consumeRule is only used in recovery mode
-	}
-	if (this.currentToken == TokenNameLBRACE){
-		// beginning of an anonymous type
-		TypeDeclaration anonymousType = new TypeDeclaration(this.compilationUnit.compilationResult);
-		anonymousType.name =CharOperation.NO_CHAR;
-		anonymousType.bits |= (ASTNode.IsAnonymousType|ASTNode.IsLocalType);
-		anonymousType.sourceStart = this.intStack[this.intPtr--];
-		anonymousType.sourceEnd = this.rParenPos; // closing parenthesis
-		QualifiedAllocationExpression alloc = new QualifiedAllocationExpression(anonymousType);
-		alloc.type = getTypeReference(0);
-		alloc.sourceStart = anonymousType.sourceStart;
-		alloc.sourceEnd = anonymousType.sourceEnd ;
-		this.lastCheckPoint = anonymousType.bodyStart = this.scanner.currentPosition;
-		this.currentElement = this.currentElement.add(anonymousType, 0);
-		this.lastIgnoredToken = -1;
-		this.currentToken = 0; // opening brace already taken into account
-		return;
-	}
-	this.lastCheckPoint = this.scanner.startPosition; // force to restart at this exact position
-	this.restartRecovery = true; // request to restart from here on
-}
 protected void consumeAnnotationAsModifier() {
 	Expression expression = this.expressionStack[this.expressionPtr];
 	int sourceStart = expression.sourceStart;
 	if (this.modifiersSourceStart < 0) {
 		this.modifiersSourceStart = sourceStart;
 	}
-}
-protected void consumeAnnotationName() {
-	if(this.currentElement != null) {
-		int start = this.intStack[this.intPtr];
-		int end = (int) (this.identifierPositionStack[this.identifierPtr] & 0x00000000FFFFFFFFL);
-		annotationRecoveryCheckPoint(start, end);
-	}
-	this.recordStringLiterals = false;
-}
-protected void consumeAnnotationTypeDeclaration() {
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		//there are length declarations
-		//dispatch according to the type of the declarations
-		dispatchDeclarationInto(length);
-	}
-
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-
-	// mark initializers with local type mark if needed
-	markInitializersWithLocalType(typeDecl);
-
-	//convert constructor that do not have the type's name into methods
-	typeDecl.checkConstructors(this);
-
-	//always add <clinit> (will be remove at code gen time if empty)
-	if (this.scanner.containsAssertKeyword) {
-		typeDecl.bits |= ASTNode.ContainsAssertion;
-	}
-	typeDecl.addClinit();
-	typeDecl.bodyEnd = this.endStatementPosition;
-	if (length == 0 && !containsComment(typeDecl.bodyStart, typeDecl.bodyEnd)) {
-		typeDecl.bits |= ASTNode.UndocumentedEmptyBlock;
-	}
-	typeDecl.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeAnnotationTypeDeclarationHeader() {
-	if (this.currentElement != null) {
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	// flush the comments related to the annotation type header
-	this.scanner.commentPtr = -1;
-}
-protected void consumeAnnotationTypeMemberDeclarations() {
-	// AnnotationTypeMemberDeclarations ::= AnnotationTypeMemberDeclarations AnnotationTypeMemberDeclaration
-	concatNodeLists();
 }
 protected void consumeArgumentList() {
 	// ArgumentList ::= ArgumentList ',' Expression
@@ -1556,94 +1459,6 @@ protected void consumeArguments() {
 	// Arguments ::= '(' ArgumentListopt ')'
 	// nothing to do, the expression stack is already updated
 	pushOnIntStack(rParenPos);
-}
-protected void consumeArrayAccess(boolean unspecifiedReference) {
-	// ArrayAccess ::= Name '[' Expression ']' ==> true
-	// ArrayAccess ::= PrimaryNoNewArray '[' Expression ']' ==> false
-
-
-	//optimize push/pop
-	Expression exp;
-	if (unspecifiedReference) {
-		exp =
-			this.expressionStack[this.expressionPtr] =
-				new ArrayReference(
-					getUnspecifiedReferenceOptimized(),
-					this.expressionStack[this.expressionPtr]);
-	} else {
-		this.expressionPtr--;
-		this.expressionLengthPtr--;
-		exp =
-			this.expressionStack[this.expressionPtr] =
-				new ArrayReference(
-					this.expressionStack[this.expressionPtr],
-					this.expressionStack[this.expressionPtr + 1]);
-	}
-	exp.sourceEnd = this.endStatementPosition;
-}
-protected void consumeArrayCreationExpressionWithInitializer() {
-	// ArrayCreationWithArrayInitializer ::= 'new' PrimitiveType DimWithOrWithOutExprs ArrayInitializer
-	// ArrayCreationWithArrayInitializer ::= 'new' ClassOrInterfaceType DimWithOrWithOutExprs ArrayInitializer
-
-	int length;
-	ArrayAllocationExpression arrayAllocation = new ArrayAllocationExpression();
-	this.expressionLengthPtr -- ;
-	arrayAllocation.initializer = (ArrayInitializer) this.expressionStack[this.expressionPtr--];
-
-	arrayAllocation.type = getTypeReference(0);
-	arrayAllocation.type.bits |= ASTNode.IgnoreRawTypeCheck; // no need to worry about raw type usage
-	length = (this.expressionLengthStack[this.expressionLengthPtr--]);
-	this.expressionPtr -= length ;
-	System.arraycopy(
-		this.expressionStack,
-		this.expressionPtr+1,
-		arrayAllocation.dimensions = new Expression[length],
-		0,
-		length);
-	arrayAllocation.sourceStart = this.intStack[this.intPtr--];
-	if (arrayAllocation.initializer == null) {
-		arrayAllocation.sourceEnd = this.endStatementPosition;
-	} else {
-		arrayAllocation.sourceEnd = arrayAllocation.initializer.sourceEnd ;
-	}
-	pushOnExpressionStack(arrayAllocation);
-}
-protected void consumeArrayCreationExpressionWithoutInitializer() {
-	// ArrayCreationWithoutArrayInitializer ::= 'new' ClassOrInterfaceType DimWithOrWithOutExprs
-	// ArrayCreationWithoutArrayInitializer ::= 'new' PrimitiveType DimWithOrWithOutExprs
-
-	int length;
-	ArrayAllocationExpression arrayAllocation = new ArrayAllocationExpression();
-	arrayAllocation.type = getTypeReference(0);
-	arrayAllocation.type.bits |= ASTNode.IgnoreRawTypeCheck; // no need to worry about raw type usage
-	length = (this.expressionLengthStack[this.expressionLengthPtr--]);
-	this.expressionPtr -= length ;
-	System.arraycopy(
-		this.expressionStack,
-		this.expressionPtr+1,
-		arrayAllocation.dimensions = new Expression[length],
-		0,
-		length);
-	arrayAllocation.sourceStart = this.intStack[this.intPtr--];
-	if (arrayAllocation.initializer == null) {
-		arrayAllocation.sourceEnd = this.endStatementPosition;
-	} else {
-		arrayAllocation.sourceEnd = arrayAllocation.initializer.sourceEnd ;
-	}
-	pushOnExpressionStack(arrayAllocation);
-}
-protected void consumeArrayCreationHeader() {
-	// nothing to do
-}
-protected void consumeArrayInitializer() {
-	// ArrayInitializer ::= '{' VariableInitializers '}'
-	// ArrayInitializer ::= '{' VariableInitializers , '}'
-
-	arrayInitializer(this.expressionLengthStack[this.expressionLengthPtr--]);
-}
-protected void consumeArrayTypeWithTypeArgumentsName() {
-	this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr] += this.identifierLengthStack[this.identifierLengthPtr];
-	pushOnGenericsLengthStack(0); // handle type arguments
 }
 protected void consumeAssignment() {
 	// Assignment ::= LeftHandSide AssignmentOperator AssignmentExpression
@@ -1841,127 +1656,6 @@ protected void consumeBinaryExpression(int op) {
 					op);
 	}
 }
-/**
- * @param op binary operator
- */
-protected void consumeBinaryExpressionWithName(int op) {
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	this.expressionPtr--;
-	this.expressionLengthPtr--;
-	/*
-	if (op == OR_OR) {
-		this.expressionStack[this.expressionPtr] =
-			new OR_OR_Expression(
-				this.expressionStack[this.expressionPtr + 1],
-				this.expressionStack[this.expressionPtr],
-				op);
-	} else {
-		if (op == AND_AND) {
-			this.expressionStack[this.expressionPtr] =
-				new AND_AND_Expression(
-					this.expressionStack[this.expressionPtr + 1],
-					this.expressionStack[this.expressionPtr],
-					op);
-		} else {
-			// look for "string1" + "string2"
-			if ((op == PLUS) && this.optimizeStringLiterals) {
-				Expression expr1, expr2;
-				expr1 = this.expressionStack[this.expressionPtr + 1];
-				expr2 = this.expressionStack[this.expressionPtr];
-				if (expr1 instanceof StringLiteral) {
-					if (expr2 instanceof CharLiteral) { // string+char
-						this.expressionStack[this.expressionPtr] =
-							((StringLiteral) expr1).extendWith((CharLiteral) expr2);
-					} else if (expr2 instanceof StringLiteral) { //string+string
-						this.expressionStack[this.expressionPtr] =
-							((StringLiteral) expr1).extendWith((StringLiteral) expr2);
-					} else {
-						this.expressionStack[this.expressionPtr] = new BinaryExpression(expr1, expr2, PLUS);
-					}
-				} else {
-					this.expressionStack[this.expressionPtr] = new BinaryExpression(expr1, expr2, PLUS);
-				}
-			} else {
-				this.expressionStack[this.expressionPtr] =
-					new BinaryExpression(
-						this.expressionStack[this.expressionPtr + 1],
-						this.expressionStack[this.expressionPtr],
-						op);
-			}
-		}
-	}
-	*/
-	Expression expr1 = this.expressionStack[this.expressionPtr + 1];
-	Expression expr2 = this.expressionStack[this.expressionPtr];
-	// Note: we do not attempt to promote BinaryExpression-s to
-	//       IndexedBinaryExpression-s here since expr1 always holds a name
-	switch(op) {
-		case OR_OR :
-			this.expressionStack[this.expressionPtr] =
-				new OR_OR_Expression(
-					expr1,
-					expr2,
-					op);
-			break;
-		case AND_AND :
-			this.expressionStack[this.expressionPtr] =
-				new AND_AND_Expression(
-					expr1,
-					expr2,
-					op);
-			break;
-		case PLUS :
-			// look for "string1" + "string2"
-			if (this.optimizeStringLiterals) {
-				if (expr1 instanceof StringLiteral) {
-					if (expr2 instanceof CharLiteral) { // string+char
-						this.expressionStack[this.expressionPtr] =
-							((StringLiteral) expr1).extendWith((CharLiteral) expr2);
-					} else if (expr2 instanceof StringLiteral) { //string+string
-						this.expressionStack[this.expressionPtr] =
-							((StringLiteral) expr1).extendWith((StringLiteral) expr2);
-					} else {
-						this.expressionStack[this.expressionPtr] = new BinaryExpression(expr1, expr2, PLUS);
-					}
-				} else {
-					this.expressionStack[this.expressionPtr] = new BinaryExpression(expr1, expr2, PLUS);
-				}
-			} else if (expr1 instanceof StringLiteral) {
-				if (expr2 instanceof StringLiteral) {
-					// string + string
-					this.expressionStack[this.expressionPtr] =
-						((StringLiteral) expr1).extendsWith((StringLiteral) expr2);
-				} else {
-					this.expressionStack[this.expressionPtr] =
-						new BinaryExpression(
-							expr1,
-							expr2,
-							op);
-				}
-			} else {
-				this.expressionStack[this.expressionPtr] =
-					new BinaryExpression(
-						expr1,
-						expr2,
-						op);
-			}
-			break;
-		case LESS :
-			this.intPtr--;
-			this.expressionStack[this.expressionPtr] =
-				new BinaryExpression(
-					expr1,
-					expr2,
-					op);
-			break;
-		default :
-			this.expressionStack[this.expressionPtr] =
-				new BinaryExpression(
-					expr1,
-					expr2,
-					op);
-	}
-}
 protected void consumeBlock() {
 	// Block ::= OpenBlock '{' BlockStatementsopt '}'
 	// simpler action for empty blocks
@@ -2038,173 +1732,6 @@ protected void consumeCatchHeader() {
 	this.restartRecovery = true; // request to restart from here on
 	this.lastIgnoredToken = -1;
 }
-protected void consumeClassBodyDeclaration() {
-	// ClassBodyDeclaration ::= Diet Block
-	//push an Initializer
-	//optimize the push/pop
-	this.nestedMethod[this.nestedType]--;
-	Block block = (Block) this.astStack[this.astPtr];
-	if (this.diet) block.bits &= ~ASTNode.UndocumentedEmptyBlock; // clear bit since was diet
-	Initializer initializer = new Initializer(block, 0);
-	this.intPtr--; // pop sourcestart left on the stack by consumeNestedMethod.
-	initializer.bodyStart = this.intStack[this.intPtr--];
-	this.realBlockPtr--; // pop the block variable counter left on the stack by consumeNestedMethod
-	int javadocCommentStart = this.intStack[this.intPtr--];
-	if (javadocCommentStart != -1) {
-		initializer.declarationSourceStart = javadocCommentStart;
-		initializer.javadoc = this.javadoc;
-		this.javadoc = null;
-	}
-	this.astStack[this.astPtr] = initializer;
-	initializer.bodyEnd = this.endPosition;
-	initializer.sourceEnd = this.endStatementPosition;
-	initializer.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeClassBodyDeclarations() {
-	// ClassBodyDeclarations ::= ClassBodyDeclarations ClassBodyDeclaration
-	concatNodeLists();
-}
-protected void consumeClassBodyDeclarationsopt() {
-	// ClassBodyDeclarationsopt ::= NestedType ClassBodyDeclarations
-	this.nestedType-- ;
-}
-protected void consumeAnnotationTypeMemberDeclarationsopt() {
-	this.nestedType-- ;
-}
-protected void consumeClassBodyopt() {
-	// ClassBodyopt ::= $empty
-	pushOnAstStack(null);
-	this.endPosition = this.rParenPos;
-}
-protected void consumeClassDeclaration() {
-	// ClassDeclaration ::= ClassHeader ClassBody
-
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		//there are length declarations
-		//dispatch according to the type of the declarations
-		dispatchDeclarationInto(length);
-	}
-
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-
-	// mark initializers with local type mark if needed
-	markInitializersWithLocalType(typeDecl);
-
-	//convert constructor that do not have the type's name into methods
-	boolean hasConstructor = typeDecl.checkConstructors(this);
-
-	//add the default constructor when needed (interface don't have it)
-	if (!hasConstructor) {
-		switch(TypeDeclaration.kind(typeDecl.modifiers)) {
-			case TypeDeclaration.CLASS_DECL :
-				boolean insideFieldInitializer = false;
-				if (this.diet) {
-					for (int i = this.nestedType; i > 0; i--){
-						if (this.variablesCounter[i] > 0) {
-							insideFieldInitializer = true;
-							break;
-						}
-					}
-				}
-				typeDecl.createDefaultConstructor(!this.diet || insideFieldInitializer, true);
-		}
-	}
-	//always add <clinit> (will be remove at code gen time if empty)
-	if (this.scanner.containsAssertKeyword) {
-		typeDecl.bits |= ASTNode.ContainsAssertion;
-	}
-	typeDecl.addClinit();
-	typeDecl.bodyEnd = this.endStatementPosition;
-	if (length == 0 && !containsComment(typeDecl.bodyStart, typeDecl.bodyEnd)) {
-		typeDecl.bits |= ASTNode.UndocumentedEmptyBlock;
-	}
-
-	typeDecl.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeClassHeader() {
-	// ClassHeader ::= ClassHeaderName ClassHeaderExtendsopt ClassHeaderImplementsopt
-
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if (this.currentToken == TokenNameLBRACE) {
-		typeDecl.bodyStart = this.scanner.currentPosition;
-	}
-	if (this.currentElement != null) {
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	// flush the comments related to the class header
-	this.scanner.commentPtr = -1;
-}
-protected void consumeClassHeaderExtends() {
-	// ClassHeaderExtends ::= 'extends' ClassType
-	//superclass
-	TypeReference superClass = getTypeReference(0);
-	// There is a class declaration on the top of stack
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	typeDecl.superclass = superClass;
-	superClass.bits |= ASTNode.IsSuperType;
-	typeDecl.bodyStart = typeDecl.superclass.sourceEnd + 1;
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = typeDecl.bodyStart;
-	}
-}
-protected void consumeClassHeaderName1() {
-	// ClassHeaderName1 ::= Modifiersopt 'class' 'Identifier'
-	TypeDeclaration typeDecl = new TypeDeclaration(this.compilationUnit.compilationResult);
-	if (this.nestedMethod[this.nestedType] == 0) {
-		if (this.nestedType != 0) {
-			typeDecl.bits |= ASTNode.IsMemberType;
-		}
-	} else {
-		// Record that the block has a declaration for local types
-		typeDecl.bits |= ASTNode.IsLocalType;
-		markEnclosingMemberWithLocalType();
-		blockReal();
-	}
-
-	//highlight the name of the type
-	long pos = this.identifierPositionStack[this.identifierPtr];
-	typeDecl.sourceEnd = (int) pos;
-	typeDecl.sourceStart = (int) (pos >>> 32);
-	typeDecl.name = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	//compute the declaration source too
-	// 'class' and 'interface' push two int positions: the beginning of the class token and its end.
-	// we want to keep the beginning position but get rid of the end position
-	// it is only used for the ClassLiteralAccess positions.
-	typeDecl.declarationSourceStart = this.intStack[this.intPtr--];
-	this.intPtr--; // remove the end position of the class token
-
-	typeDecl.modifiersSourceStart = this.intStack[this.intPtr--];
-	typeDecl.modifiers = this.intStack[this.intPtr--];
-	if (typeDecl.modifiersSourceStart >= 0) {
-		typeDecl.declarationSourceStart = typeDecl.modifiersSourceStart;
-	}
-
-	// Store secondary info
-	if ((typeDecl.bits & ASTNode.IsMemberType) == 0 && (typeDecl.bits & ASTNode.IsLocalType) == 0) {
-		if (this.compilationUnit != null && !CharOperation.equals(typeDecl.name, this.compilationUnit.getMainTypeName())) {
-			typeDecl.bits |= ASTNode.IsSecondaryType;
-		}
-	}
-	this.expressionLengthPtr--;
-
-	typeDecl.bodyStart = typeDecl.sourceEnd + 1;
-	pushOnAstStack(typeDecl);
-
-	this.listLength = 0; // will be updated when reading super-interfaces
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = typeDecl.bodyStart;
-		this.currentElement = this.currentElement.add(typeDecl, 0);
-		this.lastIgnoredToken = -1;
-	}
-	// javadoc
-	typeDecl.javadoc = this.javadoc;
-	this.javadoc = null;
-}
 
 protected void consumeFullNewExpression() {
 	// ClassInstanceCreationExpression ::= 'new' ClassType '(' ArgumentListopt ')' ClassBodyopt
@@ -2215,41 +1742,9 @@ protected void comsumeShortNewSubexpression() {
 //	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
 	classInstanceCreation(false, true);
 }
-
-protected void consumeClassInstanceCreationExpressionName() {
-	// ClassInstanceCreationExpressionName ::= Name '.'
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-}
-protected void consumeClassInstanceCreationExpressionQualified() {
-	// ClassInstanceCreationExpression ::= Primary '.' 'new' SimpleName '(' ArgumentListopt ')' ClassBodyopt
-	// ClassInstanceCreationExpression ::= ClassInstanceCreationExpressionName 'new' SimpleName '(' ArgumentListopt ')' ClassBodyopt
-	classInstanceCreation(true, false);
-
-	this.expressionLengthPtr--;
-	QualifiedAllocationExpression qae =
-		(QualifiedAllocationExpression) this.expressionStack[this.expressionPtr--];
-	qae.enclosingInstance = this.expressionStack[this.expressionPtr];
-	this.expressionStack[this.expressionPtr] = qae;
-	qae.sourceStart = qae.enclosingInstance.sourceStart;
-}
-protected void consumeClassOrInterface() {
-	this.genericsIdentifiersLengthStack[this.genericsIdentifiersLengthPtr] += this.identifierLengthStack[this.identifierLengthPtr];
-	pushOnGenericsLengthStack(0); // handle type arguments
-}
 protected void consumeClassOrInterfaceName() {
 	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
 	pushOnGenericsLengthStack(0); // handle type arguments
-}
-protected void consumeClassTypeElt() {
-	// ClassTypeElt ::= ClassType
-	pushOnAstStack(getTypeReference(0));
-	/* if incomplete thrown exception list, this.listLength counter will not have been reset,
-		indicating that some items are available on the stack */
-	this.listLength++;
-}
-protected void consumeClassTypeList() {
-	// ClassTypeList ::= ClassTypeList ',' ClassTypeElt
-	optimizedConcatNodeLists();
 }
 protected void consumeCompilationUnit() {
 	// JavaScriptUnit ::= EnterCompilationUnit InternalCompilationUnit
@@ -2266,230 +1761,6 @@ protected void consumeConditionalExpression(int op) {
 			this.expressionStack[this.expressionPtr],
 			this.expressionStack[this.expressionPtr + 1],
 			this.expressionStack[this.expressionPtr + 2]);
-}
-/**
- * @param op
- */
-protected void consumeConditionalExpressionWithName(int op) {
-	// ConditionalExpression ::= Name '?' Expression ':' ConditionalExpression
-	this.intPtr -= 2;//consume position of the question mark
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	this.expressionPtr -= 2;
-	this.expressionLengthPtr -= 2;
-	this.expressionStack[this.expressionPtr] =
-		new ConditionalExpression(
-			this.expressionStack[this.expressionPtr + 2],
-			this.expressionStack[this.expressionPtr],
-			this.expressionStack[this.expressionPtr + 1]);
-}
-protected void consumeConstructorBlockStatements() {
-	// ConstructorBody ::= NestedMethod '{' ExplicitConstructorInvocation BlockStatements '}'
-	concatNodeLists(); // explictly add the first statement into the list of statements
-}
-protected void consumeConstructorBody() {
-	// ConstructorBody ::= NestedMethod  '{' BlockStatementsopt '}'
-	// ConstructorBody ::= NestedMethod  '{' ExplicitConstructorInvocation '}'
-	this.nestedMethod[this.nestedType] --;
-}
-protected void consumeConstructorDeclaration() {
-	// ConstructorDeclaration ::= ConstructorHeader ConstructorBody
-
-	/*
-	this.astStack : FunctionDeclaration statements
-	this.identifierStack : name
-	 ==>
-	this.astStack : FunctionDeclaration
-	this.identifierStack :
-	*/
-
-	//must provide a default constructor call when needed
-
-	int length;
-
-	// pop the position of the {  (body of the method) pushed in block decl
-	this.intPtr--;
-	this.intPtr--;
-
-	//statements
-	this.realBlockPtr--;
-	ExplicitConstructorCall constructorCall = null;
-	Statement[] statements = null;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		this.astPtr -= length;
-		if (this.astStack[this.astPtr + 1] instanceof ExplicitConstructorCall) {
-			//avoid a isSomeThing that would only be used here BUT what is faster between two alternatives ?
-			System.arraycopy(
-				this.astStack,
-				this.astPtr + 2,
-				statements = new Statement[length - 1],
-				0,
-				length - 1);
-			constructorCall = (ExplicitConstructorCall) this.astStack[this.astPtr + 1];
-		} else { //need to add explicitly the super();
-			System.arraycopy(
-				this.astStack,
-				this.astPtr + 1,
-				statements = new Statement[length],
-				0,
-				length);
-			constructorCall = SuperReference.implicitSuperConstructorCall();
-		}
-	} else {
-		boolean insideFieldInitializer = false;
-		if (this.diet) {
-			for (int i = this.nestedType; i > 0; i--){
-				if (this.variablesCounter[i] > 0) {
-					insideFieldInitializer = true;
-					break;
-				}
-			}
-		}
-
-		if (!this.diet || insideFieldInitializer){
-			// add it only in non-diet mode, if diet_bodies, then constructor call will be added elsewhere.
-			constructorCall = SuperReference.implicitSuperConstructorCall();
-		}
-	}
-
-	// now we know that the top of stack is a constructorDeclaration
-	ConstructorDeclaration cd = (ConstructorDeclaration) this.astStack[this.astPtr];
-	cd.constructorCall = constructorCall;
-	cd.statements = statements;
-
-	//highlight of the implicit call on the method name
-	if (constructorCall != null && cd.constructorCall.sourceEnd == 0) {
-		cd.constructorCall.sourceEnd = cd.sourceEnd;
-		cd.constructorCall.sourceStart = cd.sourceStart;
-	}
-
-	if (!(this.diet && this.dietInt == 0)
-			&& statements == null
-			&& (constructorCall == null || constructorCall.isImplicitSuper())
-			&& !containsComment(cd.bodyStart, this.endPosition)) {
-			cd.bits |= ASTNode.UndocumentedEmptyBlock;
-
-	}
-
-	//watch for } that could be given as a unicode ! ( u007D is '}' )
-	// store the this.endPosition (position just before the '}') in case there is
-	// a trailing comment behind the end of the method
-	cd.bodyEnd = this.endPosition;
-	cd.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeConstructorHeader() {
-	// ConstructorHeader ::= ConstructorHeaderName MethodHeaderParameters MethodHeaderThrowsClauseopt
-
-	AbstractMethodDeclaration method = (AbstractMethodDeclaration)this.astStack[this.astPtr];
-
-	if (this.currentToken == TokenNameLBRACE){
-		method.bodyStart = this.scanner.currentPosition;
-	}
-	// recovery
-	if (this.currentElement != null){
-		if (this.currentToken == TokenNameSEMICOLON){ // for invalid constructors
-			method.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
-			method.declarationSourceEnd = this.scanner.currentPosition-1;
-			method.bodyEnd = this.scanner.currentPosition-1;
-			if (this.currentElement.parseTree() == method && this.currentElement.parent != null) {
-				this.currentElement = this.currentElement.parent;
-			}
-		}
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-}
-protected void consumeConstructorHeaderName() {
-
-	/* recovering - might be an empty message send */
-	if (this.currentElement != null){
-		if (this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
-			this.lastCheckPoint = this.scanner.startPosition; // force to restart at this exact position
-			this.restartRecovery = true;
-			return;
-		}
-	}
-
-	// ConstructorHeaderName ::=  Modifiersopt 'Identifier' '('
-	ConstructorDeclaration cd = new ConstructorDeclaration(this.compilationUnit.compilationResult);
-
-	//name -- this is not really revelant but we do .....
-	cd.selector = this.identifierStack[this.identifierPtr];
-	long selectorSource = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	//modifiers
-	cd.declarationSourceStart = this.intStack[this.intPtr--];
-	cd.modifiers = this.intStack[this.intPtr--];
-	this.expressionLengthPtr--;
-	
-	// javadoc
-	cd.javadoc = this.javadoc;
-	this.javadoc = null;
-
-	//highlight starts at the selector starts
-	cd.sourceStart = (int) (selectorSource >>> 32);
-	pushOnAstStack(cd);
-	cd.sourceEnd = this.lParenPos;
-	cd.bodyStart = this.lParenPos+1;
-	this.listLength = 0; // initialize this.listLength before reading parameters/throws
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = cd.bodyStart;
-		if ((this.currentElement instanceof RecoveredType && this.lastIgnoredToken != TokenNameDOT)
-			|| cd.modifiers != 0){
-			this.currentElement = this.currentElement.add(cd, 0);
-			this.lastIgnoredToken = -1;
-		}
-	}
-}
-protected void consumeConstructorHeaderNameWithTypeParameters() {
-
-	/* recovering - might be an empty message send */
-	if (this.currentElement != null){
-		if (this.lastIgnoredToken == TokenNamenew){ // was an allocation expression
-			this.lastCheckPoint = this.scanner.startPosition; // force to restart at this exact position
-			this.restartRecovery = true;
-			return;
-		}
-	}
-
-	// ConstructorHeaderName ::=  Modifiersopt TypeParameters 'Identifier' '('
-	ConstructorDeclaration cd = new ConstructorDeclaration(this.compilationUnit.compilationResult);
-
-	//name -- this is not really revelant but we do .....
-	cd.selector = this.identifierStack[this.identifierPtr];
-	long selectorSource = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-
-	// consume type parameters
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-
-	//modifiers
-	cd.declarationSourceStart = this.intStack[this.intPtr--];
-	cd.modifiers = this.intStack[this.intPtr--];
-	this.expressionLengthPtr--;
-	
-	// javadoc
-	cd.javadoc = this.javadoc;
-	this.javadoc = null;
-
-	//highlight starts at the selector starts
-	cd.sourceStart = (int) (selectorSource >>> 32);
-	pushOnAstStack(cd);
-	cd.sourceEnd = this.lParenPos;
-	cd.bodyStart = this.lParenPos+1;
-	this.listLength = 0; // initialize this.listLength before reading parameters/throws
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = cd.bodyStart;
-		if ((this.currentElement instanceof RecoveredType && this.lastIgnoredToken != TokenNameDOT)
-			|| cd.modifiers != 0){
-			this.currentElement = this.currentElement.add(cd, 0);
-			this.lastIgnoredToken = -1;
-		}
-	}
 }
 protected void consumeDefaultLabel() {
 	// SwitchLabel ::= 'default' ':'
@@ -2510,28 +1781,6 @@ protected void consumeDiet() {
 	resetModifiers();
 	jumpOverMethodBody();
 }
-protected void consumeDims() {
-	// Dims ::= DimsLoop
-	pushOnIntStack(this.dimensions);
-	this.dimensions = 0;
-}
-protected void consumeDimWithOrWithOutExpr() {
-	// DimWithOrWithOutExpr ::= '[' ']'
-	pushOnExpressionStack(null);
-
-	if(this.currentElement != null && this.currentToken == TokenNameLBRACE) {
-		this.ignoreNextOpeningBrace = true;
-		this.currentElement.bracketBalance++;
-	}
-}
-protected void consumeDimWithOrWithOutExprs() {
-	// DimWithOrWithOutExprs ::= DimWithOrWithOutExprs DimWithOrWithOutExpr
-	concatExpressionLists();
-}
-protected void consumeEmptyAnnotationTypeMemberDeclarationsopt() {
-	// AnnotationTypeMemberDeclarationsopt ::= $empty
-	pushOnAstLengthStack(0);
-}
 protected void consumeEmptyArgumentListopt() {
 	// ArgumentListopt ::= $empty
 	pushOnExpressionStackLengthStack(0);
@@ -2542,36 +1791,12 @@ protected void consumeEmptyArguments() {
 	pushOnIntStack(fieldDeclaration.sourceEnd);
 	pushOnExpressionStackLengthStack(0);
 }
-protected void consumeEmptyArrayInitializer() {
-	// ArrayInitializer ::= '{' ,opt '}'
-	arrayInitializer(0);
-}
-protected void consumeEmptyArrayInitializeropt() {
-	// ArrayInitializeropt ::= $empty
-	pushOnExpressionStackLengthStack(0);
-}
 protected void consumeEmptyBlockStatementsopt() {
 	// BlockStatementsopt ::= $empty
 	pushOnAstLengthStack(0);
 }
 protected void consumeEmptyCatchesopt() {
 	// Catchesopt ::= $empty
-	pushOnAstLengthStack(0);
-}
-protected void consumeEmptyClassBodyDeclarationsopt() {
-	// ClassBodyDeclarationsopt ::= $empty
-	pushOnAstLengthStack(0);
-}
-protected void consumeEmptyMethodHeaderDefaultValue() {
-	// DefaultValueopt ::= $empty
-	this.recordStringLiterals = true;
-}
-protected void consumeEmptyDimsopt() {
-	// Dimsopt ::= $empty
-	pushOnIntStack(0);
-}
-protected void consumeEmptyEnumDeclarations() {
-	// EnumBodyDeclarationsopt ::= $empty
 	pushOnAstLengthStack(0);
 }
 protected void consumeEmptyExpression() {
@@ -2586,10 +1811,6 @@ protected void consumeEmptyForUpdateopt() {
 	// ForUpdateopt ::= $empty
 	pushOnExpressionStackLengthStack(0);
 }
-protected void consumeEmptyInterfaceMemberDeclarationsopt() {
-	// InterfaceMemberDeclarationsopt ::= $empty
-	pushOnAstLengthStack(0);
-}
 protected void consumeEmptyInternalCompilationUnit() {
 	// InternalCompilationUnit ::= $empty
 	// nothing to do by default
@@ -2602,15 +1823,6 @@ protected void consumeEmptyInternalCompilationUnit() {
 		this.compilationUnit.types[0] = declaration;
 		declaration.javadoc = this.compilationUnit.javadoc;
 	}
-}
-protected void consumeEmptyMemberValuePairsopt() {
-	// MemberValuePairsopt ::= $empty
-	pushOnAstLengthStack(0);
-}
-protected void consumeEmptyMemberValueArrayInitializer() {
-	// MemberValueArrayInitializer ::= '{' ',' '}'
-	// MemberValueArrayInitializer ::= '{' '}'
-	arrayInitializer(0);
 }
 protected void consumeEmptyStatement() {
 	// EmptyStatement ::= ';'
@@ -2646,144 +1858,9 @@ protected void consumeEmptySwitchBlock() {
 	// SwitchBlock ::= '{' '}'
 	pushOnAstLengthStack(0);
 }
-protected void consumeEmptyTypeDeclaration() {
-	// ClassMemberDeclaration ::= ';'
-	// InterfaceMemberDeclaration ::= ';'
-	// TypeDeclaration ::= ';'
-	pushOnAstLengthStack(0);
-	if(!this.statementRecoveryActivated) problemReporter().superfluousSemicolon(this.endPosition+1, this.endStatementPosition);
-	flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeEnhancedForStatementHeaderInit(boolean hasModifiers) {
-	TypeReference type;
-
-	char[] identifierName = this.identifierStack[this.identifierPtr];
-	long namePosition = this.identifierPositionStack[this.identifierPtr];
-
-	LocalDeclaration localDeclaration = createLocalDeclaration(identifierName, (int) (namePosition >>> 32), (int) namePosition);
-	localDeclaration.declarationSourceEnd = localDeclaration.declarationEnd;
-
-	int extraDims = this.intStack[this.intPtr--];
-	this.identifierPtr--;
-	this.identifierLengthPtr--;
-	// remove fake modifiers/modifiers start
-	int declarationSourceStart = 0;
-	int modifiersValue  = 0;
-	if (hasModifiers) {
-		declarationSourceStart = this.intStack[this.intPtr--];
-		modifiersValue = this.intStack[this.intPtr--];
-	} else {
-		this.intPtr-=2;
-	}
-
-	type = getTypeReference(this.intStack[this.intPtr--] + extraDims); // type dimension
-	this.expressionLengthPtr--;
-	
-	if (hasModifiers) {
-		localDeclaration.declarationSourceStart = declarationSourceStart;
-		localDeclaration.modifiers = modifiersValue;
-	} else {
-		localDeclaration.declarationSourceStart = type.sourceStart;
-	}
-	localDeclaration.type = type;
-
-	ForeachStatement iteratorForStatement =
-		new ForeachStatement(
-			localDeclaration,
-			this.intStack[this.intPtr--]);
-	pushOnAstStack(iteratorForStatement);
-
-	iteratorForStatement.sourceEnd = localDeclaration.declarationSourceEnd;
-}
-protected void consumeEnhancedForStatementHeader(){
-	// EnhancedForStatementHeader ::= EnhancedForStatementHeaderInit ':' Expression ')'
-	final ForeachStatement statement = (ForeachStatement) this.astStack[this.astPtr];
-	//updates are on the expression stack
-	this.expressionLengthPtr--;
-	final Expression collection = this.expressionStack[this.expressionPtr--];
-	statement.collection = collection;
-	statement.sourceEnd = this.rParenPos;
-
-	if(!this.statementRecoveryActivated &&
-			options.sourceLevel < ClassFileConstants.JDK1_5 &&
-			this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-		this.problemReporter().invalidUsageOfForeachStatements(statement.elementVariable, collection);
-	}
-}
-protected void consumeEnhancedForStatement() {
-	// EnhancedForStatement ::= EnhancedForStatementHeader Statement
-	// EnhancedForStatementNoShortIf ::= EnhancedForStatementHeader StatementNoShortIf
-
-	//statements
-	this.astLengthPtr--;
-	Statement statement = (Statement) this.astStack[this.astPtr--];
-
-	// foreach statement is on the ast stack
-	ForeachStatement foreachStatement = (ForeachStatement) this.astStack[this.astPtr];
-	foreachStatement.action = statement;
-	// remember useful empty statement
-	if (statement instanceof EmptyStatement) statement.bits |= ASTNode.IsUsefulEmptyStatement;
-
-	foreachStatement.sourceEnd = this.endStatementPosition;
-}
-protected void consumeEnterAnonymousClassBody() {
-	// EnterAnonymousClassBody ::= $empty
-	TypeReference typeReference = getTypeReference(0);
-
-	TypeDeclaration anonymousType = new TypeDeclaration(this.compilationUnit.compilationResult);
-	anonymousType.name = CharOperation.NO_CHAR;
-	anonymousType.bits |= (ASTNode.IsAnonymousType|ASTNode.IsLocalType);
-	QualifiedAllocationExpression alloc = new QualifiedAllocationExpression(anonymousType);
-	markEnclosingMemberWithLocalType();
-	pushOnAstStack(anonymousType);
-
-	alloc.sourceEnd = this.rParenPos; //the position has been stored explicitly
-	int argumentLength;
-	if ((argumentLength = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		this.expressionPtr -= argumentLength;
-		System.arraycopy(
-			this.expressionStack,
-			this.expressionPtr + 1,
-			alloc.arguments = new Expression[argumentLength],
-			0,
-			argumentLength);
-	}
-	alloc.type = typeReference;
-
-	anonymousType.sourceEnd = alloc.sourceEnd;
-	//position at the type while it impacts the anonymous declaration
-	anonymousType.sourceStart = anonymousType.declarationSourceStart = alloc.type.sourceStart;
-	alloc.sourceStart = this.intStack[this.intPtr--];
-	pushOnExpressionStack(alloc);
-
-	anonymousType.bodyStart = this.scanner.currentPosition;
-	this.listLength = 0; // will be updated when reading super-interfaces
-
-	// flush the comments related to the anonymous
-	this.scanner.commentPtr = -1;
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = anonymousType.bodyStart;
-		this.currentElement = this.currentElement.add(anonymousType, 0);
-		this.currentToken = 0; // opening brace already taken into account
-		this.lastIgnoredToken = -1;
-	}
-}
 protected void consumeEnterCompilationUnit() {
 	// EnterCompilationUnit ::= $empty
 	// do nothing by default
-}
-protected void consumeEnterMemberValue() {
-	// EnterMemberValue ::= $empty
-	// do nothing by default
-}
-protected void consumeEnterMemberValueArrayInitializer() {
-	// EnterMemberValueArrayInitializer ::= $empty
-	if(this.currentElement != null) {
-		this.ignoreNextOpeningBrace = true;
-		this.currentElement.bracketBalance++;
-	}
 }
 protected void consumeEnterVariable() {
 	// EnterVariable ::= $empty
@@ -2892,131 +1969,6 @@ protected void consumeEnterVariable() {
 		this.lastIgnoredToken = -1;
 	}
 }
-protected void consumeEnumBodyNoConstants() {
-	// nothing to do
-	// The 0 on the astLengthStack has been pushed by EnumBodyDeclarationsopt
-}
-protected void consumeEnumBodyWithConstants() {
-	// merge the constants values with the class body
-	concatNodeLists();
-}
-protected void consumeEnumConstantHeaderName() {
-	if (this.currentElement != null) {
-		if (!(this.currentElement instanceof RecoveredType
-					|| (this.currentElement instanceof RecoveredField && ((RecoveredField)currentElement).fieldDeclaration.type == null))
-				|| (this.lastIgnoredToken == TokenNameDOT)) {
-			this.lastCheckPoint = this.scanner.startPosition;
-			this.restartRecovery = true;
-			return;
-		}
-	}
-   long namePosition = this.identifierPositionStack[this.identifierPtr];
-   char[] constantName = this.identifierStack[this.identifierPtr];
-   final int sourceEnd = (int) namePosition;
-   FieldDeclaration enumConstant = createFieldDeclaration(constantName, (int) (namePosition >>> 32), sourceEnd);
-   this.identifierPtr--;
-   this.identifierLengthPtr--;
-   enumConstant.modifiersSourceStart = this.intStack[this.intPtr--];
-   enumConstant.modifiers = this.intStack[this.intPtr--];
-   enumConstant.declarationSourceStart = enumConstant.modifiersSourceStart;
-
-	// Store secondary info
-	if ((enumConstant.bits & ASTNode.IsMemberType) == 0 && (enumConstant.bits & ASTNode.IsLocalType) == 0) {
-		if (this.compilationUnit != null && !CharOperation.equals(enumConstant.name, this.compilationUnit.getMainTypeName())) {
-			enumConstant.bits |= ASTNode.IsSecondaryType;
-		}
-	}
-	this.expressionLengthPtr--;
-	
-   pushOnAstStack(enumConstant);
-	if (this.currentElement != null){
-		this.lastCheckPoint = enumConstant.sourceEnd + 1;
-		this.currentElement = this.currentElement.add(enumConstant, 0);
-	}
-	// javadoc
-	enumConstant.javadoc = this.javadoc;
-	this.javadoc = null;
-}
-protected void consumeEnumConstantNoClassBody() {
-	// set declarationEnd and declarationSourceEnd
-	int endOfEnumConstant = intStack[intPtr--];
-	final FieldDeclaration fieldDeclaration = (FieldDeclaration) this.astStack[this.astPtr];
-	fieldDeclaration.declarationEnd = endOfEnumConstant;
-	fieldDeclaration.declarationSourceEnd = endOfEnumConstant;
-}
-protected void consumeEnumConstants() {
-	concatNodeLists();
-}
-protected void consumeEnumConstantWithClassBody() {
-   dispatchDeclarationInto(this.astLengthStack[this.astLengthPtr--]);
-   TypeDeclaration anonymousType = (TypeDeclaration) this.astStack[this.astPtr--]; // pop type
-   this.astLengthPtr--;
-   anonymousType.bodyEnd = this.endPosition;
-   anonymousType.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-   final FieldDeclaration fieldDeclaration = ((FieldDeclaration) this.astStack[this.astPtr]);
-   fieldDeclaration.declarationEnd = this.endStatementPosition;
-   fieldDeclaration.declarationSourceEnd = anonymousType.declarationSourceEnd;
-   intPtr --; // remove end position of the arguments
-}
-protected void consumeEnumDeclaration() {
-	// EnumDeclaration ::= EnumHeader ClassHeaderImplementsopt EnumBody
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		//there are length declarations
-		//dispatch according to the type of the declarations
-		dispatchDeclarationIntoEnumDeclaration(length);
-	}
-
-	TypeDeclaration enumDeclaration = (TypeDeclaration) this.astStack[this.astPtr];
-
-	// mark initializers with local type mark if needed
-	markInitializersWithLocalType(enumDeclaration);
-
-	//convert constructor that do not have the type's name into methods
-	boolean hasConstructor = enumDeclaration.checkConstructors(this);
-
-	//add the default constructor when needed
-	if (!hasConstructor) {
-		boolean insideFieldInitializer = false;
-		if (this.diet) {
-			for (int i = this.nestedType; i > 0; i--){
-				if (this.variablesCounter[i] > 0) {
-					insideFieldInitializer = true;
-					break;
-				}
-			}
-		}
-		enumDeclaration.createDefaultConstructor(!this.diet || insideFieldInitializer, true);
-	}
-
-	//always add <clinit> (will be remove at code gen time if empty)
-	if (this.scanner.containsAssertKeyword) {
-		enumDeclaration.bits |= ASTNode.ContainsAssertion;
-	}
-	enumDeclaration.addClinit();
-	enumDeclaration.bodyEnd = this.endStatementPosition;
-	if (length == 0 && !containsComment(enumDeclaration.bodyStart, enumDeclaration.bodyEnd)) {
-		enumDeclaration.bits |= ASTNode.UndocumentedEmptyBlock;
-	}
-
-	enumDeclaration.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeEnumDeclarations() {
-	// Do nothing by default
-}
-protected void consumeEnumHeader() {
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if (this.currentToken == TokenNameLBRACE) {
-		typeDecl.bodyStart = this.scanner.currentPosition;
-	}
-
-	if (this.currentElement != null) {
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-
-	// flush the comments related to the enum header
-	this.scanner.commentPtr = -1;
-}
 protected void consumeEqualityExpression(int op) {
 	// EqualityExpression ::= EqualityExpression '==' RelationalExpression
 	// EqualityExpression ::= EqualityExpression '!=' RelationalExpression
@@ -3030,25 +1982,6 @@ protected void consumeEqualityExpression(int op) {
 			this.expressionStack[this.expressionPtr],
 			this.expressionStack[this.expressionPtr + 1],
 			op);
-}
-/*
- * @param op
- */
-protected void consumeEqualityExpressionWithName(int op) {
-	// EqualityExpression ::= Name '==' RelationalExpression
-	// EqualityExpression ::= Name '!=' RelationalExpression
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	this.expressionPtr--;
-	this.expressionLengthPtr--;
-	this.expressionStack[this.expressionPtr] =
-		new EqualExpression(
-			this.expressionStack[this.expressionPtr + 1],
-			this.expressionStack[this.expressionPtr],
-			op);
-}
-protected void consumeExitMemberValue() {
-	// ExitMemberValue ::= $empty
-	// do nothing by default
 }
 protected void consumeExitTryBlock() {
 	//ExitTryBlock ::= $empty
@@ -3082,82 +2015,6 @@ protected void consumeExitVariableWithoutInitialization() {
 	}
 	this.recoveryExitFromVariable();
 }
-protected void consumeExplicitConstructorInvocation(int flag, int recFlag) {
-
-	/* flag allows to distinguish 3 cases :
-	(0) :
-	ExplicitConstructorInvocation ::= 'this' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= 'super' '(' ArgumentListopt ')' ';'
-	(1) :
-	ExplicitConstructorInvocation ::= Primary '.' 'super' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= Primary '.' 'this' '(' ArgumentListopt ')' ';'
-	(2) :
-	ExplicitConstructorInvocation ::= Name '.' 'super' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= Name '.' 'this' '(' ArgumentListopt ')' ';'
-	*/
-	int startPosition = this.intStack[this.intPtr--];
-	ExplicitConstructorCall ecc = new ExplicitConstructorCall(recFlag);
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		this.expressionPtr -= length;
-		System.arraycopy(this.expressionStack, this.expressionPtr + 1, ecc.arguments = new Expression[length], 0, length);
-	}
-	switch (flag) {
-		case 0 :
-			ecc.sourceStart = startPosition;
-			break;
-		case 1 :
-			this.expressionLengthPtr--;
-			ecc.sourceStart = (ecc.qualification = this.expressionStack[this.expressionPtr--]).sourceStart;
-			break;
-		case 2 :
-			ecc.sourceStart = (ecc.qualification = getUnspecifiedReferenceOptimized()).sourceStart;
-			break;
-	}
-	pushOnAstStack(ecc);
-	ecc.sourceEnd = this.endStatementPosition;
-}
-protected void consumeExplicitConstructorInvocationWithTypeArguments(int flag, int recFlag) {
-
-	/* flag allows to distinguish 3 cases :
-	(0) :
-	ExplicitConstructorInvocation ::= TypeArguments 'this' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= TypeArguments 'super' '(' ArgumentListopt ')' ';'
-	(1) :
-	ExplicitConstructorInvocation ::= Primary '.' TypeArguments 'super' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= Primary '.' TypeArguments 'this' '(' ArgumentListopt ')' ';'
-	(2) :
-	ExplicitConstructorInvocation ::= Name '.' TypeArguments 'super' '(' ArgumentListopt ')' ';'
-	ExplicitConstructorInvocation ::= Name '.' TypeArguments 'this' '(' ArgumentListopt ')' ';'
-	*/
-	int startPosition = this.intStack[this.intPtr--];
-	ExplicitConstructorCall ecc = new ExplicitConstructorCall(recFlag);
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		this.expressionPtr -= length;
-		System.arraycopy(this.expressionStack, this.expressionPtr + 1, ecc.arguments = new Expression[length], 0, length);
-	}
-	length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-	System.arraycopy(this.genericsStack, this.genericsPtr + 1, ecc.typeArguments = new TypeReference[length], 0, length);
-	ecc.typeArgumentsSourceStart = this.intStack[intPtr--];
-
-	switch (flag) {
-		case 0 :
-			ecc.sourceStart = startPosition;
-			break;
-		case 1 :
-			this.expressionLengthPtr--;
-			ecc.sourceStart = (ecc.qualification = this.expressionStack[this.expressionPtr--]).sourceStart;
-			break;
-		case 2 :
-			ecc.sourceStart = (ecc.qualification = getUnspecifiedReferenceOptimized()).sourceStart;
-			break;
-	}
-
-	pushOnAstStack(ecc);
-	ecc.sourceEnd = this.endStatementPosition;
-}
 protected void consumeExpressionStatement() {
 	// ExpressionStatement ::= StatementExpression ';'
 	this.expressionLengthPtr--;
@@ -3186,61 +2043,6 @@ protected void consumeFieldAccess(boolean isSuperAccess) {
 		fr.sourceStart = fr.receiver.sourceStart;
 		this.expressionStack[this.expressionPtr] = fr;
 	}
-}
-protected void consumeFieldDeclaration() {
-	// See consumeLocalVariableDeclarationDefaultModifier() in case of change: duplicated code
-	// FieldDeclaration ::= Modifiersopt Type VariableDeclarators ';'
-
-	/*
-	this.astStack :
-	this.expressionStack: Expression Expression ...... Expression
-	this.identifierStack : type  identifier identifier ...... identifier
-	this.intStack : typeDim      dim        dim               dim
-	 ==>
-	this.astStack : FieldDeclaration FieldDeclaration ...... FieldDeclaration
-	this.expressionStack :
-	this.identifierStack :
-	this.intStack :
-
-	*/
-	int variableDeclaratorsCounter = this.astLengthStack[this.astLengthPtr];
-
-	for (int i = variableDeclaratorsCounter - 1; i >= 0; i--) {
-		FieldDeclaration fieldDeclaration = (FieldDeclaration) this.astStack[this.astPtr - i];
-		fieldDeclaration.declarationSourceEnd = this.endStatementPosition;
-		fieldDeclaration.declarationEnd = this.endStatementPosition;	// semi-colon included
-	}
-
-	updateSourceDeclarationParts(variableDeclaratorsCounter);
-	int endPos = flushCommentsDefinedPriorTo(this.endStatementPosition);
-	if (endPos != this.endStatementPosition) {
-		for (int i = 0; i < variableDeclaratorsCounter; i++) {
-			FieldDeclaration fieldDeclaration = (FieldDeclaration) this.astStack[this.astPtr - i];
-			fieldDeclaration.declarationSourceEnd = endPos;
-		}
-	}
-	// update the this.astStack, this.astPtr and this.astLengthStack
-	int startIndex = this.astPtr - this.variablesCounter[this.nestedType] + 1;
-	System.arraycopy(
-		this.astStack,
-		startIndex,
-		this.astStack,
-		startIndex - 1,
-		variableDeclaratorsCounter);
-	this.astPtr--; // remove the type reference
-	this.astLengthStack[--this.astLengthPtr] = variableDeclaratorsCounter;
-
-	// recovery
-	if (this.currentElement != null) {
-		this.lastCheckPoint = endPos + 1;
-		if (this.currentElement.parent != null && this.currentElement instanceof RecoveredField){
-			if (!(this.currentElement instanceof RecoveredInitializer)) {
-				this.currentElement = this.currentElement.parent;
-			}
-		}
-		this.restartRecovery = true;
-	}
-	this.variablesCounter[this.nestedType] = 0;
 }
 protected void consumeForceNoDiet() {
 	// ForceNoDiet ::= $empty
@@ -3339,144 +2141,6 @@ protected void consumeFormalParameterListopt() {
 	// FormalParameterListopt ::= $empty
 	pushOnAstLengthStack(0);
 }
-protected void consumeGenericType() {
-	// nothing to do
-	// Will be consume by a getTypeRefence call
-}
-protected void consumeGenericTypeArrayType() {
-	// nothing to do
-	// Will be consume by a getTypeRefence call
-}
-protected void consumeGenericTypeNameArrayType() {
-	// nothing to do
-	// Will be consume by a getTypeRefence call
-}
-protected void consumeImportDeclaration() {
-	// SingleTypeImportDeclaration ::= SingleTypeImportDeclarationName ';'
-	ImportReference impt = (ImportReference) this.astStack[this.astPtr];
-	// flush annotations defined prior to import statements
-	impt.declarationEnd = this.endStatementPosition;
-	impt.declarationSourceEnd =
-		this.flushCommentsDefinedPriorTo(impt.declarationSourceEnd);
-
-	// recovery
-	if (this.currentElement != null) {
-		this.lastCheckPoint = impt.declarationSourceEnd + 1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true;
-		// used to avoid branching back into the regular automaton
-	}
-}
-protected void consumeImportDeclarations() {
-	// ImportDeclarations ::= ImportDeclarations ImportDeclaration
-	optimizedConcatNodeLists();
-}
-protected void consumeInsideCastExpression() {
-	// InsideCastExpression ::= $empty
-}
-protected void consumeInsideCastExpressionLL1() {
-	// InsideCastExpressionLL1 ::= $empty
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-}
-protected void consumeInsideCastExpressionWithQualifiedGenerics() {
-	// InsideCastExpressionWithQualifiedGenerics ::= $empty
-}
-protected void consumeInstanceOfExpression() {
-	// RelationalExpression ::= RelationalExpression 'instanceof' ReferenceType
-	//optimize the push/pop
-
-	//by construction, no base type may be used in getTypeReference
-	Expression exp;
-	this.expressionStack[this.expressionPtr] = exp =
-		new InstanceOfExpression(
-			this.expressionStack[this.expressionPtr],
-			getTypeReference(this.intStack[this.intPtr--]));
-	if (exp.sourceEnd == 0) {
-		//array on base type....
-		exp.sourceEnd = this.scanner.startPosition - 1;
-	}
-	//the scanner is on the next token already....
-}
-protected void consumeInstanceOfExpressionWithName() {
-	// RelationalExpression_NotName ::= Name instanceof ReferenceType
-	//optimize the push/pop
-
-	//by construction, no base type may be used in getTypeReference
-	TypeReference reference = getTypeReference(this.intStack[this.intPtr--]);
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	Expression exp;
-	this.expressionStack[this.expressionPtr] = exp =
-		new InstanceOfExpression(
-			this.expressionStack[this.expressionPtr],
-			reference);
-	if (exp.sourceEnd == 0) {
-		//array on base type....
-		exp.sourceEnd = this.scanner.startPosition - 1;
-	}
-	//the scanner is on the next token already....
-}
-protected void consumeInterfaceDeclaration() {
-	// see consumeClassDeclaration in case of changes: duplicated code
-	// InterfaceDeclaration ::= InterfaceHeader InterfaceBody
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		//there are length declarations
-		//dispatch.....according to the type of the declarations
-		dispatchDeclarationInto(length);
-	}
-
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-
-	// mark initializers with local type mark if needed
-	markInitializersWithLocalType(typeDecl);
-
-	//convert constructor that do not have the type's name into methods
-	typeDecl.checkConstructors(this);
-
-	//always add <clinit> (will be remove at code gen time if empty)
-	if (this.scanner.containsAssertKeyword) {
-		typeDecl.bits |= ASTNode.ContainsAssertion;
-	}
-	typeDecl.addClinit();
-	typeDecl.bodyEnd = this.endStatementPosition;
-	if (length == 0 && !containsComment(typeDecl.bodyStart, typeDecl.bodyEnd)) {
-		typeDecl.bits |= ASTNode.UndocumentedEmptyBlock;
-	}
-	typeDecl.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-}
-protected void consumeInterfaceHeader() {
-	// InterfaceHeader ::= InterfaceHeaderName InterfaceHeaderExtendsopt
-
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if (this.currentToken == TokenNameLBRACE){
-		typeDecl.bodyStart = this.scanner.currentPosition;
-	}
-	if (this.currentElement != null){
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-	// flush the comments related to the interface header
-	this.scanner.commentPtr = -1;
-}
-protected void consumeInterfaceMemberDeclarations() {
-	// InterfaceMemberDeclarations ::= InterfaceMemberDeclarations InterfaceMemberDeclaration
-	concatNodeLists();
-}
-protected void consumeInterfaceMemberDeclarationsopt() {
-	// InterfaceMemberDeclarationsopt ::= NestedType InterfaceMemberDeclarations
-	this.nestedType--;
-}
-protected void consumeInterfaceType() {
-	// InterfaceType ::= ClassOrInterfaceType
-	pushOnAstStack(getTypeReference(0));
-	/* if incomplete type header, this.listLength counter will not have been reset,
-		indicating that some interfaces are available on the stack */
-	this.listLength++;
-}
-protected void consumeInterfaceTypeList() {
-	// InterfaceTypeList ::= InterfaceTypeList ',' InterfaceType
-	optimizedConcatNodeLists();
-}
 protected void consumeInternalCompilationUnitWithTypes() {
 	// InternalCompilationUnit ::= PackageDeclaration ImportDeclarations ReduceImports TypeDeclarations
 	// InternalCompilationUnit ::= PackageDeclaration TypeDeclarations
@@ -3489,109 +2153,6 @@ protected void consumeInternalCompilationUnitWithTypes() {
 			this.astPtr -= length;
 			System.arraycopy(this.astStack, this.astPtr + 1, this.compilationUnit.statements, 0, length);
 	}
-}
-protected void consumeInvalidAnnotationTypeDeclaration() {
-	// BlockStatement ::= AnnotationTypeDeclaration
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if(!this.statementRecoveryActivated) problemReporter().illegalLocalTypeDeclaration(typeDecl);
-	// remove the ast node created in interface header
-	this.astPtr--;
-	pushOnAstLengthStack(-1);
-	concatNodeLists();
-}
-protected void consumeInvalidConstructorDeclaration() {
-	// ConstructorDeclaration ::= ConstructorHeader ';'
-	// now we know that the top of stack is a constructorDeclaration
-	ConstructorDeclaration cd = (ConstructorDeclaration) this.astStack[this.astPtr];
-
-	cd.bodyEnd = this.endPosition; // position just before the trailing semi-colon
-	cd.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-	// report the problem and continue the parsing - narrowing the problem onto the method
-
-	cd.modifiers |= ExtraCompilerModifiers.AccSemicolonBody; // remember semi-colon body
-}
-protected void consumeInvalidConstructorDeclaration(boolean hasBody) {
-	// InvalidConstructorDeclaration ::= ConstructorHeader ConstructorBody ==> true
-	// InvalidConstructorDeclaration ::= ConstructorHeader ';' ==> false
-
-	/*
-	this.astStack : modifiers arguments throws statements
-	this.identifierStack : name
-	 ==>
-	this.astStack : FunctionDeclaration
-	this.identifierStack :
-	*/
-	if (hasBody) {
-		// pop the position of the {  (body of the method) pushed in block decl
-		this.intPtr--;
-	}
-
-	//statements
-	if (hasBody) {
-		this.realBlockPtr--;
-	}
-
-	int length;
-	if (hasBody && ((length = this.astLengthStack[this.astLengthPtr--]) != 0)) {
-		this.astPtr -= length;
-	}
-	ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) this.astStack[this.astPtr];
-	constructorDeclaration.bodyEnd = this.endStatementPosition;
-	constructorDeclaration.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-	if (!hasBody) {
-		constructorDeclaration.modifiers |= ExtraCompilerModifiers.AccSemicolonBody;
-	}
-}
-protected void consumeInvalidInterfaceDeclaration() {
-	// BlockStatement ::= InvalidInterfaceDeclaration
-	//InterfaceDeclaration ::= Modifiersopt 'interface' 'Identifier' ExtendsInterfacesopt InterfaceHeader InterfaceBody
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if(!this.statementRecoveryActivated) problemReporter().illegalLocalTypeDeclaration(typeDecl);
-	// remove the ast node created in interface header
-	this.astPtr--;
-	pushOnAstLengthStack(-1);
-	concatNodeLists();
-}
-protected void consumeInvalidEnumDeclaration() {
-	// BlockStatement ::= EnumDeclaration
-	TypeDeclaration typeDecl = (TypeDeclaration) this.astStack[this.astPtr];
-	if(!this.statementRecoveryActivated) problemReporter().illegalLocalTypeDeclaration(typeDecl);
-	// remove the ast node created in interface header
-	this.astPtr--;
-	pushOnAstLengthStack(-1);
-	concatNodeLists();
-}
-protected void consumeInvalidMethodDeclaration() {
-	// InterfaceMemberDeclaration ::= InvalidMethodDeclaration
-
-	/*
-	this.astStack : modifiers arguments throws statements
-	this.identifierStack : type name
-	this.intStack : dim dim dim
-	 ==>
-	this.astStack : FunctionDeclaration
-	this.identifierStack :
-	this.intStack :
-	*/
-
-	// pop the position of the {  (body of the method) pushed in block decl
-	this.intPtr--;
-	// retrieve end position of method declarator
-
-	//statements
-	this.realBlockPtr--;
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		this.astPtr -= length;
-	}
-
-	//watch for } that could be given as a unicode ! ( u007D is '}' )
-	MethodDeclaration md = (MethodDeclaration) this.astStack[this.astPtr];
-	md.bodyEnd = this.endPosition;
-	md.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-
-	// report the problem and continue the parsing - narrowing the problem onto the method
-	if(!this.statementRecoveryActivated) problemReporter().abstractMethodNeedingNoBody(md);
 }
 protected void consumeLabel() {
 	// Do nothing
@@ -3649,22 +2210,6 @@ protected void consumeLocalVariableDeclarationStatement() {
 	this.astLengthStack[this.astLengthPtr]=1;
 	this.lastCheckPoint = endStatementPosition+1;
 
-}
-protected void consumeMemberValueArrayInitializer() {
-	// MemberValueArrayInitializer ::= '{' MemberValues ',' '}'
-	// MemberValueArrayInitializer ::= '{' MemberValues '}'
-	arrayInitializer(this.expressionLengthStack[this.expressionLengthPtr--]);
-}
-protected void consumeMemberValueAsName() {
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-}
-protected void consumeMemberValuePairs() {
-	// MemberValuePairs ::= MemberValuePairs ',' MemberValuePair
-	concatNodeLists();
-}
-protected void consumeMemberValues() {
-	// MemberValues ::= MemberValues ',' MemberValue
-	concatExpressionLists();
 }
 protected void consumeMethodBody() {
 	// MethodBody ::= NestedMethod '{' BlockStatementsopt '}'
@@ -3766,39 +2311,6 @@ protected void consumeMethodHeader() {
 		this.restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
-protected void consumeMethodHeaderDefaultValue() {
-	// MethodHeaderDefaultValue ::= DefaultValue
-	MethodDeclaration md = (MethodDeclaration) this.astStack[this.astPtr];
-
-
-	int length = this.expressionLengthStack[this.expressionLengthPtr--];
-	if (length == 1) {
-		intPtr--; // we get rid of the position of the default keyword
-		intPtr--; // we get rid of the position of the default keyword
-		this.expressionPtr--;
-		this.recordStringLiterals = true;
-	}
-}
-protected void consumeMethodHeaderExtendedDims() {
-	// MethodHeaderExtendedDims ::= Dimsopt
-	// now we update the returnType of the method
-	MethodDeclaration md = (MethodDeclaration) this.astStack[this.astPtr];
-	int extendedDims = this.intStack[this.intPtr--];
-	
-	if (extendedDims != 0) {
-		TypeReference returnType = md.returnType;
-		md.sourceEnd = this.endPosition;
-		int dims = returnType.dimensions() + extendedDims;
-		md.returnType = this.copyDims(returnType, dims);
-		if (this.currentToken == TokenNameLBRACE){
-			md.bodyStart = this.endPosition + 1;
-		}
-		// recovery
-		if (this.currentElement != null){
-			this.lastCheckPoint = md.bodyStart;
-		}
-	}
-}
 protected void consumeMethodHeaderName(boolean isAnonymous) {
 	// MethodHeaderName ::= Modifiersopt Type 'Identifier' '('
 	// AnnotationMethodHeaderName ::= Modifiersopt Type 'Identifier' '('
@@ -3876,57 +2388,6 @@ protected void consumeMethodHeaderName(boolean isAnonymous) {
 		}
 	}
 }
-protected void consumeMethodHeaderNameWithTypeParameters(boolean isAnnotationMethod) {
-	// MethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
-	// AnnotationMethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
-	// RecoveryMethodHeaderName ::= Modifiersopt TypeParameters Type 'Identifier' '('
-	MethodDeclaration md = new MethodDeclaration(this.compilationUnit.compilationResult);
-	
-	//name
-	md.selector = this.identifierStack[this.identifierPtr];
-	long selectorSource = this.identifierPositionStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	//type
-	md.returnType = getTypeReference(this.intStack[this.intPtr--]);
-
-	// consume type parameters
-	int length = this.genericsLengthStack[this.genericsLengthPtr--];
-	this.genericsPtr -= length;
-
-	//modifiers
-	md.declarationSourceStart = this.intStack[this.intPtr--];
-	md.modifiers = this.intStack[this.intPtr--];
-	this.expressionLengthPtr--;
-	
-	// javadoc
-	md.javadoc = this.javadoc;
-	this.javadoc = null;
-
-	//highlight starts at selector start
-	md.sourceStart = (int) (selectorSource >>> 32);
-	pushOnAstStack(md);
-	md.sourceEnd = this.lParenPos;
-	md.bodyStart = this.lParenPos+1;
-	this.listLength = 0; // initialize this.listLength before reading parameters/throws
-
-	// recovery
-	if (this.currentElement != null){
-		boolean isType;
-		if ((isType = this.currentElement instanceof RecoveredType)
-			//|| md.modifiers != 0
-			|| true
-			|| (this.scanner.getLineNumber(md.returnType.sourceStart)
-					== this.scanner.getLineNumber(md.sourceStart))){
-
-			this.lastCheckPoint = md.bodyStart;
-			this.currentElement = this.currentElement.add(md, 0);
-			this.lastIgnoredToken = -1;
-		} else {
-			this.lastCheckPoint = md.sourceStart;
-			this.restartRecovery = true;
-		}
-	}
-}
 protected void consumeMethodHeaderRightParen() {
 	// MethodHeaderParameters ::= FormalParameterListopt ')'
 	int length = this.astLengthStack[this.astLengthPtr--];
@@ -3960,26 +2421,6 @@ protected void consumeMethodHeaderRightParen() {
 		}
 	}
 }
-protected void consumeMethodInvocationName() {
-	// FunctionInvocation ::= Name '(' ArgumentListopt ')'
-
-	// when the name is only an identifier...we have a message send to "this" (implicit)
-
-	MessageSend m = newMessageSend();
-	m.sourceEnd = this.rParenPos;
-	m.sourceStart =
-		(int) ((m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr]) >>> 32);
-	m.selector = this.identifierStack[this.identifierPtr--];
-	if (this.identifierLengthStack[this.identifierLengthPtr] == 1) {
-//		m.receiver = ThisReference.implicitThis();
-		this.identifierLengthPtr--;
-	} else {
-		this.identifierLengthStack[this.identifierLengthPtr]--;
-		m.receiver = getUnspecifiedReference();
-		m.sourceStart = m.receiver.sourceStart;
-	}
-	pushOnExpressionStack(m);
-}
 protected void consumeMethodInvocationPrimary() {
 	//optimize the push/pop
 	//FunctionInvocation ::= Primary '.' 'Identifier' '(' ArgumentListopt ')'
@@ -4011,34 +2452,8 @@ protected void consumeMethodInvocationPrimary() {
 	m.sourceEnd = this.rParenPos;
 	this.expressionStack[this.expressionPtr] = m;
 }
-protected void consumeMethodInvocationSuper() {
-	// FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
-
-	MessageSend m = newMessageSend();
-	m.sourceStart = this.intStack[this.intPtr--];
-	m.sourceEnd = this.rParenPos;
-	m.nameSourcePosition = this.identifierPositionStack[this.identifierPtr];
-	m.selector = this.identifierStack[this.identifierPtr--];
-	this.identifierLengthPtr--;
-	m.receiver = new SuperReference(m.sourceStart, this.endPosition);
-	pushOnExpressionStack(m);
-}
-protected void consumeModifiers() {
-	int savedModifiersSourceStart = this.modifiersSourceStart;
-	checkComment(); // might update modifiers with AccDeprecated
-	pushOnIntStack(this.modifiers); // modifiers
-	if (this.modifiersSourceStart >= savedModifiersSourceStart) {
-		this.modifiersSourceStart = savedModifiersSourceStart;
-	}
-	pushOnIntStack(this.modifiersSourceStart);
-	resetModifiers();
-}
 protected void consumeModifiers2() {
 	this.expressionLengthStack[this.expressionLengthPtr - 1] += this.expressionLengthStack[this.expressionLengthPtr--];
-}
-protected void consumeNameArrayType() {
-	pushOnGenericsLengthStack(0); // handle type arguments
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
 }
 protected void consumeNestedMethod() {
 	// NestedMethod ::= $empty
@@ -4067,13 +2482,6 @@ protected void incrementNestedType() {
 	this.nestedMethod[this.nestedType] = 0;
 	this.variablesCounter[this.nestedType] = 0;
 }
-protected void consumeOneDimLoop() {
-	// OneDimLoop ::= '[' ']'
-	this.dimensions++;
-}
-protected void consumeOnlyTypeArgumentsForCastExpression() {
-	// OnlyTypeArgumentsForCastExpression ::= OnlyTypeArguments
-}
 protected void consumeOpenBlock() {
 	// OpenBlock ::= $empty
 
@@ -4086,115 +2494,6 @@ protected void consumeOpenBlock() {
 			stackLength);
 	}
 	this.realBlockStack[this.realBlockPtr] = 0;
-}
-protected void consumePackageComment() {
-	// get possible comment for syntax since 1.5
-	if(options.sourceLevel >= ClassFileConstants.JDK1_5) {
-		checkComment();
-		resetModifiers();
-	}
-}
-protected void consumePackageDeclaration() {
-	// PackageDeclaration ::= 'package' Name ';'
-	/* build an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt = this.compilationUnit.currentPackage;
-	this.compilationUnit.javadoc = this.javadoc;
-	this.javadoc = null;
-	// flush comments defined prior to import statements
-	impt.declarationEnd = this.endStatementPosition;
-	impt.declarationSourceEnd = this.flushCommentsDefinedPriorTo(impt.declarationSourceEnd);
-}
-protected void consumePackageDeclarationName() {
-	// PackageDeclarationName ::= 'package' Name
-	/* build an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens =
-		new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, ++this.identifierPtr, tokens, 0, length);
-	System.arraycopy(
-		this.identifierPositionStack,
-		this.identifierPtr--,
-		positions,
-		0,
-		length);
-
-	impt = new ImportReference(tokens, positions, true);
-	this.compilationUnit.currentPackage = impt;
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// get possible comment source start
-	if(this.javadoc != null) {
-		impt.declarationSourceStart = this.javadoc.sourceStart;
-	}
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-}
-protected void consumePackageDeclarationNameWithModifiers() {
-	// PackageDeclarationName ::= Modifiers 'package' Name
-	/* build an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens =
-		new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, ++this.identifierPtr, tokens, 0, length);
-	System.arraycopy(
-		this.identifierPositionStack,
-		this.identifierPtr--,
-		positions,
-		0,
-		length);
-
-	int packageModifiersSourceStart = this.intStack[this.intPtr--]; // we don't need the modifiers start
-
-	impt = new ImportReference(tokens, positions, true);
-	this.compilationUnit.currentPackage = impt;
-	// consume annotations
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		impt.declarationSourceStart = packageModifiersSourceStart;
-		intPtr--; // we don't need the position of the 'package keyword
-	} else {
-		impt.declarationSourceStart = this.intStack[this.intPtr--];
-		// get possible comment source start
-		if (this.javadoc != null) {
-			impt.declarationSourceStart = this.javadoc.sourceStart;
-		}
-	}
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
 }
 protected void consumePostfixExpression() {
 	// PostfixExpression ::= Name
@@ -4214,74 +2513,9 @@ protected void consumePrimaryNoNewArray() {
 	parenthesizedExpression.bits &= ~ASTNode.ParenthesizedMASK;
 	parenthesizedExpression.bits |= (numberOfParenthesis + 1) << ASTNode.ParenthesizedSHIFT;
 }
-protected void consumePrimaryNoNewArrayArrayType() {
-	// PrimaryNoNewArray ::= Name Dims '.' 'class'
-	this.intPtr--; // remove the class start position
-
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-	pushOnGenericsLengthStack(0);
-
-	pushOnExpressionStack(
-		new ClassLiteralAccess(this.intStack[this.intPtr--], getTypeReference(this.intStack[this.intPtr--])));
-}
-protected void consumePrimaryNoNewArrayName() {
-	// PrimaryNoNewArray ::= Name '.' 'class'
-	this.intPtr--; // remove the class start position
-
-	// handle type arguments
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-	pushOnGenericsLengthStack(0);
-	TypeReference typeReference = getTypeReference(0);
-
-	pushOnExpressionStack(
-		new ClassLiteralAccess(this.intStack[this.intPtr--], typeReference));
-}
-protected void consumePrimaryNoNewArrayNameThis() {
-	// PrimaryNoNewArray ::= Name '.' 'this'
-	// handle type arguments
-	pushOnGenericsIdentifiersLengthStack(this.identifierLengthStack[this.identifierLengthPtr]);
-	pushOnGenericsLengthStack(0); // handle type arguments
-
-	TypeReference typeReference = getTypeReference(0);
-
-	pushOnExpressionStack(
-		new QualifiedThisReference(
-			typeReference,
-			this.intStack[this.intPtr--],
-			this.endPosition));
-}
-protected void consumePrimaryNoNewArrayPrimitiveArrayType() {
-	// PrimaryNoNewArray ::= PrimitiveType Dims '.' 'class'
-	this.intPtr--; // remove the class start position
-	pushOnExpressionStack(
-		new ClassLiteralAccess(this.intStack[this.intPtr--], getTypeReference(this.intStack[this.intPtr--])));
-}
-protected void consumePrimaryNoNewArrayPrimitiveType() {
-	// PrimaryNoNewArray ::= PrimitiveType '.' 'class'
-	this.intPtr--; // remove the class start position
-	pushOnExpressionStack(
-		new ClassLiteralAccess(this.intStack[this.intPtr--], getTypeReference(0)));
-}
 protected void consumePrimaryNoNewArrayThis() {
 	// PrimaryNoNewArray ::= 'this'
 	pushOnExpressionStack(new ThisReference(this.intStack[this.intPtr--], this.endPosition));
-}
-protected void consumePrimaryNoNewArrayWithName() {
-	// PrimaryNoNewArray ::=  PushLPAREN Expression PushRPAREN
-	pushOnExpressionStack(getUnspecifiedReferenceOptimized());
-	final Expression parenthesizedExpression = this.expressionStack[this.expressionPtr];
-	updateSourcePosition(parenthesizedExpression);
-	int numberOfParenthesis = (parenthesizedExpression.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
-	parenthesizedExpression.bits &= ~ASTNode.ParenthesizedMASK;
-	parenthesizedExpression.bits |= (numberOfParenthesis + 1) << ASTNode.ParenthesizedSHIFT;
-}
-protected void consumePrimitiveArrayType() {
-	// nothing to do
-	// Will be consume by a getTypeRefence call
-}
-protected void consumePrimitiveType() {
-	// Type ::= PrimitiveType
-	pushOnIntStack(0);
 }
 protected void consumePushLeftBrace() {
 	pushOnIntStack(this.endPosition); // modifiers
@@ -4291,22 +2525,7 @@ protected void comsumeArrayLiteralHeader() {
 	pushOnIntStack(this.endPosition); // modifiers
 	pushOnIntStack(0); // numExprs
 }
-
-
-protected void consumePushRealModifiers() {
-	checkComment(); // might update modifiers with AccDeprecated
-	pushOnIntStack(this.modifiers); // modifiers
-	pushOnIntStack(this.modifiersSourceStart);
-	resetModifiers();
-}
 protected void consumePushModifiers() {
-	checkComment(); // might update modifiers with AccDeprecated
-	pushOnIntStack(this.modifiers); // modifiers
-	pushOnIntStack(this.modifiersSourceStart);
-	resetModifiers();
-	pushOnExpressionStackLengthStack(0);
-}
-protected void consumePushModifiersForHeader() {
 	checkComment(); // might update modifiers with AccDeprecated
 	pushOnIntStack(this.modifiers); // modifiers
 	pushOnIntStack(this.modifiersSourceStart);
@@ -4337,31 +2556,6 @@ protected void consumeRecoveryMethodHeaderName() {
 //		}
 //	}
 	this.consumeMethodHeaderName(false);
-}
-protected void consumeReduceImports() {
-	// Consume imports
-	int length;
-	if ((length = this.astLengthStack[this.astLengthPtr--]) != 0) {
-		this.astPtr -= length;
-		System.arraycopy(
-			this.astStack,
-			this.astPtr + 1,
-			this.compilationUnit.imports = new ImportReference[length],
-			0,
-			length);
-	}
-}
-protected void consumeReferenceType() {
-	pushOnIntStack(0); // handle array type
-}
-protected void consumeReferenceType1() {
-	pushOnGenericsStack(getTypeReference(this.intStack[this.intPtr--]));
-}
-protected void consumeReferenceType2() {
-	pushOnGenericsStack(getTypeReference(this.intStack[this.intPtr--]));
-}
-protected void consumeReferenceType3() {
-	pushOnGenericsStack(getTypeReference(this.intStack[this.intPtr--]));
 }
 protected void consumeRestoreDiet() {
 	// RestoreDiet ::= $empty
@@ -5455,11 +3649,6 @@ private void comsumeElisionEmpty() {
 
 }
 
-private void consumeForInitExpression() {
-	// TODO Auto-generated method stub
-
-}
-
 private void consumeForInInit() {
 	Statement var = getUnspecifiedReferenceOptimized();
 	pushOnAstStack(var);
@@ -5572,42 +3761,7 @@ private void consumeFullPropertyOperator() {
 	fr.sourceStart = fr.receiver.sourceStart;
 	this.expressionStack[this.expressionPtr] = fr;
 }
-private void comsumeDUMMY() {
-	//TODO: implement
-	throw new org.eclipse.wst.jsdt.core.UnimplementedException();
-}
 
-protected void consumeSingleTypeImportDeclarationName() {
-	// SingleTypeImportDeclarationName ::= 'import' Name
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = new ImportReference(tokens, positions, false));
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
-	}
-}
 protected void consumeStatementBreak() {
 	// BreakStatement ::= 'break' ';'
 	// break pushs a position on this.intStack in case there is no label
@@ -5896,51 +4050,6 @@ protected void consumeStatementWhile() {
 			this.endStatementPosition);
 }
 
-protected void consumeStaticInitializer() {
-	// StaticInitializer ::=  StaticOnly Block
-	//push an Initializer
-	//optimize the push/pop
-	Block block = (Block) this.astStack[this.astPtr];
-	if (this.diet) block.bits &= ~ASTNode.UndocumentedEmptyBlock; // clear bit set since was diet
-	Initializer initializer = new Initializer(block, ClassFileConstants.AccStatic);
-	this.astStack[this.astPtr] = initializer;
-	initializer.sourceEnd = this.endStatementPosition;
-	initializer.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
-	this.nestedMethod[this.nestedType] --;
-	initializer.declarationSourceStart = this.intStack[this.intPtr--];
-	initializer.bodyStart = this.intStack[this.intPtr--];
-	initializer.bodyEnd = this.endPosition;
-	// doc comment
-	initializer.javadoc = this.javadoc;
-	this.javadoc = null;
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = initializer.declarationSourceEnd;
-		this.currentElement = this.currentElement.add(initializer, 0);
-		this.lastIgnoredToken = -1;
-	}
-}
-protected void consumeStaticOnly() {
-	// StaticOnly ::= 'static'
-	int savedModifiersSourceStart = this.modifiersSourceStart;
-	checkComment(); // might update declaration source start
-	if (this.modifiersSourceStart >= savedModifiersSourceStart) {
-		this.modifiersSourceStart = savedModifiersSourceStart;
-	}
-	pushOnIntStack(this.scanner.currentPosition);
-	pushOnIntStack(
-		this.modifiersSourceStart >= 0 ? this.modifiersSourceStart : this.scanner.startPosition);
-	jumpOverMethodBody();
-	this.nestedMethod[this.nestedType]++;
-	resetModifiers();
-	this.expressionLengthPtr--; // remove the 0 pushed in consumeToken() for the static modifier
-
-	// recovery
-	if (this.currentElement != null){
-		this.recoveredStaticInitializerStart = this.intStack[this.intPtr]; // remember start position only for static initializers
-	}
-}
 protected void consumeSwitchBlock() {
 	// SwitchBlock ::= '{' SwitchBlockStatements SwitchLabels '}'
 	concatNodeLists();
@@ -6316,70 +4425,6 @@ protected void consumeToken(int type) {
 			//  case TokenNameOR  :
 			//  case TokenNameDIVIDE :
 			//  case TokenNameGREATER  :
-	}
-}
-protected void consumeTypeArgument() {
-	pushOnGenericsStack(getTypeReference(this.intStack[this.intPtr--]));
-}
-protected void consumeTypeArgumentList() {
-	concatGenericsLists();
-}
-protected void consumeTypeArgumentList1() {
-	concatGenericsLists();
-}
-protected void consumeTypeArgumentList2() {
-	concatGenericsLists();
-}
-protected void consumeTypeArgumentList3() {
-	concatGenericsLists();
-}
-protected void consumeTypeArgumentReferenceType1() {
-	concatGenericsLists();
-	pushOnGenericsStack(getTypeReference(0));
-	intPtr--;
-}
-protected void consumeTypeArgumentReferenceType2() {
-	concatGenericsLists();
-	pushOnGenericsStack(getTypeReference(0));
-	intPtr--;
-}
-protected void consumeTypeArguments() {
-	concatGenericsLists();
-	intPtr--;
-}
-protected void consumeTypeDeclarations() {
-	// TypeDeclarations ::= TypeDeclarations TypeDeclaration
-	concatNodeLists();
-}
-protected void consumeTypeImportOnDemandDeclarationName() {
-	// TypeImportOnDemandDeclarationName ::= 'import' Name '.' '*'
-	/* push an ImportRef build from the last name
-	stored in the identifier stack. */
-
-	ImportReference impt;
-	int length;
-	char[][] tokens = new char[length = this.identifierLengthStack[this.identifierLengthPtr--]][];
-	this.identifierPtr -= length;
-	long[] positions = new long[length];
-	System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-	System.arraycopy(this.identifierPositionStack, this.identifierPtr + 1, positions, 0, length);
-	pushOnAstStack(impt = new ImportReference(tokens, positions, true));
-
-	if (this.currentToken == TokenNameSEMICOLON){
-		impt.declarationSourceEnd = this.scanner.currentPosition - 1;
-	} else {
-		impt.declarationSourceEnd = impt.sourceEnd;
-	}
-	impt.declarationEnd = impt.declarationSourceEnd;
-	//this.endPosition is just before the ;
-	impt.declarationSourceStart = this.intStack[this.intPtr--];
-
-	// recovery
-	if (this.currentElement != null){
-		this.lastCheckPoint = impt.declarationSourceEnd+1;
-		this.currentElement = this.currentElement.add(impt, 0);
-		this.lastIgnoredToken = -1;
-		this.restartRecovery = true; // used to avoid branching back into the regular automaton
 	}
 }
 protected void consumeUnaryExpression(int op) {
@@ -6825,26 +4870,6 @@ public int flushCommentsDefinedPriorTo(int position) {
 	this.scanner.commentPtr = validCount - 1;
 	return position;
 }
-protected TypeReference getAnnotationType() {
-	int length = this.identifierLengthStack[this.identifierLengthPtr--];
-	if (length == 1) {
-		return new SingleTypeReference(
-				this.identifierStack[this.identifierPtr],
-				this.identifierPositionStack[this.identifierPtr--]);
-	} else {
-		char[][] tokens = new char[length][];
-		this.identifierPtr -= length;
-		long[] positions = new long[length];
-		System.arraycopy(this.identifierStack, this.identifierPtr + 1, tokens, 0, length);
-		System.arraycopy(
-			this.identifierPositionStack,
-			this.identifierPtr + 1,
-			positions,
-			0,
-			length);
-		return new QualifiedTypeReference(tokens, positions);
-	}
-}
 public int getFirstToken() {
 	// the first token is a virtual token that
 	// allows the parser to parse several goals
@@ -7139,12 +5164,6 @@ public void goForFieldDeclaration(){
 	this.firstToken = TokenNameAND_AND ;
 	this.scanner.recordLineSeparator = true;
 }
-public void goForGenericMethodDeclaration(){
-	//tells the scanner to go for generic method declarations parsing
-
-	this.firstToken = TokenNameDIVIDE;
-	this.scanner.recordLineSeparator = true;
-}
 public void goForHeaders(){
 	//tells the scanner to go for headers only parsing
 //	RecoveredType currentType = this.currentRecoveryType();
@@ -7154,12 +5173,6 @@ public void goForHeaders(){
 		this.firstToken = TokenNameUNSIGNED_RIGHT_SHIFT;
 //	}
 	this.scanner.recordLineSeparator = true; // recovery goals must record line separators
-}
-public void goForImportDeclaration(){
-	//tells the scanner to go for import declaration parsing
-
-	this.firstToken = TokenNameOR_OR ;
-	this.scanner.recordLineSeparator = true;
 }
 public void goForInitializer(){
 	//tells the scanner to go for initializer parsing
@@ -7178,12 +5191,6 @@ public void goForMethodBody(){
 
 	this.firstToken = TokenNameMINUS_MINUS ;
 	this.scanner.recordLineSeparator = false;
-}
-public void goForPackageDeclaration() {
-	//tells the scanner to go for package declaration parsing
-
-	this.firstToken = TokenNameQUESTION;
-	this.scanner.recordLineSeparator = true;
 }
 public void goForTypeDeclaration() {
 	//tells the scanner to go for type (interface or class) declaration parsing

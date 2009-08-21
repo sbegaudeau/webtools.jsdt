@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,28 +80,6 @@ public class CommentRecorderParser extends Parser {
 				this.modifiersSourceStart = -this.modifiersSourceStart;
 			}
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.Parser#consumeClassHeader()
-	 */
-	protected void consumeClassHeader() {
-		pushOnCommentsStack(0, this.scanner.commentPtr);
-		super.consumeClassHeader();
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.Parser#consumeEmptyTypeDeclaration()
-	 */
-	protected void consumeEmptyTypeDeclaration() {
-		pushOnCommentsStack(0, this.scanner.commentPtr);
-		super.consumeEmptyTypeDeclaration();
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.compiler.parser.Parser#consumeInterfaceHeader()
-	 */
-	protected void consumeInterfaceHeader() {
-		pushOnCommentsStack(0, this.scanner.commentPtr);
-		super.consumeInterfaceHeader();
 	}
 
 	/**
