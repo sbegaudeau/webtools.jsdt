@@ -324,14 +324,8 @@ public class ModifierCorrectionSubProcessor {
 					excludedModifiers= Modifier.VOLATILE;
 					label= CorrectionMessages.ModifierCorrectionSubProcessor_removevolatile_description;
 					break;
-				case IProblem.IllegalModifierForInterfaceMethod:
-					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT);
-					break;
 				case IProblem.IllegalModifierForClass:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.FINAL | Modifier.STRICTFP);
-					break;
-				case IProblem.IllegalModifierForInterfaceField:
-					excludedModifiers= ~(Modifier.PUBLIC | Modifier.ABSTRACT | Modifier.FINAL);
 					break;
 				case IProblem.IllegalModifierForMemberClass:
 					excludedModifiers= ~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE | Modifier.STATIC | Modifier.ABSTRACT | Modifier.FINAL | Modifier.STRICTFP);

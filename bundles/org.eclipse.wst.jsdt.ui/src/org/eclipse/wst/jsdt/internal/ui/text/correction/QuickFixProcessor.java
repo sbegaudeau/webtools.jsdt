@@ -125,9 +125,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.DuplicateField:
 			case IProblem.DuplicateMethod:
 			case IProblem.DuplicateNestedType:
-			case IProblem.IllegalModifierForInterfaceMethod:
 			case IProblem.IllegalModifierForClass:
-			case IProblem.IllegalModifierForInterfaceField:
 			case IProblem.IllegalModifierForMemberClass:
 			case IProblem.IllegalModifierForLocalClass:
 			case IProblem.IllegalModifierForField:
@@ -308,9 +306,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				ModifierCorrectionSubProcessor.addChangeOverriddenModfierProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_NON_STATIC);
 				break;
 			case IProblem.CannotHideAnInstanceMethodWithAStaticMethod:
-			case IProblem.IllegalModifierForInterfaceMethod:
 			case IProblem.IllegalModifierForClass:
-			case IProblem.IllegalModifierForInterfaceField:
 			case IProblem.UnexpectedStaticModifierForField:
 			case IProblem.IllegalModifierCombinationFinalVolatileForField:
 			case IProblem.IllegalModifierForMemberClass:

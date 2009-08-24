@@ -1474,38 +1474,6 @@ public void illegalModifierForField(ReferenceBinding type, FieldDeclaration fiel
 		fieldDecl.sourceStart,
 		fieldDecl.sourceEnd);
 }
-
-public void illegalModifierForInterfaceField(FieldDeclaration fieldDecl) {
-	String name = new String(fieldDecl.name);
-	this.handle(
-		IProblem.IllegalModifierForInterfaceField,
-		new String[] {
-			new String(fieldDecl.binding.declaringClass.readableName()),
-			name,
-		},
-		new String[] {
-			new String(fieldDecl.binding.declaringClass.shortReadableName()),
-			name,
-		},
-		fieldDecl.sourceStart,
-		fieldDecl.sourceEnd);
-}
-public void illegalModifierForInterfaceMethod(AbstractMethodDeclaration methodDecl) {
-	this.handle(
-		IProblem.IllegalModifierForInterfaceMethod,
-		new String[] {
-			new String(methodDecl.binding.declaringClass.readableName()),
-			new String(methodDecl.getSafeName()),
-			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, false),
-		},
-		new String[] {
-			new String(methodDecl.binding.declaringClass.shortReadableName()),
-			new String(methodDecl.getSafeName()),
-			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, true),
-		},
-		methodDecl.sourceStart,
-		methodDecl.sourceEnd);
-}
 public void illegalModifierForLocalClass(SourceTypeBinding type) {
 	String[] arguments = new String[] {new String(type.sourceName())};
 	this.handle(
