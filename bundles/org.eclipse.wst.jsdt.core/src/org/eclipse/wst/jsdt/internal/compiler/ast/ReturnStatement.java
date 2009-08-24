@@ -39,16 +39,11 @@ public ReturnStatement(Expression expression, int sourceStart, int sourceEnd) {
 	this.expression = expression ;
 }
 
-public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {	// here requires to generate a sequence of finally blocks invocations depending corresponding
-	// to each of the traversed try statements, so that execution will terminate properly.
-
-	// lookup the label, this should answer the returnContext
-
+public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	if (this.expression != null) {
 		flowInfo = this.expression.analyseCode(currentScope, flowContext, flowInfo);
 	}
-//	this.initStateIndex =
-//		currentScope.methodScope().recordInitializationStates(flowInfo);
+
 	// compute the return sequence (running the finally blocks)
 	FlowContext traversedContext = flowContext;
 	int subCount = 0;
