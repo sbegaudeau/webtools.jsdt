@@ -342,14 +342,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	protected abstract void createTag();
 	protected abstract Object createTypeReference(int primitiveToken);
 
-	private int getIndexPosition() {
-		if (this.index > this.lineEnd) {
-			return this.lineEnd;
-		} else {
-			return this.index-1;
-		}
-	}
-
 	/**
 	 * Search the line number corresponding to a specific position.
 	 * Warning: returned position is 1-based index!
@@ -698,9 +690,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 		this.identifierPtr = -1;
 		this.identifierLengthPtr = -1;
 		boolean hasMultiLines = this.scanner.currentPosition > (this.lineEnd+1);
-		boolean isTypeParam = false;
 		boolean valid = true, empty = true;
-		boolean mayBeGeneric = this.sourceLevel >= ClassFileConstants.JDK1_5;
 		boolean isParmType=false;
 		int token = -1;
 		nextToken: while (true) {
@@ -720,18 +710,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						break nextToken;
 					}
 					// fall through next case to report error
-				case TerminalTokens.TokenNameLESS:
-					if (valid && mayBeGeneric) {
-						// store '<' in identifiers stack as we need to add it to tag element (bug 79809)
-						pushIdentifier(true, true);
-						start = this.scanner.getCurrentTokenStartPosition();
-						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
-						isTypeParam = true;
-						break nextToken;
-					}
-					// fall through next case to report error
 				default:
-					if (token == TerminalTokens.TokenNameLEFT_SHIFT) isTypeParam = true;
 					if (valid && !hasMultiLines) start = this.scanner.getCurrentTokenStartPosition();
 					valid = false;
 					if (!hasMultiLines) {
@@ -749,8 +728,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					if (this.reportProblems)
 						if (empty)
 							this.sourceParser.problemReporter().javadocMissingParamName(start, end, this.sourceParser.modifiers);
-						else if (mayBeGeneric && isTypeParam)
-							this.sourceParser.problemReporter().javadocInvalidParamTypeParameter(start, end);
 						else
 							this.sourceParser.problemReporter().javadocInvalidParamTagName(start, end);
 					if (!isCompletionParser) {
@@ -772,90 +749,6 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			}
 		}
 
-		// Scan more tokens for type parameter declaration
-		if (isTypeParam && mayBeGeneric) {
-			// Get type parameter name
-			nextToken: while (true) {
-				this.currentTokenType = -1;
-				try {
-					token = readToken();
-				} catch (InvalidInputException e) {
-					valid = false;
-				}
-				switch (token) {
-					case TerminalTokens.TokenNameWHITESPACE:
-						if (valid && this.scanner.currentPosition <= (this.lineEnd+1)) break;
-						// if not valid fall through next case to report error
-					case TerminalTokens.TokenNameEOF:
-						if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidParamTypeParameter(start, end);
-						if (!isCompletionParser) {
-							this.scanner.currentPosition = start;
-							this.index = start;
-						}
-						this.currentTokenType = -1;
-						this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
-						return false;
-					case TerminalTokens.TokenNameIdentifier :
-						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
-						if (valid) {
-							// store param name id
-							pushIdentifier(false, false);
-							break nextToken;
-						}
-						break;
-					default:
-						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
-						valid = false;
-						break;
-				}
-			}
-
-			// Get last character of type parameter declaration
-			boolean spaces = false;
-			nextToken: while (true) {
-				this.currentTokenType = -1;
-				try {
-					token = readToken();
-				} catch (InvalidInputException e) {
-					valid = false;
-				}
-				switch (token) {
-					case TerminalTokens.TokenNameWHITESPACE:
-						if (this.scanner.currentPosition > (this.lineEnd+1)) {
-							// do not accept type parameter declaration on several lines
-							hasMultiLines = true;
-							valid = false;
-						}
-						spaces = true;
-						if (valid) break;
-						// if not valid fall through next case to report error
-					case TerminalTokens.TokenNameEOF:
-						if (this.reportProblems) this.sourceParser.problemReporter().javadocInvalidParamTypeParameter(start, end);
-						if (!isCompletionParser) {
-							this.scanner.currentPosition = start;
-							this.index = start;
-						}
-						this.currentTokenType = -1;
-						this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
-						return false;
-
-					case TerminalTokens.TokenNameGREATER:
-						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
-						if (valid) {
-							// store '>' in identifiers stack as we need to add it to tag element (bug 79809)
-							pushIdentifier(false, true);
-							break nextToken;
-						}
-						break;
-					default:
-						if (!spaces) end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
-						valid = false;
-						break;
-				}
-			}
-		}
-
-
 		// Verify that tag name is well followed by white spaces
 		if (valid) {
 			this.currentTokenType = -1;
@@ -869,7 +762,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 				this.scanner.currentPosition = restart;
 				this.index = restart;
 				this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
-				valid= pushParamName(isTypeParam);
+				valid= pushParamName(false);
 				if (valid && isParmType  )
 				{
 					createParamType(typeReference);
@@ -889,10 +782,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 			end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
 		}
 		if (this.reportProblems)
-			if (mayBeGeneric && isTypeParam)
-				this.sourceParser.problemReporter().javadocInvalidParamTypeParameter(start, end);
-			else
-				this.sourceParser.problemReporter().javadocInvalidParamTagName(start, end);
+			this.sourceParser.problemReporter().javadocInvalidParamTagName(start, end);
 		this.scanner.currentPosition = start;
 		this.index = start;
 		this.currentTokenType = -1;
