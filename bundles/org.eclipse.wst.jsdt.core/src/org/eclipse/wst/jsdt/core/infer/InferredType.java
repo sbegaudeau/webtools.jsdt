@@ -72,6 +72,7 @@ public class InferredType extends ASTNode {
 	public final static char[] OBJECT_LITERAL_NAME = new char[]{'{','}'};
 
 	public final static char[] ARRAY_NAME=new char[]{'A','r','r','a','y'};
+	public final static char[] FUNCTION_NAME=new char[]{'F','u','n','c','t','i','o','n'};
 	public final static char[] GLOBAL_NAME=new char[]{'G','l','o','b','a','l'};
 
 	public Object userData;
@@ -333,7 +334,12 @@ public class InferredType extends ASTNode {
 
 	public boolean isArray()
 	{
-		return ARRAY_NAME.equals(name);
+		return CharOperation.equals(ARRAY_NAME, name);
+	}
+	
+	public boolean isFunction()
+	{
+		return CharOperation.equals(FUNCTION_NAME, name);
 	}
 
 	public StringBuffer print(int indent, StringBuffer output) {

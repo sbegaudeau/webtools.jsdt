@@ -81,7 +81,7 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
 	public  InferredType BooleanType=new InferredType(new char[]{'B','o','o','l','e','a','n'});
-	public  InferredType FunctionType=new InferredType(new char[]{'F','u','n','c','t','i','o','n'});
+	public  InferredType FunctionType=new InferredType(InferredType.FUNCTION_NAME);
 	public  InferredType ArrayType=new InferredType(InferredType.ARRAY_NAME);
 	public  InferredType VoidType=new InferredType(new char[]{'v','o','i','d'});
 	public  InferredType ObjectType=new InferredType(InferredType.OBJECT_NAME);
@@ -95,7 +95,7 @@ public class InferEngine extends ASTVisitor {
 		WellKnownTypes.put(new char[]{'S','t','r','i','n','g'},null);
 		WellKnownTypes.put(new char[]{'N','u','m','b','e','r'},null);
 		WellKnownTypes.put(new char[]{'B','o','o','l','e','a','n'},null);
-		WellKnownTypes.put(new char[]{'F','u','n','c','t','i','o','n'},null);
+		WellKnownTypes.put(InferredType.FUNCTION_NAME,null);
 		WellKnownTypes.put(new char[]{'D','a','t','e'},null);
 		WellKnownTypes.put(new char[]{'M','a','t','h'},null);
 		WellKnownTypes.put(new char[]{'R','e','g','E','x','p'},null);

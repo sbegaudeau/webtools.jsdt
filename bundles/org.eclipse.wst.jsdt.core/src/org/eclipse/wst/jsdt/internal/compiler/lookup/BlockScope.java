@@ -112,7 +112,10 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 	binding.id = (outerMostMethodScope!=null)? outerMostMethodScope.analysisIndex++ : this.compilationUnitScope().analysisIndex++;
 	// share the outermost method scope analysisIndex
 
-	if (binding.declaration!=null && binding.declaration.initialization instanceof FunctionExpression) {
+	// added second checked for inferredType to fix
+	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=268991
+	if ((binding.declaration!=null && binding.declaration.initialization instanceof FunctionExpression) || 
+			(binding.declaration.inferredType != null && binding.declaration.inferredType.isFunction())) {
 
 		MethodBinding methodBinding=
 			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null,this.enclosingTypeBinding());
