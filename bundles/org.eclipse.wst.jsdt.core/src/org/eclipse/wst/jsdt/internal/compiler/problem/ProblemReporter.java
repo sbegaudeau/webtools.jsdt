@@ -253,7 +253,6 @@ public static long getIrritant(int problemID) {
 		case IProblem.JavadocInvalidThrowsClass:
 		case IProblem.JavadocInvalidSeeReference:
 		case IProblem.JavadocInvalidParamTagName:
-		case IProblem.JavadocInvalidParamTagTypeParameter:
 		case IProblem.JavadocMalformedSeeReference:
 		case IProblem.JavadocInvalidSeeHref:
 		case IProblem.JavadocInvalidSeeArgs:
@@ -2894,9 +2893,6 @@ public void javadocInvalidMethod(MessageSend messageSend, MethodBinding method, 
 }
 public void javadocInvalidParamTagName(int sourceStart, int sourceEnd) {
 	this.handle(IProblem.JavadocInvalidParamTagName, NoArgument, NoArgument, sourceStart, sourceEnd);
-}
-public void javadocInvalidParamTypeParameter(int sourceStart, int sourceEnd) {
-	this.handle(IProblem.JavadocInvalidParamTagTypeParameter, NoArgument, NoArgument, sourceStart, sourceEnd);
 }
 public void javadocInvalidReference(int sourceStart, int sourceEnd) {
 	this.handle(IProblem.JavadocInvalidSeeReference, NoArgument, NoArgument, sourceStart, sourceEnd);

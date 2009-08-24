@@ -625,7 +625,6 @@ void setSourceStart(int sourceStart);
 	int JavadocInvalidMemberTypeQualification = Javadoc + Internal + 466;
 	int JavadocMissingIdentifier = Javadoc + Internal + 467;
 	int JavadocNonStaticTypeFromStaticInvocation = Javadoc + Internal + 468;
-	int JavadocInvalidParamTagTypeParameter = Javadoc + Internal + 469;
 	int JavadocUnexpectedTag = Javadoc + Internal + 470;
 	int JavadocMissingParamTag = Javadoc + Internal + 471;
 	int JavadocMissingParamName = Javadoc + Internal + 472;
