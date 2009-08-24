@@ -1690,8 +1690,17 @@ public class InferEngine extends ASTVisitor {
 
 					if( varDecl != null ){
 						type = varDecl.inferredType; //could be null
-						if (type!=null && !type.isAnonymous)
-							type=createAnonymousType(varDecl);
+						if (type!=null && !type.isAnonymous) {
+							if(varDecl.initialization instanceof IAllocationExpression && !type.isFunction()) {
+								type = createAnonymousType(varDecl);
+							} else {
+								InferredType superType = type;
+								type = addType(varDecl.name, true);
+								type.superClass = superType;
+							}
+							type.updatePositions(varDecl.sourceStart(), varDecl.sourceEnd());
+						}
+							
 					}
 
 				}
