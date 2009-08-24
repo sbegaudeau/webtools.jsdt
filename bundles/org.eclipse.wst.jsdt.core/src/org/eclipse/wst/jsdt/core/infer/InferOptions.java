@@ -73,7 +73,7 @@ public class InferOptions {
 	{
 		this.useAssignments=true;
 		this.useInitMethod=true;
-		this.saveArgumentComments=false;
+		this.saveArgumentComments=true;
 	}
 
 	public Map getMap() {
