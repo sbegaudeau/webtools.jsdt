@@ -935,4 +935,15 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 		
+		public void testBUG286010() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"var MyFunc = function () {};\n" +
+				"MyFunc.myMeth = function () {};",
+				"X.js",
+				"class MyFunc extends Function{\n  static void myMeth()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 }
