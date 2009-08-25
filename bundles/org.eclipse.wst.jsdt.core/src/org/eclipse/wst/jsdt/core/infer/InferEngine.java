@@ -1053,7 +1053,7 @@ public class InferEngine extends ASTVisitor {
 		return null;
 	}
 
-	private void populateType(InferredType type, ObjectLiteral objLit, boolean isStatic) {
+	protected void populateType(InferredType type, ObjectLiteral objLit, boolean isStatic) {
 		if (objLit.inferredType==null) {
 			objLit.inferredType=type;
 			if (objLit.fields != null) {
@@ -1536,7 +1536,7 @@ public class InferEngine extends ASTVisitor {
 				System.arraycopy(
 						compUnit.inferredTypes,
 						0,
-						(compUnit.inferredTypes = new InferredType[compUnit.numberInferredTypes  * 2]),
+						(compUnit.inferredTypes = new InferredType[compUnit.numberInferredTypes  + 16]),
 						0,
 						compUnit.numberInferredTypes );
 			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
