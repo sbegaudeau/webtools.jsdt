@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
@@ -166,11 +165,6 @@ public void resolve(BlockScope scope) {
 			|| expressionType.isCompatibleWith(methodType)) {
 
 		return;
-	} else if (scope.isBoxingCompatibleWith(expressionType, methodType)
-						|| (expressionType.isBaseType()  // narrowing then boxing ?
-								&& scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5 // autoboxing
-								&& !methodType.isBaseType()
-								&& this.expression.isConstantValueOfTypeAssignableToType(expressionType, scope.environment().computeBoxingType(methodType)))) {
 	}
 	scope.problemReporter().typeMismatchError(expressionType, methodType, this.expression);
 }
