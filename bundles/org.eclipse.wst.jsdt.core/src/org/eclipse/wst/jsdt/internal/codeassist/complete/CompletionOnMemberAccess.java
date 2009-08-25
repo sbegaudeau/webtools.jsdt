@@ -73,6 +73,8 @@ public class CompletionOnMemberAccess extends FieldReference {
 		}
 		if ((receiver.bits&Binding.TYPE)!=0)
 			isStatic=true;
+		if(this.receiverType != null && this.receiverType.isAnonymousType())
+			isStatic=false;
 
 		if (this.receiverType == null && receiver instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) receiver;

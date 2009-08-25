@@ -5505,20 +5505,6 @@ protected MessageSend newMessageSend() {
 	}
 	return m;
 }
-protected MessageSend newMessageSendWithTypeArguments() {
-	MessageSend m = new MessageSend();
-	int length;
-	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
-		this.expressionPtr -= length;
-		System.arraycopy(
-			this.expressionStack,
-			this.expressionPtr + 1,
-			m.arguments = new Expression[length],
-			0,
-			length);
-	}
-	return m;
-}
 protected void optimizedConcatNodeLists() {
 	/*back from a recursive loop. Virtualy group the
 	astNode into an array using this.astLengthStack*/
