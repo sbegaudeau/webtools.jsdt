@@ -439,7 +439,8 @@ if( this.isPrototype() ){
 
 		if (!methodBinding.isStatic()) {
 			if (receiverIsType && methodBinding.isValidBinding() && !methodBinding.isConstructor()) {
-				scope.problemReporter().mustUseAStaticMethod(this, methodBinding);
+				if(this.receiverType == null || !this.receiverType.isAnonymousType())
+					scope.problemReporter().mustUseAStaticMethod(this, methodBinding);
 			}
 		}
 		else 
