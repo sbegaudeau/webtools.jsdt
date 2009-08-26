@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -74,7 +75,7 @@ public class InferrenceManager {
 	public InferrenceProvider [] getInferenceProviders(IInferenceFile script)
 	{
 		InferrenceProvider[] inferenceProviders = getInferenceProviders();
-		ArrayList extProviders=new ArrayList();
+		List extProviders=new ArrayList(inferenceProviders.length);
 		for (int i = 0; i < inferenceProviders.length; i++) {
 			    int applies = inferenceProviders[i].applysTo(script);
 			    switch (applies) {
@@ -103,7 +104,7 @@ public class InferrenceManager {
 		if (inferenceProviders.length==1)
 			  return getSingleEngine(inferenceProviders[0]);
 			
-		ArrayList extEngines=new ArrayList();
+		List extEngines=new ArrayList();
 		for (int i = 0; i < inferenceProviders.length; i++) {
 			    if (script.compilationResult!=null && script.compilationResult.compilationUnit!=null)
 			    {

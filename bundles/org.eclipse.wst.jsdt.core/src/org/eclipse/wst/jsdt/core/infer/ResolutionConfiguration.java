@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ public class ResolutionConfiguration {
 	/**
 	 * Get the default list of files to be looked at when resolving
 	 * a name 
-	 * @return a list of files, relative to the project, 
+	 * @return a list of file paths as strings, relative to the JavaScript project root 
 	 */
 	public String [] getContextIncludes()
 	{
@@ -34,9 +34,9 @@ public class ResolutionConfiguration {
 	
 	/**
 	 * Determine if all files in include path should be searched to resolve a name.
-	 * If false, names will be resolved using only librarys, imports, and context includes 
-	 * @return true 
+	 * If false, names will be resolved using only libraries, imports, and context includes 
 	 * 
+	 * @return true 
 	 */
 	public boolean searchAllFiles()
 	{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.core.infer;
 
 
 /**
- *  Implemented by extenders of org.eclipse.wst.jsdt.core.infer.inferrenceSupport extension point
+ * Implemented by contributors to the org.eclipse.wst.jsdt.core.infer.inferrenceSupport extension point
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
  * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
@@ -21,13 +21,25 @@ package org.eclipse.wst.jsdt.core.infer;
  */
 public interface InferrenceProvider {
 	
+	/**
+	 * <p>Indicates that this InferrenceProvider, and its engine, are the only ones that should apply.</p>
+	 * <p>Its use is discouraged.</p>
+	 */
 	public static final int ONLY_THIS = 1;
+
+	/**
+	 * <p>Indicates that this InferrenceProvider, and its engine, do not apply.</p>
+	 */
 	public static final int NOT_THIS = 2;
+	
+	/**
+	 * <p>Indicates that this InferrenceProvider, and its engine, should apply to a script file.</p>
+	 */
 	public static final int MAYBE_THIS = 3;
 	
 	/**
-	 * Get the inference engine for this inference provider
-	 * @return Inference engine  
+	 * Get the inference engine for this inference provider, or null if one will not be provided.  Implementors returning null are expected to return {@link #NOT_THIS} for all calls to {@link #getInferEngine()}
+	 * @return an inference engine
 	 */
 	public InferEngine getInferEngine();
 	
@@ -35,7 +47,7 @@ public interface InferrenceProvider {
 	/**
 	 * Determine if this inference provider applies to a script
 	 * @param scriptFile The script that the inferencing will be done for
-	 * @return  InferrenceProvider.ONLY_THIS, InferrenceProvider.NOT_THIS, or InferrenceProvider.MAYBE_THIS, depending on how much
+	 * @return  {@link #ONLY_THIS}, {@link #NOT_THIS}, {@link #MAYBE_THIS} depending on how much
 	 * this inference provider applies to the specified script.
 	 */
 	public int applysTo(IInferenceFile scriptFile);
@@ -54,7 +66,8 @@ public interface InferrenceProvider {
 	public ResolutionConfiguration getResolutionConfiguration();
 
 	/**
-	 * @return the RefactoringSupport used to provide refactoring for the inferred type.
+	 * @return the RefactoringSupport used to provide refactoring for inferred
+	 *         types, or null if it is not offered.
 	 */
 	public RefactoringSupport getRefactoringSupport();
 }
