@@ -24,5 +24,5 @@ package org.eclipse.wst.jsdt.core.ast;
  */
 
 public interface IFieldReference extends IReference{
-
+	char[] getToken();
 }
