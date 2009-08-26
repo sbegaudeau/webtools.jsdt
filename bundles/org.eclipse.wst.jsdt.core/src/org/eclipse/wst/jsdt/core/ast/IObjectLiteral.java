@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.core.infer.InferredType;
  * (repeatedly) as the API evolves.
  */
 
-public interface IObjectLiteral {
+public interface IObjectLiteral extends IExpression {
 	public InferredType getInferredType();
 	public void setInferredType(InferredType type);
 	public IObjectLiteralField[] getFields();
