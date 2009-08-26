@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
+import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
@@ -27,6 +28,7 @@ import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.core.ast.INumberLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
+import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
@@ -47,7 +49,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
@@ -208,9 +209,9 @@ public class InferEngine extends ASTVisitor {
 
 	}
 
-	public void setCompilationUnit(CompilationUnitDeclaration compilationUnit) {
-		this.compUnit = compilationUnit;
-		buildDefinedMembers(compilationUnit.statements,null);
+	public void setCompilationUnit(CompilationUnitDeclaration scriptFileDeclaration) {
+		this.compUnit = scriptFileDeclaration;
+		buildDefinedMembers(scriptFileDeclaration.getStatements(),null);
 	}
 
 
@@ -1601,7 +1602,7 @@ public class InferEngine extends ASTVisitor {
 
 	}
 
-	private void buildDefinedMembers(ProgramElement[] statements, IArgument[] arguments) {
+	private void buildDefinedMembers(IProgramElement[] statements, IArgument[] arguments) {
 
 		if (arguments!=null)
 		{
@@ -1612,14 +1613,14 @@ public class InferEngine extends ASTVisitor {
 		if (statements!=null)
 		{
 			for (int i = 0; i < statements.length; i++) {
-				if (statements[i] instanceof LocalDeclaration) {
-					LocalDeclaration local = (LocalDeclaration) statements[i];
-					this.currentContext.addMember( local.name, local );
+				if (statements[i] instanceof ILocalDeclaration) {
+					ILocalDeclaration local = (ILocalDeclaration) statements[i];
+					this.currentContext.addMember( local.getName(), local );
 				}
-				else if (statements[i] instanceof AbstractMethodDeclaration) {
-					AbstractMethodDeclaration method = (AbstractMethodDeclaration) statements[i];
-					if (method.selector!=null)
-						this.currentContext.addMember( method.selector, method );
+				else if (statements[i] instanceof IAbstractFunctionDeclaration) {
+					IAbstractFunctionDeclaration method = (IAbstractFunctionDeclaration) statements[i];
+					if (method.getName()!=null)
+						this.currentContext.addMember( method.getName(), method );
 				}
 			}
 		}
