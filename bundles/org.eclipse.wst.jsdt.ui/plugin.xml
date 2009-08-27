@@ -604,6 +604,18 @@
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.buildpath"/>
       </page>
+      
+      <page
+            name="%buildPathPageName"        
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
+            class="org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage"
+            id="org.eclipse.wst.jsdt.ui.propertyPages.BuildPathsPropertyPageMenu">
+         <enabledWhen>
+		     <adapt type="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot"/>       
+         </enabledWhen>
+         <keywordReference id="org.eclipse.wst.jsdt.ui.buildpath"/>
+      </page>
+      
       <page
             name="%codeStylePageName"
             category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
@@ -6125,79 +6137,12 @@
    
    <!--  JSDT context menu contributions for the JavaScript Support object  -->
    
-   
-   <extension
-         point="org.eclipse.ui.popupMenus">
-  		<objectContribution
-            objectClass="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot"
-            adaptable="true"
-            id="org.eclipse.wst.jsdt.ui.javascript.support">
-            <menu
-               label="%ActionLibraryMenu"
-               id="org.eclipse.wst.jsdt.ui.project.tools">
-            <separator
-               name="group0">
-            </separator>
-           <separator
-               name="group1">
-            </separator>
-         </menu>
-
-   		<action
-            class="org.eclipse.wst.jsdt.ui.JavaScriptSuperTypeAction"
-            label="%ActionSetGlobalType"
-            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
-            enablesFor="1"
-            id="org.eclipse.wst.jsdt.internal.ui.configure.super.type">
-      	</action>
-      	<!--
-      	 <action
-            class="org.eclipse.wst.jsdt.internal.ui.SetupProjectsWizzard"
-            label="Add/Remove AJAX Toolkits"
-            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
-            enablesFor="1"
-            id="org.eclipse.wst.jsdt.internal.ui.configure.scope">
-      	</action>
-      	-->
-      	<action
-            class="org.eclipse.wst.jsdt.ui.JavaScriptSourceFoldersAction"
-            label="%ActionEditSourceFolders"
-            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
-            enablesFor="1"
-            id="org.eclipse.wst.jsdt.internal.ui.configure.source.folders">
-      	</action>     	
-         <action
-            class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
-            label="%ActionCongigureScope"
-            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
-            enablesFor="1"
-            id="org.eclipse.wst.jsdt.internal.ui.configure.scope">
-      	</action>
-        <action
-            class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
-            label="%ActionProperties"
-            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group1"
-            enablesFor="1"
-            id="org.eclipse.wst.jsdt.internal.ui.configure.javascript.properties">
-      	</action>      	
-   		</objectContribution>
-   </extension>
-   
-   
-   
-   
    <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer">
      <JsGlobalScopeUIInitializer
      	id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"
      	class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryContainerUIExtension">
      </JsGlobalScopeUIInitializer>
    </extension>
-   
-   
-   
-   
-   
-   
    
    <!--  ENd menu  -->
       

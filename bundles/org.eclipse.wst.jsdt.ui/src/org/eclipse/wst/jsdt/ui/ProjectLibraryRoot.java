@@ -16,6 +16,7 @@ package org.eclipse.wst.jsdt.ui;
 import java.util.ArrayList;
 
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -151,6 +152,8 @@ public class ProjectLibraryRoot implements IAdaptable{
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class) {
 			return new WorkBenchAdapter();
+		} else if(adapter == IProject.class){
+			return getProject().getProject();
 		}
 		
 		return null;
