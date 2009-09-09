@@ -657,7 +657,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					System.out.println(parsedUnit.toString());
 				}
 
-				// check for inferred type names in the selection
+				// check for inferred types declared with their names in the selection
 				this.parser.inferTypes(parsedUnit, this.compilerOptions);
 				for (int i = 0; i < parsedUnit.inferredTypes.length; i++) {
 					if (parsedUnit.inferredTypes[i] != null && parsedUnit.inferredTypes[i].getNameStart() <= selectionSourceEnd && selectionSourceStart <= parsedUnit.inferredTypes[i].getNameStart() +  parsedUnit.inferredTypes[i].getName().length) {
@@ -1107,7 +1107,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	private boolean selectDeclaration(CompilationUnitDeclaration compilationUnit){
 
 		// the selected identifier is not identical to the parser one (equals but not identical),
-		// for traversing the parse tree, the parser assist identifier is necessary for identitiy checks
+		// for traversing the parse tree, the parser assist identifier is necessary for identity checks
 		char[] assistIdentifier = this.getParser().assistIdentifier();
 		if (assistIdentifier == null) return false;
 

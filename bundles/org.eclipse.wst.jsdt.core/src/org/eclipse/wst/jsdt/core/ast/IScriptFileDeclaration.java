@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public interface IScriptFileDeclaration extends IASTNode{
 	char[] getFileName();
 	
 	/**
-	 * get the inference ID for the script if it is located in a containter that specified an Inference ID
+	 * get the inference ID for the script if it is located in a container that specified an Inference ID
 	 * @return the inference ID for the script, could be null 
 	 */
 	String getInferenceID();
