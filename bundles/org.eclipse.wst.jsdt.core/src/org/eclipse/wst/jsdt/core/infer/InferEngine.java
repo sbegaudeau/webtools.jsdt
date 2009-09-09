@@ -1125,23 +1125,26 @@ public class InferEngine extends ASTVisitor {
 							functionExpression.getMethodDeclaration().modifiers=javaDoc.modifiers;
 						  handleFunctionDeclarationArguments(functionExpression.getMethodDeclaration(),javaDoc);
 						}
-					    if (returnType!=null)
+					    if (returnType!=null && functionExpression.getMethodDeclaration().getInferredType() == null)
 					    {
-					    	functionExpression.getMethodDeclaration().inferredType=returnType;
+					    	functionExpression.getMethodDeclaration().setInferredType(returnType);
 					    }
 
 
 					} else //attribute
 					{
-						InferredAttribute attribute = type.addAttribute(name,
-								field.getFieldName());
-						attribute.nameStart = nameStart;
-						attribute.isStatic=isStatic;
-						//@GINO: recursion might not be the best idea
-						if (returnType!=null)
-							attribute.type=returnType;
-						else
-						  attribute.type = getTypeOf(field.getInitializer());
+						InferredAttribute attribute = type.findAttribute(name);
+						if (attribute == null) {
+							attribute = type.addAttribute(name,
+									field.getFieldName());
+							attribute.nameStart = nameStart;
+							attribute.isStatic=isStatic;
+							//@GINO: recursion might not be the best idea
+							if (returnType!=null)
+								attribute.type=returnType;
+							else
+							  attribute.type = getTypeOf(field.getInitializer());
+						}
 					}
 				}
 			}
@@ -1319,6 +1322,9 @@ public class InferEngine extends ASTVisitor {
 		IArgument[] arguments = methodDeclaration.getArguments();
 		if (arguments!=null)
 		for (int i = 0; i < arguments.length; i++) {
+				if (arguments[i].getInferredType() != null)
+					continue;
+
 			JavadocSingleNameReference param = javadoc.findParam(arguments[i].getName());
 			if (param!=null)
 			{
@@ -1536,27 +1542,8 @@ public class InferEngine extends ASTVisitor {
 	 * @return new Inferred type
 	 */
 	protected InferredType addType(char[] className, boolean isDefinition) {
+		InferredType type = compUnit.addType(className, isDefinition, this.inferenceProvider.getID());
 
-		InferredType type = compUnit.findInferredType(className);
-
-
-		if (type==null)
-		{
-			if (compUnit.numberInferredTypes == compUnit.inferredTypes.length)
-
-				System.arraycopy(
-						compUnit.inferredTypes,
-						0,
-						(compUnit.inferredTypes = new InferredType[compUnit.numberInferredTypes  + 16]),
-						0,
-						compUnit.numberInferredTypes );
-			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
-			type.inferenceProviderID=this.inferenceProvider.getID();
-			compUnit.inferredTypesHash.put(className,type);
-
-		}
-		if (isDefinition)
-			type.isDefinition=isDefinition;
 		return type;
 	}
 

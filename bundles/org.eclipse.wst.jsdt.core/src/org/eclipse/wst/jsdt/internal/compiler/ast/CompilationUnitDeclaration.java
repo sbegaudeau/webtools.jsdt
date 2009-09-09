@@ -674,4 +674,27 @@ public class CompilationUnitDeclaration
 		}
 	}
 
+	public InferredType addType(char[] className, boolean isDefinition, String providerId) {
+
+		InferredType type = findInferredType(className);
+
+
+		if (type==null)
+		{
+			if (numberInferredTypes == inferredTypes.length)
+
+				System.arraycopy(
+						inferredTypes,
+						0,
+						(inferredTypes = new InferredType[numberInferredTypes  + 16]),
+						0,
+						numberInferredTypes );
+			type=inferredTypes[numberInferredTypes ++] = new InferredType(className);
+			type.inferenceProviderID = providerId;
+			inferredTypesHash.put(className,type);
+		}
+		if (isDefinition)
+			type.isDefinition=isDefinition;
+		return type;
+	}
 }
