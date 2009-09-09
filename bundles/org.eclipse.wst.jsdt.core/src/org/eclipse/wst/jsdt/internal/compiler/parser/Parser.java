@@ -7062,11 +7062,14 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 //	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
 	for (int i=0;i<this.inferenceEngines.length;i++)
 	{
+		try {
 			InferEngine engine=this.inferenceEngines[i];
 			engine.initialize();
 			engine.setCompilationUnit(parsedUnit);
 			engine.doInfer();
-
+		} catch (RuntimeException e) {
+			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error during type inferencing");
+		}
 	}
 	parsedUnit.typesHaveBeenInferred=true;
 }
