@@ -125,6 +125,14 @@
             class="org.eclipse.wst.jsdt.internal.ui.text.correction.QuickFixProcessor"
             id="org.eclipse.wst.jsdt.ui.text.correction.QuickFixProcessor">
       </quickFixProcessor>
+      <quickFixProcessor
+            name="%spellingQuickFixProcessor"
+            class="org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellingQuickFixProcessor"
+            id="org.eclipse.wst.jsdt.ui.text.spelling.SpellingQuickFixProcessor" >
+            <handledMarkerTypes>
+	            <markerType id="org.eclipse.ui.workbench.texteditor.spelling"/>
+            </handledMarkerTypes>
+      </quickFixProcessor>
    </extension>
    
    <extension
@@ -415,6 +423,9 @@
                id="org.eclipse.wst.jsdt.ui.JavaPerspective">
          </perspectiveShortcut>
       </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.wst.web.ui.webDevPerspective">
+         <perspectiveShortcut id="org.eclipse.wst.jsdt.ui.JavaPerspective"/>
+      </perspectiveExtension> 
       
       <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
          <showInPart id="org.eclipse.wst.jsdt.ui.PackageExplorer"/>
@@ -628,6 +639,7 @@
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.codestyle"/>
       </page>
+      <!--
       <page
             name="%importOrganizePageName"
             category="org.eclipse.wst.jsdt.ui.propertyPages.CodeStylePreferencePage"
@@ -640,6 +652,7 @@
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.organizeimports"/>
       </page>
+      -->
       <page
             name="%codeFormatterPageName"
             category="org.eclipse.wst.jsdt.ui.propertyPages.CodeStylePreferencePage"

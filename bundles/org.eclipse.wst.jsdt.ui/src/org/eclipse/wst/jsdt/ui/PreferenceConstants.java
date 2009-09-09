@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui;
 
-import java.util.Locale;
-
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -33,8 +31,6 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.SemanticHighlightings;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.FormatterProfileManager;
-import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingEngine;
-import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptColorConstants;
 
 /**
@@ -3566,38 +3562,6 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.EDITOR_MARK_METHOD_EXIT_POINTS, true);
 		store.setDefault(PreferenceConstants.EDITOR_MARK_BREAK_CONTINUE_TARGETS, true);
 		store.setDefault(PreferenceConstants.EDITOR_MARK_IMPLEMENTORS, true);
-		
-		
-		// spell checking
-		store.setDefault(PreferenceConstants.SPELLING_LOCALE, "en_US"); //$NON-NLS-1$
-		String isInitializedKey= "spelling_locale_initialized"; //$NON-NLS-1$
-		if (!store.getBoolean(isInitializedKey)) {
-			store.setValue(isInitializedKey, true);
-			Locale locale= SpellCheckEngine.getDefaultLocale();
-			locale= SpellCheckEngine.findClosestLocale(locale);
-			if (locale != null)
-				store.setValue(PreferenceConstants.SPELLING_LOCALE, locale.toString());
-		}
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_DIGITS, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_MIXED, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_SENTENCE, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_UPPER, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_URLS, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_SINGLE_LETTERS, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_AMPERSAND_IN_PROPERTIES, true);
-		store.setDefault(JavaSpellingEngine.SPELLING_IGNORE_JAVA_STRINGS, true);
-		store.setDefault(PreferenceConstants.SPELLING_IGNORE_NON_LETTERS, true);
-		store.setDefault(PreferenceConstants.SPELLING_USER_DICTIONARY, ""); //$NON-NLS-1$
-		
-		// Note: For backwards compatibility we must use the property and not the workspace default
-		store.setDefault(PreferenceConstants.SPELLING_USER_DICTIONARY_ENCODING, System.getProperty("file.encoding")); //$NON-NLS-1$
-		
-		store.setDefault(PreferenceConstants.SPELLING_PROPOSAL_THRESHOLD, 20);
-		/*
-		 * XXX: This is currently disabled because the spelling engine
-		 * cannot return word proposals but only correction proposals.
-		 */
-		store.setToDefault(PreferenceConstants.SPELLING_ENABLE_CONTENTASSIST);
 		
 		
 		// folding

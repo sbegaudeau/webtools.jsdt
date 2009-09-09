@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControlExtension2;
 import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.quickassist.IQuickFixableAnnotation;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.CompositeRuler;
 import org.eclipse.jface.text.source.IAnnotationAccess;
@@ -35,8 +36,8 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.ui.texteditor.AnnotationPreference;
 import org.eclipse.ui.texteditor.AnnotationPreferenceLookup;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaMarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitDocumentProvider.ProblemAnnotation;
@@ -180,7 +181,7 @@ public class JavaExpandHover extends AnnotationExpandHover {
 		if (annotation.hasOverlay())
 			return (!isIncluded(annotation.getOverlay(), showTemporaryProblems));
 		
-		return showTemporaryProblems && JavaCorrectionProcessor.hasCorrections((Annotation)annotation);
+		return showTemporaryProblems && (JavaCorrectionProcessor.hasCorrections((Annotation) annotation) || (annotation instanceof IQuickFixableAnnotation && ((IQuickFixableAnnotation) annotation).isQuickFixableStateSet() && ((IQuickFixableAnnotation) annotation).isQuickFixable()));
 	}
 
 	/*

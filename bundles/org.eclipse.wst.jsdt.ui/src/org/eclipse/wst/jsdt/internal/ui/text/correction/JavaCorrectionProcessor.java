@@ -29,6 +29,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ICompletionListener;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.quickassist.IQuickAssistInvocationContext;
+import org.eclipse.jface.text.quickassist.IQuickFixableAnnotation;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ltk.core.refactoring.NullChange;
@@ -38,6 +39,7 @@ import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.texteditor.SimpleMarkerAnnotation;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.IJavaAnnotation;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
@@ -53,6 +55,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 
 	private static final String QUICKFIX_PROCESSOR_CONTRIBUTION_ID= "quickFixProcessors"; //$NON-NLS-1$
 	private static final String QUICKASSIST_PROCESSOR_CONTRIBUTION_ID= "quickAssistProcessors"; //$NON-NLS-1$
+	public static final int IQUICKFIXABLE_PROBLEM_ID = IProblem.Javadoc + IProblem.Internal + 1025;
 
 	private static ContributedProcessorDescriptor[] fgContributedAssistProcessors= null;
 	private static ContributedProcessorDescriptor[] fgContributedCorrectionProcessors= null;
@@ -102,7 +105,7 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 	}
 
 	public static boolean isQuickFixableType(Annotation annotation) {
-		return (annotation instanceof IJavaAnnotation || annotation instanceof SimpleMarkerAnnotation) && !annotation.isMarkedDeleted();
+		return (annotation instanceof IJavaAnnotation || annotation instanceof SimpleMarkerAnnotation || annotation instanceof IQuickFixableAnnotation) && !annotation.isMarkedDeleted();
 	}
 
 
@@ -119,6 +122,9 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 		}
 		if (annotation instanceof SimpleMarkerAnnotation) {
 			return hasCorrections(((SimpleMarkerAnnotation) annotation).getMarker());
+		}
+		if (annotation instanceof IQuickFixableAnnotation) {
+			return ((IQuickFixableAnnotation) annotation).isQuickFixableStateSet() && ((IQuickFixableAnnotation) annotation).isQuickFixable();
 		}
 		return false;
 	}
@@ -231,6 +237,11 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 			} else if (addQuickFixes && curr instanceof SimpleMarkerAnnotation) {
 				// don't collect if annotation is already a java annotation
 				collectMarkerProposals((SimpleMarkerAnnotation) curr, proposals);
+			} else if(curr instanceof IQuickFixableAnnotation) {
+				IProblemLocation problemLocation= getProblemLocation(curr, model);
+				if (problemLocation != null) {
+					problems.add(problemLocation);
+				}
 			}
 		}
 		MultiStatus resStatus= null;
@@ -266,6 +277,13 @@ public class JavaCorrectionProcessor implements org.eclipse.jface.text.quickassi
 				return new ProblemLocation(pos.getOffset(), pos.getLength(), javaAnnotation); // java problems all handled by the quick assist processors
 			}
 		}
+		return null;
+	}
+
+	private static IProblemLocation getProblemLocation(Annotation annotation, IAnnotationModel model) {
+		Position pos= model.getPosition(annotation);
+		if(pos != null)
+			return new ProblemLocation(pos.getOffset(), pos.getLength(), IQUICKFIXABLE_PROBLEM_ID, new String[]{annotation.getText()}, false, annotation.getType());
 		return null;
 	}
 

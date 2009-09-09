@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.ISourceRange;
@@ -188,9 +189,81 @@ public class JSdocContentAccess {
 		return null;
 	}
 	
-	
+	/**
+	 * Gets a reader for an ILocalDeclaration documentation comment content.
+	 * and renders the tags in HTML.
+	 * Returns <code>null</code> if the declaration does not contain a doc comment or if no source is available.
+	 * 
+	 * @param variable			the variable declaration to get the doc of.
+	 * @param allowInherited		for methods with no (JSDoc) comment, the comment of the overridden
+	 * 									class is returned if <code>allowInherited</code> is <code>true</code>
+	 * @param useAttachedDoc	if <code>true</code> JSDoc will be extracted from attached JSDoc
+	 * 									if there's no source
+	 * @return a reader for the JSDoc comment content in HTML or <code>null</code> if the member
+	 * 			does not contain a JSDoc comment or if no source is available
+	 * @throws JavaScriptModelException is thrown when the elements JSDoc can not be accessed
+	 * 
+	 */
+	public static Reader getHTMLContentReader(ILocalVariable variable, boolean allowInherited, boolean useAttachedDoc) throws JavaScriptModelException {
+		Reader contentReader= getContentReader(variable, allowInherited);
+		if (contentReader != null)
+		{
+			IDocumentationReader[] docReaders = new IDocumentationReader[0];//getDocReaders(declaration);
+			if (docReaders.length > 0) {
+				List htmlReaders = new ArrayList(docReaders.length);
+				for (int i = 0; i < docReaders.length; i++) {
+					Reader documentation2htmlReader = docReaders[i].getDocumentation2HTMLReader(contentReader);
+					if (documentation2htmlReader != null) {
+						htmlReaders.add(documentation2htmlReader);
+					}
+				}
+				if (!htmlReaders.isEmpty()) {
+					htmlReaders.add(/*0, */new JavaDoc2HTMLTextReader(contentReader));
+					return new SequenceReader((Reader[]) htmlReaders.toArray(new Reader[htmlReaders.size()]));
+				}
+			}
+			return new JavaDoc2HTMLTextReader(contentReader);
+		}
+		
+		return null;
+	}
 
- 
+
+
+	/**
+	 * Gets a reader for an ILocalDeclaration's doc comment content from the
+	 * source attachment. Returns <code>null</code> if the declaration does
+	 * not have a doc comment or if no source is available.
+	 * 
+	 * @param declaration
+	 *            The declaration to get the doc of.
+	 * @param allowInherited
+	 *            For methods with no doc comment, the comment of the
+	 *            overridden class is returned if <code>allowInherited</code>
+	 *            is <code>true</code> and this is an argument.
+	 * @return Returns a reader for the doc comment content or
+	 *         <code>null</code> if the declaration does not contain a doc
+	 *         comment or if no source is available
+	 * @throws JavaScriptModelException
+	 *             is thrown when the declaration's doc can not be accessed
+	 */
+	public static Reader getContentReader(ILocalVariable declaration, boolean allowInherited) throws JavaScriptModelException {
+		List readers = new ArrayList(2);
+		IDocumentationReader[] docReaders = getDocReaders(declaration);
+		for (int i = 0; i < docReaders.length; i++) {
+			Reader contentReader = docReaders[i].getContentReader(declaration, allowInherited);
+			if (contentReader != null) {
+				readers.add(contentReader);
+			}
+		}
+
+		if (!readers.isEmpty()) {
+			if (readers.size() == 1)
+				return (Reader) readers.get(0);
+			return new SequenceReader((Reader[]) readers.toArray(new Reader[readers.size()]));
+		}
+		return null;
+	}
 
 	private static Reader findDocInHierarchy(IFunction method) throws JavaScriptModelException {
 		IType type= method.getDeclaringType();
@@ -221,6 +294,19 @@ public class JSdocContentAccess {
 		List readers = new ArrayList(docReaders.length);
 		for (int i = 0; i < docReaders.length; i++) {
 			if (docReaders[i].appliesTo(member)) {
+				readers.add(docReaders[i]);
+			}
+		}
+		return (IDocumentationReader[]) readers.toArray(new IDocumentationReader[readers.size()]);
+	}
+	
+	private static IDocumentationReader[] getDocReaders(ILocalVariable declaration)
+	{
+		if (docReaders==null)
+			loadExtensions();
+		List readers = new ArrayList(docReaders.length);
+		for (int i = 0; i < docReaders.length; i++) {
+			if (docReaders[i].appliesTo(declaration)) {
 				readers.add(docReaders[i]);
 			}
 		}

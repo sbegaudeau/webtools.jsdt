@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.ui.javaeditor;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.eclipse.jface.text.quickassist.IQuickFixableAnnotation;
 import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 
@@ -53,7 +54,7 @@ public class JavaAnnotationIterator implements Iterator {
 	private void skip() {
 		while (fIterator.hasNext()) {
 			Annotation next= (Annotation) fIterator.next();
-			if (next instanceof IJavaAnnotation) {
+			if (next instanceof IJavaAnnotation || next instanceof IQuickFixableAnnotation) {
 				if (fSkipIrrelevants) {
 					if (!next.isMarkedDeleted()) {
 						fNext= next;

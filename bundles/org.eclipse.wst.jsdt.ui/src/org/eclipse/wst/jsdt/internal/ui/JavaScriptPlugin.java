@@ -78,7 +78,6 @@ import org.eclipse.wst.jsdt.internal.ui.text.PreferencesAdapter;
 import org.eclipse.wst.jsdt.internal.ui.text.folding.JavaFoldingStructureProviderRegistry;
 import org.eclipse.wst.jsdt.internal.ui.text.java.ContentAssistHistory;
 import org.eclipse.wst.jsdt.internal.ui.text.java.hover.JavaEditorTextHoverDescriptor;
-import org.eclipse.wst.jsdt.internal.ui.text.spelling.SpellCheckEngine;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ProblemMarkerManager;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ClasspathAttributeConfigurationDescriptors;
@@ -563,8 +562,6 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 				PlatformUI.getWorkbench().getThemeManager().removePropertyChangeListener(fThemeListener);
 				fThemeListener= null;
 			}
-			
-			SpellCheckEngine.shutdownInstance();
 			
 			QualifiedTypeNameHistory.getDefault().save();
 			

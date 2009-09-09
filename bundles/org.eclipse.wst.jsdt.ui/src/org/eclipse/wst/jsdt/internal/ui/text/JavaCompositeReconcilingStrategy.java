@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,18 +15,18 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.java.IProblemRequestorExtension;
 import org.eclipse.wst.jsdt.internal.ui.text.java.JavaReconcilingStrategy;
 import org.eclipse.wst.jsdt.internal.ui.text.spelling.JavaSpellingReconcileStrategy;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Reconciling strategy for Java code. This is a composite strategy containing the
  * regular java model reconciler and the comment spelling strategy.
- *
- * 
  */
 public class JavaCompositeReconcilingStrategy  extends CompositeReconcilingStrategy {
 
@@ -45,7 +45,7 @@ public class JavaCompositeReconcilingStrategy  extends CompositeReconcilingStrat
 		fJavaStrategy= new JavaReconcilingStrategy(editor);
 		setReconcilingStrategies(new IReconcilingStrategy[] {
 			fJavaStrategy,
-			new JavaSpellingReconcileStrategy(viewer, editor)
+			new JavaSpellingReconcileStrategy(viewer, EditorsUI.getSpellingService(), IJavaScriptPartitions.JAVA_PARTITIONING)
 		});
 	}
 
