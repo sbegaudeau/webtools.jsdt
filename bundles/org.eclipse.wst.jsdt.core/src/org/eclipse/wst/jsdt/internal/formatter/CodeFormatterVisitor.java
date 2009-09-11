@@ -1203,7 +1203,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 					}
 					if (i < size - 1) {
 						this.scribe.alignFragment(cascadingMessageSendAlignment, i);
-						this.scribe.printNextToken(TerminalTokens.TokenNameDOT);
+						this.scribe.printOptionalNextToken(TerminalTokens.TokenNameDOT, false);
 					}
 				}
 				ok = true;
