@@ -188,11 +188,16 @@
 	<file-association 
 		content-type="org.eclipse.core.runtime.xml" 
 		file-names=".jsdtscope"/>  
-	<!-- declares a content type for Java Source files -->
+	<!-- declares a content type for JavaScript Source files -->
 	<content-type id="jsSource" name="%jsSourceName" 
 		base-type="org.eclipse.core.runtime.text"
 		priority="high"				
 		file-extensions="js"/>
+	<!-- declares a content type for JSON files -->
+	<content-type id="jsonSource" name="%jsonSourceName" 
+		base-type="org.eclipse.wst.jsdt.core.jsSource"
+		priority="normal"				
+		file-extensions="json"/>
 </extension>
       
 <!-- =================================================================================== -->
