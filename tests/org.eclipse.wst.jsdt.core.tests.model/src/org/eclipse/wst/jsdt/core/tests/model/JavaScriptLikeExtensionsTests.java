@@ -39,7 +39,8 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 	public void testGetJavaScriptLikeExtensions01() {
 		assertSortedStringsEqual(
 			"Unexpected file extensions",
-			"js\n",
+			"js\n" +
+			"json\n",
 			JavaScriptCore.getJavaScriptLikeExtensions()
 		);
 	}
@@ -55,7 +56,8 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 			assertSortedStringsEqual(
 				"Unexpected file extensions",
 				"abc\n" + 
-				"js\n",
+				"js\n" +
+				"json\n",
 				JavaScriptCore.getJavaScriptLikeExtensions()
 			);
 		} finally {
