@@ -241,6 +241,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
 				 attribute = type.addAttribute(localDeclaration.getName(), localDeclaration);
+				 handleAttributeDeclaration(attribute, localDeclaration.getInitialization());
 				 if (localDeclaration.getInitialization()!=null)
 					 attribute.initializationStart=localDeclaration.getInitialization().sourceStart();
 				attribute.type=type;
@@ -326,6 +327,7 @@ public class InferEngine extends ASTVisitor {
 			else{
 
 				member = this.currentContext.currentType.addAttribute( memberName, assignment );
+				handleAttributeDeclaration((InferredAttribute) member, assignment.getExpression());
 				((InferredAttribute)member).type = getTypeOf( assignmentExpression );
 
 			}
@@ -389,6 +391,7 @@ public class InferEngine extends ASTVisitor {
 					if( !(attr != null && attr.type != null) ){
 
 						attr = receiverType.addAttribute( fRef.getToken(), assignment );
+						handleAttributeDeclaration(attr, assignment.getExpression());
 						attr.type = getTypeOf( assignmentExpression );
 
 						if (isKnownName && attr.type.isAnonymous)
@@ -486,6 +489,7 @@ public class InferEngine extends ASTVisitor {
 							else
 							{
 							  attr = receiverType.addAttribute( fRef.token, assignment );
+							  handleAttributeDeclaration(attr, assignmentExpression);
 							  attr.type=exprType;
 							/*
 							 * determine if static
@@ -831,6 +835,7 @@ public class InferEngine extends ASTVisitor {
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
+					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart=assignment.getExpression().sourceStart();
 					attribute.nameStart=nameStart;
 					if (attribute.type==null)
@@ -877,6 +882,7 @@ public class InferEngine extends ASTVisitor {
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
+					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart=assignment.getExpression().sourceStart();
 					attribute.nameStart=nameStart;
 					if (attribute.type==null)
