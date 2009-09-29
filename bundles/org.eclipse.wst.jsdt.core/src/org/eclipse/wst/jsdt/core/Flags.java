@@ -47,6 +47,12 @@ public final class Flags {
 	 */
 	public static final int AccPrivate = ClassFileConstants.AccPrivate;
 	/**
+	 * Protected access flag.  
+	 *
+	 * <b>This flag only applies to ECMAScript 4 which is not yet supported</b>
+	 */
+	public static final int AccProtected = ClassFileConstants.AccProtected;
+	/**
 	 * Static access flag. 
 	 */
 	public static final int AccStatic = ClassFileConstants.AccStatic;
@@ -124,6 +130,17 @@ public final class Flags {
 	 */
 	public static boolean isPrivate(int flags) {
 		return (flags & AccPrivate) != 0;
+	}
+	/**
+	 * Returns whether the given integer includes the <code>protected</code> modifier.
+	 *
+	 * <p><b>Note: This Method only applies to ECMAScript 4 which is not yet supported</b></p>
+	 *
+	 * @param flags the flags
+	 * @return <code>true</code> if the <code>protected</code> modifier is included
+	 */
+	public static boolean isProtected(int flags) {
+		return (flags & AccProtected) != 0;
 	}
 	/**
 	 * Returns whether the given integer includes the <code>public</code> modifier.

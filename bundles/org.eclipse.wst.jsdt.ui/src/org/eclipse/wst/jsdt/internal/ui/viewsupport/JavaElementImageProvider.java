@@ -345,6 +345,8 @@ public class JavaElementImageProvider {
 	public static ImageDescriptor getMethodImageDescriptor(boolean isInInterfaceOrAnnotation, int flags) {
 		if (Flags.isPublic(flags) || isInInterfaceOrAnnotation)
 			return JavaPluginImages.DESC_MISC_PUBLIC;
+		if (Flags.isProtected(flags))
+			return JavaPluginImages.DESC_MISC_PROTECTED;
 		if (Flags.isPrivate(flags))
 			return JavaPluginImages.DESC_MISC_PRIVATE;
 		
@@ -354,9 +356,11 @@ public class JavaElementImageProvider {
 	public static ImageDescriptor getFieldImageDescriptor(boolean isInInterfaceOrAnnotation, int flags) {
 		if (Flags.isPublic(flags) || isInInterfaceOrAnnotation)
 			return JavaPluginImages.DESC_FIELD_PUBLIC;
+		if (Flags.isProtected(flags))
+			return JavaPluginImages.DESC_FIELD_PROTECTED;
 		if (Flags.isPrivate(flags))
 			return JavaPluginImages.DESC_FIELD_PRIVATE;
-			
+
 		return JavaPluginImages.DESC_FIELD_DEFAULT;
 	}		
 	
