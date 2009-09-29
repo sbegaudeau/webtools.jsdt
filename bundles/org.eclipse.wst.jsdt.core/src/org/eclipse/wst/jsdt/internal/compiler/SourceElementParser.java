@@ -797,7 +797,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		fieldInfo.declarationStart = field.sourceStart();
 		fieldInfo.name = field.name;
-		fieldInfo.modifiers = 0;
+		fieldInfo.modifiers = field.modifiers;
 
 		if (field.isStatic)
 			fieldInfo.modifiers |= ClassFileConstants.AccStatic;
@@ -843,7 +843,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 //		int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
 
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
-		methodInfo.modifiers = 0;
+		methodInfo.modifiers = methodDeclaration.modifiers;
 		if (method.isStatic)
 			methodInfo.modifiers |= ClassFileConstants.AccStatic;
 		methodInfo.name =method.name;

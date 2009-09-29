@@ -186,6 +186,8 @@ public class InferEngine extends ASTVisitor {
 
 
 	}
+	
+	private static boolean REPORT_INFER_TIME = false;
 
 	public InferEngine(InferOptions inferOptions)
 	{
@@ -1135,8 +1137,8 @@ public class InferEngine extends ASTVisitor {
 					{
 						InferredAttribute attribute = type.findAttribute(name);
 						if (attribute == null) {
-							attribute = type.addAttribute(name,
-									field.getFieldName());
+							attribute = type.addAttribute(name, field.getInitializer());
+							handleAttributeDeclaration(attribute, field.getInitializer());
 							attribute.nameStart = nameStart;
 							attribute.isStatic=isStatic;
 							//@GINO: recursion might not be the best idea
@@ -1153,6 +1155,10 @@ public class InferEngine extends ASTVisitor {
 
 	public void endVisit(IAssignment assignment) {
 		popContext();
+	}
+	
+	protected boolean handleAttributeDeclaration(InferredAttribute attribute, IExpression initializer) {
+		return true;
 	}
 
 	protected boolean handleFunctionCall(IFunctionCall messageSend) {
@@ -1517,6 +1523,11 @@ public class InferEngine extends ASTVisitor {
 	public void doInfer()
 	{
 		try {
+			long time0 = 0;
+			if (REPORT_INFER_TIME) {
+				time0 = System.currentTimeMillis();
+			}
+				
 			compUnit.traverse(this );
 			passNumber=2;
 			compUnit.traverse(this );
@@ -1524,7 +1535,13 @@ public class InferEngine extends ASTVisitor {
 				if (compUnit.inferredTypes[i].sourceStart<0)
 					compUnit.inferredTypes[i].sourceStart=0;
 			}
+
+			if (REPORT_INFER_TIME) {
+				long time = System.currentTimeMillis() - time0;
+				System.err.println(getClass().getName() + " inferred " + new String(compUnit.getFileName()) + " in " + time + "ms");
+			}
 			this.compUnit=null;
+
 		} catch (RuntimeException e) {
 			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error during type inferencing");
 		}
@@ -1577,7 +1594,9 @@ public class InferEngine extends ASTVisitor {
 		char [] name=null;
 
 		if (expression instanceof ISingleNameReference)
-			name=((ISingleNameReference)expression).getToken();
+			name = ((ISingleNameReference) expression).getToken();
+		else if (expression instanceof IFieldReference)
+			name = ((IFieldReference) expression).getToken();
 		if (name!=null)
 		{
 			Object var = this.currentContext.getMember( name );

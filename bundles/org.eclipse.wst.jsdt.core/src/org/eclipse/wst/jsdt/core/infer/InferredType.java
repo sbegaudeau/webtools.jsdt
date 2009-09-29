@@ -121,7 +121,7 @@ public class InferredType extends ASTNode {
 		InferredAttribute attribute = findAttribute(name);
 		if (attribute==null)
 		{
-			attribute=new InferredAttribute(name, this ,definer.sourceStart(),definer.sourceEnd());
+			attribute=new InferredAttribute(name, this, definer);
 			attribute.node=(ASTNode)definer;
 			
 			if (this.numberAttributes == this.attributes.length)

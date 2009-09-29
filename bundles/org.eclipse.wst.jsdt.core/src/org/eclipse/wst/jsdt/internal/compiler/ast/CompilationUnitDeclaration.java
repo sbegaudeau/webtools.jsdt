@@ -679,21 +679,25 @@ public class CompilationUnitDeclaration
 		InferredType type = findInferredType(className);
 
 
-		if (type==null)
+		if (type==null && className.length > 0)
 		{
 			if (numberInferredTypes == inferredTypes.length)
-
 				System.arraycopy(
 						inferredTypes,
 						0,
 						(inferredTypes = new InferredType[numberInferredTypes  + 16]),
 						0,
 						numberInferredTypes );
+
 			type=inferredTypes[numberInferredTypes ++] = new InferredType(className);
 			type.inferenceProviderID = providerId;
+			if (className.length > 2 && className[className.length - 2] == '[' && className[className.length - 1] == ']') {
+				type.isArray = true;
+			}
+			
 			inferredTypesHash.put(className,type);
 		}
-		if (isDefinition)
+		if (isDefinition && type != null)
 			type.isDefinition=isDefinition;
 		return type;
 	}

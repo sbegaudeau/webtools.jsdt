@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.infer;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 
@@ -29,13 +30,28 @@ public class InferredAttribute extends InferredMember{
 	public int initializationStart=-1;
 	public InferredType type;
 	public ASTNode node;
+	public int modifiers;
 
+	/**
+	 * @deprecated
+	 */
 	public InferredAttribute(char [] name, InferredType inType, int start, int end)
 	{
 		this.name=name;
 		this.inType = inType;
 		this.sourceStart=start;
 		this.sourceEnd=end;
+	}
+
+
+	/**
+	 * @param name
+	 * @param inferredType
+	 * @param definer
+	 */
+	public InferredAttribute(char[] name, InferredType inferredType, IASTNode definer) {
+		this(name, inferredType, definer.sourceStart(), definer.sourceEnd());
+		node = (ASTNode) definer;
 	}
 
 
