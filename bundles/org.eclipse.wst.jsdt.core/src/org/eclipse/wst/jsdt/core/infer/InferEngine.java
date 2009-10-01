@@ -551,7 +551,7 @@ public class InferEngine extends ASTVisitor {
 		return var.getInferredType();
 	}
 
-	private InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
+	protected InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
 		char []name;
 		if (this.isKnownType(possibleTypeName))
 		{
@@ -955,6 +955,11 @@ public class InferEngine extends ASTVisitor {
 			IAbstractVariableDeclaration varDecl = getVariable( expression );
 			if( varDecl != null )
 				return varDecl.getInferredType();
+			
+			IAbstractFunctionDeclaration functionDecl = getFunction(expression);
+			if(functionDecl != null)
+				return functionDecl.getInferredType();
+			
 			if (this.inferredGlobal!=null)
 			{
 				InferredAttribute attribute = this.inferredGlobal.findAttribute(((ISingleNameReference)expression).getToken() );
@@ -1612,6 +1617,29 @@ public class InferEngine extends ASTVisitor {
 		}
 		return null;
 
+	}
+	
+	/**
+	 * Finds a Function Declaration on the context from the name represented with the expression
+	 *
+	 * Currently, only SNR are supported
+	 */
+	protected IAbstractFunctionDeclaration getFunction(IExpression expression)
+	{
+		char [] name=null;
+
+		if (expression instanceof ISingleNameReference)
+			name = ((ISingleNameReference) expression).getToken();
+		else if (expression instanceof IFieldReference)
+			name = ((IFieldReference) expression).getToken();
+		if (name!=null)
+		{
+			Object method = this.currentContext.getMember( name );
+			if (method instanceof IAbstractFunctionDeclaration)
+				return (IAbstractFunctionDeclaration)method;
+
+		}
+		return null;
 	}
 
 	private void buildDefinedMembers(IProgramElement[] statements, IArgument[] arguments) {
