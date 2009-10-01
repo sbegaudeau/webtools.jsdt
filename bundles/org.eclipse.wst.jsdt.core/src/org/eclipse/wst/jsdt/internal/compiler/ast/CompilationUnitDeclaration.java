@@ -675,19 +675,19 @@ public class CompilationUnitDeclaration
 	}
 
 	public InferredType addType(char[] className, boolean isDefinition, String providerId) {
-
 		InferredType type = findInferredType(className);
-
 
 		if (type==null && className.length > 0)
 		{
-			if (numberInferredTypes == inferredTypes.length)
+			if (numberInferredTypes == inferredTypes.length) 
+			{
 				System.arraycopy(
 						inferredTypes,
 						0,
-						(inferredTypes = new InferredType[numberInferredTypes  + 16]),
+						(inferredTypes = new InferredType[numberInferredTypes  * 2]),
 						0,
 						numberInferredTypes );
+			}
 
 			type=inferredTypes[numberInferredTypes ++] = new InferredType(className);
 			type.inferenceProviderID = providerId;
