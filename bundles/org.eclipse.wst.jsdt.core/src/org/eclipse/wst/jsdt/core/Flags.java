@@ -118,7 +118,7 @@ public final class Flags {
 	 * @return <code>true</code> if no visibility flag is set
 	 */
 	public static boolean isPackageDefault(int flags) {
-		return (flags & (AccPublic | AccPrivate)) == 0;
+		return (flags & (AccPublic | AccProtected | AccPrivate)) == 0;
 	}
 	/**
 	 * Returns whether the given integer includes the <code>private</code> modifier.

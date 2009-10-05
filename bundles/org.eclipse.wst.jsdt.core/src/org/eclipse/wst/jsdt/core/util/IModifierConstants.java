@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ public interface IModifierConstants {
 
 	int ACC_PUBLIC       = 0x0001;
 	int ACC_PRIVATE      = 0x0002;
+	int ACC_PROTECTED    = 0x0004;
 	int ACC_STATIC       = 0x0008;
 	int ACC_FINAL        = 0x0010;
 	int ACC_SUPER        = 0x0020;
