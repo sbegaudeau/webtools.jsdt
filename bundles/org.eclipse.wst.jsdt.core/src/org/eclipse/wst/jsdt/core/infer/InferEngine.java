@@ -1136,8 +1136,8 @@ public class InferEngine extends ASTVisitor {
 						if (javaDoc!=null)
 						{
 							functionExpression.getMethodDeclaration().modifiers=javaDoc.modifiers;
-						  handleFunctionDeclarationArguments(functionExpression.getMethodDeclaration(),javaDoc);
 						}
+						handleFunctionDeclarationArguments(functionExpression.getMethodDeclaration(),javaDoc);
 					    if (returnType!=null && functionExpression.getMethodDeclaration().getInferredType() == null)
 					    {
 					    	functionExpression.getMethodDeclaration().setInferredType(returnType);
@@ -1287,8 +1287,7 @@ public class InferEngine extends ASTVisitor {
 				}
 
 			}
-			if (methodDeclaration.getArguments()!=null)
-				handleFunctionDeclarationArguments((MethodDeclaration)methodDeclaration,(Javadoc)methodDeclaration.getJsDoc());
+			handleFunctionDeclarationArguments((MethodDeclaration)methodDeclaration,(Javadoc)methodDeclaration.getJsDoc());
 		}
 		// check if this is a constructor
 		if (passNumber==2)
@@ -1618,7 +1617,7 @@ public class InferEngine extends ASTVisitor {
 		return null;
 
 	}
-	
+
 	/**
 	 * Finds a Function Declaration on the context from the name represented with the expression
 	 *
