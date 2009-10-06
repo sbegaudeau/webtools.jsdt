@@ -73,7 +73,8 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 			else
 			{
 				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
-				return typeRoot.getFunction(name, parameters);
+				if(typeRoot != null)
+					return typeRoot.getFunction(name, parameters);
 			}
 		}		
 		return null;
