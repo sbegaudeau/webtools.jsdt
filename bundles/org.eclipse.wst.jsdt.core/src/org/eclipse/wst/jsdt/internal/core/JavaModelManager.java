@@ -3409,7 +3409,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 				savePaths(entry.getExclusionPatterns());
 				savePath(entry.getSourceAttachmentPath());
 				savePath(entry.getSourceAttachmentRootPath());
-				savePath(new Path(""));
+				savePath(Path.EMPTY);
 				this.out.writeBoolean(entry.isExported());
 				saveAccessRules(entry.getAccessRules());
 				this.out.writeBoolean(entry.combineAccessRules());
