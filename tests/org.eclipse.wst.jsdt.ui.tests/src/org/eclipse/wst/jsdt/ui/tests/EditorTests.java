@@ -14,6 +14,7 @@ package org.eclipse.wst.jsdt.ui.tests;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -52,6 +53,9 @@ public class EditorTests extends TestCase {
 		assertTrue("unexpected editor opened", editor instanceof JavaEditor && editor instanceof ITextEditor);
 		IAnnotationModel annotationModel = ((ITextEditor) editor).getDocumentProvider().getAnnotationModel(input);
 		assertNotNull("no annotation model present", annotationModel);
+		IDocument document = ((ITextEditor) editor).getDocumentProvider().getDocument(input);
+		assertNotNull("no text document present", document);
+		assertTrue("text document is empty", document.getLength() > 0);
 
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editor, false);
 	}
@@ -64,6 +68,9 @@ public class EditorTests extends TestCase {
 		assertTrue("unexpected editor opened", editor instanceof JavaEditor && editor instanceof ITextEditor);
 		IAnnotationModel annotationModel = ((ITextEditor) editor).getDocumentProvider().getAnnotationModel(input);
 		assertNotNull("no annotation model present", annotationModel);
+		IDocument document = ((ITextEditor) editor).getDocumentProvider().getDocument(input);
+		assertNotNull("no text document present", document);
+		assertTrue("text document is not empty", document.getLength() == 0);
 
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editor, false);
 	}
