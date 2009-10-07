@@ -49,6 +49,8 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
@@ -258,7 +260,11 @@ public class InferEngine extends ASTVisitor {
 
 		if (localDeclaration.getInferredType()==null && localDeclaration.getInitialization()!=null)
 		{
-			localDeclaration.setInferredType(getTypeOf(localDeclaration.getInitialization()));
+			if(localDeclaration.getInitialization() instanceof MessageSend) {
+				handleFunctionCall((IFunctionCall)localDeclaration.getInitialization(), (LocalDeclaration) localDeclaration);
+			} else {
+				localDeclaration.setInferredType(getTypeOf(localDeclaration.getInitialization()));
+			}
 		}
 		return true;
 	}
@@ -1175,6 +1181,10 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	protected boolean handleFunctionCall(IFunctionCall messageSend) {
+		return handleFunctionCall(messageSend, null);
+	}
+	
+	protected boolean handleFunctionCall(IFunctionCall messageSend, LocalDeclaration assignmentExpression) {
 		return true;
 	}
 
