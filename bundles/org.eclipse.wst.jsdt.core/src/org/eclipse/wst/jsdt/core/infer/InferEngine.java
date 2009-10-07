@@ -956,10 +956,6 @@ public class InferEngine extends ASTVisitor {
 			if( varDecl != null )
 				return varDecl.getInferredType();
 			
-			IAbstractFunctionDeclaration functionDecl = getFunction(expression);
-			if(functionDecl != null)
-				return functionDecl.getInferredType();
-			
 			if (this.inferredGlobal!=null)
 			{
 				InferredAttribute attribute = this.inferredGlobal.findAttribute(((ISingleNameReference)expression).getToken() );
@@ -968,6 +964,12 @@ public class InferEngine extends ASTVisitor {
 			}
 
 		}
+//		else if (expression instanceof IFunctionCall) {
+//			IAbstractFunctionDeclaration functionDecl = getFunction(expression);
+//			if(functionDecl != null && functionDecl.getInferredType() != null)
+//				return functionDecl.getInferredType();
+//			
+//		}
 		else if (expression instanceof FieldReference)
 		{
 			FieldReference fieldReference=(FieldReference)expression;
