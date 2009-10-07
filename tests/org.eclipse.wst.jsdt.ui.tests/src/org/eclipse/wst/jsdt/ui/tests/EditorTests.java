@@ -56,6 +56,9 @@ public class EditorTests extends TestCase {
 		IDocument document = ((ITextEditor) editor).getDocumentProvider().getDocument(input);
 		assertNotNull("no text document present", document);
 		assertTrue("text document is empty", document.getLength() > 0);
+		
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().layout(true, true);
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().redraw();
 
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editor, false);
 	}
