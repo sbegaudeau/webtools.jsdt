@@ -970,12 +970,6 @@ public class InferEngine extends ASTVisitor {
 			}
 
 		}
-//		else if (expression instanceof IFunctionCall) {
-//			IAbstractFunctionDeclaration functionDecl = getFunction(expression);
-//			if(functionDecl != null && functionDecl.getInferredType() != null)
-//				return functionDecl.getInferredType();
-//			
-//		}
 		else if (expression instanceof FieldReference)
 		{
 			FieldReference fieldReference=(FieldReference)expression;
