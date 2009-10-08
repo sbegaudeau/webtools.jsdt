@@ -267,6 +267,8 @@ public MissingBinaryTypeBinding cacheMissingBinaryType(char[][] compoundName, Co
 		this.missingClassFileLocation);
 
 	PackageBinding packageBinding = computePackageFrom(compoundName);
+	if(unit == null)
+		return null;
 	// create a proxy for the missing BinaryType
 	MissingBinaryTypeBinding type = new MissingBinaryTypeBinding(packageBinding, compoundName, this,unit.scope);
 	if (type.id != TypeIds.T_JavaLangObject) {
