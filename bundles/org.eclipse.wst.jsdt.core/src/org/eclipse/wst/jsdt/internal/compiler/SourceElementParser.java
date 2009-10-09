@@ -766,7 +766,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 	if ( !type.isDefinition || type.isEmptyGlobal())
 		return;
 
-	if (type.isAnonymous && !type.isNamed())
+	if (type.isAnonymous && !type.isNamed() && !type.isObjectLiteral)
 		return;
 				// prevent possible recurrsion
 	if (notifiedTypes.containsKey(type.getName()))
@@ -781,11 +781,12 @@ public void notifySourceElementRequestor( InferredType type ) {
 	typeInfo.name = type.getName();
 
 	typeInfo.nameSourceStart = type.getNameStart();
-	typeInfo.nameSourceEnd = typeInfo.nameSourceStart+typeInfo.name.length-1;
+	if(type.isObjectLiteral) {
+		typeInfo.nameSourceEnd = type.sourceEnd;
+	} else {
+		typeInfo.nameSourceEnd = typeInfo.nameSourceStart+typeInfo.name.length-1;
+	}
 	typeInfo.superclass = type.getSuperClassName();
-//		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);
-//		typeInfo.annotationPositions = collectAnnotationPositions(typeDeclaration.annotations);
-//		typeInfo.categories = (char[][]) this.nodesToCategories.get(typeDeclaration);
 	typeInfo.secondary = false;
 
 	typeInfo.anonymousMember = type.isAnonymous;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceField;
 
@@ -56,5 +58,21 @@ protected String getTypeSignature() {
  */
 protected void setTypeName(char[] typeName) {
 	this.typeName = typeName;
+}
+
+public IJavaScriptElement[] getChildren() {
+	IJavaScriptElement[] children = super.getChildren();
+	if(children != null && children.length == 1) {
+		if(children[0] instanceof SourceType) {
+			if(((SourceType)children[0]).isAnonymous()) {
+				try {
+					children = ((SourceType)children[0]).getChildren();
+				} catch (JavaScriptModelException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	return children;
 }
 }
