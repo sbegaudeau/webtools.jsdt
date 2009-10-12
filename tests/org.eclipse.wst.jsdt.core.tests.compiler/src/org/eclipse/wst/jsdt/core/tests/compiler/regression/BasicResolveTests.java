@@ -1397,6 +1397,19 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					""
 			);
 	}
+	
+	public void testbug290414() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function Test(w) {this.w1 = w;}\n" +
+							"var t = new Test(3);\n" +
+							"t.area = function() {};\n" +
+							"var area = t.area();"
+					},
+					""
+			);
+	}
 
 
 }
