@@ -5380,18 +5380,20 @@
 		         id="org.eclipse.wst.jsdt.ui.navigator.actions.OpenActions"
 		         overrides="org.eclipse.ui.navigator.resources.OpenActions"> 
 		         <enablement>
-					<or>
+					<and>
 						<and>
 							<instanceof value="org.eclipse.core.resources.IProject" />
           					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
 						</and>
-						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
-						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
-						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
+						<or>
+							<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
+							<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
+							<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
+						</or>
 						<adapt type="java.util.Collection"> 
 							<count value="0" />
 						</adapt>				
-					</or>
+					</and>
 				</enablement>
 		   </actionProvider> 
 		   
