@@ -2289,9 +2289,13 @@ public class NameLookup implements SuffixConstants {
 			InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders(compUnit);
 			if (inferenceProviders!=null && inferenceProviders.length>0)
 			{
-				ResolutionConfiguration resolutionConfiguration = inferenceProviders[0].getResolutionConfiguration();
-				if (resolutionConfiguration!=null)
-					searchFiles=resolutionConfiguration.searchAllFiles();
+				for(int i = 0; i < inferenceProviders.length; i++) {
+					ResolutionConfiguration resolutionConfiguration = inferenceProviders[i].getResolutionConfiguration();
+					if (resolutionConfiguration!=null)
+						searchFiles=resolutionConfiguration.searchAllFiles();
+					if(!searchFiles)
+						break;
+				}
 			}
 		}
 		

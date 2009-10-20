@@ -888,7 +888,18 @@ ImportBinding[] getDefaultImports() {
 	InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders(this.referenceContext);
     if (inferenceProviders!=null &&inferenceProviders.length>0)
     {
-    	contextIncludes = inferenceProviders[0].getResolutionConfiguration().getContextIncludes();
+    	for(int i = 0; i < inferenceProviders.length; i++) {
+    		if(contextIncludes == null) {
+    			contextIncludes = inferenceProviders[i].getResolutionConfiguration().getContextIncludes();
+    		} else {
+    			String[] contextIncludesTemp = inferenceProviders[0].getResolutionConfiguration().getContextIncludes();
+    			String[] contextIncludesOld = contextIncludes;
+    			contextIncludes = new String[contextIncludesTemp.length + contextIncludesOld.length];
+    			System.arraycopy(contextIncludesOld, 0, contextIncludes, 0, contextIncludesOld.length);
+    			System.arraycopy(contextIncludesTemp, 0, contextIncludes, contextIncludesOld.length - 1, contextIncludesTemp.length);
+    		}
+    	}
+    	
     }
     if (contextIncludes!=null && contextIncludes.length>0)
     {

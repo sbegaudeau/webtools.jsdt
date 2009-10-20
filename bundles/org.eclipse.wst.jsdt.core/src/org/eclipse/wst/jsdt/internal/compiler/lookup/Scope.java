@@ -833,7 +833,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		PackageBinding declarationPackage,
 		PackageBinding invocationPackage) {
 
-		return (ReferenceBinding)findBinding(typeName, Binding.TYPE|Binding.PACKAGE, declarationPackage, invocationPackage, true);
+		return (ReferenceBinding)findBinding(typeName, Binding.TYPE, declarationPackage, invocationPackage, true);
 	}
 
 	public LocalVariableBinding findVariable(char[] variable) {
