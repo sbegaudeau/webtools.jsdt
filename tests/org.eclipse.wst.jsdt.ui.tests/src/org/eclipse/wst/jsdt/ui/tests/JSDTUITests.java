@@ -42,10 +42,11 @@ public class JSDTUITests extends TestSuite {
 	}
 
 	public static Test suite() {
-
 		ArrayList standardTests = new ArrayList();
 		
+		// $JUnit-BEGIN$
 		standardTests.add(EditorTests.class);
+		// $JUnit-END$
 
 		TestSuite all = new TestSuite("JSDT UI Tests");
 		for (Iterator iter = standardTests.iterator(); iter.hasNext();) {
