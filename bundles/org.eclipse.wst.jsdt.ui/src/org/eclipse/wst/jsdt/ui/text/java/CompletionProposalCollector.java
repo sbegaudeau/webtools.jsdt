@@ -134,7 +134,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 * @param cu the compilation unit that the result collector will operate on
 	 */
 	public CompletionProposalCollector(IJavaScriptUnit cu) {
-		this(cu.getJavaScriptProject(), cu);
+		this(cu == null ? null : cu.getJavaScriptProject(), cu);
 	}
 
 	/**
