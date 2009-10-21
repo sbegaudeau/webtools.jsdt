@@ -275,7 +275,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 //							CastExpression.checkNeedForAssignedCast(scope, variableType, (CastExpression) this.initialization);
 //						}
 						} else {
-							scope.problemReporter().typeMismatchError(initializationType, variableType, this.initialization);
+							//scope.problemReporter().typeMismatchError(initializationType, variableType, this.initialization);
 						}
 					}
 				}

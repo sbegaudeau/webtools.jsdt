@@ -120,7 +120,6 @@ public boolean isCompactableOperation() {
  */
 void nonRecursiveResolveTypeUpwards(BlockScope scope) {
 	// keep implementation in sync with BinaryExpression#resolveType
-	boolean leftIsCast, rightIsCast;
 	TypeBinding leftType = this.left.resolvedType;
 
 	TypeBinding rightType = this.right.resolveType(scope);
@@ -262,7 +261,6 @@ public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output
 public TypeBinding resolveType(BlockScope scope) {
 	// keep implementation in sync with CombinedBinaryExpression#resolveType
 	// and nonRecursiveResolveTypeUpwards
-	boolean leftIsCast, rightIsCast;
 	TypeBinding leftType = this.left.resolveType(scope);
 	TypeBinding rightType = this.right.resolveType(scope);
 
@@ -277,7 +275,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	int leftTypeID = leftType.id;
 	int rightTypeID = rightType.id;
 
-	if(operator==OperatorIds.INSTANCEOF  ||operator==OperatorIds.IN  ) {
+	if(operator==OperatorIds.INSTANCEOF  || operator==OperatorIds.IN  || operator==OperatorIds.OR_OR) {
 		if ( rightTypeID>15)
 			rightTypeID=  TypeIds.T_JavaLangObject;
 		if ( leftTypeID>15)
@@ -355,6 +353,9 @@ public TypeBinding resolveType(BlockScope scope) {
 			break;
 		case T_function:
 			this.resolvedType = scope.getJavaLangFunction();
+			break;
+		case T_JavaLangObject:
+			this.resolvedType = scope.getJavaLangObject();
 			break;
 		default : //error........
 			this.constant = Constant.NotAConstant;
