@@ -209,6 +209,8 @@ public abstract class Constant implements TypeIds, OperatorIds {
 
 		switch (operator) {
 			case NOT	:
+							if(cst == null)
+								return NotAConstant;
 							return BooleanConstant.fromValue(!cst.booleanValue());
 			case PLUS	:
 							return computeConstantOperationPLUS(IntConstant.fromValue(0),T_int,cst,id);
