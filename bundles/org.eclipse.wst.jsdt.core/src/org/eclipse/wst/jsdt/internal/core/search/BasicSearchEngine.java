@@ -31,6 +31,9 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredMethod;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
@@ -829,6 +832,7 @@ public class BasicSearchEngine {
 							CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.compilerOptions.maxProblemsPerUnit);
 							CompilationUnitDeclaration parsedUnit = basicParser.dietParse(unit, compilationUnitResult);
 							if (parsedUnit != null) {
+								basicParser.inferTypes(parsedUnit, null);
 								final char[] packageDeclaration = parsedUnit.currentPackage == null ? CharOperation.NO_CHAR : CharOperation.concatWith(parsedUnit.currentPackage.getImportName(), '.');
 								class AllTypeDeclarationsVisitor extends ASTVisitor {
 //									public boolean visit(TypeDeclaration typeDeclaration, Scope blockScope) {
@@ -873,6 +877,27 @@ public class BasicSearchEngine {
 //										}
 //										return true;
 //									}
+									public boolean visit(InferredType inferredType, BlockScope scope) {
+										if (bindingType==Binding.TYPE &&
+													match(typeSuffix, packageName, bindingName, matchRule, TypeDeclaration.kind(0), packageDeclaration, inferredType.getName())) {
+												nameRequestor.acceptBinding(bindingType,0, packageDeclaration, inferredType.getName(),  path, null);
+											}
+										return true;
+									}
+									public boolean visit(InferredAttribute inferredField, BlockScope scope) {
+										if ((scope instanceof CompilationUnitScope) && (bindingType==Binding.LOCAL || bindingType==Binding.FIELD || bindingType==Binding.VARIABLE )&&
+													match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, inferredField.name)) {
+												nameRequestor.acceptBinding(bindingType,inferredField.modifiers, packageDeclaration,  inferredField.name,  path, null);
+										}
+										return true;
+									}
+									public boolean visit(InferredMethod inferredMethod, BlockScope scope) {
+										if (bindingType==Binding.METHOD && inferredMethod.name!=null &&
+													match(typeSuffix, packageName, bindingName, matchRule,0, packageDeclaration, inferredMethod.name)) {
+												nameRequestor.acceptBinding(bindingType,((MethodDeclaration)inferredMethod.getFunctionDeclaration()).modifiers, packageDeclaration,  inferredMethod.name,  path, null);
+											}
+										return true;
+									}
 								}
 								parsedUnit.traverse(new AllTypeDeclarationsVisitor(), parsedUnit.scope);
 							}
@@ -1207,6 +1232,7 @@ public class BasicSearchEngine {
 						CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.compilerOptions.maxProblemsPerUnit);
 						CompilationUnitDeclaration parsedUnit = basicParser.dietParse(unit, compilationUnitResult);
 						if (parsedUnit != null) {
+							basicParser.inferTypes(parsedUnit, null);
 							final char[] packageDeclaration = parsedUnit.currentPackage == null ? CharOperation.NO_CHAR : CharOperation.concatWith(parsedUnit.currentPackage.getImportName(), '.');
 							class AllTypeDeclarationsVisitor extends ASTVisitor {
 								public boolean visit(TypeDeclaration typeDeclaration, BlockScope blockScope) {
@@ -1245,6 +1271,17 @@ public class BasicSearchEngine {
 											((TypeNameMatchRequestorWrapper)nameRequestor).requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, 0));
 										} else {
 											nameRequestor.acceptType(memberTypeDeclaration.modifiers, packageDeclaration, memberTypeDeclaration.name, enclosingTypeNames, path, null);
+										}
+									}
+									return true;
+								}
+								public boolean visit(InferredType inferredType, BlockScope scope) {
+									if (match(typeSuffix, packageName, typeName, typeMatchRule, TypeDeclaration.kind(0), packageDeclaration, inferredType.getName())) {
+										if (nameRequestor instanceof TypeNameMatchRequestorWrapper) {
+											IType type = workingCopy.getType(new String(typeName));
+											((TypeNameMatchRequestorWrapper)nameRequestor).requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, 0));
+										} else {
+											nameRequestor.acceptType(0, packageDeclaration, inferredType.getName(), CharOperation.NO_CHAR_CHAR, path, null);
 										}
 									}
 									return true;
@@ -1435,6 +1472,7 @@ public class BasicSearchEngine {
 						CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, this.compilerOptions.maxProblemsPerUnit);
 						CompilationUnitDeclaration parsedUnit = basicParser.dietParse(unit, compilationUnitResult);
 						if (parsedUnit != null) {
+							basicParser.inferTypes(parsedUnit, null);
 							final char[] packageDeclaration = parsedUnit.currentPackage == null
 								? CharOperation.NO_CHAR
 								: CharOperation.concatWith(parsedUnit.currentPackage.getImportName(), '.');
@@ -1468,6 +1506,14 @@ public class BasicSearchEngine {
 										new QualifiedTypeDeclarationPattern(qualification, memberTypeDeclaration.name, convertTypeKind(TypeDeclaration.kind(memberTypeDeclaration.modifiers)), matchRule);
 									if (pattern.matchesDecodedKey(decodedPattern)) {
 										nameRequestor.acceptType(memberTypeDeclaration.modifiers, packageDeclaration, memberTypeDeclaration.name, enclosingTypeNames, path, null);
+									}
+									return true;
+								}
+								public boolean visit(InferredType inferredType, BlockScope scope) {
+									SearchPattern decodedPattern =
+										new QualifiedTypeDeclarationPattern(packageDeclaration, inferredType.getName(), convertTypeKind(TypeDeclaration.kind(0)), matchRule);
+									if (pattern.matchesDecodedKey(decodedPattern)) {
+										nameRequestor.acceptType(0, packageDeclaration, inferredType.getName(), CharOperation.NO_CHAR_CHAR, path, null);
 									}
 									return true;
 								}
