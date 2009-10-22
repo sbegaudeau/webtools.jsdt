@@ -113,23 +113,26 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				break;
 			case Binding.LOCAL : // reading a local variable
 			case Binding.LOCAL | Binding.TYPE :
-				LocalVariableBinding localBinding= (LocalVariableBinding) binding;
-
-				if(!flowInfo.isDefinitelyAssigned(localBinding)) {
-					if (localBinding.declaringScope instanceof MethodScope) {
-						// ignore the arguments variable inside a function
-						if(!CharOperation.equals(localBinding.name, new char[]{'a','r','g','u','m','e','n','t','s'}))
-								currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
-					} else if(localBinding.isSameCompilationUnit(currentScope)) {
-						currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+			case Binding.VARIABLE:
+				if(binding instanceof LocalVariableBinding) {
+					LocalVariableBinding localBinding= (LocalVariableBinding) binding;
+	
+					if(!flowInfo.isDefinitelyAssigned(localBinding)) {
+						if (localBinding.declaringScope instanceof MethodScope) {
+							// ignore the arguments variable inside a function
+							if(!CharOperation.equals(localBinding.name, new char[]{'a','r','g','u','m','e','n','t','s'}))
+									currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
+						} else if(localBinding.isSameCompilationUnit(currentScope)) {
+							currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+						}
 					}
+					
+					if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
+						localBinding.useFlag = LocalVariableBinding.USED;
+					} else if (localBinding.useFlag == LocalVariableBinding.UNUSED) {
+						localBinding.useFlag = LocalVariableBinding.FAKE_USED;
+					}	
 				}
-				
-				if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
-					localBinding.useFlag = LocalVariableBinding.USED;
-				} else if (localBinding.useFlag == LocalVariableBinding.UNUSED) {
-					localBinding.useFlag = LocalVariableBinding.FAKE_USED;
-				}	
 				
 		}
 		if (valueRequired) {

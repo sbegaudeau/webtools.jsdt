@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.IndirectMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
@@ -64,6 +65,18 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		flowInfo = receiver.analyseCode(currentScope, flowContext, flowInfo, nonStatic).unconditionalInits();
 		if (nonStatic) {
 			receiver.checkNPE(currentScope, flowContext, flowInfo);
+		}
+	}
+	if(selector != null) {
+		Binding existingVariable = currentScope.getLocalBinding(selector, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
+		if(existingVariable != null && existingVariable instanceof LocalVariableBinding) {
+			LocalVariableBinding localBinding = (LocalVariableBinding) existingVariable;
+			
+			if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0)	{
+				localBinding.useFlag = LocalVariableBinding.USED;
+			} else if (localBinding.useFlag == LocalVariableBinding.UNUSED) {
+				localBinding.useFlag = LocalVariableBinding.FAKE_USED;
+			}	
 		}
 	}
 
