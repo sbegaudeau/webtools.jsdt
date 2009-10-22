@@ -14,13 +14,31 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Vector;
 
+import junit.framework.Test;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
 import org.eclipse.wst.jsdt.core.tests.model.Semaphore.TimeOutException;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -29,8 +47,6 @@ import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.core.search.processing.IJob;
-
-import junit.framework.Test;
 
 /*
  * Test indexing support.
@@ -870,7 +886,7 @@ public void testSearchPatternCreation30() {
 			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
-		"LocalVarDeclarationPattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
+		"LocalVarDeclarationPattern: var [in foo() [in X [in X.js [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
 		searchPattern);
 }
 
@@ -884,7 +900,7 @@ public void testSearchPatternCreation31() {
 			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
-		"LocalVarReferencePattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
+		"LocalVarReferencePattern: var [in foo() [in X [in X.js [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
 		searchPattern);
 }
 
@@ -898,7 +914,7 @@ public void testSearchPatternCreation32() {
 			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
-		"LocalVarCombinedPattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
+		"LocalVarCombinedPattern: var [in foo() [in X [in X.js [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
 		searchPattern);
 }
 
