@@ -520,14 +520,6 @@ public void alreadyDefinedLabel(char[] labelName, ASTNode location) {
 		location.sourceStart,
 		location.sourceEnd);
 }
-public void anonymousClassCannotExtendFinalClass(Expression expression, TypeBinding type) {
-	this.handle(
-		IProblem.AnonymousClassCannotExtendFinalClass,
-		new String[] {new String(type.readableName())},
-		new String[] {new String(type.shortReadableName())},
-		expression.sourceStart,
-		expression.sourceEnd);
-}
 public void argumentTypeCannotBeVoid(SourceTypeBinding type, AbstractMethodDeclaration methodDecl, Argument arg) {
 	String[] arguments = new String[] {new String(methodDecl.getSafeName()), new String(arg.name)};
 	this.handle(

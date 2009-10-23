@@ -280,7 +280,6 @@ void setSourceStart(int sourceStart);
 	int OuterLocalMustBeFinal = Internal + 25;
 	int IllegalPrimitiveOrArrayTypeForEnclosingInstance = TypeRelated + 27;
 	int EnclosingInstanceInConstructorCall = Internal + 28;
-	int AnonymousClassCannotExtendFinalClass = TypeRelated + 29;
 	int TypeHidingType = TypeRelated + 33;
 
 

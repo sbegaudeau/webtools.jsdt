@@ -223,9 +223,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.UndefinedConstructor:
 				UnresolvedElementsSubProcessor.getConstructorProposals(context, problem, proposals);
 				break;
-//			case IProblem.UndefinedAnnotationMember:
-//				UnresolvedElementsSubProcessor.getAnnotationMemberProposals(context, problem, proposals);
-//				break;
 			case IProblem.ParameterMismatch:
 				UnresolvedElementsSubProcessor.getMethodProposals(context, problem, true, proposals);
 				break;
@@ -293,7 +290,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.DuplicateFinalLocalInitialization:
 			case IProblem.FinalFieldAssignment:
 			case IProblem.DuplicateBlankFinalFieldInitialization:
-			case IProblem.AnonymousClassCannotExtendFinalClass:
 			case IProblem.ClassExtendFinalClass:
 				ModifierCorrectionSubProcessor.addNonAccessibleReferenceProposal(context, problem, proposals, ModifierCorrectionSubProcessor.TO_NON_FINAL, 9);
 				break;
@@ -332,10 +328,7 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 				break;
 			case IProblem.AbstractMethodMustBeImplemented:
 				LocalCorrectionsSubProcessor.addUnimplementedMethodsProposals(context, problem, proposals);
-				break;
-//			case IProblem.MissingValueForAnnotationMember:
-//				LocalCorrectionsSubProcessor.addValueForAnnotationProposals(context, problem, proposals);
-//				break;				
+				break;			
 			case IProblem.BodyForNativeMethod:
 				ModifierCorrectionSubProcessor.addNativeMethodProposals(context, problem, proposals);
 				break;
@@ -422,9 +415,6 @@ public class QuickFixProcessor implements IQuickFixProcessor {
 			case IProblem.InvalidOperator:
 				LocalCorrectionsSubProcessor.getInvalidOperatorProposals(context, problem, proposals);
 				break;
-//			case IProblem.MissingSerialVersion:
-//			    SerialVersionSubProcessor.getSerialVersionProposals(context, problem, proposals);
-//				break;
 			case IProblem.UnnecessaryElse:
 				LocalCorrectionsSubProcessor.getUnnecessaryElseProposals(context, problem, proposals);
 				break;
