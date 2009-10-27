@@ -43,9 +43,6 @@ public class ASTNodeFactory {
 	private static final String TYPE_HEADER= "class __X__ { abstract "; //$NON-NLS-1$
 	private static final String TYPE_FOOTER= " __f__(); }}"; //$NON-NLS-1$
 	
-	private static final String TYPEPARAM_HEADER= "class __X__ { abstract <"; //$NON-NLS-1$
-	private static final String TYPEPARAM_FOOTER= "> void __f__(); }}"; //$NON-NLS-1$
-	
 	private static class PositionClearer extends GenericVisitor {
 		
 		public PositionClearer() {

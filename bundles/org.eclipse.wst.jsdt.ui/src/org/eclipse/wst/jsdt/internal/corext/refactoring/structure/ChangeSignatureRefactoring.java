@@ -1471,8 +1471,6 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		}
 	}
 	
-	private static final boolean BUG_89686= true; //see bug 83693: Search for References to methods/constructors: do ranges include parameter lists?
-	
 	private OccurrenceUpdate createOccurrenceUpdate(ASTNode node, CompilationUnitRewrite cuRewrite, RefactoringStatus result) {
 		
 		if (isReferenceNode(node))

@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -793,7 +792,6 @@ public class ASTNodes {
 
 	public static ITypeBinding getTypeBinding(JavaScriptUnit root, IType type) throws JavaScriptModelException {
 		if (type.isAnonymous()) {
-			final IJavaScriptElement parent= type.getParent();
 				final ClassInstanceCreation creation= (ClassInstanceCreation) getParent(NodeFinder.perform(root, type.getNameRange()), ClassInstanceCreation.class);
 				if (creation != null)
 					return creation.resolveTypeBinding();

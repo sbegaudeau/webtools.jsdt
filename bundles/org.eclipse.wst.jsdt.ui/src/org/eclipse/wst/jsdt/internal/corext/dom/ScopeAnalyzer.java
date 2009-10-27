@@ -363,7 +363,7 @@ public class ScopeAnalyzer {
 		try {
 			// special case for switch on enum
 			if (selector.getLocationInParent() == SwitchCase.EXPRESSION_PROPERTY) {
-				ITypeBinding binding= ((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
+				((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
 			}
 			
 			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentType(selector);
@@ -450,7 +450,7 @@ public class ScopeAnalyzer {
 		try {
 			// special case for switch on enum
 			if (selector.getLocationInParent() == SwitchCase.EXPRESSION_PROPERTY) {
-				ITypeBinding binding= ((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
+				((SwitchStatement) selector.getParent().getParent()).getExpression().resolveTypeBinding();
 			}
 			
 			ITypeBinding parentTypeBinding= Bindings.getBindingOfParentTypeContext(selector);
@@ -474,22 +474,6 @@ public class ScopeAnalyzer {
 		} finally {
 			clearLists();
 		}
-	}
-	
-	private IVariableBinding[] getEnumContants(ITypeBinding binding) {
-		IVariableBinding[] declaredFields= binding.getDeclaredFields();
-		ArrayList res= new ArrayList(declaredFields.length);
-		return (IVariableBinding[]) res.toArray(new IVariableBinding[res.size()]);
-	}
-	
-	private boolean hasEnumContants(IBinding declaration, ITypeBinding binding) {
-		IVariableBinding[] declaredFields= binding.getDeclaredFields();
-		for (int i= 0; i < declaredFields.length; i++) {
-			IVariableBinding curr= declaredFields[i];
-			if (curr == declaration)
-				return true;
-		}
-		return false;
 	}
 
 	public IBinding[] getDeclarationsInScope(int offset, int flags) {

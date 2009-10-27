@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
@@ -70,7 +69,6 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression.Operator;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.LinkedNodeFinder;
@@ -1344,23 +1342,23 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 		return infix;
 	}
 
-	private static boolean isNegated(Expression expression) {
-		if (!(expression.getParent() instanceof ParenthesizedExpression))
-			return false;
-		
-		ParenthesizedExpression parenthesis= (ParenthesizedExpression)expression.getParent();
-		if (!(parenthesis.getParent() instanceof PrefixExpression))
-			return false;
-		
-		PrefixExpression prefix= (PrefixExpression)parenthesis.getParent();
-		if (!(prefix.getOperator() == PrefixExpression.Operator.NOT))
-			return false;
-		
-		return true;
-	}
-	private static String[] suggestLocalVariableNames(IJavaScriptUnit cu, ITypeBinding binding) {
-		return StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, cu.getJavaScriptProject(), binding, null, null);
-	}
+//	private static boolean isNegated(Expression expression) {
+//		if (!(expression.getParent() instanceof ParenthesizedExpression))
+//			return false;
+//		
+//		ParenthesizedExpression parenthesis= (ParenthesizedExpression)expression.getParent();
+//		if (!(parenthesis.getParent() instanceof PrefixExpression))
+//			return false;
+//		
+//		PrefixExpression prefix= (PrefixExpression)parenthesis.getParent();
+//		if (!(prefix.getOperator() == PrefixExpression.Operator.NOT))
+//			return false;
+//		
+//		return true;
+//	}
+//	private static String[] suggestLocalVariableNames(IJavaScriptUnit cu, ITypeBinding binding) {
+//		return StubUtility.getVariableNameSuggestions(StubUtility.LOCAL, cu.getJavaScriptProject(), binding, null, null);
+//	}
 
 	private static boolean getPickOutStringProposals(IInvocationContext context, ASTNode node, Collection resultingCollections) {
 		// we work with String's

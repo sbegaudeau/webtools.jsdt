@@ -42,8 +42,6 @@ import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
@@ -60,7 +58,6 @@ public class CodeStyleFix extends AbstractFix {
 	private final static class CodeStyleVisitor extends GenericVisitor {
 		
 		private final List/*<IFixRewriteOperation>*/ fResult;
-		private final ImportRewrite fImportRewrite;
 		private final boolean fFindUnqualifiedAccesses;
 		private final boolean fFindUnqualifiedStaticAccesses;
 		private final boolean fFindUnqualifiedMethodAccesses;
@@ -77,7 +74,7 @@ public class CodeStyleFix extends AbstractFix {
 			fFindUnqualifiedStaticAccesses= findUnqualifiedStaticAccesses;
 			fFindUnqualifiedMethodAccesses= findUnqualifiedMethodAccesses;
 			fFindUnqualifiedStaticMethodAccesses= findUnqualifiedStaticMethodAccesses;
-			fImportRewrite= StubUtility.createImportRewrite(compilationUnit, true);
+			//fImportRewrite= StubUtility.createImportRewrite(compilationUnit, true);
 			fResult= resultingCollection;
 		}
 		
@@ -646,61 +643,61 @@ public class CodeStyleFix extends AbstractFix {
 //		return new AddThisQualifierOperation(replacement, name);
 //	}
 //	
-	private static String getQualifier(IVariableBinding binding, ImportRewrite imports, SimpleName name) {
-		ITypeBinding declaringClass= binding.getDeclaringClass();
-		if (Modifier.isStatic(binding.getModifiers())) {
-			IJavaScriptElement javaElement= declaringClass.getJavaElement();
-			if (javaElement instanceof IType) {
-				return ((IType)javaElement).getElementName();
-			}
-		} else {
-			return getNonStaticQualifier(declaringClass, imports, name);
-		}
+//	private static String getQualifier(IVariableBinding binding, ImportRewrite imports, SimpleName name) {
+//		ITypeBinding declaringClass= binding.getDeclaringClass();
+//		if (Modifier.isStatic(binding.getModifiers())) {
+//			IJavaScriptElement javaElement= declaringClass.getJavaElement();
+//			if (javaElement instanceof IType) {
+//				return ((IType)javaElement).getElementName();
+//			}
+//		} else {
+//			return getNonStaticQualifier(declaringClass, imports, name);
+//		}
+//
+//		return null;
+//	}
 
-		return null;
-	}
-
-	private static String getNonStaticQualifier(ITypeBinding declaringClass, ImportRewrite imports, SimpleName name) {
-		ITypeBinding parentType= Bindings.getBindingOfParentType(name);
-		ITypeBinding currType= parentType;
-		while (currType != null && !Bindings.isSuperType(declaringClass, currType)) {
-			currType= currType.getDeclaringClass();
-		}
-		if (currType == null) {
-			declaringClass= declaringClass.getTypeDeclaration();
-			currType= parentType;
-			while (currType != null && !Bindings.isSuperType(declaringClass, currType)) {
-				currType= currType.getDeclaringClass();
-			}
-		}
-		if (currType != parentType) {
-			if (currType == null)
-				return null;
-			
-			if (currType.isAnonymous())
-				//If we access a field of a super class of an anonymous class
-				//then we can only qualify with 'this' but not with outer.this
-				//see bug 115277
-				return null;
-			
-			String outer= imports.addImport(currType);
-			return outer + ".this"; //$NON-NLS-1$
-		} else {
-			return "this"; //$NON-NLS-1$
-		}
-	}
+//	private static String getNonStaticQualifier(ITypeBinding declaringClass, ImportRewrite imports, SimpleName name) {
+//		ITypeBinding parentType= Bindings.getBindingOfParentType(name);
+//		ITypeBinding currType= parentType;
+//		while (currType != null && !Bindings.isSuperType(declaringClass, currType)) {
+//			currType= currType.getDeclaringClass();
+//		}
+//		if (currType == null) {
+//			declaringClass= declaringClass.getTypeDeclaration();
+//			currType= parentType;
+//			while (currType != null && !Bindings.isSuperType(declaringClass, currType)) {
+//				currType= currType.getDeclaringClass();
+//			}
+//		}
+//		if (currType != parentType) {
+//			if (currType == null)
+//				return null;
+//			
+//			if (currType.isAnonymous())
+//				//If we access a field of a super class of an anonymous class
+//				//then we can only qualify with 'this' but not with outer.this
+//				//see bug 115277
+//				return null;
+//			
+//			String outer= imports.addImport(currType);
+//			return outer + ".this"; //$NON-NLS-1$
+//		} else {
+//			return "this"; //$NON-NLS-1$
+//		}
+//	}
 	
-	private static SimpleName getName(JavaScriptUnit compilationUnit, IProblemLocation problem) {
-		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
-		
-		while (selectedNode instanceof QualifiedName) {
-			selectedNode= ((QualifiedName) selectedNode).getQualifier();
-		}
-		if (!(selectedNode instanceof SimpleName)) {
-			return null;
-		}
-		return (SimpleName) selectedNode;
-	}
+//	private static SimpleName getName(JavaScriptUnit compilationUnit, IProblemLocation problem) {
+//		ASTNode selectedNode= problem.getCoveringNode(compilationUnit);
+//		
+//		while (selectedNode instanceof QualifiedName) {
+//			selectedNode= ((QualifiedName) selectedNode).getQualifier();
+//		}
+//		if (!(selectedNode instanceof SimpleName)) {
+//			return null;
+//		}
+//		return (SimpleName) selectedNode;
+//	}
 
 	private CodeStyleFix(String name, JavaScriptUnit compilationUnit, IFixRewriteOperation[] fixRewriteOperations) {
 		super(name, compilationUnit, fixRewriteOperations);

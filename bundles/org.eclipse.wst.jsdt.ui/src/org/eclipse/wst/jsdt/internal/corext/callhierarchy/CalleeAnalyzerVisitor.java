@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.callhierarchy;
 
-import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -25,12 +24,12 @@ import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
-import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
-import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.SuperConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
@@ -292,16 +291,16 @@ class CalleeAnalyzerVisitor extends ASTVisitor {
         return isNodeWithinMethod(node) || isNodeEnclosingMethod(node);
     }
 
-    private IFunction findImplementingMethods(IFunction calledMethod) {
-        Collection implementingMethods = CallHierarchy.getDefault()
-                                                        .getImplementingMethods(calledMethod);
-
-        if ((implementingMethods.size() == 0) || (implementingMethods.size() > 1)) {
-            return calledMethod;
-        } else {
-            return (IFunction) implementingMethods.iterator().next();
-        }
-    }
+//    private IFunction findImplementingMethods(IFunction calledMethod) {
+//        Collection implementingMethods = CallHierarchy.getDefault()
+//                                                        .getImplementingMethods(calledMethod);
+//
+//        if ((implementingMethods.size() == 0) || (implementingMethods.size() > 1)) {
+//            return calledMethod;
+//        } else {
+//            return (IFunction) implementingMethods.iterator().next();
+//        }
+//    }
     
     private void progressMonitorWorked(int work) {
         if (fProgressMonitor != null) {

@@ -118,7 +118,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 
 	private boolean fSort;
 
-	private boolean fFinal;
+	//private boolean fFinal;
 
 	private int fVisibility;
 
@@ -291,7 +291,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 				return;
 			}
 			fSort= dialog.getSortOrder();
-			fFinal= dialog.getFinal();
+			//fFinal= dialog.getFinal();
 			fVisibility= dialog.getVisibilityModifier();
 			fGenerateComment= dialog.getGenerateComment();
 			IField[] getterFields, setterFields, getterSetterFields;
@@ -719,7 +719,6 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 		Map result= new LinkedHashMap();
 		for (int i= 0; i < fields.length; i++) {
 			IField field= fields[i];
-			int flags= field.getFlags();
 			
 			List l= new ArrayList(2);
 			if (GetterSetterUtil.getGetter(field) == null) {
@@ -743,7 +742,7 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 
 		private static final Object[] EMPTY= new Object[0];
 
-		private Viewer fViewer;
+		//private Viewer fViewer;
 
 		private Map fGetterSetterEntries;
 
@@ -755,12 +754,12 @@ public class AddGetterSetterAction extends SelectionDispatchAction {
 		 * @see IContentProvider#inputChanged(Viewer, Object, Object)
 		 */
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			fViewer= viewer;
+			//fViewer= viewer;
 		}
 
-		public Viewer getViewer() {
-			return fViewer;
-		}
+//		public Viewer getViewer() {
+//			return fViewer;
+//		}
 			
 		/*
 		 * @see ITreeContentProvider#getChildren(Object)

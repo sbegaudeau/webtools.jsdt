@@ -67,8 +67,6 @@ public class BindingLabelProvider extends LabelProvider {
 			}
 			return getTypeImageDescriptor(typeBinding.getDeclaringClass() != null, typeBinding, flags);
 		} else if (binding instanceof IFunctionBinding) {
-			ITypeBinding type= ((IFunctionBinding) binding).getDeclaringClass();
-			int modifiers= binding.getModifiers();
 			return getMethodImageDescriptor(binding.getModifiers());
 		} else if (binding instanceof IVariableBinding)
 			return getFieldImageDescriptor((IVariableBinding) binding);
@@ -153,23 +151,23 @@ public class BindingLabelProvider extends LabelProvider {
 			return JavaPluginImages.DESC_OBJS_INNER_CLASS_DEFAULT;
 	}
 
-	private static ImageDescriptor getInnerInterfaceImageDescriptor(int modifiers) {
-		if (Modifier.isPublic(modifiers))
-			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PUBLIC;
-		else if (Modifier.isPrivate(modifiers))
-			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PRIVATE;
-		else if (Modifier.isProtected(modifiers))
-			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PROTECTED;
-		else
-			return JavaPluginImages.DESC_OBJS_INTERFACE_DEFAULT;
-	}
-
-	private static ImageDescriptor getInterfaceImageDescriptor(int modifiers) {
-		if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers) || Modifier.isPrivate(modifiers))
-			return JavaPluginImages.DESC_OBJS_INTERFACE;
-		else
-			return JavaPluginImages.DESC_OBJS_INTERFACE_DEFAULT;
-	}
+//	private static ImageDescriptor getInnerInterfaceImageDescriptor(int modifiers) {
+//		if (Modifier.isPublic(modifiers))
+//			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PUBLIC;
+//		else if (Modifier.isPrivate(modifiers))
+//			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PRIVATE;
+//		else if (Modifier.isProtected(modifiers))
+//			return JavaPluginImages.DESC_OBJS_INNER_INTERFACE_PROTECTED;
+//		else
+//			return JavaPluginImages.DESC_OBJS_INTERFACE_DEFAULT;
+//	}
+//
+//	private static ImageDescriptor getInterfaceImageDescriptor(int modifiers) {
+//		if (Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers) || Modifier.isPrivate(modifiers))
+//			return JavaPluginImages.DESC_OBJS_INTERFACE;
+//		else
+//			return JavaPluginImages.DESC_OBJS_INTERFACE_DEFAULT;
+//	}
 
 	private static ImageDescriptor getMethodImageDescriptor(int modifiers) {
 		if (Modifier.isPublic(modifiers))
@@ -317,32 +315,18 @@ public class BindingLabelProvider extends LabelProvider {
 		}
 	}
 	
-	private static void getTypeArgumentsLabel(ITypeBinding[] typeArgs, long flags, StringBuffer buf) {
-		if (typeArgs.length > 0) {
-			buf.append('<');
-			for (int i = 0; i < typeArgs.length; i++) {
-				if (i > 0) {
-					buf.append(JavaScriptElementLabels.COMMA_STRING);
-				}
-				getTypeLabel(typeArgs[i], flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buf);
-			}
-			buf.append('>');
-		}
-	}
-	
-
-	private static void getTypeParametersLabel(ITypeBinding[] typeParameters, long flags, StringBuffer buffer) {
-		if (typeParameters.length > 0) {
-			buffer.append('<');
-			for (int index= 0; index < typeParameters.length; index++) {
-				if (index > 0) {
-					buffer.append(JavaScriptElementLabels.COMMA_STRING);
-				}
-				buffer.append(typeParameters[index].getName());
-			}
-			buffer.append('>');
-		}
-	}
+//	private static void getTypeArgumentsLabel(ITypeBinding[] typeArgs, long flags, StringBuffer buf) {
+//		if (typeArgs.length > 0) {
+//			buf.append('<');
+//			for (int i = 0; i < typeArgs.length; i++) {
+//				if (i > 0) {
+//					buf.append(JavaScriptElementLabels.COMMA_STRING);
+//				}
+//				getTypeLabel(typeArgs[i], flags & JavaScriptElementLabels.T_TYPE_PARAMETERS, buf);
+//			}
+//			buf.append('>');
+//		}
+//	}
 
 	/**
 	 * Returns the label for a Java element with the flags as defined by {@link JavaScriptElementLabels}.

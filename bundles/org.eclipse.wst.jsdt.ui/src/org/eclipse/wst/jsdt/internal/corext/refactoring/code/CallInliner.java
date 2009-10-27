@@ -60,7 +60,6 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.IfStatement;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
@@ -81,19 +80,16 @@ import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodeFactory;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
-import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.dom.CodeScopeBuilder;
 import org.eclipse.wst.jsdt.internal.corext.dom.HierarchicalASTVisitor;
 import org.eclipse.wst.jsdt.internal.corext.dom.LocalVariableIndex;
 import org.eclipse.wst.jsdt.internal.corext.dom.Selection;
-import org.eclipse.wst.jsdt.internal.corext.dom.TypeBindingVisitor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.RefactoringStatusCodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.code.flow.InputFlowAnalyzer;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TType;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.typeconstraints.types.TypeEnvironment;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.NoCommentSourceRangeComputer;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringFileBuffers;
@@ -177,48 +173,48 @@ public class CallInliner {
 		}
 	}
 
-	private static class AmbiguousMethodAnalyzer implements TypeBindingVisitor {
-		private TypeEnvironment fTypeEnvironment;
-		private TType[] fTypes;
-		private IFunctionBinding fOriginal;
-
-		public AmbiguousMethodAnalyzer(TypeEnvironment typeEnvironment, IFunctionBinding original, TType[] types) {
-			fTypeEnvironment= typeEnvironment;
-			fOriginal= original;
-			fTypes= types;
-		}
-		public boolean visit(ITypeBinding node) {
-			IFunctionBinding[] methods= node.getDeclaredMethods();
-			for (int i= 0; i < methods.length; i++) {
-				IFunctionBinding candidate= methods[i];
-				if (candidate == fOriginal) {
-					continue;
-				}
-				if (fOriginal.getName().equals(candidate.getName())) {
-					if (canImplicitlyCall(candidate)) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-		/**
-		 * Returns <code>true</code> if the method can be called without explicit casts; 
-		 * otherwise <code>false</code>.
-		 */
-		private boolean canImplicitlyCall(IFunctionBinding candidate) {
-			ITypeBinding[] parameters= candidate.getParameterTypes();
-			if (parameters.length != fTypes.length) {
-				return false;
-			}
-			for (int i= 0; i < parameters.length; i++) {
-				if (!fTypes[i].canAssignTo(fTypeEnvironment.create(parameters[i]))) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
+//	private static class AmbiguousMethodAnalyzer implements TypeBindingVisitor {
+//		private TypeEnvironment fTypeEnvironment;
+//		private TType[] fTypes;
+//		private IFunctionBinding fOriginal;
+//
+//		public AmbiguousMethodAnalyzer(TypeEnvironment typeEnvironment, IFunctionBinding original, TType[] types) {
+//			fTypeEnvironment= typeEnvironment;
+//			fOriginal= original;
+//			fTypes= types;
+//		}
+//		public boolean visit(ITypeBinding node) {
+//			IFunctionBinding[] methods= node.getDeclaredMethods();
+//			for (int i= 0; i < methods.length; i++) {
+//				IFunctionBinding candidate= methods[i];
+//				if (candidate == fOriginal) {
+//					continue;
+//				}
+//				if (fOriginal.getName().equals(candidate.getName())) {
+//					if (canImplicitlyCall(candidate)) {
+//						return false;
+//					}
+//				}
+//			}
+//			return true;
+//		}
+//		/**
+//		 * Returns <code>true</code> if the method can be called without explicit casts; 
+//		 * otherwise <code>false</code>.
+//		 */
+//		private boolean canImplicitlyCall(IFunctionBinding candidate) {
+//			ITypeBinding[] parameters= candidate.getParameterTypes();
+//			if (parameters.length != fTypes.length) {
+//				return false;
+//			}
+//			for (int i= 0; i < parameters.length; i++) {
+//				if (!fTypes[i].canAssignTo(fTypeEnvironment.create(parameters[i]))) {
+//					return false;
+//				}
+//			}
+//			return true;
+//		}
+//	}
 
 	public CallInliner(IJavaScriptUnit unit, JavaScriptUnit targetAstRoot, SourceProvider provider) throws CoreException {
 		super();
@@ -659,54 +655,6 @@ public class CallInliner {
 			}
 		}
 	}
-
-	/**
-	 * @return <code>true</code> if explicit cast is needed otherwise <code>false</code>
-	 */
-	private boolean needsExplicitCast(RefactoringStatus status) {
-		// if the return type of the method is the same as the type of the
-		// returned expression then we don't need an explicit cast.
-		if (fSourceProvider.returnTypeMatchesReturnExpressions())
-				return false;		 
-		ASTNode parent= fTargetNode.getParent();
-		int nodeType= parent.getNodeType();
-		if (nodeType == ASTNode.FUNCTION_INVOCATION) {
-			FunctionInvocation methodInvocation= (FunctionInvocation)parent;
-			if(methodInvocation.getExpression() == fTargetNode)
-				return false;
-			IFunctionBinding method= methodInvocation.resolveMethodBinding();
-			if (method == null) {
-				status.addError(RefactoringCoreMessages.CallInliner_cast_analysis_error,  
-					JavaStatusContext.create(fCUnit, methodInvocation));
-				return false;
-			}
-			ITypeBinding[] parameters= method.getParameterTypes();
-			int argumentIndex= methodInvocation.arguments().indexOf(fInvocation);
-			List returnExprs= fSourceProvider.getReturnExpressions();
-			// it is inferred that only methods consisting of a single 
-			// return statement can be inlined as parameters in other 
-			// method invocations
-			if (returnExprs.size() != 1)
-				return false;
-			parameters[argumentIndex]= ((Expression)returnExprs.get(0)).resolveTypeBinding();
-
-			ITypeBinding type= ASTNodes.getReceiverTypeBinding(methodInvocation);
-			TypeBindingVisitor visitor= new AmbiguousMethodAnalyzer(
-				fTypeEnvironment, method, fTypeEnvironment.create(parameters));
-			if(!visitor.visit(type)) {
-				return true;
-			}
-			else if(Modifier.isAbstract(type.getModifiers())) {
-				return !Bindings.visitHierarchy(type, visitor);
-			}
-			else {
-				// it is not needed to visit interfaces if receiver is a concrete class
-				return !Bindings.visitSuperclasses(type, visitor);
-			}
-		}
-		return false;
-	}
-
 	private boolean needsParenthesis() {
 		if (!fSourceProvider.needsReturnedExpressionParenthesis())
 			return false;
