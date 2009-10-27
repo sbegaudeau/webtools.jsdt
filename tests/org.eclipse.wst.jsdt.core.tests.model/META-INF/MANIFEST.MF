@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.wst.jsdt.core.tests.compiler,
  org.eclipse.team.core,
  org.eclipse.text,
- org.eclipse.wst.jsdt.core
+ org.eclipse.wst.jsdt.core,
+ com.ibm.icu;bundle-version="[3.8.0,4.0.0)"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
