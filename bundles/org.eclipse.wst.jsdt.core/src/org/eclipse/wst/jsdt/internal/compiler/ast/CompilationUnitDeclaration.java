@@ -182,7 +182,6 @@ public class CompilationUnitDeclaration
 //					flowInfo=((Statement)statements[i]).analyseCode(scope,flowContext,flowInfo);
 //				}
 			}
-			this.scope.reportUnusedDeclarations();
 		} catch (AbortCompilationUnit e) {
 			this.ignoreFurtherInvestigation = true;
 			return;
