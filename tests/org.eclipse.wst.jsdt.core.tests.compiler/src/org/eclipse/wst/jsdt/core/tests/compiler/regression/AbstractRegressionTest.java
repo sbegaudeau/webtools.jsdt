@@ -427,6 +427,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				CompilerOptions.WARNING);
 		defaultOptions.put(CompilerOptions.OPTION_ReportUninitializedGlobalVariable, 
 				CompilerOptions.IGNORE);
+		defaultOptions.put(CompilerOptions.OPTION_ReportUnusedLocal, 
+				CompilerOptions.WARNING);
 		return defaultOptions;
 	}
 

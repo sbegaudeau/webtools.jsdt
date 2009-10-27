@@ -208,7 +208,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"{\n" +
 						"}\n"
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	var t = new Test();\n" + 
+				"	    ^\n" + 
+				"The local variable t is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -237,7 +242,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"	ff(1);\n" +
 						"}\n" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 3)\n" + 
+				"	{var c=p;};\n" + 
+				"	     ^\n" + 
+				"The local variable c is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -251,7 +261,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"	ff(1);\n" +
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	{var c=p;};\n" + 
+				"	     ^\n" + 
+				"The local variable c is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -364,7 +379,27 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"}\n" +
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	var x= 10, z = null, i, j;\n" + 
+				"	    ^\n" + 
+				"The local variable x is never read\n" + 
+				"----------\n" + 
+				"2. WARNING in X.js (at line 2)\n" + 
+				"	var x= 10, z = null, i, j;\n" + 
+				"	           ^\n" + 
+				"The local variable z is never read\n" + 
+				"----------\n" + 
+				"3. WARNING in X.js (at line 2)\n" + 
+				"	var x= 10, z = null, i, j;\n" + 
+				"	                     ^\n" + 
+				"The local variable i is never read\n" + 
+				"----------\n" + 
+				"4. WARNING in X.js (at line 2)\n" + 
+				"	var x= 10, z = null, i, j;\n" + 
+				"	                        ^\n" + 
+				"The local variable j is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -445,7 +480,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"   var vv=arguments;}\n" +
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	var vv=arguments;}\n" + 
+				"	    ^^\n" + 
+				"The local variable vv is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -599,7 +639,17 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						" var f=e;}\n" +
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 3)\n" + 
+				"	function abc(){ var d= 1,e=4;\n" + 
+				"	                    ^\n" + 
+				"The local variable d is never read\n" + 
+				"----------\n" + 
+				"2. WARNING in X.js (at line 4)\n" + 
+				"	var f=e;}\n" + 
+				"	    ^\n" + 
+				"The local variable f is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -781,7 +831,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"});\n"+
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 4)\n" + 
+				"	var c=this.i; },\n" + 
+				"	    ^\n" + 
+				"The local variable c is never read\n" + 
+				"----------\n"
 		);
 	}
 	
@@ -908,7 +963,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"}\n"+ 
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	var bp = (base||0).prototype;\n" + 
+				"	    ^^\n" + 
+				"The local variable bp is never read\n" + 
+				"----------\n"
 		);
 	}
 		
@@ -1018,7 +1078,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						+"}\n" 
 						+"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 3)\n" + 
+				"	var dd=inner;\n" + 
+				"	    ^^\n" + 
+				"The local variable dd is never read\n" + 
+				"----------\n"
 		);
 	}
 
@@ -1036,11 +1101,16 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						+"" 
 				},
 				"----------\n" + 
-		"1. WARNING in X.js (at line 4)\n" + 
-		"	var dd=ii;\n" + 
-		"	       ^^\n" + 
-		"The local variable ii may not have been initialized\n" + 
-		"----------\n"
+				"1. WARNING in X.js (at line 4)\n" + 
+				"	var dd=ii;\n" + 
+				"	    ^^\n" + 
+				"The local variable dd is never read\n" + 
+				"----------\n" + 
+				"2. WARNING in X.js (at line 4)\n" + 
+				"	var dd=ii;\n" + 
+				"	       ^^\n" + 
+				"The local variable ii may not have been initialized\n" + 
+				"----------\n"
 		);
 	}
 	
@@ -1055,7 +1125,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						+"}\n" 
 						+"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	var ii=0,i2=ii+1;\n" + 
+				"	         ^^\n" + 
+				"The local variable i2 is never read\n" + 
+				"----------\n"
 		);
 	}
  
@@ -1122,7 +1197,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"	 if(param1 || param2) {} \n" +
 						"}\n",
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 3)\n" + 
+				"	var value = param1 || param2; \n" + 
+				"	    ^^^^^\n" + 
+				"The local variable value is never read\n" + 
+				"----------\n"
 		);
 
 	}
@@ -1311,7 +1391,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 							"}\n"+
 							"top();"
 					},
-					""
+					"----------\n" + 
+					"1. WARNING in Z.js (at line 6)\n" + 
+					"	var p = x1 + 3;\n" + 
+					"	    ^\n" + 
+					"The local variable p is never read\n" + 
+					"----------\n"
 			);
 	}
 	

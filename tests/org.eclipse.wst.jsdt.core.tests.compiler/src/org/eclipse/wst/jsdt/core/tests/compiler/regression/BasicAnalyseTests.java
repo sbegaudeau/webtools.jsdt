@@ -3,8 +3,6 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-
 public class BasicAnalyseTests extends AbstractRegressionTest {
 	public BasicAnalyseTests(String name) {
 		super(name);
@@ -158,63 +156,42 @@ public class BasicAnalyseTests extends AbstractRegressionTest {
 	}
 	
 	public void testBug251225_1() {
-		Map custom = new HashMap();
-		custom.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.WARNING);
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
 						"var temp = function () {};\n" +
 						"temp();"
 				},
-				"----------\n" + 
-				"1. WARNING in D:\\WTPDevelopment\\wtp32\\org.eclipse.wst.jsdt.core\\libraries\\system.js (at line 1831)\n" + 
-				"	var debugger = null;\n" + 
-				"	    ^^^^^^^^\n" + 
-				"The local variable debugger is never read\n" + 
-				"----------\n", null, false, custom
+				""
 		);
 	}
 	
 	public void testBug251225_2() {
-		Map custom = new HashMap();
-		custom.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.WARNING);
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
 						"var temp = function () {};\n" +
 						"new temp();"
 				},
-				"----------\n" + 
-				"1. WARNING in D:\\WTPDevelopment\\wtp32\\org.eclipse.wst.jsdt.core\\libraries\\system.js (at line 1831)\n" + 
-				"	var debugger = null;\n" + 
-				"	    ^^^^^^^^\n" + 
-				"The local variable debugger is never read\n" + 
-				"----------\n", null, false, custom
+				""
 		);
 	}
 	
 	public void testBug251225_3() {
-		Map custom = new HashMap();
-		custom.put(CompilerOptions.OPTION_ReportUnusedLocal, CompilerOptions.WARNING);
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
+						"function testFunction() {\n" +
 						"var temp = function () {};\n" +
 						"function temp2(){}" + 
-						"new temp2();"
+						"new temp2();}"
 				},
 				"----------\n" + 
-				"1. WARNING in X.js (at line 1)\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
 				"	var temp = function () {};\n" + 
 				"	    ^^^^\n" + 
 				"The local variable temp is never read\n" + 
-				"----------\n" + 
-				"----------\n" + 
-				"1. WARNING in D:\\WTPDevelopment\\wtp32\\org.eclipse.wst.jsdt.core\\libraries\\system.js (at line 1831)\n" + 
-				"	var debugger = null;\n" + 
-				"	    ^^^^^^^^\n" + 
-				"The local variable debugger is never read\n" + 
-				"----------\n", null, false, custom
+				"----------\n"
 		);
 	}
 }
