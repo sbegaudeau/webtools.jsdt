@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.refactoring.code;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -814,11 +813,6 @@ public class ExtractMethodRefactoring extends ScriptableRefactoring {
 		}
 		
 		return result;
-	}
-	
-	private ITypeBinding[] computeLocalTypeVariables() {
-		List result= new ArrayList(Arrays.asList(fAnalyzer.getTypeVariables()));
-		return (ITypeBinding[])result.toArray(new ITypeBinding[result.size()]);
 	}
 	
 	private Block createMethodBody(FunctionDeclaration method, ASTNode[] selectedNodes, TextEditGroup substitute) throws BadLocationException, CoreException {

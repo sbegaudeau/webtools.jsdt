@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.corext.fix;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -447,7 +446,6 @@ public class UnusedCodeFix extends AbstractFix {
 
 		List/*<IFixRewriteOperation>*/ result= new ArrayList();
 		Hashtable/*<ASTNode, List>*/ variableDeclarations= new Hashtable();
-		HashSet/*/CastExpression>*/ unnecessaryCasts= new HashSet();
 		for (int i= 0; i < problems.length; i++) {
 			IProblemLocation problem= problems[i];
 			int id= problem.getProblemId();

@@ -382,10 +382,9 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 				result.add(bindings[i]);
 		}
 		// all all type variables which are needed since a local variable uses it
-		for (int i= 0; i < fArguments.length; i++) {
-			IVariableBinding arg= fArguments[i];
-			ITypeBinding type= arg.getType();
-		}
+//		for (int i= 0; i < fArguments.length; i++) {
+//			IVariableBinding arg= fArguments[i];
+//		}
 		return (ITypeBinding[])result.toArray(new ITypeBinding[result.size()]);
 	}
 	

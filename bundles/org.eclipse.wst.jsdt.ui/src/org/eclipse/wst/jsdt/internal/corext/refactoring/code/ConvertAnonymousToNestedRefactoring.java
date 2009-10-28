@@ -110,12 +110,11 @@ public class ConvertAnonymousToNestedRefactoring extends ScriptableRefactoring {
 	
 	public static class TypeVariableFinder extends ASTVisitor {
 
-		private final Map fBindings= new HashMap();
 		private final List fFound= new ArrayList();
 		
 		public final boolean visit(final SimpleName node) {
 			Assert.isNotNull(node);
-			final ITypeBinding binding= node.resolveTypeBinding();
+			node.resolveTypeBinding();
 			return true;
 		}
 

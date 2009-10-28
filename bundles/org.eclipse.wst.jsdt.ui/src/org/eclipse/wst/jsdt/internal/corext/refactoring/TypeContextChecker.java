@@ -591,19 +591,6 @@ public class TypeContextChecker {
 		}
 	}
 
-	private static void appendSuperInterfaces(StringBuffer buf, List superInterfaces) {
-		int superInterfaceCount= superInterfaces.size();
-		if (superInterfaceCount > 0) {
-			buf.append(" implements "); //$NON-NLS-1$
-			for (int i= 0; i < superInterfaceCount; i++) {
-				Type superInterface= (Type) superInterfaces.get(i);
-				buf.append(ASTNodes.asString(superInterface));
-				if (i < superInterfaceCount - 1)
-					buf.append(',');
-			}
-		}
-	}
-
 	public static StubTypeContext createSuperInterfaceStubTypeContext(String typeName, IType enclosingType, IPackageFragment packageFragment) {
 		return createSupertypeStubTypeContext(typeName, true, enclosingType, packageFragment);
 	}

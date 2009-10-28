@@ -68,7 +68,6 @@ public class JavaScriptElementComparator extends ViewerComparator {
 	private static final int RESOURCEFOLDERS= 7;
 	private static final int RESOURCES= 8;
 	
-	private static final int PACKAGE_DECL=	10;
 	private static final int IMPORT_CONTAINER= 11;
 	private static final int IMPORT_DECLARATION= 12;
 	

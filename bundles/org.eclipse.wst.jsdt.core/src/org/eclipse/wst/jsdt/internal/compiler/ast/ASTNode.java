@@ -245,27 +245,14 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	public static void checkInvocationArguments(BlockScope scope, Expression receiver, TypeBinding receiverType, MethodBinding method, Expression[] arguments, TypeBinding[] argumentTypes, boolean argsContainCast, InvocationSite invocationSite) {
 		TypeBinding[] params = method.parameters;
 		int paramLength = params.length;
-//		boolean isRawMemberInvocation = false;//!method.isStatic()
-//				&& !receiverType.isUnboundWildcard()
-//				&& method.declaringClass.isRawType()
-//				&& method.hasSubstitutedParameters();
 
-		MethodBinding rawOriginalGenericMethod = null;
-//		if (!isRawMemberInvocation) {
-//			if (method instanceof ParameterizedGenericMethodBinding) {
-//				ParameterizedGenericMethodBinding paramMethod = (ParameterizedGenericMethodBinding) method;
-//				if (paramMethod.isUnchecked || (paramMethod.isRaw && method.hasSubstitutedParameters())) {
-//					rawOriginalGenericMethod = method.original();
-//				}
-//			}
-//		}
 		int invocationStatus = INVOCATION_ARGUMENT_OK;
 		if (arguments != null) {
 			if (method.isVarargs()) {
 				// 4 possibilities exist for a call to the vararg method foo(int i, long ... value) : foo(1), foo(1, 2), foo(1, 2, 3, 4) & foo(1, new long[] {1, 2})
 				int lastIndex = paramLength - 1;
 				for (int i = 0; i < lastIndex; i++) {
-					TypeBinding originalRawParam = rawOriginalGenericMethod == null ? null : rawOriginalGenericMethod.parameters[i];
+					TypeBinding originalRawParam = null;
 					invocationStatus |= checkInvocationArgument(scope, arguments[i], params[i] , argumentTypes[i], originalRawParam);
 				}
 			   int argLength = arguments.length;
@@ -275,7 +262,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 				    if (paramLength != argLength || parameterType.dimensions() != argumentTypes[lastIndex].dimensions()) {
 				    	parameterType = ((ArrayBinding) parameterType).elementsType(); // single element was provided for vararg parameter
-						originalRawParam = rawOriginalGenericMethod == null ? null : ((ArrayBinding)rawOriginalGenericMethod.parameters[lastIndex]).elementsType();
 				    }
 					for (int i = lastIndex; i < argLength; i++) {
 						invocationStatus |= checkInvocationArgument(scope, arguments[i], parameterType, argumentTypes[i], originalRawParam);
@@ -296,7 +282,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 			} else {
 				int length = (paramLength<arguments.length) ? paramLength : arguments.length;
 				for (int i = 0; i < length; i++) {
-					TypeBinding originalRawParam = rawOriginalGenericMethod == null ? null : rawOriginalGenericMethod.parameters[i];
+					TypeBinding originalRawParam = null;
 					invocationStatus |= checkInvocationArgument(scope, arguments[i], params[i], argumentTypes[i], originalRawParam);
 				}
 			}
@@ -423,7 +409,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 		if ((refType.isPrivate() || refType.isLocalType()) && !scope.isDefinedInType(refType)) {
 			// ignore cases where type is used from within inside itself
-			((ReferenceBinding)refType).modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
+			refType.modifiers |= ExtraCompilerModifiers.AccLocallyUsed;
 		}
 
 		if (refType.hasRestrictedAccess()) {

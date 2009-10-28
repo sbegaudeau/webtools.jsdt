@@ -340,7 +340,7 @@ public class InlineTempRefactoring extends ScriptableRefactoring {
 				if (! (referenceContext instanceof VariableDeclarationFragment
 						|| referenceContext instanceof SingleVariableDeclaration
 						|| referenceContext instanceof Assignment)) {
-					IFunctionBinding methodBinding= Invocations.resolveBinding(initializer);
+					Invocations.resolveBinding(initializer);
 					String newSource= createParameterizedInvocation(initializer, new Type[0]);
 					return (Expression) rewrite.getASTRewrite().createStringPlaceholder(newSource, initializer.getNodeType());
 				}

@@ -462,7 +462,7 @@ public class JavaDocLocations {
 				break;
 			case IJavaScriptElement.IMPORT_CONTAINER :
 				element= element.getParent();
-				// fall through
+				//$FALL-THROUGH$
 			case IJavaScriptElement.JAVASCRIPT_UNIT :
 				IType mainType= ((IJavaScriptUnit) element).findPrimaryType();
 				if (mainType == null) {
