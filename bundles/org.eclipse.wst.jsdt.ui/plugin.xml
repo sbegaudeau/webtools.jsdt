@@ -2039,6 +2039,7 @@
                menubarPath="navigate/open.ext2"
                id="openTypeInHierarchy">
          </action>
+         <!--
          <action
                definitionId="org.eclipse.wst.jsdt.ui.generate.javadoc"
                label="%GenerateJavadocAction.label"
@@ -2048,6 +2049,7 @@
                menubarPath="project/additions"
                id="exportJavadoc">
          </action>
+         -->
          <action
                id="openType"
                toolbarPath="org.eclipse.search.searchActionSet/Search"
