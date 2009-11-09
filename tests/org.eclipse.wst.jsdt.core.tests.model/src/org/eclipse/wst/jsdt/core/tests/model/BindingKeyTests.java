@@ -163,22 +163,12 @@ public class BindingKeyTests extends AbstractJavaModelTests {
 	}
 
 	/*
-	 * Create a type binding key from a primitive type name
-	 */
-	public void test016() {
-		String key = BindingKey.createTypeBindingKey("int");
-		assertBindingKeyEquals(
-			"I",
-			key);
-	}
-
-	/*
 	 * Create a type binding key from an array type name
 	 */
 	public void test017() {
-		String key = BindingKey.createTypeBindingKey("boolean[]");
+		String key = BindingKey.createTypeBindingKey("Boolean[]");
 		assertBindingKeyEquals(
-			"[Z",
+			"[LBoolean;",
 			key);
 	}
 

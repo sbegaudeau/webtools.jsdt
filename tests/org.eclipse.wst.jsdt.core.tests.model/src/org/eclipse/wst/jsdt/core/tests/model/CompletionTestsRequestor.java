@@ -47,11 +47,7 @@ public class CompletionTestsRequestor extends CompletionRequestor {
 				fElements.addElement(new String(typeName));
 				this.acceptCommon(proposal);
 				if (fDebug) {
-					if(Signature.getTypeSignatureKind(proposal.getSignature()) == Signature.TYPE_VARIABLE_SIGNATURE) {
-						System.out.println("type parameter " + new String(typeName));
-					} else {
-						System.out.println("Class " + new String(typeName));
-					}
+					System.out.println("Class " + new String(typeName));	
 				}
 				break;
 				

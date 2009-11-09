@@ -801,13 +801,6 @@ public void testGetTypeSignatureKind14() {
 }
 	
 // signatures with 1.5 elements
-
-public void testGetTypeSignatureKind15() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(String) is not correct 15", 
-		Signature.TYPE_VARIABLE_SIGNATURE,
-		Signature.getTypeSignatureKind("TVAR;"));
-}
 public void testGetTypeSignatureKind16() {
 	assertEquals(
 		"Signature#getTypeSignatureKind(String) is not correct 16", 
@@ -946,12 +939,6 @@ public void testGetTypeSignatureKindCharArray14() {
 
 // signatures with 1.5 elements
 
-public void testGetTypeSignatureKindCharArray15() {
-	assertEquals(
-		"Signature#getTypeSignatureKind(char[]) is not correct 15", 
-		Signature.TYPE_VARIABLE_SIGNATURE,
-		Signature.getTypeSignatureKind("TVAR;".toCharArray()));
-}
 public void testGetTypeSignatureKindCharArray16() {
 	assertEquals(
 		"Signature#getTypeSignatureKind(char[]) is not correct 16", 
