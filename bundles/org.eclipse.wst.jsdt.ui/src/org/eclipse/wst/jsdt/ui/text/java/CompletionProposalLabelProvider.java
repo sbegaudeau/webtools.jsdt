@@ -196,10 +196,12 @@ public class CompletionProposalLabelProvider {
 					buffer.append(',');
 					buffer.append(' ');
 				}
-				if (!Arrays.equals(Signature.ANY, parameterTypes[i]))
+				if (!Arrays.equals(Signature.ANY, parameterTypes[i])) {
 					buffer.append(parameterTypes[i]);
-				if (parameterNames != null && parameterNames[i] != null) {
 					buffer.append(' ');
+				}
+					
+				if (parameterNames != null && parameterNames[i] != null) {
 					buffer.append(parameterNames[i]);
 				}
 			}
@@ -593,9 +595,6 @@ public class CompletionProposalLabelProvider {
 				switch (Signature.getTypeSignatureKind(proposal.getSignature())) {
 					case Signature.CLASS_TYPE_SIGNATURE:
 						descriptor= JavaElementImageProvider.getTypeImageDescriptor(false, false, flags, false);
-						break;
-					case Signature.TYPE_VARIABLE_SIGNATURE:
-						descriptor= JavaPluginImages.DESC_OBJS_TYPEVARIABLE;
 						break;
 					default:
 						descriptor= null;

@@ -364,13 +364,6 @@ public class MethodOverrideTester {
 				}
 				return buf;
 			}
-			case Signature.TYPE_VARIABLE_SIGNATURE:
-				String varName= Signature.toString(typeSig);
-				if (erasure) {
-					return buf.append(getVariableErasure(context, varName));
-				} else {
-					return buf.append(getVariableSubstitution(context, varName));
-				}
 			default:
 				Assert.isTrue(false, "Unhandled type signature kind"); //$NON-NLS-1$
 				return buf;

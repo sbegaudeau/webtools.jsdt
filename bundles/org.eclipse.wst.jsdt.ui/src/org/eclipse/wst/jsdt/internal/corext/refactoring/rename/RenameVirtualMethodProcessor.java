@@ -170,17 +170,15 @@ public class RenameVirtualMethodProcessor extends RenameMethodProcessor {
 
 	private boolean isSpecialCase() throws CoreException {
 		String[] noParams= new String[0];
-		String[] specialNames= new String[]{"toString", "toString", "toString", "toString", "equals", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-											"equals", "getClass", "getClass", "hashCode", "notify", //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-											"notifyAll", "wait", "wait", "wait"}; //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+		String[] specialNames= new String[]{"toString", "toString", "toString", "toString", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+											"getClass", "getClass", "notify", //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+											"notifyAll", "wait"}; //$NON-NLS-2$ //$NON-NLS-1$
 		String[][] specialParamTypes= new String[][]{noParams, noParams, noParams, noParams,
-													 {"QObject;"}, {"Qjava.lang.Object;"}, noParams, noParams, //$NON-NLS-2$ //$NON-NLS-1$
-													 noParams, noParams, noParams, {Signature.SIG_LONG, Signature.SIG_INT},
-													 {Signature.SIG_LONG}, noParams};
+													 noParams, noParams, //$NON-NLS-2$ //$NON-NLS-1$
+													 noParams, noParams, noParams};
 		String[] specialReturnTypes= new String[]{"QString;", "QString;", "Qjava.lang.String;", "Qjava.lang.String;", //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
-												   Signature.SIG_BOOLEAN, Signature.SIG_BOOLEAN, "QClass;", "Qjava.lang.Class;", //$NON-NLS-2$ //$NON-NLS-1$
-												   Signature.SIG_INT, Signature.SIG_VOID, Signature.SIG_VOID, Signature.SIG_VOID,
-												   Signature.SIG_VOID, Signature.SIG_VOID};
+												   "QClass;", "Qjava.lang.Class;", //$NON-NLS-2$ //$NON-NLS-1$
+												   Signature.SIG_VOID, Signature.SIG_VOID, Signature.SIG_VOID};
 		Assert.isTrue((specialNames.length == specialParamTypes.length) && (specialParamTypes.length == specialReturnTypes.length));
 		for (int i= 0; i < specialNames.length; i++){
 			if (specialNames[i].equals(getNewElementName()) 

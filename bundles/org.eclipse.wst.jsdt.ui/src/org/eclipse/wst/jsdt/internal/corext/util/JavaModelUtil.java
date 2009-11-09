@@ -59,6 +59,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
 import org.eclipse.wst.jsdt.internal.corext.ValidateEditException;
+import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
 import org.eclipse.wst.jsdt.launching.IVMInstall;
 import org.eclipse.wst.jsdt.launching.IVMInstall2;
@@ -461,7 +462,7 @@ public final class JavaModelUtil {
 	 * Checks if the field is boolean.
 	 */
 	public static boolean isBoolean(IField field) throws JavaScriptModelException{
-		return field.getTypeSignature().equals(Signature.SIG_BOOLEAN);
+		return field.getTypeSignature().equals(SignatureUtil.BOOLEAN_SIGNATURE);
 	}
 		
 	/**

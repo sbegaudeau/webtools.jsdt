@@ -95,14 +95,6 @@ public class Util {
 	private static char[][] JAVA_LIKE_EXTENSIONS;
 	public static boolean ENABLE_JAVA_LIKE_EXTENSIONS = true;
 
-	private static final char[] BOOLEAN = "boolean".toCharArray(); //$NON-NLS-1$
-	private static final char[] BYTE = "byte".toCharArray(); //$NON-NLS-1$
-	private static final char[] CHAR = "char".toCharArray(); //$NON-NLS-1$
-	private static final char[] DOUBLE = "double".toCharArray(); //$NON-NLS-1$
-	private static final char[] FLOAT = "float".toCharArray(); //$NON-NLS-1$
-	private static final char[] INT = "int".toCharArray(); //$NON-NLS-1$
-	private static final char[] LONG = "long".toCharArray(); //$NON-NLS-1$
-	private static final char[] SHORT = "short".toCharArray(); //$NON-NLS-1$
 	private static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
 	private static final char[] INIT = "<init>".toCharArray(); //$NON-NLS-1$
 
@@ -2052,34 +2044,6 @@ public class Util {
 			case Signature.C_RESOLVED :
 				appendClassTypeSignature(string, start, buffer, compact);
 				break;
-			case Signature.C_TYPE_VARIABLE :
-				int e = Util.scanTypeVariableSignature(string, start);
-				buffer.append(string, start + 1, e - start - 1);
-				break;
-			case Signature.C_BOOLEAN :
-				buffer.append(BOOLEAN);
-				break;
-			case Signature.C_BYTE :
-				buffer.append(BYTE);
-				break;
-			case Signature.C_CHAR :
-				buffer.append(CHAR);
-				break;
-			case Signature.C_DOUBLE :
-				buffer.append(DOUBLE);
-				break;
-			case Signature.C_FLOAT :
-				buffer.append(FLOAT);
-				break;
-			case Signature.C_INT :
-				buffer.append(INT);
-				break;
-			case Signature.C_LONG :
-				buffer.append(LONG);
-				break;
-			case Signature.C_SHORT :
-				buffer.append(SHORT);
-				break;
 			case Signature.C_VOID :
 				buffer.append(VOID);
 				break;
@@ -2269,16 +2233,6 @@ public class Util {
 			case Signature.C_RESOLVED :
 			case Signature.C_UNRESOLVED :
 				return scanClassTypeSignature(string, start);
-			case Signature.C_TYPE_VARIABLE :
-				return scanTypeVariableSignature(string, start);
-			case Signature.C_BOOLEAN :
-			case Signature.C_BYTE :
-			case Signature.C_CHAR :
-			case Signature.C_DOUBLE :
-			case Signature.C_FLOAT :
-			case Signature.C_INT :
-			case Signature.C_LONG :
-			case Signature.C_SHORT :
 			case Signature.C_VOID :
 			case Signature.C_ANY :
 				return scanBaseTypeSignature(string, start);
@@ -2350,38 +2304,6 @@ public class Util {
 			c = string[++start];
 		}
 		return scanTypeSignature(string, start);
-	}
-
-	/**
-	 * Scans the given string for a type variable signature starting at the given
-	 * index and returns the index of the last character.
-	 * <pre>
-	 * TypeVariableSignature:
-	 *     <b>T</b> Identifier <b>;</b>
-	 * </pre>
-	 *
-	 * @param string the signature string
-	 * @param start the 0-based character index of the first character
-	 * @return the 0-based character index of the last character
-	 * @exception IllegalArgumentException if this is not a type variable signature
-	 */
-	public static int scanTypeVariableSignature(char[] string, int start) {
-		// need a minimum 3 chars "Tx;"
-		if (start >= string.length - 2) {
-			throw new IllegalArgumentException();
-		}
-		// must start in "T"
-		char c = string[start];
-		if (c != Signature.C_TYPE_VARIABLE) {
-			throw new IllegalArgumentException();
-		}
-		int id = scanIdentifier(string, start + 1);
-		c = string[id + 1];
-		if (c == Signature.C_SEMICOLON) {
-			return id + 1;
-		} else {
-			throw new IllegalArgumentException();
-		}
 	}
 
 	/**
@@ -2646,15 +2568,6 @@ public class Util {
 				case Signature.C_ARRAY :
 					return appendArrayTypeSignatureForAnchor(string, start, buffer, true);
 				case Signature.C_RESOLVED :
-				case Signature.C_TYPE_VARIABLE :
-				case Signature.C_BOOLEAN :
-				case Signature.C_BYTE :
-				case Signature.C_CHAR :
-				case Signature.C_DOUBLE :
-				case Signature.C_FLOAT :
-				case Signature.C_INT :
-				case Signature.C_LONG :
-				case Signature.C_SHORT :
 				case Signature.C_VOID :
 				default:
 					throw new IllegalArgumentException(); // a var args is an array type
@@ -2665,34 +2578,6 @@ public class Util {
 					return appendArrayTypeSignatureForAnchor(string, start, buffer, false);
 				case Signature.C_RESOLVED :
 					return appendClassTypeSignatureForAnchor(string, start, buffer);
-				case Signature.C_TYPE_VARIABLE :
-					int e = Util.scanTypeVariableSignature(string, start);
-					buffer.append(string, start + 1, e - start - 1);
-					return e;
-				case Signature.C_BOOLEAN :
-					buffer.append(BOOLEAN);
-					return start;
-				case Signature.C_BYTE :
-					buffer.append(BYTE);
-					return start;
-				case Signature.C_CHAR :
-					buffer.append(CHAR);
-					return start;
-				case Signature.C_DOUBLE :
-					buffer.append(DOUBLE);
-					return start;
-				case Signature.C_FLOAT :
-					buffer.append(FLOAT);
-					return start;
-				case Signature.C_INT :
-					buffer.append(INT);
-					return start;
-				case Signature.C_LONG :
-					buffer.append(LONG);
-					return start;
-				case Signature.C_SHORT :
-					buffer.append(SHORT);
-					return start;
 				case Signature.C_VOID :
 					buffer.append(VOID);
 					return start;

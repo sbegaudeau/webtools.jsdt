@@ -458,9 +458,6 @@ public class ColoredJavaElementLabels {
 				
 				getTypeArgumentSignaturesLabel(new String[0], flags, result);
 				break;
-			case Signature.TYPE_VARIABLE_SIGNATURE:
-				result.append(Signature.toString(typeSig));
-				break;
 			default:
 				// unknown
 		}

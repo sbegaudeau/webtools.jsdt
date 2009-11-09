@@ -189,9 +189,6 @@ public class SimilarElementsRequestor extends CompletionRequestor {
 	}
 
 	private static final int getKind(int flags, char[] typeNameSig) {
-		if (Signature.getTypeSignatureKind(typeNameSig) == Signature.TYPE_VARIABLE_SIGNATURE) {
-			return VARIABLES;
-		}
 		return CLASSES;
 	}
 

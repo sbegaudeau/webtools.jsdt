@@ -26,6 +26,11 @@ public final class SignatureUtil {
 	 * The signature of <code>java.lang.Object</code> ({@value}).
 	 */
 	private static final String OBJECT_SIGNATURE= "Ljava.lang.Object;"; //$NON-NLS-1$
+	
+	/**
+	 * The signature of <code>Boolean</code> ({@value}).
+	 */
+	public static final String BOOLEAN_SIGNATURE= "LBoolean;"; //$NON-NLS-1$
 
 	private SignatureUtil() {
 		// do not instantiate

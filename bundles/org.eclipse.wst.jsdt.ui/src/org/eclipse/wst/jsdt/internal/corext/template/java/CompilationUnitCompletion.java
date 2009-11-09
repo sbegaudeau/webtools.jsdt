@@ -449,13 +449,13 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 			
 			try {
 				
-				if ((Signature.getTypeSignatureKind(subTypeSignature) & (Signature.TYPE_VARIABLE_SIGNATURE | Signature.CLASS_TYPE_SIGNATURE)) == 0)
+				if ((Signature.getTypeSignatureKind(subTypeSignature) & Signature.CLASS_TYPE_SIGNATURE) == 0)
 					return false;
 				IType subType= project.findType(SignatureUtil.stripSignatureToFQN(subTypeSignature));
 				if (subType == null)
 					return false;
 				
-				if ((Signature.getTypeSignatureKind(superTypeSignature) & (Signature.TYPE_VARIABLE_SIGNATURE | Signature.CLASS_TYPE_SIGNATURE)) == 0)
+				if ((Signature.getTypeSignatureKind(superTypeSignature) & Signature.CLASS_TYPE_SIGNATURE) == 0)
 					return false;
 				IType superType= project.findType(SignatureUtil.stripSignatureToFQN(superTypeSignature));
 				if (superType == null)
@@ -483,10 +483,6 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 * @throws JavaScriptModelException if finding the type fails
 		 */
 		private boolean isConcreteType(String signature, IType context) throws JavaScriptModelException {
-			// Inexpensive check for the variable type first
-			if (Signature.TYPE_VARIABLE_SIGNATURE == Signature.getTypeSignatureKind(signature))
-				return false;
-			
 			// try and resolve otherwise
 			if (context.isBinary()) {
 				return fUnit.getJavaScriptProject().findType(SignatureUtil.stripSignatureToFQN(signature)) != null;

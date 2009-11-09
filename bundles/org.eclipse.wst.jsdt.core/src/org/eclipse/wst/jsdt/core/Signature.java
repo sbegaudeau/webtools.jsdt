@@ -31,42 +31,6 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 public final class Signature {
 
 	/**
-	 * Character constant indicating the primitive type boolean in a signature.
-	 * Value is <code>'Z'</code>.
-	 */
-	public static final char C_BOOLEAN 		= 'Z';
-
-	/**
-	 * Character constant indicating the primitive type byte in a signature.
-	 * Value is <code>'B'</code>.
-	 */
-	public static final char C_BYTE 		= 'B';
-
-	/**
-	 * Character constant indicating the primitive type char in a signature.
-	 * Value is <code>'C'</code>.
-	 */
-	public static final char C_CHAR 		= 'C';
-
-	/**
-	 * Character constant indicating the primitive type double in a signature.
-	 * Value is <code>'D'</code>.
-	 */
-	public static final char C_DOUBLE 		= 'D';
-
-	/**
-	 * Character constant indicating the primitive type float in a signature.
-	 * Value is <code>'F'</code>.
-	 */
-	public static final char C_FLOAT 		= 'F';
-
-	/**
-	 * Character constant indicating the primitive type int in a signature.
-	 * Value is <code>'I'</code>.
-	 */
-	public static final char C_INT 			= 'I';
-
-	/**
 	 * Character constant indicating the semicolon in a signature.
 	 * Value is <code>';'</code>.
 	 */
@@ -80,18 +44,6 @@ public final class Signature {
 	public static final char C_COLON 			= ':';
 
 	/**
-	 * Character constant indicating the primitive type long in a signature.
-	 * Value is <code>'J'</code>.
-	 */
-	public static final char C_LONG			= 'J';
-
-	/**
-	 * Character constant indicating the primitive type short in a signature.
-	 * Value is <code>'S'</code>.
-	 */
-	public static final char C_SHORT		= 'S';
-
-	/**
 	 * Character constant indicating result type void in a signature.
 	 * Value is <code>'V'</code>.
 	 */
@@ -103,14 +55,6 @@ public final class Signature {
 	 * Value is <code>'A'</code>.
 	 */
 	public static final char C_ANY			= 'A';
-
-
-	/**
-	 * Character constant indicating the start of a resolved type variable in a
-	 * signature. Value is <code>'T'</code>.
-	 *  
-	 */
-	public static final char C_TYPE_VARIABLE	= 'T';
 
 	/**
 	 * Character constant indicating the dot in a signature.
@@ -168,54 +112,6 @@ public final class Signature {
 	 */
 	public static final char C_PARAM_END	= ')';
 
-	/**
-	 * String constant for the signature of the primitive type boolean.
-	 * Value is <code>"Z"</code>.
-	 */
-	public static final String SIG_BOOLEAN 		= "Z"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type byte.
-	 * Value is <code>"B"</code>.
-	 */
-	public static final String SIG_BYTE 		= "B"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type char.
-	 * Value is <code>"C"</code>.
-	 */
-	public static final String SIG_CHAR 		= "C"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type double.
-	 * Value is <code>"D"</code>.
-	 */
-	public static final String SIG_DOUBLE 		= "D"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type float.
-	 * Value is <code>"F"</code>.
-	 */
-	public static final String SIG_FLOAT 		= "F"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type int.
-	 * Value is <code>"I"</code>.
-	 */
-	public static final String SIG_INT 			= "I"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type long.
-	 * Value is <code>"J"</code>.
-	 */
-	public static final String SIG_LONG			= "J"; //$NON-NLS-1$
-
-	/**
-	 * String constant for the signature of the primitive type short.
-	 * Value is <code>"S"</code>.
-	 */
-	public static final String SIG_SHORT		= "S"; //$NON-NLS-1$
-
 	/** String constant for the signature of result type void.
 	 * Value is <code>"V"</code>.
 	 */
@@ -240,27 +136,12 @@ public final class Signature {
 	public static final int BASE_TYPE_SIGNATURE = 2;
 
 	/**
-	 * Kind constant for a type variable signature.
-	 * @see #getTypeSignatureKind(String)
-	 *  
-	 */
-	public static final int TYPE_VARIABLE_SIGNATURE = 3;
-
-	/**
 	 * Kind constant for an array type signature.
 	 * @see #getTypeSignatureKind(String)
 	 *  
 	 */
 	public static final int ARRAY_TYPE_SIGNATURE = 4;
 
-	private static final char[] BOOLEAN = "boolean".toCharArray(); //$NON-NLS-1$
-	private static final char[] BYTE = "byte".toCharArray(); //$NON-NLS-1$
-	private static final char[] CHAR = "char".toCharArray(); //$NON-NLS-1$
-	private static final char[] DOUBLE = "double".toCharArray(); //$NON-NLS-1$
-	private static final char[] FLOAT = "float".toCharArray(); //$NON-NLS-1$
-	private static final char[] INT = "int".toCharArray(); //$NON-NLS-1$
-	private static final char[] LONG = "long".toCharArray(); //$NON-NLS-1$
-	private static final char[] SHORT = "short".toCharArray(); //$NON-NLS-1$
 	private static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
 	public static final char[] ANY = "any".toCharArray(); //$NON-NLS-1$
 
@@ -276,8 +157,6 @@ private static int checkName(char[] name, char[] typeName, int pos, int length) 
         switch (currentChar) {
             case ' ' :
             case '.' :
-            case '<' :
-            case '>' :
             case '[' :
             case ',' :
                 return pos;
@@ -444,8 +323,6 @@ private static int encodeQualifiedName(char[] typeName, int pos, int length, Str
     nameLoop: while (pos < length) {
 	    char currentChar = typeName[pos];
 		switch (currentChar) {
-		    case '<' :
-		    case '>' :
 		    case '[' :
 		    case ',' :
 		        break nameLoop;
@@ -494,16 +371,9 @@ private static int checkArrayDimension(char[] typeName, int pos, int length) {
     int genericBalance = 0;
     while (pos < length) {
 		switch(typeName[pos]) {
-		    case '<' :
-		        genericBalance++;
-		        break;
 		    case ',' :
 			    if (genericBalance == 0) return -1;
 			    break;
-			case '>':
-			    if (genericBalance == 0) return -1;
-			    genericBalance--;
-		        break;
 			case '[':
 			    if (genericBalance == 0) {
 			        return pos;
@@ -529,60 +399,6 @@ private static int encodeTypeSignature(char[] typeName, int start, boolean isRes
     char currentChar = typeName[pos];
     switch (currentChar) {
 		// primitive type?
-		case 'b' :
-		    checkPos = checkName(BOOLEAN, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_BOOLEAN);
-			    return pos;
-			}
-		    checkPos = checkName(BYTE, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_BYTE);
-			    return pos;
-			}
-		    break;
-		case 'd':
-		    checkPos = checkName(DOUBLE, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_DOUBLE);
-			    return pos;
-			}
-		    break;
-		case 'f':
-		    checkPos = checkName(FLOAT, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_FLOAT);
-			    return pos;
-			}
-		    break;
-		case 'i':
-		    checkPos = checkName(INT, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_INT);
-			    return pos;
-			}
-		    break;
-		case 'l':
-		    checkPos = checkName(LONG, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_LONG);
-			    return pos;
-			}
-		    break;
-		case 's':
-		    checkPos = checkName(SHORT, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_SHORT);
-			    return pos;
-			}
-		    break;
 		case 'v':
 		    checkPos = checkName(VOID, typeName, pos, length);
 		    if (checkPos > 0) {
@@ -591,15 +407,6 @@ private static int encodeTypeSignature(char[] typeName, int start, boolean isRes
 			    return pos;
 			}
 		    break;
-		case 'c':
-		    checkPos = checkName(CHAR, typeName, pos, length);
-		    if (checkPos > 0) {
-		        pos = encodeArrayDimension(typeName, checkPos, length, buffer);
-			    buffer.append(C_CHAR);
-			    return pos;
-			} else {
-				break;
-			}
     }
     // non primitive type
     checkPos = checkArrayDimension(typeName, pos, length);
@@ -790,16 +597,6 @@ public static int getTypeSignatureKind(char[] typeSignature) {
 		case C_RESOLVED :
 		case C_UNRESOLVED :
 			return CLASS_TYPE_SIGNATURE;
-		case C_TYPE_VARIABLE :
-			return TYPE_VARIABLE_SIGNATURE;
-		case C_BOOLEAN :
-		case C_BYTE :
-		case C_CHAR :
-		case C_DOUBLE :
-		case C_FLOAT :
-		case C_INT :
-		case C_LONG :
-		case C_SHORT :
 		case C_VOID :
 		case C_ANY :
 			return BASE_TYPE_SIGNATURE;
@@ -831,16 +628,6 @@ public static int getTypeSignatureKind(String typeSignature) {
 		case C_RESOLVED :
 		case C_UNRESOLVED :
 			return CLASS_TYPE_SIGNATURE;
-		case C_TYPE_VARIABLE :
-			return TYPE_VARIABLE_SIGNATURE;
-		case C_BOOLEAN :
-		case C_BYTE :
-		case C_CHAR :
-		case C_DOUBLE :
-		case C_FLOAT :
-		case C_INT :
-		case C_LONG :
-		case C_SHORT :
 		case C_VOID :
 		case C_ANY :
 
@@ -1186,7 +973,7 @@ public static String getSignatureSimpleName(String typeSignature) {
  */
 public static char[] getSimpleName(char[] name) {
 
-	int lastDot = -1, lastGenericStart = -1, lastGenericEnd = -1;
+	int lastDot = -1;
 	int depth = 0;
 	int length = name.length;
 	lastDotLookup: for (int i = length -1; i >= 0; i--) {
@@ -1197,30 +984,13 @@ public static char[] getSimpleName(char[] name) {
 					break lastDotLookup;
 				}
 				break;
-			case '<':
-				depth--;
-				if (depth == 0) lastGenericStart = i;
-				break;
-			case '>':
-				if (depth == 0) lastGenericEnd = i;
-				depth++;
-				break;
 		}
 	}
-	if (lastGenericStart < 0) {
-		if (lastDot < 0) {
-			return name;
-		}
-		return  CharOperation.subarray(name, lastDot + 1, length);
+	
+	if (lastDot < 0) {
+		return name;
 	}
-	StringBuffer buffer = new StringBuffer(10);
-	int nameStart = lastDot < 0 ? 0 : lastDot+1;
-	buffer.append(name, nameStart, lastGenericStart - nameStart);
-	appendArgumentSimpleNames(name, lastGenericStart, lastGenericEnd, buffer);
-	buffer.append(name, lastGenericEnd+1, length-lastGenericEnd-1); // copy trailing portion, may contain dimensions
-	char[] result = new char[length = buffer.length()];
-	buffer.getChars(0, length, result, 0);
-	return result;
+	return  CharOperation.subarray(name, lastDot + 1, length);
 }
 /**
  * Returns the last segment of the given dot-separated qualified name.
@@ -1242,7 +1012,7 @@ public static char[] getSimpleName(char[] name) {
  * @exception NullPointerException if name is null
  */
 public static String getSimpleName(String name) {
-	int lastDot = -1, lastGenericStart = -1, lastGenericEnd = -1;
+	int lastDot = -1;
 	int depth = 0;
 	int length = name.length();
 	lastDotLookup: for (int i = length -1; i >= 0; i--) {
@@ -1253,105 +1023,14 @@ public static String getSimpleName(String name) {
 					break lastDotLookup;
 				}
 				break;
-			case '<':
-				depth--;
-				if (depth == 0) lastGenericStart = i;
-				break;
-			case '>':
-				if (depth == 0) lastGenericEnd = i;
-				depth++;
-				break;
 		}
 	}
-	if (lastGenericStart < 0) {
-		if (lastDot < 0) {
-			return name;
-		}
-		return name.substring(lastDot + 1, length);
+	if (lastDot < 0) {
+		return name;
 	}
-	StringBuffer buffer = new StringBuffer(10);
-	char[] nameChars = name.toCharArray();
-	int nameStart = lastDot < 0 ? 0 : lastDot+1;
-	buffer.append(nameChars, nameStart, lastGenericStart - nameStart);
-	appendArgumentSimpleNames(nameChars, lastGenericStart, lastGenericEnd, buffer);
-	buffer.append(nameChars, lastGenericEnd+1, length-lastGenericEnd-1); // copy trailing portion, may contain dimensions
-	return buffer.toString();
+	return name.substring(lastDot + 1, length);
 }
 
-private static void appendSimpleName(char[] name, int start, int end, StringBuffer buffer) {
-	int lastDot = -1, lastGenericStart = -1, lastGenericEnd = -1;
-	int depth = 0;
-	if (name[start] == '?') { // wildcard
-		buffer.append("?"); //$NON-NLS-1$
-		int index = consumeWhitespace(name, start+1, end+1);
-		switch (name[index]) {
-			case 'e' :
-				break;
-			case 's' :
-				break;
-		}
-		start = index; // leading segment got processed
-	}
-	lastDotLookup: for (int i = end; i >= start; i--) {
-		switch (name[i]) {
-			case '.':
-				if (depth == 0) {
-					lastDot = i;
-					break lastDotLookup;
-				}
-				break;
-			case '<':
-				depth--;
-				if (depth == 0) lastGenericStart = i;
-				break;
-			case '>':
-				if (depth == 0) lastGenericEnd = i;
-				depth++;
-				break;
-		}
-	}
-	int nameStart = lastDot < 0 ? start : lastDot+1;
-	int nameEnd = lastGenericStart < 0 ? end+1 : lastGenericStart;
-	buffer.append(name, nameStart, nameEnd - nameStart);
-	if (lastGenericStart >= 0) {
-		appendArgumentSimpleNames(name, lastGenericStart, lastGenericEnd, buffer);
-		buffer.append(name, lastGenericEnd+1, end - lastGenericEnd); // copy trailing portion, may contain dimensions
-	}
-}
-// <x.y.z, a.b<c>.d<e.f>> --> <z,d<f>>
-private static void appendArgumentSimpleNames(char[] name, int start, int end, StringBuffer buffer) {
-	buffer.append('<');
-	int depth = 0;
-	int argumentStart = -1;
-	int argumentCount = 0;
-	for (int i = start; i <= end; i++) {
-		switch(name[i]) {
-			case '<' :
-				depth++;
-				if (depth == 1) {
-					argumentStart = i+1;
-				}
-				break;
-			case '>' :
-				if (depth == 1) {
-					if (argumentCount > 0) buffer.append(',');
-					appendSimpleName(name, argumentStart, i-1, buffer);
-					argumentCount++;
-				}
-				depth--;
-				break;
-			case ',' :
-				if (depth == 1) {
-					if (argumentCount > 0) buffer.append(',');
-					appendSimpleName(name, argumentStart, i-1, buffer);
-					argumentCount++;
-					argumentStart = i+1;
-				}
-				break;
-		}
-	}
-	buffer.append('>');
-}
 /**
  * Returns all segments of the given dot-separated qualified name.
  * Returns an array with only the given name if it is not qualified.
@@ -1614,15 +1293,6 @@ private static int appendTypeSignature(char[] string, int start, boolean fullyQu
 				return appendArrayTypeSignature(string, start, fullyQualifyTypeNames, buffer, true);
 			case C_RESOLVED :
 			case C_UNRESOLVED :
-			case C_TYPE_VARIABLE :
-			case C_BOOLEAN :
-			case C_BYTE :
-			case C_CHAR :
-			case C_DOUBLE :
-			case C_FLOAT :
-			case C_INT :
-			case C_LONG :
-			case C_SHORT :
 			case C_VOID :
 			default:
 				throw new IllegalArgumentException(); // a var args is an array type
@@ -1634,38 +1304,10 @@ private static int appendTypeSignature(char[] string, int start, boolean fullyQu
 			case C_RESOLVED :
 			case C_UNRESOLVED :
 				return appendClassTypeSignature(string, start, fullyQualifyTypeNames, buffer);
-			case C_TYPE_VARIABLE :
-				int e = Util.scanTypeVariableSignature(string, start);
-				buffer.append(string, start + 1, e - start - 1);
-				return e;
-			case C_BOOLEAN :
-				buffer.append(BOOLEAN);
-				return start;
-			case C_BYTE :
-				buffer.append(BYTE);
-				return start;
-			case C_CHAR :
-				buffer.append(CHAR);
-				return start;
 			case C_COMPILATION_UNIT :
 				return appendCompilationUnitSignature(string, start, fullyQualifyTypeNames, buffer);
 			case C_ANY :
 				buffer.append(ANY);
-				return start;
-			case C_DOUBLE :
-				buffer.append(DOUBLE);
-				return start;
-			case C_FLOAT :
-				buffer.append(FLOAT);
-				return start;
-			case C_INT :
-				buffer.append(INT);
-				return start;
-			case C_LONG :
-				buffer.append(LONG);
-				return start;
-			case C_SHORT :
-				buffer.append(SHORT);
 				return start;
 			case C_VOID :
 				buffer.append(VOID);

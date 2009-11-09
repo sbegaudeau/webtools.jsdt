@@ -1092,7 +1092,6 @@ public class SourceMapper
 					break;
 				case Signature.C_RESOLVED :
 				case Signature.C_UNRESOLVED :
-				case Signature.C_TYPE_VARIABLE :
 					if (!sigStart) {
 						start = ++i;
 						sigStart = true;
@@ -1109,7 +1108,6 @@ public class SourceMapper
 		switch (firstChar) {
 			case Signature.C_RESOLVED :
 			case Signature.C_UNRESOLVED :
-			case Signature.C_TYPE_VARIABLE :
 				unqualifiedTypeSig.append(Signature.C_UNRESOLVED);
 				if (noDollar) {
 					int lastDollar = qualifiedTypeSig.lastIndexOf('$', end);

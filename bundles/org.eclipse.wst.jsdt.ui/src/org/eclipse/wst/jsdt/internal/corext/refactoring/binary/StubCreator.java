@@ -53,26 +53,10 @@ public class StubCreator {
 	}
 
 	protected void appendExpression(final String signature) {
-		switch (signature.charAt(0)) {
-			case Signature.C_BOOLEAN:
-				fBuffer.append("false"); //$NON-NLS-1$
-				break;
-			case Signature.C_BYTE:
-			case Signature.C_CHAR:
-			case Signature.C_DOUBLE:
-			case Signature.C_FLOAT:
-			case Signature.C_INT:
-			case Signature.C_LONG:
-			case Signature.C_SHORT:
-				fBuffer.append("0"); //$NON-NLS-1$
-				break;
-			default:
-				fBuffer.append("("); //$NON-NLS-1$
-				fBuffer.append(Signature.toString(signature));
-				fBuffer.append(")"); //$NON-NLS-1$
-				fBuffer.append("null"); //$NON-NLS-1$
-				break;
-		}
+		fBuffer.append("("); //$NON-NLS-1$
+		fBuffer.append(Signature.toString(signature));
+		fBuffer.append(")"); //$NON-NLS-1$
+		fBuffer.append("null"); //$NON-NLS-1$
 	}
 
 	protected void appendFieldDeclaration(final IField field) throws JavaScriptModelException {

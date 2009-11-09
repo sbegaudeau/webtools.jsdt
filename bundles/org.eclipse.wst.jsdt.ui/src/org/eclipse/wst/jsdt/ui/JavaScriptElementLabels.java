@@ -763,9 +763,6 @@ public class JavaScriptElementLabels {
 				
 				getTypeArgumentSignaturesLabel(new String[0], flags, buf);
 				break;
-			case Signature.TYPE_VARIABLE_SIGNATURE:
-				buf.append(Signature.toString(typeSig));
-				break;
 			default:
 				// unknown
 		}

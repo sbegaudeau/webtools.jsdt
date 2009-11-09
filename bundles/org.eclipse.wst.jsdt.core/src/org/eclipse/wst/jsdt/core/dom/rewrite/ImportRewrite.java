@@ -459,8 +459,6 @@ public final class ImportRewrite {
 				}
 				Type baseType= ast.newSimpleType(ast.newName(erasureName));
 				return baseType;
-			case Signature.TYPE_VARIABLE_SIGNATURE:
-				return ast.newSimpleType(ast.newSimpleName(Signature.toString(typeSig)));
 			default:
 				throw new IllegalArgumentException("Unknown type signature kind: " + typeSig); //$NON-NLS-1$
 		}
