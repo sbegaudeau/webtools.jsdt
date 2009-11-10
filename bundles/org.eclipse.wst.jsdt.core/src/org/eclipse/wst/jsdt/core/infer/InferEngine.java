@@ -334,8 +334,8 @@ public class InferEngine extends ASTVisitor {
 
 				member = this.currentContext.currentType.addAttribute( memberName, assignment );
 				handleAttributeDeclaration((InferredAttribute) member, assignment.getExpression());
-				((InferredAttribute)member).type = getTypeOf( assignmentExpression );
-
+				if (((InferredAttribute) member).type == null)
+					((InferredAttribute)member).type = getTypeOf( assignmentExpression );
 			}
 
 			//setting location
