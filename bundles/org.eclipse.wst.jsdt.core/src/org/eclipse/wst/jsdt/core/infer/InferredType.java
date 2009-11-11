@@ -327,7 +327,8 @@ public class InferredType extends ASTNode {
 		if (this.resolvedSuperType != null)
 			return this.resolvedSuperType;
 
-		this.resolvedSuperType = (ReferenceBinding)classScope.getType(name);
+		if(superClass != null)
+			this.resolvedSuperType = (ReferenceBinding)classScope.getType(superClass.getName());
 
 		return this.resolvedSuperType;
 	}

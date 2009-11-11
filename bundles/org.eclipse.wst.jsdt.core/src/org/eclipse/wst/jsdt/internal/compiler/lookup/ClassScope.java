@@ -530,7 +530,7 @@ public class ClassScope extends Scope {
 		}
 		else
 		{
-			ReferenceBinding superclass = findInferredSupertype(inferredType.superClass);
+			ReferenceBinding superclass = findInferredSupertype(inferredType);
 			if (superclass != null) { // is null if a cycle was detected cycle or a problem
 				if (!superclass.isClass()) {
 					problemReporter().superclassMustBeAClass(sourceType, inferredType, superclass);
@@ -723,7 +723,7 @@ public class ClassScope extends Scope {
 	private ReferenceBinding findInferredSupertype(InferredType type) {
 		try {
 //			typeReference.aboutToResolve(this); // allows us to trap completion & selection nodes
-			compilationUnitScope().recordQualifiedReference(new char[][]{type.getName()});
+			compilationUnitScope().recordQualifiedReference(new char[][]{type.superClass.getName()});
 //			this.superTypeReference = typeReference;
 			ReferenceBinding superType = type.resolveSuperType(this);
 			this.superTypeReference = null;
