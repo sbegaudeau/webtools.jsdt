@@ -60,7 +60,6 @@ public static final int IMPOSSIBLE_MATCH = 0;
 public static final int INACCURATE_MATCH = 1;
 public static final int POSSIBLE_MATCH = 2;
 public static final int ACCURATE_MATCH = 3;
-public static final int ERASURE_MATCH = 4;
 
 // Possible rule match flavors
 // see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=79866
@@ -84,7 +83,7 @@ public static final int ALL_CONTAINER =
 	COMPILATION_UNIT_CONTAINER | CLASS_CONTAINER | METHOD_CONTAINER | FIELD_CONTAINER;
 
 /* match rule */
-public static final int RAW_MASK = SearchPattern.R_EQUIVALENT_MATCH | SearchPattern.R_ERASURE_MATCH;
+public static final int RAW_MASK = SearchPattern.R_EQUIVALENT_MATCH;
 public static final int RULE_MASK = RAW_MASK; // no other values for the while...
 
 public static PatternLocator patternLocator(SearchPattern pattern) {
@@ -144,7 +143,6 @@ public PatternLocator(SearchPattern pattern) {
 	int matchRule = pattern.getMatchRule();
 	this.isCaseSensitive = (matchRule & SearchPattern.R_CASE_SENSITIVE) != 0;
 	this.isCamelCase = (matchRule & SearchPattern.R_CAMELCASE_MATCH) != 0;
-	this.isErasureMatch = (matchRule & SearchPattern.R_ERASURE_MATCH) != 0;
 	this.isEquivalentMatch = (matchRule & SearchPattern.R_EQUIVALENT_MATCH) != 0;
 	this.matchMode = matchRule & JavaSearchPattern.MATCH_MODE_MASK;
 	this.mustResolve = ((InternalSearchPattern)pattern).mustResolve;
@@ -483,17 +481,10 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 			matchRule &= ~SearchPattern.R_FULL_MATCH;
 		}
 	}
-	if (hasTypeParameters) {
-		matchRule = SearchPattern.R_ERASURE_MATCH;
-	}
 
 	// Compare arguments lengthes
 	if (patternTypeArgsLength == typeArgumentsLength) {
-		if (!match.isRaw() && hasTypeParameters) {
-			// generic patterns are always not compatible match
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
-			return;
-		}
+		
 	} else {
 		if (patternTypeArgsLength==0) {
 			if (!match.isRaw() || hasTypeParameters) {
@@ -539,8 +530,6 @@ protected void updateMatch(TypeBinding[] argumentsBinding, MatchLocator locator,
 					break;
 			}
 
-			// Argument does not match => erasure match will be the only possible one
-			match.setRule(SearchPattern.R_ERASURE_MATCH);
 			return;
 		}
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.indexing;
 
-import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 
 public interface IIndexConstants {
 
@@ -35,9 +34,6 @@ public interface IIndexConstants {
 	char ENUM_SUFFIX = 'E';
 	char ANNOTATION_TYPE_SUFFIX = 'A';
 	char TYPE_SUFFIX = 0;
-	char CLASS_AND_ENUM_SUFFIX = IJavaScriptSearchConstants.CLASS_AND_ENUM;
-	char CLASS_AND_INTERFACE_SUFFIX = IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
-	char INTERFACE_AND_ANNOTATION_SUFFIX = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 	char SEPARATOR= '/';
 	char SECONDARY_SUFFIX = 'S';
 

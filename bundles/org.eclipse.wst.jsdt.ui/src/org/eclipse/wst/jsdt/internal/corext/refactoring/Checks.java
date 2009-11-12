@@ -780,7 +780,7 @@ public class Checks {
 		try{
 			if (! iType.isClass())
 				return false;
-			IType[] superTypes= iType.newSupertypeHierarchy(pm).getAllSupertypes(iType);
+			IType[] superTypes= iType.newSupertypeHierarchy(pm).getAllSuperclasses(iType);
 			for (int i= 0; i < superTypes.length; i++) {
 				if ("java.lang.Throwable".equals(superTypes[i].getFullyQualifiedName())) //$NON-NLS-1$
 					return true;

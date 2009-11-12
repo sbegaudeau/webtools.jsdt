@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -114,7 +114,7 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 	private void buildResourceVector() {
 		HashMap resources = new HashMap();
 		HashMap paths = new HashMap();
-		this.types = this.hierarchy.getAllTypes();
+		this.types = this.hierarchy.getAllClasses();
 		IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		for (int i = 0; i < this.types.length; i++) {
 			IType type = this.types[i];

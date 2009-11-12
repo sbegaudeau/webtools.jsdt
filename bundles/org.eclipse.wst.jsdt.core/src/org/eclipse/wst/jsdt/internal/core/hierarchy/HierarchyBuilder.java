@@ -131,15 +131,14 @@ public abstract class HierarchyBuilder {
 		}
 	}
 	/**
-	 * Connect the supplied type to its superclass & superinterfaces.
-	 * The superclass & superinterfaces are the identical binary or source types as
+	 * Connect the supplied type to its superclass.
+	 * The superclass is the identical binary or source types as
 	 * supplied by the name environment.
 	 */
 	public void connect(
 		IGenericType type,
 		IType typeHandle,
-		IType superclassHandle,
-		IType[] superinterfaceHandles) {
+		IType superclassHandle) {
 
 		/*
 		 * Temporary workaround for 1G2O5WK: ITPJCORE:WINNT - NullPointerException when selecting "Show in Type Hierarchy" for a inner class
@@ -154,17 +153,6 @@ public abstract class HierarchyBuilder {
 					+ (superclassHandle == null
 						? "<None>" //$NON-NLS-1$
 						: ((JavaElement) superclassHandle).toStringWithAncestors()));
-			System.out.print("  and superinterfaces:"); //$NON-NLS-1$
-			if (superinterfaceHandles == null || superinterfaceHandles.length == 0) {
-				System.out.println(" <None>"); //$NON-NLS-1$
-			} else {
-				System.out.println();
-				for (int i = 0, length = superinterfaceHandles.length; i < length; i++) {
-					if (superinterfaceHandles[i] == null) continue;
-					System.out.println(
-						"    " + ((JavaElement) superinterfaceHandles[i]).toStringWithAncestors()); //$NON-NLS-1$
-				}
-			}
 		}
 		// now do the caching
 		switch (TypeDeclaration.kind(type.getModifiers())) {
@@ -176,10 +164,6 @@ public abstract class HierarchyBuilder {
 				}
 				break;
 		}
-		if (superinterfaceHandles == null) {
-			superinterfaceHandles = TypeHierarchy.NO_TYPE;
-		}
-		this.hierarchy.cacheSuperInterfaces(typeHandle, superinterfaceHandles);
 
 		// record flags
 		this.hierarchy.cacheFlags(typeHandle, type.getModifiers());
@@ -224,23 +208,13 @@ public abstract class HierarchyBuilder {
 	 * Looks up and returns a handle for the given binary info.
 	 */
 	protected IType lookupBinaryHandle(ISourceType typeInfo) {
-		int flag;
 		String qualifiedName;
-		switch (TypeDeclaration.kind(typeInfo.getModifiers())) {
-			case TypeDeclaration.CLASS_DECL :
-				flag = NameLookup.ACCEPT_CLASSES;
-				break;
-			default:
-				//case IGenericType.ANNOTATION :
-				flag = NameLookup.ACCEPT_ANNOTATIONS;
-				break;
-		}
 		char[] bName = typeInfo.getName();
 		qualifiedName = new String(ClassFile.translatedName(bName));
 		if (qualifiedName.equals(this.focusQualifiedName)) return getType();
 		NameLookup.Answer answer = this.nameLookup.findType(qualifiedName,
 			false,
-			flag,
+			NameLookup.ACCEPT_CLASSES,
 			true/* consider secondary types */,
 			false/* do NOT wait for indexes */,
 			false/*don't check restrictions*/,

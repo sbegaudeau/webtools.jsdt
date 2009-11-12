@@ -253,91 +253,7 @@ private IType findSuperClass(IGenericType type, ReferenceBinding typeBinding) {
 
 	return null;
 }
-/*
- * Returns the handles of the super interfaces of the given type.
- * Adds the simple name to the hierarchy missing types if an interface is not found (but don't put null in the returned array)
- */
-//private IType[] findSuperInterfaces(IGenericType type, ReferenceBinding typeBinding) {
-//	char[][] superInterfaceNames;
-//	char separator;
-//	if (type instanceof IBinaryType) {
-//		superInterfaceNames = ((IBinaryType)type).getInterfaceNames();
-//		separator = '/';
-//	} else if (type instanceof ISourceType) {
-//		ISourceType sourceType = (ISourceType)type;
-//		if (sourceType.getName().length == 0) { // if anonymous type
-//			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
-//				superInterfaceNames = new char[][] {sourceType.getSuperclassName()};
-//			} else {
-//				superInterfaceNames = sourceType.getInterfaceNames();
-//			}
-//		} else {
-//			if (TypeDeclaration.kind(sourceType.getModifiers()) == TypeDeclaration.ANNOTATION_TYPE_DECL)
-//				superInterfaceNames = new char[][] {TypeConstants.CharArray_JAVA_LANG_ANNOTATION_ANNOTATION};
-//			else
-//				superInterfaceNames = sourceType.getInterfaceNames();
-//		}
-//		separator = '.';
-//	} else if (type instanceof HierarchyType) {
-//		HierarchyType hierarchyType = (HierarchyType)type;
-//		if (hierarchyType.name.length == 0) { // if anonymous type
-//			if (typeBinding.superInterfaces() != null && typeBinding.superInterfaces().length > 0) {
-//				superInterfaceNames = new char[][] {hierarchyType.superclassName};
-//			} else {
-//				superInterfaceNames = hierarchyType.superInterfaceNames;
-//			}
-//		} else {
-//			superInterfaceNames = hierarchyType.superInterfaceNames;
-//		}
-//		separator = '.';
-//	} else{
-//		return null;
-//	}
-//
-//	ReferenceBinding[] interfaceBindings = typeBinding.superInterfaces();
-//	int bindingIndex = 0;
-//	int bindingLength = interfaceBindings == null ? 0 : interfaceBindings.length;
-//	int length = superInterfaceNames == null ? 0 : superInterfaceNames.length;
-//	IType[] superinterfaces = new IType[length];
-//	int index = 0;
-//	next : for (int i = 0; i < length; i++) {
-//		char[] superInterfaceName = superInterfaceNames[i];
-//		int end = superInterfaceName.length;
-//
-//		// find the end of simple name
-//		int genericStart = CharOperation.indexOf(Signature.C_GENERIC_START, superInterfaceName);
-//		if (genericStart != -1) end = genericStart;
-//
-//		// find the start of simple name
-//		int lastSeparator = CharOperation.lastIndexOf(separator, superInterfaceName, 0, end);
-//		int start = lastSeparator + 1;
-//
-//		// case of binary inner type -> take the last part
-//		int lastDollar = CharOperation.lastIndexOf('$', superInterfaceName, start);
-//		if (lastDollar != -1) start = lastDollar + 1;
-//
-//		char[] simpleName = CharOperation.subarray(superInterfaceName, start, end);
-//
-//		if (bindingIndex < bindingLength) {
-//			ReferenceBinding interfaceBinding = (ReferenceBinding) interfaceBindings[bindingIndex].erasure();
-//
-//			// ensure that the binding corresponds to the interface defined by the user
-//			if (CharOperation.equals(simpleName, interfaceBinding.sourceName)) {
-//				bindingIndex++;
-//				for (int t = this.typeIndex; t >= 0; t--) {
-//					if (this.typeBindings[t] == interfaceBinding) {
-//						superinterfaces[index++] = this.builder.getHandle(this.typeModels[t], interfaceBinding);
-//						continue next;
-//					}
-//				}
-//			}
-//		}
-//		this.builder.hierarchy.missingTypes.add(new String(simpleName));
-//	}
-//	if (index != length)
-//		System.arraycopy(superinterfaces, 0, superinterfaces = new IType[index], 0, index);
-//	return superinterfaces;
-//}
+
 private void fixSupertypeBindings() {
 	for (int current = this.typeIndex; current >= 0; current--) {
 		ReferenceBinding typeBinding = this.typeBindings[current];
@@ -405,15 +321,11 @@ private void remember(IType type, ReferenceBinding typeBinding) {
 			superclassName = typeName == null ? null : typeName[typeName.length-1];
 		}
 
-		// simple super interface names
-		char[][] superInterfaceNames = null;
-
 		HierarchyType hierarchyType = new HierarchyType(
 			type,
 			typeDeclaration.name,
 			typeDeclaration.binding.modifiers,
-			superclassName,
-			superInterfaceNames);
+			superclassName);
 		remember(hierarchyType, typeDeclaration.binding);
 	}
 
@@ -446,25 +358,11 @@ private void rememberInferredType(InferredType inferredType, IType type, Referen
 //			superclassName = typeName == null ? null : typeName[typeName.length-1];
 //		}
 
-//		// simple super interface names
-		char[][] superInterfaceNames = null;
-//		TypeReference[] superInterfaces = typeDeclaration.superInterfaces;
-//		if (superInterfaces != null) {
-//			int length = superInterfaces.length;
-//			superInterfaceNames = new char[length][];
-//			for (int i = 0; i < length; i++) {
-//				TypeReference superInterface = superInterfaces[i];
-//				char[][] typeName = superInterface.getTypeName();
-//				superInterfaceNames[i] = typeName[typeName.length-1];
-//			}
-//		}
-//
 		HierarchyType hierarchyType = new HierarchyType(
 			type,
 			inferredType.getName(),
 			0,//typeDeclaration.binding.modifiers,
-			superclassName,
-			superInterfaceNames);
+			superclassName);
 		remember(hierarchyType, inferredType.binding);
 	}
 
@@ -574,15 +472,13 @@ private void reportHierarchy(IType focus, CompilationUnitDeclaration parsedUnit,
 		}
 
 		IType superclass = findSuperClass(suppliedType, typeBinding);
-		
-		IType[] superinterfaces = new IType[0];// findSuperInterfaces(suppliedType, typeBinding);
 
-		this.builder.connect(suppliedType, this.builder.getHandle(suppliedType, typeBinding), superclass, superinterfaces);
+		this.builder.connect(suppliedType, this.builder.getHandle(suppliedType, typeBinding), superclass);
 	}
 	// add java.lang.Object only if the super class is not missing
 	if (!this.hasMissingSuperClass && objectIndex > -1) {
 		IGenericType objectType = this.typeModels[objectIndex];
-		this.builder.connect(objectType, this.builder.getHandle(objectType, this.typeBindings[objectIndex]), null, null);
+		this.builder.connect(objectType, this.builder.getHandle(objectType, this.typeBindings[objectIndex]), null);
 	}
 }
 
@@ -600,7 +496,7 @@ private void reset(){
 /**
  * Resolve the supertypes for the supplied source type.
  * Inform the requestor of the resolved supertypes using:
- *    connect(ISourceType suppliedType, IGenericType superclass, IGenericType[] superinterfaces)
+ *    connect(ISourceType suppliedType, IGenericType superclass)
  * @param suppliedType
  */
 public void resolve(IGenericType suppliedType) {
@@ -608,7 +504,7 @@ public void resolve(IGenericType suppliedType) {
 		if (suppliedType.isBinaryType()) {
 			ReferenceBinding binaryTypeBinding = this.lookupEnvironment.cacheBinaryType((ISourceType) suppliedType, false/*don't need field and method (bug 125067)*/, null /*no access restriction*/);
 			remember(suppliedType, binaryTypeBinding);
-			// We still need to add superclasses and superinterfaces bindings (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53095)
+			// We still need to add superclasses bindings (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53095)
 			int startIndex = this.typeIndex;
 			for (int i = startIndex; i <= this.typeIndex; i++) {
 				IGenericType igType = this.typeModels[i];
@@ -641,7 +537,7 @@ public void resolve(IGenericType suppliedType) {
  * Resolve the supertypes for the types contained in the given openables (ICompilationUnits and/or IClassFiles).
  * Inform the requestor of the resolved supertypes for each
  * supplied source type using:
- *    connect(ISourceType suppliedType, IGenericType superclass, IGenericType[] superinterfaces)
+ *    connect(ISourceType suppliedType, IGenericType superclass)
  *
  * Also inform the requestor of the supertypes of each
  * additional requested super type which is also a source type
@@ -903,7 +799,7 @@ public boolean subOrSuperOfFocus(ReferenceBinding typeBinding) {
 		if (this.subTypeOfType(this.focusType, typeBinding)) return true;
 		if (!this.superTypesOnly && this.subTypeOfType(typeBinding, this.focusType)) return true;
 	} catch (AbortCompilation e) {
-		// unresolved superclass/superinterface -> ignore
+		// unresolved superclass -> ignore
 	}
 	return false;
 }

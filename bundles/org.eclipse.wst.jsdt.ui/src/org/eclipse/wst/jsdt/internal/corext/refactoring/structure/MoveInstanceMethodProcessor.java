@@ -2229,7 +2229,7 @@ public final class MoveInstanceMethodProcessor extends MoveProcessor implements 
 					if (method != null)
 						found= true;
 				}
-				types= hierarchy.getAllSupertypes(fMethod.getDeclaringType());
+				types= hierarchy.getAllSuperclasses(fMethod.getDeclaringType());
 				for (int index= 0; index < types.length && !found; index++) {
 					type= types[index];
 					method= JavaModelUtil.findMethod(fMethod.getElementName(), fMethod.getParameterTypes(), false, type);

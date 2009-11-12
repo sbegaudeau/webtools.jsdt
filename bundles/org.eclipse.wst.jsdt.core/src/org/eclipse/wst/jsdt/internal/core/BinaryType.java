@@ -414,15 +414,7 @@ public String getKey(boolean forceOpen) throws JavaScriptModelException {
 public IFunction getFunction(String selector, String[] parameterTypeSignatures) {
 	return new BinaryMethod(this, selector, parameterTypeSignatures);
 }
-/*
- * @see IType#getMethods()
- */
-/**
- * @deprecated Use {@link #getFunctions()} instead
- */
-public IFunction[] getMethods() throws JavaScriptModelException {
-	return getFunctions();
-}
+
 /*
  * @see IType#getMethods()
  */
@@ -520,76 +512,6 @@ public String getSuperclassName() throws JavaScriptModelException {
 		return null;
 	}
 	return new String(ClassFile.translatedName(superclassName));
-}
-/*
- * @see IType#getSuperInterfaceNames()
- */
-public String[] getSuperInterfaceNames() throws JavaScriptModelException {
-	IBinaryType info = (IBinaryType) getElementInfo();
-	char[][] names= info.getInterfaceNames();
-	int length;
-	if (names == null || (length = names.length) == 0) {
-		return CharOperation.NO_STRINGS;
-	}
-	names= ClassFile.translatedNames(names);
-	String[] strings= new String[length];
-	for (int i= 0; i < length; i++) {
-		strings[i]= new String(names[i]);
-	}
-	return strings;
-}
-
-/**
- * @see IType#getSuperInterfaceTypeSignatures()
- * @since 3.0
- */
-public String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException {
-	IBinaryType info = (IBinaryType) getElementInfo();
-	char[] genericSignature = info.getGenericSignature();
-	if (genericSignature != null) {
-		ArrayList interfaces = new ArrayList();
-		int signatureLength = genericSignature.length;
-		// skip type parameters
-		int index = 0;
-		if (genericSignature[0] == '<') {
-			int count = 1;
-			while (count > 0 && ++index < signatureLength) {
-				switch (genericSignature[index]) {
-					case '<':
-						count++;
-						break;
-					case '>':
-						count--;
-						break;
-				}
-			}
-			index++;
-		}
-		// skip superclass
-		index = Util.scanClassTypeSignature(genericSignature, index) + 1;
-		while (index  < signatureLength) {
-			int start = index;
-			index = Util.scanClassTypeSignature(genericSignature, start) + 1;
-			char[] interfaceSig = CharOperation.subarray(genericSignature, start, index);
-			interfaces.add(new String(ClassFile.translatedName(interfaceSig)));
-		}
-		int size = interfaces.size();
-		String[] result = new String[size];
-		interfaces.toArray(result);
-		return result;
-	} else {
-		char[][] names= info.getInterfaceNames();
-		int length;
-		if (names == null || (length = names.length) == 0) {
-			return CharOperation.NO_STRINGS;
-		}
-		names= ClassFile.translatedNames(names);
-		String[] strings= new String[length];
-		for (int i= 0; i < length; i++) {
-			strings[i]= new String(Signature.createTypeSignature(names[i], true));
-		}
-		return strings;
-	}
 }
 
 /**

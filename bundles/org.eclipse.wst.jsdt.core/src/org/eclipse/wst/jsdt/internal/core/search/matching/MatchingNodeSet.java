@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
-import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfLong;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
@@ -33,7 +32,6 @@ SimpleLookupTable matchingNodes = new SimpleLookupTable(3); // node -> accuracy
 private HashtableOfLong matchingNodesKeys = new HashtableOfLong(3); // sourceRange -> node
 static Integer EXACT_MATCH = new Integer(SearchMatch.A_ACCURATE);
 static Integer POTENTIAL_MATCH = new Integer(SearchMatch.A_INACCURATE);
-static Integer ERASURE_MATCH = new Integer(SearchPattern.R_ERASURE_MATCH);
 
 /**
  * Tell whether locators need to resolve or not for current matching node set.
@@ -65,13 +63,6 @@ public int addMatch(ASTNode node, int matchLevel) {
 			break;
 		case PatternLocator.POSSIBLE_MATCH:
 			addPossibleMatch(node);
-			break;
-		case PatternLocator.ERASURE_MATCH:
-			if (matchLevel != maskedLevel) {
-				addTrustedMatch(node, new Integer(SearchPattern.R_ERASURE_MATCH+(matchLevel & PatternLocator.FLAVORS_MASK)));
-			} else {
-				addTrustedMatch(node, ERASURE_MATCH);
-			}
 			break;
 		case PatternLocator.ACCURATE_MATCH:
 			if (matchLevel != maskedLevel) {
@@ -190,9 +181,6 @@ public String toString() {
 				break;
 			case SearchMatch.A_INACCURATE:
 				result.append("INACCURATE_MATCH: "); //$NON-NLS-1$
-				break;
-			case SearchPattern.R_ERASURE_MATCH:
-				result.append("ERASURE_MATCH: "); //$NON-NLS-1$
 				break;
 		}
 		node.print(0, result);

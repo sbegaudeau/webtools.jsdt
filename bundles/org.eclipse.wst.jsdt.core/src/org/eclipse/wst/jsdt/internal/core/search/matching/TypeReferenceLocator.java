@@ -482,10 +482,6 @@ protected void matchReportReference(QualifiedTypeReference qTypeRef, IJavaScript
 }
 void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding, MatchLocator locator) throws CoreException {
 
-	if (this.pattern.hasTypeArguments()) { // binding has no type params, compatible erasure if pattern does
-		match.setRule(SearchPattern.R_ERASURE_MATCH);
-	}
-
 	// Report match
 	if (expr instanceof ArrayTypeReference) {
 		locator.reportAccurateTypeReference(match, expr, this.pattern.simpleName);

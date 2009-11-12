@@ -1245,14 +1245,11 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType[] types= hierarchy.getSupertypes(referencing);
-			IType superType= null;
-			for (int index= 0; index < types.length; index++) {
-				superType= types[index];
-				if (superType.equals(referenced.getDeclaringType())) {
-					keyword= ModifierKeyword.PROTECTED_KEYWORD;
-					return keyword;
-				}
+			final IType type= hierarchy.getSuperclass(referencing);
+			IType superType= type;
+			if (superType.equals(referenced.getDeclaringType())) {
+				keyword= ModifierKeyword.PROTECTED_KEYWORD;
+				return keyword;
 			}
 		}
 		final IJavaScriptUnit typeUnit= referencing.getJavaScriptUnit();
@@ -1279,15 +1276,14 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType[] types= hierarchy.getSupertypes(referencing);
-			IType superType= null;
-			for (int index= 0; index < types.length; index++) {
-				superType= types[index];
-				if (superType.equals(referenced.getDeclaringType())) {
-					keyword= ModifierKeyword.PROTECTED_KEYWORD;
-					return keyword;
-				}
+			final IType type= hierarchy.getSuperclass(referencing);
+			IType superType= type;
+		
+			if (superType.equals(referenced.getDeclaringType())) {
+				keyword= ModifierKeyword.PROTECTED_KEYWORD;
+				return keyword;
 			}
+			
 		}
 		final IJavaScriptUnit typeUnit= referencing.getJavaScriptUnit();
 		if (referencedUnit != null && referencedUnit.equals(typeUnit)) {
@@ -1316,14 +1312,12 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType[] types= hierarchy.getSupertypes(referencing);
-			IType superType= null;
-			for (int index= 0; index < types.length; index++) {
-				superType= types[index];
-				if (superType.equals(referenced)) {
-					keyword= null;
-					return keyword;
-				}
+			final IType type= hierarchy.getSuperclass(referencing);
+			IType superType= type;
+		
+			if (superType.equals(referenced)) {
+				keyword= null;
+				return keyword;
 			}
 		}
 		final IJavaScriptUnit typeUnit= referencing.getJavaScriptUnit();

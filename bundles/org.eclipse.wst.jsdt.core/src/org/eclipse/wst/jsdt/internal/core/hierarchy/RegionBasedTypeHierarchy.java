@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,7 +125,6 @@ public IJavaScriptProject javaProject() {
 }
 public void pruneDeadBranches() {
 	pruneDeadBranches(getRootClasses());
-	pruneDeadBranches(getRootInterfaces());
 }
 /*
  * Returns whether all subtypes of the given type have been pruned.
@@ -150,7 +149,7 @@ private void pruneDeadBranches(IType[] types) {
  * removes its superclass entry and removes the references from its super types.
  */
 protected void removeType(IType type) {
-	IType[] subtypes = this.getSubtypes(type);
+	IType[] subtypes = this.getSubclasses(type);
 	this.typeToSubtypes.remove(type);
 	if (subtypes != null) {
 		for (int i= 0; i < subtypes.length; i++) {
@@ -162,15 +161,6 @@ protected void removeType(IType type) {
 		TypeVector types = (TypeVector)this.typeToSubtypes.get(superclass);
 		if (types != null) types.remove(type);
 	}
-	IType[] superinterfaces = (IType[])this.typeToSuperInterfaces.remove(type);
-	if (superinterfaces != null) {
-		for (int i = 0, length = superinterfaces.length; i < length; i++) {
-			IType superinterface = superinterfaces[i];
-			TypeVector types = (TypeVector)this.typeToSubtypes.get(superinterface);
-			if (types != null) types.remove(type);
-		}
-	}
-	this.interfaces.remove(type);
 }
 
 }

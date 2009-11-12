@@ -26,7 +26,6 @@ public class HierarchyBinaryType implements IBinaryType {
 	private char[] name;
 	private char[] enclosingTypeName;
 	private char[] superclass;
-	private char[][] superInterfaces = NoInterface;
 	private char[][] typeParameterSignatures;
 	private char[] genericSignature;
 
@@ -78,24 +77,12 @@ public char[] getGenericSignature() {
 			buffer.append(Signature.createTypeSignature("java.lang.Object", true/*resolved*/)); //$NON-NLS-1$
 		else
 			buffer.append(Signature.createTypeSignature(this.superclass, true/*resolved*/));
-		if (this.superInterfaces != null)
-			for (int i = 0, length = this.superInterfaces.length; i < length; i++)
-				buffer.append(Signature.createTypeSignature(this.superInterfaces[i], true/*resolved*/));
 		this.genericSignature = buffer.toString().toCharArray();
 		CharOperation.replace(this.genericSignature, '.', '/');
 	}
 	return this.genericSignature;
 }
-/**
- * Answer the resolved names of the receiver's interfaces in the
- * class file format as specified in section 4.2 of the Java 2 VM spec
- * or null if the array is empty.
- *
- * For example, java.lang.String is java/lang/String.
- */
-public char[][] getInterfaceNames() {
-	return this.superInterfaces;
-}
+
 /**
  * Answer the receiver's nested types or null if the array is empty.
  *
@@ -178,16 +165,6 @@ public void recordSuperType(char[] superTypeName, char[] superQualification, cha
 		char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
 		CharOperation.replace(encodedName, '.', '/');
 		this.superclass = encodedName;
-	} else {
-		char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
-		CharOperation.replace(encodedName, '.', '/');
-		if (this.superInterfaces == NoInterface){
-			this.superInterfaces = new char[][] { encodedName };
-		} else {
-			int length = this.superInterfaces.length;
-			System.arraycopy(this.superInterfaces, 0, this.superInterfaces = new char[length+1][], 0, length);
-			this.superInterfaces[length] = encodedName;
-		}
 	}
 }
 public String toString() {
@@ -206,16 +183,6 @@ public String toString() {
 	if (this.superclass != null) {
 		buffer.append("\n  extends "); //$NON-NLS-1$
 		buffer.append(this.superclass);
-	}
-	int length;
-	if (this.superInterfaces != null && (length = this.superInterfaces.length) != 0) {
-		buffer.append("\n implements "); //$NON-NLS-1$
-		for (int i = 0; i < length; i++) {
-			buffer.append(this.superInterfaces[i]);
-			if (i != length - 1) {
-				buffer.append(", "); //$NON-NLS-1$
-			}
-		}
 	}
 	return buffer.toString();
 }

@@ -159,7 +159,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					return hierarchy.contains(sup);
 				} else {
 					ITypeHierarchy hierarchy= sub.newSupertypeHierarchy(null);
-					IType[] allTypes= hierarchy.getAllTypes();
+					IType[] allTypes= hierarchy.getAllClasses();
 					for (int i= 0; i < allTypes.length; i++) {
 						IType type= allTypes[i];
 						if (type.getElementName().equals(supertype))
@@ -199,7 +199,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					return new IType[] {sup};
 				} else {
 					ITypeHierarchy hierarchy= sub.newSupertypeHierarchy(null);
-					IType[] allTypes= hierarchy.getAllTypes();
+					IType[] allTypes= hierarchy.getAllClasses();
 					List matches= new ArrayList();
 					for (int i= 0; i < allTypes.length; i++) {
 						IType type= allTypes[i];
@@ -462,7 +462,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 					return false;
 				
 				ITypeHierarchy hierarchy= subType.newSupertypeHierarchy(null);
-				IType[] types= hierarchy.getAllSupertypes(subType);
+				IType[] types= hierarchy.getAllSuperclasses(subType);
 				
 				for (int i= 0; i < types.length; i++)
 					if (types[i].equals(superType))

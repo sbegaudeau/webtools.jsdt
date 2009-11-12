@@ -42,15 +42,6 @@ IBinaryField[] getFields();
  */
 char[] getGenericSignature();
 /**
- * Answer the resolved names of the receiver's interfaces in the
- * class file format as specified in section 4.2 of the Java 2 VM spec
- * or null if the array is empty.
- *
- * For example, java.lang.String is java/lang/String.
- */
-
-char[][] getInterfaceNames();
-/**
  * Answer the receiver's nested types or null if the array is empty.
  *
  * This nested type info is extracted from the inner class attributes.

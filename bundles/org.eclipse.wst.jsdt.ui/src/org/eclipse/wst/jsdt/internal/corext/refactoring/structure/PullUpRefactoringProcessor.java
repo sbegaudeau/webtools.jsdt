@@ -1319,7 +1319,7 @@ public class PullUpRefactoringProcessor extends HierarchyProcessor {
 
 	public IType[] getCandidateTypes(final RefactoringStatus status, final IProgressMonitor monitor) throws JavaScriptModelException {
 		final IType declaring= getDeclaringType();
-		final IType[] superTypes= declaring.newSupertypeHierarchy(fOwner, monitor).getAllSupertypes(declaring);
+		final IType[] superTypes= declaring.newSupertypeHierarchy(fOwner, monitor).getAllSuperclasses(declaring);
 		final List list= new ArrayList(superTypes.length);
 		int binary= 0;
 		for (int index= 0; index < superTypes.length; index++) {

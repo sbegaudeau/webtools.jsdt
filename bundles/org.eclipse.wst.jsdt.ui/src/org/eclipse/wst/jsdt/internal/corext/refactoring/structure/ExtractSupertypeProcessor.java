@@ -798,7 +798,7 @@ public final class ExtractSupertypeProcessor extends PullUpRefactoringProcessor 
 					monitor.beginTask(RefactoringCoreMessages.ExtractSupertypeProcessor_computing_possible_types, 10);
 					final IType superType= getDeclaringSuperTypeHierarchy(new SubProgressMonitor(monitor, 1, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL)).getSuperclass(declaring);
 					if (superType != null) {
-						fPossibleCandidates= superType.newTypeHierarchy(fOwner, new SubProgressMonitor(monitor, 9, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL)).getSubtypes(superType);
+						fPossibleCandidates= superType.newTypeHierarchy(fOwner, new SubProgressMonitor(monitor, 9, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL)).getSubclasses(superType);
 						final LinkedList list= new LinkedList(Arrays.asList(fPossibleCandidates));
 						final Set names= new HashSet();
 						for (final Iterator iterator= list.iterator(); iterator.hasNext();) {

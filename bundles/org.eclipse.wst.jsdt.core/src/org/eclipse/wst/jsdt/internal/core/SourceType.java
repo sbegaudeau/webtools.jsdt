@@ -415,32 +415,6 @@ public String getSuperclassTypeSignature() throws JavaScriptModelException {
 /**
  * @see IType
  */
-public String[] getSuperInterfaceNames() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	char[][] names= info.getInterfaceNames();
-	return CharOperation.toStrings(names);
-}
-
-/**
- * @see IType#getSuperInterfaceTypeSignatures()
- * @since 3.0
- */
-public String[] getSuperInterfaceTypeSignatures() throws JavaScriptModelException {
-	SourceTypeElementInfo info = (SourceTypeElementInfo) getElementInfo();
-	char[][] names= info.getInterfaceNames();
-	if (names == null) {
-		return CharOperation.NO_STRINGS;
-	}
-	String[] strings= new String[names.length];
-	for (int i= 0; i < names.length; i++) {
-		strings[i]= new String(Signature.createTypeSignature(names[i], false));
-	}
-	return strings;
-}
-
-/**
- * @see IType
- */
 public IType getType(String typeName) {
 	return new SourceType(this, typeName);
 }

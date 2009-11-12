@@ -209,7 +209,7 @@ public void acceptError(CategorizedProblem error) {
 public void acceptField(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] name, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 	if(isDeclaration) {
 		IType type= resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
-				NameLookup.ACCEPT_ALL,
+				NameLookup.ACCEPT_CLASSES,
 				start, end);
 		if(type != null) {
 			try {
@@ -234,7 +234,7 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 			}
 		}
 	} else {
-		IType type= resolveType(declaringTypePackageName, fileName, declaringTypeName, NameLookup.ACCEPT_ALL);
+		IType type= resolveType(declaringTypePackageName, fileName, declaringTypeName, NameLookup.ACCEPT_CLASSES);
 		if (type != null) {
 			IField field= type.getField(new String(name));
 			if (field.exists()) {
@@ -429,7 +429,7 @@ public void acceptMethod(
 
 	if(isDeclaration) {
 		IType type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
-				NameLookup.ACCEPT_ALL,
+				NameLookup.ACCEPT_CLASSES,
 				start, end);
 
 //		if(type != null) {
@@ -437,7 +437,7 @@ public void acceptMethod(
 //		}
 	} else {
 		IJavaScriptElement parent = (!isFileName) ?
-				resolveType(declaringTypePackageName, fileName,declaringTypeName,NameLookup.ACCEPT_ALL)
+				resolveType(declaringTypePackageName, fileName,declaringTypeName,NameLookup.ACCEPT_CLASSES)
 			:
 				resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
 //		if (type != null) {
@@ -643,11 +643,11 @@ public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName
 	IType type;
 	if(isDeclaration) {
 		type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
-				NameLookup.ACCEPT_ALL,
+				NameLookup.ACCEPT_CLASSES,
 				start, end);
 	} else {
 		type = resolveType(declaringTypePackageName, fileName, declaringTypeName,
-				NameLookup.ACCEPT_ALL);
+				NameLookup.ACCEPT_CLASSES);
 	}
 
 	if(type != null) {
@@ -661,7 +661,7 @@ public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName
 }
 public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] selector,int selectorStart, int selectorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
 	IType type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
-			NameLookup.ACCEPT_ALL,
+			NameLookup.ACCEPT_CLASSES,
 			selectorStart, selectorEnd);
 
 	if(type != null) {

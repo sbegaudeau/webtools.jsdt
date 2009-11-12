@@ -360,10 +360,7 @@ public final class CompletionEngine
 	ImportBinding[] favoriteReferenceBindings;
 
 	boolean assistNodeIsClass;
-	boolean assistNodeIsEnum;
 	boolean assistNodeIsException;
-	boolean assistNodeIsInterface;
-	boolean assistNodeIsAnnotation;
 	boolean assistNodeIsConstructor;
 	boolean assistNodeIsSuperType;
 	int  assistNodeInJavadoc = 0;
@@ -1359,7 +1356,6 @@ public final class CompletionEngine
 
 			this.assistNodeIsClass = singleRef.isClass();
 			this.assistNodeIsException = singleRef.isException();
-			this.assistNodeIsInterface = singleRef.isInterface();
 			this.assistNodeIsConstructor = singleRef.isConstructorType;
 			this.assistNodeIsSuperType = singleRef.isSuperType();
 
@@ -1577,7 +1573,6 @@ public final class CompletionEngine
 
 			this.assistNodeIsClass = ref.isClass();
 			this.assistNodeIsException = ref.isException();
-			this.assistNodeIsInterface = ref.isInterface();
 			this.assistNodeIsSuperType = ref.isSuperType();
 
 			this.completionToken = ref.completionIdentifier;
@@ -4362,10 +4357,6 @@ public final class CompletionEngine
 			if(!this.insideQualifiedReference) {
 				if(this.assistNodeIsClass) {
 					if(!memberType.isClass()) continue next;
-				} else if(this.assistNodeIsInterface) {
-					continue next;
-				} else if (this.assistNodeIsAnnotation) {
-					continue next;
 				}
 			}
 
@@ -5171,118 +5162,6 @@ public final class CompletionEngine
 		return proposal;
 	}
 
-	// Helper method for findMethods(char[], TypeBinding[], ReferenceBinding, Scope, ObjectVector, boolean, boolean, boolean)
-	private void findLocalMethodsOfStaticImports(
-		char[] methodName,
-		MethodBinding[] methods,
-		Scope scope,
-		ObjectVector methodsFound,
-		ReferenceBinding receiverType,
-		InvocationSite invocationSite) {
-
-		ObjectVector newMethodsFound =  new ObjectVector();
-
-		next : for (int f = methods.length; --f >= 0;) {
-			MethodBinding method = methods[f];
-
-			if (method.isDefaultAbstract())	continue next;
-
-			if (method.isConstructor()) continue next;
-
-			if (!method.isStatic()) continue next;
-
-			if (this.options.checkDeprecation &&
-					method.isViewedAsDeprecated() &&
-					!scope.isDefinedInSameUnit(method.declaringClass))
-				continue next;
-
-			if (this.options.checkVisibility
-				&& !method.canBeSeenBy(receiverType, invocationSite, scope)) continue next;
-
-			if (!CharOperation.equals(methodName, method.selector, false /* ignore case */)
-					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(methodName, method.selector)))
-				continue next;
-
-			for (int i = methodsFound.size; --i >= 0;) {
-				Object[] other = (Object[]) methodsFound.elementAt(i);
-				MethodBinding otherMethod = (MethodBinding) other[0];
-				ReferenceBinding otherReceiverType = (ReferenceBinding) other[1];
-				if (method == otherMethod && receiverType == otherReceiverType)
-					continue next;
-
-				if (CharOperation.equals(method.selector, otherMethod.selector, true)) {
-					if (lookupEnvironment.methodVerifier().doesMethodOverride(otherMethod, method)) {
-						continue next;
-					}
-				}
-			}
-
-			newMethodsFound.add(new Object[]{method, receiverType});
-
-			int length = method.parameters.length;
-			char[][] parameterPackageNames = new char[length][];
-			char[][] parameterTypeNames = new char[length][];
-
-			for (int i = 0; i < length; i++) {
-				TypeBinding type = method.original().parameters[i];
-				parameterPackageNames[i] = type.qualifiedPackageName();
-				parameterTypeNames[i] = type.qualifiedSourceName();
-			}
-			char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
-
-			char[] completion = CharOperation.NO_CHAR;
-
-			int previousStartPosition = this.startPosition;
-
-			// nothing to insert - do not want to replace the existing selector & arguments
-			if (this.source != null
-				&& this.source.length > this.endPosition
-				&& this.source[this.endPosition] == '(') {
-				completion = method.selector;
-			} else {
-				completion = CharOperation.concat(method.selector, new char[] { '(', ')' });
-			}
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(methodName, method.selector);
-			relevance += computeRelevanceForExpectingType(method.returnType);
-			relevance += computeRelevanceForStatic(true, method.isStatic());
-			relevance += computeRelevanceForQualification(false);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-			this.noProposal = false;
-			if(!this.requestor.isIgnored(CompletionProposal.METHOD_REF)) {
-				CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_REF, this.actualCompletionPosition);
-				proposal.setDeclarationSignature(getSignature(method.declaringClass));
-				proposal.setSignature(getSignature(method));
-				MethodBinding original = method.original();
-				if(original != method) {
-					proposal.setOriginalSignature(getSignature(original));
-				}
-				proposal.setDeclarationPackageName(method.declaringClass.qualifiedPackageName());
-				proposal.setDeclarationTypeName(method.declaringClass.qualifiedSourceName());
-				proposal.setParameterPackageNames(parameterPackageNames);
-				proposal.setParameterTypeNames(parameterTypeNames);
-				proposal.setPackageName(method.returnType.qualifiedPackageName());
-				proposal.setTypeName(method.returnType.qualifiedSourceName());
-				proposal.setName(method.selector);
-				proposal.setCompletion(completion);
-				proposal.setFlags(method.modifiers);
-				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-				proposal.setRelevance(relevance);
-				if(parameterNames != null) proposal.setParameterNames(parameterNames);
-				this.requestor.accept(proposal);
-				if(DEBUG) {
-					this.printDebug(proposal);
-				}
-			}
-			this.startPosition = previousStartPosition;
-		}
-
-		methodsFound.addAll(newMethodsFound);
-	}
 	int computeRelevanceForCaseMatching(char[] token, char[] proposalName){
 		if (this.options.camelCaseMatch) {
 			if(CharOperation.equals(token, proposalName, true /* do not ignore case */)) {
@@ -5305,27 +5184,9 @@ public final class CompletionEngine
 		}
 		return 0;
 	}
-	private int computeRelevanceForAnnotation(){
-		if(this.assistNodeIsAnnotation) {
-			return R_ANNOTATION;
-		}
-		return 0;
-	}
 	private int computeRelevanceForClass(){
 		if(this.assistNodeIsClass) {
 			return R_CLASS;
-		}
-		return 0;
-	}
-	private int computeRelevanceForEnum(){
-		if(this.assistNodeIsEnum) {
-			return R_ENUM;
-		}
-		return 0;
-	}
-	private int computeRelevanceForInterface(){
-		if(this.assistNodeIsInterface) {
-			return R_INTERFACE;
 		}
 		return 0;
 	}
@@ -5958,10 +5819,6 @@ public final class CompletionEngine
 
 								if(this.assistNodeIsClass) {
 									if(!localType.isClass()) continue next;
-								} else if(this.assistNodeIsInterface) {
-									continue next;
-								} else if (this.assistNodeIsAnnotation) {
-									continue next;
 								}
 
 								int relevance = computeBaseRelevance();
@@ -6126,10 +5983,6 @@ public final class CompletionEngine
 				} else if (!CharOperation.prefixEquals(token, sourceType.sourceName, false)
 						&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, sourceType.sourceName))) continue ;
 
-				if (this.assistNodeIsAnnotation) {
-					continue next;
-				}
-
 				for (int j = typesFound.size; --j >= 0;) {
 					ReferenceBinding otherType = (ReferenceBinding) typesFound.elementAt(j);
 
@@ -6140,10 +5993,6 @@ public final class CompletionEngine
 
 				if(this.assistNodeIsClass) {
 					if(!sourceType.isClass()) continue next;
-				} else if(this.assistNodeIsInterface) {
-					continue next;
-				} else if (this.assistNodeIsAnnotation) {
-					continue next;
 				}
 
 				int relevance = computeBaseRelevance();
@@ -6166,7 +6015,7 @@ public final class CompletionEngine
 			}
 		}
 
-		if (isEmptyPrefix && !this.assistNodeIsAnnotation) {
+		if (isEmptyPrefix) {
 			if(proposeType && this.expectedTypesPtr > -1) {
 				next : for (int i = 0; i <= this.expectedTypesPtr; i++) {
 					if(this.expectedTypes[i] instanceof ReferenceBinding) {
@@ -6226,10 +6075,6 @@ public final class CompletionEngine
 
 							if(this.assistNodeIsClass) {
 								if(!refBinding.isClass()) continue next;
-							} else if(this.assistNodeIsInterface) {
-								continue next;
-							} else if (this.assistNodeIsAnnotation) {
-								continue next;
 							}
 
 							int relevance = computeBaseRelevance();
@@ -6286,12 +6131,6 @@ public final class CompletionEngine
 				int searchFor = IJavaScriptSearchConstants.TYPE;
 				if(this.assistNodeIsClass) {
 					searchFor = IJavaScriptSearchConstants.CLASS;
-				} else if(this.assistNodeIsInterface) {
-					searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
-				} else if(this.assistNodeIsEnum) {
-					searchFor = IJavaScriptSearchConstants.ENUM;
-				} else if(this.assistNodeIsAnnotation) {
-					searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 				}
 				this.nameEnvironment.findTypes(
 						token,
@@ -6401,12 +6240,6 @@ public final class CompletionEngine
 			int searchFor = IJavaScriptSearchConstants.TYPE;
 			if(this.assistNodeIsClass) {
 				searchFor = IJavaScriptSearchConstants.CLASS;
-			} else if(this.assistNodeIsInterface) {
-				searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
-			} else if(this.assistNodeIsEnum) {
-				searchFor = IJavaScriptSearchConstants.ENUM;
-			} else if(this.assistNodeIsAnnotation) {
-				searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 			}
 			this.nameEnvironment.findTypes(
 					qualifiedName,

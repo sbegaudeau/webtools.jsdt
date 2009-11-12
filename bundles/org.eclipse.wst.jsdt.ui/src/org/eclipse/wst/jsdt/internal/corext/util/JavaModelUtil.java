@@ -542,7 +542,7 @@ public final class JavaModelUtil {
 
 	public static IType[] getAllSuperTypes(IType type, IProgressMonitor pm) throws JavaScriptModelException {
 		// workaround for 23656
-		IType[] superTypes= SuperTypeHierarchyCache.getTypeHierarchy(type).getAllSupertypes(type);
+		IType[] superTypes= SuperTypeHierarchyCache.getTypeHierarchy(type).getAllSuperclasses(type);
 		return superTypes;
 	}
 	

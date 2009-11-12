@@ -275,9 +275,6 @@ EntryResult[] queryIn(Index index) throws IOException {
 						case INTERFACE_SUFFIX :
 						case ENUM_SUFFIX :
 						case ANNOTATION_TYPE_SUFFIX :
-						case CLASS_AND_INTERFACE_SUFFIX :
-						case CLASS_AND_ENUM_SUFFIX :
-						case INTERFACE_AND_ANNOTATION_SUFFIX :
 							// null key already returns all types
 							// key = new char[] {ONE_STAR[0],  SEPARATOR, ONE_STAR[0]};
 							break;
@@ -303,17 +300,8 @@ protected StringBuffer print(StringBuffer output) {
 		case CLASS_SUFFIX :
 			output.append("ClassDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
-		case CLASS_AND_INTERFACE_SUFFIX:
-			output.append("ClassAndInterfaceDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case CLASS_AND_ENUM_SUFFIX :
-			output.append("ClassAndEnumDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
 		case INTERFACE_SUFFIX :
 			output.append("InterfaceDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case INTERFACE_AND_ANNOTATION_SUFFIX:
-			output.append("InterfaceAndAnnotationDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: pkg<"); //$NON-NLS-1$

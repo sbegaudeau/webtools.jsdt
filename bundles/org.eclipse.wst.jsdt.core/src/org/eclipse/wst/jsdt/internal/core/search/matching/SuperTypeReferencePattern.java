@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ public char[][] typeParameterSignatures;
 
 protected int superRefKind;
 public static final int ALL_SUPER_TYPES = 0;
-public static final int ONLY_SUPER_INTERFACES = 1; // used for IMPLEMENTORS
 public static final int ONLY_SUPER_CLASSES = 2; // used for hierarchy with a class focus
 
 protected static char[][] CATEGORIES = { SUPER_REF };
@@ -273,9 +272,6 @@ protected StringBuffer print(StringBuffer output) {
 	switch (this.superRefKind) {
 		case ALL_SUPER_TYPES:
 			output.append("SuperTypeReferencePattern: <"); //$NON-NLS-1$
-			break;
-		case ONLY_SUPER_INTERFACES:
-			output.append("SuperInterfaceReferencePattern: <"); //$NON-NLS-1$
 			break;
 		case ONLY_SUPER_CLASSES:
 			output.append("SuperClassReferencePattern: <"); //$NON-NLS-1$

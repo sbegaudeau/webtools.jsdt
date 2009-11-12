@@ -164,18 +164,6 @@ protected StringBuffer print(StringBuffer output) {
 		case CLASS_SUFFIX :
 			output.append("MultiClassDeclarationPattern: "); //$NON-NLS-1$
 			break;
-		case CLASS_AND_INTERFACE_SUFFIX :
-			output.append("MultiClassAndInterfaceDeclarationPattern: "); //$NON-NLS-1$
-			break;
-		case CLASS_AND_ENUM_SUFFIX :
-			output.append("MultiClassAndEnumDeclarationPattern: "); //$NON-NLS-1$
-			break;
-		case INTERFACE_SUFFIX :
-			output.append("MultiInterfaceDeclarationPattern: "); //$NON-NLS-1$
-			break;
-		case INTERFACE_AND_ANNOTATION_SUFFIX :
-			output.append("MultiInterfaceAndAnnotationDeclarationPattern: "); //$NON-NLS-1$
-			break;
 		case ENUM_SUFFIX :
 			output.append("MultiEnumDeclarationPattern: "); //$NON-NLS-1$
 			break;

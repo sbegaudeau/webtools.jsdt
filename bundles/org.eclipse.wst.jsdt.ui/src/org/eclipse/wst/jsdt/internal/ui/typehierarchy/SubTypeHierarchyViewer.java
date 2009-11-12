@@ -67,7 +67,7 @@ public class SubTypeHierarchyViewer extends TypeHierarchyViewer {
 		protected final void getTypesInHierarchy(IType type, List res) {
 			ITypeHierarchy hierarchy= getHierarchy();
 			if (hierarchy != null) {
-				IType[] types= hierarchy.getSubtypes(type);
+				IType[] types= hierarchy.getSubclasses(type);
 				if (isObject(type)) {
 					for (int i= 0; i < types.length; i++) {
 						IType curr= types[i];

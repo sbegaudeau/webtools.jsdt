@@ -226,24 +226,12 @@ boolean matchSuperTypeReference(SuperTypeReferencePattern pattern, Object binary
 	if (!(binaryInfo instanceof IBinaryType)) return false;
 
 	IBinaryType type = (IBinaryType) binaryInfo;
-	if (pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_INTERFACES) {
-		char[] vmName = type.getSuperclassName();
-		if (vmName != null) {
-			char[] superclassName = convertClassFileFormat(vmName);
-			if (checkTypeName(pattern.superSimpleName, pattern.superQualification, superclassName, pattern.isCaseSensitive(), pattern.isCamelCase()))
-				return true;
-		}
-	}
-
-	if (pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_CLASSES) {
-		char[][] superInterfaces = type.getInterfaceNames();
-		if (superInterfaces != null) {
-			for (int i = 0, max = superInterfaces.length; i < max; i++) {
-				char[] superInterfaceName = convertClassFileFormat(superInterfaces[i]);
-				if (checkTypeName(pattern.superSimpleName, pattern.superQualification, superInterfaceName, pattern.isCaseSensitive(), pattern.isCamelCase()))
-					return true;
-			}
-		}
+	
+	char[] vmName = type.getSuperclassName();
+	if (vmName != null) {
+		char[] superclassName = convertClassFileFormat(vmName);
+		if (checkTypeName(pattern.superSimpleName, pattern.superQualification, superclassName, pattern.isCaseSensitive(), pattern.isCamelCase()))
+			return true;
 	}
 	return false;
 }

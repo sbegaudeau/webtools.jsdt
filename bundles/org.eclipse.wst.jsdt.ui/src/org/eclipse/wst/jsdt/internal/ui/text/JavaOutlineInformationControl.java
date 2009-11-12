@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -295,7 +295,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 					ITypeHierarchy th= getSuperTypeHierarchy(type);
 					if (th != null) {
 						List children= new ArrayList();
-						IType[] superClasses= th.getAllSupertypes(type);
+						IType[] superClasses= th.getAllSuperclasses(type);
 						children.addAll(Arrays.asList(super.getChildren(type)));
 						for (int i= 0, scLength= superClasses.length; i < scLength; i++)
 							children.addAll(Arrays.asList(super.getChildren(superClasses[i])));
@@ -715,7 +715,7 @@ public class JavaOutlineInformationControl extends AbstractInformationControl {
 			if (hierarchy == null)
 				return new IJavaScriptElement[] {fInput};
 			
-			IType[] supertypes= hierarchy.getAllSupertypes((IType)p);
+			IType[] supertypes= hierarchy.getAllSuperclasses((IType)p);
 			IJavaScriptElement[] result= new IJavaScriptElement[supertypes.length + 1];
 			result[0]= fInput;
 			System.arraycopy(supertypes, 0, result, 1, supertypes.length);

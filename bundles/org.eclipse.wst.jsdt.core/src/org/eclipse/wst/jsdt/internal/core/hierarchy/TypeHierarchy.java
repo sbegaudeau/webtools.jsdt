@@ -74,7 +74,6 @@ public class TypeHierarchy implements ITypeHierarchy, IElementChangedListener {
 
 	// type info
 	static final byte CLASS = 0x0000;
-	static final byte INTERFACE = 0x0001;
 	static final byte COMPUTED_FOR = 0x0002;
 	static final byte ROOT = 0x0004;
 
@@ -100,11 +99,9 @@ public class TypeHierarchy implements ITypeHierarchy, IElementChangedListener {
 	protected IJavaScriptUnit[] workingCopies;
 
 	protected Map classToSuperclass;
-	protected Map typeToSuperInterfaces;
 	protected Map typeToSubtypes;
 	protected Map typeFlags;
 	protected TypeVector rootClasses = new TypeVector();
-	protected ArrayList interfaces = new ArrayList(10);
 	public ArrayList missingTypes = new ArrayList(4);
 
 	protected static final IType[] NO_TYPE = new IType[0];
@@ -183,7 +180,7 @@ public TypeHierarchy(IType type, IJavaScriptUnit[] workingCopies, IJavaScriptSea
  */
 protected void initializeRegions() {
 
-	IType[] allTypes = getAllTypes();
+	IType[] allTypes = getAllClasses();
 	for (int i = 0; i < allTypes.length; i++) {
 		IType type = allTypes[i];
 		Openable o = (Openable) ((JavaElement) type).getOpenableParent();
@@ -204,24 +201,7 @@ protected void initializeRegions() {
 		checkCanceled();
 	}
 }
-/**
- * Adds all of the elements in the collection to the list if the
- * element is not already in the list.
- */
-private void addAllCheckingDuplicates(ArrayList list, IType[] collection) {
-	for (int i = 0; i < collection.length; i++) {
-		IType element = collection[i];
-		if (!list.contains(element)) {
-			list.add(element);
-		}
-	}
-}
-/**
- * Adds the type to the collection of interfaces.
- */
-protected void addInterface(IType type) {
-	this.interfaces.add(type);
-}
+
 /**
  * Adds the type to the collection of root classes
  * if the classes is not already present in the collection.
@@ -286,19 +266,7 @@ protected void cacheSuperclass(IType type, IType superclass) {
 		addSubtype(superclass, type);
 	}
 }
-/**
- * Caches all of the superinterfaces that are specified for the
- * type.
- */
-protected void cacheSuperInterfaces(IType type, IType[] superinterfaces) {
-	this.typeToSuperInterfaces.put(type, superinterfaces);
-	for (int i = 0; i < superinterfaces.length; i++) {
-		IType superinterface = superinterfaces[i];
-		if (superinterface != null) {
-			addSubtype(superinterface, type);
-		}
-	}
-}
+
 /**
  * Checks with the progress monitor to see whether the creation of the type hierarchy
  * should be canceled. Should be regularly called
@@ -349,9 +317,6 @@ public boolean contains(IType type) {
 
 	// root classes
 	if (this.rootClasses.contains(type)) return true;
-
-	// interfaces
-	if (this.interfaces.contains(type)) return true;
 
 	return false;
 }
@@ -424,14 +389,7 @@ public IType[] getAllClasses() {
 	}
 	return classes.elements();
 }
-/**
- * @see ITypeHierarchy
- */
-public IType[] getAllInterfaces() {
-	IType[] collection= new IType[this.interfaces.size()];
-	this.interfaces.toArray(collection);
-	return collection;
-}
+
 /**
  * @see ITypeHierarchy
  */
@@ -472,72 +430,6 @@ public IType[] getAllSuperclasses(IType type) {
 	}
 	return supers.elements();
 }
-/**
- * @see ITypeHierarchy
- */
-public IType[] getAllSuperInterfaces(IType type) {
-	ArrayList supers = new ArrayList();
-	if (this.typeToSuperInterfaces.get(type) == null) {
-		return NO_TYPE;
-	}
-	getAllSuperInterfaces0(type, supers);
-	IType[] superinterfaces = new IType[supers.size()];
-	supers.toArray(superinterfaces);
-	return superinterfaces;
-}
-private void getAllSuperInterfaces0(IType type, ArrayList supers) {
-	IType[] superinterfaces = (IType[]) this.typeToSuperInterfaces.get(type);
-	if (superinterfaces != null && superinterfaces.length != 0) {
-		addAllCheckingDuplicates(supers, superinterfaces);
-		for (int i = 0; i < superinterfaces.length; i++) {
-			getAllSuperInterfaces0(superinterfaces[i], supers);
-		}
-	}
-	IType superclass = (IType) this.classToSuperclass.get(type);
-	if (superclass != null) {
-		getAllSuperInterfaces0(superclass, supers);
-	}
-}
-/**
- * @see ITypeHierarchy
- */
-public IType[] getAllSupertypes(IType type) {
-	ArrayList supers = new ArrayList();
-	if (this.typeToSuperInterfaces.get(type) == null) {
-		return NO_TYPE;
-	}
-	getAllSupertypes0(type, supers);
-	IType[] supertypes = new IType[supers.size()];
-	supers.toArray(supertypes);
-	return supertypes;
-}
-private void getAllSupertypes0(IType type, ArrayList supers) {
-	IType[] superinterfaces = (IType[]) this.typeToSuperInterfaces.get(type);
-	if (superinterfaces != null && superinterfaces.length != 0) {
-		addAllCheckingDuplicates(supers, superinterfaces);
-		for (int i = 0; i < superinterfaces.length; i++) {
-			getAllSuperInterfaces0(superinterfaces[i], supers);
-		}
-	}
-	IType superclass = (IType) this.classToSuperclass.get(type);
-	if (superclass != null) {
-		supers.add(superclass);
-		getAllSupertypes0(superclass, supers);
-	}
-}
-/**
- * @see ITypeHierarchy
- */
-public IType[] getAllTypes() {
-	IType[] classes = getAllClasses();
-	int classesLength = classes.length;
-	IType[] allInterfaces = getAllInterfaces();
-	int interfacesLength = allInterfaces.length;
-	IType[] all = new IType[classesLength + interfacesLength];
-	System.arraycopy(classes, 0, all, 0, classesLength);
-	System.arraycopy(allInterfaces, 0, all, classesLength, interfacesLength);
-	return all;
-}
 
 /**
  * @see ITypeHierarchy#getCachedFlags(IType)
@@ -553,40 +445,10 @@ public int getCachedFlags(IType type) {
 /**
  * @see ITypeHierarchy
  */
-public IType[] getExtendingInterfaces(IType type) {
-	return NO_TYPE;
-}
-/**
- * @see ITypeHierarchy
- */
-public IType[] getImplementingClasses(IType type) {
-	return NO_TYPE;
-}
-/**
- * @see ITypeHierarchy
- */
 public IType[] getRootClasses() {
 	return this.rootClasses.elements();
 }
-/**
- * @see ITypeHierarchy
- */
-public IType[] getRootInterfaces() {
-	IType[] allInterfaces = getAllInterfaces();
-	IType[] roots = new IType[allInterfaces.length];
-	int rootNumber = 0;
-	for (int i = 0; i < allInterfaces.length; i++) {
-		IType[] superInterfaces = getSuperInterfaces(allInterfaces[i]);
-		if (superInterfaces == null || superInterfaces.length == 0) {
-			roots[rootNumber++] = allInterfaces[i];
-		}
-	}
-	IType[] result = new IType[rootNumber];
-	if (result.length > 0) {
-		System.arraycopy(roots, 0, result, 0, rootNumber);
-	}
-	return result;
-}
+
 /**
  * @see ITypeHierarchy
  */
@@ -597,12 +459,7 @@ public IType[] getSubclasses(IType type) {
 	else
 		return vector.elements();
 }
-/**
- * @see ITypeHierarchy
- */
-public IType[] getSubtypes(IType type) {
-	return getSubtypesForType(type);
-}
+
 /**
  * Returns an array of subtypes for the given type - will never return null.
  */
@@ -619,29 +476,7 @@ private IType[] getSubtypesForType(IType type) {
 public IType getSuperclass(IType type) {
 	return (IType) this.classToSuperclass.get(type);
 }
-/**
- * @see ITypeHierarchy
- */
-public IType[] getSuperInterfaces(IType type) {
-	IType[] types = (IType[]) this.typeToSuperInterfaces.get(type);
-	if (types == null) {
-		return NO_TYPE;
-	}
-	return types;
-}
-/**
- * @see ITypeHierarchy
- */
-public IType[] getSupertypes(IType type) {
-	IType superclass = getSuperclass(type);
-	if (superclass == null) {
-		return getSuperInterfaces(type);
-	} else {
-		TypeVector superTypes = new TypeVector(getSuperInterfaces(type));
-		superTypes.add(superclass);
-		return superTypes.elements();
-	}
-}
+
 /**
  * @see ITypeHierarchy
  */
@@ -691,7 +526,7 @@ private boolean hasSubtypeNamed(String simpleName) {
 	if (this.focusType != null && this.focusType.getElementName().equals(simpleName)) {
 		return true;
 	}
-	IType[] types = this.focusType == null ? getAllTypes() : getAllSubtypes(this.focusType);
+	IType[] types = this.focusType == null ? getAllClasses() : getAllSubtypes(this.focusType);
 	for (int i = 0, length = types.length; i < length; i++) {
 		if (types[i].getElementName().equals(simpleName)) {
 			return true;
@@ -704,7 +539,7 @@ private boolean hasSubtypeNamed(String simpleName) {
  * Returns whether one of the types in this hierarchy has the given simple name.
  */
 private boolean hasTypeNamed(String simpleName) {
-	IType[] types = this.getAllTypes();
+	IType[] types = this.getAllClasses();
 	for (int i = 0, length = types.length; i < length; i++) {
 		if (types[i].getElementName().equals(simpleName)) {
 			return true;
@@ -743,11 +578,9 @@ protected void initialize(int size) {
 	}
 	int smallSize = (size / 2);
 	this.classToSuperclass = new HashMap(size);
-	this.interfaces = new ArrayList(smallSize);
 	this.missingTypes = new ArrayList(smallSize);
 	this.rootClasses = new TypeVector();
 	this.typeToSubtypes = new HashMap(smallSize);
-	this.typeToSuperInterfaces = new HashMap(smallSize);
 	this.typeFlags = new HashMap(smallSize);
 
 	this.projectRegion = new Region();
@@ -1074,9 +907,6 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 			// read info
 			byte info = (byte)input.read();
 
-			if((info & INTERFACE) != 0) {
-				typeHierarchy.addInterface(element);
-			}
 			if((info & COMPUTED_FOR) != 0) {
 				if(!element.equals(type)) {
 					throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
@@ -1103,36 +933,6 @@ public static ITypeHierarchy load(IType type, InputStream input, WorkingCopyOwne
 				types[superClass]);
 		}
 
-		// read super interface
-		while((b = (byte)input.read()) != SEPARATOR1 && b != -1) {
-			bytes = readUntil(input, SEPARATOR3, 1);
-			bytes[0] = b;
-			int subClass = new Integer(new String(bytes)).intValue();
-
-			// read super interface
-			bytes = readUntil(input, SEPARATOR1);
-			IType[] superInterfaces = new IType[(bytes.length / 2) + 1];
-			int interfaceCount = 0;
-
-			int j = 0;
-			byte[] b2;
-			for (int i = 0; i < bytes.length; i++) {
-				if(bytes[i] == SEPARATOR2){
-					b2 = new byte[i - j];
-					System.arraycopy(bytes, j, b2, 0, i - j);
-					j = i + 1;
-					superInterfaces[interfaceCount++] = types[new Integer(new String(b2)).intValue()];
-				}
-			}
-			b2 = new byte[bytes.length - j];
-			System.arraycopy(bytes, j, b2, 0, bytes.length - j);
-			superInterfaces[interfaceCount++] = types[new Integer(new String(b2)).intValue()];
-			System.arraycopy(superInterfaces, 0, superInterfaces = new IType[interfaceCount], 0, interfaceCount);
-
-			typeHierarchy.cacheSuperInterfaces(
-				types[subClass],
-				superInterfaces);
-		}
 		if(b == -1) {
 			throw new JavaScriptModelException(new JavaModelStatus(IStatus.ERROR));
 		}
@@ -1254,27 +1054,6 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaScri
 				hashtable2.put(index, superClass);
 			}
 		}
-		types = this.typeToSuperInterfaces.entrySet().toArray();
-		for (int i = 0; i < types.length; i++) {
-			Map.Entry entry = (Map.Entry) types[i];
-			Object t = entry.getKey();
-			if(hashtable.get(t) == null) {
-				Integer index = new Integer(count++);
-				hashtable.put(t, index);
-				hashtable2.put(index, t);
-			}
-			Object[] sp = (Object[]) entry.getValue();
-			if(sp != null) {
-				for (int j = 0; j < sp.length; j++) {
-					Object superInterface = sp[j];
-					if(sp[j] != null && hashtable.get(superInterface) == null) {
-						Integer index = new Integer(count++);
-						hashtable.put(superInterface, index);
-						hashtable2.put(index, superInterface);
-					}
-				}
-			}
-		}
 		// save version of the hierarchy format
 		output.write(VERSION);
 
@@ -1314,9 +1093,6 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaScri
 			if(this.focusType != null && this.focusType.equals(t)) {
 				info |= COMPUTED_FOR;
 			}
-			if(this.interfaces.contains(t)) {
-				info |= INTERFACE;
-			}
 			if(this.rootClasses.contains(t)) {
 				info |= ROOT;
 			}
@@ -1337,25 +1113,6 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaScri
 			output.write(SEPARATOR1);
 		}
 		output.write(SEPARATOR1);
-
-		// save superinterfaces
-		types = this.typeToSuperInterfaces.entrySet().toArray();
-		for (int i = 0; i < types.length; i++) {
-			Map.Entry entry = (Map.Entry) types[i];
-			IJavaScriptElement key = (IJavaScriptElement) entry.getKey();
-			IJavaScriptElement[] values = (IJavaScriptElement[]) entry.getValue();
-
-			if(values.length > 0) {
-				output.write(((Integer)hashtable.get(key)).toString().getBytes());
-				output.write(SEPARATOR3);
-				for (int j = 0; j < values.length; j++) {
-					IJavaScriptElement value = values[j];
-					if(j != 0) output.write(SEPARATOR2);
-					output.write(((Integer)hashtable.get(value)).toString().getBytes());
-				}
-				output.write(SEPARATOR1);
-			}
-		}
 		output.write(SEPARATOR1);
 	} catch(IOException e) {
 		throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);
@@ -1432,7 +1189,7 @@ public String toString() {
  * If ascendant, shows the super types, otherwise show the sub types.
  */
 private void toString(StringBuffer buffer, IType type, int indent, boolean ascendant) {
-	IType[] types= ascendant ? getSupertypes(type) : getSubtypes(type);
+	IType[] types= ascendant ? new IType[]{getSuperclass(type)} : getSubclasses(type);
 	IJavaScriptElement[] sortedTypes = Util.sortCopy(types);
 	for (int i= 0; i < sortedTypes.length; i++) {
 		for (int j= 0; j < indent; j++) {

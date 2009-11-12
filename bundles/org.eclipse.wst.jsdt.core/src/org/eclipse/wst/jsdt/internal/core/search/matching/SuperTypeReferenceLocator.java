@@ -88,10 +88,10 @@ public int resolveLevel(Binding binding) {
 
 	ReferenceBinding type = (ReferenceBinding) binding;
 	int level = IMPOSSIBLE_MATCH;
-	if (this.pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_INTERFACES) {
-		level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
-		if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
-	}
+	
+	level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
+	if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
+	
 	return level;
 }
 public String toString() {

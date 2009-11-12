@@ -1168,7 +1168,7 @@ public class JavaProject
 					lookup.findType(
 					qualifiedName,
 					false,
-					NameLookup.ACCEPT_ALL,
+					NameLookup.ACCEPT_CLASSES,
 					true/* consider secondary types */,
 					false/* do NOT wait for indexes */,
 					false/*don't check restrictions*/,
@@ -1277,7 +1277,7 @@ public class JavaProject
 		NameLookup.Answer answer = lookup.findType(
 			fullyQualifiedName,
 			false,
-			NameLookup.ACCEPT_ALL,
+			NameLookup.ACCEPT_CLASSES,
 			considerSecondaryTypes,
 			true, /* wait for indexes (only if consider secondary types)*/
 			false/*don't check restrictions*/,
@@ -1321,7 +1321,7 @@ public class JavaProject
 			typeQualifiedName,
 			packageName,
 			false,
-			NameLookup.ACCEPT_ALL,
+			NameLookup.ACCEPT_CLASSES,
 			considerSecondaryTypes,
 			true, // wait for indexes (in case we need to consider secondary types)
 			false/*don't check restrictions*/,

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,10 +75,6 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 		return null;
 	}
 
-	boolean isErasureMatch() {
-		return (this.matchCompatibility & R_ERASURE_MATCH) != 0;
-	}
-
 	boolean isPolymorphicSearch() {
 		for (int i = 0, length = this.patterns.length; i < length; i++)
 			if (((InternalSearchPattern) this.patterns[i]).isPolymorphicSearch()) return true;
@@ -90,8 +86,7 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 	 * @return true if one at least of the stored pattern has signatures.
 	 */
 	public final boolean hasSignatures() {
-		boolean isErasureMatch = isErasureMatch();
-		for (int i = 0, length = this.patterns.length; i < length && !isErasureMatch; i++) {
+		for (int i = 0, length = this.patterns.length; i < length; i++) {
 			if (((JavaSearchPattern) this.patterns[i]).hasSignatures()) return true;
 		}
 		return false;

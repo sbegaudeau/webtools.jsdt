@@ -369,7 +369,7 @@ public final class ContentAssistHistory {
 			ITypeHierarchy hierarchy= rhs.newSupertypeHierarchy(getProgressMonitor());
 			if (hierarchy.contains(lhs)) {
 				// TODO remember for every member of the LHS hierarchy or not? Yes for now.
-				IType[] allLHSides= hierarchy.getAllSupertypes(lhs);
+				IType[] allLHSides= hierarchy.getAllSuperclasses(lhs);
 				for (int i= 0; i < allLHSides.length; i++)
 					rememberInternal(allLHSides[i], rhs);
 				rememberInternal(lhs, rhs);

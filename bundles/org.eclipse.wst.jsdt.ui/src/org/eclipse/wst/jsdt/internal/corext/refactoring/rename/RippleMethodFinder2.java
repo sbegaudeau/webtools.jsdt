@@ -279,7 +279,7 @@ public class RippleMethodFinder2 {
 
 	private void findAllDeclarations(IProgressMonitor monitor, WorkingCopyOwner owner) throws CoreException {
 		fDeclarations= new ArrayList();
-		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(fMethod, IJavaScriptSearchConstants.DECLARATIONS | IJavaScriptSearchConstants.IGNORE_DECLARING_TYPE | IJavaScriptSearchConstants.IGNORE_RETURN_TYPE, SearchPattern.R_ERASURE_MATCH | SearchPattern.R_CASE_SENSITIVE));
+		final RefactoringSearchEngine2 engine= new RefactoringSearchEngine2(SearchPattern.createPattern(fMethod, IJavaScriptSearchConstants.DECLARATIONS | IJavaScriptSearchConstants.IGNORE_DECLARING_TYPE | IJavaScriptSearchConstants.IGNORE_RETURN_TYPE, SearchPattern.R_CASE_SENSITIVE));
 		if (owner != null)
 			engine.setOwner(owner);
 		engine.setScope(RefactoringScopeFactory.createRelatedProjectsScope(fMethod.getJavaScriptProject(), IJavaScriptSearchScope.SOURCES | IJavaScriptSearchScope.APPLICATION_LIBRARIES | IJavaScriptSearchScope.SYSTEM_LIBRARIES));
@@ -334,9 +334,8 @@ public class RippleMethodFinder2 {
 	}
 
 	private void uniteWithSupertypes(IType anchor, IType type) throws JavaScriptModelException {
-		IType[] supertypes= fHierarchy.getSupertypes(type);
-		for (int i= 0; i < supertypes.length; i++) {
-			IType supertype= supertypes[i];
+		IType supertype= fHierarchy.getSuperclass(type);
+		if(supertype != null) {
 			IType superRep= fUnionFind.find(supertype);
 			if (superRep == null) {
 				//Type doesn't declare method, but maybe supertypes?
