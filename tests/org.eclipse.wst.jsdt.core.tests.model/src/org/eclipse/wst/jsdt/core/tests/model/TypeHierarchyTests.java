@@ -277,7 +277,7 @@ public void testAnonymousType06() throws JavaScriptModelException {
 public void testAnonymousType07() throws CoreException {
 	IType type = getClassFile("TypeHierarchy","myLib.jar", "my.pkg", "X.class").getType();
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] subtypes = hierarchy.getSubtypes(type);
+	IType[] subtypes = hierarchy.getSubclasses(type);
 	assertEquals("Unexpected key", "Lmy/pkg/Y$1;", subtypes.length < 1 ? null : subtypes[0].getKey());
 }
 /*
@@ -739,7 +739,7 @@ public void testGeneric06() throws CoreException {
 	getJavaProject("TypeHierarcht15").close();
 	IType type = getClassFile("TypeHierarchy15","lib15.jar", "util", "AbstractList.class").getType();
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] subtypes = hierarchy.getSubtypes(type);
+	IType[] subtypes = hierarchy.getSubclasses(type);
 	assertEquals("Unexpected key", "Lutil/Map<TK;TV;>;", subtypes.length < 2 ? null : subtypes[1].getKey());
 }
 /*
@@ -926,7 +926,7 @@ public void testGetAllSuperclassesFromBinary() throws JavaScriptModelException {
 	assertTrue("Invalid type for class file \""+fileName+"\"", javaElement instanceof IClassFile);
 	IType type = ((IClassFile) javaElement).getType();
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null); // it works when we use newTypeHierarchy(null)
-	IType[] types = hierarchy.getAllSupertypes(type);
+	IType[] types = hierarchy.getAllSuperclasses(type);
 	assertTypesEqual(
 		"Unexpected all super classes of X53095", 
 		"java.lang.RuntimeException\n" +
@@ -945,7 +945,7 @@ public void testGetAllSuperclassesFromBinary2() throws JavaScriptModelException 
 	IClassFile cf = getClassFile("TypeHierarchy", "test54043.jar", "p54043", "X54043.class");
 	IType type = cf.getType();
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getAllSupertypes(type);
+	IType[] types = hierarchy.getAllSuperclasses(type);
 	assertTypesEqual(
 		"Unexpected all super classes of X54043", 
 		"java.lang.RuntimeException\n" +
@@ -962,7 +962,7 @@ public void testGetAllSuperclassesFromBinary2() throws JavaScriptModelException 
 public void testGetAllSupertypes() throws JavaScriptModelException {
 	IType type = getCompilationUnit("TypeHierarchy", "src", "p1", "Z.js").getType("Z");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getAllSupertypes(type);
+	IType[] types = hierarchy.getAllSuperclasses(type);
 	assertTypesEqual(
 		"Unexpected all super types of Z", 
 		"java.lang.Object\n" + 
@@ -980,7 +980,7 @@ public void testGetAllSupertypes() throws JavaScriptModelException {
 public void testGetAllSupertypes2() throws JavaScriptModelException {
 	IType type = getCompilationUnit("TypeHierarchy", "src", "p3", "B.js").getType("B");
 	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	IType[] types = hierarchy.getAllSupertypes(type);
+	IType[] types = hierarchy.getAllSuperclasses(type);
 	assertTypesEqual(
 		"Unexpected all super types of B", 
 		"java.lang.Object\n" +
@@ -1005,7 +1005,7 @@ public void testGetAllTypes() throws JavaScriptModelException {
 		"p1.X\n" + 
 		"p1.Y\n" + 
 		"p1.Z\n",
-		hierarchy.getAllTypes()
+		hierarchy.getAllClasses()
 	);
 }
 /**
@@ -1056,7 +1056,7 @@ public void testGetSubclasses() throws JavaScriptModelException {
  */
 public void testGetSubtypes() throws JavaScriptModelException {
 	IType type = getClassFile("TypeHierarchy", "lib.jar", "binary", "X.class").getType();
-	IType[] types = this.typeHierarchy.getSubtypes(type);
+	IType[] types = this.typeHierarchy.getSubclasses(type);
 	this.assertTypesEqual(
 		"Unexpected subtypes of binary.X",
 		"binary.Y\n",
@@ -1064,7 +1064,7 @@ public void testGetSubtypes() throws JavaScriptModelException {
 	);
 	
 	type = getClassFile("TypeHierarchy", "lib.jar", "binary", "I.class").getType();
-	types = this.typeHierarchy.getSubtypes(type);
+	types = this.typeHierarchy.getSubclasses(type);
 	this.assertTypesEqual(
 		"Unexpected subtypes of binary.I",
 		"binary.X\n" + 
@@ -1093,7 +1093,7 @@ public void testGetSuperclassInRegion() throws JavaScriptModelException {
  */
 public void testGetSupertypesInRegion() throws JavaScriptModelException {
 	IType type = getClassFile("TypeHierarchy", "lib.jar", "binary", "Y.class").getType();
-	IType[] superTypes = this.typeHierarchy.getSupertypes(type);
+	IType[] superTypes = new IType[]{this.typeHierarchy.getSuperclass(type)};
 	assertTypesEqual(
 		"Unexpected super types of Y",
 		"binary.X\n",
@@ -1109,7 +1109,7 @@ public void testGetSupertypesWithProjectRegion() throws JavaScriptModelException
 	region.add(project);
 	IType type = getClassFile("TypeHierarchy", "lib.jar", "binary", "Y.class").getType();
 	ITypeHierarchy hierarchy = project.newTypeHierarchy(type, region, null);
-	IType[] superTypes = hierarchy.getSupertypes(type);
+	IType[] superTypes = new IType[]{hierarchy.getSuperclass(type)};
 	assertTypesEqual(
 		"Unexpected super types of Y",
 		"binary.X\n",
@@ -1312,7 +1312,7 @@ public void testPotentialSubtypeNotInClasspath() throws JavaScriptModelException
 	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
-	IType[] types = h.getSubtypes(type);
+	IType[] types = h.getSubclasses(type);
 	this.assertTypesEqual(
 		"Unexpected sub types of X",
 		"p1.Y\n",
@@ -1334,7 +1334,7 @@ public void testRegion1() throws JavaScriptModelException {
 		"q1.X\n" +
 		"q1.Z\n" +
 		"q2.Y\n",
-		h.getAllTypes()
+		h.getAllClasses()
 	);
 }
 /*
@@ -1351,7 +1351,7 @@ public void testRegion2() throws JavaScriptModelException {
 		"java.lang.Object\n" + 
 		"q1.X\n" +
 		"q2.Y\n",
-		h.getAllTypes()
+		h.getAllClasses()
 	);
 }
 /*
@@ -1369,7 +1369,7 @@ public void testRegion3() throws JavaScriptModelException {
 		"p9.X\n" + 
 		"p9.X$1\n" + 
 		"p9.X$Y\n",
-		h.getAllTypes()
+		h.getAllClasses()
 	);
 }
 public void testRegion4() throws CoreException {
@@ -1424,7 +1424,7 @@ public void testRegion4() throws CoreException {
  */
 public void testRegion_Bug150289() throws JavaScriptModelException {
 	ITypeHierarchy h = this.currentProject.newTypeHierarchy(JavaScriptCore.newRegion(), null);
-	assertEquals("Unexpected number of types in hierarchy", 0, h.getAllTypes().length);
+	assertEquals("Unexpected number of types in hierarchy", 0, h.getAllClasses().length);
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=144976
 public void testResilienceToMissingBinaries() throws CoreException {
@@ -1454,7 +1454,7 @@ public void testResilienceToMissingBinaries() throws CoreException {
 			);
 		IType type = getCompilationUnit("P", "src", "tools", "DisplayTestResult2.js").getType("DisplayTestResult2");		
 		ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
-		assertNotNull(hierarchy.getSupertypes(type));
+		assertNotNull(hierarchy.getSuperclass(type));
 		assertHierarchyEquals(
 				"Focus: DisplayTestResult2 [in DisplayTestResult2.java [in tools [in src [in P]]]]\n" + 
 				"Super types:\n" + 
@@ -1612,7 +1612,7 @@ public void testSupertypeHierarchyGetSubclasses() throws JavaScriptModelExceptio
 public void testSupertypeHierarchyGetSubtypes() throws JavaScriptModelException {
 	IType type = getClassFile("TypeHierarchy", getSystemJsPathString(), "java.lang", "Object.class").getType();
 	ITypeHierarchy hierarchy = type.newSupertypeHierarchy(null);
-	IType[] types = hierarchy.getSubtypes(type);
+	IType[] types = hierarchy.getSubclasses(type);
 	assertTypesEqual(
 		"Unexpected subtypes of Object", 
 		"", 
@@ -1621,7 +1621,7 @@ public void testSupertypeHierarchyGetSubtypes() throws JavaScriptModelException 
 	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchy", "src", "p1", "Y.js");
 	type = cu.getType("Y");
 	hierarchy = type.newSupertypeHierarchy(null);
-	types = hierarchy.getSubtypes(type);
+	types = hierarchy.getSubclasses(type);
 	assertTypesEqual(
 		"Unexpected subtypes of Y", 
 		"", 

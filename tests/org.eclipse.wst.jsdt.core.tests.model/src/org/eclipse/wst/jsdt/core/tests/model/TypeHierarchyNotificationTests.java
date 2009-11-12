@@ -210,7 +210,7 @@ public void testAddCompilationUnit2() throws CoreException {
 		this.assertOneChange(h);
 		h.refresh(null);
 		IType eE = getCompilationUnit("TypeHierarchyNotification", "src", "e", "E.js").getType("E");
-		IType[] subtypes = h.getSubtypes(eE);
+		IType[] subtypes = h.getSubclasses(eE);
 		assertTrue("Should be one subtype of e.E", subtypes.length == 1);
 		assertEquals("Subtype of e.E should be p.Z2", newCU2.getType("Z2"), subtypes[0]);
 	} finally {
@@ -247,7 +247,7 @@ public void testAddCompilationUnit3() throws CoreException {
 		this.assertOneChange(h);
 		h.refresh(null);
 		IType dD = getCompilationUnit("TypeHierarchyNotification", "src", "d", "D.js").getType("D");
-		IType[] subtypes = h.getSubtypes(dD);
+		IType[] subtypes = h.getSubclasses(dD);
 		assertTrue("Should be one subtype of d.D", subtypes.length == 1);
 		assertEquals("Subtype of d.D should be p.Z3.InnerZ", newCU3.getType("Z3").getType("InnerZ"), subtypes[0]);
 	} finally {
@@ -305,7 +305,7 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
 			this.assertOneChange(h);
 			h.refresh(null);
 			IType eE = getCompilationUnit("TypeHierarchyNotification", "src", "e", "E.js").getType("E");
-			IType[] subtypes = h.getSubtypes(eE);
+			IType[] subtypes = h.getSubclasses(eE);
 			assertTrue("Should be one subtype of e.E", subtypes.length == 1);
 			assertEquals("Subtype of e.E should be p.Z2", newCU2.getType("Z2"), subtypes[0]);
 		} finally {

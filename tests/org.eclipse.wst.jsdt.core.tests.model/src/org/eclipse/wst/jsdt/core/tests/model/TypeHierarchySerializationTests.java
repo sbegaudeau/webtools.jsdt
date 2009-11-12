@@ -49,8 +49,8 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 	IType type2 = loaded.getType();
 	assertEquals("["+focus+"] focus are not the same", type1, type2);
 	
-	IType[] allTypes1 = stored.getAllTypes();
-	IType[] allTypes2 = loaded.getAllTypes();
+	IType[] allTypes1 = stored.getAllClasses();
+	IType[] allTypes2 = loaded.getAllClasses();
 	compare("["+focus+"] all types are not the same", allTypes1, allTypes2);
 	
 	IType[] allClasses1 = stored.getAllClasses();
@@ -76,22 +76,17 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 		IType superclass2 = loaded.getSuperclass(aType);
 		assertEquals("["+focus+"] superclass are not the same for "+aType.getFullyQualifiedName(), superclass1, superclass2);
 		
-		IType[] superTypes1 = stored.getSupertypes(aType);
-		IType[] superTypes2 = loaded.getSupertypes(aType);
+		IType[] superTypes1 = new IType[]{stored.getSuperclass(aType)};
+		IType[] superTypes2 = new IType[]{loaded.getSuperclass(aType)};
 		compare("["+focus+"] all super types are not the same for "+aType.getFullyQualifiedName(), superTypes1, superTypes2);
 		
 		IType[] subclasses1 = stored.getSubclasses(aType);
 		IType[] subclasses2 = loaded.getSubclasses(aType);
 		compare("["+focus+"] all subclasses are not the same for "+aType.getFullyQualifiedName(), subclasses1, subclasses2);
 		
-		IType[] subtypes1 = stored.getSubtypes(aType);
-		IType[] subtypes2 = loaded.getSubtypes(aType);
+		IType[] subtypes1 = stored.getSubclasses(aType);
+		IType[] subtypes2 = loaded.getSubclasses(aType);
 		compare("["+focus+"] all subtypes are not the same for "+aType.getFullyQualifiedName(), subtypes1, subtypes2);
-		
-		IType[] implementingClasses1 = stored.getImplementingClasses(aType);
-		IType[] implementingClasses2 = loaded.getImplementingClasses(aType);
-		compare("["+focus+"] all implemeting classes are not the same for "+aType.getFullyQualifiedName(), implementingClasses1, implementingClasses2);
-		
 	}
 }
 private static void compare(String msg, Object[] types1, Object[] types2) {

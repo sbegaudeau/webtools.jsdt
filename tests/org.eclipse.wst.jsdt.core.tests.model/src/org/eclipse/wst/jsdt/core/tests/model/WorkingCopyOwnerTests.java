@@ -854,7 +854,7 @@ public class WorkingCopyOwnerTests extends ModifyingResourceTests {
 			this.workingCopy = getCompilationUnit("/P/Y.js").getWorkingCopy(owner, null/*no progress*/);
 			IType focus = getCompilationUnit("/P/X.js").getType("X");
 			ITypeHierarchy hierarchy = focus.newTypeHierarchy(owner, null/*no progress*/);
-			IType[] subtypes = hierarchy.getSubtypes(focus);
+			IType[] subtypes = hierarchy.getSubclasses(focus);
 			assertTypesEqual(
 				"Unexpected types", 
 				"Y\n",

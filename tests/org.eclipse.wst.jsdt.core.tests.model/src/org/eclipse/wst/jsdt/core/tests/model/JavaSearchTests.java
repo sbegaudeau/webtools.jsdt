@@ -1635,30 +1635,6 @@ public void testMethodReference15() throws CoreException { // was testMethodRefe
 		"src/s4/X.java void s4.X.fred() [foo()] OUTSIDE_JAVADOC",
 		this.resultCollector);
 }
-/*
- * Generic method reference.
- */
-public void testMethodReference16() throws CoreException {
-	IType type = getCompilationUnit("JavaSearch15/src/p2/X.js").getType("X");
-	IFunction method = type.getFunction("foo", new String[] {"QE;"});
-	search(method, REFERENCES, ERASURE_RULE, getJavaSearchScope15(), resultCollector);
-	assertSearchResults(
-		"src/p2/Y.java void p2.Y.bar() [foo(this)]",
-		this.resultCollector);
-}
-/**
- * Bug 111416: [search] wrong potential matches on a static method open
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=111416"
- */
-public void testMethodReference17() throws CoreException {
-	IType type = getCompilationUnit("JavaSearch/src/b111416/X.js").getType("X");
-	IFunction method = type.getFunction("open", new String[] {"QString;"});
-	resultCollector.showAccuracy = true;
-	search(method, REFERENCES, ERASURE_RULE, getJavaSearchScope(), resultCollector);
-	assertSearchResults(
-		"src/b111416/X.java void b111416.X.foo() [open(\"\")] EXACT_MATCH",
-		this.resultCollector);
-}
 /**
  * OrPattern test.
  * (regression test for bug 5862 search : too many matches on search with OrPattern)

@@ -38,8 +38,6 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 	protected static boolean COPY_DIRS = true;
 	protected static int EXACT_RULE = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
 	protected static int EQUIVALENT_RULE = EXACT_RULE | SearchPattern.R_EQUIVALENT_MATCH;
-	protected static int ERASURE_RULE = EXACT_RULE | SearchPattern.R_ERASURE_MATCH;
-	protected static int RAW_RULE = EXACT_RULE | SearchPattern.R_ERASURE_MATCH | SearchPattern.R_EQUIVALENT_MATCH;
 
 //	IJavaScriptUnit[] workingCopies;
 //	boolean discard;
@@ -164,8 +162,6 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 								line.append("EXACT_");
 							} else if (match.isEquivalent()) {
 								line.append("EQUIVALENT_");
-							} else if (match.isErasure()) {
-								line.append("ERASURE_");
 							} else {
 								line.append("INVALID_RULE_");
 							}
