@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -106,6 +106,24 @@ public class SearchableEnvironment implements INameEnvironment,
 		.getJavaModelManager()
 		.getWorkingCopies(owner, true/* add primary WCs */));
 }
+	private static int convertSearchFilterToModelFilter(int searchFilter) {
+		switch (searchFilter) {
+			case IJavaScriptSearchConstants.CLASS:
+				return NameLookup.ACCEPT_CLASSES;
+			case IJavaScriptSearchConstants.INTERFACE:
+				return NameLookup.ACCEPT_INTERFACES;
+			case IJavaScriptSearchConstants.ENUM:
+				return NameLookup.ACCEPT_ENUMS;
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
+				return NameLookup.ACCEPT_ANNOTATIONS;
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
+				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
+				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES;
+			default:
+				return NameLookup.ACCEPT_ALL;
+		}
+	}
 
 	/**
 	 * Returns the given type in the the given package if it exists, otherwise
@@ -115,7 +133,7 @@ public class SearchableEnvironment implements INameEnvironment,
 		if (packageName == null)
 			packageName = IPackageFragment.DEFAULT_PACKAGE_NAME;
 		NameLookup.Answer answer = this.nameLookup.findType(typeName,
-				packageName, false/* exact match */, NameLookup.ACCEPT_CLASSES,
+				packageName, false/* exact match */, NameLookup.ACCEPT_ALL,
 				this.checkAccessRestrictions);
 		if (answer != null) {
 			// construct name env answer
@@ -194,7 +212,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				packageName,
 				type,
 				false/* exact match */,
-				NameLookup.ACCEPT_CLASSES,
+				NameLookup.ACCEPT_ALL,
 				this.checkAccessRestrictions,  returnMultiple,  excludePath);
 		if (answer != null && answer.element!=null) {
 			if (answer.element instanceof IJavaScriptElement)
@@ -261,7 +279,7 @@ public class SearchableEnvironment implements INameEnvironment,
 					findExactTypes(
 						new String(name),
 						storage,
-						NameLookup.ACCEPT_CLASSES);
+						convertSearchFilterToModelFilter(searchFor));
 					return;
 				}
 				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath().toString();
@@ -320,13 +338,13 @@ public class SearchableEnvironment implements INameEnvironment,
 				findExactTypes(
 					new String(name),
 					storage,
-					NameLookup.ACCEPT_CLASSES);
+					convertSearchFilterToModelFilter(searchFor));
 			}
 		} catch (JavaScriptModelException e) {
 			findExactTypes(
 				new String(name),
 				storage,
-				NameLookup.ACCEPT_CLASSES);
+				convertSearchFilterToModelFilter(searchFor));
 		}
 	}
 
@@ -416,7 +434,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				if (!(this.unitToSkip instanceof IJavaScriptElement)) {
 					// revert to model investigation
 					findTypes(new String(prefix), storage,
-							NameLookup.ACCEPT_CLASSES);
+							convertSearchFilterToModelFilter(searchFor));
 					return;
 				}
 				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath()
@@ -502,10 +520,10 @@ public class SearchableEnvironment implements INameEnvironment,
 						typeRequestor, CANCEL_IF_NOT_READY_TO_SEARCH,
 						progressMonitor);
 			} catch (OperationCanceledException e) {
-				findTypes(new String(prefix), storage, NameLookup.ACCEPT_CLASSES);
+				findTypes(new String(prefix), storage, convertSearchFilterToModelFilter(searchFor));
 			}
 		} catch (JavaScriptModelException e) {
-			findTypes(new String(prefix), storage, NameLookup.ACCEPT_CLASSES);
+			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}
 
@@ -540,7 +558,7 @@ public class SearchableEnvironment implements INameEnvironment,
 				if (!(this.unitToSkip instanceof IJavaScriptElement)) {
 					// revert to model investigation
 					findBindings(new String(prefix),bindingType, storage,
-							NameLookup.ACCEPT_CLASSES);
+							NameLookup.ACCEPT_ALL);
 					return;
 				}
 				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath()
@@ -650,10 +668,10 @@ public class SearchableEnvironment implements INameEnvironment,
 						true,
 						progressMonitor);
 			} catch (OperationCanceledException e) {
-				findBindings(new String(prefix),bindingType, storage, NameLookup.ACCEPT_CLASSES);
+				findBindings(new String(prefix),bindingType, storage, NameLookup.ACCEPT_ALL);
 			}
 		} catch (JavaScriptModelException e) {
-			findTypes(new String(prefix), storage, NameLookup.ACCEPT_CLASSES);
+			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}
 

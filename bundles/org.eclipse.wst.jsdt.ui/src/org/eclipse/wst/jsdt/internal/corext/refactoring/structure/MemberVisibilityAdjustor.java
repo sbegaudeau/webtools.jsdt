@@ -1245,8 +1245,8 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType type= hierarchy.getSuperclass(referencing);
-			IType superType= type;
+			final IType superType= hierarchy.getSuperclass(referencing);
+			
 			if (superType.equals(referenced.getDeclaringType())) {
 				keyword= ModifierKeyword.PROTECTED_KEYWORD;
 				return keyword;
@@ -1276,9 +1276,8 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType type= hierarchy.getSuperclass(referencing);
-			IType superType= type;
-		
+			final IType superType= hierarchy.getSuperclass(referencing);
+
 			if (superType.equals(referenced.getDeclaringType())) {
 				keyword= ModifierKeyword.PROTECTED_KEYWORD;
 				return keyword;
@@ -1312,9 +1311,8 @@ public final class MemberVisibilityAdjustor {
 			keyword= ModifierKeyword.PRIVATE_KEYWORD;
 		else {
 			final ITypeHierarchy hierarchy= getTypeHierarchy(referencing, new SubProgressMonitor(monitor, 1));
-			final IType type= hierarchy.getSuperclass(referencing);
-			IType superType= type;
-		
+			final IType superType = hierarchy.getSuperclass(referencing);
+			
 			if (superType.equals(referenced)) {
 				keyword= null;
 				return keyword;

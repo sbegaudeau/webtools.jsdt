@@ -253,6 +253,16 @@ public class TypeInfoFilter {
 		switch (fElementKind) {
 			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
+				return false;
+			case IJavaScriptSearchConstants.INTERFACE:
+				return false;
+			case IJavaScriptSearchConstants.ENUM:
+				return false;
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
+				return modifiers == 0;
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
+				return modifiers == 0;
 		}
 		return false;
 	}

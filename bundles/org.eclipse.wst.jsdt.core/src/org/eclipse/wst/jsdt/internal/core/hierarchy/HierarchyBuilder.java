@@ -132,7 +132,7 @@ public abstract class HierarchyBuilder {
 	}
 	/**
 	 * Connect the supplied type to its superclass.
-	 * The superclass is the identical binary or source types as
+	 * The superclass are the identical binary or source types as
 	 * supplied by the name environment.
 	 */
 	public void connect(
@@ -208,13 +208,23 @@ public abstract class HierarchyBuilder {
 	 * Looks up and returns a handle for the given binary info.
 	 */
 	protected IType lookupBinaryHandle(ISourceType typeInfo) {
+		int flag;
 		String qualifiedName;
+		switch (TypeDeclaration.kind(typeInfo.getModifiers())) {
+			case TypeDeclaration.CLASS_DECL :
+				flag = NameLookup.ACCEPT_CLASSES;
+				break;
+			default:
+				//case IGenericType.ANNOTATION :
+				flag = NameLookup.ACCEPT_ANNOTATIONS;
+				break;
+		}
 		char[] bName = typeInfo.getName();
 		qualifiedName = new String(ClassFile.translatedName(bName));
 		if (qualifiedName.equals(this.focusQualifiedName)) return getType();
 		NameLookup.Answer answer = this.nameLookup.findType(qualifiedName,
 			false,
-			NameLookup.ACCEPT_CLASSES,
+			flag,
 			true/* consider secondary types */,
 			false/* do NOT wait for indexes */,
 			false/*don't check restrictions*/,

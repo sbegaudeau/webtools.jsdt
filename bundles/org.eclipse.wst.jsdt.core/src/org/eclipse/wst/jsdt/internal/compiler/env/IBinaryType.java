@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.env;
 
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 public interface IBinaryType extends IGenericType {
 
-	char[][] NoInterface = CharOperation.NO_CHAR_CHAR;
 	IBinaryNestedType[] NoNestedType = new IBinaryNestedType[0];
 	IBinaryField[] NoField = new IBinaryField[0];
 	IBinaryMethod[] NoMethod = new IBinaryMethod[0];

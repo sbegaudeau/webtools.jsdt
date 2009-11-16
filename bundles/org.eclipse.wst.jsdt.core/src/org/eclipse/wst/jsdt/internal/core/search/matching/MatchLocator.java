@@ -1672,6 +1672,8 @@ protected void report(SearchMatch match) throws CoreException {
 			System.out.print("EXACT"); //$NON-NLS-1$
 		} else if (match.isEquivalent()) {
 			System.out.print("EQUIVALENT"); //$NON-NLS-1$
+		} else if (match.isErasure()) {
+			System.out.print("ERASURE"); //$NON-NLS-1$
 		} else {
 			System.out.print("INVALID RULE"); //$NON-NLS-1$
 		}
@@ -1743,38 +1745,41 @@ protected void reportAccurateParameterizedMethodReference(SearchMatch match, AST
 	// If there's type arguments, look for end (ie. char '>') of last one.
 	int start = match.getOffset();
 	if (typeArguments != null && typeArguments.length > 0) {
-		
-		// Initialize scanner
-		Scanner scanner = this.parser.scanner;
-		char[] source = this.currentPossibleMatch.getContents();
-		scanner.setSource(source);
+		boolean isErasureMatch= (pattern instanceof OrPattern) ? ((OrPattern)pattern).isErasureMatch() : ((JavaSearchPattern)pattern).isErasureMatch();
+		if (!isErasureMatch) {
 
-		// Search previous opening '<'
-		start = typeArguments[0].sourceStart;
-		int end = statement.sourceEnd;
-		scanner.resetTo(start, end);
-		int lineStart = start;
-		try {
-			linesUp: while (true) {
-				while (scanner.source[scanner.currentPosition] != '\n') {
-					scanner.currentPosition--;
-					if (scanner.currentPosition == 0) break linesUp;
-				}
-				lineStart = scanner.currentPosition+1;
-				scanner.resetTo(lineStart, end);
-				while (!scanner.atEnd()) {
-					if (scanner.getNextToken() == TerminalTokens.TokenNameLESS) {
-						start = scanner.getCurrentTokenStartPosition();
-						break linesUp;
+			// Initialize scanner
+			Scanner scanner = this.parser.scanner;
+			char[] source = this.currentPossibleMatch.getContents();
+			scanner.setSource(source);
+
+			// Search previous opening '<'
+			start = typeArguments[0].sourceStart;
+			int end = statement.sourceEnd;
+			scanner.resetTo(start, end);
+			int lineStart = start;
+			try {
+				linesUp: while (true) {
+					while (scanner.source[scanner.currentPosition] != '\n') {
+						scanner.currentPosition--;
+						if (scanner.currentPosition == 0) break linesUp;
 					}
+					lineStart = scanner.currentPosition+1;
+					scanner.resetTo(lineStart, end);
+					while (!scanner.atEnd()) {
+						if (scanner.getNextToken() == TerminalTokens.TokenNameLESS) {
+							start = scanner.getCurrentTokenStartPosition();
+							break linesUp;
+						}
+					}
+					end = lineStart - 2;
+					scanner.currentPosition = end;
 				}
-				end = lineStart - 2;
-				scanner.currentPosition = end;
 			}
-		}
-		catch (InvalidInputException ex) {
-			// give up
-		}
+			catch (InvalidInputException ex) {
+				// give up
+			}
+	 	}
 	}
 
 	// Report match
@@ -1801,8 +1806,9 @@ protected void reportAccurateParameterizedTypeReference(SearchMatch match, TypeR
 		char[] source = this.currentPossibleMatch.getContents();
 		scanner.setSource(source);
 
+		boolean shouldMatchErasure= (pattern instanceof OrPattern) ? ((OrPattern)pattern).isErasureMatch() : ((JavaSearchPattern)pattern).isErasureMatch();
 		boolean hasSignatures = (pattern instanceof OrPattern) ? ((OrPattern)pattern).hasSignatures() : ((JavaSearchPattern)pattern).hasSignatures();
-		if (!hasSignatures) {
+		if (shouldMatchErasure || !hasSignatures) {
 			// if pattern is erasure only, then select the end of the reference
 			if (typeRef instanceof QualifiedTypeReference && index >= 0) {
 				long[] positions = ((QualifiedTypeReference) typeRef).sourcePositions;

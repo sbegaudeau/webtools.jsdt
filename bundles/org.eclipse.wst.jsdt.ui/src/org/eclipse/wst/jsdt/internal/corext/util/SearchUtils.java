@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@ public class SearchUtils {
      * Constant for use as matchRule in {@link SearchPattern#createPattern(IJavaScriptElement, int, int)}
      * to get search behavior as of 3.1M3 (all generic instantiations are found).
      */
-    public final static int GENERICS_AGNOSTIC_MATCH_RULE= SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
+    public final static int GENERICS_AGNOSTIC_MATCH_RULE= SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE | SearchPattern.R_ERASURE_MATCH;
 
     /**
      * Returns whether the given pattern is a camel case pattern or not.

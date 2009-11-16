@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,7 +62,8 @@ public class SearchMatch {
 
 	// store the rule used while reporting the match
 	private final static int ALL_GENERIC_FLAVORS = SearchPattern.R_FULL_MATCH |
-								SearchPattern.R_EQUIVALENT_MATCH;
+								SearchPattern.R_EQUIVALENT_MATCH |
+								SearchPattern.R_ERASURE_MATCH;
 	private int rule = ALL_GENERIC_FLAVORS;
 
 	// store other necessary information
@@ -181,7 +182,20 @@ public class SearchMatch {
 	 *  
 	 */
 	public final boolean isEquivalent() {
-		return (this.rule & SearchPattern.R_EQUIVALENT_MATCH) != 0;
+		return isErasure() && (this.rule & SearchPattern.R_EQUIVALENT_MATCH) != 0;
+	}
+
+	/**
+	 * Returns whether match element only has same erasure than searched pattern or not.
+	 * Note that this is always true for both generic and non-generic element as soon
+	 * as the accuracy is accurate.
+	 *
+	 * @return <code>true</code> if match element has same erasure
+	 * 				<code>false</code> otherwise
+	 *  
+	 */
+	public final boolean isErasure() {
+		return (this.rule & SearchPattern.R_ERASURE_MATCH) != 0;
 	}
 
 	/**
@@ -347,6 +361,8 @@ public class SearchMatch {
 			buffer.append("EXACT"); //$NON-NLS-1$
 		} else if ((this.rule & SearchPattern.R_EQUIVALENT_MATCH) != 0) {
 			buffer.append("EQUIVALENT"); //$NON-NLS-1$
+		} else if ((this.rule & SearchPattern.R_ERASURE_MATCH) != 0) {
+			buffer.append("ERASURE"); //$NON-NLS-1$
 		}
 		buffer.append("\n  raw="); //$NON-NLS-1$
 		buffer.append(this.raw);

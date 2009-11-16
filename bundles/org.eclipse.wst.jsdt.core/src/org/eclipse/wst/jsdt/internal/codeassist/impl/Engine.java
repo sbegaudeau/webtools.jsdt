@@ -235,7 +235,7 @@ public abstract class Engine implements ITypeRequestor {
 									String.valueOf(typeName),
 									String.valueOf(conflictingImportName),
 									false,
-									NameLookup.ACCEPT_CLASSES,
+									NameLookup.ACCEPT_ALL,
 									false/*don't check restrictions*/) != null) {
 								return true;
 							}

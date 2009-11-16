@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 
 public abstract class HierarchyType extends TType {
 	private HierarchyType fSuperclass;
-	private HierarchyType[] fInterfaces;
 	private IType fJavaElementType;
 	
 	protected HierarchyType(TypeEnvironment environment) {
@@ -39,10 +38,6 @@ public abstract class HierarchyType extends TType {
 	
 	public TType getSuperclass() {
 		return fSuperclass;
-	}
-	
-	public TType[] getInterfaces() {
-		return fInterfaces;
 	}
 	
 	public IType getJavaElementType() {
@@ -67,10 +62,6 @@ public abstract class HierarchyType extends TType {
 	private boolean doIsSubType(HierarchyType other) {
 		if (fSuperclass != null && (other.isTypeEquivalentTo(fSuperclass) || fSuperclass.doIsSubType(other)))
 			return true;
-		for (int i= 0; i < fInterfaces.length; i++) {
-			if (other.isTypeEquivalentTo(fInterfaces[i]) || fInterfaces[i].doIsSubType(other))
-				return true;
-		}
 		return false;
 	}
 	

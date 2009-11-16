@@ -82,7 +82,6 @@ public char[] getGenericSignature() {
 	}
 	return this.genericSignature;
 }
-
 /**
  * Answer the receiver's nested types or null if the array is empty.
  *
@@ -160,8 +159,6 @@ public void recordSuperType(char[] superTypeName, char[] superQualification, cha
 	}
 
 	if (superClassOrInterface == IIndexConstants.CLASS_SUFFIX){
-		// interfaces are indexed as having superclass references to Object by default,
-		// this is an artifact used for being able to query them only.
 		char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
 		CharOperation.replace(encodedName, '.', '/');
 		this.superclass = encodedName;

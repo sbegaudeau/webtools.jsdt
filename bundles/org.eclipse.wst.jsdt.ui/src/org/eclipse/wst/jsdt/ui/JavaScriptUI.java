@@ -522,8 +522,18 @@ public final class JavaScriptUI {
 		int elementKinds= 0;
 		if (style == IJavaScriptElementSearchConstants.CONSIDER_ALL_TYPES) {
 			elementKinds= IJavaScriptSearchConstants.TYPE;
-		}else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES) {
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_INTERFACES) {
+			elementKinds= IJavaScriptSearchConstants.INTERFACE;
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES) {
 			elementKinds= IJavaScriptSearchConstants.CLASS;
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_ANNOTATION_TYPES) {
+			elementKinds= IJavaScriptSearchConstants.ANNOTATION_TYPE;
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_ENUMS) {
+			elementKinds= IJavaScriptSearchConstants.ENUM;
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES_AND_INTERFACES) {
+			elementKinds= IJavaScriptSearchConstants.CLASS_AND_INTERFACE;
+		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES_AND_ENUMS) {
+			elementKinds= IJavaScriptSearchConstants.CLASS_AND_ENUM;
 		} else {	
 			throw new IllegalArgumentException("Invalid style constant."); //$NON-NLS-1$
 		}

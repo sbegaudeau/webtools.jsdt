@@ -102,7 +102,16 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 	private char[][][] acceptedClasses;
 	private int[] acceptedClassesModifiers;
+	private char[][][] acceptedInterfaces;
+	private int[] acceptedInterfacesModifiers;
+	private char[][][] acceptedEnums;
+	private int[] acceptedEnumsModifiers;
+	private char[][][] acceptedAnnotations;
+	private int[] acceptedAnnotationsModifiers;
 	int acceptedClassesCount;
+	int acceptedInterfacesCount;
+	int acceptedEnumsCount;
+	int acceptedAnnotationsCount;
 
 	boolean noProposal = true;
 	CategorizedProblem problem = null;
@@ -301,6 +310,60 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			this.acceptedClasses = null;
 			this.acceptedClassesModifiers = null;
 			this.acceptedClassesCount = 0;
+		}
+		if(this.acceptedInterfaces != null){
+			this.acceptedAnswer = true;
+			for (int i = 0; i < this.acceptedInterfacesCount; i++) {
+				this.noProposal = false;
+				this.requestor.acceptType(
+					this.acceptedInterfaces[i][0],
+					null,
+					this.acceptedInterfaces[i][1],
+					this.acceptedInterfacesModifiers[i],
+					false,
+					null,
+					this.actualSelectionStart,
+					this.actualSelectionEnd);
+			}
+			this.acceptedInterfaces = null;
+			this.acceptedInterfacesModifiers = null;
+			this.acceptedInterfacesCount = 0;
+		}
+		if(this.acceptedAnnotations != null){
+			this.acceptedAnswer = true;
+			for (int i = 0; i < this.acceptedAnnotationsCount; i++) {
+				this.noProposal = false;
+				this.requestor.acceptType(
+					this.acceptedAnnotations[i][0],
+					null,
+					this.acceptedAnnotations[i][1],
+					this.acceptedAnnotationsModifiers[i],
+					false,
+					null,
+					this.actualSelectionStart,
+					this.actualSelectionEnd);
+			}
+			this.acceptedAnnotations = null;
+			this.acceptedAnnotationsModifiers = null;
+			this.acceptedAnnotationsCount = 0;
+		}
+		if(this.acceptedEnums != null){
+			this.acceptedAnswer = true;
+			for (int i = 0; i < this.acceptedEnumsCount; i++) {
+				this.noProposal = false;
+				this.requestor.acceptType(
+					this.acceptedEnums[i][0],
+					null,
+					this.acceptedEnums[i][1],
+					this.acceptedEnumsModifiers[i],
+					false,
+					null,
+					this.actualSelectionStart,
+					this.actualSelectionEnd);
+			}
+			this.acceptedEnums = null;
+			this.acceptedEnumsModifiers = null;
+			this.acceptedEnumsCount = 0;
 		}
 	}
 	private boolean checkSelection(

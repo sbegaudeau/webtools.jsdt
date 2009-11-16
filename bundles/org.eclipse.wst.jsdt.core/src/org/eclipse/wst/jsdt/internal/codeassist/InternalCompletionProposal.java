@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ public class InternalCompletionProposal {
 			// TODO (david) shouldn't it be NameLookup.ACCEPT_ALL ?
 			NameLookup.Answer answer = this.nameLookup.findType(new String(tName),
 				false,
-				NameLookup.ACCEPT_CLASSES,
+				NameLookup.ACCEPT_CLASSES & NameLookup.ACCEPT_INTERFACES,
 				true/* consider secondary types */,
 				false/* do NOT wait for indexes */,
 				false/*don't check restrictions*/,

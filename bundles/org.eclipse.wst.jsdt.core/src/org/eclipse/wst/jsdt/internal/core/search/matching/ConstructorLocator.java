@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
@@ -220,9 +221,13 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 	// Create search match
 	match = locator.newMethodReferenceMatch(element, elementBinding, accuracy, -1, -1, true, reference);
 
+	if (this.pattern.hasConstructorArguments()) { // binding has no type params, compatible erasure if pattern does
+		match.setRule(SearchPattern.R_ERASURE_MATCH);
+	}
+
 	// See whether it is necessary to report or not
 	if (match.getRule() == 0) return; // impossible match
-	boolean report = (this.isEquivalentMatch && match.isEquivalent()) || match.isExact();
+	boolean report = (this.isErasureMatch && match.isErasure()) || (this.isEquivalentMatch && match.isEquivalent()) || match.isExact();
 	if (!report) return;
 
 	// Report match

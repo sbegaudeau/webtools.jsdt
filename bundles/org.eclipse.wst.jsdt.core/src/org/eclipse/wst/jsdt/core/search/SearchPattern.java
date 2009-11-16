@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.OrPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.PackageDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.PackageReferencePattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.QualifiedTypeDeclarationPattern;
+import org.eclipse.wst.jsdt.internal.core.search.matching.SuperTypeReferencePattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeReferencePattern;
 
@@ -97,6 +98,28 @@ public abstract class SearchPattern extends InternalSearchPattern {
 	 * Can be combined to previous rules, e.g. {@link #R_EXACT_MATCH} | {@link #R_CASE_SENSITIVE}
 	 */
 	public static final int R_CASE_SENSITIVE = 0x0008;
+
+	/**
+	 * Match rule: The search pattern matches search results as raw/parameterized types/methods with same erasure.
+	 * This mode has no effect on other javascript elements search.<br>
+	 * Type search example:
+	 * 	<ul>
+	 * 	<li>pattern: <code>List&lt;Exception&gt;</code></li>
+	 * 	<li>match: <code>List&lt;Object&gt;</code></li>
+	 * 	</ul>
+	 * Method search example:
+	 * 	<ul>
+	 * 	<li>declaration: <code>&lt;T&gt;foo(T t)</code></li>
+	 * 	<li>pattern: <code>&lt;Exception&gt;foo(new Exception())</code></li>
+	 * 	<li>match: <code>&lt;Object&gt;foo(new Object())</code></li>
+	 * 	</ul>
+	 * Can be combined to all other match rules, e.g. {@link #R_CASE_SENSITIVE} | {@link #R_ERASURE_MATCH}
+	 * This rule is not activated by default, so raw types or parameterized types with same erasure will not be found
+	 * for pattern List&lt;String&gt;,
+	 * Note that with this pattern, the match selection will be only on the erasure even for parameterized types.
+	 *  
+	 */
+	public static final int R_ERASURE_MATCH = 0x0010;
 
 	/**
 	 * Match rule: The search pattern matches search results as raw/parameterized types/methods with equivalent type parameters.
@@ -192,7 +215,7 @@ public abstract class SearchPattern extends InternalSearchPattern {
 public SearchPattern(int matchRule) {
 	this.matchRule = matchRule;
 	// Set full match implicit mode
-	if ((matchRule & R_EQUIVALENT_MATCH) == 0) {
+	if ((matchRule & (R_EQUIVALENT_MATCH | R_ERASURE_MATCH )) == 0) {
 		this.matchRule |= R_FULL_MATCH;
 	}
 }
@@ -1072,6 +1095,18 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 	switch (searchFor) {
 		case IJavaScriptSearchConstants.CLASS:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_SUFFIX);
+		case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_INTERFACE_SUFFIX);
+		case IJavaScriptSearchConstants.CLASS_AND_ENUM:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_ENUM_SUFFIX);
+		case IJavaScriptSearchConstants.INTERFACE:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_SUFFIX);
+		case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX);
+		case IJavaScriptSearchConstants.ENUM:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ENUM_SUFFIX);
+		case IJavaScriptSearchConstants.ANNOTATION_TYPE:
+			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ANNOTATION_TYPE_SUFFIX);
 		case IJavaScriptSearchConstants.TYPE:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.TYPE_SUFFIX);
 		case IJavaScriptSearchConstants.FUNCTION:
@@ -1141,7 +1176,7 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
  * @return a search pattern for a JavaScript element or <code>null</code> if the given element is ill-formed
  */
 public static SearchPattern createPattern(IJavaScriptElement element, int limitTo) {
-	return createPattern(element, limitTo, R_EXACT_MATCH | R_CASE_SENSITIVE);
+	return createPattern(element, limitTo, R_EXACT_MATCH | R_CASE_SENSITIVE | R_ERASURE_MATCH);
 }
 
 /**
@@ -1506,6 +1541,12 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 				simpleName,
 				typeSignature,
 				matchRule);
+		case IJavaScriptSearchConstants.IMPLEMENTORS :
+			return new SuperTypeReferencePattern(
+				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
+				simpleName,
+				SuperTypeReferencePattern.ONLY_SUPER_INTERFACES,
+				matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new TypeDeclarationPattern(
@@ -1621,6 +1662,8 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 			return new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule);
 		case IJavaScriptSearchConstants.REFERENCES :
 			return new TypeReferencePattern(qualificationChars, typeChars, typeSignature, matchRule);
+		case IJavaScriptSearchConstants.IMPLEMENTORS :
+			return new SuperTypeReferencePattern(qualificationChars, typeChars, SuperTypeReferencePattern.ONLY_SUPER_INTERFACES, indexSuffix, matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule),// cannot search for explicit member types

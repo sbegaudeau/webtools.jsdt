@@ -201,7 +201,6 @@ protected void initializeRegions() {
 		checkCanceled();
 	}
 }
-
 /**
  * Adds the type to the collection of root classes
  * if the classes is not already present in the collection.
@@ -266,7 +265,6 @@ protected void cacheSuperclass(IType type, IType superclass) {
 		addSubtype(superclass, type);
 	}
 }
-
 /**
  * Checks with the progress monitor to see whether the creation of the type hierarchy
  * should be canceled. Should be regularly called
@@ -389,7 +387,6 @@ public IType[] getAllClasses() {
 	}
 	return classes.elements();
 }
-
 /**
  * @see ITypeHierarchy
  */
@@ -419,6 +416,16 @@ private void getAllSubtypesForType0(IType type, ArrayList subs) {
 	}
 }
 /**
+ * Returns an array of subtypes for the given type - will never return null.
+ */
+private IType[] getSubtypesForType(IType type) {
+	TypeVector vector = (TypeVector)this.typeToSubtypes.get(type);
+	if (vector == null)
+		return NO_TYPE;
+	else
+		return vector.elements();
+}
+/**
  * @see ITypeHierarchy
  */
 public IType[] getAllSuperclasses(IType type) {
@@ -441,29 +448,16 @@ public int getCachedFlags(IType type) {
 	}
 	return -1;
 }
-
 /**
  * @see ITypeHierarchy
  */
 public IType[] getRootClasses() {
 	return this.rootClasses.elements();
 }
-
 /**
  * @see ITypeHierarchy
  */
 public IType[] getSubclasses(IType type) {
-	TypeVector vector = (TypeVector)this.typeToSubtypes.get(type);
-	if (vector == null)
-		return NO_TYPE;
-	else
-		return vector.elements();
-}
-
-/**
- * Returns an array of subtypes for the given type - will never return null.
- */
-private IType[] getSubtypesForType(IType type) {
 	TypeVector vector = (TypeVector)this.typeToSubtypes.get(type);
 	if (vector == null)
 		return NO_TYPE;
@@ -476,7 +470,6 @@ private IType[] getSubtypesForType(IType type) {
 public IType getSuperclass(IType type) {
 	return (IType) this.classToSuperclass.get(type);
 }
-
 /**
  * @see ITypeHierarchy
  */
@@ -1113,6 +1106,7 @@ public void store(OutputStream output, IProgressMonitor monitor) throws JavaScri
 			output.write(SEPARATOR1);
 		}
 		output.write(SEPARATOR1);
+
 		output.write(SEPARATOR1);
 	} catch(IOException e) {
 		throw new JavaScriptModelException(e, IJavaScriptModelStatusConstants.IO_EXCEPTION);

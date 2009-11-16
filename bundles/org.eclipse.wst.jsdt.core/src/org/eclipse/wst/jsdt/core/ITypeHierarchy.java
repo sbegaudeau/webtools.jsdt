@@ -98,7 +98,6 @@ IType[] getAllSubtypes(IType type);
  * array if none.
  */
 IType[] getAllSuperclasses(IType type);
-
 /**
  * Return the flags associated with the given type (would be equivalent to <code>IMember.getFlags()</code>),
  * or <code>-1</code> if this information wasn't cached on the hierarchy during its computation.
@@ -119,8 +118,7 @@ IType[] getRootClasses();
  * Returns the direct resolved subclasses of the given class,
  * in no particular order, limited to the classes in this
  * type hierarchy's graph.
- * Returns an empty collection if the given type is an interface,
- * or if no classes were resolved to be subclasses of the given
+ * Returns an empty collection if no classes were resolved to be subclasses of the given
  * class.
  *
  * @param type the given type
@@ -130,15 +128,13 @@ IType[] getRootClasses();
 IType[] getSubclasses(IType type);
 /**
  * Returns the resolved superclass of the given class,
- * or <code>null</code> if the given class has no superclass,
- * the superclass could not be resolved, or if the given
- * type is an interface.
+ * or <code>null</code> if the given class has no superclass or
+ * the superclass could not be resolved.
  *
  * @param type the given type
  * @return the resolved superclass of the given class,
- * or <code>null</code> if the given class has no superclass,
- * the superclass could not be resolved, or if the given
- * type is an interface
+ * or <code>null</code> if the given class has no superclass or
+ * the superclass could not be resolved.
  */
 IType getSuperclass(IType type);
 /**

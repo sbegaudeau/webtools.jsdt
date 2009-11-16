@@ -86,7 +86,6 @@ public class SubTypeHierarchyViewer extends TypeHierarchyViewer {
 			ITypeHierarchy hierarchy= getHierarchy();
 			if (hierarchy != null) {
 				return hierarchy.getSuperclass(type);
-				// dont handle interfaces
 			}
 			return null;
 		}

@@ -504,7 +504,7 @@ public void resolve(IGenericType suppliedType) {
 		if (suppliedType.isBinaryType()) {
 			ReferenceBinding binaryTypeBinding = this.lookupEnvironment.cacheBinaryType((ISourceType) suppliedType, false/*don't need field and method (bug 125067)*/, null /*no access restriction*/);
 			remember(suppliedType, binaryTypeBinding);
-			// We still need to add superclasses bindings (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53095)
+			// We still need to add superclasses binding (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=53095)
 			int startIndex = this.typeIndex;
 			for (int i = startIndex; i <= this.typeIndex; i++) {
 				IGenericType igType = this.typeModels[i];
@@ -741,7 +741,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 
 		// if no potential subtype was a real subtype of the binary focus type, no need to go further
 		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=54043)
-		if (focusBinaryBinding == null && focus != null && focus.isBinary()) {
+		if (focus != null && focus.isBinary()) {
 			char [] typeName=focus.getElementName().toCharArray();
 			char [] pkgName=focus.getPackageFragment().getElementName().toCharArray();
 			char [][]qualifiedName=new char[][]{pkgName,typeName};

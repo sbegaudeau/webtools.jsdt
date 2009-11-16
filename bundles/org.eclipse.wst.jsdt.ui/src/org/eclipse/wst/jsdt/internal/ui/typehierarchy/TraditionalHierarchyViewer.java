@@ -143,7 +143,6 @@ public class TraditionalHierarchyViewer extends TypeHierarchyViewer {
 			ITypeHierarchy hierarchy= getHierarchy();
 			if (hierarchy != null) {
 				return hierarchy.getSuperclass(type);
-				// don't handle interfaces
 			}
 			return null;
 		}	

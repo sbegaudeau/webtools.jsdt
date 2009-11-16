@@ -69,6 +69,47 @@ public interface IJavaScriptSearchConstants {
 	int CLASS= 5;
 
 	/**
+	 * The searched element is an interface.
+	 * More selective than using {@link #TYPE}.
+	 */
+	int INTERFACE= 6;
+
+	/**
+	 * The searched element is an enum.
+	 * More selective than using {@link #TYPE}.
+	 *  
+	 */
+	int ENUM= 7;
+
+	/**
+	 * The searched element is an annotation type.
+	 * More selective than using {@link #TYPE}.
+	 *  
+	 */
+	int ANNOTATION_TYPE= 8;
+
+	/**
+	 * The searched element is a class or enum type.
+	 * More selective than using {@link #TYPE}.
+	 *  
+	 */
+	int CLASS_AND_ENUM= 9;
+
+	/**
+	 * The searched element is a class or interface type.
+	 * More selective than using {@link #TYPE}.
+	 *  
+	 */
+	int CLASS_AND_INTERFACE= 10;
+
+	/**
+	 * The searched element is an interface or annotation type.
+	 * More selective than using {@link #TYPE}.
+	 *  
+	 */
+	int INTERFACE_AND_ANNOTATION= 11;
+
+	/**
 	 * The searched element is a field.
 	 */
 	int VAR= 12;

@@ -681,7 +681,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 						// make sure we search a concrete name. This is faster according to Kent  
 						"_______________".toCharArray(), //$NON-NLS-1$
 						SearchPattern.RULE_EXACT_MATCH | SearchPattern.RULE_CASE_SENSITIVE, 
-						IJavaScriptSearchConstants.CLASS,
+						IJavaScriptSearchConstants.ENUM,
 						SearchEngine.createWorkspaceScope(), 
 						new TypeNameRequestor() {}, 
 						IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, 
@@ -1242,6 +1242,16 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			int modifiers= type.getModifiers();
 			switch (fElemKind) {
 			case IJavaScriptSearchConstants.CLASS:
+				return modifiers == 0;
+			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
+				return false;
+			case IJavaScriptSearchConstants.INTERFACE:
+				return false;
+			case IJavaScriptSearchConstants.ENUM:
+				return false;
+			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
+				return modifiers == 0;
+			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return modifiers == 0;
 			}
 			return false;

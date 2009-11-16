@@ -54,7 +54,7 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	/**
 	 * Mask used on match rule for generic relevance.
 	 */
-	public static final int MATCH_COMPATIBILITY_MASK = R_EQUIVALENT_MATCH | R_FULL_MATCH;
+	public static final int MATCH_COMPATIBILITY_MASK = R_ERASURE_MATCH | R_EQUIVALENT_MATCH | R_FULL_MATCH;
 
 	// Signatures and arguments for parameterized types search
 	char[][] typeSignatures;
@@ -88,6 +88,10 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 
 	boolean isCaseSensitive () {
 		return this.isCaseSensitive;
+	}
+
+	boolean isErasureMatch() {
+		return (this.matchCompatibility & R_ERASURE_MATCH) != 0;
 	}
 
 	boolean isEquivalentMatch() {
@@ -149,15 +153,49 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	boolean matchDifferentTypeSuffixes(int typeSuffix, int patternSuffix) {
 		switch(typeSuffix) {
 			case CLASS_SUFFIX :
+				switch (patternSuffix) {
+					case CLASS_AND_INTERFACE_SUFFIX :
+					case CLASS_AND_ENUM_SUFFIX :
+						return true;
+				}
 				return false;
 
 			case INTERFACE_SUFFIX :
+				switch (patternSuffix) {
+					case CLASS_AND_INTERFACE_SUFFIX :
+					case INTERFACE_AND_ANNOTATION_SUFFIX:
+						return true;
+				}
 				return false;
 
 			case ENUM_SUFFIX :
-				return false;
+				return patternSuffix == CLASS_AND_ENUM_SUFFIX;
 
 			case ANNOTATION_TYPE_SUFFIX :
+				return patternSuffix == INTERFACE_AND_ANNOTATION_SUFFIX;
+
+			case CLASS_AND_INTERFACE_SUFFIX :
+				switch (patternSuffix) {
+					case CLASS_SUFFIX :
+					case INTERFACE_SUFFIX :
+						return true;
+				}
+				return false;
+
+			case CLASS_AND_ENUM_SUFFIX :
+				switch (patternSuffix) {
+					case CLASS_SUFFIX :
+					case ENUM_SUFFIX :
+						return true;
+				}
+				return false;
+
+			case INTERFACE_AND_ANNOTATION_SUFFIX :
+				switch (patternSuffix) {
+					case INTERFACE_SUFFIX :
+					case ANNOTATION_TYPE_SUFFIX :
+						return true;
+				}
 				return false;
 		}
 
@@ -193,6 +231,9 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 			output.append(" case sensitive"); //$NON-NLS-1$
 		else
 			output.append(" case insensitive"); //$NON-NLS-1$
+		if ((this.matchCompatibility & R_ERASURE_MATCH) != 0) {
+			output.append(", erasure only"); //$NON-NLS-1$
+		}
 		if ((this.matchCompatibility & R_EQUIVALENT_MATCH) != 0) {
 			output.append(", equivalent oronly"); //$NON-NLS-1$
 		}
