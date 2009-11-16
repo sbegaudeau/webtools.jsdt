@@ -137,8 +137,9 @@ public class InferredType extends ASTNode {
 
 			attributesHash.put(name, attribute);
 
-			if( !isAnonymous )
+			if (!isAnonymous) {
 				this.updatePositions(definer.sourceStart(), definer.sourceEnd());
+			}
 		}
 		return attribute;
 	}
@@ -169,8 +170,14 @@ public class InferredType extends ASTNode {
 
 			attributesHash.put(name, newAttribute);
 
-			if( !isAnonymous )
-				this.updatePositions(definer.sourceStart(), definer.sourceEnd());
+			if (!isAnonymous) {
+				if (definer != null) {
+					this.updatePositions(definer.sourceStart(), definer.sourceEnd());
+				}
+				else {
+					this.updatePositions(newAttribute.sourceStart(), newAttribute.sourceEnd());
+				}
+			}
 		}
 		return newAttribute;
 	}
