@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -150,7 +150,7 @@ public void testDuplicateTypesInWorkingCopies() throws CoreException {
 		);
 		NameLookup nameLookup = project.newNameLookup(workingCopies);
 		//		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false);
-		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_CLASSES,false, false, null); 
+		NameLookup.Answer answer=nameLookup.findBinding("foo","",Binding.METHOD, false, NameLookup.ACCEPT_ALL,false, false, null); 
 		assertEquals(
 			"Unepexted ",
 			"foo",
@@ -221,7 +221,7 @@ public void testFindBinaryTypeWithDollarName() throws CoreException, IOException
 				"}"
 			}, 
 			"1.4");
-		IType type = getNameLookup((JavaProject) project).findType("p.X$$1", false, NameLookup.ACCEPT_CLASSES);
+		IType type = getNameLookup((JavaProject) project).findType("p.X$$1", false, NameLookup.ACCEPT_ALL);
 		assertTypesEqual(
 			"Unexpected type", 
 			"p.X$$1\n",
@@ -240,7 +240,7 @@ public void testFindBinaryTypeWithSameNameAsMember() throws CoreException, IOExc
 		createFolder("/P/lib/p");
 		createFile("/P/lib/p/X.js", "");
 		createFile("/P/lib/p/X$X.js", "");
-		IType type = getNameLookup((JavaProject) project).findType("p.X", false, NameLookup.ACCEPT_CLASSES);
+		IType type = getNameLookup((JavaProject) project).findType("p.X", false, NameLookup.ACCEPT_ALL);
 		assertTypesEqual(
 			"Unexpected type", 
 			"p.X\n",

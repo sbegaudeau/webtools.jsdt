@@ -794,6 +794,26 @@ public void testBug79378b() throws CoreException {
 	assertSearchResults("");
 }
 
+/**
+ * Bug 79803: [1.5][search] Search for references to type A reports match for type variable A
+ * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=79803"
+ */
+public void testBug79803() throws CoreException {
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.js",
+		"package b79803;\n" + 
+		"class A<A> {\n" + 
+		"    A a;\n" + 
+		"    b79803.A pa= new b79803.A();\n" + 
+		"}\n"	
+	);
+	IType type = workingCopies[0].getType("A");
+	search(type, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b79803/A.java b79803.A.pa [b79803.A] EXACT_MATCH\n" + 
+		"src/b79803/A.java b79803.A.pa [b79803.A] EXACT_MATCH"
+	);
+}
 public void testBug79803string() throws CoreException {
 	workingCopies = new IJavaScriptUnit[1];
 	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b79803/A.js",
@@ -1300,7 +1320,7 @@ public void testBug80890() throws CoreException, JavaScriptModelException {
 public void testBug80918() throws CoreException {
 	IType type = getClassFile("JavaSearchBugs", getExternalJCLPathString("1.5"), "java.lang", "Exception.class").getType();
 	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptProject[] {getJavaProject("JavaSearchBugs")}, IJavaScriptSearchScope.SOURCES);
-	search(type, REFERENCES, SearchPattern.R_CASE_SENSITIVE|SearchPattern.R_EQUIVALENT_MATCH, scope);
+	search(type, REFERENCES, SearchPattern.R_CASE_SENSITIVE|SearchPattern.R_ERASURE_MATCH, scope);
 	assertSearchResults(
 		"" // do not expect to find anything, just verify that no CCE happens
 	);
@@ -1488,6 +1508,49 @@ public void testBug82208_CLASS() throws CoreException {
 		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
 	);
 }
+public void testBug82208_INTERFACE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug82208();
+	search("B82208*", INTERFACE, ALL_OCCURRENCES);
+	assertSearchResults(
+		"src/b82208/Test.java b82208.B82208_I [B82208_I] EXACT_MATCH"
+	);
+}
+public void testBug82208_ENUM() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug82208();
+	search("B82208*", ENUM, ALL_OCCURRENCES);
+	assertSearchResults(
+		"src/b82208/Test.java b82208.B82208_E [B82208_E] EXACT_MATCH"
+	);
+}
+public void testBug82208_ANNOTATION_TYPE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug82208();
+	search("B82208*", ANNOTATION_TYPE, ALL_OCCURRENCES);
+	assertSearchResults(
+		"src/b82208/Test.java b82208.B82208_A [B82208_A] EXACT_MATCH"
+	);
+}
+public void testBug82208_CLASS_AND_INTERFACE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug82208();
+	search("B82208*", CLASS_AND_INTERFACE, ALL_OCCURRENCES);
+	assertSearchResults(
+		"src/b82208/Test.java b82208.B82208_I [B82208_I] EXACT_MATCH\n" + 
+		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
+	);
+}
+public void testBug82208_CLASS_AND_ENUMERATION() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug82208();
+	search("B82208*", CLASS_AND_ENUM, ALL_OCCURRENCES);
+	assertSearchResults(
+		"src/b82208/Test.java b82208.B82208_E [B82208_E] EXACT_MATCH\n" + 
+		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
+	);
+}
+
 /**
  * Bug 82673: [1.5][search][annot] Search for annotations misses references in default and values constructs
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=83012"
@@ -1706,6 +1769,197 @@ public void testBug83230_Implicit02() throws CoreException {
 		"src/b83230/Test.java A b83230.Main.first() [\"Void\"] EXACT_MATCH\n" + 
 		"src/b83230/Test.java b83230.Test [\"\"] EXACT_MATCH\n" + 
 		"src/b83230/Test.java b83230.Test [\"2\"] EXACT_MATCH"
+	);
+}
+
+/**
+ * Bug 83304: [search] correct results are missing in java search
+ * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=83304"
+ */
+public void testBug83304() throws CoreException {
+	resultCollector.showRule = true;
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Test.js",
+		"package b83304;\n" + 
+		"public class Test {\n" + 
+		"	void foo() {\n" + 
+		"		Class<? extends Throwable> l1= null;\n" + 
+		"		Class<Exception> l2= null;\n" + 
+		"		\n" + 
+		"		Class<String> string_Class;\n" + 
+		"	}\n" + 
+		"}\n"
+		);
+	IType type = selectType(workingCopies[0], "Class", 3);
+	search(type, REFERENCES, ERASURE_RULE, getJavaSearchWorkingCopiesScope());
+	assertSearchResults(
+		"src/b83304/Test.java void b83304.Test.foo() [Class] ERASURE_MATCH\n" + 
+		"src/b83304/Test.java void b83304.Test.foo() [Class] ERASURE_MATCH\n" + 
+		"src/b83304/Test.java void b83304.Test.foo() [Class] EXACT_MATCH"
+	);
+}
+private void setUpBug83304_TypeParameterizedElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Types.js",
+		"package b83304;\n" + 
+		"import g1.t.s.def.Generic;\n" + 
+		"public class Types {\n" + 
+		"	public Generic gen;\n" + 
+		"	public Generic<Object> gen_obj;\n" + 
+		"	public Generic<Exception> gen_exc;\n" + 
+		"	public Generic<?> gen_wld;\n" + 
+		"	public Generic<? extends Throwable> gen_thr;\n" + 
+		"	public Generic<? super RuntimeException> gen_run;\n" + 
+		"}\n"
+	);
+}
+public void testBug83304_TypeParameterizedElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_TypeParameterizedElementPattern();
+	IType type = selectType(workingCopies[0], "Generic", 4);
+	search(type, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Types.java [g1.t.s.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen [Generic] EQUIVALENT_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_obj [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_exc [Generic] EXACT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_wld [Generic] EQUIVALENT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_thr [Generic] EQUIVALENT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_run [Generic] EQUIVALENT_MATCH\n" + 
+		"lib/JavaSearch15.jar g1.t.s.def.Generic<T> g1.t.s.def.Generic.foo() ERASURE_MATCH"
+	);
+}
+public void testBug83304_TypeGenericElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_TypeParameterizedElementPattern();
+	IType type = getClassFile("JavaSearchBugs", "lib/JavaSearch15.jar", "g1.t.s.def", "Generic.class").getType();
+	search(type, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Types.java [g1.t.s.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen [Generic] ERASURE_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_obj [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_exc [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_wld [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_thr [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_run [Generic] ERASURE_MATCH\n" + 
+		"lib/JavaSearch15.jar g1.t.s.def.Generic<T> g1.t.s.def.Generic.foo() EXACT_MATCH"
+	);
+}
+public void testBug83304_TypeStringPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_TypeParameterizedElementPattern();
+	search("Generic<? super Exception>", TYPE, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Types.java [Generic] EQUIVALENT_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen [Generic] EQUIVALENT_RAW_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_obj [Generic] EQUIVALENT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_exc [Generic] EQUIVALENT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_wld [Generic] EQUIVALENT_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_thr [Generic] ERASURE_MATCH\n" + 
+		"src/b83304/Types.java b83304.Types.gen_run [Generic] ERASURE_MATCH\n" + 
+		"lib/JavaSearch15.jar g1.t.s.def.Generic<T> g1.t.s.def.Generic.foo() ERASURE_MATCH"
+	);
+}
+private void setUpBug83304_MethodParameterizedElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Methods.js",
+		"package b83304;\n" + 
+		"import g5.m.def.Single;\n" + 
+		"public class Methods {\n" + 
+		"	void test() {\n" + 
+		"		Single<Exception> gs = new Single<Exception>();\n" + 
+		"		Exception exc = new Exception();\n" + 
+		"		gs.<Throwable>generic(exc);\n" + 
+		"		gs.<Exception>generic(exc);\n" + 
+		"		gs.<String>generic(\"\");\n" + 
+		"	}\n" + 
+		"}\n"
+	);
+}
+public void testBug83304_MethodParameterizedElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_MethodParameterizedElementPattern();
+	IFunction method = selectMethod(workingCopies[0], "generic", 2);
+	search(method, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] EXACT_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(\"\")] ERASURE_MATCH"
+	);
+}
+public void testBug83304_MethodGenericElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_MethodParameterizedElementPattern();
+	IType type = getClassFile("JavaSearchBugs", "lib/JavaSearch15.jar", "g5.m.def", "Single.class").getType();
+	IFunction method = type.getFunction("generic", new String[] { "TU;" });
+	search(method, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(\"\")] ERASURE_MATCH"
+	);
+}
+public void testBug83304_MethodStringPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_MethodParameterizedElementPattern();
+	search("<Exception>generic", METHOD, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(exc)] EXACT_MATCH\n" + 
+		"src/b83304/Methods.java void b83304.Methods.test() [generic(\"\")] ERASURE_MATCH"
+	);
+}
+private void setUpBug83304_ConstructorGenericElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b83304/Constructors.js",
+		"package b83304;\n" + 
+		"import g5.c.def.Single;\n" + 
+		"public class Constructors {\n" + 
+		"	void test() {\n" + 
+		"		Exception exc= new Exception();\n" + 
+		"		new <Throwable>Single<String>(\"\", exc);\n" + 
+		"		new <Exception>Single<String>(\"\", exc);\n" + 
+		"		new <String>Single<String>(\"\", \"\");\n" + 
+		"	}\n" + 
+		"}\n"
+	);
+}
+public void testBug83304_ConstructorGenericElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_ConstructorGenericElementPattern();
+	IFunction method = selectMethod(workingCopies[0], "Single", 3);
+	search(method, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Throwable>Single<String>(\"\", exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Exception>Single<String>(\"\", exc)] EXACT_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <String>Single<String>(\"\", \"\")] ERASURE_MATCH"
+	);
+}
+public void testBug83304_ConstructorParameterizedElementPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_ConstructorGenericElementPattern();
+	IType type = getClassFile("JavaSearchBugs", "lib/JavaSearch15.jar", "g5.c.def", "Single.class").getType();
+	IFunction method = type.getFunction("Single", new String[] { "TT;", "TU;" });
+	search(method, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Throwable>Single<String>(\"\", exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Exception>Single<String>(\"\", exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <String>Single<String>(\"\", \"\")] ERASURE_MATCH"
+	);
+}
+public void testBug83304_ConstructorStringPattern() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug83304_ConstructorGenericElementPattern();
+	search("<Exception>Single", CONSTRUCTOR, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Throwable>Single<String>(\"\", exc)] ERASURE_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <Exception>Single<String>(\"\", exc)] EXACT_MATCH\n" + 
+		"src/b83304/Constructors.java void b83304.Constructors.test() [new <String>Single<String>(\"\", \"\")] ERASURE_MATCH\n" + 
+		"lib/JavaSearch15.jar g5.m.def.Single<T> g5.m.def.Single.returnParamType() ERASURE_MATCH\n" + 
+		"lib/JavaSearch15.jar g5.m.def.Single<T> g5.m.def.Single.complete(U, g5.m.def.Single<T>) ERASURE_MATCH"
 	);
 }
 
@@ -2764,6 +3018,110 @@ public void testBug92944_CLASS() throws CoreException {
 		"b92944.B92944",
 		requestor);
 }
+public void testBug92944_CLASS_AND_INTERFACE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug92944();
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		CLASS_AND_INTERFACE,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	// Remove enum and annotation
+	assertSearchResults(
+		"Unexpected all type names",
+		"b92944.B92944\n" + 
+		"b92944.B92944_I",  // Annotation is an interface in java.lang
+		requestor);
+}
+public void testBug92944_CLASS_AND_ENUM() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug92944();
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		CLASS_AND_ENUM,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	// Remove interface and annotation
+	assertSearchResults(
+		"Unexpected all type names",
+		"b92944.B92944\n" + 
+		"b92944.B92944_E",
+		requestor);
+}
+public void testBug92944_INTERFACE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug92944();
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		INTERFACE,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	assertSearchResults(
+		"Unexpected all type names",
+		"b92944.B92944_I",
+		requestor);
+}
+public void testBug92944_ENUM() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug92944();
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		ENUM,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	assertSearchResults(
+		"Unexpected all type names",
+		"b92944.B92944_E",
+		requestor);
+}
+public void testBug92944_ANNOTATION_TYPE() throws CoreException {
+	resultCollector.showRule = true;
+	setUpBug92944();
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		ANNOTATION_TYPE,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	assertSearchResults(
+		"Unexpected all type names",
+		"b92944.B92944_A",
+		requestor);
+}
 
 /**
  * Bug 93392: [1.5][search][annot] search for annotation elements does not seem to be implemented yet
@@ -3249,6 +3607,34 @@ public void testBug96763c() throws CoreException {
 }
 
 /**
+ * Bug 97087: [1.5][search] Can't find reference of generic class's constructor.
+ * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=97087"
+ */
+public void testBug97087() throws CoreException {
+	workingCopies = new IJavaScriptUnit[1];
+	this.resultCollector.showRule = true;
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97087/Bug.js",
+		"package b97087;\n" + 
+		"public class Bug<Type> {\n" + 
+		"    Bug(){}\n" + 
+		"}\n" + 
+		"class Foo extends Bug<String>{\n" + 
+		"    Foo(){}\n" + 
+		"}\n" +
+		"class Bar extends Bug<Exception>{\n" + 
+		"    Bar(){super();}\n" + 
+		"}"
+	);
+	IType type = workingCopies[0].getType("Bug");
+	IFunction method= type.getFunctions()[0];
+	search(method, REFERENCES, SearchPattern.R_ERASURE_MATCH);
+	assertSearchResults(
+		"src/b97087/Bug.java b97087.Foo() [Foo] EXACT_MATCH\n" + 
+		"src/b97087/Bug.java b97087.Bar() [super();] ERASURE_MATCH"
+	);
+}
+
+/**
  * Bug 97120: 
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=97120"
  */
@@ -3295,6 +3681,63 @@ public void testBug97322() throws CoreException {
 	search(method, REFERENCES);
 	assertSearchResults(""); // Expect no result
 }
+
+/**
+ * Bug 97606: [1.5][search] Raw type reference is reported as exact match for qualified names
+ * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=97606"
+ */
+public void testBug97606() throws CoreException {
+	workingCopies = new IJavaScriptUnit[4];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.js",
+		"package b97606.pack.def;\n" + 
+		"public interface L<E> {}\n"
+	);
+	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/LL.js",
+		"package b97606.pack.def;\n" + 
+		"public class LL<E> implements L<E> {\n" + 
+		"	public Object clone() {\n" + 
+		"		return null;\n" + 
+		"	}\n" + 
+		"}\n"
+	);
+	workingCopies[2] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/K.js",
+		"package b97606.pack.ref;\n" + 
+		"public interface K {}\n"
+	);
+	workingCopies[3] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/ref/X.js",
+		"package b97606.pack.ref;\n" + 
+		"public class X implements K {\n" + 
+		"	private b97606.pack.def.LL sg;\n" + 
+		"	protected synchronized b97606.pack.def.L<K> getSG() {\n" + 
+		"		return (sg != null) \n" + 
+		"			? (b97606.pack.def.L) sg.clone()\n" + 
+		"			: null;\n" + 
+		"	}\n" + 
+		"}\n"
+	);
+	IPath pathDef = new Path("/JavaSearchBugs/src/b97606/pack/def");
+	IPath pathRef = new Path("/JavaSearchBugs/src/b97606/pack/ref");
+	try {
+		createFolder(pathDef);
+		createFolder(pathRef);
+		workingCopies[0].commitWorkingCopy(true, null);
+		workingCopies[1].commitWorkingCopy(true, null);
+		workingCopies[2].commitWorkingCopy(true, null);
+		workingCopies[3].commitWorkingCopy(true, null);
+		this.resultCollector.showRule = true;
+		IType type = workingCopies[0].getType("L");
+		search(type, REFERENCES, SearchPattern.R_ERASURE_MATCH);
+		assertSearchResults(
+			"src/b97606/pack/def/LL.java b97606.pack.def.LL [L] ERASURE_MATCH\n" + 
+			"src/b97606/pack/ref/X.java b97606.pack.def.L<K> b97606.pack.ref.X.getSG() [b97606.pack.def.L] ERASURE_MATCH\n" + 
+			"src/b97606/pack/ref/X.java b97606.pack.def.L<K> b97606.pack.ref.X.getSG() [b97606.pack.def.L] ERASURE_RAW_MATCH"
+		);
+	}
+	finally {
+		deleteFolder(pathDef);
+		deleteFolder(pathRef);
+	}
+}
 public void testBug97606b() throws CoreException {
 	workingCopies = new IJavaScriptUnit[4];
 	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b97606/pack/def/L.js",
@@ -3336,7 +3779,7 @@ public void testBug97606b() throws CoreException {
 		workingCopies[3].commitWorkingCopy(true, null);
 		this.resultCollector.showRule = true;
 		IType type = workingCopies[0].getType("L");
-		search(type, REFERENCES, SearchPattern.R_EQUIVALENT_MATCH);
+		search(type, REFERENCES, SearchPattern.R_ERASURE_MATCH);
 		assertSearchResults(
 			"src/b97606/pack/def/LL.java b97606.pack.def.LL [L] ERASURE_MATCH\n" + 
 			"src/b97606/pack/ref/X.java L<K> b97606.pack.ref.X.getSG() [L] ERASURE_MATCH\n" + 
@@ -5254,6 +5697,30 @@ public void testBug114539() throws CoreException {
 }
 
 /**
+ * Bug 116459: [search] correct results are missing in java search
+ * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=116459"
+ */
+public void testBug116459() throws CoreException {
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/p1/X.js",
+		"package p1;\n" + 
+		"class X<T> {\n" + 
+		"	X<T> gen;\n" + 
+		"	X<String> param;\n" + 
+		"	X raw;\n" + 
+		"}"
+	);
+	IType type = workingCopies[0].getType("X");
+	this.resultCollector.showRule = true;
+	search(type, REFERENCES, ERASURE_RULE);
+	assertSearchResults(
+		"src/p1/X.java p1.X.gen [X] EXACT_MATCH\n" + 
+		"src/p1/X.java p1.X.param [X] ERASURE_MATCH\n" + 
+		"src/p1/X.java p1.X.raw [X] ERASURE_RAW_MATCH"
+	);
+}
+
+/**
  * @test Bug 119545: [search] Binary java method model elements returned by SearchEngine have unresolved parameter types
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=119545"
  */
@@ -5348,6 +5815,13 @@ public void testBug122442a() throws CoreException {
 		"src/b122442/X.java b122442.X [I] EXACT_MATCH"
 	);
 }
+public void testBug122442b() throws CoreException {
+	setUpBug122442a();
+	search("I", INTERFACE, IMPLEMENTORS);
+	assertSearchResults(
+		"src/b122442/II.java b122442.II [I] EXACT_MATCH"
+	);
+}
 public void testBug122442c() throws CoreException {
 	setUpBug122442a();
 	search("I", CLASS, IMPLEMENTORS);
@@ -5376,6 +5850,13 @@ public void testBug122442d() throws CoreException {
 		"src/b122442/User.java void b122442.User.m():<anonymous>#2 [Interface] EXACT_MATCH"
 	);
 }
+public void testBug122442e() throws CoreException {
+	setUpBug122442d();
+	search("Interface", INTERFACE, IMPLEMENTORS);
+	assertSearchResults(
+		"" // expected no result
+	);
+}
 public void testBug122442f() throws CoreException {
 	setUpBug122442d();
 	search("Interface", CLASS, IMPLEMENTORS);
@@ -5389,6 +5870,13 @@ public void testBug122442g() throws CoreException {
 	assertSearchResults(
 		"src/b122442/User.java void b122442.User.m():<anonymous>#1 [Klass] EXACT_MATCH\n" + 
 		"src/b122442/User.java b122442.Sub [Klass] EXACT_MATCH"
+	);
+}
+public void testBug122442h() throws CoreException {
+	setUpBug122442d();
+	search("Klass", INTERFACE, IMPLEMENTORS);
+	assertSearchResults(
+		"" // expected no result
 	);
 }
 public void testBug122442i() throws CoreException {
@@ -6491,6 +6979,39 @@ public void testBug156340() throws CoreException {
 		"java.lang.RuntimeException\n" + 
 		"java.lang.String\n" + 
 		"java.lang.Throwable",
+		requestor);
+}
+
+/**
+ * Bug 156177: [1.5][search] interfaces and annotations could be found with only one requets of searchAllTypeName
+ * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=156177"
+ */
+public void testBug156177() throws CoreException {
+	resultCollector.showRule = true;
+	workingCopies = new IJavaScriptUnit[1];
+	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b156177/Test.js",
+		"package b156177;\n" + 
+		"interface B156177_I {}\n" + 
+		"enum B156177_E {}\n" + 
+		"@interface B156177_A {}\n" + 
+		"public class B156177 {}\n"
+	);
+	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
+	new SearchEngine(this.workingCopies).searchAllTypeNames(
+		null,
+		SearchPattern.R_EXACT_MATCH,
+		null,
+		SearchPattern.R_PATTERN_MATCH, // case insensitive
+		INTERFACE_AND_ANNOTATION,
+		getJavaSearchWorkingCopiesScope(),
+		requestor,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		null
+	);
+	assertSearchResults(
+		"Unexpected all type names",
+		"b156177.B156177_A\n" + 
+		"b156177.B156177_I",
 		requestor);
 }
 

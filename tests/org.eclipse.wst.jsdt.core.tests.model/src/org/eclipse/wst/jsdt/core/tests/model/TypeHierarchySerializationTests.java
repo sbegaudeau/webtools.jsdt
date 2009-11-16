@@ -49,10 +49,6 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 	IType type2 = loaded.getType();
 	assertEquals("["+focus+"] focus are not the same", type1, type2);
 	
-	IType[] allTypes1 = stored.getAllClasses();
-	IType[] allTypes2 = loaded.getAllClasses();
-	compare("["+focus+"] all types are not the same", allTypes1, allTypes2);
-	
 	IType[] allClasses1 = stored.getAllClasses();
 	IType[] allClasses2 = loaded.getAllClasses();
 	compare("["+focus+"] all classes are not the same", allClasses1, allClasses2);
@@ -65,8 +61,8 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 	Object[] missingTypes2 = loaded.missingTypes.toArray();
 	compare("["+focus+"] all missing types are not the same", missingTypes1, missingTypes2);
 	
-	for (int i = 0; i < allTypes1.length; i++) {
-		IType aType = allTypes1[i];
+	for (int i = 0; i < allClasses1.length; i++) {
+		IType aType = allClasses1[i];
 		
 		int cachedFlags1 = stored.getCachedFlags(aType);
 		int cachedFlags2 = loaded.getCachedFlags(aType);
@@ -76,17 +72,9 @@ private static void compareTypeHierarchy(String focus, TypeHierarchy stored, Typ
 		IType superclass2 = loaded.getSuperclass(aType);
 		assertEquals("["+focus+"] superclass are not the same for "+aType.getFullyQualifiedName(), superclass1, superclass2);
 		
-		IType[] superTypes1 = new IType[]{stored.getSuperclass(aType)};
-		IType[] superTypes2 = new IType[]{loaded.getSuperclass(aType)};
-		compare("["+focus+"] all super types are not the same for "+aType.getFullyQualifiedName(), superTypes1, superTypes2);
-		
 		IType[] subclasses1 = stored.getSubclasses(aType);
 		IType[] subclasses2 = loaded.getSubclasses(aType);
 		compare("["+focus+"] all subclasses are not the same for "+aType.getFullyQualifiedName(), subclasses1, subclasses2);
-		
-		IType[] subtypes1 = stored.getSubclasses(aType);
-		IType[] subtypes2 = loaded.getSubclasses(aType);
-		compare("["+focus+"] all subtypes are not the same for "+aType.getFullyQualifiedName(), subtypes1, subtypes2);
 	}
 }
 private static void compare(String msg, Object[] types1, Object[] types2) {
@@ -132,10 +120,10 @@ private static void testFocusHierarchy(IType type, IJavaScriptProject project) t
 	ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 	ITypeHierarchy h2 = type.loadTypeHierachy(inputStream, null);
 	
-	compare(type.getFullyQualifiedName(), h1, h2);
+	compare(type.getElementName(), h1, h2);
 	
 	h2.refresh(null);
-	compare(type.getFullyQualifiedName(), h1, h2);
+	compare(type.getElementName(), h1, h2);
 }
 public void test001() throws JavaScriptModelException {
 	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "X.js");
@@ -150,36 +138,6 @@ public void test002() throws JavaScriptModelException {
 public void test003() throws JavaScriptModelException {
 	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Z.js");
 	IType type = cu.getType("Z");
-	testFocusHierarchy(type, project);
-}
-public void test004() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I1.js");
-	IType type = cu.getType("I1");
-	testFocusHierarchy(type, project);
-}
-public void test005() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I2.js");
-	IType type = cu.getType("I2");
-	testFocusHierarchy(type, project);
-}
-public void test006() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I3.js");
-	IType type = cu.getType("I3");
-	testFocusHierarchy(type, project);
-}
-public void test007() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I4.js");
-	IType type = cu.getType("I4");
-	testFocusHierarchy(type, project);
-}
-public void test008() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I5.js");
-	IType type = cu.getType("I5");
-	testFocusHierarchy(type, project);
-}
-public void test009() throws JavaScriptModelException {
-	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I6.js");
-	IType type = cu.getType("I6");
 	testFocusHierarchy(type, project);
 }
 }

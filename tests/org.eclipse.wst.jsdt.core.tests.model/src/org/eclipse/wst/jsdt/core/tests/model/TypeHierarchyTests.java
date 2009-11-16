@@ -30,9 +30,6 @@ public class TypeHierarchyTests extends ModifyingResourceTests {
 	 */
 	ITypeHierarchy typeHierarchy;
 
-static {
-//	TESTS_NAMES= new String[] { "testGeneric7" };
-}
 public static Test suite() {
 	return buildModelTestSuite(TypeHierarchyTests.class);
 }
@@ -1093,11 +1090,11 @@ public void testGetSuperclassInRegion() throws JavaScriptModelException {
  */
 public void testGetSupertypesInRegion() throws JavaScriptModelException {
 	IType type = getClassFile("TypeHierarchy", "lib.jar", "binary", "Y.class").getType();
-	IType[] superTypes = new IType[]{this.typeHierarchy.getSuperclass(type)};
+	IType superType = this.typeHierarchy.getSuperclass(type);
 	assertTypesEqual(
 		"Unexpected super types of Y",
 		"binary.X\n",
-		superTypes);
+		new IType[]{superType});
 }
 /**
  * Ensures that the correct supertypes exist in the type 
@@ -1109,11 +1106,11 @@ public void testGetSupertypesWithProjectRegion() throws JavaScriptModelException
 	region.add(project);
 	IType type = getClassFile("TypeHierarchy", "lib.jar", "binary", "Y.class").getType();
 	ITypeHierarchy hierarchy = project.newTypeHierarchy(type, region, null);
-	IType[] superTypes = new IType[]{hierarchy.getSuperclass(type)};
+	IType superType = hierarchy.getSuperclass(type);
 	assertTypesEqual(
 		"Unexpected super types of Y",
 		"binary.X\n",
-		superTypes);
+		new IType[]{superType});
 }
 /**
  * Ensures that getType() returns the type the hierarchy was created for.
@@ -1703,21 +1700,6 @@ public void testVisibility1() throws JavaScriptModelException {
 		"Super types:\n" + 
 		"  NonVisibleClass [in X.java [in q5 [in src [in TypeHierarchy]]]]\n" + 
 		"    Object [in Object.class [in java.lang [in "+ getSystemJsPathString() + "]]]\n" + 
-		"Sub types:\n",
-		hierarchy
-	);
-}
-/*
- * Ensures that a hierarchy where the super interface is not visible can still be constructed.
- */
-public void testVisibility2() throws JavaScriptModelException {
-	IType type = getCompilationUnit("/TypeHierarchy/src/q6/Z.js").getType("Z");
-	ITypeHierarchy hierarchy = type.newTypeHierarchy(null);
-	assertHierarchyEquals(
-		"Focus: Z [in Z.java [in q6 [in src [in TypeHierarchy]]]]\n" + 
-		"Super types:\n" + 
-		"  NonVisibleInterface [in X.java [in q5 [in src [in TypeHierarchy]]]]\n" + 
-		"  Object [in Object.class [in java.lang [in "+ getSystemJsPathString() + "]]]\n" + 
 		"Sub types:\n",
 		hierarchy
 	);

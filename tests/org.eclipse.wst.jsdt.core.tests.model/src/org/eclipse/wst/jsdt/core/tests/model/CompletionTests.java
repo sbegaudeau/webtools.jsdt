@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3692,6 +3692,24 @@ public void testCompletionFindSecondaryType1() throws JavaScriptModelException {
 		"element:SecondaryType1    completion:SecondaryType1    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"\n"+
 		"element:SecondaryType2    completion:SecondaryType2    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
+}
+
+public void testCompletionFindSuperInterface() throws JavaScriptModelException {
+	this.wc = getWorkingCopy(
+            "/Completion/src/CompletionFindSuperInterface.js",
+            "public class CompletionFindSuperInterface implements SuperInterface {\n"+
+            "}");
+    
+    
+    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+    String str = this.wc.getSource();
+    String completeBehind = "Super";
+    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+
+    assertResults(
+           "SuperInterface[TYPE_REF]{SuperInterface, , LSuperInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+			requestor.getResults());
 }
 
 /**
@@ -9861,7 +9879,71 @@ public void testCompletionSuperType2() throws JavaScriptModelException {
 		}
 	}
 }
-
+public void testCompletionSuperType3() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
+	IJavaScriptUnit superClass2 = null;
+	IJavaScriptUnit superInterface = null;
+	IJavaScriptUnit superInterface2 = null;
+	try {
+		superClass = getWorkingCopy(
+	            "/Completion/src/CompletionSuperClass.js",
+	            "public class CompletionSuperClass{\n" +
+	            "	public class Inner {}\n" +
+	            "	public int eqFoo(int a,Object b){\n" +
+	            "		return 1;\n" +
+	            "	}\n" +
+	            "}");
+		
+		superClass2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperClass2.js",
+	            "public class CompletionSuperClass2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		superInterface = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface.js",
+	            "public interface CompletionSuperInterface{\n" +
+	            "	public int eqFoo(int a,Object b);\n" +
+	            "}");
+		
+		superInterface2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface2.js",
+	            "public interface CompletionSuperInterface2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		this.wc = getWorkingCopy(
+	            "/Completion/src/CompletionSuperType3.js",
+	            "public class CompletionSuperType3 implements CompletionSuper");
+	    
+	    
+	    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+	    String str = this.wc.getSource();
+	    String completeBehind = "CompletionSuper";
+	    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+	
+		assertResults(
+			"CompletionSuperInterface[TYPE_REF]{CompletionSuperInterface, , LCompletionSuperInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n" +
+			"CompletionSuperInterface2[TYPE_REF]{CompletionSuperInterface2, , LCompletionSuperInterface2;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+			requestor.getResults());
+	} finally {
+		if(superClass != null) {
+			superClass.discardWorkingCopy();
+		}
+		if(superClass2 != null) {
+			superClass2.discardWorkingCopy();
+		}
+		if(superInterface != null) {
+			superInterface.discardWorkingCopy();
+		}
+		if(superInterface2 != null) {
+			superInterface2.discardWorkingCopy();
+		}
+	}
+}
 public void testCompletionSuperType4() throws JavaScriptModelException {
 	IJavaScriptUnit superClass2 = null;
 	try {
@@ -9890,6 +9972,164 @@ public void testCompletionSuperType4() throws JavaScriptModelException {
 	} finally {
 		if(superClass2 != null) {
 			superClass2.discardWorkingCopy();
+		}
+	}
+}
+public void testCompletionSuperType5() throws JavaScriptModelException {
+	IJavaScriptUnit superInterface2 = null;
+	try {
+		superInterface2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface2.js",
+	            "public interface CompletionSuperInterface2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		this.wc = getWorkingCopy(
+	            "/Completion/src/CompletionSuperType5.js",
+	            "public class CompletionSuperType5 implements CompletionSuperInterface2.Inner");
+	    
+	    
+	    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+	    String str = this.wc.getSource();
+	    String completeBehind = "CompletionSuperInterface2.Inner";
+	    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+	
+		assertResults(
+			"CompletionSuperInterface2.InnerClass[TYPE_REF]{InnerClass, , LCompletionSuperInterface2$InnerClass;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n" +
+			"CompletionSuperInterface2.InnerInterface[TYPE_REF]{InnerInterface, , LCompletionSuperInterface2$InnerInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE+ R_NON_RESTRICTED)+"}",
+			requestor.getResults());
+	} finally {
+		if(superInterface2 != null) {
+			superInterface2.discardWorkingCopy();
+		}
+	}
+}
+public void testCompletionSuperType6() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
+	IJavaScriptUnit superClass2 = null;
+	IJavaScriptUnit superInterface = null;
+	IJavaScriptUnit superInterface2 = null;
+	try {
+		superClass = getWorkingCopy(
+	            "/Completion/src/CompletionSuperClass.js",
+	            "public class CompletionSuperClass{\n" +
+	            "	public class Inner {}\n" +
+	            "	public int eqFoo(int a,Object b){\n" +
+	            "		return 1;\n" +
+	            "	}\n" +
+	            "}");
+		
+		superClass2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperClass2.js",
+	            "public class CompletionSuperClass2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		superInterface = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface.js",
+	            "public interface CompletionSuperInterface{\n" +
+	            "	public int eqFoo(int a,Object b);\n" +
+	            "}");
+		
+		superInterface2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface2.js",
+	            "public interface CompletionSuperInterface2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		this.wc = getWorkingCopy(
+	            "/Completion/src/CompletionSuperType6.js",
+	            "public interface CompletionSuperType6 extends CompletionSuper");
+	    
+	    
+	    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+	    String str = this.wc.getSource();
+	    String completeBehind = "CompletionSuper";
+	    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+	
+		assertResults(
+				"CompletionSuperInterface[TYPE_REF]{CompletionSuperInterface, , LCompletionSuperInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_INTERFACE + R_NON_RESTRICTED)+"}\n" +
+				"CompletionSuperInterface2[TYPE_REF]{CompletionSuperInterface2, , LCompletionSuperInterface2;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_INTERFACE+ R_NON_RESTRICTED)+"}",
+				requestor.getResults());
+	} finally {
+		if(superClass != null) {
+			superClass.discardWorkingCopy();
+		}
+		if(superClass2 != null) {
+			superClass2.discardWorkingCopy();
+		}
+		if(superInterface != null) {
+			superInterface.discardWorkingCopy();
+		}
+		if(superInterface2 != null) {
+			superInterface2.discardWorkingCopy();
+		}
+	}
+}
+public void testCompletionSuperType7() throws JavaScriptModelException {
+	IJavaScriptUnit superClass2 = null;
+	try {
+		superClass2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperClass2.js",
+	            "public class CompletionSuperClass2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		this.wc = getWorkingCopy(
+	            "/Completion/src/CompletionSuperType7.js",
+	            "public interface CompletionSuperType7 extends CompletionSuperClass2.Inner");
+	    
+	    
+	    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+	    String str = this.wc.getSource();
+	    String completeBehind = "CompletionSuperClass2.Inner";
+	    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+	
+		assertResults(
+			"CompletionSuperClass2.InnerClass[TYPE_REF]{InnerClass, , LCompletionSuperClass2$InnerClass;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n" +
+			"CompletionSuperClass2.InnerInterface[TYPE_REF]{InnerInterface, , LCompletionSuperClass2$InnerInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE+ R_NON_RESTRICTED)+"}",
+			requestor.getResults());
+	} finally {
+		if(superClass2 != null) {
+			superClass2.discardWorkingCopy();
+		}
+	}
+}
+public void testCompletionSuperType8() throws JavaScriptModelException {
+	IJavaScriptUnit superInterface2 = null;
+	try {
+		superInterface2 = getWorkingCopy(
+	            "/Completion/src/CompletionSuperInterface2.js",
+	            "public interface CompletionSuperInterface2 {\n" +
+	            "	public class InnerClass {}\n" +
+	            "	public interface InnerInterface {}\n" +
+	            "}");
+		
+		this.wc = getWorkingCopy(
+	            "/Completion/src/CompletionSuperType8.js",
+	            "public interface CompletionSuperType8 extends CompletionSuperInterface2.Inner");
+	    
+	    
+	    CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
+	    String str = this.wc.getSource();
+	    String completeBehind = "CompletionSuperInterface2.Inner";
+	    int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
+	
+		assertResults(
+			"CompletionSuperInterface2.InnerClass[TYPE_REF]{InnerClass, , LCompletionSuperInterface2$InnerClass;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n" +
+			"CompletionSuperInterface2.InnerInterface[TYPE_REF]{InnerInterface, , LCompletionSuperInterface2$InnerInterface;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE+ R_NON_RESTRICTED)+"}",
+			requestor.getResults());
+	} finally {
+		if(superInterface2 != null) {
+			superInterface2.discardWorkingCopy();
 		}
 	}
 }

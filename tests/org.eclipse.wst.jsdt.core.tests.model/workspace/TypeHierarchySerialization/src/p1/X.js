@@ -1,4 +1,3 @@
-package p1;
-public class X implements I5 {
-		
+function X() {
+	this.x = "x";
 }

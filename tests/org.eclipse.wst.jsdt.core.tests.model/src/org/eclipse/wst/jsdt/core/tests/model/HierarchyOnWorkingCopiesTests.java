@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,9 +38,8 @@ public static Test suite() {
  */
 public void testSimpleSubTypeHierarchy() throws CoreException {
 	String newContents =
-		"package x.y;\n" +
-		"public class A extends B {\n" +
-		"}";
+		"function A(){}\n" +
+		"A.prototype = new B()\n";
 	this.copy.getBuffer().setContents(newContents);
 	this.copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
@@ -48,9 +47,7 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
 	try {
 		file = this.createFile(
 			"P/src/x/y/B.js", 
-			"package x.y;\n" +
-			"public class B {\n" +
-			"}");
+			"function B() {}\n");
 	
 		IType type = this.getCompilationUnit("P/src/x/y/B.js").getType("B");
 		ITypeHierarchy h = type.newTypeHierarchy(new IJavaScriptUnit[] {this.copy}, null);
@@ -58,7 +55,7 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
 		assertHierarchyEquals(
 			"Focus: B [in B.js [in x.y [in src [in P]]]]\n" + 
 			"Super types:\n" + 
-			"  Object [in Object.class [in java.lang [in "+ getSystemJsPathString() + " [in P]]]]\n" + 
+			"  Object [in System.js [in java.lang [in "+ getSystemJsPathString() + " [in P]]]]\n" + 
 			"Sub types:\n" + 
 			"  A [in [Working copy] A.js [in x.y [in src [in P]]]]\n",
 			h);
@@ -72,10 +69,8 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
  */
 public void testSimpleSuperTypeHierarchy() throws CoreException {
 	String newContents =
-		"package x.y;\n" +
-		"public class A {\n" +
-		"}\n"  +
-		"class B {\n" +
+		"function A() {this.a = 1;}\n" +
+		"function B(this.b = 2;) {\n" +
 		"}";
 	this.copy.getBuffer().setContents(newContents);
 	this.copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
@@ -84,9 +79,8 @@ public void testSimpleSuperTypeHierarchy() throws CoreException {
 	try {
 		file = this.createFile(
 			"P/src/x/y/C.js", 
-			"package x.y;\n" +
-			"public class C extends B {\n" +
-			"}");
+			"function C() {} {\n" +
+			"C.prototype = new B();");
 	
 		IType type = this.getCompilationUnit("P/src/x/y/C.js").getType("C");
 		ITypeHierarchy h = type.newSupertypeHierarchy(new IJavaScriptUnit[] {this.copy}, null);
