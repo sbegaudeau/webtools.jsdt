@@ -806,7 +806,7 @@ public final class ImportRewrite {
 		if (res == ImportRewriteContext.RES_NAME_UNKNOWN) {
 			addEntry(NORMAL_PREFIX + importName);
 		}
-		return (this.isImportMatchesType)?typeName: fullTypeName;
+		return fullTypeName;
 	}
 
 	private void addEntry(String entry) {
