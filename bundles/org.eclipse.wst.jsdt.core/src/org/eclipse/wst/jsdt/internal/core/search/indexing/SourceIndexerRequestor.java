@@ -129,7 +129,7 @@ private void enterClass(TypeInfo typeInfo) {
 
 	// eliminate possible qualifications, given they need to be fully resolved again
 	if (typeInfo.superclass != null) {
-		typeInfo.superclass = getSimpleName(typeInfo.superclass);
+		//typeInfo.superclass = getSimpleName(typeInfo.superclass);
 
 		// add implicit constructor reference to default constructor
 		this.indexer.addConstructorReference(typeInfo.superclass, 0);

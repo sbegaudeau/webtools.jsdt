@@ -3266,8 +3266,8 @@ public void mustSpecifyPackage(CompilationUnitDeclaration compUnitDecl) {
 public void mustUseAStaticMethod(ASTNode messageSend, MethodBinding method) {
 	this.handle(
 		IProblem.StaticMethodRequested,
-		new String[] {new String(method.declaringClass.readableName()), new String(method.selector), typesAsString(method.isVarargs(), method.parameters, false)},
-		new String[] {new String(method.declaringClass.shortReadableName()), new String(method.selector), typesAsString(method.isVarargs(), method.parameters, true)},
+		new String[] {new String(method.declaringClass.readableName()), new String(method.selector != null ? method.selector : "".toCharArray()), typesAsString(method.isVarargs(), method.parameters, false)},
+		new String[] {new String(method.declaringClass.shortReadableName()), new String(method.selector != null ? method.selector : "".toCharArray()), typesAsString(method.isVarargs(), method.parameters, true)},
 		messageSend.sourceStart,
 		messageSend.sourceEnd);
 }

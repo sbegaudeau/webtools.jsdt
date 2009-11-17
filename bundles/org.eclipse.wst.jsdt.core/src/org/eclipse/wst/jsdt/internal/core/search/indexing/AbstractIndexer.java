@@ -43,7 +43,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addIndexEntry(
 			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
-				modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
+				modifiers, packageName, name, enclosingTypeNames, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
 	}
 	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
@@ -68,7 +68,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addIndexEntry(
 			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
-				modifiers, packageName, name, enclosingTypeNames, null, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
+				modifiers, packageName, name, enclosingTypeNames, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
 	}
 	public void addFieldDeclaration(char[] typeName, char[] fieldName, boolean isVar) {
 		char [] key = isVar ? VAR_DECL:FIELD_DECL;
@@ -92,7 +92,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 				addIndexEntry(
 					SUPER_REF,
 					SuperTypeReferencePattern.createIndexKey(
-						modifiers, packageName, name, enclosingTypeNames, typeParameterSignatures, INTERFACE_SUFFIX, superinterface, INTERFACE_SUFFIX));
+						modifiers, packageName, name, enclosingTypeNames, INTERFACE_SUFFIX, superinterface, INTERFACE_SUFFIX));
 			}
 		}
 	}

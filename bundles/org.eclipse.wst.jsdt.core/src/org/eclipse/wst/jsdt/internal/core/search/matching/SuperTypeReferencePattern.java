@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ public char[] simpleName;
 public char[] enclosingTypeName;
 public char classOrInterface;
 public int modifiers;
-public char[][] typeParameterSignatures;
 
 protected int superRefKind;
 public static final int ALL_SUPER_TYPES = 0;
@@ -46,20 +45,19 @@ public static char[] createIndexKey(
 	char[] packageName,
 	char[] typeName,
 	char[][] enclosingTypeNames,
-	char[][] typeParameterSignatures,
 	char classOrInterface,
 	char[] superTypeName,
 	char superClassOrInterface) {
 
 	if (superTypeName == null)
 		superTypeName = OBJECT;
-	char[] superSimpleName = CharOperation.lastSegment(superTypeName, '.');
+	char[] superSimpleName = superTypeName;//CharOperation.lastSegment(superTypeName, '.');
 	char[] superQualification = null;
-	if (superSimpleName != superTypeName) {
-		int length = superTypeName.length - superSimpleName.length - 1;
-		superQualification = new char[length];
-		System.arraycopy(superTypeName, 0, superQualification, 0, length);
-	}
+//	if (superSimpleName != superTypeName) {
+//		int length = superTypeName.length - superSimpleName.length - 1;
+//		superQualification = new char[length];
+//		System.arraycopy(superTypeName, 0, superQualification, 0, length);
+//	}
 
 	// if the supertype name contains a $, then split it into: source name and append the $ prefix to the qualification
 	//	e.g. p.A$B ---> p.A$ + B
@@ -82,30 +80,13 @@ public static char[] createIndexKey(
 	if (superQualification != null && CharOperation.equals(superQualification, packageName))
 		packageName = ONE_ZERO; // save some space
 
-	char[] typeParameters = CharOperation.NO_CHAR;
-	int typeParametersLength = 0;
-	if (typeParameterSignatures != null) {
-		StringBuffer buffer = new StringBuffer();
-		for (int i = 0, length = typeParameterSignatures.length; i < length; i++) {
-			char[] typeParameter = typeParameterSignatures[i];
-			buffer.append(typeParameter);
-			typeParametersLength += typeParameter.length;
-			if (i != length-1) {
-				buffer.append(',');
-				typeParametersLength++;
-			}
-		}
-		typeParameters = new char[typeParametersLength];
-		buffer.getChars(0, typeParametersLength, typeParameters, 0);
-	}
-
 	// superSimpleName / superQualification / simpleName / enclosingTypeName / typeParameters / packageName / superClassOrInterface classOrInterface modifiers
 	int superLength = superSimpleName == null ? 0 : superSimpleName.length;
 	int superQLength = superQualification == null ? 0 : superQualification.length;
 	int simpleLength = simpleName == null ? 0 : simpleName.length;
 	int enclosingLength = enclosingTypeName == null ? 0 : enclosingTypeName.length;
 	int packageLength = packageName == null ? 0 : packageName.length;
-	char[] result = new char[superLength + superQLength + simpleLength + enclosingLength + typeParametersLength + packageLength + 9];
+	char[] result = new char[superLength + superQLength + simpleLength + enclosingLength + packageLength + 9];
 	int pos = 0;
 	if (superLength > 0) {
 		System.arraycopy(superSimpleName, 0, result, pos, superLength);
@@ -125,11 +106,6 @@ public static char[] createIndexKey(
 	if (enclosingLength > 0) {
 		System.arraycopy(enclosingTypeName, 0, result, pos, enclosingLength);
 		pos += enclosingLength;
-	}
-	result[pos++] = SEPARATOR;
-	if (typeParametersLength > 0) {
-		System.arraycopy(typeParameters, 0, result, pos, typeParametersLength);
-		pos += typeParametersLength;
 	}
 	result[pos++] = SEPARATOR;
 	if (packageLength > 0) {
@@ -196,14 +172,6 @@ public void decodeIndexKey(char[] key) {
 			char[] names = CharOperation.subarray(key, start, slash);
 			this.enclosingTypeName = names;
 		}
-	}
-
-	start = ++slash;
-	if (key[start] == SEPARATOR) {
-		this.typeParameterSignatures = null;
-	} else {
-		slash = CharOperation.indexOf(SEPARATOR, key, start);
-		this.typeParameterSignatures = CharOperation.splitOn(',', key, start, slash);
 	}
 
 	start = ++slash;
