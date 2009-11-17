@@ -471,10 +471,10 @@ public static void searchAllPossibleSubTypes(
 							typeName = documentPath.substring(lastDollar+1, suffix).toCharArray();
 						}
 					}
-					binaryType = new HierarchyBinaryType(record.modifiers, record.pkgName, typeName, enclosingTypeName, null, record.classOrInterface);
+					binaryType = new HierarchyBinaryType(record.modifiers, record.pkgName, typeName, enclosingTypeName);
 					binariesFromIndexMatches.put(documentPath, binaryType);
 				}
-				binaryType.recordSuperType(record.superSimpleName, record.superQualification, record.superClassOrInterface);
+				binaryType.recordSuperType(record.superSimpleName, record.superQualification);
 			}
 			if (!isLocalOrAnonymous // local or anonymous types cannot have subtypes outside the cu that define them
 					&& !foundSuperNames.containsKey(typeName)){
@@ -485,14 +485,8 @@ public static void searchAllPossibleSubTypes(
 		}
 	};
 
-	int superRefKind;
-	try {
-		superRefKind = type.isClass() ? SuperTypeReferencePattern.ONLY_SUPER_CLASSES : SuperTypeReferencePattern.ALL_SUPER_TYPES;
-	} catch (JavaScriptModelException e) {
-		superRefKind = SuperTypeReferencePattern.ALL_SUPER_TYPES;
-	}
 	SuperTypeReferencePattern pattern =
-		new SuperTypeReferencePattern(null, null, superRefKind, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
+		new SuperTypeReferencePattern(null, null, SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
 	MatchLocator.setFocus(pattern, type);
 	SubTypeSearchJob job = new SubTypeSearchJob(
 		pattern,

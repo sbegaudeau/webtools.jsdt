@@ -1545,7 +1545,6 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 			return new SuperTypeReferencePattern(
 				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
 				simpleName,
-				SuperTypeReferencePattern.ONLY_SUPER_INTERFACES,
 				matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
@@ -1663,7 +1662,7 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 		case IJavaScriptSearchConstants.REFERENCES :
 			return new TypeReferencePattern(qualificationChars, typeChars, typeSignature, matchRule);
 		case IJavaScriptSearchConstants.IMPLEMENTORS :
-			return new SuperTypeReferencePattern(qualificationChars, typeChars, SuperTypeReferencePattern.ONLY_SUPER_INTERFACES, indexSuffix, matchRule);
+			return new SuperTypeReferencePattern(qualificationChars, typeChars, matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule),// cannot search for explicit member types

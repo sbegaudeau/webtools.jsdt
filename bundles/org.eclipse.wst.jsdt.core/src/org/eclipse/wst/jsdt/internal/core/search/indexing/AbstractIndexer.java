@@ -43,7 +43,7 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		addIndexEntry(
 			SUPER_REF,
 			SuperTypeReferencePattern.createIndexKey(
-				modifiers, packageName, name, enclosingTypeNames, CLASS_SUFFIX, superclass, CLASS_SUFFIX));
+				modifiers, packageName, name, enclosingTypeNames, superclass));
 	}
 	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
@@ -62,14 +62,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 		if (innermostTypeName != simpleTypeName)
 			addIndexEntry(CONSTRUCTOR_REF, ConstructorPattern.createIndexKey(innermostTypeName, argCount));
 	}
-	public void addEnumDeclaration(int modifiers, char[] packageName, char[] name, char[][] enclosingTypeNames, char[] superclass, boolean secondary) {
-		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
-
-		addIndexEntry(
-			SUPER_REF,
-			SuperTypeReferencePattern.createIndexKey(
-				modifiers, packageName, name, enclosingTypeNames, ENUM_SUFFIX, superclass, CLASS_SUFFIX));
-	}
 	public void addFieldDeclaration(char[] typeName, char[] fieldName, boolean isVar) {
 		char [] key = isVar ? VAR_DECL:FIELD_DECL;
 		addIndexEntry(key, FieldPattern.createIndexKey(fieldName));
@@ -81,20 +73,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 	}
 	protected void addIndexEntry(char[] category, char[] key) {
 		this.document.addIndexEntry(category, key);
-	}
-	public void addInterfaceDeclaration(int modifiers, char[] packageName, char[] name, char[][] enclosingTypeNames, char[][] superinterfaces, char[][] typeParameterSignatures, boolean secondary) {
-		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
-
-		if (superinterfaces != null) {
-			for (int i = 0, max = superinterfaces.length; i < max; i++) {
-				char[] superinterface = superinterfaces[i];
-				addTypeReference(superinterface);
-				addIndexEntry(
-					SUPER_REF,
-					SuperTypeReferencePattern.createIndexKey(
-						modifiers, packageName, name, enclosingTypeNames, INTERFACE_SUFFIX, superinterface, INTERFACE_SUFFIX));
-			}
-		}
 	}
 	public void addMethodDeclaration(char[] methodName, char[][] parameterTypes,
 				char[] returnType,boolean isFunction) {

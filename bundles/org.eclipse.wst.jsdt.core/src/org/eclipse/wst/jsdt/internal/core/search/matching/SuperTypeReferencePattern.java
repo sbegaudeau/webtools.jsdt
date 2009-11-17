@@ -21,22 +21,11 @@ public class SuperTypeReferencePattern extends JavaSearchPattern {
 
 public char[] superQualification;
 public char[] superSimpleName;
-public char superClassOrInterface;
 
-// set to CLASS_SUFFIX for only matching classes
-// set to INTERFACE_SUFFIX for only matching interfaces
-// set to TYPE_SUFFIX for matching both classes and interfaces
-public char typeSuffix;
 public char[] pkgName;
 public char[] simpleName;
 public char[] enclosingTypeName;
-public char classOrInterface;
 public int modifiers;
-
-protected int superRefKind;
-public static final int ALL_SUPER_TYPES = 0;
-public static final int ONLY_SUPER_INTERFACES = 1; // used for IMPLEMENTORS
-public static final int ONLY_SUPER_CLASSES = 2; // used for hierarchy with a class focus
 
 protected static char[][] CATEGORIES = { SUPER_REF };
 
@@ -45,9 +34,7 @@ public static char[] createIndexKey(
 	char[] packageName,
 	char[] typeName,
 	char[][] enclosingTypeNames,
-	char classOrInterface,
-	char[] superTypeName,
-	char superClassOrInterface) {
+	char[] superTypeName) {
 
 	if (superTypeName == null)
 		superTypeName = OBJECT;
@@ -76,6 +63,12 @@ public static char[] createIndexKey(
 	}
 
 	char[] simpleName = CharOperation.lastSegment(typeName, '.');
+	char[] simpleNameTemp = new char[simpleName.length + packageName.length + 1];
+	System.arraycopy(packageName, 0, simpleNameTemp, 0, packageName.length);
+	simpleNameTemp[packageName.length] = '.';
+	System.arraycopy(simpleName, 0, simpleNameTemp, packageName.length + 1, simpleName.length);
+
+	simpleName = simpleNameTemp;
 	char[] enclosingTypeName = CharOperation.concatWith(enclosingTypeNames, '$');
 	if (superQualification != null && CharOperation.equals(superQualification, packageName))
 		packageName = ONE_ZERO; // save some space
@@ -113,8 +106,6 @@ public static char[] createIndexKey(
 		pos += packageLength;
 	}
 	result[pos++] = SEPARATOR;
-	result[pos++] = superClassOrInterface;
-	result[pos++] = classOrInterface;
 	result[pos] = (char) modifiers;
 	return result;
 }
@@ -122,7 +113,6 @@ public static char[] createIndexKey(
 public SuperTypeReferencePattern(
 	char[] superQualification,
 	char[] superSimpleName,
-	int superRefKind,
 	int matchRule) {
 
 	this(matchRule);
@@ -130,18 +120,6 @@ public SuperTypeReferencePattern(
 	this.superQualification = isCaseSensitive() ? superQualification : CharOperation.toLowerCase(superQualification);
 	this.superSimpleName = (isCaseSensitive() || isCamelCase())  ? superSimpleName : CharOperation.toLowerCase(superSimpleName);
 	((InternalSearchPattern)this).mustResolve = superQualification != null;
-	this.superRefKind = superRefKind;
-}
-public SuperTypeReferencePattern(
-	char[] superQualification,
-	char[] superSimpleName,
-	int superRefKind,
-	char typeSuffix,
-	int matchRule) {
-
-	this(superQualification, superSimpleName, superRefKind, matchRule);
-	this.typeSuffix = typeSuffix;
-	((InternalSearchPattern)this).mustResolve = superQualification != null || typeSuffix != TYPE_SUFFIX;
 }
 SuperTypeReferencePattern(int matchRule) {
 	super(SUPER_REF_PATTERN, matchRule);
@@ -187,8 +165,6 @@ public void decodeIndexKey(char[] key) {
 		}
 	}
 
-	this.superClassOrInterface = key[slash + 1];
-	this.classOrInterface = key[slash + 2];
 	this.modifiers = key[slash + 3]; // implicit cast to int type
 }
 public SearchPattern getBlankPattern() {
@@ -199,11 +175,6 @@ public char[][] getIndexCategories() {
 }
 public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 	SuperTypeReferencePattern pattern = (SuperTypeReferencePattern) decodedPattern;
-	if (this.superRefKind == ONLY_SUPER_CLASSES && pattern.enclosingTypeName != ONE_ZERO/*not an anonymous*/)
-		// consider enumerations as classes, reject interfaces and annotations
-		if (pattern.superClassOrInterface == INTERFACE_SUFFIX
-			|| pattern.superClassOrInterface == ANNOTATION_TYPE_SUFFIX)
-			return false;
 
 	if (pattern.superQualification != null)
 		if (!matchesName(this.superQualification, pattern.superQualification)) return false;
@@ -238,17 +209,8 @@ EntryResult[] queryIn(Index index) throws IOException {
 	return index.query(getIndexCategories(), key, matchRule); // match rule is irrelevant when the key is null
 }
 protected StringBuffer print(StringBuffer output) {
-	switch (this.superRefKind) {
-		case ALL_SUPER_TYPES:
-			output.append("SuperTypeReferencePattern: <"); //$NON-NLS-1$
-			break;
-		case ONLY_SUPER_INTERFACES:
-			output.append("SuperInterfaceReferencePattern: <"); //$NON-NLS-1$
-			break;
-		case ONLY_SUPER_CLASSES:
-			output.append("SuperClassReferencePattern: <"); //$NON-NLS-1$
-			break;
-	}
+		output.append("SuperClassReferencePattern: <"); //$NON-NLS-1$
+
 	if (superSimpleName != null)
 		output.append(superSimpleName);
 	else

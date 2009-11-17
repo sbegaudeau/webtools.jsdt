@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.hierarchy;
 
-import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -18,7 +17,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryNestedType;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class HierarchyBinaryType implements IBinaryType {
 	private int modifiers;
@@ -26,10 +24,9 @@ public class HierarchyBinaryType implements IBinaryType {
 	private char[] name;
 	private char[] enclosingTypeName;
 	private char[] superclass;
-	private char[][] typeParameterSignatures;
 	private char[] genericSignature;
 
-public HierarchyBinaryType(int modifiers, char[] qualification, char[] sourceName, char[] enclosingTypeName, char[][] typeParameterSignatures, char typeSuffix){
+public HierarchyBinaryType(int modifiers, char[] qualification, char[] sourceName, char[] enclosingTypeName){
 
 	this.modifiers = modifiers;
 	this.sourceName = sourceName;
@@ -40,7 +37,6 @@ public HierarchyBinaryType(int modifiers, char[] qualification, char[] sourceNam
 		this.enclosingTypeName = CharOperation.concat(qualification, enclosingTypeName,'/');
 		CharOperation.replace(this.enclosingTypeName, '.', '/');
 	}
-	this.typeParameterSignatures = typeParameterSignatures;
 	CharOperation.replace(this.name, '.', '/');
 }
 /**
@@ -66,20 +62,6 @@ public char[] getFileName() {
 	return null;
 }
 public char[] getGenericSignature() {
-	if (this.typeParameterSignatures != null && this.genericSignature == null) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append('<');
-		for (int i = 0, length = this.typeParameterSignatures.length; i < length; i++) {
-			buffer.append(this.typeParameterSignatures[i]);
-		}
-		buffer.append('>');
-		if (this.superclass == null)
-			buffer.append(Signature.createTypeSignature("java.lang.Object", true/*resolved*/)); //$NON-NLS-1$
-		else
-			buffer.append(Signature.createTypeSignature(this.superclass, true/*resolved*/));
-		this.genericSignature = buffer.toString().toCharArray();
-		CharOperation.replace(this.genericSignature, '.', '/');
-	}
 	return this.genericSignature;
 }
 /**
@@ -146,7 +128,7 @@ public boolean isMember() {
 	return false;  // index did not record this information (since unused for hierarchies)
 }
 
-public void recordSuperType(char[] superTypeName, char[] superQualification, char superClassOrInterface){
+public void recordSuperType(char[] superTypeName, char[] superQualification){
 
 	// index encoding of p.A$B was B/p.A$, rebuild the proper name
 	if (superQualification != null){
@@ -158,11 +140,10 @@ public void recordSuperType(char[] superTypeName, char[] superQualification, cha
 		}
 	}
 
-	if (superClassOrInterface == IIndexConstants.CLASS_SUFFIX){
-		char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
-		CharOperation.replace(encodedName, '.', '/');
-		this.superclass = encodedName;
-	}
+	char[] encodedName = CharOperation.concat(superQualification, superTypeName, '/');
+	CharOperation.replace(encodedName, '.', '/');
+	this.superclass = encodedName;
+	
 }
 public String toString() {
 	StringBuffer buffer = new StringBuffer();

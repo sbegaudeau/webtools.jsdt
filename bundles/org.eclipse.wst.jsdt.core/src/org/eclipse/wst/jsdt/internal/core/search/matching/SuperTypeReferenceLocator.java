@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
@@ -19,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class SuperTypeReferenceLocator extends PatternLocator {
 
@@ -58,19 +56,6 @@ public int match(TypeReference node, MatchingNodeSet nodeSet) {
 protected int matchContainer() {
 	return CLASS_CONTAINER;
 }
-/* (non-Javadoc)
- * @see org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator#matchReportReference(org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode, org.eclipse.wst.jsdt.core.IJavaScriptElement, org.eclipse.wst.jsdt.internal.compiler.lookup.Binding, int, org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator)
- */
-protected void matchReportReference(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, MatchLocator locator) throws CoreException {
-	if (elementBinding instanceof ReferenceBinding) {
-		ReferenceBinding referenceBinding = (ReferenceBinding) elementBinding;
-		if (referenceBinding.isClass() && this.pattern.typeSuffix == IIndexConstants.INTERFACE_SUFFIX) {
-			// do not report class if expected types are only interfaces
-			return;
-		}
-	}
-	super.matchReportReference(reference, element, elementBinding, accuracy, locator);
-}
 protected int referenceType() {
 	return IJavaScriptElement.TYPE;
 }
@@ -88,10 +73,10 @@ public int resolveLevel(Binding binding) {
 
 	ReferenceBinding type = (ReferenceBinding) binding;
 	int level = IMPOSSIBLE_MATCH;
-	if (this.pattern.superRefKind != SuperTypeReferencePattern.ONLY_SUPER_INTERFACES) {
-		level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
-		if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
-	}
+	
+	level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
+	if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
+	
 	return level;
 }
 public String toString() {
