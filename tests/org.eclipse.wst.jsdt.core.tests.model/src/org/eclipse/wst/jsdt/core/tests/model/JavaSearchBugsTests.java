@@ -18,10 +18,30 @@ import junit.framework.Test;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.search.*;
-
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatch;
+import org.eclipse.wst.jsdt.core.search.TypeNameMatchRequestor;
+import org.eclipse.wst.jsdt.core.search.TypeNameRequestor;
+import org.eclipse.wst.jsdt.core.search.TypeReferenceMatch;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.SourceMethod;
@@ -29,7 +49,6 @@ import org.eclipse.wst.jsdt.internal.core.search.AbstractSearchScope;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 import org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator;
-import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
 
 /**
  * Non-regression tests for bugs fixed in Java Search engine.
@@ -470,60 +489,6 @@ public void testBug73336c() throws CoreException {
 		"src/b73336c/C.java b73336c.C [A] EXACT_MATCH\n" + 
 		"src/b73336c/C.java b73336c.C [A] EXACT_MATCH\n" + 
 		"src/b73336c/C.java b73336c.C [A] EXACT_MATCH"
-	);
-}
-
-/**
- * Bug 73696: searching only works for IJavaScriptSearchConstants.TYPE, but not CLASS or INTERFACE
- * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=73696"
- */
-public void testBug73696() throws CoreException {
-	workingCopies = new IJavaScriptUnit[2];
-	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b73696/C.js",
-		"package b73696;\n" + 
-		"public class C implements  I {\n" + 
-		"}",
-		owner,
-		true);
-	workingCopies[1] = getWorkingCopy("/JavaSearchBugs/src/b73696/I.js",
-		"package b73696;\n" + 
-		"public interface I {}\n",
-		owner,
-		true);
-	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
-	
-	// Interface declaration
-	TypeDeclarationPattern pattern = new TypeDeclarationPattern(
-		null,
-		null,
-		null,
-		IIndexConstants.INTERFACE_SUFFIX,
-		SearchPattern.R_PATTERN_MATCH
-	);
-	new SearchEngine(new IJavaScriptUnit[] {workingCopies[1]}).search(
-		pattern,
-		new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
-		scope,
-		resultCollector,
-		null);
-	// Class declaration
-	pattern = new TypeDeclarationPattern(
-		null,
-		null,
-		null,
-		IIndexConstants.CLASS_SUFFIX,
-		SearchPattern.R_PATTERN_MATCH
-	);
-	new SearchEngine(new IJavaScriptUnit[] {workingCopies[0]}).search(
-		pattern,
-		new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
-		scope,
-		resultCollector,
-		null);
-	assertSearchResults(
-		"src/b73696/I.java b73696.I [I] EXACT_MATCH\n" + 
-		"src/b73696/C.java b73696.C [C] EXACT_MATCH"
 	);
 }
 
@@ -1508,14 +1473,6 @@ public void testBug82208_CLASS() throws CoreException {
 		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
 	);
 }
-public void testBug82208_INTERFACE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug82208();
-	search("B82208*", INTERFACE, ALL_OCCURRENCES);
-	assertSearchResults(
-		"src/b82208/Test.java b82208.B82208_I [B82208_I] EXACT_MATCH"
-	);
-}
 public void testBug82208_ENUM() throws CoreException {
 	resultCollector.showRule = true;
 	setUpBug82208();
@@ -1530,15 +1487,6 @@ public void testBug82208_ANNOTATION_TYPE() throws CoreException {
 	search("B82208*", ANNOTATION_TYPE, ALL_OCCURRENCES);
 	assertSearchResults(
 		"src/b82208/Test.java b82208.B82208_A [B82208_A] EXACT_MATCH"
-	);
-}
-public void testBug82208_CLASS_AND_INTERFACE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug82208();
-	search("B82208*", CLASS_AND_INTERFACE, ALL_OCCURRENCES);
-	assertSearchResults(
-		"src/b82208/Test.java b82208.B82208_I [B82208_I] EXACT_MATCH\n" + 
-		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
 	);
 }
 public void testBug82208_CLASS_AND_ENUMERATION() throws CoreException {
@@ -3018,28 +2966,6 @@ public void testBug92944_CLASS() throws CoreException {
 		"b92944.B92944",
 		requestor);
 }
-public void testBug92944_CLASS_AND_INTERFACE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug92944();
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		CLASS_AND_INTERFACE,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	// Remove enum and annotation
-	assertSearchResults(
-		"Unexpected all type names",
-		"b92944.B92944\n" + 
-		"b92944.B92944_I",  // Annotation is an interface in java.lang
-		requestor);
-}
 public void testBug92944_CLASS_AND_ENUM() throws CoreException {
 	resultCollector.showRule = true;
 	setUpBug92944();
@@ -3060,26 +2986,6 @@ public void testBug92944_CLASS_AND_ENUM() throws CoreException {
 		"Unexpected all type names",
 		"b92944.B92944\n" + 
 		"b92944.B92944_E",
-		requestor);
-}
-public void testBug92944_INTERFACE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug92944();
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		INTERFACE,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	assertSearchResults(
-		"Unexpected all type names",
-		"b92944.B92944_I",
 		requestor);
 }
 public void testBug92944_ENUM() throws CoreException {
@@ -5815,13 +5721,6 @@ public void testBug122442a() throws CoreException {
 		"src/b122442/X.java b122442.X [I] EXACT_MATCH"
 	);
 }
-public void testBug122442b() throws CoreException {
-	setUpBug122442a();
-	search("I", INTERFACE, IMPLEMENTORS);
-	assertSearchResults(
-		"src/b122442/II.java b122442.II [I] EXACT_MATCH"
-	);
-}
 public void testBug122442c() throws CoreException {
 	setUpBug122442a();
 	search("I", CLASS, IMPLEMENTORS);
@@ -5850,13 +5749,6 @@ public void testBug122442d() throws CoreException {
 		"src/b122442/User.java void b122442.User.m():<anonymous>#2 [Interface] EXACT_MATCH"
 	);
 }
-public void testBug122442e() throws CoreException {
-	setUpBug122442d();
-	search("Interface", INTERFACE, IMPLEMENTORS);
-	assertSearchResults(
-		"" // expected no result
-	);
-}
 public void testBug122442f() throws CoreException {
 	setUpBug122442d();
 	search("Interface", CLASS, IMPLEMENTORS);
@@ -5870,13 +5762,6 @@ public void testBug122442g() throws CoreException {
 	assertSearchResults(
 		"src/b122442/User.java void b122442.User.m():<anonymous>#1 [Klass] EXACT_MATCH\n" + 
 		"src/b122442/User.java b122442.Sub [Klass] EXACT_MATCH"
-	);
-}
-public void testBug122442h() throws CoreException {
-	setUpBug122442d();
-	search("Klass", INTERFACE, IMPLEMENTORS);
-	assertSearchResults(
-		"" // expected no result
 	);
 }
 public void testBug122442i() throws CoreException {
@@ -6979,39 +6864,6 @@ public void testBug156340() throws CoreException {
 		"java.lang.RuntimeException\n" + 
 		"java.lang.String\n" + 
 		"java.lang.Throwable",
-		requestor);
-}
-
-/**
- * Bug 156177: [1.5][search] interfaces and annotations could be found with only one requets of searchAllTypeName
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=156177"
- */
-public void testBug156177() throws CoreException {
-	resultCollector.showRule = true;
-	workingCopies = new IJavaScriptUnit[1];
-	workingCopies[0] = getWorkingCopy("/JavaSearchBugs/src/b156177/Test.js",
-		"package b156177;\n" + 
-		"interface B156177_I {}\n" + 
-		"enum B156177_E {}\n" + 
-		"@interface B156177_A {}\n" + 
-		"public class B156177 {}\n"
-	);
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		INTERFACE_AND_ANNOTATION,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	assertSearchResults(
-		"Unexpected all type names",
-		"b156177.B156177_A\n" + 
-		"b156177.B156177_I",
 		requestor);
 }
 
