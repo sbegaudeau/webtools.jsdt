@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,12 +69,6 @@ public interface IJavaScriptSearchConstants {
 	int CLASS= 5;
 
 	/**
-	 * The searched element is an interface.
-	 * More selective than using {@link #TYPE}.
-	 */
-	int INTERFACE= 6;
-
-	/**
 	 * The searched element is an enum.
 	 * More selective than using {@link #TYPE}.
 	 *  
@@ -94,20 +88,6 @@ public interface IJavaScriptSearchConstants {
 	 *  
 	 */
 	int CLASS_AND_ENUM= 9;
-
-	/**
-	 * The searched element is a class or interface type.
-	 * More selective than using {@link #TYPE}.
-	 *  
-	 */
-	int CLASS_AND_INTERFACE= 10;
-
-	/**
-	 * The searched element is an interface or annotation type.
-	 * More selective than using {@link #TYPE}.
-	 *  
-	 */
-	int INTERFACE_AND_ANNOTATION= 11;
 
 	/**
 	 * The searched element is a field.

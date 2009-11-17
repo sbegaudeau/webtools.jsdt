@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -164,17 +164,11 @@ protected StringBuffer print(StringBuffer output) {
 		case CLASS_SUFFIX :
 			output.append("MultiClassDeclarationPattern: "); //$NON-NLS-1$
 			break;
-		case CLASS_AND_INTERFACE_SUFFIX :
-			output.append("MultiClassAndInterfaceDeclarationPattern: "); //$NON-NLS-1$
-			break;
 		case CLASS_AND_ENUM_SUFFIX :
 			output.append("MultiClassAndEnumDeclarationPattern: "); //$NON-NLS-1$
 			break;
 		case INTERFACE_SUFFIX :
 			output.append("MultiInterfaceDeclarationPattern: "); //$NON-NLS-1$
-			break;
-		case INTERFACE_AND_ANNOTATION_SUFFIX :
-			output.append("MultiInterfaceAndAnnotationDeclarationPattern: "); //$NON-NLS-1$
 			break;
 		case ENUM_SUFFIX :
 			output.append("MultiEnumDeclarationPattern: "); //$NON-NLS-1$

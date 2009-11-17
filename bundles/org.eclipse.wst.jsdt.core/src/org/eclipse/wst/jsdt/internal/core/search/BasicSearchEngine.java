@@ -344,18 +344,12 @@ public class BasicSearchEngine {
 				return ("FIELD"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.CLASS:
 				return ("CLASS"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.INTERFACE:
-				return ("INTERFACE"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.ENUM:
 				return ("ENUM"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return ("ANNOTATION_TYPE"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return ("CLASS_AND_ENUM"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
-				return ("CLASS_AND_INTERFACE"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION:
-				return ("INTERFACE_AND_ANNOTATION"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.VAR:
 				return ("VAR"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.FUNCTION:
@@ -1076,17 +1070,8 @@ public class BasicSearchEngine {
 			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
 				break;
-			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE :
-				typeSuffix = IIndexConstants.CLASS_AND_INTERFACE_SUFFIX;
-				break;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
 				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.INTERFACE :
-				typeSuffix = IIndexConstants.INTERFACE_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION :
-				typeSuffix = IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX;
 				break;
 			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;
@@ -1331,17 +1316,8 @@ public class BasicSearchEngine {
 			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
 				break;
-			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE :
-				typeSuffix = IIndexConstants.CLASS_AND_INTERFACE_SUFFIX;
-				break;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
 				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.INTERFACE :
-				typeSuffix = IIndexConstants.INTERFACE_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION :
-				typeSuffix = IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX;
 				break;
 			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;

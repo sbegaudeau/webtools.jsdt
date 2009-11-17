@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -104,17 +104,11 @@ protected StringBuffer print(StringBuffer output) {
 		case CLASS_SUFFIX :
 			output.append("ClassDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
-		case CLASS_AND_INTERFACE_SUFFIX:
-			output.append("ClassAndInterfaceDeclarationPattern: qualification<"); //$NON-NLS-1$
-			break;
 		case CLASS_AND_ENUM_SUFFIX :
 			output.append("ClassAndEnumDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
 		case INTERFACE_SUFFIX :
 			output.append("InterfaceDeclarationPattern: qualification<"); //$NON-NLS-1$
-			break;
-		case INTERFACE_AND_ANNOTATION_SUFFIX:
-			output.append("InterfaceAndAnnotationDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: qualification<"); //$NON-NLS-1$

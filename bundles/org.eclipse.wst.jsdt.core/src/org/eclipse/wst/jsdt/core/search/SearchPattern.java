@@ -1095,14 +1095,8 @@ public static SearchPattern createPattern(String stringPattern, int searchFor, i
 	switch (searchFor) {
 		case IJavaScriptSearchConstants.CLASS:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_SUFFIX);
-		case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
-			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_INTERFACE_SUFFIX);
 		case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.CLASS_AND_ENUM_SUFFIX);
-		case IJavaScriptSearchConstants.INTERFACE:
-			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_SUFFIX);
-		case IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION:
-			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.INTERFACE_AND_ANNOTATION_SUFFIX);
 		case IJavaScriptSearchConstants.ENUM:
 			return createTypePattern(stringPattern, limitTo, matchRule, IIndexConstants.ENUM_SUFFIX);
 		case IJavaScriptSearchConstants.ANNOTATION_TYPE:

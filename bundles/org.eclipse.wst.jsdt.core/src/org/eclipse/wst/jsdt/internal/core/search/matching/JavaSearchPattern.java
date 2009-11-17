@@ -154,46 +154,21 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 		switch(typeSuffix) {
 			case CLASS_SUFFIX :
 				switch (patternSuffix) {
-					case CLASS_AND_INTERFACE_SUFFIX :
 					case CLASS_AND_ENUM_SUFFIX :
 						return true;
 				}
 				return false;
 
 			case INTERFACE_SUFFIX :
-				switch (patternSuffix) {
-					case CLASS_AND_INTERFACE_SUFFIX :
-					case INTERFACE_AND_ANNOTATION_SUFFIX:
-						return true;
-				}
 				return false;
 
 			case ENUM_SUFFIX :
 				return patternSuffix == CLASS_AND_ENUM_SUFFIX;
 
-			case ANNOTATION_TYPE_SUFFIX :
-				return patternSuffix == INTERFACE_AND_ANNOTATION_SUFFIX;
-
-			case CLASS_AND_INTERFACE_SUFFIX :
-				switch (patternSuffix) {
-					case CLASS_SUFFIX :
-					case INTERFACE_SUFFIX :
-						return true;
-				}
-				return false;
-
 			case CLASS_AND_ENUM_SUFFIX :
 				switch (patternSuffix) {
 					case CLASS_SUFFIX :
 					case ENUM_SUFFIX :
-						return true;
-				}
-				return false;
-
-			case INTERFACE_AND_ANNOTATION_SUFFIX :
-				switch (patternSuffix) {
-					case INTERFACE_SUFFIX :
-					case ANNOTATION_TYPE_SUFFIX :
 						return true;
 				}
 				return false;

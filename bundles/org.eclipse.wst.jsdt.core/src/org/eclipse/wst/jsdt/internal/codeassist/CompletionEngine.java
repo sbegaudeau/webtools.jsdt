@@ -6286,8 +6286,6 @@ public final class CompletionEngine
 				int searchFor = IJavaScriptSearchConstants.TYPE;
 				if(this.assistNodeIsClass) {
 					searchFor = IJavaScriptSearchConstants.CLASS;
-				} else if(this.assistNodeIsInterface) {
-					searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 				} else if(this.assistNodeIsEnum) {
 					searchFor = IJavaScriptSearchConstants.ENUM;
 				} else if(this.assistNodeIsAnnotation) {
@@ -6401,8 +6399,6 @@ public final class CompletionEngine
 			int searchFor = IJavaScriptSearchConstants.TYPE;
 			if(this.assistNodeIsClass) {
 				searchFor = IJavaScriptSearchConstants.CLASS;
-			} else if(this.assistNodeIsInterface) {
-				searchFor = IJavaScriptSearchConstants.INTERFACE_AND_ANNOTATION;
 			} else if(this.assistNodeIsEnum) {
 				searchFor = IJavaScriptSearchConstants.ENUM;
 			} else if(this.assistNodeIsAnnotation) {

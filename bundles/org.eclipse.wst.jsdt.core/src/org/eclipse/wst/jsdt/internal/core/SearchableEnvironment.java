@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -110,16 +110,12 @@ public class SearchableEnvironment implements INameEnvironment,
 		switch (searchFilter) {
 			case IJavaScriptSearchConstants.CLASS:
 				return NameLookup.ACCEPT_CLASSES;
-			case IJavaScriptSearchConstants.INTERFACE:
-				return NameLookup.ACCEPT_INTERFACES;
 			case IJavaScriptSearchConstants.ENUM:
 				return NameLookup.ACCEPT_ENUMS;
 			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
 				return NameLookup.ACCEPT_ANNOTATIONS;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
-			case IJavaScriptSearchConstants.CLASS_AND_INTERFACE:
-				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES;
 			default:
 				return NameLookup.ACCEPT_ALL;
 		}
