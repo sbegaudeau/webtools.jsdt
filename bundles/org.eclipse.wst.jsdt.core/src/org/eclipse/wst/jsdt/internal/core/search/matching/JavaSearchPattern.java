@@ -159,9 +159,6 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 				}
 				return false;
 
-			case INTERFACE_SUFFIX :
-				return false;
-
 			case ENUM_SUFFIX :
 				return patternSuffix == CLASS_AND_ENUM_SUFFIX;
 

@@ -31,7 +31,6 @@ public interface IIndexConstants {
 			new char[] {'/', '5'}, new char[] {'/', '6'}, new char[] {'/', '7'}, new char[] {'/', '8'}, new char[] {'/', '9'}
 	};
 	char CLASS_SUFFIX = 'C';
-	char INTERFACE_SUFFIX = 'I';
 	char ENUM_SUFFIX = 'E';
 	char ANNOTATION_TYPE_SUFFIX = 'A';
 	char TYPE_SUFFIX = 0;

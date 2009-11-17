@@ -272,7 +272,6 @@ EntryResult[] queryIn(Index index) throws IOException {
 				if (this.simpleName == null) {
 					switch(this.typeSuffix) {
 						case CLASS_SUFFIX :
-						case INTERFACE_SUFFIX :
 						case ENUM_SUFFIX :
 						case ANNOTATION_TYPE_SUFFIX :
 						case CLASS_AND_ENUM_SUFFIX :
@@ -303,9 +302,6 @@ protected StringBuffer print(StringBuffer output) {
 			break;
 		case CLASS_AND_ENUM_SUFFIX :
 			output.append("ClassAndEnumDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case INTERFACE_SUFFIX :
-			output.append("InterfaceDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: pkg<"); //$NON-NLS-1$

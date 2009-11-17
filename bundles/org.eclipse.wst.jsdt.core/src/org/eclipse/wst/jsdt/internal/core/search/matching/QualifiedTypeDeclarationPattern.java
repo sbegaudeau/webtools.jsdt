@@ -107,9 +107,6 @@ protected StringBuffer print(StringBuffer output) {
 		case CLASS_AND_ENUM_SUFFIX :
 			output.append("ClassAndEnumDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
-		case INTERFACE_SUFFIX :
-			output.append("InterfaceDeclarationPattern: qualification<"); //$NON-NLS-1$
-			break;
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
