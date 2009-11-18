@@ -771,7 +771,11 @@ public class DeltaProcessor {
 							break;
 					}
 					if (pkgFragment == null) {
-						element =  rootInfo == null ? JavaScriptCore.create(resource) : JavaModelManager.create(resource, rootInfo.project);
+						boolean isSource = rootInfo == null || rootInfo.entryKind == IIncludePathEntry.CPE_SOURCE;
+						if(!isSource)
+							element = JavaScriptCore.createClassFileFrom((IFile)resource);
+						else 
+							element =  rootInfo == null ? JavaScriptCore.create(resource) : JavaModelManager.create(resource, rootInfo.project);
 					} else {
 						if (elementType == IJavaScriptElement.JAVASCRIPT_UNIT) {
 							// create compilation unit handle
@@ -1283,10 +1287,11 @@ public class DeltaProcessor {
 				String fileName = res.getName();
 				String sourceLevel = rootInfo.project == null ? null : rootInfo.project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 				String complianceLevel = rootInfo.project == null ? null : rootInfo.project.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
-				if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel)) {
-					return IJavaScriptElement.JAVASCRIPT_UNIT;
-				} else if (Util.isValidClassFileName(fileName, sourceLevel, complianceLevel) || Util.isMetadataFileName(fileName)) {
+				boolean isSource = rootInfo.entryKind == IIncludePathEntry.CPE_SOURCE;
+				if ((Util.isValidClassFileName(fileName, sourceLevel, complianceLevel) || Util.isMetadataFileName(fileName)) && !isSource) {
 					return IJavaScriptElement.CLASS_FILE;
+				} else if (Util.isValidCompilationUnitName(fileName, sourceLevel, complianceLevel)) {
+					return IJavaScriptElement.JAVASCRIPT_UNIT;
 				} else if ((rootInfo = this.rootInfo(res.getFullPath(), kind)) != null
 						&& rootInfo.project.getProject().getFullPath().isPrefixOf(res.getFullPath()) /*ensure root is a root of its project (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=185310) */) {
 					// case of proj=src=bin and resource is a jar file on the classpath
@@ -2078,7 +2083,7 @@ public class DeltaProcessor {
 					);
 
 				// is childRes in the output folder and is it filtered out ?
-				boolean isResFilteredFromOutput = this.isResFilteredFromOutput(rootInfo, outputsInfo, childRes, childType);
+				boolean isResFilteredFromOutput = false; //this.isResFilteredFromOutput(rootInfo, outputsInfo, childRes, childType);
 
 				boolean isNestedRoot = rootInfo != null && childRootInfo != null;
 				if (!isResFilteredFromOutput
