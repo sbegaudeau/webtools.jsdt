@@ -1861,18 +1861,6 @@ public class DefaultCodeFormatterConstants {
 	public static final String FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_question_in_conditional"; //$NON-NLS-1$
 	/**
 	 * <pre>
-	 * FORMATTER / Option to insert a space after question mark in a wildcard
-	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_after_question_in_wildcard"
-	 *     - possible values:   { INSERT, DO_NOT_INSERT }
-	 *     - default:           DO_NOT_INSERT
-	 * </pre>
-	 * @see JavaScriptCore#INSERT
-	 * @see JavaScriptCore#DO_NOT_INSERT
-	 *  
-	 */
-	public static final String FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_WILDCARD = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_question_in_wildcard"; //$NON-NLS-1$
-	/**
-	 * <pre>
 	 * FORMATTER / Option to insert a space after semicolon in a for statement
 	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_after_semicolon_in_for"
 	 *     - possible values:   { INSERT, DO_NOT_INSERT }
@@ -1895,18 +1883,6 @@ public class DefaultCodeFormatterConstants {
 	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_AFTER_UNARY_OPERATOR = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_after_unary_operator"; //$NON-NLS-1$
-	/**
-	 * <pre>
-	 * FORMATTER / Option to insert a space before and in wildcard
-	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_before_and_in_type_parameter"
-	 *     - possible values:   { INSERT, DO_NOT_INSERT }
-	 *     - default:           INSERT
-	 * </pre>
-	 * @see JavaScriptCore#INSERT
-	 * @see JavaScriptCore#DO_NOT_INSERT
-	 *  
-	 */
-	public static final String FORMATTER_INSERT_SPACE_BEFORE_AND_IN_TYPE_PARAMETER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_and_in_type_parameter";	//$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a space before an assignment operator
@@ -2905,18 +2881,6 @@ public class DefaultCodeFormatterConstants {
 	 *  
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_CONDITIONAL = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_question_in_conditional";	//$NON-NLS-1$
-	/**
-	 * <pre>
-	 * FORMATTER / Option to insert a space before question mark in a wildcard
-	 *     - option id:         "org.eclipse.wst.jsdt.core.formatter.insert_space_before_question_in_wildcard"
-	 *     - possible values:   { INSERT, DO_NOT_INSERT }
-	 *     - default:           DO_NOT_INSERT
-	 * </pre>
-	 * @see JavaScriptCore#INSERT
-	 * @see JavaScriptCore#DO_NOT_INSERT
-	 *  
-	 */
-	public static final String FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_WILDCARD = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_question_in_wildcard"; //$NON-NLS-1$
 	/**
 	 * <pre>
 	 * FORMATTER / Option to insert a space before semicolon

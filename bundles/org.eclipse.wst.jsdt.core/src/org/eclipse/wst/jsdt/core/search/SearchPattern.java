@@ -1568,13 +1568,6 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
  * e.g. java.lang.Object
  *		Runnable
  *		List&lt;String&gt;
- *
- *  
- *		Type arguments can be specified to search references to parameterized types.
- * 	and look as follow: '&lt;' { [ '?' {'extends'|'super'} ] type ( ',' [ '?' {'extends'|'super'} ] type )* | '?' } '&gt;'
- * 	Please note that:
- * 		- '*' is not valid inside type arguments definition &lt;&gt;
- * 		- '?' is treated as a wildcard when it is inside &lt;&gt; (ie. it must be put on first position of the type argument)
  */
 private static SearchPattern createTypePattern(String patternString, int limitTo, int matchRule, char indexSuffix) {
 

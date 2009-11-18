@@ -79,19 +79,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 		return new String(dotSeparated);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getBound()
-	 */
-	public ITypeBinding getBound() {
-//		if (this.binding.isWildcard()) {
-//			WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
-//			if (wildcardBinding.bound != null) {
-//				return this.resolver.getTypeBinding(wildcardBinding.bound);
-//			}
-//		}
-		return null;
-	}
-
 	/*
 	 * Returns the class file for the given file name, or null if not found.
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.IDependent#getFileName()
@@ -425,23 +412,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 		StringBuffer buffer;
 //		switch (this.binding.kind()) {
 //
-//			case Binding.WILDCARD_TYPE :
-//				WildcardBinding wildcardBinding = (WildcardBinding) this.binding;
-//				buffer = new StringBuffer();
-//				buffer.append(TypeConstants.WILDCARD_NAME);
-//				final ITypeBinding bound = getBound();
-//				if (bound != null) {
-//					switch(wildcardBinding.boundKind) {
-//				        case Wildcard.SUPER :
-//				        	buffer.append(TypeConstants.WILDCARD_SUPER);
-//				            break;
-//				        case Wildcard.EXTENDS :
-//				        	buffer.append(TypeConstants.WILDCARD_EXTENDS);
-//					}
-//					buffer.append(bound.getQualifiedName());
-//				}
-//				return String.valueOf(buffer);
-//
 //			case Binding.RAW_TYPE :
 //				return getTypeDeclaration().getQualifiedName();
 //
@@ -556,14 +526,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 	 */
 	public ITypeBinding[] getTypeParameters() {
 		return NO_TYPE_BINDINGS;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
-	 *  
-	 */
-	public ITypeBinding getWildcard() {
-		return null;
 	}
 
 	/* (non-Javadoc)
@@ -752,14 +714,6 @@ class JavaScriptUnitBinding implements ITypeBinding {
 	public boolean isUpperbound() {
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isWildcardType()
-	 */
-	public boolean isWildcardType() {
-		return false;
-	}
-
 
 	/*
 	 * For debugging purpose only.

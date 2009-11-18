@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -200,10 +200,8 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_space_after_postfix_operator;
 	public boolean insert_space_after_prefix_operator;
 	public boolean insert_space_after_question_in_conditional;
-	public boolean insert_space_after_question_in_wilcard;
 	public boolean insert_space_after_semicolon_in_for;
 	public boolean insert_space_after_unary_operator;
-	public boolean insert_space_before_and_in_type_parameter;
 	public boolean insert_space_before_at_in_annotation_type_declaration;
 	public boolean insert_space_before_assignment_operator;
 	public boolean insert_space_before_binary_operator;
@@ -255,7 +253,6 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_space_before_ellipsis;
 	public boolean insert_space_before_parenthesized_expression_in_return;
 	public boolean insert_space_before_parenthesized_expression_in_throw;
-	public boolean insert_space_before_question_in_wilcard;
 	public boolean insert_space_before_opening_angle_bracket_in_parameterized_type_reference;
 	public boolean insert_space_before_opening_angle_bracket_in_type_arguments;
 	public boolean insert_space_before_opening_angle_bracket_in_type_parameters;
@@ -483,10 +480,8 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_POSTFIX_OPERATOR, this.insert_space_after_postfix_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_PREFIX_OPERATOR, this.insert_space_after_prefix_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_CONDITIONAL, this.insert_space_after_question_in_conditional? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_WILDCARD, this.insert_space_after_question_in_wilcard? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_SEMICOLON_IN_FOR, this.insert_space_after_semicolon_in_for? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_UNARY_OPERATOR, this.insert_space_after_unary_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_AND_IN_TYPE_PARAMETER, this.insert_space_before_and_in_type_parameter ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_AT_IN_ANNOTATION_TYPE_DECLARATION, this.insert_space_before_at_in_annotation_type_declaration ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_ASSIGNMENT_OPERATOR, this.insert_space_before_assignment_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_BINARY_OPERATOR, this.insert_space_before_binary_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
@@ -570,7 +565,6 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_POSTFIX_OPERATOR, this.insert_space_before_postfix_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_PREFIX_OPERATOR, this.insert_space_before_prefix_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_CONDITIONAL, this.insert_space_before_question_in_conditional? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_WILDCARD, this.insert_space_before_question_in_wilcard? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON, this.insert_space_before_semicolon? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON_IN_FOR, this.insert_space_before_semicolon_in_for? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_UNARY_OPERATOR, this.insert_space_before_unary_operator? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
@@ -1463,10 +1457,6 @@ public class DefaultCodeFormatterOptions {
 		if (insertSpaceAfterQuestionInConditionalOption != null) {
 			this.insert_space_after_question_in_conditional = JavaScriptCore.INSERT.equals(insertSpaceAfterQuestionInConditionalOption);
 		}
-		final Object insertSpaceAfterQuestionInWildcardOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_QUESTION_IN_WILDCARD);
-		if (insertSpaceAfterQuestionInWildcardOption != null) {
-			this.insert_space_after_question_in_wilcard = JavaScriptCore.INSERT.equals(insertSpaceAfterQuestionInWildcardOption);
-		}
 		final Object insertSpaceAfterSemicolonInForOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_SEMICOLON_IN_FOR);
 		if (insertSpaceAfterSemicolonInForOption != null) {
 			this.insert_space_after_semicolon_in_for = JavaScriptCore.INSERT.equals(insertSpaceAfterSemicolonInForOption);
@@ -1474,10 +1464,6 @@ public class DefaultCodeFormatterOptions {
 		final Object insertSpaceAfterUnaryOperatorOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_UNARY_OPERATOR);
 		if (insertSpaceAfterUnaryOperatorOption != null) {
 			this.insert_space_after_unary_operator = JavaScriptCore.INSERT.equals(insertSpaceAfterUnaryOperatorOption);
-		}
-		final Object insertSpaceBeforeAndInWildcardOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_AND_IN_TYPE_PARAMETER);
-		if (insertSpaceBeforeAndInWildcardOption != null) {
-			this.insert_space_before_and_in_type_parameter = JavaScriptCore.INSERT.equals(insertSpaceBeforeAndInWildcardOption);
 		}
 		final Object insertSpaceBeforeAtInAnnotationTypeDeclarationOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_AT_IN_ANNOTATION_TYPE_DECLARATION);
 		if (insertSpaceBeforeAtInAnnotationTypeDeclarationOption != null) {
@@ -1811,10 +1797,6 @@ public class DefaultCodeFormatterOptions {
 		if (insertSpaceBeforeQuestionInConditionalOption != null) {
 			this.insert_space_before_question_in_conditional = JavaScriptCore.INSERT.equals(insertSpaceBeforeQuestionInConditionalOption);
 		}
-		final Object insertSpaceBeforeQuestionInWildcardOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_QUESTION_IN_WILDCARD);
-		if (insertSpaceBeforeQuestionInWildcardOption != null) {
-			this.insert_space_before_question_in_wilcard = JavaScriptCore.INSERT.equals(insertSpaceBeforeQuestionInWildcardOption);
-		}
 		final Object insertSpaceBeforeSemicolonOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_SEMICOLON);
 		if (insertSpaceBeforeSemicolonOption != null) {
 			this.insert_space_before_semicolon = JavaScriptCore.INSERT.equals(insertSpaceBeforeSemicolonOption);
@@ -2119,10 +2101,8 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_after_postfix_operator = false;
 		this.insert_space_after_prefix_operator = false;
 		this.insert_space_after_question_in_conditional = true;
-		this.insert_space_after_question_in_wilcard = false;
 		this.insert_space_after_semicolon_in_for = true;
 		this.insert_space_after_unary_operator = false;
-		this.insert_space_before_and_in_type_parameter = true;
 		this.insert_space_before_at_in_annotation_type_declaration = true;
 		this.insert_space_before_assignment_operator = true;
 		this.insert_space_before_binary_operator = true;
@@ -2205,7 +2185,6 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_postfix_operator = false;
 		this.insert_space_before_prefix_operator = false;
 		this.insert_space_before_question_in_conditional = true;
-		this.insert_space_before_question_in_wilcard = false;
 		this.insert_space_before_semicolon = false;
 		this.insert_space_before_semicolon_in_for = false;
 		this.insert_space_before_unary_operator = false;
@@ -2389,10 +2368,8 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_after_postfix_operator = false;
 		this.insert_space_after_prefix_operator = false;
 		this.insert_space_after_question_in_conditional = true;
-		this.insert_space_after_question_in_wilcard = false;
 		this.insert_space_after_semicolon_in_for = true;
 		this.insert_space_after_unary_operator = false;
-		this.insert_space_before_and_in_type_parameter = true;
 		this.insert_space_before_at_in_annotation_type_declaration = true;
 		this.insert_space_before_assignment_operator = true;
 		this.insert_space_before_binary_operator = true;
@@ -2475,7 +2452,6 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_postfix_operator = false;
 		this.insert_space_before_prefix_operator = false;
 		this.insert_space_before_question_in_conditional = true;
-		this.insert_space_before_question_in_wilcard = false;
 		this.insert_space_before_semicolon = false;
 		this.insert_space_before_semicolon_in_for = false;
 		this.insert_space_before_unary_operator = false;

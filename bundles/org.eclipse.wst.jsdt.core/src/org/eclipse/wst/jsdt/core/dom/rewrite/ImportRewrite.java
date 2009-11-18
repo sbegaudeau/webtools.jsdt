@@ -401,10 +401,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a {@link Type} node that can be used
-	 * in the code as a reference to the type. The type binding can be an array binding, type variable or wildcard.
+	 * in the code as a reference to the type. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
@@ -423,10 +422,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a {@link Type} node that can be used
-	 * in the code as a reference to the type. The type binding can be an array binding, type variable or wildcard.
+	 * in the code as a reference to the type. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
@@ -468,10 +466,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a type reference that can be used
-	 * in the code. The type binding can be an array binding, type variable or wildcard.
+	 * in the code. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
@@ -489,10 +486,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a type reference that can be used
-	 * in the code. The type binding can be an array binding, type variable or wildcard.
+	 * in the code. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
@@ -544,10 +540,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a {@link Type} that can be used
-	 * in the code. The type binding can be an array binding, type variable or wildcard.
+	 * in the code. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>
@@ -566,10 +561,9 @@ public final class ImportRewrite {
 
 	/**
 	 * Adds a new import to the rewriter's record and returns a {@link Type} that can be used
-	 * in the code. The type binding can be an array binding, type variable or wildcard.
+	 * in the code. The type binding can be an array binding or type variable.
 	 * If the binding is a generic type, the type parameters are ignored. For parameterized types, also the type
-	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type, wildcard
-	 * of wildcards are ignored.
+	 * arguments are processed and imports added if necessary. Anonymous types inside type arguments are normalized to their base type.
 	 * 	<p>
  	 * No imports are added for types that are already known. If a import for a type is recorded to be removed, this record is discarded instead.
 	 * </p>

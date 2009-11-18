@@ -14,10 +14,9 @@ package org.eclipse.wst.jsdt.core.dom;
 /**
  * Abstract base class of all type AST node types. A type node represents a
  * reference to a primitive type (including void), to an array type, or to a
- * simple named type (or type variable), to a qualified type, to a
- * parameterized type, or to a wildcard type. Note that not all of these
- * are meaningful in all contexts; for example, a wildcard type is only
- * meaningful in the type argument position of a parameterized type.
+ * simple named type (or type variable), to a qualified type, or to a
+ * parameterized type. Note that not all of these
+ * are meaningful in all contexts.
  * <p>
  * <pre>
  * Type:
@@ -26,7 +25,6 @@ package org.eclipse.wst.jsdt.core.dom;
  *    SimpleType
  *    QualifiedType
  *    ParameterizedType
- *    WildcardType
  * PrimitiveType:
  *    <b>byte</b>
  *    <b>short</b>

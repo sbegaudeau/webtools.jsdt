@@ -287,13 +287,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#getWildcard()
-	 */
-	public ITypeBinding getWildcard() {
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isAnnotation()
 	 */
 	public boolean isAnnotation() {
@@ -451,14 +444,6 @@ class RecoveredTypeBinding implements ITypeBinding {
 	public boolean isUpperbound() {
 		return false;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ITypeBinding#isWildcardType()
-	 */
-	public boolean isWildcardType() {
-		return false;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.IBinding#getJavaElement()

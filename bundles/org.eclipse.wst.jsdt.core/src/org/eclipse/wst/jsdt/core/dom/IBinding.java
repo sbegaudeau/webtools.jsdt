@@ -145,7 +145,6 @@ public interface IBinding {
 	 * <ul>
 	 * <li>primitive types, including void</li>
 	 * <li>null type</li>
-	 * <li>wildcard types</li>
 	 * <li>capture types</li>
 	 * <li>array types of any of the above</li>
 	 * <li>the "length" field of an array type</li>
@@ -202,8 +201,6 @@ public interface IBinding {
 	 * <li>type variables - the name of the type variable and
 	 * the key of the generic type or generic method that declares that
 	 * type variable</li>
-	 * <li>wildcard types - the key of the optional wildcard type bound</li>
-     * <li>capture type bindings - the key of the wildcard captured</li>
 	 * <li>generic type instances - the key of the generic type and the keys
 	 * of the type arguments used to instantiate it, and whether the
 	 * instance is explicit (a parameterized type reference) or

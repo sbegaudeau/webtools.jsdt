@@ -30,8 +30,6 @@ package org.eclipse.wst.jsdt.core.dom;
  * <li>the null type - this is the special type of <code>null</code></li>
  * <li>a type variable - represents the declaration of a type variable;
  * possibly with type bounds</li>
- * <li>a wildcard type - represents a wild card used as a type argument in
- * a parameterized type reference</li>
  * <li>a raw type - represents a legacy non-parameterized reference to
  * a generic type</li>
  * <li>a parameterized type - represents an copy of a type declaration
@@ -156,7 +154,7 @@ public interface ITypeBinding extends IBinding {
 	 * declared by the type, but excludes inherited types. Returns an empty
 	 * list if the type declares no type members, or if this type
 	 * binding represents an array type, a primitive type, a type variable,
-	 * a wildcard type, a capture, or the null type.
+	 * a capture, or the null type.
 	 * The resulting bindings are in no particular order.
 	 *
 	 * @return the list of type bindings for the member types of this type,
@@ -183,7 +181,7 @@ public interface ITypeBinding extends IBinding {
 	 * declared.
 	 * </p>
 	 * <p>Array types, primitive types, the null type, top-level types,
-	 * wildcard types, recovered binding have no declaring class.
+	 * recovered binding have no declaring class.
 	 * </p>
 	 *
 	 * @return the binding of the type that declares this type, or
@@ -206,7 +204,7 @@ public interface ITypeBinding extends IBinding {
 	 * returns <code>null</code> otherwise.
 	 * </p>
 	 * <p>Array types, primitive types, the null type, top-level types,
-	 * wildcard types, capture bindings, and recovered binding have no
+	 * capture bindings, and recovered binding have no
 	 * declaring method.
 	 * </p>
 	 *
@@ -242,8 +240,6 @@ public interface ITypeBinding extends IBinding {
 	 * - returns the binding for the corresponding generic type.</li>
 	 * <li>For raw types ({@link #isRawType()})
 	 * - returns the binding for the corresponding generic type.</li>
-	 * <li>For wildcard types ({@link #isWildcardType()})
-	 * - returns the binding for the upper bound if it has one and
 	 * java.lang.Object in other cases.</li>
 	 * <li>For type variables ({@link #isTypeVariable()})
 	 * - returns the binding for the erasure of the leftmost bound
@@ -311,12 +307,6 @@ public interface ITypeBinding extends IBinding {
 	 * type arising from a raw type reference, the name is the unqualified name of
 	 * the erasure type (as computed by this method).
 	 * Example: <code>"Collection"</code>.</li>
-	 * <li>For wildcard types, the name is "?" optionally followed by
-	 * a single space followed by the keyword "extends" or "super"
-	 * followed a single space followed by the name of the bound (as computed by
-	 * this method) when present.
-	 * Example: <code>"? extends InputStream"</code>.
-	 * </li>
      * <li>Capture types do not have a name. For these types,
      * and array types thereof, this method returns an empty string.</li>
 	 * </ul>
@@ -336,7 +326,7 @@ public interface ITypeBinding extends IBinding {
 	 * @return the binding for the package in which this class, interface,
 	 * enum, or annotation type is declared, or <code>null</code> if this type
 	 * binding represents a primitive type, an array type, the null type,
-	 * a type variable, a wildcard type, a capture binding.
+	 * a type variable, a capture binding.
 	 */
 	public IPackageBinding getPackage();
 
@@ -385,14 +375,8 @@ public interface ITypeBinding extends IBinding {
 	 * the fully qualified name is the fully qualified name of the erasure type.
 	 * Example: <code>"java.util.Collection"</code>. Note that the
 	 * the type parameters are omitted.</li>
-	 * <li>For wildcard types, the fully qualified name is "?" optionally followed by
-	 * a single space followed by the keyword "extends" or "super"
-	 * followed a single space followed by the fully qualified name of the bound
-	 * (as computed by this method) when present.
-	 * Example: <code>"? extends java.io.InputStream"</code>.
-	 * </li>
-    * <li>Capture types do not have a fully qualified name. For these types,
-    * and array types thereof, this method returns an empty string.</li>
+     * <li>Capture types do not have a fully qualified name. For these types,
+     * and array types thereof, this method returns an empty string.</li>
 	 * </ul>
 	 *
 	 * @return the fully qualified name of the type represented by this
@@ -421,7 +405,7 @@ public interface ITypeBinding extends IBinding {
 	 * <p>
 	 * If this type binding represents an interface, an array type, a
 	 * primitive type, the null type, a type variable, an enum type,
-	 * an annotation type, a wildcard type, or a capture binding then
+	 * an annotation type, or a capture binding then
 	 * <code>null</code> is returned.
 	 * </p>
 	 *
@@ -517,7 +501,7 @@ public interface ITypeBinding extends IBinding {
 	 * Returns <code>false</code> for all primitive types, the null type,
 	 * array types, and for all classes, interfaces, enums, annotation
 	 * types, type variables, parameterized type references,
-	 * raw type references, wildcard types, and capture bindings
+	 * raw type references, and capture bindings
      * whose information came from a pre-compiled binary class file.
 	 *
 	 * @return <code>true</code> if the type is in source code,
