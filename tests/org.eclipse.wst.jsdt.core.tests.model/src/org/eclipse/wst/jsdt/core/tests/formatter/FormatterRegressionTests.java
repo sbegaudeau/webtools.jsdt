@@ -7414,64 +7414,6 @@ public class FormatterRegressionTests extends AbstractJavaModelTests {
 	}
 	
 	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78698
-	 */
-	public void test536() {
-		Map options = DefaultCodeFormatterConstants.getJavaConventionsSettings();
-		DefaultCodeFormatterOptions preferences = new DefaultCodeFormatterOptions(options);
-		preferences.tab_char = DefaultCodeFormatterOptions.TAB;
-		preferences.insert_space_after_question_in_wilcard = true;
-		preferences.insert_space_before_question_in_wilcard = true;
-        preferences.tab_size = 4;
-		Hashtable javaCoreOptions = JavaScriptCore.getOptions();
-		try {
-			Hashtable newJavaCoreOptions = JavaScriptCore.getOptions();
-			newJavaCoreOptions.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-			newJavaCoreOptions.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-			newJavaCoreOptions.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
-			JavaScriptCore.setOptions(newJavaCoreOptions);
-		
-			Map compilerOptions = new HashMap();
-			compilerOptions.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-			compilerOptions.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-			compilerOptions.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);		
-			DefaultCodeFormatter codeFormatter = new DefaultCodeFormatter(preferences, compilerOptions);
-			runTest(codeFormatter, "test536", "A.js", CodeFormatter.K_JAVASCRIPT_UNIT, false);//$NON-NLS-1$ //$NON-NLS-2$
-		} finally {
-			JavaScriptCore.setOptions(javaCoreOptions);
-		}
-	}
-	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78698
-	 */
-	public void test537() {
-		Map options = DefaultCodeFormatterConstants.getJavaConventionsSettings();
-		DefaultCodeFormatterOptions preferences = new DefaultCodeFormatterOptions(options);
-		preferences.tab_char = DefaultCodeFormatterOptions.TAB;
-		preferences.insert_space_after_question_in_wilcard = true;
-		preferences.insert_space_before_question_in_wilcard = true;
-        preferences.tab_size = 4;
-		Hashtable javaCoreOptions = JavaScriptCore.getOptions();
-		try {
-			Hashtable newJavaCoreOptions = JavaScriptCore.getOptions();
-			newJavaCoreOptions.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-			newJavaCoreOptions.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-			newJavaCoreOptions.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);
-			JavaScriptCore.setOptions(newJavaCoreOptions);
-		
-			Map compilerOptions = new HashMap();
-			compilerOptions.put(CompilerOptions.OPTION_Compliance, CompilerOptions.VERSION_1_5);
-			compilerOptions.put(CompilerOptions.OPTION_TargetPlatform, CompilerOptions.VERSION_1_5);
-			compilerOptions.put(CompilerOptions.OPTION_Source, CompilerOptions.VERSION_1_5);		
-			DefaultCodeFormatter codeFormatter = new DefaultCodeFormatter(preferences, compilerOptions);
-			runTest(codeFormatter, "test537", "A.js", CodeFormatter.K_JAVASCRIPT_UNIT, false);//$NON-NLS-1$ //$NON-NLS-2$
-		} finally {
-			JavaScriptCore.setOptions(javaCoreOptions);
-		}
-	}
-	
-	/**
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=83078
 	 */
 	public void test538() {
