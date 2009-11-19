@@ -109,9 +109,12 @@ public class InferrenceManager {
 			    if (script.compilationResult!=null && script.compilationResult.compilationUnit!=null)
 			    {
 			    	String inferenceID = script.compilationResult.compilationUnit.getInferenceID();
-			    	if (inferenceProviders[i].getID().equals(inferenceID))
-			    	{
-						  return getSingleEngine(inferenceProviders[i]);
+			    	if (inferenceProviders[i].getID().equals(inferenceID)) {
+			    		InferEngine eng=inferenceProviders[i].getInferEngine();
+						eng.appliesTo=InferrenceProvider.MAYBE_THIS;
+						eng.inferenceProvider=inferenceProviders[i];
+						extEngines.add(eng);
+						break;
 			    	}
 			    }
 			    int applies = InferrenceProvider.NOT_THIS;
