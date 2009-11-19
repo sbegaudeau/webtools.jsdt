@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
+import org.eclipse.wst.jsdt.ui.tests.JSDTUITests;
 import org.eclipse.wst.jsdt.web.core.tests.AllWebCoreTests;
 import org.eclipse.wst.jsdt.web.ui.tests.AllWebUITests;
 import org.osgi.framework.Bundle;
@@ -38,6 +39,7 @@ public class MasterJSDTTestSuite extends TestSuite {
 		addTest(RunJSDTCoreTests.suite());
 		addTest(AllWebCoreTests.suite());
 		addTest(AllWebUITests.suite());
+		addTest(JSDTUITests.suite());
 
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
 		for (int i = 0; i < elements.length; i++) {

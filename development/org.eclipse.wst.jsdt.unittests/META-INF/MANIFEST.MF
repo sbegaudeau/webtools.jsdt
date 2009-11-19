@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.wst.jsdt.web.ui.tests,
  org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.ui,
+ org.eclipse.wst.jsdt.ui.tests,
  org.junit;bundle-version="[3.8.0,4.0.0)"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
