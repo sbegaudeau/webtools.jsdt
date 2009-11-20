@@ -1481,14 +1481,6 @@ public void testBug82208_ENUM() throws CoreException {
 		"src/b82208/Test.java b82208.B82208_E [B82208_E] EXACT_MATCH"
 	);
 }
-public void testBug82208_ANNOTATION_TYPE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug82208();
-	search("B82208*", ANNOTATION_TYPE, ALL_OCCURRENCES);
-	assertSearchResults(
-		"src/b82208/Test.java b82208.B82208_A [B82208_A] EXACT_MATCH"
-	);
-}
 public void testBug82208_CLASS_AND_ENUMERATION() throws CoreException {
 	resultCollector.showRule = true;
 	setUpBug82208();
@@ -3006,26 +2998,6 @@ public void testBug92944_ENUM() throws CoreException {
 	assertSearchResults(
 		"Unexpected all type names",
 		"b92944.B92944_E",
-		requestor);
-}
-public void testBug92944_ANNOTATION_TYPE() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug92944();
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		ANNOTATION_TYPE,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	assertSearchResults(
-		"Unexpected all type names",
-		"b92944.B92944_A",
 		requestor);
 }
 
