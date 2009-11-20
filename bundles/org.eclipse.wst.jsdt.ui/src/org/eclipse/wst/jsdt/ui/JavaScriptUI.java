@@ -524,8 +524,6 @@ public final class JavaScriptUI {
 			elementKinds= IJavaScriptSearchConstants.TYPE;
 		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES) {
 			elementKinds= IJavaScriptSearchConstants.CLASS;
-		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_ANNOTATION_TYPES) {
-			elementKinds= IJavaScriptSearchConstants.ANNOTATION_TYPE;
 		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_ENUMS) {
 			elementKinds= IJavaScriptSearchConstants.ENUM;
 		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES_AND_ENUMS) {

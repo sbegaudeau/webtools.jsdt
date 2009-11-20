@@ -170,9 +170,6 @@ protected StringBuffer print(StringBuffer output) {
 		case ENUM_SUFFIX :
 			output.append("MultiEnumDeclarationPattern: "); //$NON-NLS-1$
 			break;
-		case ANNOTATION_TYPE_SUFFIX :
-			output.append("MultiAnnotationTypeDeclarationPattern: "); //$NON-NLS-1$
-			break;
 		default :
 			output.append("MultiTypeDeclarationPattern: "); //$NON-NLS-1$
 			break;

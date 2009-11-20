@@ -32,7 +32,6 @@ public interface IIndexConstants {
 	};
 	char CLASS_SUFFIX = 'C';
 	char ENUM_SUFFIX = 'E';
-	char ANNOTATION_TYPE_SUFFIX = 'A';
 	char TYPE_SUFFIX = 0;
 	char CLASS_AND_ENUM_SUFFIX = IJavaScriptSearchConstants.CLASS_AND_ENUM;
 	char SEPARATOR= '/';

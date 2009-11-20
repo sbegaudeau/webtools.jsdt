@@ -362,8 +362,6 @@ public final class CompletionEngine
 	boolean assistNodeIsClass;
 	boolean assistNodeIsEnum;
 	boolean assistNodeIsException;
-	boolean assistNodeIsInterface;
-	boolean assistNodeIsAnnotation;
 	boolean assistNodeIsConstructor;
 	boolean assistNodeIsSuperType;
 	int  assistNodeInJavadoc = 0;
@@ -1359,7 +1357,6 @@ public final class CompletionEngine
 
 			this.assistNodeIsClass = singleRef.isClass();
 			this.assistNodeIsException = singleRef.isException();
-			this.assistNodeIsInterface = singleRef.isInterface();
 			this.assistNodeIsConstructor = singleRef.isConstructorType;
 			this.assistNodeIsSuperType = singleRef.isSuperType();
 
@@ -1577,7 +1574,6 @@ public final class CompletionEngine
 
 			this.assistNodeIsClass = ref.isClass();
 			this.assistNodeIsException = ref.isException();
-			this.assistNodeIsInterface = ref.isInterface();
 			this.assistNodeIsSuperType = ref.isSuperType();
 
 			this.completionToken = ref.completionIdentifier;
@@ -4362,10 +4358,6 @@ public final class CompletionEngine
 			if(!this.insideQualifiedReference) {
 				if(this.assistNodeIsClass) {
 					if(!memberType.isClass()) continue next;
-				} else if(this.assistNodeIsInterface) {
-					continue next;
-				} else if (this.assistNodeIsAnnotation) {
-					continue next;
 				}
 			}
 
@@ -5305,12 +5297,6 @@ public final class CompletionEngine
 		}
 		return 0;
 	}
-	private int computeRelevanceForAnnotation(){
-		if(this.assistNodeIsAnnotation) {
-			return R_ANNOTATION;
-		}
-		return 0;
-	}
 	private int computeRelevanceForClass(){
 		if(this.assistNodeIsClass) {
 			return R_CLASS;
@@ -5320,12 +5306,6 @@ public final class CompletionEngine
 	private int computeRelevanceForEnum(){
 		if(this.assistNodeIsEnum) {
 			return R_ENUM;
-		}
-		return 0;
-	}
-	private int computeRelevanceForInterface(){
-		if(this.assistNodeIsInterface) {
-			return R_INTERFACE;
 		}
 		return 0;
 	}
@@ -5958,10 +5938,6 @@ public final class CompletionEngine
 
 								if(this.assistNodeIsClass) {
 									if(!localType.isClass()) continue next;
-								} else if(this.assistNodeIsInterface) {
-									continue next;
-								} else if (this.assistNodeIsAnnotation) {
-									continue next;
 								}
 
 								int relevance = computeBaseRelevance();
@@ -6126,10 +6102,6 @@ public final class CompletionEngine
 				} else if (!CharOperation.prefixEquals(token, sourceType.sourceName, false)
 						&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(token, sourceType.sourceName))) continue ;
 
-				if (this.assistNodeIsAnnotation) {
-					continue next;
-				}
-
 				for (int j = typesFound.size; --j >= 0;) {
 					ReferenceBinding otherType = (ReferenceBinding) typesFound.elementAt(j);
 
@@ -6140,10 +6112,6 @@ public final class CompletionEngine
 
 				if(this.assistNodeIsClass) {
 					if(!sourceType.isClass()) continue next;
-				} else if(this.assistNodeIsInterface) {
-					continue next;
-				} else if (this.assistNodeIsAnnotation) {
-					continue next;
 				}
 
 				int relevance = computeBaseRelevance();
@@ -6166,7 +6134,7 @@ public final class CompletionEngine
 			}
 		}
 
-		if (isEmptyPrefix && !this.assistNodeIsAnnotation) {
+		if (isEmptyPrefix) {
 			if(proposeType && this.expectedTypesPtr > -1) {
 				next : for (int i = 0; i <= this.expectedTypesPtr; i++) {
 					if(this.expectedTypes[i] instanceof ReferenceBinding) {
@@ -6226,10 +6194,6 @@ public final class CompletionEngine
 
 							if(this.assistNodeIsClass) {
 								if(!refBinding.isClass()) continue next;
-							} else if(this.assistNodeIsInterface) {
-								continue next;
-							} else if (this.assistNodeIsAnnotation) {
-								continue next;
 							}
 
 							int relevance = computeBaseRelevance();
@@ -6288,8 +6252,6 @@ public final class CompletionEngine
 					searchFor = IJavaScriptSearchConstants.CLASS;
 				} else if(this.assistNodeIsEnum) {
 					searchFor = IJavaScriptSearchConstants.ENUM;
-				} else if(this.assistNodeIsAnnotation) {
-					searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 				}
 				this.nameEnvironment.findTypes(
 						token,
@@ -6401,8 +6363,6 @@ public final class CompletionEngine
 				searchFor = IJavaScriptSearchConstants.CLASS;
 			} else if(this.assistNodeIsEnum) {
 				searchFor = IJavaScriptSearchConstants.ENUM;
-			} else if(this.assistNodeIsAnnotation) {
-				searchFor = IJavaScriptSearchConstants.ANNOTATION_TYPE;
 			}
 			this.nameEnvironment.findTypes(
 					qualifiedName,

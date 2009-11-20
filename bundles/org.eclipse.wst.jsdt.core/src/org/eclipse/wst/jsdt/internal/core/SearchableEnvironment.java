@@ -112,8 +112,6 @@ public class SearchableEnvironment implements INameEnvironment,
 				return NameLookup.ACCEPT_CLASSES;
 			case IJavaScriptSearchConstants.ENUM:
 				return NameLookup.ACCEPT_ENUMS;
-			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
-				return NameLookup.ACCEPT_ANNOTATIONS;
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
 			default:

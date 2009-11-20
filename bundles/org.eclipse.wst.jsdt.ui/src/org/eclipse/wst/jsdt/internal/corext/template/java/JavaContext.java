@@ -524,12 +524,10 @@ public class JavaContext extends CompilationUnitContext {
 		final int CLASSES= SimilarElementsRequestor.CLASSES;
 		final int INTERFACES= SimilarElementsRequestor.INTERFACES;
 		final int ENUMS= SimilarElementsRequestor.ENUMS;
-		final int ANNOTATIONS= SimilarElementsRequestor.ANNOTATIONS;
 
-		switch (typeKinds & (CLASSES | INTERFACES | ENUMS | ANNOTATIONS)) {
+		switch (typeKinds & (CLASSES | INTERFACES | ENUMS)) {
 			case CLASSES: return IJavaScriptSearchConstants.CLASS;
 			case ENUMS: return IJavaScriptSearchConstants.ENUM;
-			case ANNOTATIONS: return IJavaScriptSearchConstants.ANNOTATION_TYPE;
 			case CLASSES | ENUMS: return IJavaScriptSearchConstants.CLASS_AND_ENUM;
 			default: return IJavaScriptSearchConstants.TYPE;
 		}

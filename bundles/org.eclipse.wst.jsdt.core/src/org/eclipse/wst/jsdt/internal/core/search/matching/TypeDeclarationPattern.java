@@ -273,7 +273,6 @@ EntryResult[] queryIn(Index index) throws IOException {
 					switch(this.typeSuffix) {
 						case CLASS_SUFFIX :
 						case ENUM_SUFFIX :
-						case ANNOTATION_TYPE_SUFFIX :
 						case CLASS_AND_ENUM_SUFFIX :
 							// null key already returns all types
 							// key = new char[] {ONE_STAR[0],  SEPARATOR, ONE_STAR[0]};
@@ -305,9 +304,6 @@ protected StringBuffer print(StringBuffer output) {
 			break;
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case ANNOTATION_TYPE_SUFFIX :
-			output.append("AnnotationTypeDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
 		default :
 			output.append("TypeDeclarationPattern: pkg<"); //$NON-NLS-1$

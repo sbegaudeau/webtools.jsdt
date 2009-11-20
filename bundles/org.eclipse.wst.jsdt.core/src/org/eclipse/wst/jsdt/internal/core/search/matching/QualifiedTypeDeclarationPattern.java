@@ -110,9 +110,6 @@ protected StringBuffer print(StringBuffer output) {
 		case ENUM_SUFFIX :
 			output.append("EnumDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;
-		case ANNOTATION_TYPE_SUFFIX :
-			output.append("AnnotationTypeDeclarationPattern: qualification<"); //$NON-NLS-1$
-			break;
 		default :
 			output.append("TypeDeclarationPattern: qualification<"); //$NON-NLS-1$
 			break;

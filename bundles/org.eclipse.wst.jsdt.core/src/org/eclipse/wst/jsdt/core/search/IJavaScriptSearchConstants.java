@@ -76,13 +76,6 @@ public interface IJavaScriptSearchConstants {
 	int ENUM= 7;
 
 	/**
-	 * The searched element is an annotation type.
-	 * More selective than using {@link #TYPE}.
-	 *  
-	 */
-	int ANNOTATION_TYPE= 8;
-
-	/**
 	 * The searched element is a class or enum type.
 	 * More selective than using {@link #TYPE}.
 	 *  

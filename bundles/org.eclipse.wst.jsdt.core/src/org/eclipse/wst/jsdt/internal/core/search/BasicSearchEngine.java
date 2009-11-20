@@ -346,8 +346,6 @@ public class BasicSearchEngine {
 				return ("CLASS"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.ENUM:
 				return ("ENUM"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.ANNOTATION_TYPE:
-				return ("ANNOTATION_TYPE"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
 				return ("CLASS_AND_ENUM"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.VAR:
@@ -1076,9 +1074,6 @@ public class BasicSearchEngine {
 			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;
 				break;
-			case IJavaScriptSearchConstants.ANNOTATION_TYPE :
-				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
-				break;
 			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;
 				break;
@@ -1321,9 +1316,6 @@ public class BasicSearchEngine {
 				break;
 			case IJavaScriptSearchConstants.ENUM :
 				typeSuffix = IIndexConstants.ENUM_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.ANNOTATION_TYPE :
-				typeSuffix = IIndexConstants.ANNOTATION_TYPE_SUFFIX;
 				break;
 			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;

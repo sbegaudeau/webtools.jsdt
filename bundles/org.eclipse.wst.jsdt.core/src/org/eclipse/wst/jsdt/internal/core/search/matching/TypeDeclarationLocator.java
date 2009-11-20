@@ -94,8 +94,6 @@ public int resolveLevel(Binding binding) {
 			break;
 		case ENUM_SUFFIX:
 			return IMPOSSIBLE_MATCH;
-		case ANNOTATION_TYPE_SUFFIX:
-			return IMPOSSIBLE_MATCH;
 		case TYPE_SUFFIX : // nothing
 	}
 
