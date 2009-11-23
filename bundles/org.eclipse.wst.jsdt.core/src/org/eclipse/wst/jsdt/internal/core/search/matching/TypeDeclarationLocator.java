@@ -89,11 +89,6 @@ public int resolveLevel(Binding binding) {
 		case CLASS_SUFFIX:
 			if (!type.isClass()) return IMPOSSIBLE_MATCH;
 			break;
-		case CLASS_AND_ENUM_SUFFIX:
-			if (!(type.isClass())) return IMPOSSIBLE_MATCH;
-			break;
-		case ENUM_SUFFIX:
-			return IMPOSSIBLE_MATCH;
 		case TYPE_SUFFIX : // nothing
 	}
 

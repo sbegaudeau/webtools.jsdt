@@ -141,7 +141,6 @@ private void enterClass(TypeInfo typeInfo) {
 	} else {
 		typeNames = this.enclosingTypeNames();
 	}
-	char[][] typeParameterSignatures = null;
 	char [] typeName=typeInfo.name;
 	char [] pkgName=this.packageName;
 	int index;
@@ -150,7 +149,7 @@ private void enterClass(TypeInfo typeInfo) {
 		pkgName=CharOperation.subarray(typeName, 0, index);
 		typeName=CharOperation.subarray(typeName, index+1, typeName.length);
 	}
-	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeParameterSignatures, typeInfo.secondary);
+	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeInfo.secondary);
 	this.pushTypeName(typeInfo.name);
 }
 /**

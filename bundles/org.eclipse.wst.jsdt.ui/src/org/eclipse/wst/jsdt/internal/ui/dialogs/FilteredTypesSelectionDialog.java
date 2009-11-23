@@ -1243,10 +1243,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			switch (fElemKind) {
 			case IJavaScriptSearchConstants.CLASS:
 				return modifiers == 0;
-			case IJavaScriptSearchConstants.ENUM:
-				return false;
-			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
-				return modifiers == 0;
 			}
 			return false;
 		}

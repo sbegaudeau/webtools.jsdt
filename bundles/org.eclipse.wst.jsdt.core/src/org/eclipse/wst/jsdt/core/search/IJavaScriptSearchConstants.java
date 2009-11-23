@@ -67,20 +67,13 @@ public interface IJavaScriptSearchConstants {
 	 * More selective than using {@link #TYPE}.
 	 */
 	int CLASS= 5;
-
+	
 	/**
 	 * The searched element is an enum.
 	 * More selective than using {@link #TYPE}.
 	 *  
 	 */
 	int ENUM= 7;
-
-	/**
-	 * The searched element is a class or enum type.
-	 * More selective than using {@link #TYPE}.
-	 *  
-	 */
-	int CLASS_AND_ENUM= 9;
 
 	/**
 	 * The searched element is a field.
@@ -98,11 +91,10 @@ public interface IJavaScriptSearchConstants {
 	int DECLARATIONS= 0;
 
 	/**
-	 * The search result is a type that implements an interface or extends a class.
-	 * Used in conjunction with either TYPE or CLASS or INTERFACE, it will
-	 * respectively search for any type implementing/extending a type,
-	 * or rather exclusively search for classes implementing/extending the type, or
-	 * interfaces extending the type.
+	 * The search result is a type that extends a class.
+	 * Used in conjunction with either TYPE or CLASS, it will
+	 * respectively search for any type extending a type,
+	 * or rather exclusively search for classes extending the type.
 	 */
 	int IMPLEMENTORS= 1;
 

@@ -110,10 +110,6 @@ public class SearchableEnvironment implements INameEnvironment,
 		switch (searchFilter) {
 			case IJavaScriptSearchConstants.CLASS:
 				return NameLookup.ACCEPT_CLASSES;
-			case IJavaScriptSearchConstants.ENUM:
-				return NameLookup.ACCEPT_ENUMS;
-			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
-				return NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_ENUMS;
 			default:
 				return NameLookup.ACCEPT_ALL;
 		}

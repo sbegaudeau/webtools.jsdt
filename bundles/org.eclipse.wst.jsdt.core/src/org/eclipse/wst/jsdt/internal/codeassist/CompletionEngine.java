@@ -6250,8 +6250,6 @@ public final class CompletionEngine
 				int searchFor = IJavaScriptSearchConstants.TYPE;
 				if(this.assistNodeIsClass) {
 					searchFor = IJavaScriptSearchConstants.CLASS;
-				} else if(this.assistNodeIsEnum) {
-					searchFor = IJavaScriptSearchConstants.ENUM;
 				}
 				this.nameEnvironment.findTypes(
 						token,
@@ -6361,8 +6359,6 @@ public final class CompletionEngine
 			int searchFor = IJavaScriptSearchConstants.TYPE;
 			if(this.assistNodeIsClass) {
 				searchFor = IJavaScriptSearchConstants.CLASS;
-			} else if(this.assistNodeIsEnum) {
-				searchFor = IJavaScriptSearchConstants.ENUM;
 			}
 			this.nameEnvironment.findTypes(
 					qualifiedName,

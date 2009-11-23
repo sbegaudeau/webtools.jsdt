@@ -33,7 +33,6 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			char[] name,
 			char[][] enclosingTypeNames,
 			char[] superclass,
-			char[][] typeParameterSignatures,
 			boolean secondary) {
 		addTypeDeclaration(modifiers, packageName, name, enclosingTypeNames, secondary);
 

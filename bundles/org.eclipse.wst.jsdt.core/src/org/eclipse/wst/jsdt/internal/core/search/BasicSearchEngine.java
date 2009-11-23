@@ -344,10 +344,6 @@ public class BasicSearchEngine {
 				return ("FIELD"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.CLASS:
 				return ("CLASS"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.ENUM:
-				return ("ENUM"); //$NON-NLS-1$
-			case IJavaScriptSearchConstants.CLASS_AND_ENUM:
-				return ("CLASS_AND_ENUM"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.VAR:
 				return ("VAR"); //$NON-NLS-1$
 			case IJavaScriptSearchConstants.FUNCTION:
@@ -1068,12 +1064,6 @@ public class BasicSearchEngine {
 			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
 				break;
-			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
-				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.ENUM :
-				typeSuffix = IIndexConstants.ENUM_SUFFIX;
-				break;
 			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;
 				break;
@@ -1310,12 +1300,6 @@ public class BasicSearchEngine {
 		switch(searchFor){
 			case IJavaScriptSearchConstants.CLASS :
 				typeSuffix = IIndexConstants.CLASS_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.CLASS_AND_ENUM :
-				typeSuffix = IIndexConstants.CLASS_AND_ENUM_SUFFIX;
-				break;
-			case IJavaScriptSearchConstants.ENUM :
-				typeSuffix = IIndexConstants.ENUM_SUFFIX;
 				break;
 			default :
 				typeSuffix = IIndexConstants.TYPE_SUFFIX;

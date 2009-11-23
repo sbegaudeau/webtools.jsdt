@@ -524,10 +524,6 @@ public final class JavaScriptUI {
 			elementKinds= IJavaScriptSearchConstants.TYPE;
 		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES) {
 			elementKinds= IJavaScriptSearchConstants.CLASS;
-		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_ENUMS) {
-			elementKinds= IJavaScriptSearchConstants.ENUM;
-		} else if (style == IJavaScriptElementSearchConstants.CONSIDER_CLASSES_AND_ENUMS) {
-			elementKinds= IJavaScriptSearchConstants.CLASS_AND_ENUM;
 		} else {	
 			throw new IllegalArgumentException("Invalid style constant."); //$NON-NLS-1$
 		}

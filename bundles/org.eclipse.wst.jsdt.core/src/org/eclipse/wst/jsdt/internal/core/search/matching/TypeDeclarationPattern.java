@@ -272,8 +272,6 @@ EntryResult[] queryIn(Index index) throws IOException {
 				if (this.simpleName == null) {
 					switch(this.typeSuffix) {
 						case CLASS_SUFFIX :
-						case ENUM_SUFFIX :
-						case CLASS_AND_ENUM_SUFFIX :
 							// null key already returns all types
 							// key = new char[] {ONE_STAR[0],  SEPARATOR, ONE_STAR[0]};
 							break;
@@ -298,12 +296,6 @@ protected StringBuffer print(StringBuffer output) {
 	switch (this.typeSuffix){
 		case CLASS_SUFFIX :
 			output.append("ClassDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case CLASS_AND_ENUM_SUFFIX :
-			output.append("ClassAndEnumDeclarationPattern: pkg<"); //$NON-NLS-1$
-			break;
-		case ENUM_SUFFIX :
-			output.append("EnumDeclarationPattern: pkg<"); //$NON-NLS-1$
 			break;
 		default :
 			output.append("TypeDeclarationPattern: pkg<"); //$NON-NLS-1$

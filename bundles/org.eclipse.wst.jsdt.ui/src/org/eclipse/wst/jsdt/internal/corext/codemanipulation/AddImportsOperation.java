@@ -343,12 +343,9 @@ public class AddImportsOperation implements IWorkspaceRunnable {
 	
 	private int getSearchForConstant(int typeKinds) {
 		final int CLASSES= SimilarElementsRequestor.CLASSES;
-		final int ENUMS= SimilarElementsRequestor.ENUMS;
 
-		switch (typeKinds & (CLASSES | ENUMS)) {
+		switch (typeKinds & (CLASSES)) {
 			case CLASSES: return IJavaScriptSearchConstants.CLASS;
-			case ENUMS: return IJavaScriptSearchConstants.ENUM;
-			case CLASSES | ENUMS: return IJavaScriptSearchConstants.CLASS_AND_ENUM;
 			default: return IJavaScriptSearchConstants.TYPE;
 		}
 	}

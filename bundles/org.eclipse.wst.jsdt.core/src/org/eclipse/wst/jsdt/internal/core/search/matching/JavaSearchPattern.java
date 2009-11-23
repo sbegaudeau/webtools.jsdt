@@ -153,21 +153,6 @@ public class JavaSearchPattern extends SearchPattern implements IIndexConstants 
 	boolean matchDifferentTypeSuffixes(int typeSuffix, int patternSuffix) {
 		switch(typeSuffix) {
 			case CLASS_SUFFIX :
-				switch (patternSuffix) {
-					case CLASS_AND_ENUM_SUFFIX :
-						return true;
-				}
-				return false;
-
-			case ENUM_SUFFIX :
-				return patternSuffix == CLASS_AND_ENUM_SUFFIX;
-
-			case CLASS_AND_ENUM_SUFFIX :
-				switch (patternSuffix) {
-					case CLASS_SUFFIX :
-					case ENUM_SUFFIX :
-						return true;
-				}
 				return false;
 		}
 
