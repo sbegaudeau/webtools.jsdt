@@ -2017,7 +2017,7 @@ public final class CompletionEngine
 						this.completionToken,
 						null,
 						argTypes,
-						(ReferenceBinding) ((ReferenceBinding) qualifiedBinding),
+						((ReferenceBinding) qualifiedBinding),
 						scope,
 						new ObjectVector(),
 						false,
