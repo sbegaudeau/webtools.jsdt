@@ -1473,23 +1473,6 @@ public void testBug82208_CLASS() throws CoreException {
 		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
 	);
 }
-public void testBug82208_ENUM() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug82208();
-	search("B82208*", ENUM, ALL_OCCURRENCES);
-	assertSearchResults(
-		"src/b82208/Test.java b82208.B82208_E [B82208_E] EXACT_MATCH"
-	);
-}
-public void testBug82208_CLASS_AND_ENUMERATION() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug82208();
-	search("B82208*", CLASS_AND_ENUM, ALL_OCCURRENCES);
-	assertSearchResults(
-		"src/b82208/Test.java b82208.B82208_E [B82208_E] EXACT_MATCH\n" + 
-		"src/b82208/Test.java b82208.B82208 [B82208] EXACT_MATCH"
-	);
-}
 
 /**
  * Bug 82673: [1.5][search][annot] Search for annotations misses references in default and values constructs
@@ -2956,48 +2939,6 @@ public void testBug92944_CLASS() throws CoreException {
 	assertSearchResults(
 		"Unexpected all type names",
 		"b92944.B92944",
-		requestor);
-}
-public void testBug92944_CLASS_AND_ENUM() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug92944();
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		CLASS_AND_ENUM,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	// Remove interface and annotation
-	assertSearchResults(
-		"Unexpected all type names",
-		"b92944.B92944\n" + 
-		"b92944.B92944_E",
-		requestor);
-}
-public void testBug92944_ENUM() throws CoreException {
-	resultCollector.showRule = true;
-	setUpBug92944();
-	TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-	new SearchEngine(this.workingCopies).searchAllTypeNames(
-		null,
-		SearchPattern.R_EXACT_MATCH,
-		null,
-		SearchPattern.R_PATTERN_MATCH, // case insensitive
-		ENUM,
-		getJavaSearchWorkingCopiesScope(),
-		requestor,
-		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
-		null
-	);
-	assertSearchResults(
-		"Unexpected all type names",
-		"b92944.B92944_E",
 		requestor);
 }
 
