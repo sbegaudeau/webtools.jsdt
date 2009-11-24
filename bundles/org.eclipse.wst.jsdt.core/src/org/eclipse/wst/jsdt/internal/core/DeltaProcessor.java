@@ -540,6 +540,18 @@ public class DeltaProcessor {
 				addForRefresh(javaProject);
 
 				break;
+			case IResource.FOLDER :
+				IFolder folder = (IFolder) resource;
+				if(folder.getName().equals(JavaProject.SHARED_PROPERTIES_DIRECTORY)) {
+					switch (delta.getKind()) {
+					case IResourceDelta.CHANGED :
+					// fall through
+					case IResourceDelta.ADDED :
+						children = delta.getAffectedChildren();
+						break;
+					}
+				}
+				break;
 			case IResource.FILE :
 				IFile file = (IFile) resource;
 				/* classpath file change */
