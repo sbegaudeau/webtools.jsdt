@@ -805,9 +805,11 @@ public class ClassScope extends Scope {
 		}
 
 		SourceTypeBinding sourceType = inferredType.binding;
-		environment().setAccessRestriction(sourceType, accessRestriction);
-		environment().defaultPackage.addType(sourceType);
-		sourceType.fPackage.addType(sourceType);
+		LookupEnvironment environment = environment();
+		environment.setAccessRestriction(sourceType, accessRestriction);
+		environment.defaultPackage.addType(sourceType);
+		if (environment.defaultPackage != sourceType.fPackage)
+			sourceType.fPackage.addType(sourceType);
 		return sourceType;
 	}
 
