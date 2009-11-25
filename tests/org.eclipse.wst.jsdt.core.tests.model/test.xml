@@ -50,13 +50,16 @@
                 dir="${eclipse-home}"
                 includes="${plugin-name}.*xml" />
         </delete>
-        <!-- make directory, in case path doesn't exist yet -->
-        <mkdir dir="${workspace}" />
-        <!--  but delete to make sure fresh contents-->
+        
+            <!-- 
+         make the workspace directory, in case path doesn't exist yet
+         but delete to make sure fresh contents, if it does exist
+        -->
         <delete
             dir="${workspace}"
             quiet="true" />
-
+        <mkdir
+            dir="${workspace}" />
     </target>
 
     <!-- This target defines the tests that need to be run. -->
