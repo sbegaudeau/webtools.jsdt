@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,12 +37,6 @@ public class StringLiteral extends Literal implements IStringLiteral {
 	public void computeConstant() {
 
 		constant = StringConstant.fromValue(String.valueOf(source));
-	}
-
-	public ExtendedStringLiteral extendWith(CharLiteral lit){
-
-		//add the lit source to mine, just as if it was mine
-		return new ExtendedStringLiteral(this,lit);
 	}
 
 	public ExtendedStringLiteral extendWith(StringLiteral lit){

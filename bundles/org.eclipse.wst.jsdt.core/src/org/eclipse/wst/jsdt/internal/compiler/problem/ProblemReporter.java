@@ -55,7 +55,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Literal;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -882,10 +881,10 @@ public void conflictingImport(ImportReference importRef) {
 }
 public void constantOutOfFormat(NumberLiteral literal) {
 	// the literal is not in a correct format
-	// this code is called on IntLiteral and LongLiteral
+	// this code is called on IntLiteral
 	// example 000811 ...the 8 is uncorrect.
 
-	if ((literal instanceof LongLiteral) || (literal instanceof IntLiteral)) {
+	if (literal instanceof IntLiteral) {
 		char[] source = literal.source();
 		try {
 			final String Radix;

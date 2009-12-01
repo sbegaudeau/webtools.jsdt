@@ -47,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
@@ -64,7 +63,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
@@ -77,8 +75,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -1553,10 +1549,7 @@ protected void consumeBinaryExpression(int op) {
 			// look for "string1" + "string2"
 			if (this.optimizeStringLiterals) {
 				if (expr1 instanceof StringLiteral) {
-					if (expr2 instanceof CharLiteral) { // string+char
-						this.expressionStack[this.expressionPtr] =
-							((StringLiteral) expr1).extendWith((CharLiteral) expr2);
-					} else if (expr2 instanceof StringLiteral) { //string+string
+					if (expr2 instanceof StringLiteral) { //string+string
 						this.expressionStack[this.expressionPtr] =
 							((StringLiteral) expr1).extendWith((StringLiteral) expr2);
 					} else {
@@ -4208,19 +4201,7 @@ protected void consumeToken(int type) {
 					this.scanner.currentPosition - 1));
 			break;
 		case TokenNameLongLiteral :
-			pushOnExpressionStack(
-				new LongLiteral(
-					this.scanner.getCurrentTokenSource(),
-					this.scanner.startPosition,
-					this.scanner.currentPosition - 1));
-			break;
 		case TokenNameFloatingPointLiteral :
-			pushOnExpressionStack(
-				new FloatLiteral(
-					this.scanner.getCurrentTokenSource(),
-					this.scanner.startPosition,
-					this.scanner.currentPosition - 1));
-			break;
 		case TokenNameDoubleLiteral :
 			pushOnExpressionStack(
 				new DoubleLiteral(
@@ -4230,10 +4211,11 @@ protected void consumeToken(int type) {
 			break;
 		case TokenNameCharacterLiteral :
 			pushOnExpressionStack(
-				new CharLiteral(
-					this.scanner.getCurrentTokenSource(),
-					this.scanner.startPosition,
-					this.scanner.currentPosition - 1));
+				this.createStringLiteral(
+						this.scanner.getCurrentTokenSourceString(),
+						this.scanner.startPosition,
+						this.scanner.currentPosition - 1,
+						0));
 			break;
 		case TokenNameRegExLiteral :
 			pushOnExpressionStack(
@@ -4447,11 +4429,7 @@ protected void consumeUnaryExpression(int op) {
 		if ((exp instanceof IntLiteral) && (((IntLiteral) exp).mayRepresentMIN_VALUE())) {
 			r = this.expressionStack[this.expressionPtr] = new IntLiteralMinValue();
 		} else {
-			if ((exp instanceof LongLiteral) && (((LongLiteral) exp).mayRepresentMIN_VALUE())) {
-				r = this.expressionStack[this.expressionPtr] = new LongLiteralMinValue();
-			} else {
-				r = this.expressionStack[this.expressionPtr] = new UnaryExpression(exp, op);
-			}
+			r = this.expressionStack[this.expressionPtr] = new UnaryExpression(exp, op);
 		}
 	} else {
 		r = this.expressionStack[this.expressionPtr] = new UnaryExpression(exp, op);

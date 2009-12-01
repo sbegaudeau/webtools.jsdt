@@ -1054,19 +1054,6 @@ class ASTConverter {
 		return objectLiteralField;
 	}
 
-	public CharacterLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral expression) {
-		int length = expression.sourceEnd - expression.sourceStart + 1;
-		int sourceStart = expression.sourceStart;
-		CharacterLiteral literal = new CharacterLiteral(this.ast);
-		if (this.resolveBindings) {
-			this.recordNodes(literal, expression);
-		}
-		literal.internalSetEscapedValue(new String(this.compilationUnitSource, sourceStart, length));
-		literal.setSourceRange(sourceStart, length);
-		removeLeadingAndTrailingCommentsFromLiteral(literal);
-		return literal;
-	}
-
 	public RegularExpressionLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.RegExLiteral expression) {
 		int length = expression.sourceEnd - expression.sourceStart + 1;
 		int sourceStart = expression.sourceStart;
@@ -1441,26 +1428,14 @@ class ASTConverter {
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral) expression);
 		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral) expression);
-		}
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.DoubleLiteral) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.DoubleLiteral) expression);
-		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral) expression);
 		}
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteralMinValue) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteralMinValue) expression);
 		}
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral) expression);
-		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue) expression);
-		}
-		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral) expression);
 		}
 		if (expression instanceof StringLiteralConcatenation) {
 			return convert((StringLiteralConcatenation) expression);
@@ -1582,19 +1557,6 @@ class ASTConverter {
 			fieldAccess.setSourceRange(receiver.getStartPosition(), reference.sourceEnd - receiver.getStartPosition() + 1);
 			return fieldAccess;
 		}
-	}
-
-	public NumberLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral expression) {
-		int length = expression.sourceEnd - expression.sourceStart + 1;
-		int sourceStart = expression.sourceStart;
-		NumberLiteral literal = new NumberLiteral(this.ast);
-		literal.internalSetToken(new String(this.compilationUnitSource, sourceStart, length));
-		if (this.resolveBindings) {
-			this.recordNodes(literal, expression);
-		}
-		literal.setSourceRange(sourceStart, length);
-		removeLeadingAndTrailingCommentsFromLiteral(literal);
-		return literal;
 	}
 
 	public Statement convert(ForeachStatement statement) {
@@ -1839,33 +1801,6 @@ class ASTConverter {
 			}
 		}
 		return listExpression;
-	}
-
-
-	public NumberLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral expression) {
-		int length = expression.sourceEnd - expression.sourceStart + 1;
-		int sourceStart = expression.sourceStart;
-		final NumberLiteral literal = new NumberLiteral(this.ast);
-		literal.internalSetToken(new String(this.compilationUnitSource, sourceStart, length));
-		if (this.resolveBindings) {
-			this.recordNodes(literal, expression);
-		}
-		literal.setSourceRange(sourceStart, length);
-		removeLeadingAndTrailingCommentsFromLiteral(literal);
-		return literal;
-	}
-
-	public NumberLiteral convert(org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteralMinValue expression) {
-		int length = expression.sourceEnd - expression.sourceStart + 1;
-		int sourceStart = expression.sourceStart;
-		final NumberLiteral literal = new NumberLiteral(this.ast);
-		literal.internalSetToken(new String(this.compilationUnitSource, sourceStart, length));
-		if (this.resolveBindings) {
-			this.recordNodes(literal, expression);
-		}
-		literal.setSourceRange(sourceStart, length);
-		removeLeadingAndTrailingCommentsFromLiteral(literal);
-		return literal;
 	}
 
 	public Expression convert(MessageSend expression) {

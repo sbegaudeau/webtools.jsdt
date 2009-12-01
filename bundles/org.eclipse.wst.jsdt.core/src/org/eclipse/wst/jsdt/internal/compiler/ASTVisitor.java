@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Clinit;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -44,7 +43,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
@@ -69,7 +67,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -168,9 +165,6 @@ public abstract class ASTVisitor {
 	public void endVisit(CaseStatement caseStatement, BlockScope scope) {
 		// do nothing by default
 	}
-	public void endVisit(CharLiteral charLiteral, BlockScope scope) {
-		// do nothing by default
-	}
 	public void endVisit(ClassLiteralAccess classLiteral, BlockScope scope) {
 		// do nothing by default
 	}
@@ -230,9 +224,6 @@ public abstract class ASTVisitor {
 		// do nothing by default
 	}
 	public void endVisit(FieldReference fieldReference, ClassScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(FloatLiteral floatLiteral, BlockScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(ForeachStatement forStatement, BlockScope scope) {
@@ -348,9 +339,6 @@ public abstract class ASTVisitor {
 		// do nothing by default
 	}
 	public void endVisit(ListExpression listDeclaration, BlockScope scope) {
-		// do nothing by default
-	}
-	public void endVisit(LongLiteral longLiteral, BlockScope scope) {
 		// do nothing by default
 	}
 	public void endVisit(MessageSend messageSend, BlockScope scope) {
@@ -547,9 +535,6 @@ public abstract class ASTVisitor {
 	public boolean visit(CaseStatement caseStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
 	public boolean visit(ClassLiteralAccess classLiteral, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -609,9 +594,6 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(FieldReference fieldReference, ClassScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(FloatLiteral floatLiteral, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ForeachStatement forStatement, BlockScope scope) {
@@ -734,9 +716,6 @@ public abstract class ASTVisitor {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(ListExpression listDeclaration, BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(MessageSend messageSend, BlockScope scope) {

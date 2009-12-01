@@ -70,9 +70,6 @@ public abstract class ASTVisitor  {
 	public void endVisit(ICaseStatement caseStatement) {
 		// do nothing by default
 	}
-	public void endVisit(ICharLiteral charLiteral) {
-		// do nothing by default
-	}
 	public void endVisit(IScriptFileDeclaration scriptFileDeclaration) {		
 		// do nothing by default
 	}
@@ -117,9 +114,6 @@ public abstract class ASTVisitor  {
 		// do nothing by default
 	}
 	
-	public void endVisit(IFloatLiteral floatLiteral) {
-		// do nothing by default
-	}
 	public void endVisit(IForeachStatement forStatement) {
 		// do nothing by default
 	}
@@ -195,9 +189,6 @@ public abstract class ASTVisitor  {
 		// do nothing by default
 	}
 	public void endVisit(IListExpression listDeclaration) {
-		// do nothing by default
-	}
-	public void endVisit(ILongLiteral longLiteral) {
 		// do nothing by default
 	}
 	public void endVisit(IFunctionCall messageSend) {
@@ -328,10 +319,6 @@ public abstract class ASTVisitor  {
 	public boolean visit(ICaseStatement caseStatement) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(ICharLiteral charLiteral) {
-		return true; // do nothing by default, keep traversing
-	}
-
 	public boolean visit(IScriptFileDeclaration compilationUnitDeclaration) {
 		return true; // do nothing by default, keep traversing
 	}
@@ -372,10 +359,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IFieldReference fieldReference) {
-		return true; // do nothing by default, keep traversing
-	}
-
-	public boolean visit(IFloatLiteral floatLiteral) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IForeachStatement forStatement) {
@@ -472,9 +455,6 @@ public abstract class ASTVisitor  {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IListExpression listDeclaration) {
-		return true; // do nothing by default, keep traversing
-	}
-	public boolean visit(ILongLiteral longLiteral) {
 		return true; // do nothing by default, keep traversing
 	}
 	public boolean visit(IFunctionCall functionCall) {

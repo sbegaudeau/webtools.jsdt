@@ -23,7 +23,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompoundAssignment;
@@ -34,12 +33,10 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OR_OR_Expression;
@@ -282,11 +279,6 @@ class BinaryExpressionFragmentBuilder
 		return false;
 	}
 
-	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-		this.addSmallFragment(charLiteral);
-		return false;
-	}
-
 	public boolean visit(
 		ClassLiteralAccess classLiteralAccess,
 		BlockScope scope) {
@@ -335,11 +327,6 @@ class BinaryExpressionFragmentBuilder
 		return false;
 	}
 
-	public boolean visit(FloatLiteral floatLiteral, BlockScope scope) {
-		this.addSmallFragment(floatLiteral);
-		return false;
-	}
-
 
 	public boolean visit(ObjectLiteral literal, BlockScope scope) {
 		this.addRealFragment(literal);
@@ -373,10 +360,6 @@ class BinaryExpressionFragmentBuilder
 		BlockScope scope) {
 			this.addRealFragment(listExpression);
 			return false;
-	}
-	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
-		this.addSmallFragment(longLiteral);
-		return false;
 	}
 
 	public boolean visit(MessageSend messageSend, BlockScope scope) {

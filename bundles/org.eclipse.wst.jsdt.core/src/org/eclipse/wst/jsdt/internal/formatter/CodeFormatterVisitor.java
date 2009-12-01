@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Clinit;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
@@ -53,7 +52,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FalseLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForInStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
@@ -66,7 +64,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.IntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NullLiteral;
@@ -2651,26 +2648,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-
-		final int numberOfParens = (charLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
-		if (numberOfParens > 0) {
-			manageOpeningParenthesizedExpression(charLiteral, numberOfParens);
-		}
-		this.scribe.checkNLSTag(charLiteral.sourceStart);
-		this.scribe.printNextToken(TerminalTokens.TokenNameCharacterLiteral);
-		this.scribe.printTrailingComment();
-
-		if (numberOfParens > 0) {
-			manageClosingParenthesizedExpression(charLiteral, numberOfParens);
-		}
-		return false;
-	}
-
-
-	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.ClassLiteralAccess, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
 	public boolean visit(ClassLiteralAccess classLiteral, BlockScope scope) {
@@ -3349,26 +3326,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.FloatLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(FloatLiteral floatLiteral, BlockScope scope) {
-
-		final int numberOfParens = (floatLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
-		if (numberOfParens > 0) {
-			manageOpeningParenthesizedExpression(floatLiteral, numberOfParens);
-		}
-		Constant constant = floatLiteral.constant;
-		if (constant != null && floatLiteral.constant.floatValue() < 0) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameMINUS);
-		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameFloatingPointLiteral);
-
-		if (numberOfParens > 0) {
-			manageClosingParenthesizedExpression(floatLiteral, numberOfParens);
-		}
-		return false;
-	}
 	public boolean visit(ForeachStatement forStatement, BlockScope scope) {
 		this.scribe.printNextToken(TerminalTokens.TokenNamefor);
 	    final int line = this.scribe.line;
@@ -3771,27 +3728,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	 */
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
 		formatLocalDeclaration(localDeclaration, scope, this.preferences.insert_space_before_comma_in_multiple_local_declarations, this.preferences.insert_space_after_comma_in_multiple_local_declarations);
-		return false;
-	}
-
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.LongLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(LongLiteral longLiteral, BlockScope scope) {
-
-		final int numberOfParens = (longLiteral.bits & ASTNode.ParenthesizedMASK) >> ASTNode.ParenthesizedSHIFT;
-		if (numberOfParens > 0) {
-			manageOpeningParenthesizedExpression(longLiteral, numberOfParens);
-		}
-		Constant constant = longLiteral.constant;
-		if (constant != null && constant.longValue() < 0) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameMINUS);
-		}
-		this.scribe.printNextToken(TerminalTokens.TokenNameLongLiteral);
-
-		if (numberOfParens > 0) {
-			manageClosingParenthesizedExpression(longLiteral, numberOfParens);
-		}
 		return false;
 	}
 	/**
@@ -4279,7 +4215,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			manageOpeningParenthesizedExpression(stringLiteral, numberOfParens);
 		}
 		this.scribe.checkNLSTag(stringLiteral.sourceStart);
-		this.scribe.printNextToken(TerminalTokens.TokenNameStringLiteral);
+		this.scribe.printNextToken(new int[]{TerminalTokens.TokenNameCharacterLiteral, TerminalTokens.TokenNameStringLiteral});
 		this.scribe.printTrailingComment();
 		if (numberOfParens > 0) {
 			manageClosingParenthesizedExpression(stringLiteral, numberOfParens);

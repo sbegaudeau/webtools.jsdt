@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
-import org.eclipse.wst.jsdt.core.ast.ICharLiteral;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFalseLiteral;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
@@ -935,7 +934,7 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	protected InferredType getTypeOf(IExpression expression) {
-		if (expression instanceof IStringLiteral || expression instanceof ICharLiteral) {
+		if (expression instanceof IStringLiteral) {
 			return StringType;
 		}
 		else if (expression instanceof INumberLiteral) {

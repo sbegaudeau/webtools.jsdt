@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BreakStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ContinueStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.EqualExpression;
@@ -613,25 +612,6 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 		pushValue(receiver,false);
 
 		return false;
-	}
-	
-	
-
-	public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-		String value;
-		if (charLiteral.source==null)
-		{
-			char [] chars={charLiteral.value};
-			value = new String(chars);
-		}
-		else  
-		{
-			char [] chars=new char[charLiteral.source.length-2];
-			System.arraycopy(charLiteral.source, 1, chars, 0, chars.length);
-			value =new String(chars);
-		}
-		pushString(value);
-		return super.visit(charLiteral, scope);
 	}
 
 	public boolean visit(FalseLiteral falseLiteral, BlockScope scope) {
