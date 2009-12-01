@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CombinedBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ExtendedStringLiteral;
@@ -890,11 +889,6 @@ public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
 	super.endVisit(binaryExpression, scope);
 }
 
-public void endVisit(CharLiteral charLiteral, BlockScope scope) {
-	this.collector.append("[ev CL " + cut(charLiteral.toString()) + "]\n");
-	super.endVisit(charLiteral, scope);
-}
-
 public void endVisit(ExtendedStringLiteral literal, BlockScope scope) {
 	this.collector.append("[ev ESL " + cut(literal.toString()) + "]\n");
 	super.endVisit(literal, scope);
@@ -920,11 +914,6 @@ public void endVisit(StringLiteralConcatenation literal, BlockScope scope) {
 public boolean visit(BinaryExpression binaryExpression, BlockScope scope) {
 	this.collector.append("[v BE " + cut(binaryExpression.toString()) + "]\n");
 	return super.visit(binaryExpression, scope);
-}
-
-public boolean visit(CharLiteral charLiteral, BlockScope scope) {
-	this.collector.append("[v CL " + cut(charLiteral.toString()) + "]\n");
-	return super.visit(charLiteral, scope);
 }
 
 public boolean visit(ExtendedStringLiteral literal, BlockScope scope) {

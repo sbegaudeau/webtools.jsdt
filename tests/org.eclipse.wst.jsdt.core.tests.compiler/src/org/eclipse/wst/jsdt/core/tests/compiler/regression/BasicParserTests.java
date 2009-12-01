@@ -329,7 +329,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"i= { 'a': 2 , 'b': 3+4};" + 
 				"\n",
 			"X.js",
-			"i = {\n  'a' : 2,\n  'b' : (3 + 4)\n};" + 
+			"i = {\n  \"a\" : 2,\n  \"b\" : (3 + 4)\n};" + 
 			"\n"
 		 );
 		 
@@ -581,7 +581,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"}\n",
 			"X.js",
 				"var SingleQuote = {\n" +
-				"  Version : '1.1-beta2'\n" +
+				"  Version : \"1.1-beta2\"\n" +
 				"};\n"
 		);
 	}
@@ -623,7 +623,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"String.replace(/&/g, '&amp;');",
 			"X.js",
-				"String.replace(/&/g, '&amp;');\n"
+				"String.replace(/&/g, \"&amp;\");\n"
 		);
 	}
 	
@@ -631,7 +631,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"  (!options) ? options = {} : '';",
 			"X.js",
-				"((! options) ? (options = {}) : '');\n"			
+				"((! options) ? (options = {}) : \"\");\n"			
 		);
 	}
 	
@@ -639,7 +639,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"  (!options) ? '' : options = {};",
 			"X.js",
-				"((! options) ? '' : (options = {}));\n"			
+				"((! options) ? \"\" : (options = {}));\n"			
 		);
 	}
 	
@@ -735,7 +735,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"'abc\\u0027def';\n",
 			"X.js",
-				"'abc'def';\n"			
+				"\"abc\'def\";\n"			
 		);
 	}
 	
@@ -988,11 +988,11 @@ public class BasicParserTests extends AbstractRegressionTest {
 				      
 			"X.js",
 			"var fields = ["+
-		     "{\n  name : 'id',\n  type : 'int'\n},"+
-		      " abc, userName, , 'forumtitle', 'forumid', 'author',"+
-			" {\n  name : 'lastpost',\n  mapping : 'lastpost',\n  type : 'date',\n"+
-		    "  dateFormat : 'timestamp'\n},"+
-		     " 'lastposter', 'excerpt'"+
+		     "{\n  name : \"id\",\n  type : \"int\"\n},"+
+		      " abc, userName, , \"forumtitle\", \"forumid\", \"author\","+
+			" {\n  name : \"lastpost\",\n  mapping : \"lastpost\",\n  type : \"date\",\n"+
+		    "  dateFormat : \"timestamp\"\n},"+
+		     " \"lastposter\", \"excerpt\""+
 		      "];"+
 		   		"\n;\n"  
 		);

@@ -1213,8 +1213,8 @@ public class ASTRewritingExpressionsTest extends ASTRewritingTest {
 		{ // replace number
 			ReturnStatement returnStatement= (ReturnStatement) statements.get(0);
 			
-			CharacterLiteral literal= (CharacterLiteral) returnStatement.getExpression();
-			rewrite.set(literal, CharacterLiteral.ESCAPED_VALUE_PROPERTY, "'y'", null);
+			StringLiteral literal= (StringLiteral) returnStatement.getExpression();
+			rewrite.set(literal, StringLiteral.ESCAPED_VALUE_PROPERTY, "'y'", null);
 		}
 			
 		String preview= evaluateRewrite(cu, rewrite);
