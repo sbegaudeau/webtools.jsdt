@@ -735,7 +735,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"'abc\\u0027def';\n",
 			"X.js",
-				"\"abc'def\";\n"				
+				"\"abc\\'def\";\n"				
 		);
 	}
 	

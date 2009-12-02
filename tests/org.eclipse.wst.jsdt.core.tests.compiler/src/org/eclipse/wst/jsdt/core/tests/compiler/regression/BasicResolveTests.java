@@ -1495,6 +1495,50 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					""
 			);
 	}
-
-
+	
+	public void testbug268989_1() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**@return {Date}*/function test(w) {return w}\n" +
+							"var t = test(3);\n" +
+							"t.getTime();"
+					},
+					""
+			);
+	}
+	
+	public void testbug268989_2() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**@returns {Date}*/function test(w) {return w}\n" +
+							"var t = test(3);\n" +
+							"t.getTime();"
+					},
+					""
+			);
+	}
+	
+	public void testObject() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"var o = new Object();\n" +
+							"var x = o.toString();\n" +
+							"x.charAt(0);\n" +
+							"var x = o.toLocaleString();\n" +
+							"x.charAt(0);\n" +
+							"var x = o.valueOf();\n" +
+							"x.toLocaleString();\n" +
+							"var x = o.hasOwnProperty(1);\n" +
+							"var x = o.isPrototypeOf(1);\n" +
+							"var x = o.propertyIsEnumerable(1);\n" +
+							"var x = o.constructor;\n" +
+							"x.call();"
+					},
+					""
+			);
+	}
+	
 }

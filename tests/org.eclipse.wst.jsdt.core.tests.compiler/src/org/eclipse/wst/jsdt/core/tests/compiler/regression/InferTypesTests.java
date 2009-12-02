@@ -944,6 +944,5 @@ public class InferTypesTests extends AbstractRegressionTest {
 				getDefaultOptions()
 				
 			 );
-		}
-		
+		}		
 }

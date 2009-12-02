@@ -155,32 +155,13 @@ protected void verifyCompletionOnJavadocTag(char[] tag, char[][] expectedTags, b
 protected void verifyAllTagsCompletion() {
 	char[][] allTags = {
 		// Block tags
-		TAG_AUTHOR, TAG_DEPRECATED, TAG_EXCEPTION, TAG_PARAM, TAG_RETURN, TAG_SEE, TAG_VERSION, TAG_CATEGORY,
+		TAG_AUTHOR, TAG_DEPRECATED, TAG_EXCEPTION, TAG_PARAM, TAG_RETURN, TAG_SEE, TAG_VERSION,
 		TAG_SINCE,
 //		TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD ,
 		TAG_THROWS,
 		// Inline tags
-		TAG_LINK,
-		TAG_DOC_ROOT,
+		TAG_LINK
 	};
-	char[][] additionalTags = null;
-	if (complianceLevel.equals(COMPLIANCE_1_4)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN
-		};
-	}
-	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN,
-			TAG_CODE, TAG_LITERAL
-		};
-	}
-	if (additionalTags != null) {
-		int length = allTags.length;
-		int add = additionalTags.length;
-		System.arraycopy(allTags, 0, allTags = new char[length+add][], 0, length);
-		System.arraycopy(additionalTags, 0, allTags, length, add);
-	}
 	verifyCompletionOnJavadocTag(null, allTags, false);
 }
 
@@ -244,7 +225,7 @@ public void test005() {
 	verifyCompletionInJavadoc(source, "@link");
 	char[][] allTags = this.complianceLevel.equals(COMPLIANCE_1_3) 
 		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK, TAG_LINKPLAIN };
+		: new char[][] { TAG_LINK };
 	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
 }
 
@@ -256,27 +237,8 @@ public void test006() {
 		"public class Test {}\n";
 	verifyCompletionInJavadoc(source, "@");
 	char[][] allTags = {
-		TAG_LINK,
-		TAG_DOC_ROOT,
+		TAG_LINK
 	};
-	char[][] additionalTags = null;
-	if (complianceLevel.equals(COMPLIANCE_1_4)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN
-		};
-	}
-	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN,
-			TAG_CODE, TAG_LITERAL
-		};
-	}
-	if (additionalTags != null) {
-		int length = allTags.length;
-		int add = additionalTags.length;
-		System.arraycopy(allTags, 0, allTags = new char[length+add][], 0, length);
-		System.arraycopy(additionalTags, 0, allTags, length, add);
-	}
 	verifyCompletionOnJavadocTag(null, allTags, false);
 }
 
@@ -478,27 +440,8 @@ public void test025() {
 		"public class Test {}\n";
 	verifyCompletionInJavadoc(source, "{@");
 	char[][] allTags = {
-		TAG_LINK,
-		TAG_DOC_ROOT,
+		TAG_LINK
 	};
-	char[][] additionalTags = null;
-	if (complianceLevel.equals(COMPLIANCE_1_4)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN
-		};
-	}
-	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN,
-			TAG_CODE, TAG_LITERAL
-		};
-	}
-	if (additionalTags != null) {
-		int length = allTags.length;
-		int add = additionalTags.length;
-		System.arraycopy(allTags, 0, allTags = new char[length+add][], 0, length);
-		System.arraycopy(additionalTags, 0, allTags, length, add);
-	}
 	verifyCompletionOnJavadocTag("".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
@@ -517,8 +460,8 @@ public void test026() {
 	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
 		? new char[][] { TAG_LINK }
 		: (complianceLevel.equals(COMPLIANCE_1_4)
-				? new char[][] { TAG_LINK, TAG_LINKPLAIN }
-				: new char[][] { TAG_LINK, TAG_LINKPLAIN, TAG_LITERAL });
+				? new char[][] { TAG_LINK}
+				: new char[][] { TAG_LINK });
 	verifyCompletionOnJavadocTag("li".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
@@ -536,7 +479,7 @@ public void test027() {
 	verifyCompletionInJavadoc(source, "{@link");
 	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
 		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK, TAG_LINKPLAIN  };
+		: new char[][] { TAG_LINK  };
 	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
@@ -552,27 +495,8 @@ public void test028() {
 		"public class Test {}\n";
 	verifyCompletionInJavadoc(source, "{@");
 	char[][] allTags = {
-		TAG_LINK,
-		TAG_DOC_ROOT,
+		TAG_LINK
 	};
-	char[][] additionalTags = null;
-	if (complianceLevel.equals(COMPLIANCE_1_4)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN
-		};
-	}
-	else if (!complianceLevel.equals(COMPLIANCE_1_3)) {
-		additionalTags = new char[][] {
-			TAG_INHERITDOC, TAG_LINKPLAIN,
-			TAG_CODE, TAG_LITERAL
-		};
-	}
-	if (additionalTags != null) {
-		int length = allTags.length;
-		int add = additionalTags.length;
-		System.arraycopy(allTags, 0, allTags = new char[length+add][], 0, length);
-		System.arraycopy(additionalTags, 0, allTags, length, add);
-	}
 	verifyCompletionOnJavadocTag("".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
@@ -591,8 +515,8 @@ public void test029() {
 	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
 		? new char[][] { TAG_LINK }
 		: (complianceLevel.equals(COMPLIANCE_1_4)
-				? new char[][] { TAG_LINK, TAG_LINKPLAIN }
-				: new char[][] { TAG_LINK, TAG_LINKPLAIN, TAG_LITERAL });
+				? new char[][] { TAG_LINK }
+				: new char[][] { TAG_LINK });
 	verifyCompletionOnJavadocTag("li".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
@@ -610,7 +534,7 @@ public void test030() {
 	verifyCompletionInJavadoc(source, "{@link");
 	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
 		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK, TAG_LINKPLAIN  };
+		: new char[][] { TAG_LINK  };
 	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
