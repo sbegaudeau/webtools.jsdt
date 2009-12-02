@@ -111,6 +111,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -7927,6 +7928,33 @@ public final class CompletionEngine
 //			}
 		}
 
+	}
+	
+	public static char[] getSignature(Binding binding) {
+		char[] result = null;
+		if ((binding.kind() & Binding.TYPE) != 0 || (binding.kind() & Binding.COMPILATION_UNIT) != 0) {
+			TypeBinding typeBinding = (TypeBinding)binding;
+			result = typeBinding.signature();
+			boolean update = false;
+			while(typeBinding.isAnonymousType()) {
+				if(typeBinding instanceof SourceTypeBinding)
+					typeBinding = ((SourceTypeBinding)typeBinding).superclass();
+				else if(typeBinding instanceof BinaryTypeBinding)
+					typeBinding = ((BinaryTypeBinding)typeBinding).superclass();
+				update = true;
+			}
+			if(update && typeBinding != null)
+				result = typeBinding.signature();
+			
+			if (result != null) {
+				if ( (binding.kind() & Binding.TYPE) != 0 )
+				result = CharOperation.replaceOnCopy(result, '/', '.');
+			}
+		} else {
+			result = Engine.getSignature(binding);
+		}
+		
+		return result;
 	}
 
 }
