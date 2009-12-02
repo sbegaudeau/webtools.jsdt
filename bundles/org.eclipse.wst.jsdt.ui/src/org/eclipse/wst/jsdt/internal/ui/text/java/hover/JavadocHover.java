@@ -151,7 +151,7 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 			for (int i= 0; i < result.length; i++) {
 				HTMLPrinter.startBulletList(buffer);
 				IJavaScriptElement curr= result[i];
-				if (curr instanceof IMember || curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE) {
+				if (curr != null && (curr instanceof IMember || curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE)) {
 					HTMLPrinter.addBullet(buffer, getInfoText(curr));
 					hasContents= true;
 				}
