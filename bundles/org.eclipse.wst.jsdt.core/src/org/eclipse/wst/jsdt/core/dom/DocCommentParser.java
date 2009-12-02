@@ -397,35 +397,10 @@ class DocCommentParser extends AbstractCommentParser {
 		switch (token) {
 			case TerminalTokens.TokenNameIdentifier :
 				switch (tagName[0]) {
-					case 'c':
-						if (length == TAG_CATEGORY_LENGTH && CharOperation.equals(TAG_CATEGORY, tagName)) {
-							this.tagValue = TAG_CATEGORY_VALUE;
-							valid = parseIdentifierTag(false); // TODO (frederic) reconsider parameter value when @category will be significant in spec
-						} else {
-							this.tagValue = TAG_OTHERS_VALUE;
-							createTag();
-						}
-						break;
 					case 'd':
 						if (length == TAG_DEPRECATED_LENGTH && CharOperation.equals(TAG_DEPRECATED, tagName)) {
 							this.deprecated = true;
 							this.tagValue = TAG_DEPRECATED_VALUE;
-						} else {
-							this.tagValue = TAG_OTHERS_VALUE;
-						}
-						createTag();
-					break;
-					case 'i':
-						if (length == TAG_INHERITDOC_LENGTH && CharOperation.equals(TAG_INHERITDOC, tagName)) {
-							// inhibits inherited flag when tags have been already stored
-							// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51606
-							// Note that for DOM_PARSER, nodes stack may be not empty even no '@' tag
-							// was encountered in comment. But it cannot be the case for COMPILER_PARSER
-							// and so is enough as it is only this parser which signals the missing tag warnings...
-							if (this.astPtr==-1) {
-								this.inheritedPositions = (((long) this.tagSourceStart) << 32) + this.tagSourceEnd;
-							}
-							this.tagValue = TAG_INHERITDOC_VALUE;
 						} else {
 							this.tagValue = TAG_OTHERS_VALUE;
 						}
@@ -467,8 +442,6 @@ class DocCommentParser extends AbstractCommentParser {
 					case 'l':
 						if (length == TAG_LINK_LENGTH && CharOperation.equals(TAG_LINK, tagName)) {
 							this.tagValue = TAG_LINK_VALUE;
-						} else if (length == TAG_LINKPLAIN_LENGTH && CharOperation.equals(TAG_LINKPLAIN, tagName)) {
-							this.tagValue = TAG_LINKPLAIN_VALUE;
 						}
 						if (this.tagValue != NO_TAG_VALUE)  {
 							if (this.inlineTagStarted) {
@@ -608,9 +581,6 @@ class DocCommentParser extends AbstractCommentParser {
 			switch (this.tagValue) {
 				case TAG_LINK_VALUE:
 					seeTag.setTagName(TagElement.TAG_LINK);
-				break;
-				case TAG_LINKPLAIN_VALUE:
-					seeTag.setTagName(TagElement.TAG_LINKPLAIN);
 				break;
 			}
 			TagElement previousTag = null;

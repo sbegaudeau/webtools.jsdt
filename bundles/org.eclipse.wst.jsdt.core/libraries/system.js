@@ -14,80 +14,67 @@
 /**
   * Object Object()
   * @constructor
-  * @memberOf Object
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
 function Object(){};
  /**
   * function toString() 
-  * @type    String
   * @memberOf   Object
   * @returns {String}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.toString = function( ){return "";};
+Object.prototype.toString = function(){return "";};
  /**
   * function toLocaleString() 
-  * @type    String
   * @memberOf   Object
   * @returns {String}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.toLocaleString  = function( ){return "";};
+Object.prototype.toLocaleString = function(){return "";};
  /**
   * function valueOf() 
-  * @type    Object
   * @memberOf   Object
   * @returns {Object}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.valueOf = function( ){return new Object();};
+Object.prototype.valueOf = function(){return new Object();};
  /**
-  * function hasOwnProperty(V) 
-  * @type    Boolean
+  * function hasOwnProperty(name) 
   * @memberOf   Object
-  * @param   {Object} V
+  * @param   {String} name
   * @returns {Boolean}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.hasOwnProperty  = function (V){return true;};
+Object.prototype.hasOwnProperty = function(name){return true;};
  /**
-  * function isPrototypeOf(V) 
-  * @type    Boolean
+  * function isPrototypeOf(o) 
   * @memberOf   Object
-  * @param   {Object} V
+  * @param   {Object} o
   * @returns {Boolean}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.isPrototypeOf  = function (V){return true;};
+Object.prototype.isPrototypeOf = function(o){return true;};
  /**
-  * function propertyIsEnumerable(V) 
-  * @type    Boolean
+  * function propertyIsEnumerable(name) 
   * @memberOf   Object
-  * @param   {Object} V
+  * @param   {Object} name
   * @returns {Boolean}
-  * @throws  DOMException
   * @see     Object
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-Object.prototype.propertyIsEnumerable  = function(V){return true;};
+Object.prototype.propertyIsEnumerable = function(name){return true;};
 /**
   * Property constructor
   * @type  Function
@@ -95,106 +82,23 @@ Object.prototype.propertyIsEnumerable  = function(V){return true;};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */ 
-Object.prototype.constructor=new Function();
+Object.prototype.constructor = new Function();
 
 /**
-  * Property Class
-  * @type  String
-  * @memberOf Object
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Class="";
-/**
-  * Property Value
-  * @memberOf Object
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Value=0;
-/**
-  * function Get(property)
-  * @memberOf Object
-  * @type Object
-  * @returns {Object}
-  * @param {String} property
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Get=function(property){return new Object();};
-/**
-  * function Put(property, value)
-  * @memberOf Object
-  * @param {String} property
-  * @param {String} value
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Put=function(property, value){};
-/**
-  * function CanPut(property)
-  * @memberOf Object
-  * @param {String} property
-  * @type Boolean
-  * @returns {Boolean}
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.CanPut=function(property){return false;};
-/**
-  * function HasProperty(property)
-  * @memberOf Object
-  * @param {String} property
-  * @type Boolean
-  * @returns {Boolean}
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.HasProperty=function(property){return false;};
-/**
-  * function Delete(property)
-  * @memberOf Object
-  * @param {String} property
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Delete=function(property){};
-/**
-  * function DefaultValue()
-  * @memberOf Object
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.DefaultValue=function(){};
-/**
-  * function Match(value,index)
-  * @memberOf Object
-  * @param {String} value
-  * @param {String} index
-  * @type Object
-  * @returns {Object}
-  * @since Standard ECMA-262 3rd. Edition
-  * @since Level 2 Document Object Model Core Definition.
- */ 
-Object.prototype.Match=function(value,index){return new Object();};
-/**
   * Object String()
-  * @super Object
-  * @type  constructor
-  * @memberOf String
+  * @constructor
+  * @extends Object
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
-
 function String(){}
 String.prototype = new Object();
-
 /**
-  * static function fromCharCode(chars)
-  * @type    String
-  * @returns {String}
-  * @param {Number} charCode
+  * static function fromCharCode(charCode1, ...)
   * @memberOf   String
+  * @param {Number} charCode
+  * @returns {String}
+  * @static
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -210,74 +114,62 @@ String.fromCharCode=function(charCode){return "";};
  */  
 String.prototype.length =1;
  /**
-  * function charAt(pos) 
-  * @type    String
+  * function charAt(position) 
   * @memberOf   String
-  * @param   {Number} pos
+  * @param   {Number} position
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.charAt = function(pos){return "";};
+String.prototype.charAt = function(position){return "";};
  /**
-  * function charCodeAt(pos) 
-  * @type    Number
+  * function charCodeAt(position) 
   * @memberOf   String
-  * @param   {Number} pos
+  * @param   {Number} position
   * @returns {Number}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.charCodeAt= function(pos){return 0;};
+String.prototype.charCodeAt= function(position){return 0;};
  /**
-  * function concat() 
-  * @type    String
+  * function concat(value1, ...) 
   * @memberOf   String
   * @param {String} value
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
 String.prototype.concat= function(value){return "";};
  /**
-  * function indexOf(searchString, position) 
-  * @type    Number
+  * function indexOf(searchString, startPosition) 
   * @memberOf   String
   * @param   {String} searchString
-  * @param   {Number} position
+  * @param   {Number} startPosition
   * @returns {Number}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.indexOf = function(searchString, position){return 1;};
+String.prototype.indexOf = function(searchString, startPosition){return 1;};
  /**
-  * function lastIndexOf(pos) 
-  * @type    Number
+  * function lastIndexOf(searchString, startPosition) 
   * @memberOf   String
   * @param   {String} searchString
-  * @param   {Number} position
+  * @param   {Number} startPosition
   * @returns {Number}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.lastIndexOf = function(searchString, position){return 1;};
+String.prototype.lastIndexOf = function(searchString, startPosition){return 1;};
  /**
   * function localeCompare(otherString) 
-  * @type    Number
   * @memberOf   String
   * @param   {String} otherString
   * @returns {Number}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -285,36 +177,30 @@ String.prototype.lastIndexOf = function(searchString, position){return 1;};
 String.prototype.localeCompare = function(otherString){return 0;};
  /**
   * function match(regexp) 
-  * @type    Array
   * @memberOf   String
-  * @param   {String} regexp
+  * @param   {RegExp} regexp
   * @returns {Array}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
 String.prototype.match = function(regexp){return [];};
  /**
-  * function replace(searchValue, replaceValue) 
-  * @type    String
+  * function replace(regexp, replaceValue) 
   * @memberOf   String
-  * @param   {String} searchValue
+  * @param   {RegExp} regexp
   * @param   {String} replaceValue
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
  */  
-String.prototype.replace = function(searchValue, replaceValue){return "";};
+String.prototype.replace = function(regexp, replaceValue){return "";};
  /**
   * function search(regexp) 
-  * @type    Number
   * @memberOf   String
-  * @param   {String} regexp
+  * @param   {RegExp} regexp
   * @returns {Number}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -322,12 +208,10 @@ String.prototype.replace = function(searchValue, replaceValue){return "";};
 String.prototype.search = function(regexp){return 1;};
  /**
   * function slice(start, end) 
-  * @type    String
   * @memberOf   String
   * @param   {Number} start
   * @param   {Number} end
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -335,12 +219,10 @@ String.prototype.search = function(regexp){return 1;};
 String.prototype.slice = function(start, end){return "";};
  /**
   * function split(separator, limit) 
-  * @type    Array
   * @memberOf   String
   * @param   {String} separator
   * @param   {Number} limit
   * @returns {Array}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -348,12 +230,10 @@ String.prototype.slice = function(start, end){return "";};
 String.prototype.split = function(separator, limit){return [];};
  /**
   * function substring(start, end) 
-  * @type    String
   * @memberOf   String
   * @param   {Number} start
   * @param   {Number} end
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -361,10 +241,8 @@ String.prototype.split = function(separator, limit){return [];};
 String.prototype.substring = function(start, end){return "";};
  /**
   * function toLowerCase() 
-  * @type    String
   * @memberOf   String
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -372,10 +250,8 @@ String.prototype.substring = function(start, end){return "";};
 String.prototype.toLowerCase = function( ){return "";};
  /**
   * function toLocaleLowerCase() 
-  * @type    String
   * @memberOf   String
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -383,10 +259,8 @@ String.prototype.toLowerCase = function( ){return "";};
 String.prototype.toLocaleLowerCase = function( ){return "";};
  /**
   * function toUpperCase() 
-  * @type    String
   * @memberOf   String
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -394,10 +268,8 @@ String.prototype.toLocaleLowerCase = function( ){return "";};
 String.prototype.toUpperCase= function ( ){return "";};
  /**
   * function toLocaleUpperCase() 
-  * @type    String
   * @memberOf   String
   * @returns {String}
-  * @throws  DOMException
   * @see     String
   * @since   Standard ECMA-262 3rd. Edition 
   * @since   Level 2 Document Object Model Core Definition.
@@ -1219,7 +1091,7 @@ Date.prototype.setFullYear=function(year, month,date){return 0;};
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
  */
-Date.prototype.setUTCFullYear=function(year, month,date){return 1;};
+Date.prototype.setUTCFullYear=function(year, month,date){};
 /**
  * function toUTCString()
  * @memberOf Date

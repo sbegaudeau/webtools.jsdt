@@ -105,15 +105,6 @@ public class CompletionJavadoc extends Javadoc {
 				}
 			}
 		}
-		if (this.paramTypeParameters != null) {
-			for (int i = 0, length = this.paramTypeParameters.length; i < length; i++) {
-				printIndent(indent, output).append(" * @param <"); //$NON-NLS-1$
-				this.paramTypeParameters[i].print(indent, output).append(">\n"); //$NON-NLS-1$
-				if (!nodePrinted && this.completionNode != null) {
-					nodePrinted =  this.completionNode == this.paramTypeParameters[i];
-				}
-			}
-		}
 		if (this.returnStatement != null) {
 			printIndent(indent, output).append(" * @"); //$NON-NLS-1$
 			this.returnStatement.print(indent, output).append('\n');

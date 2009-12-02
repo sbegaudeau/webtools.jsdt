@@ -185,6 +185,10 @@ public abstract class AbstractMethodDeclaration extends Statement
 			return this.binding.isStatic();
 		return (this.modifiers & ClassFileConstants.AccStatic) != 0;
 	}
+	
+	public boolean isInferredJsDocType() {
+		return (this.bits & ASTNode.IsInferredJsDocType) != 0;
+	}
 
 	/**
 	 * Fill up the method body with statement

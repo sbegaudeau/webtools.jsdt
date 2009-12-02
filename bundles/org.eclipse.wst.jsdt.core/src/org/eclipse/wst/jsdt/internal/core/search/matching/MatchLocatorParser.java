@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocMessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
@@ -145,14 +144,6 @@ public void checkComment() {
 		if (paramReferences != null) {
 			for (int i=0, length=paramReferences.length; i < length; i++) {
 				this.patternLocator.match(paramReferences[i], this.nodeSet);
-			}
-		}
-
-		// Search for pattern locator matches in javadoc comment type parameters @param tags
-		JavadocSingleTypeReference[] paramTypeParameters = this.javadoc.paramTypeParameters;
-		if (paramTypeParameters != null) {
-			for (int i=0, length=paramTypeParameters.length; i < length; i++) {
-				this.patternLocator.match(paramTypeParameters[i], this.nodeSet);
 			}
 		}
 

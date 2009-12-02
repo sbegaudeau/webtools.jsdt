@@ -32,9 +32,8 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class Javadoc extends ASTNode implements IJsDoc {
 
 	public JavadocSingleNameReference[] paramReferences; // @param
-	public JavadocSingleTypeReference[] paramTypeParameters; // @param
 	public TypeReference[] exceptionReferences; // @throws, @exception
-	public JavadocReturnStatement returnStatement; // @return
+	public JavadocReturnStatement returnStatement; // @return, @returns
 	public Expression[] seeReferences; // @see
 	public long inheritedPositions = -1;
 	// bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=51600
@@ -107,16 +106,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 				}
 			}
 		}
-		// type parameters array
-		if (this.paramTypeParameters != null) {
-			length = this.paramTypeParameters.length;
-			for (int i=0; i<length; i++) {
-				JavadocSingleTypeReference param = this.paramTypeParameters[i];
-				if (param.sourceStart==start) {
-					return param;
-				}
-			}
-		}
+		
 		// thrown exception array
 		if (this.exceptionReferences != null) {
 			length = this.exceptionReferences.length;
@@ -173,12 +163,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			for (int i = 0, length = this.paramReferences.length; i < length; i++) {
 				printIndent(indent + 1, output).append(" * @param "); //$NON-NLS-1$
 				this.paramReferences[i].print(indent, output).append('\n');
-			}
-		}
-		if (this.paramTypeParameters != null) {
-			for (int i = 0, length = this.paramTypeParameters.length; i < length; i++) {
-				printIndent(indent + 1, output).append(" * @param <"); //$NON-NLS-1$
-				this.paramTypeParameters[i].print(indent, output).append(">\n"); //$NON-NLS-1$
 			}
 		}
 		if (this.returnStatement != null) {
@@ -669,11 +653,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 					this.paramReferences[i].traverse(visitor, scope);
 				}
 			}
-			if (this.paramTypeParameters != null) {
-				for (int i = 0, length = this.paramTypeParameters.length; i < length; i++) {
-					this.paramTypeParameters[i].traverse(visitor, scope);
-				}
-			}
 			if (this.returnStatement != null) {
 				this.returnStatement.traverse(visitor, scope);
 			}
@@ -695,11 +674,6 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			if (this.paramReferences != null) {
 				for (int i = 0, length = this.paramReferences.length; i < length; i++) {
 					this.paramReferences[i].traverse(visitor, scope);
-				}
-			}
-			if (this.paramTypeParameters != null) {
-				for (int i = 0, length = this.paramTypeParameters.length; i < length; i++) {
-					this.paramTypeParameters[i].traverse(visitor, scope);
 				}
 			}
 			if (this.returnStatement != null) {

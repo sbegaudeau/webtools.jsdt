@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
-import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 
 public class SourceJavadocParser extends JavadocParser {
 
@@ -44,36 +43,6 @@ public boolean checkDeprecation(int commentPtr) {
 protected boolean parseIdentifierTag(boolean report) {
 	int end = this.lineEnd+1;
 	if (super.parseIdentifierTag(report) && this.index <= end) {
-		if (this.tagValue == TAG_CATEGORY_VALUE) {
-			// Store first category id
-			int length = this.categories.length;
-			if (++this.categoriesPtr >= length) {
-				System.arraycopy(this.categories, 0, this.categories = new char[length+5][], 0, length);
-				length += 5;
-			}
-			this.categories[this.categoriesPtr] = this.identifierStack[this.identifierPtr--];
-			// Store optional additional category identifiers
-			consumeToken();
-			while (this.index < end) {
-				if (readTokenSafely() == TerminalTokens.TokenNameIdentifier && (this.scanner.currentCharacter == ' ' || ScannerHelper.isWhitespace(this.scanner.currentCharacter))) {
-					if (this.index > (this.lineEnd+1)) break;
-					// valid additional identifier
-					if (++this.categoriesPtr >= length) {
-						System.arraycopy(this.categories, 0, this.categories = new char[length+5][], 0, length);
-						length += 5;
-					}
-					this.categories[this.categoriesPtr] = this.scanner.getCurrentIdentifierSource();
-					consumeToken();
-				} else {
-					// TODO (frederic) raise warning for invalid syntax when javadoc spec will be finalized...
-					break;
-				}
-			}
-			// Reset position to end of line
-			this.index = end;
-			this.scanner.currentPosition = end;
-			consumeToken();
-		}
 		return true;
 	}
 	return false;
@@ -116,23 +85,6 @@ protected void parseSimpleTag() {
 				if (ScannerHelper.isWhitespace(c) || c == '*') {
 					this.tagValue = TAG_DEPRECATED_VALUE;
 					this.deprecated = true;
-				}
-	        }
-			break;
-		case 'c': // perhaps @category tag?
-	        if ((readChar() == 'a') &&
-					(readChar() == 't') && (readChar() == 'e') &&
-					(readChar() == 'g') && (readChar() == 'o') &&
-					(readChar() == 'r') && (readChar() == 'y')) {
-				// ensure the tag is properly ended: either followed by a space, a tab, line end or asterisk.
-				char c = readChar();
-				if (ScannerHelper.isWhitespace(c) || c == '*') {
-					this.tagValue = TAG_CATEGORY_VALUE;
-					if (this.scanner.source == null) {
-						this.scanner.setSource(this.source);
-					}
-					this.scanner.resetTo(this.index, this.scanner.eofPosition);
-					parseIdentifierTag(false); // Do not report missing identifier
 				}
 	        }
 			break;

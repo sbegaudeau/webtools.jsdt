@@ -1222,7 +1222,8 @@ public class InferEngine extends ASTVisitor {
 
 					if (currentContext.currentMethod.getInferredType()==VoidType)
 						currentContext.currentMethod.setInferredType(type);
-					else if (type==null || !type.equals(currentContext.currentMethod.getInferredType()))
+					else if ((type==null || !type.equals(currentContext.currentMethod.getInferredType())) && 
+							!((MethodDeclaration)currentContext.currentMethod).isInferredJsDocType())
 						currentContext.currentMethod.setInferredType(null);
 				}
 			}
