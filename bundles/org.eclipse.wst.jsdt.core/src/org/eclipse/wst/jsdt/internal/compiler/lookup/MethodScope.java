@@ -53,7 +53,7 @@ public class MethodScope extends BlockScope {
 
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
 
-	LocalVariableBinding argumentsBinding ;
+	public LocalVariableBinding argumentsBinding ;
 
 
 	public MethodScope(Scope parent, ReferenceContext context, boolean isStatic) {

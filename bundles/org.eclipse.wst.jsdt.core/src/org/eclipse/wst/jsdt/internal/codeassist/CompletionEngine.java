@@ -6400,20 +6400,29 @@ public final class CompletionEngine
 
 		if (!this.requestor.isIgnored(CompletionProposal.LOCAL_VARIABLE_REF)) {
 			done1 : while (true) { // done when a COMPILATION_UNIT_SCOPE is found
-
+				LocalVariableBinding arguments = null;
 				switch (currentScope.kind) {
 
 					case Scope.METHOD_SCOPE :
 						// handle the error case inside an explicit constructor call (see MethodScope>>findField)
 						MethodScope methodScope = (MethodScope) currentScope;
 						staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
+						arguments = methodScope.argumentsBinding;
 
 					case Scope.BLOCK_SCOPE :
 					case Scope.COMPILATION_UNIT_SCOPE :
 						BlockScope blockScope = (BlockScope) currentScope;
-
-						next : for (int i = 0, length = blockScope.locals.length; i < length; i++) {
-							LocalVariableBinding local = blockScope.locals[i];
+						LocalVariableBinding[] localBindings = null;
+						if(arguments != null) {
+							localBindings = new LocalVariableBinding[blockScope.locals.length + 1];
+							System.arraycopy(blockScope.locals, 0, localBindings, 1, blockScope.locals.length);
+							localBindings[0] = arguments;
+						} else {
+							localBindings = blockScope.locals;
+						}
+						
+						next : for (int i = 0, length = localBindings.length; i < length; i++) {
+							LocalVariableBinding local = localBindings[i];
 
 							if (local == null)
 								break next;
