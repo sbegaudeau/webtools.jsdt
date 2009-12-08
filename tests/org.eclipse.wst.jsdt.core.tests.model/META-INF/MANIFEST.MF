@@ -16,7 +16,7 @@ Import-Package: com.ibm.icu.text; version="3.8",
  com.ibm.icu.util; version="3.8"
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
- org.junit;bundle-version="[3.8.2,4.0.0)",
+ org.junit;bundle-version=3.8.2,
  org.eclipse.wst.jsdt.core.tests.compiler,
  org.eclipse.team.core,
  org.eclipse.text,
