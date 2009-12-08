@@ -19,24 +19,12 @@ public class WellKnownTypesProperty extends ASTAttribute {
 	
 	public static final String[] WELL_KNOWN_TYPES = {
 		"Object",
-		"Array",
 		"Boolean",
-		"Date",
-		"Error",
-		"EvalError",
 		"Function",
 		"Global",
-		"Math",
 		"Number",
-		"RangeError",
-		"ReferenceError",
-		"RegExp",
 		"String",
-		"SyntaxError",
-		"TypeError",
-		"URIError",
-		"_.$UnknownType$",
-		"Window"
+		"_.$UnknownType$"
 	};
 	
 	private final JavaScriptUnit fRoot;
