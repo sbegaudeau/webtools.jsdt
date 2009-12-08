@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.junit.extension;
 
-import java.util.*;
-import junit.framework.*;
+import java.util.Enumeration;
+import java.util.Vector;
+
+import junit.framework.AssertionFailedError;
+import junit.framework.Test;
+import junit.framework.TestFailure;
 
 public class TestResult extends junit.framework.TestResult {
 	TestCase currentTest;
@@ -27,7 +31,7 @@ public TestResult() {
 	 */
 	public synchronized void addError(Test test, Throwable t) {
 		TestFailure testFailure= new TestFailure(test, t);
-		fErrors.addElement(testFailure);
+		fErrors.add(testFailure);
 		for (Enumeration e= cloneListeners().elements(); e.hasMoreElements(); ) {
 			((TestListener)e.nextElement()).addError(test, testFailure);
 		}
@@ -38,7 +42,7 @@ public TestResult() {
 	 */
 	public synchronized void addFailure(Test test, AssertionFailedError t) {
 		TestFailure testFailure= new TestFailure(test, t);
-		fFailures.addElement(testFailure);
+		fFailures.add(testFailure);
 		for (Enumeration e= cloneListeners().elements(); e.hasMoreElements(); ) {
 			((TestListener)e.nextElement()).addFailure(test, testFailure);
 		}
@@ -47,7 +51,7 @@ public TestResult() {
 	 * Returns a copy of the listeners.
 	 */
 	private synchronized Vector cloneListeners() {
-		return (Vector)fListeners.clone();
+		return new Vector(fListeners);
 	}
 	protected void run(final TestCase test) {
 		this.currentTest = test;
