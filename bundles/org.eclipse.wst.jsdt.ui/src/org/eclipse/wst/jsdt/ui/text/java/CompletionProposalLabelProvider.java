@@ -565,10 +565,10 @@ public class CompletionProposalLabelProvider {
 	 * @return the created image descriptor, or <code>null</code> if no image is available
 	 */
 	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
-		char[] compUnit = proposal.getDeclarationTypeName();
-		char[] propType = proposal.getName();
-		IJavaScriptProject project = proposal.getJavaProject();
-		
+//		char[] compUnit = proposal.getDeclarationTypeName();
+//		char[] propType = proposal.getName();
+//		IJavaScriptProject project = proposal.getJavaProject();
+//		
 //		IJsGlobalScopeContainerInitializerExtension init = null;
 //		IType type = proposal.getNameLookup().findType(new String(compUnit), true, NameLookup.ACCEPT_ALL);
 //		IPackageFragment frag = type.getPackageFragment();
@@ -633,9 +633,9 @@ public class CompletionProposalLabelProvider {
 	}
 
 	ImageDescriptor createMethodImageDescriptor(CompletionProposal proposal) {
-		char[] compUnit = proposal.getDeclarationTypeName();
-		char[] propType = proposal.getName();
-		IJavaScriptProject project = proposal.getJavaProject();
+//		char[] compUnit = proposal.getDeclarationTypeName();
+//		char[] propType = proposal.getName();
+//		IJavaScriptProject project = proposal.getJavaProject();
 		//if (compUnit!=null && compUnit.length>0)
 //		{
 //			IJsGlobalScopeContainerInitializerExtension init = JSDScopeUiUtil.findLibraryUiInitializer(new Path(new String(compUnit)),project);
@@ -654,9 +654,9 @@ public class CompletionProposalLabelProvider {
 	}
 
 	ImageDescriptor createFieldImageDescriptor(CompletionProposal proposal) {
-		char[] compUnit = proposal.getDeclarationTypeName();
-		char[] propType = proposal.getName();
-		IJavaScriptProject project = proposal.getJavaProject();
+//		char[] compUnit = proposal.getDeclarationTypeName();
+//		char[] propType = proposal.getName();
+//		IJavaScriptProject project = proposal.getJavaProject();
 //		NameLookup lookup = proposal.getNameLookup();
 //		IJavaScriptUnit[] sources = lookup.findTypeSources(new String(propType),true);
 		

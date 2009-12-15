@@ -341,7 +341,7 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	protected IStatus fSuperInterfacesStatus;	
 	
 	private final int PUBLIC_INDEX= 0, DEFAULT_INDEX= 1, PRIVATE_INDEX= 2, PROTECTED_INDEX= 3;
-	private final int ABSTRACT_INDEX= 0, FINAL_INDEX= 1, STATIC_INDEX= 2, ENUM_ANNOT_STATIC_INDEX= 1;
+	private final int ABSTRACT_INDEX= 0, STATIC_INDEX= 2, ENUM_ANNOT_STATIC_INDEX= 1;
 	
 	private int fTypeKind;
 	
@@ -1692,7 +1692,6 @@ public abstract class NewTypeWizardPage extends NewContainerWizardPage {
 	 */
 	protected IStatus modifiersChanged() {
 		StatusInfo status= new StatusInfo();
-		int modifiers= getModifiers();
 		return status;
 	}
 	
