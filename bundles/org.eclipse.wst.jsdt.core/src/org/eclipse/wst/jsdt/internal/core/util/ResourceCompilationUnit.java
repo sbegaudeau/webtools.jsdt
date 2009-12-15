@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
  */
 public class ResourceCompilationUnit extends CompilationUnit {
 
-	private IFile file;
+	protected IFile file;
 
 	public ResourceCompilationUnit(IFile file, URI location) {
 		super(null/*no contents*/, location == null ? file.getFullPath().toString() : location.getPath(), null/*encoding is used only when retrieving the contents*/);

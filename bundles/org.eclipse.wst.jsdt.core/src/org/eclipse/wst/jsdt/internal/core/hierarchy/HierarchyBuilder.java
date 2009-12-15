@@ -248,7 +248,7 @@ protected ICompilationUnit createCompilationUnitFromPath(Openable handle, IFile 
 	final char[] elementName = handle.getElementName().toCharArray();
 	return new ResourceCompilationUnit(file, file.getLocationURI()) {
 		public char[] getFileName() {
-			return elementName;
+			return super.file.getFullPath().toString().toCharArray();
 		}
 	};
 }
