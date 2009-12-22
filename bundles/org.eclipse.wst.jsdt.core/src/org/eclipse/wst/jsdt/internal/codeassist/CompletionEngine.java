@@ -7944,15 +7944,18 @@ public final class CompletionEngine
 		if ((binding.kind() & Binding.TYPE) != 0 || (binding.kind() & Binding.COMPILATION_UNIT) != 0) {
 			TypeBinding typeBinding = (TypeBinding)binding;
 			result = typeBinding.signature();
-			boolean update = false;
-			while(typeBinding.isAnonymousType()) {
-				if(typeBinding instanceof SourceTypeBinding)
-					typeBinding = ((SourceTypeBinding)typeBinding).superclass();
-				else if(typeBinding instanceof BinaryTypeBinding)
-					typeBinding = ((BinaryTypeBinding)typeBinding).superclass();
-				update = true;
+			// walk the supertypes if the type is anonymous to get a useful name
+			while (typeBinding != null && typeBinding.isAnonymousType()) {
+				// why not just use ReferenceBinding here?
+				if (typeBinding instanceof SourceTypeBinding)
+					typeBinding = ((SourceTypeBinding) typeBinding).superclass();
+				else if (typeBinding instanceof BinaryTypeBinding)
+					typeBinding = ((BinaryTypeBinding) typeBinding).superclass();
+				// must avoid endless loop
+				else
+					typeBinding = null;
 			}
-			if(update && typeBinding != null)
+			if (typeBinding != null && typeBinding != binding)
 				result = typeBinding.signature();
 			
 			if (result != null) {
