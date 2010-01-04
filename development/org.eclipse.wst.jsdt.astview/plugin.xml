@@ -27,19 +27,19 @@
   <extension
      point="org.eclipse.ui.bindings">
   <key
-        sequence="M2+M3+Q A"
+        sequence="M2+M3+K A"
         commandId="org.eclipse.wst.jsdt.astview.views.ASTView"
         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
   </key>
   <key
         platform="carbon"
-        sequence="M2+M3+Q A"
+        sequence="M2+M3+K A"
         commandId=""
         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
   </key>
   <key
         platform="carbon"
-        sequence="M1+M3+Q A"
+        sequence="M1+M3+K A"
         commandId="org.eclipse.wst.jsdt.astview.views.ASTView"
         schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
   </key>
