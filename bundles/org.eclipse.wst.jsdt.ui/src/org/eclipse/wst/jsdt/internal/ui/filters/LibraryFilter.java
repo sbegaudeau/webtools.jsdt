@@ -10,17 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.filters;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
+import org.eclipse.wst.jsdt.ui.ProjectLibraryRoot;
 
 
 /**
  * The LibraryFilter is a filter used to determine whether
- * a Java library is shown
+ * the JavaScript Resources node is shown. This node contains libraries.
  */
 public class LibraryFilter extends ViewerFilter {
 	
@@ -28,18 +26,8 @@ public class LibraryFilter extends ViewerFilter {
 	 * Method declared on ViewerFilter.
 	 */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		if (element instanceof IPackageFragmentRoot) {
-			IPackageFragmentRoot root= (IPackageFragmentRoot)element;
-			if (root.isArchive()) {
-				// don't filter out JARs contained in the project itself
-				IResource resource= root.getResource();
-				if (resource != null) {
-					IProject jarProject= resource.getProject();
-					IProject container= root.getJavaScriptProject().getProject();
-					return container.equals(jarProject);
-				}
-				return false;
-			}
+		if (element instanceof ProjectLibraryRoot) {
+			return false;
 		} else if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) {
 			return false;
 		}

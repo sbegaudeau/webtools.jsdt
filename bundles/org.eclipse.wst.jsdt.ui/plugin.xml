@@ -4608,14 +4608,6 @@
       -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
-            name="%HideNonJavaProjects.label"
-            enabled="false"
-            description="%HideNonJavaProjects.description"
-            class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaProjectsFilter"
-            id="org.eclipse.wst.jsdt.ui.PackageExplorer.NonJavaProjectsFilter">
-      </filter>
-      <filter
-            targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideNonSharedProjects.label"
             enabled="false"
             description="%HideNonSharedProjects.description"
@@ -5524,26 +5516,7 @@
 		        class="org.eclipse.wst.jsdt.internal.ui.navigator.NonEssentialEmptyInnerPackageFilter"
 		        name="%HideEmptyInnerPackages.label"
 		        description="%HideEmptyInnerPackages.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideEmptyInnerPackages"/>
-<!--		        
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.AnnotationFilter"
-		        name="%HideAnnotation.label"
-		        description="%HideAnnotation.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideAnnotations"/>
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.EnumFilter"
-		        name="%HideEnum.label"
-		        description="%HideEnum.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideAnnotations"/>
--->		  
-<!--      
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.InterfaceFilter"
-		        name="%HideInterface.label"
-		        description="%HideInterface.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInterface"/>		        		        
--->
+		        id="org.eclipse.wst.jsdt.java.ui.filters.HideEmptyInnerPackages"/>  
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.FieldsFilter"
 		        name="%HideFields.label"
@@ -5557,14 +5530,6 @@
 		        description="%HideImportDeclaration.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideImportDeclaration"/> 
   		-->
-  		<!--
-  		<commonFilter
-		        activeByDefault="true"
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
-		        name="%HideInnerClassFiles.label"
-		        description="%HideInnerClassFiles.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideInnerClassFiles"/>
-  		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.JavaFileFilter"
 		        name="%HideJavaFiles.label"
@@ -5575,35 +5540,12 @@
 		        name="%HideLocalTypes.label"
 		        description="%HideLocalTypes.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideLocalTypes"/>
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaElementFilter"
-		        name="%HideNonJavaElements.label"
-		        description="%HideNonJavaElements.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonJavaElements"/>   		
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonJavaProjectsFilter"
-		        name="%HideNonJavaProjects.label"
-		        description="%HideNonJavaProjects.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonJavaProjects"/> 
-		<!--  
+  		<!--  
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
 		        name="%HideNonPublic.label"
 		        description="%HideNonPublic.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonPublic"/>   
-  		-->
-  		<commonFilter 
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonSharedProjectFilter"
-		        name="%HideNonSharedProjects.label"
-		        description="%HideNonSharedProjects.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonSharedProjects"/>   
-  		<!--
-  		<commonFilter
-		        activeByDefault="true"
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.PackageDeclarationFilter"
-		        name="%HidePackageDeclaration.label"
-		        description="%HidePackageDeclaration.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HidePackageDeclaration"/>   
   		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.LibraryFilter"
@@ -5615,14 +5557,6 @@
 		        name="%HideStatics.label"
 		        description="%HideStatics.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideStatics"/>
-		<!--
-  		<commonFilter
-		        activeByDefault="true"
-		        class="org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter"
-		        name="%HideSyntheticMembers.label"
-		        description="%HideSyntheticMembers.description"
-		        id="org.eclipse.wst.jsdt.java.ui.filters.HideSyntheticMembers"/>
-		 -->
    </extension>
    <extension
        point="org.eclipse.ui.navigator.linkHelper">

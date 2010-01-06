@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.filters.SyntheticMembersFilter;
 import org.eclipse.wst.jsdt.internal.ui.util.JavaUIHelp;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredViewersManager;
@@ -66,8 +65,6 @@ public class MethodsViewer extends ProblemTableViewer {
 	
 	public MethodsViewer(Composite parent, final TypeHierarchyLifeCycle lifeCycle, IWorkbenchPart part) {
 		super(new Table(parent, SWT.MULTI));
-		
-		addFilter(new SyntheticMembersFilter());
 		
 		fLabelProvider= new MethodsLabelProvider(lifeCycle, this);
 	
