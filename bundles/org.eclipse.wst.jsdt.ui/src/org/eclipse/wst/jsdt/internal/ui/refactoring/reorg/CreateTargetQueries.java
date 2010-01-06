@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,20 +11,10 @@
 
 package org.eclipse.wst.jsdt.internal.ui.refactoring.reorg;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQueries;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.reorg.ICreateTargetQuery;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewPackageCreationWizard;
-import org.eclipse.wst.jsdt.ui.wizards.NewPackageWizardPage;
 
 public class CreateTargetQueries implements ICreateTargetQueries {
 
@@ -40,43 +30,16 @@ public class CreateTargetQueries implements ICreateTargetQueries {
 		fShell = shell;
 		fWizard= null;
 	}
-
-	private Shell getShell() {
-		Assert.isTrue(fWizard == null || fShell == null);
-		if (fWizard != null)
-			return fWizard.getContainer().getShell();
-		else if (fShell != null)
-			return fShell;
-		else
-			return JavaScriptPlugin.getActiveWorkbenchShell();
-	}
 	
 	public ICreateTargetQuery createNewPackageQuery() {
 		return new ICreateTargetQuery() {
 			public Object getCreatedTarget(Object selection) {
-				IWorkbenchWizard packageCreationWizard= new NewPackageCreationWizard();
-				
-				IWizardPage[] pages= openNewElementWizard(packageCreationWizard, getShell(), selection);
-				
-				NewPackageWizardPage page= (NewPackageWizardPage) pages[0];
-				return page.getNewPackageFragment();
+				return null;
 			}
 			
 			public String getNewButtonLabel() {
 				return ReorgMessages.ReorgMoveWizard_newPackage;
 			}
 		};
-	}
-	
-	private IWizardPage[] openNewElementWizard(IWorkbenchWizard wizard, Shell shell, Object selection) {
-		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(selection));
-		
-		WizardDialog dialog= new WizardDialog(shell, wizard);
-		PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
-		dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
-		dialog.create();
-		dialog.open();
-		IWizardPage[] pages= wizard.getPages();
-		return pages;
 	}
 }

@@ -512,67 +512,6 @@
             %NewJavaClass.description
          </description>
       </wizard>
-
-      <wizard
-            name="%NewJavaPackage.label"
-            icon="$nl$/icons/full/etool16/newpack_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            class="org.eclipse.wst.jsdt.internal.ui.wizards.NewPackageCreationWizard"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard">
-         <description>
-            %NewJavaPackage.description
-         </description>
-      </wizard>
-      <wizard
-            name="%NewJavaInterface.label"
-            icon="$nl$/icons/full/etool16/newint_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard">
-         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewInterfaceCreationWizard">
-            <parameter name="javatype" value="true"/>
-         </class>
-         <description>
-            %NewJavaInterface.description
-         </description>
-      </wizard>
- -->
- 	<!--
-      <wizard
-            name="%NewSourceFolderCreationWizard.label"
-            icon="$nl$/icons/full/etool16/newpackfolder_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            class="org.eclipse.wst.jsdt.internal.ui.wizards.NewSourceFolderCreationWizard"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewSourceFolderCreationWizard">
-         <description>
-            %NewSourceFolderCreationWizard.description
-         </description>
-      </wizard>
-      -->
-<!--      
-      <wizard
-            name="%NewEnumType.label"
-            icon="$nl$/icons/full/etool16/newenum_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard">
-         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewEnumCreationWizard">
-            <parameter name="javatype" value="true"/>
-         </class>
-         <description>
-            %NewEnumType.description
-         </description>
-      </wizard>
-      <wizard
-            name="%NewAnnotationType.label"
-            icon="$nl$/icons/full/etool16/newannotation_wiz.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            id="org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard">
-         <class class="org.eclipse.wst.jsdt.internal.ui.wizards.NewAnnotationCreationWizard">
-            <parameter name="javatype" value="true"/>
-         </class>
-         <description>
-            %NewAnnotationType.description
-         </description>
-      </wizard>
  -->
    </extension>
    <extension
@@ -5397,23 +5336,7 @@
 			<commonSorter
 					class="org.eclipse.wst.jsdt.ui.JavaElementSorter"
 					id="org.eclipse.wst.jsdt.ui.javaElementSorter"/>
-		   <!--
-		   <commonWizard
-		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
-		        type="new"
-		        wizardId="org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard">
-		     <enablement>
-		        <or>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
-		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-		           </adapt>
-		        </or>
-		     </enablement>
-		  </commonWizard>-->
-
+		 
 		  <commonWizard
 		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
 		        type="new"
@@ -5433,68 +5356,7 @@
 				</or>
 		     </enablement>
 		  </commonWizard>
-
-		<!--
-   	      <commonWizard
-		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
-		        type="new"
-		        wizardId="org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard">
-		     <enablement>
-		        <or>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
-		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-		           </adapt>
-		        </or>
-		     </enablement>
-		  </commonWizard>		  
-		  <commonWizard
-		        menuGroupId="org.eclipse.wst.jsdt.ui.java"
-		        type="new"
-		        wizardId="org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard">
-		     <enablement>
-		        <or>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-		           <instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
-		           <adapt type="org.eclipse.core.resources.IProject">
-		              <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-		           </adapt>
-		        </or>
-		     </enablement>
-		  </commonWizard>
-
-		    <commonWizard
-				  menuGroupId="org.eclipse.wst.jsdt.ui.java"
-		          type="new"
-		          wizardId="org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard">
-				<enablement>
-					<or>
-						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragment"/>
-						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/>
-						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptUnit"/>
-						<adapt type="org.eclipse.core.resources.IProject">
-							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-						</adapt>
-					</or>
-				 </enablement>
-		    </commonWizard>	 -->
-		    <commonWizard
-		          menuGroupId="org.eclipse.wst.jsdt.ui.java"
-		          type="new"
-		          wizardId="org.eclipse.wst.jsdt.ui.wizards.NewSourceFolderCreationWizard">
-				<enablement>
-					<or> 
-						<instanceof value="org.eclipse.wst.jsdt.core.IPackageFragmentRoot"/> 
-						<adapt type="org.eclipse.core.resources.IProject">
-							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-						</adapt>
-					</or>
-				</enablement>
-			</commonWizard>
-  			<dropAssistant
+  		  <dropAssistant
     			class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaDropAdapterAssistant"
    				id="org.eclipse.wst.jsdt.ui.dropAssistant">
  				<possibleDropTargets>
