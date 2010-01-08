@@ -156,8 +156,6 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
  * 
  * @see org.eclipse.wst.jsdt.ui.wizards.NewClassWizardPage
  * @see org.eclipse.wst.jsdt.ui.wizards.NewInterfaceWizardPage
- * @see org.eclipse.wst.jsdt.ui.wizards.NewEnumWizardPage
- * @see org.eclipse.wst.jsdt.ui.wizards.NewAnnotationWizardPage
  * 
  */
 public abstract class NewTypeWizardPage extends NewContainerWizardPage {
