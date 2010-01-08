@@ -9,6 +9,7 @@ import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.ast.IStringLiteral;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -40,7 +41,7 @@ public class InferResolveTests  extends AbstractRegressionTest  {
 			return "dummyID";
 		}
 
-		public InferEngine getInferEngine() {
+		public IInferEngine getInferEngine() {
 			return inferEngine;
 		}
 
@@ -129,7 +130,7 @@ public class InferResolveTests  extends AbstractRegressionTest  {
 
 		InferEngine[] inferenceEngines = new InferEngine[]  
 		                            			{
-		                            					new InferProvider(inferEngine).getInferEngine()
+		                            					(InferEngine)new InferProvider(inferEngine).getInferEngine()
 		                            					
 		                            			};
 		options.put(INFERENCE_ENGINES, inferenceEngines);

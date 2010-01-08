@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
@@ -1185,7 +1186,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 					compilerOptions, requestor, problemFactory);
 			Object inferEngines = options.get(INFERENCE_ENGINES);
 			if (inferEngines != null) {
-				batchCompiler.parser.inferenceEngines = (InferEngine[]) inferEngines;
+				batchCompiler.parser.inferenceEngines = (IInferEngine[]) inferEngines;
 
 			}
 			batchCompiler.options.produceReferenceInfo = true;
@@ -1698,7 +1699,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 			CompilationUnitDeclaration compUnit = parser.parseCompilationUnit(
 					sourceUnit, true);
 
-			InferEngine inferEngine = inferrenceProvider.getInferEngine();
+			InferEngine inferEngine = (InferEngine)inferrenceProvider.getInferEngine();
 
 			inferEngine.initialize();
 			inferEngine.setCompilationUnit(compUnit);
