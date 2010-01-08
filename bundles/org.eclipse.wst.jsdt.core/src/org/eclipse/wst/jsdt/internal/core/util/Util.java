@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.Type;
-import org.eclipse.wst.jsdt.core.infer.InferEngine;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
@@ -2669,7 +2669,7 @@ public class Util {
 	 *
 	 * marker and label
 	 */
-	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(InferEngine.ANONYMOUS_PREFIX, InferEngine.ANONYMOUS_CLASS_ID) );
+	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(IInferEngine.ANONYMOUS_PREFIX, IInferEngine.ANONYMOUS_CLASS_ID) );
 	public static final String ANONYMOUS_LABEL = "{}"; //$NON-NLS-1$
 
 	/*

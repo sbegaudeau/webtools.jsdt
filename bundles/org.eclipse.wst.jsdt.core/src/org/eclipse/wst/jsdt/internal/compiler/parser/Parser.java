@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.core.infer.InferEngine;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -309,7 +309,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 
 	public static final byte FLAG_EMPTY_STATEMENT = 1;
 
-	public InferEngine[] inferenceEngines;
+	public IInferEngine[] inferenceEngines;
 	
 	static {
 		try{
@@ -7041,7 +7041,7 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 	for (int i=0;i<this.inferenceEngines.length;i++)
 	{
 		try {
-			InferEngine engine=this.inferenceEngines[i];
+			IInferEngine engine=this.inferenceEngines[i];
 			engine.initialize();
 			engine.setCompilationUnit(parsedUnit);
 			engine.doInfer();

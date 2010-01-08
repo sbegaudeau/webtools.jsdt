@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -98,7 +98,7 @@ public class InferrenceManager {
 
 	
 
-	public InferEngine [] getInferenceEngines(CompilationUnitDeclaration script)
+	public IInferEngine [] getInferenceEngines(CompilationUnitDeclaration script)
 	{
 		InferrenceProvider[] inferenceProviders = getInferenceProviders();
 		if (inferenceProviders.length==1)
@@ -127,9 +127,7 @@ public class InferrenceManager {
 				}
 			    switch (applies) {
 				case InferrenceProvider.MAYBE_THIS:
-					  InferEngine eng=inferenceProviders[i].getInferEngine();
-					  eng.appliesTo=InferrenceProvider.MAYBE_THIS;
-					  eng.inferenceProvider=inferenceProviders[i];
+					  IInferEngine eng=inferenceProviders[i].getInferEngine();
 					  extEngines.add(eng);
 					break;
 
@@ -141,16 +139,14 @@ public class InferrenceManager {
 					break;
 				}
 			}
-		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]);
+		return (IInferEngine [] )extEngines.toArray(new IInferEngine[extEngines.size()]);
 	}
 
 	
-	private InferEngine [] getSingleEngine(InferrenceProvider provider)
+	private IInferEngine [] getSingleEngine(InferrenceProvider provider)
 	{
-		  InferEngine engine=provider.getInferEngine();
-		  engine.appliesTo=InferrenceProvider.ONLY_THIS;
-		  engine.inferenceProvider=provider;
-		  InferEngine [] thisEngine = {engine};
+		  IInferEngine engine=provider.getInferEngine();
+		  IInferEngine [] thisEngine = {engine};
 		  return thisEngine;
 	}
 	

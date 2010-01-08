@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,7 @@ public interface InferrenceProvider {
 	 * Get the inference engine for this inference provider, or null if one will not be provided.  Implementors returning null are expected to return {@link #NOT_THIS} for all calls to {@link #getInferEngine()}
 	 * @return an inference engine
 	 */
-	public InferEngine getInferEngine();
+	public IInferEngine getInferEngine();
 	
 	
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
  * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
  * (repeatedly) as the API evolves.
  */
-public class InferEngine extends ASTVisitor {
+public class InferEngine extends ASTVisitor implements IInferEngine {
 
 	InferOptions inferOptions;
 	CompilationUnitDeclaration compUnit;
@@ -80,8 +80,6 @@ public class InferEngine extends ASTVisitor {
 
     boolean isTopLevelAnonymousFunction;
     int anonymousCount=0;
-    
-    public int appliesTo;
     
     public InferrenceProvider inferenceProvider;
 
@@ -114,9 +112,6 @@ public class InferEngine extends ASTVisitor {
 	protected InferredType inferredGlobal=null;
 
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
-
-	public final static char[] ANONYMOUS_PREFIX = {'_','_','_'};
-	public static final char[] ANONYMOUS_CLASS_ID= {'a','n','o','n','y','m','o','u','s'};
 
 	static class Context
 	{
