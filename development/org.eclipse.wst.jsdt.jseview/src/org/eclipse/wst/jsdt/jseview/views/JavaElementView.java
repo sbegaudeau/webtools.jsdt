@@ -741,7 +741,7 @@ public class JavaElementView extends ViewPart implements IShowInSource, IShowInT
 		fCompareAction.setText("C&ompare with Each Other...");
 
 		
-		fLogDeltasAction= new Action("Log Java element deltas", IAction.AS_CHECK_BOX) {
+		fLogDeltasAction= new Action("Log JavaScript element deltas", IAction.AS_CHECK_BOX) {
 			
 			private IElementChangedListener fListener= new IElementChangedListener() {
 				public void elementChanged(ElementChangedEvent event) {
