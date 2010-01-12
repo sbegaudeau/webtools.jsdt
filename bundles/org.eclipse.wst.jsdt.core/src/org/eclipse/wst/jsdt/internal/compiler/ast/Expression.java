@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -60,8 +60,6 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.intValue() == constant.charValue();
 				case T_short :
 					return constant.shortValue() == constant.charValue();
-				case T_byte :
-					return constant.byteValue() == constant.charValue();
 				case T_long :
 					return constant.longValue() == constant.charValue();
 				default :
@@ -80,8 +78,6 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.intValue() == constant.floatValue();
 				case T_short :
 					return constant.shortValue() == constant.floatValue();
-				case T_byte :
-					return constant.byteValue() == constant.floatValue();
 				case T_long :
 					return constant.longValue() == constant.floatValue();
 				default :
@@ -100,30 +96,8 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.intValue() == constant.doubleValue();
 				case T_short :
 					return constant.shortValue() == constant.doubleValue();
-				case T_byte :
-					return constant.byteValue() == constant.doubleValue();
 				case T_long :
 					return constant.longValue() == constant.doubleValue();
-				default :
-					return false; //boolean
-			}
-
-		case T_byte :
-			switch (constantTypeID) {
-				case T_char :
-					return constant.charValue() == constant.byteValue();
-				case T_double :
-					return constant.doubleValue() == constant.byteValue();
-				case T_float :
-					return constant.floatValue() == constant.byteValue();
-				case T_int :
-					return constant.intValue() == constant.byteValue();
-				case T_short :
-					return constant.shortValue() == constant.byteValue();
-				case T_byte :
-					return true;
-				case T_long :
-					return constant.longValue() == constant.byteValue();
 				default :
 					return false; //boolean
 			}
@@ -140,8 +114,6 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.intValue() == constant.shortValue();
 				case T_short :
 					return true;
-				case T_byte :
-					return constant.byteValue() == constant.shortValue();
 				case T_long :
 					return constant.longValue() == constant.shortValue();
 				default :
@@ -160,8 +132,6 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return true;
 				case T_short :
 					return constant.shortValue() == constant.intValue();
-				case T_byte :
-					return constant.byteValue() == constant.intValue();
 				case T_long :
 					return constant.longValue() == constant.intValue();
 				default :
@@ -180,8 +150,6 @@ public static final boolean isConstantValueRepresentable(Constant constant, int 
 					return constant.intValue() == constant.longValue();
 				case T_short :
 					return constant.shortValue() == constant.longValue();
-				case T_byte :
-					return constant.byteValue() == constant.longValue();
 				case T_long :
 					return true;
 				default :
@@ -463,9 +431,6 @@ public void markAsNonNull() {
 		switch (runtimeType) {
 			case T_boolean :
 				convertedType = TypeBinding.BOOLEAN;
-				break;
-			case T_byte :
-				convertedType = TypeBinding.BYTE;
 				break;
 			case T_short :
 				convertedType = TypeBinding.SHORT;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 //		throw new ShouldNotImplement(Messages.bind(Messages.constant_cannotCastedInto, new String[] { typeName(), "boolean" })); //$NON-NLS-1$
 	}
 
-	public byte byteValue() {
-
-		throw new ShouldNotImplement(Messages.bind(Messages.constant_cannotCastedInto, new String[] { typeName(), "byte" })); //$NON-NLS-1$
-	}
-
 	public final Constant castTo(int conversionToTargetType){
 		//the cast is an int of the form
 		// (castId<<4)+typeId (in order to follow the
@@ -52,21 +47,7 @@ public abstract class Constant implements TypeIds, OperatorIds {
 	//	    case (T_undefined<<4)+T_char  		 : return NotAConstant;
 	//	    case (T_undefined<<4)+T_int  		 : return NotAConstant;
 
-	//	    case (T_byte<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_byte<<4)+T_byte  		 : return this;
-		    case (T_byte<<4)+T_long  		 : return ByteConstant.fromValue((byte)this.longValue());
-		    case (T_byte<<4)+T_short  		 : return ByteConstant.fromValue((byte)this.shortValue());
-	//	    case (T_byte<<4)+T_void  		 : return NotAConstant;
-	//	    case (T_byte<<4)+T_String  	 	 : return NotAConstant;
-	//	    case (T_byte<<4)+T_Object  	 	 : return NotAConstant;
-		    case (T_byte<<4)+T_double  	 	 : return ByteConstant.fromValue((byte)this.doubleValue());
-		    case (T_byte<<4)+T_float  		 : return ByteConstant.fromValue((byte)this.floatValue());
-	//	    case (T_byte<<4)+T_boolean  	 : return NotAConstant;
-		    case (T_byte<<4)+T_char  		 : return ByteConstant.fromValue((byte)this.charValue());
-		    case (T_byte<<4)+T_int  		 : return ByteConstant.fromValue((byte)this.intValue());
-
 	//	    case (T_long<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_long<<4)+T_byte  		 : return LongConstant.fromValue(this.byteValue());
 		    case (T_long<<4)+T_long  		 : return this;
 		    case (T_long<<4)+T_short  		 : return LongConstant.fromValue(this.shortValue());
 	//	    case (T_long<<4)+T_void  		 : return NotAConstant;
@@ -79,7 +60,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 		    case (T_long<<4)+T_int  		 : return LongConstant.fromValue(this.intValue());
 
 	//	    case (T_short<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_short<<4)+T_byte  		 : return ShortConstant.fromValue(this.byteValue());
 		    case (T_short<<4)+T_long  		 : return ShortConstant.fromValue((short)this.longValue());
 		    case (T_short<<4)+T_short  		 : return this;
 	//	    case (T_short<<4)+T_void  		 : return NotAConstant;
@@ -131,7 +111,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 	//	    case (T_Object<<4)+T_int  			: return NotAConstant;
 
 	//	    case (T_double<<4)+T_undefined  	: return NotAConstant;
-		    case (T_double<<4)+T_byte  		 	: return DoubleConstant.fromValue(this.byteValue());
 		    case (T_double<<4)+T_long  		 	: return DoubleConstant.fromValue(this.longValue());
 		    case (T_double<<4)+T_short  		: return DoubleConstant.fromValue(this.shortValue());
 	//	    case (T_double<<4)+T_void  		 	: return NotAConstant;
@@ -144,7 +123,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 		    case (T_double<<4)+T_int  			: return DoubleConstant.fromValue(this.intValue());
 
 	//	    case (T_float<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_float<<4)+T_byte  		 : return FloatConstant.fromValue(this.byteValue());
 		    case (T_float<<4)+T_long  		 : return FloatConstant.fromValue(this.longValue());
 		    case (T_float<<4)+T_short  		 : return FloatConstant.fromValue(this.shortValue());
 	//	    case (T_float<<4)+T_void  		 : return NotAConstant;
@@ -170,7 +148,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 	//	    case (T_boolean<<4)+T_int  				 : return NotAConstant;
 
 	//	    case (T_char<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_char<<4)+T_byte  		 : return CharConstant.fromValue((char)this.byteValue());
 		    case (T_char<<4)+T_long  		 : return CharConstant.fromValue((char)this.longValue());
 		    case (T_char<<4)+T_short  		 : return CharConstant.fromValue((char)this.shortValue());
 	//	    case (T_char<<4)+T_void  		 : return NotAConstant;
@@ -183,7 +160,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 		    case (T_char<<4)+T_int  		 : return CharConstant.fromValue((char)this.intValue());
 
 	//	    case (T_int<<4)+T_undefined  	 : return NotAConstant;
-		    case (T_int<<4)+T_byte  		 : return IntConstant.fromValue(this.byteValue());
 		    case (T_int<<4)+T_long  		 : return IntConstant.fromValue((int) this.longValue());
 		    case (T_int<<4)+T_short  		 : return IntConstant.fromValue(this.shortValue());
 	//	    case (T_int<<4)+T_void  		 : return NotAConstant;
@@ -237,7 +213,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case TWIDDLE:
 				switch (id){
 					case T_char :	return IntConstant.fromValue(~ cst.charValue());
-					case T_byte:	return IntConstant.fromValue(~ cst.byteValue());
 					case T_short:	return IntConstant.fromValue(~ cst.shortValue());
 					case T_int:		return IntConstant.fromValue(~ cst.intValue());
 					case T_long:	return LongConstant.fromValue(~ cst.longValue());
@@ -279,25 +254,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() & right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() & right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() & right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() & right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() & right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() & right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() & right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() & right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() & right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() & right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() & right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() & right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() & right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() & right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() & right.longValue());
@@ -306,7 +270,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() & right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() & right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() & right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() & right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() & right.longValue());
@@ -315,7 +278,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() & right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() & right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() & right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() & right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() & right.longValue());
@@ -339,7 +301,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.charValue() / right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.charValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.charValue() / right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() / right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() / right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() / right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() / right.longValue());
@@ -350,7 +311,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return FloatConstant.fromValue(left.floatValue() / right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.floatValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.floatValue() / right.doubleValue());
-					case T_byte:	return FloatConstant.fromValue(left.floatValue() / right.byteValue());
 					case T_short:	return FloatConstant.fromValue(left.floatValue() / right.shortValue());
 					case T_int:		return FloatConstant.fromValue(left.floatValue() / right.intValue());
 					case T_long:	return FloatConstant.fromValue(left.floatValue() / right.longValue());
@@ -361,21 +321,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return DoubleConstant.fromValue(left.doubleValue() / right.charValue());
 					case T_float:	return DoubleConstant.fromValue(left.doubleValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.doubleValue() / right.doubleValue());
-					case T_byte:	return DoubleConstant.fromValue(left.doubleValue() / right.byteValue());
 					case T_short:	return DoubleConstant.fromValue(left.doubleValue() / right.shortValue());
 					case T_int:		return DoubleConstant.fromValue(left.doubleValue() / right.intValue());
 					case T_long:	return DoubleConstant.fromValue(left.doubleValue() / right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() / right.charValue());
-					case T_float:	return FloatConstant.fromValue(left.byteValue() / right.floatValue());
-					case T_double:	return DoubleConstant.fromValue(left.byteValue() / right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() / right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() / right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() / right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() / right.longValue());
 				}
 			break;
 			case T_short :
@@ -383,7 +331,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.shortValue() / right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.shortValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.shortValue() / right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() / right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() / right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() / right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() / right.longValue());
@@ -394,7 +341,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.intValue() / right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.intValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() / right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() / right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() / right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() / right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() / right.longValue());
@@ -405,7 +351,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return LongConstant.fromValue(left.longValue() / right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.longValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.longValue() / right.doubleValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() / right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() / right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() / right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() / right.longValue());
@@ -429,7 +374,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.charValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.charValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.charValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.charValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.charValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.charValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.charValue() == right.longValue());}
@@ -439,7 +383,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.floatValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.floatValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.floatValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.floatValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.floatValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.floatValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.floatValue() == right.longValue());
@@ -450,21 +393,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.doubleValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.doubleValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.doubleValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.doubleValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.doubleValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.doubleValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.doubleValue() == right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return BooleanConstant.fromValue(left.byteValue() == right.charValue());
-					case T_float:	return BooleanConstant.fromValue(left.byteValue() == right.floatValue());
-					case T_double:	return BooleanConstant.fromValue(left.byteValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.byteValue() == right.byteValue());
-					case T_short:	return BooleanConstant.fromValue(left.byteValue() == right.shortValue());
-					case T_int:		return BooleanConstant.fromValue(left.byteValue() == right.intValue());
-					case T_long:	return BooleanConstant.fromValue(left.byteValue() == right.longValue());
 				}
 			break;
 			case T_short :
@@ -472,7 +403,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.shortValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.shortValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.shortValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.shortValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.shortValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.shortValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.shortValue() == right.longValue());
@@ -483,7 +413,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.intValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.intValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.intValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.intValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.intValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.intValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.intValue() == right.longValue());
@@ -494,7 +423,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.longValue() == right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.longValue() == right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.longValue() == right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.longValue() == right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.longValue() == right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.longValue() == right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.longValue() == right.longValue());
@@ -528,7 +456,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.charValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.charValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.charValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.charValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.charValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.charValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.charValue() > right.longValue());
@@ -539,7 +466,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.floatValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.floatValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.floatValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.floatValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.floatValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.floatValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.floatValue() > right.longValue());
@@ -550,21 +476,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.doubleValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.doubleValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.doubleValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.doubleValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.doubleValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.doubleValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.doubleValue() > right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return BooleanConstant.fromValue(left.byteValue() > right.charValue());
-					case T_float:	return BooleanConstant.fromValue(left.byteValue() > right.floatValue());
-					case T_double:	return BooleanConstant.fromValue(left.byteValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.byteValue() > right.byteValue());
-					case T_short:	return BooleanConstant.fromValue(left.byteValue() > right.shortValue());
-					case T_int:		return BooleanConstant.fromValue(left.byteValue() > right.intValue());
-					case T_long:	return BooleanConstant.fromValue(left.byteValue() > right.longValue());
 				}
 			break;
 			case T_short :
@@ -572,7 +486,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.shortValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.shortValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.shortValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.shortValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.shortValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.shortValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.shortValue() > right.longValue());
@@ -583,7 +496,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.intValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.intValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.intValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.intValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.intValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.intValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.intValue() > right.longValue());
@@ -594,7 +506,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.longValue() > right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.longValue() > right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.longValue() > right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.longValue() > right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.longValue() > right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.longValue() > right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.longValue() > right.longValue());
@@ -613,7 +524,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.charValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.charValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.charValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.charValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.charValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.charValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.charValue() >= right.longValue());
@@ -624,7 +534,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.floatValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.floatValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.floatValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.floatValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.floatValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.floatValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.floatValue() >= right.longValue());
@@ -635,21 +544,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.doubleValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.doubleValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.doubleValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.doubleValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.doubleValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.doubleValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.doubleValue() >= right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return BooleanConstant.fromValue(left.byteValue() >= right.charValue());
-					case T_float:	return BooleanConstant.fromValue(left.byteValue() >= right.floatValue());
-					case T_double:	return BooleanConstant.fromValue(left.byteValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.byteValue() >= right.byteValue());
-					case T_short:	return BooleanConstant.fromValue(left.byteValue() >= right.shortValue());
-					case T_int:		return BooleanConstant.fromValue(left.byteValue() >= right.intValue());
-					case T_long:	return BooleanConstant.fromValue(left.byteValue() >= right.longValue());
 				}
 			break;
 			case T_short :
@@ -657,7 +554,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.shortValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.shortValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.shortValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.shortValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.shortValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.shortValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.shortValue() >= right.longValue());
@@ -668,7 +564,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.intValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.intValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.intValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.intValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.intValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.intValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.intValue() >= right.longValue());
@@ -679,7 +574,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.longValue() >= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.longValue() >= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.longValue() >= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.longValue() >= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.longValue() >= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.longValue() >= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.longValue() >= right.longValue());
@@ -696,25 +590,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() << right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() << right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() << right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() << right.intValue());
 					case T_long:	return IntConstant.fromValue(left.charValue() << right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() << right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() << right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() << right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() << right.intValue());
-					case T_long:	return IntConstant.fromValue(left.byteValue() << right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() << right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() << right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() << right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() << right.intValue());
 					case T_long:	return IntConstant.fromValue(left.shortValue() << right.longValue());
@@ -723,7 +606,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() << right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() << right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() << right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() << right.intValue());
 					case T_long:	return IntConstant.fromValue(left.intValue() << right.longValue());
@@ -732,7 +614,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() << right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() << right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() << right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() << right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() << right.longValue());
@@ -751,7 +632,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.charValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.charValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.charValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.charValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.charValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.charValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.charValue() < right.longValue());
@@ -762,7 +642,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.floatValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.floatValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.floatValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.floatValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.floatValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.floatValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.floatValue() < right.longValue());
@@ -773,21 +652,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.doubleValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.doubleValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.doubleValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.doubleValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.doubleValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.doubleValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.doubleValue() < right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return BooleanConstant.fromValue(left.byteValue() < right.charValue());
-					case T_float:	return BooleanConstant.fromValue(left.byteValue() < right.floatValue());
-					case T_double:	return BooleanConstant.fromValue(left.byteValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.byteValue() < right.byteValue());
-					case T_short:	return BooleanConstant.fromValue(left.byteValue() < right.shortValue());
-					case T_int:		return BooleanConstant.fromValue(left.byteValue() < right.intValue());
-					case T_long:	return BooleanConstant.fromValue(left.byteValue() < right.longValue());
 				}
 			break;
 			case T_short :
@@ -795,7 +662,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.shortValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.shortValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.shortValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.shortValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.shortValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.shortValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.shortValue() < right.longValue());
@@ -806,7 +672,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.intValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.intValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.intValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.intValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.intValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.intValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.intValue() < right.longValue());
@@ -817,7 +682,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.longValue() < right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.longValue() < right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.longValue() < right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.longValue() < right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.longValue() < right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.longValue() < right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.longValue() < right.longValue());
@@ -836,7 +700,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.charValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.charValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.charValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.charValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.charValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.charValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.charValue() <= right.longValue());
@@ -847,7 +710,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.floatValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.floatValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.floatValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.floatValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.floatValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.floatValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.floatValue() <= right.longValue());
@@ -858,21 +720,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.doubleValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.doubleValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.doubleValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.doubleValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.doubleValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.doubleValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.doubleValue() <= right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return BooleanConstant.fromValue(left.byteValue() <= right.charValue());
-					case T_float:	return BooleanConstant.fromValue(left.byteValue() <= right.floatValue());
-					case T_double:	return BooleanConstant.fromValue(left.byteValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.byteValue() <= right.byteValue());
-					case T_short:	return BooleanConstant.fromValue(left.byteValue() <= right.shortValue());
-					case T_int:		return BooleanConstant.fromValue(left.byteValue() <= right.intValue());
-					case T_long:	return BooleanConstant.fromValue(left.byteValue() <= right.longValue());
 				}
 			break;
 			case T_short :
@@ -880,7 +730,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.shortValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.shortValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.shortValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.shortValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.shortValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.shortValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.shortValue() <= right.longValue());
@@ -891,7 +740,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.intValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.intValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.intValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.intValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.intValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.intValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.intValue() <= right.longValue());
@@ -902,7 +750,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return BooleanConstant.fromValue(left.longValue() <= right.charValue());
 					case T_float:	return BooleanConstant.fromValue(left.longValue() <= right.floatValue());
 					case T_double:	return BooleanConstant.fromValue(left.longValue() <= right.doubleValue());
-					case T_byte:	return BooleanConstant.fromValue(left.longValue() <= right.byteValue());
 					case T_short:	return BooleanConstant.fromValue(left.longValue() <= right.shortValue());
 					case T_int:		return BooleanConstant.fromValue(left.longValue() <= right.intValue());
 					case T_long:	return BooleanConstant.fromValue(left.longValue() <= right.longValue());
@@ -920,7 +767,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.charValue() - right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.charValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.charValue() - right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() - right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() - right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() - right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() - right.longValue());
@@ -931,7 +777,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return FloatConstant.fromValue(left.floatValue() - right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.floatValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.floatValue() - right.doubleValue());
-					case T_byte:	return FloatConstant.fromValue(left.floatValue() - right.byteValue());
 					case T_short:	return FloatConstant.fromValue(left.floatValue() - right.shortValue());
 					case T_int:		return FloatConstant.fromValue(left.floatValue() - right.intValue());
 					case T_long:	return FloatConstant.fromValue(left.floatValue() - right.longValue());
@@ -942,21 +787,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return DoubleConstant.fromValue(left.doubleValue() - right.charValue());
 					case T_float:	return DoubleConstant.fromValue(left.doubleValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.doubleValue() - right.doubleValue());
-					case T_byte:	return DoubleConstant.fromValue(left.doubleValue() - right.byteValue());
 					case T_short:	return DoubleConstant.fromValue(left.doubleValue() - right.shortValue());
 					case T_int:		return DoubleConstant.fromValue(left.doubleValue() - right.intValue());
 					case T_long:	return DoubleConstant.fromValue(left.doubleValue() - right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() - right.charValue());
-					case T_float:	return FloatConstant.fromValue(left.byteValue() - right.floatValue());
-					case T_double:	return DoubleConstant.fromValue(left.byteValue() - right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() - right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() - right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() - right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() - right.longValue());
 				}
 			break;
 			case T_short :
@@ -964,7 +797,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.shortValue() - right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.shortValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.shortValue() - right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() - right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() - right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() - right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() - right.longValue());
@@ -975,7 +807,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.intValue() - right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.intValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() - right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() - right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() - right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() - right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() - right.longValue());
@@ -986,7 +817,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return LongConstant.fromValue(left.longValue() - right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.longValue() - right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.longValue() - right.doubleValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() - right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() - right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() - right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() - right.longValue());
@@ -1005,7 +835,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.charValue() * right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.charValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.charValue() * right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() * right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() * right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() * right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() * right.longValue());
@@ -1016,7 +845,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return FloatConstant.fromValue(left.floatValue() * right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.floatValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.floatValue() * right.doubleValue());
-					case T_byte:	return FloatConstant.fromValue(left.floatValue() * right.byteValue());
 					case T_short:	return FloatConstant.fromValue(left.floatValue() * right.shortValue());
 					case T_int:		return FloatConstant.fromValue(left.floatValue() * right.intValue());
 					case T_long:	return FloatConstant.fromValue(left.floatValue() * right.longValue());
@@ -1027,21 +855,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return DoubleConstant.fromValue(left.doubleValue() * right.charValue());
 					case T_float:	return DoubleConstant.fromValue(left.doubleValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.doubleValue() * right.doubleValue());
-					case T_byte:	return DoubleConstant.fromValue(left.doubleValue() * right.byteValue());
 					case T_short:	return DoubleConstant.fromValue(left.doubleValue() * right.shortValue());
 					case T_int:		return DoubleConstant.fromValue(left.doubleValue() * right.intValue());
 					case T_long:	return DoubleConstant.fromValue(left.doubleValue() * right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() * right.charValue());
-					case T_float:	return FloatConstant.fromValue(left.byteValue() * right.floatValue());
-					case T_double:	return DoubleConstant.fromValue(left.byteValue() * right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() * right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() * right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() * right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() * right.longValue());
 				}
 			break;
 			case T_short :
@@ -1049,7 +865,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.shortValue() * right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.shortValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.shortValue() * right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() * right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() * right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() * right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() * right.longValue());
@@ -1060,7 +875,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.intValue() * right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.intValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() * right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() * right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() * right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() * right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() * right.longValue());
@@ -1071,7 +885,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return LongConstant.fromValue(left.longValue() * right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.longValue() * right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.longValue() * right.doubleValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() * right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() * right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() * right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() * right.longValue());
@@ -1088,25 +901,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() | right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() | right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() | right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() | right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() | right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() | right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() | right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() | right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() | right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() | right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() | right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() | right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() | right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() | right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() | right.longValue());
@@ -1115,7 +917,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() | right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() | right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() | right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() | right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() | right.longValue());
@@ -1124,7 +925,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() | right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() | right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() | right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() | right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() | right.longValue());
@@ -1157,7 +957,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.charValue() + right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.charValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.charValue() + right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() + right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() + right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() + right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() + right.longValue());
@@ -1169,7 +968,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return FloatConstant.fromValue(left.floatValue() + right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.floatValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.floatValue() + right.doubleValue());
-					case T_byte:	return FloatConstant.fromValue(left.floatValue() + right.byteValue());
 					case T_short:	return FloatConstant.fromValue(left.floatValue() + right.shortValue());
 					case T_int:		return FloatConstant.fromValue(left.floatValue() + right.intValue());
 					case T_long:	return FloatConstant.fromValue(left.floatValue() + right.longValue());
@@ -1181,32 +979,17 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return DoubleConstant.fromValue(left.doubleValue() + right.charValue());
 					case T_float:	return DoubleConstant.fromValue(left.doubleValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.doubleValue() + right.doubleValue());
-					case T_byte:	return DoubleConstant.fromValue(left.doubleValue() + right.byteValue());
 					case T_short:	return DoubleConstant.fromValue(left.doubleValue() + right.shortValue());
 					case T_int:		return DoubleConstant.fromValue(left.doubleValue() + right.intValue());
 					case T_long:	return DoubleConstant.fromValue(left.doubleValue() + right.longValue());
 					case T_JavaLangString:	return StringConstant.fromValue(left.stringValue() + right.stringValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() + right.charValue());
-					case T_float:	return FloatConstant.fromValue(left.byteValue() + right.floatValue());
-					case T_double:	return DoubleConstant.fromValue(left.byteValue() + right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() + right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() + right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() + right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() + right.longValue());
-					case T_JavaLangString:	return StringConstant.fromValue(left.stringValue() + right.stringValue());
-				}
-
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() + right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.shortValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.shortValue() + right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() + right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() + right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() + right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() + right.longValue());
@@ -1218,7 +1001,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.intValue() + right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.intValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() + right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() + right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() + right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() + right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() + right.longValue());
@@ -1230,7 +1012,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return LongConstant.fromValue(left.longValue() + right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.longValue() + right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.longValue() + right.doubleValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() + right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() + right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() + right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() + right.longValue());
@@ -1242,7 +1023,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.charValue()));
 					case T_float:	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.floatValue()));
 					case T_double:	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.doubleValue()));
-					case T_byte:	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.byteValue()));
 					case T_short:	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.shortValue()));
 					case T_int:		return StringConstant.fromValue(left.stringValue() + String.valueOf(right.intValue()));
 					case T_long:	return StringConstant.fromValue(left.stringValue() + String.valueOf(right.longValue()));
@@ -1275,7 +1055,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.charValue() % right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.charValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.charValue() % right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() % right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() % right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() % right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() % right.longValue());
@@ -1286,7 +1065,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return FloatConstant.fromValue(left.floatValue() % right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.floatValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.floatValue() % right.doubleValue());
-					case T_byte:	return FloatConstant.fromValue(left.floatValue() % right.byteValue());
 					case T_short:	return FloatConstant.fromValue(left.floatValue() % right.shortValue());
 					case T_int:		return FloatConstant.fromValue(left.floatValue() % right.intValue());
 					case T_long:	return FloatConstant.fromValue(left.floatValue() % right.longValue());
@@ -1297,21 +1075,9 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return DoubleConstant.fromValue(left.doubleValue() % right.charValue());
 					case T_float:	return DoubleConstant.fromValue(left.doubleValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.doubleValue() % right.doubleValue());
-					case T_byte:	return DoubleConstant.fromValue(left.doubleValue() % right.byteValue());
 					case T_short:	return DoubleConstant.fromValue(left.doubleValue() % right.shortValue());
 					case T_int:		return DoubleConstant.fromValue(left.doubleValue() % right.intValue());
 					case T_long:	return DoubleConstant.fromValue(left.doubleValue() % right.longValue());
-				}
-			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() % right.charValue());
-					case T_float:	return FloatConstant.fromValue(left.byteValue() % right.floatValue());
-					case T_double:	return DoubleConstant.fromValue(left.byteValue() % right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() % right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() % right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() % right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() % right.longValue());
 				}
 			break;
 			case T_short :
@@ -1319,7 +1085,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.shortValue() % right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.shortValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.shortValue() % right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() % right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() % right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() % right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() % right.longValue());
@@ -1330,7 +1095,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return IntConstant.fromValue(left.intValue() % right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.intValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() % right.doubleValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() % right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() % right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() % right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() % right.longValue());
@@ -1341,7 +1105,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_char :	return LongConstant.fromValue(left.longValue() % right.charValue());
 					case T_float:	return FloatConstant.fromValue(left.longValue() % right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.longValue() % right.doubleValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() % right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() % right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() % right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() % right.longValue());
@@ -1358,25 +1121,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() >> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() >> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() >> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() >> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.charValue() >> right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() >> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() >> right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() >> right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() >> right.intValue());
-					case T_long:	return IntConstant.fromValue(left.byteValue() >> right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() >> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() >> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() >> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() >> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.shortValue() >> right.longValue());
@@ -1385,7 +1137,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() >> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() >> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() >> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() >> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.intValue() >> right.longValue());
@@ -1394,7 +1145,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() >> right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() >> right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() >> right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() >> right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() >> right.longValue());
@@ -1411,25 +1161,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() >>> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() >>> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() >>> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() >>> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.charValue() >>> right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() >>> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() >>> right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() >>> right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() >>> right.intValue());
-					case T_long:	return IntConstant.fromValue(left.byteValue() >>> right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() >>> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() >>> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() >>> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() >>> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.shortValue() >>> right.longValue());
@@ -1438,7 +1177,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() >>> right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() >>> right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() >>> right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() >>> right.intValue());
 					case T_long:	return IntConstant.fromValue(left.intValue() >>> right.longValue());
@@ -1447,7 +1185,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() >>> right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() >>> right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() >>> right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() >>> right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() >>> right.longValue());
@@ -1465,25 +1202,14 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_char :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.charValue() ^ right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.charValue() ^ right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.charValue() ^ right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.charValue() ^ right.intValue());
 					case T_long:	return LongConstant.fromValue(left.charValue() ^ right.longValue());
 				}
 			break;
-			case T_byte :
-				switch (rightId){
-					case T_char :	return IntConstant.fromValue(left.byteValue() ^ right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.byteValue() ^ right.byteValue());
-					case T_short:	return IntConstant.fromValue(left.byteValue() ^ right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.byteValue() ^ right.intValue());
-					case T_long:	return LongConstant.fromValue(left.byteValue() ^ right.longValue());
-				}
-			break;
 			case T_short :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.shortValue() ^ right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.shortValue() ^ right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.shortValue() ^ right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.shortValue() ^ right.intValue());
 					case T_long:	return LongConstant.fromValue(left.shortValue() ^ right.longValue());
@@ -1492,7 +1218,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_int :
 				switch (rightId){
 					case T_char :	return IntConstant.fromValue(left.intValue() ^ right.charValue());
-					case T_byte:	return IntConstant.fromValue(left.intValue() ^ right.byteValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() ^ right.shortValue());
 					case T_int:		return IntConstant.fromValue(left.intValue() ^ right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() ^ right.longValue());
@@ -1501,7 +1226,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 			case T_long :
 				switch (rightId){
 					case T_char :	return LongConstant.fromValue(left.longValue() ^ right.charValue());
-					case T_byte:	return LongConstant.fromValue(left.longValue() ^ right.byteValue());
 					case T_short:	return LongConstant.fromValue(left.longValue() ^ right.shortValue());
 					case T_int:		return LongConstant.fromValue(left.longValue() ^ right.intValue());
 					case T_long:	return LongConstant.fromValue(left.longValue() ^ right.longValue());
@@ -1533,8 +1257,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 		switch (typeID) {
 			case TypeIds.T_boolean:
 				return booleanValue() == otherConstant.booleanValue();
-			case TypeIds.T_byte:
-				return byteValue() == otherConstant.byteValue();
 			case TypeIds.T_char:
 				return charValue() == otherConstant.charValue();
 			case TypeIds.T_double:
@@ -1586,7 +1308,6 @@ public abstract class Constant implements TypeIds, OperatorIds {
 	public String typeName() {
 		switch (typeID()) {
 			case T_int : return "int"; //$NON-NLS-1$
-			case T_byte : return "byte"; //$NON-NLS-1$
 			case T_short : return "short"; //$NON-NLS-1$
 			case T_char : return "char"; //$NON-NLS-1$
 			case T_float : return "float"; //$NON-NLS-1$

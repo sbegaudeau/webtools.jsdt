@@ -4157,11 +4157,6 @@ protected void consumeToken(int type) {
 			pushOnIntStack(this.scanner.currentPosition - 1);
 			pushOnIntStack(this.scanner.startPosition);
 			break;
-		case TokenNamebyte :
-			pushIdentifier(-T_byte);
-			pushOnIntStack(this.scanner.currentPosition - 1);
-			pushOnIntStack(this.scanner.startPosition);
-			break;
 		case TokenNamechar :
 			pushIdentifier(-T_char);
 			pushOnIntStack(this.scanner.currentPosition - 1);

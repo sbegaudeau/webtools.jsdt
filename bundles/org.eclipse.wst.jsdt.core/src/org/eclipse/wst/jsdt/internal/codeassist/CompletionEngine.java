@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -361,7 +361,6 @@ public final class CompletionEngine
 	ImportBinding[] favoriteReferenceBindings;
 
 	boolean assistNodeIsClass;
-	boolean assistNodeIsEnum;
 	boolean assistNodeIsException;
 	boolean assistNodeIsConstructor;
 	boolean assistNodeIsSuperType;
@@ -5304,12 +5303,6 @@ public final class CompletionEngine
 		}
 		return 0;
 	}
-	private int computeRelevanceForEnum(){
-		if(this.assistNodeIsEnum) {
-			return R_ENUM;
-		}
-		return 0;
-	}
 	private int computeRelevanceForMissingElements(boolean hasProblems) {
 		if (!hasProblems) {
 			return R_NO_PROBLEMS;
@@ -7299,7 +7292,6 @@ public final class CompletionEngine
 						addExpectedType(TypeBinding.FLOAT, scope);
 						addExpectedType(TypeBinding.DOUBLE, scope);
 						addExpectedType(TypeBinding.CHAR, scope);
-						addExpectedType(TypeBinding.BYTE, scope);
 						addExpectedType(scope.getJavaLangString(), scope);
 						break;
 					case OperatorIds.AND_AND :
@@ -7314,7 +7306,6 @@ public final class CompletionEngine
 						addExpectedType(TypeBinding.FLOAT, scope);
 						addExpectedType(TypeBinding.DOUBLE, scope);
 						addExpectedType(TypeBinding.CHAR, scope);
-						addExpectedType(TypeBinding.BYTE, scope);
 						break;
 				}
 				BinaryExpression binaryExpression = (BinaryExpression) parent;
@@ -7334,7 +7325,6 @@ public final class CompletionEngine
 						addExpectedType(TypeBinding.INT, scope);
 						addExpectedType(TypeBinding.LONG, scope);
 						addExpectedType(TypeBinding.CHAR, scope);
-						addExpectedType(TypeBinding.BYTE, scope);
 						break;
 					case OperatorIds.PLUS :
 					case OperatorIds.MINUS :
@@ -7346,7 +7336,6 @@ public final class CompletionEngine
 						addExpectedType(TypeBinding.FLOAT, scope);
 						addExpectedType(TypeBinding.DOUBLE, scope);
 						addExpectedType(TypeBinding.CHAR, scope);
-						addExpectedType(TypeBinding.BYTE, scope);
 						break;
 				}
 			}

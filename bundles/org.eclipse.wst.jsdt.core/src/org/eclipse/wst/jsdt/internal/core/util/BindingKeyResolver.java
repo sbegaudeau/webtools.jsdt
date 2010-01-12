@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -224,8 +224,6 @@ public class BindingKeyResolver extends BindingKeyParser {
 				return TypeBinding.CHAR;
 			case 'D' :
 				return TypeBinding.DOUBLE;
-			case 'B' :
-				return TypeBinding.BYTE;
 			case 'F' :
 				return TypeBinding.FLOAT;
 			case 'J' :

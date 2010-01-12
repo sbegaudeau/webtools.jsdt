@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,6 @@ abstract public class TypeBinding extends Binding {
 	/** Base type definitions */
 	public final static BaseTypeBinding INT = new BaseTypeBinding(
 			TypeIds.T_int, TypeConstants.INT, new char[] { 'I' });
-
-	public final static BaseTypeBinding BYTE = new BaseTypeBinding(
-			TypeIds.T_byte, TypeConstants.BYTE, new char[] { 'B' });
 
 	public final static BaseTypeBinding SHORT = new BaseTypeBinding(
 			TypeIds.T_short, TypeConstants.SHORT, new char[] { 'S' });
@@ -91,8 +88,6 @@ abstract public class TypeBinding extends Binding {
 		switch (id) {
 		case TypeIds.T_boolean:
 			return TypeBinding.BOOLEAN;
-		case TypeIds.T_byte:
-			return TypeBinding.BYTE;
 		case TypeIds.T_char:
 			return TypeBinding.CHAR;
 		case TypeIds.T_short:
@@ -336,7 +331,6 @@ abstract public class TypeBinding extends Binding {
 		case TypeIds.T_float:
 		case TypeIds.T_double:
 		case TypeIds.T_short:
-		case TypeIds.T_byte:
 		case TypeIds.T_long:
 		case TypeIds.T_char:
 			return true;

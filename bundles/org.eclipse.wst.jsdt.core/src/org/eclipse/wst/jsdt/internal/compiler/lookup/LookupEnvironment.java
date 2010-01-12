@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -368,8 +368,6 @@ public TypeBinding computeBoxingType(TypeBinding type) {
 	switch (type.id) {
 		case TypeIds.T_JavaLangBoolean :
 			return TypeBinding.BOOLEAN;
-		case TypeIds.T_JavaLangByte :
-			return TypeBinding.BYTE;
 		case TypeIds.T_JavaLangCharacter :
 			return TypeBinding.CHAR;
 		case TypeIds.T_JavaLangShort :
@@ -387,10 +385,6 @@ public TypeBinding computeBoxingType(TypeBinding type) {
 			boxedType = getType(JAVA_LANG_INTEGER);
 			if (boxedType != null) return boxedType;
 			return new ProblemReferenceBinding(JAVA_LANG_INTEGER, null, NotFound);
-		case TypeIds.T_byte :
-			boxedType = getType(JAVA_LANG_BYTE);
-			if (boxedType != null) return boxedType;
-			return new ProblemReferenceBinding(JAVA_LANG_BYTE, null, NotFound);
 		case TypeIds.T_short :
 			boxedType = getType(JAVA_LANG_SHORT);
 			if (boxedType != null) return boxedType;
@@ -752,9 +746,6 @@ TypeBinding getTypeFromSignature(char[] signature, int start, int end, boolean i
 				break;
 			case 'D' :
 				binding = TypeBinding.DOUBLE;
-				break;
-			case 'B' :
-				binding = TypeBinding.BYTE;
 				break;
 			case 'F' :
 				binding = TypeBinding.FLOAT;

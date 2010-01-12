@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,8 +51,6 @@ public static final TypeReference baseTypeReference(int baseType, int dim) {
 				return new SingleTypeReference(TypeBinding.FLOAT.simpleName, 0);
 			case (TypeIds.T_double) :
 				return new SingleTypeReference(TypeBinding.DOUBLE.simpleName, 0);
-			case (TypeIds.T_byte) :
-				return new SingleTypeReference(TypeBinding.BYTE.simpleName, 0);
 			case (TypeIds.T_short) :
 				return new SingleTypeReference(TypeBinding.SHORT.simpleName, 0);
 			case (TypeIds.T_int) :
@@ -72,8 +70,6 @@ public static final TypeReference baseTypeReference(int baseType, int dim) {
 			return new ArrayTypeReference(TypeBinding.FLOAT.simpleName, dim, 0);
 		case (TypeIds.T_double) :
 			return new ArrayTypeReference(TypeBinding.DOUBLE.simpleName, dim, 0);
-		case (TypeIds.T_byte) :
-			return new ArrayTypeReference(TypeBinding.BYTE.simpleName, dim, 0);
 		case (TypeIds.T_short) :
 			return new ArrayTypeReference(TypeBinding.SHORT.simpleName, dim, 0);
 		case (TypeIds.T_int) :

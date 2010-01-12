@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2009 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -89,8 +89,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						&& name[5] == 'a'
 						&& name[6] == 'n')
 						return TypeBinding.BOOLEAN;
-					if (length == 4 && name[1] == 'y' && name[2] == 't' && name[3] == 'e')
-						return TypeBinding.BYTE;
 					break;
 				case 'c' :
 					if (length == 4 && name[1] == 'h' && name[2] == 'a' && name[3] == 'r')
@@ -2544,7 +2542,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 							continue;
 						}
 						// fallthrough
-					case T_byte:
 					case T_short:
 					case T_char:
 					case T_boolean:

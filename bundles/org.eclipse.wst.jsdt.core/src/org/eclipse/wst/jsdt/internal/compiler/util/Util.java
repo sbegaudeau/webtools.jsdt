@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -305,25 +305,13 @@ public class Util implements SuffixConstants {
 	 */
 	public final static boolean isArchiveFileName(String name) {
 		int nameLength = name == null ? 0 : name.length();
-		int suffixLength = SUFFIX_JAR.length;
+		int suffixLength = SUFFIX_ZIP.length;
 		if (nameLength < suffixLength) return false;
 
-		// try to match as JAR file
 		for (int i = 0; i < suffixLength; i++) {
 			char c = name.charAt(nameLength - i - 1);
 			int suffixIndex = suffixLength - i - 1;
-			if (c != SUFFIX_jar[suffixIndex] && c != SUFFIX_JAR[suffixIndex]) {
-
-				// try to match as ZIP file
-				suffixLength = SUFFIX_ZIP.length;
-				if (nameLength < suffixLength) return false;
-				for (int j = 0; j < suffixLength; j++) {
-					c = name.charAt(nameLength - j - 1);
-					suffixIndex = suffixLength - j - 1;
-					if (c != SUFFIX_zip[suffixIndex] && c != SUFFIX_ZIP[suffixIndex]) return false;
-				}
-				return true;
-			}
+			if (c != SUFFIX_zip[suffixIndex] && c != SUFFIX_ZIP[suffixIndex]) return false;
 		}
 		return true;
 	}

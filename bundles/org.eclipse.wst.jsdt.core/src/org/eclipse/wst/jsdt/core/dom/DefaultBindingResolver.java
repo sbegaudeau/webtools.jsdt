@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -510,7 +510,6 @@ class DefaultBindingResolver extends BindingResolver {
 			if (constant != null && constant != Constant.NotAConstant) {
 				switch (constant.typeID()) {
 					case TypeIds.T_int : return new Integer(constant.intValue());
-					case TypeIds.T_byte : return new Byte(constant.byteValue());
 					case TypeIds.T_short : return new Short(constant.shortValue());
 					case TypeIds.T_char : return new Character(constant.charValue());
 					case TypeIds.T_float : return new Float(constant.floatValue());
@@ -1565,9 +1564,6 @@ class DefaultBindingResolver extends BindingResolver {
 			switch(name.charAt(0)) {
 				case 'I' :
 					leafTypeBinding = org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding.INT;
-					break;
-				case 'B' :
-					leafTypeBinding = org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding.BYTE;
 					break;
 				case 'Z' :
 					leafTypeBinding = org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding.BOOLEAN;

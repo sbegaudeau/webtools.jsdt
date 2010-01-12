@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ public interface TypeIds {
 	final int T_undefined = 0; // should not be changed
 	final int T_JavaLangObject = 1;
 	final int T_char = 2;
-	final int T_byte = 3;
 	final int T_short = 4;
 	final int T_boolean = 5;
 	final int T_void = 6;
@@ -49,7 +48,6 @@ public interface TypeIds {
 	final int T_JavaLangException = 25;
 
 	// wrapper types
-	final int T_JavaLangByte = 26;
 	final int T_JavaLangShort = 27;
 	final int T_JavaLangCharacter = 28;
 	final int T_JavaLangInteger = 29;
@@ -83,15 +81,6 @@ public interface TypeIds {
 	final int Boolean2Int = T_boolean + (T_int << 4);
 	final int Boolean2String = T_boolean + (T_JavaLangString << 4);
 	final int Boolean2Boolean = T_boolean + (T_boolean << 4);
-	final int Byte2Byte = T_byte + (T_byte << 4);
-	final int Byte2Short = T_byte + (T_short << 4);
-	final int Byte2Char = T_byte + (T_char << 4);
-	final int Byte2Int = T_byte + (T_int << 4);
-	final int Byte2Long = T_byte + (T_long << 4);
-	final int Byte2Float = T_byte + (T_float << 4);
-	final int Byte2Double = T_byte + (T_double << 4);
-	final int Byte2String = T_byte + (T_JavaLangString << 4);
-	final int Short2Byte = T_short + (T_byte << 4);
 	final int Short2Short = T_short + (T_short << 4);
 	final int Short2Char = T_short + (T_char << 4);
 	final int Short2Int = T_short + (T_int << 4);
@@ -99,7 +88,6 @@ public interface TypeIds {
 	final int Short2Float = T_short + (T_float << 4);
 	final int Short2Double = T_short + (T_double << 4);
 	final int Short2String = T_short + (T_JavaLangString << 4);
-	final int Char2Byte = T_char + (T_byte << 4);
 	final int Char2Short = T_char + (T_short << 4);
 	final int Char2Char = T_char + (T_char << 4);
 	final int Char2Int = T_char + (T_int << 4);
@@ -107,7 +95,6 @@ public interface TypeIds {
 	final int Char2Float = T_char + (T_float << 4);
 	final int Char2Double = T_char + (T_double << 4);
 	final int Char2String = T_char + (T_JavaLangString << 4);
-	final int Int2Byte = T_int + (T_byte << 4);
 	final int Int2Short = T_int + (T_short << 4);
 	final int Int2Char = T_int + (T_char << 4);
 	final int Int2Int = T_int + (T_int << 4);
@@ -115,7 +102,6 @@ public interface TypeIds {
 	final int Int2Float = T_int + (T_float << 4);
 	final int Int2Double = T_int + (T_double << 4);
 	final int Int2String = T_int + (T_JavaLangString << 4);
-	final int Long2Byte = T_long + (T_byte << 4);
 	final int Long2Short = T_long + (T_short << 4);
 	final int Long2Char = T_long + (T_char << 4);
 	final int Long2Int = T_long + (T_int << 4);
@@ -123,7 +109,6 @@ public interface TypeIds {
 	final int Long2Float = T_long + (T_float << 4);
 	final int Long2Double = T_long + (T_double << 4);
 	final int Long2String = T_long + (T_JavaLangString << 4);
-	final int Float2Byte = T_float + (T_byte << 4);
 	final int Float2Short = T_float + (T_short << 4);
 	final int Float2Char = T_float + (T_char << 4);
 	final int Float2Int = T_float + (T_int << 4);
@@ -131,7 +116,6 @@ public interface TypeIds {
 	final int Float2Float = T_float + (T_float << 4);
 	final int Float2Double = T_float + (T_double << 4);
 	final int Float2String = T_float + (T_JavaLangString << 4);
-	final int Double2Byte = T_double + (T_byte << 4);
 	final int Double2Short = T_double + (T_short << 4);
 	final int Double2Char = T_double + (T_char << 4);
 	final int Double2Int = T_double + (T_int << 4);
