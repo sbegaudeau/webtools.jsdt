@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -176,8 +176,8 @@ public class MethodScope extends BlockScope {
 			int incompatibleWithAbstract = ClassFileConstants.AccPrivate | ClassFileConstants.AccStatic | ClassFileConstants.AccFinal | ClassFileConstants.AccNative | ClassFileConstants.AccStrictfp;
 			if ((modifiers & incompatibleWithAbstract) != 0)
 				problemReporter().illegalAbstractModifierCombinationForMethod(declaringClass, (AbstractMethodDeclaration) referenceContext);
-			if (!methodBinding.declaringClass.isAbstract())
-				problemReporter().abstractMethodInAbstractClass((SourceTypeBinding) declaringClass, (AbstractMethodDeclaration) referenceContext);
+	
+			problemReporter().abstractMethodInAbstractClass((SourceTypeBinding) declaringClass, (AbstractMethodDeclaration) referenceContext);
 		}
 
 		/* DISABLED for backward compatibility with javac (if enabled should also mark private methods as final)

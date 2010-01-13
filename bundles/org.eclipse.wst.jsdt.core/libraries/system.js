@@ -561,7 +561,7 @@ Date.UTC = function(hour, min, sec, ms){return 0;};
 /**
   * function parse(string)
   * @memberOf Date
-  * @param {Strig} string
+  * @param {String} string
   * @returns {Number}
   * @static
   * @since Standard ECMA-262 3rd. Edition

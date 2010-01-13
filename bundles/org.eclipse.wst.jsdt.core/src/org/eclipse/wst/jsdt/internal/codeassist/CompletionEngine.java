@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMemberAcces
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSend;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMessageSendName;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnMethodName;
-import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnPackageReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.codeassist.complete.CompletionOnQualifiedType;
@@ -321,9 +320,6 @@ public final class CompletionEngine
 	private final static char[] VOID = "void".toCharArray();  //$NON-NLS-1$
 //	private final static char[] INT = "int".toCharArray();  //$NON-NLS-1$
 //	private final static char[] INT_SIGNATURE = new char[]{Signature.C_INT};
-	private final static char[] VALUE = "value".toCharArray();  //$NON-NLS-1$
-	private final static char[] EXTENDS = "extends".toCharArray();  //$NON-NLS-1$
-	private final static char[] SUPER = "super".toCharArray();  //$NON-NLS-1$
 
 	private final static char[] VARARGS = "...".toCharArray();  //$NON-NLS-1$
 
@@ -440,7 +436,6 @@ public final class CompletionEngine
 	static final char[] THROWS = "throws".toCharArray();  //$NON-NLS-1$
 
 	static InvocationSite FakeInvocationSite = new InvocationSite(){
-		public TypeBinding[] genericTypeArguments() { return null; }
 		public boolean isSuperAccess(){ return false; }
 		public boolean isTypeAccess(){ return false; }
 		public void setActualReceiverType(ReferenceBinding receiverType) {/* empty */}
@@ -1767,8 +1762,7 @@ public final class CompletionEngine
 
 			ReferenceBinding ref = (ReferenceBinding) qualifiedBinding;
 			if (!this.requestor.isIgnored(CompletionProposal.METHOD_REF)
-					&& ref.isClass()
-					&& !ref.isAbstract()) {
+					&& ref.isClass()) {
 					findConstructors(
 						ref,
 						argTypes,
@@ -2264,21 +2258,6 @@ public final class CompletionEngine
 				}
 
 				this.parser.inferTypes(parsedUnit, this.compilerOptions);
-				// scan the package & import statements first
-				if (parsedUnit.currentPackage instanceof CompletionOnPackageReference) {
-					contextAccepted = true;
-					this.buildContext(parsedUnit.currentPackage, null, null, null);
-//					if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
-//						findPackages((CompletionOnPackageReference) parsedUnit.currentPackage);
-//					}
-					if(this.noProposal && this.problem != null) {
-						this.requestor.completionFailure(this.problem);
-						if(DEBUG) {
-							this.printDebug(this.problem);
-						}
-					}
-					return;
-				}
 
 				ImportReference[] imports = parsedUnit.imports;
 				if (imports != null) {
@@ -3225,8 +3204,6 @@ public final class CompletionEngine
 			return;
 
 		ReferenceBinding currentType = receiverType;
-		ReferenceBinding[] interfacesToVisit = null;
-		int nextPosition = 0;
 		do {
 
 			FieldBinding[] fields = currentType.availableFields();
@@ -3274,31 +3251,6 @@ public final class CompletionEngine
 			
 			currentType = currentType.superclass();
 		} while (notInJavadoc && currentType != null);
-
-		if (notInJavadoc && interfacesToVisit != null) {
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding anInterface = interfacesToVisit[i];
-				FieldBinding[] fields = anInterface.availableFields();
-				if(fields !=  null) {
-					findFields(
-						fieldName,
-						fields,
-						scope,
-						fieldsFound,
-						localsFound,
-						onlyStaticFields,
-						receiverType,
-						invocationSite,
-						invocationScope,
-						implicitCall,
-						canBePrefixed,
-						missingElements,
-						missingElementsStarts,
-						missingElementsEnds,
-						missingElementsHaveProblems);
-				}
-			}
-		}
 	}
 
 	protected void findFieldsAndMethods(
@@ -5163,118 +5115,6 @@ public final class CompletionEngine
 		return proposal;
 	}
 
-	// Helper method for findMethods(char[], TypeBinding[], ReferenceBinding, Scope, ObjectVector, boolean, boolean, boolean)
-	private void findLocalMethodsOfStaticImports(
-		char[] methodName,
-		MethodBinding[] methods,
-		Scope scope,
-		ObjectVector methodsFound,
-		ReferenceBinding receiverType,
-		InvocationSite invocationSite) {
-
-		ObjectVector newMethodsFound =  new ObjectVector();
-
-		next : for (int f = methods.length; --f >= 0;) {
-			MethodBinding method = methods[f];
-
-			if (method.isDefaultAbstract())	continue next;
-
-			if (method.isConstructor()) continue next;
-
-			if (!method.isStatic()) continue next;
-
-			if (this.options.checkDeprecation &&
-					method.isViewedAsDeprecated() &&
-					!scope.isDefinedInSameUnit(method.declaringClass))
-				continue next;
-
-			if (this.options.checkVisibility
-				&& !method.canBeSeenBy(receiverType, invocationSite, scope)) continue next;
-
-			if (!CharOperation.equals(methodName, method.selector, false /* ignore case */)
-					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(methodName, method.selector)))
-				continue next;
-
-			for (int i = methodsFound.size; --i >= 0;) {
-				Object[] other = (Object[]) methodsFound.elementAt(i);
-				MethodBinding otherMethod = (MethodBinding) other[0];
-				ReferenceBinding otherReceiverType = (ReferenceBinding) other[1];
-				if (method == otherMethod && receiverType == otherReceiverType)
-					continue next;
-
-				if (CharOperation.equals(method.selector, otherMethod.selector, true)) {
-					if (lookupEnvironment.methodVerifier().doesMethodOverride(otherMethod, method)) {
-						continue next;
-					}
-				}
-			}
-
-			newMethodsFound.add(new Object[]{method, receiverType});
-
-			int length = method.parameters.length;
-			char[][] parameterPackageNames = new char[length][];
-			char[][] parameterTypeNames = new char[length][];
-
-			for (int i = 0; i < length; i++) {
-				TypeBinding type = method.original().parameters[i];
-				parameterPackageNames[i] = type.qualifiedPackageName();
-				parameterTypeNames[i] = type.qualifiedSourceName();
-			}
-			char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
-
-			char[] completion = CharOperation.NO_CHAR;
-
-			int previousStartPosition = this.startPosition;
-
-			// nothing to insert - do not want to replace the existing selector & arguments
-			if (this.source != null
-				&& this.source.length > this.endPosition
-				&& this.source[this.endPosition] == '(') {
-				completion = method.selector;
-			} else {
-				completion = CharOperation.concat(method.selector, new char[] { '(', ')' });
-			}
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(methodName, method.selector);
-			relevance += computeRelevanceForExpectingType(method.returnType);
-			relevance += computeRelevanceForStatic(true, method.isStatic());
-			relevance += computeRelevanceForQualification(false);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-			this.noProposal = false;
-			if(!this.requestor.isIgnored(CompletionProposal.METHOD_REF)) {
-				CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_REF, this.actualCompletionPosition);
-				proposal.setDeclarationSignature(getSignature(method.declaringClass));
-				proposal.setSignature(getSignature(method));
-				MethodBinding original = method.original();
-				if(original != method) {
-					proposal.setOriginalSignature(getSignature(original));
-				}
-				proposal.setDeclarationPackageName(method.declaringClass.qualifiedPackageName());
-				proposal.setDeclarationTypeName(method.declaringClass.qualifiedSourceName());
-				proposal.setParameterPackageNames(parameterPackageNames);
-				proposal.setParameterTypeNames(parameterTypeNames);
-				proposal.setPackageName(method.returnType.qualifiedPackageName());
-				proposal.setTypeName(method.returnType.qualifiedSourceName());
-				proposal.setName(method.selector);
-				proposal.setCompletion(completion);
-				proposal.setFlags(method.modifiers);
-				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-				proposal.setRelevance(relevance);
-				if(parameterNames != null) proposal.setParameterNames(parameterNames);
-				this.requestor.accept(proposal);
-				if(DEBUG) {
-					this.printDebug(proposal);
-				}
-			}
-			this.startPosition = previousStartPosition;
-		}
-
-		methodsFound.addAll(newMethodsFound);
-	}
 	int computeRelevanceForCaseMatching(char[] token, char[] proposalName){
 		if (this.options.camelCaseMatch) {
 			if(CharOperation.equals(token, proposalName, true /* do not ignore case */)) {
@@ -5702,7 +5542,6 @@ public final class CompletionEngine
 				currentType = receiverType.superclass();
 			}
 		}
-		boolean hasPotentialDefaultAbstractMethods = true;
 		while (currentType != null) {
 
 			MethodBinding[] methods = currentType.availableMethods();
@@ -5764,13 +5603,6 @@ public final class CompletionEngine
 							missingElementsEnds,
 							missingElementsHaveProblems);
 				}
-			}
-			
-			if (notInJavadoc &&
-					hasPotentialDefaultAbstractMethods &&
-					(currentType.isAbstract())){
-			} else {
-				hasPotentialDefaultAbstractMethods = false;
 			}
 			
 			currentType = currentType.superclass();
@@ -5977,49 +5809,6 @@ public final class CompletionEngine
 //		setSourceRange(packageStatement.sourceStart, packageStatement.sourceEnd);
 //		this.nameEnvironment.findPackages(CharOperation.toLowerCase(this.completionToken), this);
 //	}
-
-	private void findParameterizedType(TypeReference ref, Scope scope) {
-		ReferenceBinding refBinding = (ReferenceBinding) ref.resolvedType;
-		if(refBinding != null) {
-			if (this.options.checkDeprecation &&
-					refBinding.isViewedAsDeprecated() &&
-					!scope.isDefinedInSameUnit(refBinding))
-				return;
-
-			int accessibility = IAccessRule.K_ACCESSIBLE;
-			if(refBinding.hasRestrictedAccess()) {
-				AccessRestriction accessRestriction = lookupEnvironment.getAccessRestriction(refBinding);
-				if(accessRestriction != null) {
-					switch (accessRestriction.getProblemId()) {
-						case IProblem.ForbiddenReference:
-							if (this.options.checkForbiddenReference) {
-								return;
-							}
-							accessibility = IAccessRule.K_NON_ACCESSIBLE;
-							break;
-						case IProblem.DiscouragedReference:
-							if (this.options.checkDiscouragedReference) {
-								return;
-							}
-							accessibility = IAccessRule.K_DISCOURAGED;
-							break;
-					}
-				}
-			}
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(refBinding.sourceName, refBinding.sourceName);
-			relevance += computeRelevanceForExpectingType(refBinding);
-			relevance += computeRelevanceForQualification(false);
-			relevance += computeRelevanceForRestrictions(accessibility); // no access restriction for type in the current unit
-
-			if(!this.requestor.isIgnored(CompletionProposal.TYPE_REF)) {
-				createTypeProposal(refBinding, refBinding.qualifiedSourceName(), IAccessRule.K_ACCESSIBLE, CharOperation.NO_CHAR, relevance);
-			}
-		}
-	}
 	
 	private void findTypesAndPackages(char[] token, Scope scope, ObjectVector typesFound) {
 
@@ -7143,8 +6932,6 @@ public final class CompletionEngine
 			ArrayList result) {
 
 		ReferenceBinding currentType = receiverType;
-		ReferenceBinding[] interfacesToVisit = null;
-		int nextPosition = 0;
 		do {
 			FieldBinding[] fields = currentType.availableFields();
 			if(fields != null && fields.length > 0) {
@@ -7158,22 +6945,6 @@ public final class CompletionEngine
 			}
 			currentType = currentType.superclass();
 		} while ( currentType != null);
-
-		if (interfacesToVisit != null) {
-			for (int i = 0; i < nextPosition; i++) {
-				ReferenceBinding anInterface = interfacesToVisit[i];
-				FieldBinding[] fields = anInterface.availableFields();
-				if(fields !=  null) {
-					computeAlreadyDefinedName(
-						fields,
-						scope,
-						onlyStaticFields,
-						receiverType,
-						invocationSite,
-						result);
-				}
-			}
-		}
 	}
 
 	private void computeAlreadyDefinedName(

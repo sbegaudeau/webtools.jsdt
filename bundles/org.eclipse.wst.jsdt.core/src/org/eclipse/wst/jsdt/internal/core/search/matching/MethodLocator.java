@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -545,9 +545,8 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 
 	int level = resolveLevelForType(qualifiedPattern, type);
 	if (level != IMPOSSIBLE_MATCH) {
-		if (!type.isAbstract()) { // if concrete class, then method is overridden
-			level |= OVERRIDDEN_METHOD_FLAVOR;
-		}
+		level |= OVERRIDDEN_METHOD_FLAVOR;
+		
 		return level;
 	}
 

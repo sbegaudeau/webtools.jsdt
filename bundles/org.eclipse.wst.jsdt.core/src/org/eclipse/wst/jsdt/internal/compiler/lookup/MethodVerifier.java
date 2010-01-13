@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
@@ -102,24 +100,11 @@ boolean areTypesEqual(TypeBinding one, TypeBinding two) {
 	return false; // all other type bindings are identical
 }
 boolean canSkipInheritedMethods() {
-	if (this.type.superclass() != null && this.type.superclass().isAbstract())
-		return false;
 	return true;
 }
 boolean canSkipInheritedMethods(MethodBinding one, MethodBinding two) {
 	return two == null // already know one is not null
 		|| one.declaringClass == two.declaringClass;
-}
-void checkAbstractMethod(MethodBinding abstractMethod) {
-	if (mustImplementAbstractMethod(abstractMethod.declaringClass)) {
-		TypeDeclaration typeDeclaration = this.type.classScope.referenceContext;
-		if (typeDeclaration != null) {
-			MethodDeclaration missingAbstractMethod = typeDeclaration.addMissingAbstractMethodFor(abstractMethod);
-			missingAbstractMethod.scope.problemReporter().abstractMethodMustBeImplemented(this.type, abstractMethod);
-		} else {
-			problemReporter().abstractMethodMustBeImplemented(this.type, abstractMethod);
-		}
-	}
 }
 void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] methods, int length, MethodBinding[] allInheritedMethods) {
 	CompilerOptions options = type.scope.compilerOptions();
@@ -213,20 +198,7 @@ void checkInheritedMethods(MethodBinding[] methods, int length) {
 	}
 	
 	if (concreteMethod == null) {
-		if (!this.type.isAbstract()) {
-			for (int i = length; --i >= 0;) {
-				if (mustImplementAbstractMethod(methods[i].declaringClass)) {
-					TypeDeclaration typeDeclaration = this.type.classScope.referenceContext;
-					if (typeDeclaration != null) {
-						MethodDeclaration missingAbstractMethod = typeDeclaration.addMissingAbstractMethodFor(methods[0]);
-						missingAbstractMethod.scope.problemReporter().abstractMethodMustBeImplemented(this.type, methods[0]);
-					} else {
-						problemReporter().abstractMethodMustBeImplemented(this.type, methods[0]);
-					}
-					return;
-				}
-			}
-		}
+		
 		return;
 	}
 
@@ -266,20 +238,14 @@ For each inherited method identifier (message pattern - vm signature minus the r
 					complain about missing implementation only if type is NOT an interface or abstract
 */
 void checkMethods() {
-	boolean mustImplementAbstractMethods = mustImplementAbstractMethods();
-	boolean skipInheritedMethods = mustImplementAbstractMethods && canSkipInheritedMethods(); // have a single concrete superclass so only check overridden methods
 	char[][] methodSelectors = this.inheritedMethods.keyTable;
 	nextSelector : for (int s = methodSelectors.length; --s >= 0;) {
 		if (methodSelectors[s] == null) continue nextSelector;
 
 		MethodBinding[] current = (MethodBinding[]) this.currentMethods.get(methodSelectors[s]);
-		if (current == null && skipInheritedMethods)
-			continue nextSelector;
 
 		MethodBinding[] inherited = (MethodBinding[]) this.inheritedMethods.valueTable[s];
 		if (inherited.length == 1 && current == null) { // handle the common case
-			if (mustImplementAbstractMethods && inherited[0].isAbstract())
-				checkAbstractMethod(inherited[0]);
 			continue nextSelector;
 		}
 
@@ -324,8 +290,6 @@ void checkMethods() {
 			if (index == -1) continue;
 			if (index > 0)
 				checkInheritedMethods(matchingInherited, index + 1); // pass in the length of matching
-			else if (mustImplementAbstractMethods && matchingInherited[0].isAbstract())
-				checkAbstractMethod(matchingInherited[0]);
 			while (index >= 0) matchingInherited[index--] = null; // clear the contents of the matching methods
 		}
 	}
@@ -336,25 +300,11 @@ void checkPackagePrivateAbstractMethod(MethodBinding abstractMethod) {
 	if (necessaryPackage == this.type.fPackage) return; // not a problem
 
 	ReferenceBinding superType = this.type.superclass();
-	char[] selector = abstractMethod.selector;
 	do {
 		if (!superType.isValidBinding()) return;
-		if (!superType.isAbstract()) return; // closer non abstract super type will be flagged instead
+		return; // closer non abstract super type will be flagged instead
 
-		if (necessaryPackage == superType.fPackage) {
-			MethodBinding[] methods = superType.getMethods(selector);
-			nextMethod : for (int m = methods.length; --m >= 0;) {
-				MethodBinding method = methods[m];
-				if (method.isPrivate() || method.isConstructor() || method.isDefaultAbstract())
-					continue nextMethod;
-				if (areMethodsCompatible(method, abstractMethod))
-					return; // found concrete implementation of abstract method in same package
-			}
-		}
 	} while ((superType = superType.superclass()) != abstractMethod.declaringClass);
-
-	// non visible abstract methods cannot be overridden so the type must be defined abstract
-	problemReporter().abstractMethodCannotBeOverridden(this.type, abstractMethod);
 }
 void computeInheritedMethods() {
 	ReferenceBinding superclass = this.type.superclass(); // class or enum
@@ -387,15 +337,8 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 
 	ReferenceBinding superType = superclass;
 	HashtableOfObject nonVisibleDefaultMethods = new HashtableOfObject(3); // maps method selectors to an array of methods
-	boolean allSuperclassesAreAbstract = true;
 
 	while (superType != null && superType.isValidBinding()) {
-	    if (allSuperclassesAreAbstract) {
-		    if (superType.isAbstract()) {
-			} else {
-			    allSuperclassesAreAbstract = false;
-			}
-		}
 
 		MethodBinding[] methods = superType.unResolvedMethods();
 		nextMethod : for (int m = methods.length; --m >= 0;) {
@@ -437,7 +380,7 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 				}
 				nonVisibleDefaultMethods.put(inheritedMethod.selector, nonVisible);
 
-				if (inheritedMethod.isAbstract() && !this.type.isAbstract()) // non visible abstract methods cannot be overridden so the type must be defined abstract
+				if (inheritedMethod.isAbstract()) // non visible abstract methods cannot be overridden so the type must be defined abstract
 					problemReporter().abstractMethodCannotBeOverridden(this.type, inheritedMethod);
 
 				MethodBinding[] current = (MethodBinding[]) this.currentMethods.get(inheritedMethod.selector);
@@ -543,22 +486,6 @@ boolean isSameClassOrSubclassOf(ReferenceBinding testClass, ReferenceBinding sup
 		if (testClass == superclass) return true;
 	} while ((testClass = testClass.superclass()) != null);
 	return false;
-}
-boolean mustImplementAbstractMethod(ReferenceBinding declaringClass) {
-	// if the type's superclass is an abstract class, then all abstract methods must be implemented
-	// otherwise, skip it if the type's superclass must implement any of the inherited methods
-	ReferenceBinding superclass = this.type.superclass();
-	if (declaringClass.isClass()) {
-		while (superclass.isAbstract() && superclass != declaringClass)
-			superclass = superclass.superclass(); // find the first concrete superclass or the abstract declaringClass
-	} else {
-		while (superclass.isAbstract())
-			superclass = superclass.superclass(); // find the first concrete superclass or the superclass which implements the interface
-	}
-	return superclass.isAbstract();		// if it is a concrete class then we have already reported problem against it
-}
-boolean mustImplementAbstractMethods() {
-	return !this.type.isAbstract();
 }
 ProblemReporter problemReporter() {
 	return this.type.scope.problemReporter();

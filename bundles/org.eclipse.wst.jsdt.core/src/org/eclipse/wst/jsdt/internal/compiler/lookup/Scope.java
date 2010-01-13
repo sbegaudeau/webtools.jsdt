@@ -641,7 +641,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding[] candidates = null;
 		int candidatesCount = 0;
 		MethodBinding problemMethod = null;
-		boolean searchForDefaultAbstractMethod = isCompliant14 && (receiverType.isAbstract());
 		if (foundSize > 0) {
 			// argument type compatibility check
 			for (int i = 0; i < foundSize; i++) {
@@ -651,8 +650,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					if (compatibleMethod.isValidBinding()) {
 						if (foundSize == 1 && compatibleMethod.canBeSeenBy(receiverType, invocationSite, this)) {
 							// return the single visible match now
-							if (searchForDefaultAbstractMethod)
-								return findDefaultAbstractMethod(receiverType, selector, argumentTypes, invocationSite, classHierarchyStart, found, compatibleMethod);
 							return compatibleMethod;
 						}
 						if (candidatesCount == 0)
@@ -734,10 +731,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 		}
 		if (visiblesCount == 1) {
-			if (searchForDefaultAbstractMethod)
-				return findDefaultAbstractMethod(receiverType, selector,
-						argumentTypes, invocationSite, classHierarchyStart,
-						found, candidates[0]);
 			return candidates[0];
 		}
 		if (visiblesCount == 0) {
@@ -757,15 +750,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 
 		MethodBinding mostSpecificMethod = mostSpecificMethodBinding(candidates, visiblesCount, argumentTypes, invocationSite, receiverType);
-		if (searchForDefaultAbstractMethod) { // search interfaces for a better match
-			if (mostSpecificMethod.isValidBinding())
-				// see if there is a better match in the interfaces - see AutoBoxingTest 99
-				return findDefaultAbstractMethod(receiverType, selector, argumentTypes, invocationSite, classHierarchyStart, found, mostSpecificMethod);
-			// see if there is a match in the interfaces - see LookupTest#84
-			MethodBinding interfaceMethod = findDefaultAbstractMethod(receiverType, selector, argumentTypes, invocationSite, classHierarchyStart, found, null);
-			if (interfaceMethod != null && interfaceMethod.isValidBinding() /* else return the same error as before */)
-				return interfaceMethod;
-		}
 		return mostSpecificMethod;
 	}
 

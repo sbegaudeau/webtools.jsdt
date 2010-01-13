@@ -189,10 +189,6 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	}
 	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
 		fPackage = environment.defaultPackage;
-//		if ((fPackage = environment.defaultPackage) == null) {
-//			problemReporter().mustSpecifyPackage(referenceContext);
-//			return;
-//		}
 	} else {
 		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
 //			problemReporter().packageCollidesWithType(referenceContext);
