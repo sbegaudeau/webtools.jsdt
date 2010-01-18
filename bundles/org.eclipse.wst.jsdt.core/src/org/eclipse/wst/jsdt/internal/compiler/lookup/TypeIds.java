@@ -40,7 +40,6 @@ public interface TypeIds {
 	final int T_JavaLangStringBuffer = 17;
 	final int T_JavaLangSystem = 18;
 	final int T_JavaLangError = 19;
-	final int T_JavaLangReflectConstructor = 20;
 	final int T_JavaLangThrowable = 21;
 	final int T_JavaLangNoClassDefError = 22;
 	final int T_JavaLangClassNotFoundException = 23;
@@ -68,9 +67,6 @@ public interface TypeIds {
 	final int T_JavaLangDeprecated = 44;
 	final int T_JavaLangOverride = 47;
 	final int T_JavaLangSuppressWarnings = 49;
-
-	final int T_JavaLangReflectField = 54;
-	final int T_JavaLangReflectMethod = 55;
 
 	final int NoId = Integer.MAX_VALUE;
 

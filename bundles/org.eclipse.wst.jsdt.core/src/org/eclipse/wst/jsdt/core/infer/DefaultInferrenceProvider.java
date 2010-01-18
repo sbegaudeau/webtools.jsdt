@@ -23,18 +23,12 @@ public class DefaultInferrenceProvider implements InferrenceProvider {
 
 	public static final String ID="org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider";
 	
-
 	public int applysTo(IInferenceFile scriptFile) {
 		char[] fileNameChars = scriptFile.getFileName();
-		if (fileNameChars!=null)
-		{
-//			String inferenceID = compilationUnit.getInferenceID();
-//			if (ID.equals(inferenceID))
-//			  return InferrenceProvider.ONLY_THIS;
+		if (fileNameChars!=null) {
 
 			String fileName = new String(fileNameChars);
-			if (fileName.indexOf("org.eclipse.wst.jsdt.core/libraries")>=0)
-			{
+			if (fileName.indexOf("org.eclipse.wst.jsdt.core/libraries")>=0) {
 				  return InferrenceProvider.ONLY_THIS;
 			}
 		}
@@ -47,12 +41,9 @@ public class DefaultInferrenceProvider implements InferrenceProvider {
 		 return engine;
 	}
  
-
-
 	public String getID() {
 		return ID;
 	}
-
 
 	public ResolutionConfiguration getResolutionConfiguration() {
 		return new ResolutionConfiguration();
@@ -61,5 +52,4 @@ public class DefaultInferrenceProvider implements InferrenceProvider {
 	public RefactoringSupport getRefactoringSupport() {
 		return null;
 	}
-
 }

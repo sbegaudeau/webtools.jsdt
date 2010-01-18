@@ -73,7 +73,6 @@ import org.eclipse.wst.jsdt.internal.core.Member;
 import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.ASTNodeFinder;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class HierarchyResolver implements ITypeRequestor {
@@ -641,7 +640,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 				ClassFile classFile = (ClassFile)openable;
 				org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit sourceUnit =
 					new org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit(null,new String(classFile.getFileName()),this.options.defaultEncoding);
-				sourceUnit.packageName=Util.toCharArrays(new String[]{classFile.getParent().getElementName()});
+				//sourceUnit.packageName=Util.toCharArrays(new String[]{classFile.getParent().getElementName()});
 				CompilationResult unitResult = new CompilationResult(sourceUnit, i, openablesLength, this.options.maxProblemsPerUnit);
 				CompilationUnitDeclaration parsedUnit = parser.dietParse(sourceUnit, unitResult);
 				if (parsedUnit != null) {

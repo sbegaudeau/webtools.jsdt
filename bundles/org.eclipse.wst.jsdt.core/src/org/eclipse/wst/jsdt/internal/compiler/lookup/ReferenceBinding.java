@@ -410,13 +410,6 @@ public void computeId() {
 			typeName = this.compoundName[3];
 			if (typeName.length == 0) return; // just to be safe
 			if (CharOperation.equals(packageName, TypeConstants.REFLECT)) {
-				if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_REFLECT_CONSTRUCTOR[3])) {
-					this.id = TypeIds.T_JavaLangReflectConstructor;
-				} else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_REFLECT_FIELD[3])) {
-					this.id = TypeIds.T_JavaLangReflectField;
-				} else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_REFLECT_METHOD[3])) {
-					this.id = TypeIds.T_JavaLangReflectMethod;
-				}
 				return;
 			}
 			break;

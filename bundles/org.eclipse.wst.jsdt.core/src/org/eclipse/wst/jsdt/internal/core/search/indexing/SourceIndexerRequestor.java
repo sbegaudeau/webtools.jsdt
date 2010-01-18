@@ -126,7 +126,8 @@ public char[][] enclosingTypeNames(){
 }
 
 private void enterClass(TypeInfo typeInfo) {
-
+	if(typeInfo.anonymousMember)
+		return;
 	// eliminate possible qualifications, given they need to be fully resolved again
 	if (typeInfo.superclass != null) {
 		//typeInfo.superclass = getSimpleName(typeInfo.superclass);

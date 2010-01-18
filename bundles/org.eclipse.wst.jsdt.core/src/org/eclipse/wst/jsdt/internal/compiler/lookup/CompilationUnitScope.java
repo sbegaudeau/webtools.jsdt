@@ -172,20 +172,12 @@ void buildFieldsAndMethods() {
 }
 void buildTypeBindings(AccessRestriction accessRestriction) {
 	topLevelTypes = new SourceTypeBinding[0]; // want it initialized if the package cannot be resolved
-//	boolean firstIsSynthetic = false;
 	if (referenceContext.compilationResult.compilationUnit != null) {
 		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
-//		if (expectedPackageName != null
-//				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
-//
-//			// only report if the unit isn't structurally empty
-//			if (referenceContext.currentPackage != null
-//					|| referenceContext.types != null
-//					|| referenceContext.imports != null) {
-//				problemReporter().packageIsNotExpectedPackage(referenceContext);
-//			}
-			currentPackageName = (expectedPackageName==null || expectedPackageName.length == 0 ) ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
-//		}
+		if (expectedPackageName != null
+				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
+			currentPackageName = expectedPackageName.length == 0 ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
+		}
 	}
 	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
 		fPackage = environment.defaultPackage;
