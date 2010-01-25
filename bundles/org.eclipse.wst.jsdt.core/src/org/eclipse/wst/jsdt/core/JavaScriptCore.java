@@ -3216,6 +3216,80 @@ public final class JavaScriptCore extends Plugin {
 			false, // no access rules to combine
 			extraAttributes);
 	}
+	
+	/**
+	 * Creates and returns a new includepath entry of kind <code>CPE_LIBRARY</code> for the JAR or folder
+	 * identified by the given absolute path. This specifies that all package fragments within the root
+	 * will have children of type <code>IClassFile</code>.
+	 * <p>
+	 * A library entry is used to denote a prerequisite JAR or root folder containing binaries.
+	 * The target JAR can either be defined internally to the workspace (absolute path relative
+	 * to the workspace root) or externally to the workspace (absolute path in the file system).
+	 * The target root folder can only be defined internally to the workspace (absolute path relative
+	 * to the workspace root). To use a binary folder external to the workspace, it must first be
+	 * linked (see IFolder#createLink(...)).
+	 * <p>
+	 * <p>
+	 * The <code>extraAttributes</code> list contains name/value pairs that must be persisted with
+	 * this entry. If no extra attributes are provided, an empty array must be passed in.<br>
+	 * Note that this list should not contain any duplicate name.
+	 * </p>
+	 * <p>
+	 * The <code>isExported</code> flag indicates whether this entry is contributed to dependent
+	 * projects. If not exported, dependent projects will not see any of the classes from this entry.
+	 * If exported, dependent projects will concatenate the accessible files patterns of this entry with the
+	 * accessible files patterns of the projects, and they will concatenate the non accessible files patterns of this entry
+	 * with the non accessible files patterns of the project.
+	 * </p>
+	 *
+	 * @param path the absolute path of the binary archive
+	 * @param sourceAttachmentPath the absolute path of the corresponding source archive or folder,
+	 *    or <code>null</code> if none. Note, since 3.0, an empty path is allowed to denote no source attachment.
+	 *   and will be automatically converted to <code>null</code>.
+	 * @param sourceAttachmentRootPath the location of the root of the source files within the source archive or folder
+	 *    or <code>null</code> if this location should be automatically detected.
+	 * @param accessRules the possibly empty list of access rules for this entry
+     * @param exclusionPatterns the possibly empty list of exclusion patterns
+	 *    represented as relative paths
+	 * @param extraAttributes the possibly empty list of extra attributes to persist with this entry
+	 * @param isExported indicates whether this entry is contributed to dependent
+	 * 	  projects in addition to the output location
+	 * @return a new library includepath entry
+	 */
+	public static IIncludePathEntry newLibraryEntry(
+			IPath path,
+			IPath sourceAttachmentPath,
+			IPath sourceAttachmentRootPath,
+			IAccessRule[] accessRules,
+			IIncludePathAttribute[] extraAttributes,
+			IPath[] exclusionPatterns,
+			boolean isExported) {
+
+		if (path == null) Assert.isTrue(false, "Library path cannot be null"); //$NON-NLS-1$
+		if (!path.isAbsolute()) Assert.isTrue(false, "Path for IIncludePathEntry must be absolute"); //$NON-NLS-1$
+		if (sourceAttachmentPath != null) {
+			if (sourceAttachmentPath.isEmpty()) {
+				sourceAttachmentPath = null; // treat empty path as none
+			} else if (!sourceAttachmentPath.isAbsolute()) {
+				Assert.isTrue(false, "Source attachment path '" //$NON-NLS-1$
+						+ sourceAttachmentPath
+						+ "' for IIncludePathEntry must be absolute"); //$NON-NLS-1$
+			}
+		}
+		return new ClasspathEntry(
+			IPackageFragmentRoot.K_BINARY,
+			IIncludePathEntry.CPE_LIBRARY,
+			JavaProject.canonicalizedPath(path),
+			ClasspathEntry.INCLUDE_ALL, // inclusion patterns
+			exclusionPatterns, // exclusion patterns
+			sourceAttachmentPath,
+			sourceAttachmentRootPath,
+			null, // specific output folder
+			isExported,
+			accessRules,
+			false, // no access rules to combine
+			extraAttributes);
+	}
 
 	/**
 	 * Creates and returns a new non-exported includepath entry of kind <code>CPE_PROJECT</code>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,19 +20,55 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
+import org.eclipse.wst.jsdt.internal.core.JavaModel;
+import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class IndexBinaryFolder extends IndexRequest {
 	IContainer folder;
+	char[][] exclusionPatterns;
 
 	public IndexBinaryFolder(IContainer folder, IndexManager manager) {
 		super(folder.getFullPath(), manager);
 		this.folder = folder;
+		
+		// need to check for exclusion patterns
+		try {
+			JavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
+			JavaProject javaProject = (JavaProject) model.getJavaProject(folder.getProject());
+			IIncludePathEntry[] newResolvedClasspath = javaProject.getResolvedClasspath();
+			IPath folderPath = folder.getFullPath();
+			for (int i = 0; i < newResolvedClasspath.length; i++) {
+				boolean found = false;
+				// Request indexing
+				int entryKind = newResolvedClasspath[i].getEntryKind();
+				switch (entryKind) {
+					case IIncludePathEntry.CPE_LIBRARY:
+						IPath newPath = newResolvedClasspath[i].getPath();
+						if(newPath.equals(folderPath)) {
+							exclusionPatterns = ((ClasspathEntry)newResolvedClasspath[i]).fullExclusionPatternChars();
+							found = true;
+						}
+						break;
+				}
+				if(found)
+					break;
+			}
+		} catch (JavaScriptModelException e) {
+			// project doesn't exist
+			return;
+		}
 	}
+	
 	public boolean equals(Object o) {
 		if (o instanceof IndexBinaryFolder)
 			return this.folder.equals(((IndexBinaryFolder) o).folder);
@@ -68,8 +104,10 @@ public class IndexBinaryFolder extends IndexRequest {
 						if (proxy.getType() == IResource.FILE) {
 							if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
 								IFile file = (IFile) proxy.requestResource();
-								String containerRelativePath = Util.relativePath(file.getFullPath(), containerPath.segmentCount());
-								indexedFileNames.put(containerRelativePath, file);
+								if(exclusionPatterns == null || !Util.isExcluded(file, null, exclusionPatterns)) {
+									String containerRelativePath = Util.relativePath(file.getFullPath(), containerPath.segmentCount());
+									indexedFileNames.put(containerRelativePath, file);
+								}
 							}
 							return false;
 						}
@@ -88,15 +126,17 @@ public class IndexBinaryFolder extends IndexRequest {
 							if (proxy.getType() == IResource.FILE) {
 								if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(proxy.getName())) {
 									IFile file = (IFile) proxy.requestResource();
-									URI location = file.getLocationURI();
-									if (location != null) {
-										String containerRelativePath = Util.relativePath(file.getFullPath(), containerPath.segmentCount());
-										indexedFileNames.put(containerRelativePath,
-											indexedFileNames.get(containerRelativePath) == null
-													|| indexLastModified <
-													EFS.getStore(location).fetchInfo().getLastModified()
-												? (Object) file
-												: (Object) OK);
+									if(exclusionPatterns == null || !Util.isExcluded(file, null, exclusionPatterns)) {
+										URI location = file.getLocationURI();
+										if (location != null) {
+											String containerRelativePath = Util.relativePath(file.getFullPath(), containerPath.segmentCount());
+											indexedFileNames.put(containerRelativePath,
+												indexedFileNames.get(containerRelativePath) == null
+														|| indexLastModified <
+														EFS.getStore(location).fetchInfo().getLastModified()
+													? (Object) file
+													: (Object) OK);
+										}
 									}
 								}
 								return false;

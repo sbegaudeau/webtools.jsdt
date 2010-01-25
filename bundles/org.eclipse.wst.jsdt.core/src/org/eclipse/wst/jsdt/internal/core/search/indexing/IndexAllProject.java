@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,10 +63,11 @@ public class IndexAllProject extends IndexRequest {
 			// Do not create marker while getting raw classpath (see bug 41859)
 			IIncludePathEntry[] entries = javaProject.getRawIncludepath();
 			int length = entries.length;
-			IIncludePathEntry[] sourceEntries = new IIncludePathEntry[length+1];
+			IIncludePathEntry[] sourceEntries = new IIncludePathEntry[length];
 			int sourceEntriesNumber = 0;
 
-			IIncludePathEntry projectRoot = JavaScriptCore.newSourceEntry( javaProject.getPath());
+			// it does not appear necessary to index the entire project
+			//IIncludePathEntry projectRoot = JavaScriptCore.newSourceEntry( javaProject.getPath());
 
 
 			for (int i = 0; i < length; i++) {
@@ -76,7 +77,7 @@ public class IndexAllProject extends IndexRequest {
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
 
-			if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
+			//if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
 
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();
