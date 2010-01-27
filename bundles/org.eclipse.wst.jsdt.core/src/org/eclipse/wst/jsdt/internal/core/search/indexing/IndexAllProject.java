@@ -63,21 +63,21 @@ public class IndexAllProject extends IndexRequest {
 			// Do not create marker while getting raw classpath (see bug 41859)
 			IIncludePathEntry[] entries = javaProject.getRawIncludepath();
 			int length = entries.length;
-			IIncludePathEntry[] sourceEntries = new IIncludePathEntry[length + 1];
+			IIncludePathEntry[] sourceEntries = new IIncludePathEntry[length];
 			int sourceEntriesNumber = 0;
 
 			// it does not appear necessary to index the entire project
-			IIncludePathEntry projectRoot = JavaScriptCore.newSourceEntry( javaProject.getPath());
+			//IIncludePathEntry projectRoot = JavaScriptCore.newSourceEntry( javaProject.getPath());
 
 
 			for (int i = 0; i < length; i++) {
 				IIncludePathEntry entry = entries[i];
-				if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE && 
-						(! javaProject.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) //&& 
+						//(! javaProject.getPath().isPrefixOf(entry.getPath())|| ! JavaProject.hasJavaNature(project) ))
 					sourceEntries[sourceEntriesNumber++] = entry;
 			}
 
-			if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
+			//if(JavaProject.hasJavaNature(project)) sourceEntries[sourceEntriesNumber++] = projectRoot;
 
 			if (sourceEntriesNumber == 0) {
 				IPath projectPath = javaProject.getPath();
