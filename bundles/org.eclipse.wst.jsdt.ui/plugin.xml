@@ -1188,7 +1188,6 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%javaPrefName"
-            category="org.eclipse.wst.html.ui.preferences.web"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaBasePreferencePage"
             id="org.eclipse.wst.jsdt.ui.preferences.JavaBasePreferencePage">
             <keywordReference id="org.eclipse.wst.jsdt.ui.general"/>
