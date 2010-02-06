@@ -13,10 +13,18 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.*;
-
 import junit.framework.Test;
+
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.IImportDeclaration;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class CreateCompilationUnitTests extends ModifyingResourceTests {
 public CreateCompilationUnitTests(String name) {
@@ -43,7 +51,8 @@ public void tearDown() throws Exception {
  * of running the operation.
  * Ensure that the import container has been created correctly.
  */
-public void testCUAndImportContainer() throws JavaScriptModelException {
+//no imports in JS
+public void _testCUAndImportContainer() throws JavaScriptModelException {
 	IPackageFragment pkg = getPackage("/P/p");
 	IJavaScriptUnit cu= pkg.createCompilationUnit("HelloImports.js", 
 		("package p;\n" +
@@ -63,7 +72,7 @@ public void testCUAndImportContainer() throws JavaScriptModelException {
 		"P[*]: {CHILDREN}\n" + 
 		"	<project root>[*]: {CHILDREN}\n" + 
 		"		p[*]: {CHILDREN}\n" + 
-		"			HelloImports.java[+]: {}"
+		"			HelloImports.js[+]: {}"
 	);
 	IImportDeclaration[] imprts= cu.getImports();
 	assertTrue("Import does not exist", imprts.length == 2 && imprts[0].exists());
@@ -78,7 +87,7 @@ public void testCUAndImportContainer() throws JavaScriptModelException {
 public void testDefaultCU() throws CoreException {
 	IPackageFragment pkg = getPackage("/P/p");
 	IJavaScriptUnit cu= pkg.getJavaScriptUnit("Default.js");
-	IType type= cu.createType("public class Default {}", null, false, null);
+	IType type= cu.createType("function Default (){this.foo = \"\";}", null, false, null);
 	assertCreation(cu);
 	assertCreation(type);
 	assertDeltas(
@@ -86,20 +95,22 @@ public void testDefaultCU() throws CoreException {
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		p[*]: {CHILDREN}\n" + 
-			"			Default.java[+]: {}\n" + 
+			"			Default.js[+]: {}\n" + 
 			"\n" + 
 			"P[*]: {CHILDREN}\n" + 
 			"	<project root>[*]: {CHILDREN}\n" + 
 			"		p[*]: {CHILDREN}\n" + 
-			"			Default.java[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+			"			Default.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
 			"				Default[+]: {}"
 	);
 	// CU should have a package statement and type
 	assertElementDescendants(
 		"Unexpected children",
-		"Default.java\n" + 
-		"  package p\n" + 
-		"  class Default",
+		"Default.js\n" + 
+		"  function Default()\n" + 
+		"  class Default\n" +
+		"    var foo\n" + 
+		"    Default()",
 		cu);
 
 	// should fail if we try again
@@ -140,8 +151,8 @@ public void testForce() throws JavaScriptModelException, IOException {
 	new File(folder, "X.js").createNewFile();
 	IJavaScriptUnit cu = pkg.createCompilationUnit(
 		"X.js", 
-		"package p;\n" +
-		"public class X {\n" +
+		"function X() {\n" +
+		"  \"\".toLowerCase();\n" +
 		"}",
 		true, // force,
 		null);
@@ -151,7 +162,7 @@ public void testForce() throws JavaScriptModelException, IOException {
 		"P[*]: {CHILDREN}\n" + 
 		"	<project root>[*]: {CHILDREN}\n" + 
 		"		p[*]: {CHILDREN}\n" + 
-		"			X.java[+]: {}"
+		"			X.js[+]: {}"
 	);
 }
 /**
@@ -196,12 +207,10 @@ public void testNullContents() {
 public void testSimpleCreation() throws JavaScriptModelException {
 	IPackageFragment pkg = getPackage("/P/p");
 	IJavaScriptUnit cu= pkg.createCompilationUnit("HelloWorld.js", 
-		("package p;\n" +
+		("function HelloWorld() {\n" +
 		"\n" +
-		"public class HelloWorld {\n" +
-		"\n" +
-		"	public static main(String[] args) {\n" +
-		"		System.out.println(\"HelloWorld\");\n" +
+		"	this.main = function(String[] args) {\n" +
+		"		\"HelloWorld\".toLowerCase();\n" +
 		"	}\n" +
 		"}\n"), false, null);
 	assertCreation(cu);
@@ -210,7 +219,123 @@ public void testSimpleCreation() throws JavaScriptModelException {
 		"P[*]: {CHILDREN}\n" + 
 		"	<project root>[*]: {CHILDREN}\n" + 
 		"		p[*]: {CHILDREN}\n" + 
-		"			HelloWorld.java[+]: {}"
+		"			HelloWorld.js[+]: {}"
 	);
+}
+/**
+ * Ensures that a default compilation unit is created for a type if
+ * it does not yet exist.
+ */
+public void testDefaultCUNewFolder() throws CoreException {
+	createFolder("/P/z");
+	IPackageFragment pkg = getPackage("/P/z");
+	IJavaScriptUnit cu= pkg.getJavaScriptUnit("Default.js");
+	IType type= cu.createType("function Default2 (){this.foo = \"\";}", null, false, null);
+	assertCreation(cu);
+	assertCreation(type);
+	assertDeltas(
+		"Unexpected delta",
+			"P[*]: {CHILDREN}\n" + 
+			"	<project root>[*]: {CHILDREN}\n" +
+			"		z[+]: {}\n"+
+			"\n"+
+			"P[*]: {CHILDREN}\n" +
+			"	<project root>[*]: {CHILDREN}\n" + 
+			"		z[*]: {CHILDREN}\n" + 
+			"			Default.js[+]: {}\n" + 
+			"\n" + 
+			"P[*]: {CHILDREN}\n" + 
+			"	<project root>[*]: {CHILDREN}\n" + 
+			"		z[*]: {CHILDREN}\n" + 
+			"			Default.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+			"				Default2[+]: {}"
+	);
+	// CU should have a package statement and type
+	assertElementDescendants(
+		"Unexpected children",
+		"Default.js\n" + 
+		"  function Default2()\n" + 
+		"  class Default2\n" +
+		"    var foo\n" + 
+		"    Default2()",
+		cu);
+
+	// should fail if we try again
+	try {
+		pkg.createCompilationUnit("Default.js", "", false, null);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Exception status not correct for creating a cu that already exists", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.NAME_COLLISION);
+	}
+	// should fail if we try again
+	try {
+		pkg.createCompilationUnit("Default.js", "public class Default {}", true, null);
+		return;
+	} catch (JavaScriptModelException jme) {
+	}
+	assertTrue("Creation should not fail if the compilation unit already exists", false);
+}
+
+/**
+ * Ensures that creating a folder, compilation unit, and types results in
+ * minimized deltas if in a workspace runnable, but that element info is
+ * still made available.
+ */
+public void testDefaultCUNewFolderOperation() throws CoreException {
+	IWorkspaceRunnable testRun = new IWorkspaceRunnable(){
+		public void run(IProgressMonitor monitor) throws CoreException {
+			createFolder("/P/z");
+			IPackageFragment pkg = getPackage("/P/z");
+			IJavaScriptUnit cu= pkg.getJavaScriptUnit("Default.js");
+			IType type= cu.createType("function Default2 (){this.foo = \"\";}", null, false, null);
+			assertCreation(cu);
+			assertCreation(type);
+		}
+	};
+	ResourcesPlugin.getWorkspace().run(testRun, null);
+	
+	assertDeltas(
+				"Unexpected delta",
+					"P[*]: {CHILDREN}\n" + 
+					"	<project root>[*]: {CHILDREN}\n" +
+					"		z[+]: {}"//\n"+
+//					"\n"+
+//					"P[*]: {CHILDREN}\n" +
+//					"	<project root>[*]: {CHILDREN}\n" + 
+//					"		z[*]: {CHILDREN}\n" + 
+//					"			Default.js[+]: {}\n" + 
+//					"\n" + 
+//					"P[*]: {CHILDREN}\n" + 
+//					"	<project root>[*]: {CHILDREN}\n" + 
+//					"		z[*]: {CHILDREN}\n" + 
+//					"			Default.js[*]: {CHILDREN | FINE GRAINED | PRIMARY RESOURCE}\n" + 
+//					"				Default2[+]: {}"
+			);
+
+	IPackageFragment pkg = getPackage("/P/z");
+	IJavaScriptUnit cu= pkg.getJavaScriptUnit("Default.js");
+	
+	// CU should have a package statement and type
+	assertElementDescendants(
+		"Unexpected children",
+		"Default.js\n" + 
+		"  function Default2()\n" + 
+		"  class Default2\n" +
+		"    var foo\n" + 
+		"    Default2()",
+		cu);
+
+	// should fail if we try again
+	try {
+		pkg.createCompilationUnit("Default.js", "", false, null);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Exception status not correct for creating a cu that already exists", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.NAME_COLLISION);
+	}
+	// should fail if we try again
+	try {
+		pkg.createCompilationUnit("Default.js", "public class Default {}", true, null);
+		return;
+	} catch (JavaScriptModelException jme) {
+	}
+	assertTrue("Creation should not fail if the compilation unit already exists", false);
 }
 }
