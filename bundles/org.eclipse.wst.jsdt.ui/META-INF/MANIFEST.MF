@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-SymbolicName: org.eclipse.wst.jsdt.ui; singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin
-Import-Package: com.ibm.icu.text
+Import-Package: com.ibm.icu.text,
+ com.ibm.icu.util
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
