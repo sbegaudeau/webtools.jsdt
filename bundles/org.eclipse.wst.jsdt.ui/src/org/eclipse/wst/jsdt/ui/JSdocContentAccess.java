@@ -95,16 +95,16 @@ public class JSdocContentAccess {
 		IBuffer buf= openable.getBuffer();
 		if (buf != null) {
 			// source or attachment found
-			ISourceRange javadocRange= member.getJSdocRange();
-			if(javadocRange == null && member.getElementType() == IJavaScriptElement.TYPE) {
+			ISourceRange jsDocRange= member.getJSdocRange();
+			if(jsDocRange == null && member.getElementType() == IJavaScriptElement.TYPE) {
 				IFunction constructor = ((IType) member).getFunction(member.getElementName(), null);
 				if(constructor.exists()) {
-					javadocRange = constructor.getJSdocRange();
+					jsDocRange = constructor.getJSdocRange();
 				}
 			}
-			if (javadocRange != null) {
-				JavaDocCommentReader reader= new JavaDocCommentReader(buf, javadocRange.getOffset(), javadocRange.getOffset() + javadocRange.getLength() - 1);
-				if (!containsOnlyInheritDoc(reader, javadocRange.getLength())) {
+			if (jsDocRange != null) {
+				JavaDocCommentReader reader= new JavaDocCommentReader(buf, jsDocRange.getOffset(), jsDocRange.getOffset() + jsDocRange.getLength() - 1);
+				if (!containsOnlyInheritDoc(reader, jsDocRange.getLength())) {
 					reader.reset();
 					readers.add(reader);
 				}
@@ -168,13 +168,14 @@ public class JSdocContentAccess {
 			if (docReaders.length > 0) {
 				List htmlReaders = new ArrayList(docReaders.length);
 				for (int i = 0; i < docReaders.length; i++) {
-					Reader documentation2htmlReader = docReaders[i].getDocumentation2HTMLReader(contentReader);
-					if (documentation2htmlReader != null) {
-						htmlReaders.add(documentation2htmlReader);
+					Reader htmlReader = docReaders[i].getDocumentation2HTMLReader(contentReader);
+					if (htmlReader != null) {
+						htmlReaders.add(htmlReader);
 					}
 				}
+				/* return any and all HTML readers in sequence */
 				if (!htmlReaders.isEmpty()) {
-					htmlReaders.add(/*0, */new JavaDoc2HTMLTextReader(contentReader));
+//					htmlReaders.add(/*0, */new JavaDoc2HTMLTextReader(contentReader));
 					return new SequenceReader((Reader[]) htmlReaders.toArray(new Reader[htmlReaders.size()]));
 				}
 			}

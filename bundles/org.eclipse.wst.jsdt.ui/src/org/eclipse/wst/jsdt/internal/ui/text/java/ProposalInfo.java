@@ -101,7 +101,7 @@ public class ProposalInfo {
 	}
 
 	private Reader getHTMLContentReader(IMember member, IProgressMonitor monitor) throws JavaScriptModelException {
-	    Reader contentReader= JSdocContentAccess.getContentReader(member, true);
+	    Reader contentReader= JSdocContentAccess.getHTMLContentReader(member, true, true);
         if (contentReader != null)
         	return new JavaDoc2HTMLTextReader(contentReader);
         
