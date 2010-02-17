@@ -42,14 +42,16 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.util.SelectionUtil;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
+import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.actions.SelectionDispatchAction;
 
@@ -377,14 +379,31 @@ public abstract class AbstractInfoView extends ViewPart implements ISelectionLis
 	 * @return the selected Java element
 	 */
 	protected IJavaScriptElement findSelectedJavaElement(IWorkbenchPart part, ISelection selection) {
-		Object element;
+		Object element = null;
 		try {
 			if (part instanceof JavaEditor && selection instanceof ITextSelection) {
 				IJavaScriptElement[] elements= TextSelectionConverter.codeResolve((JavaEditor)part, (ITextSelection)selection);
-				if (elements != null && elements.length > 0)
-					return elements[0];
-				else
+				if (elements != null) {
+					if (elements.length > 1) {
+						for (int i = 0; i < elements.length; i++) {
+							if (elements[i] == null)
+								continue;
+							int elementType = elements[i].getElementType();
+							if ((elementType == IJavaScriptElement.METHOD || elementType == IJavaScriptElement.FIELD || elementType == IJavaScriptElement.TYPE || elementType == IJavaScriptElement.INITIALIZER) && JSdocContentAccess.getContentReader((IMember) elements[i], true) != null) {
+								return elements[i];
+							}
+							if (elementType == IJavaScriptElement.LOCAL_VARIABLE && JSdocContentAccess.getContentReader((ILocalVariable) elements[i], true) != null) {
+								return elements[i];
+							}
+						}
+					}
+					else if (elements.length > 0) {
+						return elements[0];
+					}
+				}
+				else {
 					return null;
+				}
 			} else if (selection instanceof IStructuredSelection) {
 				element= SelectionUtil.getSingleElement(selection);
 			} else {
