@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,12 +28,20 @@ public class InferredAttribute extends InferredMember{
 
 	public FieldBinding binding;
 	public int initializationStart=-1;
+	
+	/**
+	 * The type of this attribute
+	 */
 	public InferredType type;
 	public ASTNode node;
 	public int modifiers;
 
 	/**
 	 * @deprecated
+	 *
+	 * Creates an attribute with this name in the given inferred type. This
+	 * method is discouraged in favor of supplying the ASTNode which declared
+	 * the attribute.
 	 */
 	public InferredAttribute(char [] name, InferredType inType, int start, int end)
 	{
@@ -46,7 +54,7 @@ public class InferredAttribute extends InferredMember{
 
 	/**
 	 * @param name
-	 * @param inferredType
+	 * @param inferredType the type to which this attribute belongs
 	 * @param definer
 	 */
 	public InferredAttribute(char[] name, InferredType inferredType, IASTNode definer) {

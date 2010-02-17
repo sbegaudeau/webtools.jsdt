@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,17 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
  */
 public abstract class InferredMember extends ASTNode{
 
+	/**
+	 * The name of this member
+	 */
 	public char [] name;
+	/**
+	 * The type to which this member belongs
+	 */
 	public InferredType inType;
+	/**
+	 * The source offset at which the name of this member begins
+	 */
 	public int nameStart;
 	public boolean isStatic = false;
 
