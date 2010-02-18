@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.model;
 
+import junit.framework.Test;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-import junit.framework.Test;
 
 public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 	
@@ -39,8 +39,7 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 	public void testGetJavaScriptLikeExtensions01() {
 		assertSortedStringsEqual(
 			"Unexpected file extensions",
-			"js\n" +
-			"json\n",
+			"js\n",
 			JavaScriptCore.getJavaScriptLikeExtensions()
 		);
 	}
@@ -56,8 +55,7 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 			assertSortedStringsEqual(
 				"Unexpected file extensions",
 				"abc\n" + 
-				"js\n" +
-				"json\n",
+				"js\n",
 				JavaScriptCore.getJavaScriptLikeExtensions()
 			);
 		} finally {
