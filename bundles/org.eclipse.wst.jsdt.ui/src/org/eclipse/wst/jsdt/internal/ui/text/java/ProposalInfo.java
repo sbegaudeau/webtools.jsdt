@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
 import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
 
 
@@ -102,9 +103,13 @@ public class ProposalInfo {
 	private Reader getHTMLContentReader(IMember member, IProgressMonitor monitor) throws JavaScriptModelException {
 	    Reader contentReader= JSdocContentAccess.getHTMLContentReader(member, true, true);
         if (contentReader != null)
-        	return contentReader;//new JavaDoc2HTMLTextReader(contentReader);
+        	return contentReader;
+
+        contentReader= JSdocContentAccess.getContentReader(member, true);
+        if (contentReader != null)
+        	return new JavaDoc2HTMLTextReader(contentReader);
         
-        if (true && member.getOpenable().getBuffer() == null) { // only if no source available
+        if (member.getOpenable().getBuffer() == null) { // only if no source available
         	String s= member.getAttachedJavadoc(monitor);
         	if (s != null)
         		return new StringReader(s);
