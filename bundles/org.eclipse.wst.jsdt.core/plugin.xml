@@ -195,7 +195,7 @@
 		file-extensions="js"/>
 	<!-- declares a content type for JSON files -->
 	<content-type id="jsonSource" name="%jsonSourceName" 
-		base-type="org.eclipse.wst.jsdt.core.jsSource"
+		base-type="org.eclipse.core.runtime.text"
 		priority="normal"				
 		file-extensions="json"/>
 </extension>
