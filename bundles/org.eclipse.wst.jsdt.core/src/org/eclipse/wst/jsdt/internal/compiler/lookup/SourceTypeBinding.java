@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.Hashtable;
+import java.util.zip.CRC32;
 
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -38,6 +39,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 	char[] genericReferenceTypeSignature;
 
 	public SourceTypeBinding nextType;
+	
+	private static final CRC32 checksumCalculator = new CRC32();
 
 	public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,
 			Scope scope) {
@@ -1357,10 +1360,49 @@ public class SourceTypeBinding extends ReferenceBinding {
 
 	public void addNextType(SourceTypeBinding type) {
 		SourceTypeBinding binding = this;
-		while (binding.nextType != null)
-			binding = binding.nextType;
-		binding.nextType = type;
+		
+		// attempt to remove duplicates
+		boolean isDuplicate = checkIfDuplicateType(binding, type);
 
+		while (!isDuplicate && binding.nextType != null) {
+			binding = binding.nextType;
+			if(binding != null && checkIfDuplicateType(binding, type))
+				isDuplicate = true;
+		}
+		if(!isDuplicate)
+			binding.nextType = type;
+	}
+	
+	public boolean checkIfDuplicateType(SourceTypeBinding binding1, SourceTypeBinding binding2) {
+		if(binding1.superclass == null && binding2.superclass != null)
+			return false;
+		if(binding1.superclass != null && binding2.superclass == null)
+			return false;
+		if(binding1.superclass != null && binding2.superclass != null &&
+				!CharOperation.equals(binding1.superclass.compoundName, binding2.superclass.compoundName))
+			return false;
+		if(binding1.fields.length != binding2.fields.length)
+			return false;
+		if(binding1.methods.length != binding2.methods.length)
+			return false;
+		
+		String checkSumString1 = ""; //$NON-NLS-1$
+		String checkSumString2 = ""; //$NON-NLS-1$
+		
+		for(int i = 0; i < binding1.fields.length; i++) {
+			checkSumString1 = checkSumString1 + new String(binding1.fields[i].name);
+			checkSumString2 = checkSumString1 + new String(binding2.fields[i].name);
+		}
+		checksumCalculator.reset();
+		checksumCalculator.update(checkSumString1.getBytes());
+		long checkSum1 = checksumCalculator.getValue();
+		checksumCalculator.reset();
+		checksumCalculator.update(checkSumString2.getBytes());
+		long checkSum2 = checksumCalculator.getValue();
+		if(checkSum1 != checkSum2)
+			return false;
+
+		return true;
 	}
 
 	public TypeBinding reconcileAnonymous(TypeBinding other) {
