@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
 import java.util.HashMap;
@@ -69,6 +79,8 @@ public class InferResolveTests  extends AbstractRegressionTest  {
 				{
 					char [] className=getString(arguments[0]);
 					InferredType type = addType(className,true);
+					type.sourceStart = functionCall.sourceStart();
+					type.sourceEnd = functionCall.sourceEnd();
 					if (arguments[1] instanceof IObjectLiteral) {
 						IObjectLiteral objectLiteral = (IObjectLiteral) arguments[1];
 						if (objectLiteral.getFields()!=null)
@@ -79,7 +91,7 @@ public class InferResolveTests  extends AbstractRegressionTest  {
 								{
 									IFunctionExpression functionExpression=(IFunctionExpression)field.getInitializer();
 									
-									InferredMethod method=type.addMethod(name, functionExpression.getMethodDeclaration(),false);
+									InferredMethod method=type.addMethod(name, functionExpression.getMethodDeclaration(),field.getFieldName().sourceStart());
 								}
 							}
 					}
