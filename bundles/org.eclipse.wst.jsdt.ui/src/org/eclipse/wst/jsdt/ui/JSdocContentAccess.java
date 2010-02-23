@@ -94,27 +94,31 @@ public class JSdocContentAccess {
 		
 		IBuffer buf= openable.getBuffer();
 		if (buf != null) {
-			// source or attachment found
-			ISourceRange jsDocRange= member.getJSdocRange();
-			if(jsDocRange == null && member.getElementType() == IJavaScriptElement.TYPE) {
-				IFunction constructor = ((IType) member).getFunction(member.getElementName(), null);
-				if(constructor.exists()) {
-					jsDocRange = constructor.getJSdocRange();
+			try {
+				// source or attachment found
+				ISourceRange jsDocRange = member.getJSdocRange();
+				if (jsDocRange == null && member.getElementType() == IJavaScriptElement.TYPE) {
+					IFunction constructor = ((IType) member).getFunction(member.getElementName(), null);
+					if (constructor.exists()) {
+						jsDocRange = constructor.getJSdocRange();
+					}
+				}
+				if (jsDocRange != null) {
+					JavaDocCommentReader reader = new JavaDocCommentReader(buf, jsDocRange.getOffset(), jsDocRange.getOffset() + jsDocRange.getLength() - 1);
+					if (!containsOnlyInheritDoc(reader, jsDocRange.getLength())) {
+						reader.reset();
+						readers.add(reader);
+					}
+					else if (allowInherited && (member.getElementType() == IJavaScriptElement.METHOD)) {
+						Reader hierarchyDocReader = findDocInHierarchy((IFunction) member);
+						if (hierarchyDocReader != null)
+							readers.add(hierarchyDocReader);
+					}
 				}
 			}
-			if (jsDocRange != null) {
-				JavaDocCommentReader reader= new JavaDocCommentReader(buf, jsDocRange.getOffset(), jsDocRange.getOffset() + jsDocRange.getLength() - 1);
-				if (!containsOnlyInheritDoc(reader, jsDocRange.getLength())) {
-					reader.reset();
-					readers.add(reader);
-				}
-				else if (allowInherited && (member.getElementType() == IJavaScriptElement.METHOD)) {
-					Reader hierarchyDocReader = findDocInHierarchy((IFunction) member);
-					if (hierarchyDocReader != null)
-						readers.add(hierarchyDocReader);
-				}
+			catch (JavaScriptModelException e) {
+				// doesn't exist
 			}
-
 		}
 		
 		if (!readers.isEmpty()) {
