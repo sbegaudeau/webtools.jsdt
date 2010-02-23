@@ -114,9 +114,10 @@ public class InferredType extends ASTNode {
 	 * 
 	 * @param name the attribute name
 	 * @param definer the ASTNode which this attribute is inferred from
+	 * @param nameStart character position (in the source) of the attribute name
 	 * @return a new InferredAttribute
 	 */
-	public InferredAttribute addAttribute(char [] name, IASTNode definer)
+	public InferredAttribute addAttribute(char [] name, IASTNode definer, int nameStart)
 	{
 		InferredAttribute attribute = findAttribute(name);
 		if (attribute==null)
@@ -141,6 +142,7 @@ public class InferredType extends ASTNode {
 				this.updatePositions(definer.sourceStart(), definer.sourceEnd());
 			}
 		}
+		attribute.nameStart = nameStart;
 		return attribute;
 	}
 
@@ -201,6 +203,32 @@ public class InferredType extends ASTNode {
 
 
 	/**
+	 * Add a new constructor method to the inferred type
+	 * 
+	 * @param methodName name of the method to add
+	 * @param functionDeclaration the AST Node containing the method bode
+	 * @param nameStart character position (in the source) of the method name
+	 * @return a new inferred method
+	 */
+	public InferredMethod addConstructorMethod(char [] methodName, IFunctionDeclaration functionDeclaration, int nameStart) {
+		InferredMethod method = this.addMethod(methodName, functionDeclaration, nameStart, true);
+		this.setNameStart(nameStart);
+		return method;
+	}
+	
+	/**
+	 * Add a new method to the inferred type
+	 * 
+	 * @param methodName name of the method to add
+	 * @param functionDeclaration the AST Node containing the method bode
+	 * @param nameStart character position (in the source) of the method name
+	 * @return a new inferred method
+	 */
+	public InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, int nameStart) {
+		return this.addMethod(methodName, functionDeclaration, nameStart, false);
+	}
+	
+	/**
 	 * Add a new method to the inferred type
 	 * 
 	 * @param methodName name of the method to add
@@ -208,7 +236,7 @@ public class InferredType extends ASTNode {
 	 * @param isConstructor true if it is a constructor
 	 * @return a new inferred method
 	 */
-	public InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, boolean isConstructor) {
+	private InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, int nameStart, boolean isConstructor) {
 		MethodDeclaration methodDeclaration = (MethodDeclaration)functionDeclaration;
 		InferredMethod method = findMethod(methodName, methodDeclaration);
 		if (method==null)
@@ -239,6 +267,7 @@ public class InferredType extends ASTNode {
 		else
 			if (methodDeclaration.inferredMethod==null)
 				methodDeclaration.inferredMethod=method;
+		method.nameStart = nameStart;
 		return method;
 	}
 

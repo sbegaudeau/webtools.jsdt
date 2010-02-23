@@ -236,9 +236,10 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			if (javadoc.memberOf!=null)
 			{
 				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
-				 attribute = type.addAttribute(localDeclaration.getName(), localDeclaration);
-				 handleAttributeDeclaration(attribute, localDeclaration.getInitialization());
-				 if (localDeclaration.getInitialization()!=null)
+				int nameStart = localDeclaration.sourceStart(); 
+				attribute = type.addAttribute(localDeclaration.getName(), localDeclaration, nameStart);
+				handleAttributeDeclaration(attribute, localDeclaration.getInitialization());
+				if (localDeclaration.getInitialization()!=null)
 					 attribute.initializationStart=localDeclaration.getInitialization().sourceStart();
 				attribute.type=type;
 			} 
@@ -311,6 +312,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			IFieldReference fieldReference=(IFieldReference)assignment.getLeftHandSide();
 			char [] memberName = fieldReference.getToken();
 			InferredMember member = null;
+			
+			int nameStart = fieldReference.sourceEnd() - memberName.length + 1;
 
 			/*
 			 * this.foo = bar //bar is a function
@@ -318,7 +321,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			if( object instanceof MethodDeclaration ){
 
 				MethodDeclaration method=(MethodDeclaration)object;
-				member = this.currentContext.currentType.addMethod( memberName, method,false );
+				member = this.currentContext.currentType.addMethod(memberName, method, nameStart);
 
 			}
 			/*
@@ -326,7 +329,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			 */
 			else{
 
-				member = this.currentContext.currentType.addAttribute( memberName, assignment );
+				member = this.currentContext.currentType.addAttribute(memberName, assignment, nameStart);
 				handleAttributeDeclaration((InferredAttribute) member, assignment.getExpression());
 				if (((InferredAttribute) member).type == null)
 					((InferredAttribute)member).type = getTypeOf( assignmentExpression );
@@ -335,7 +338,6 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			//setting location
 			if( member != null ){
 				member.isStatic = false; //this is a not static member because it is being set on the this
-				member.nameStart = fieldReference.sourceEnd() - memberName.length+1;
 			}
 		}
 
@@ -390,7 +392,9 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					//ignore if the attribute exists and has a type
 					if( !(attr != null && attr.type != null) ){
 
-						attr = receiverType.addAttribute( fRef.getToken(), assignment );
+						int nameStart = (int)(fRef.nameSourcePosition>>>32);
+
+						attr = receiverType.addAttribute(fRef.getToken(), assignment, nameStart);
 						handleAttributeDeclaration(attr, assignment.getExpression());
 						attr.type = getTypeOf( assignmentExpression );
 
@@ -420,8 +424,6 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 							attr.isStatic = true;
 						else
 							attr.isStatic = false;
-
-						attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
 
 						return false; //done with this
 					}
@@ -482,13 +484,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 							if (definedFunction!=null)
 							{
-								method = receiverType.addMethod(fRef.token, definedFunction,false);
-								method.nameStart=nameStart;
+								method = receiverType.addMethod(fRef.token, definedFunction, nameStart);
 								method.isStatic=receiverType.allStatic;
 							}
 							else
 							{
-							  attr = receiverType.addAttribute( fRef.token, assignment );
+							  int nameStart_ = (int)(fRef.nameSourcePosition>>>32);
+							  
+							  attr = receiverType.addAttribute(fRef.token, assignment, nameStart_);
 							  handleAttributeDeclaration(attr, assignmentExpression);
 							  attr.type=exprType;
 							/*
@@ -503,8 +506,6 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 								attr.isStatic = true;
 							  else
 								attr.isStatic = false;
-
-							  attr.nameStart = (int)(fRef.nameSourcePosition>>>32);
 							}
 							return false; //done with this
 						}
@@ -632,11 +633,10 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			if (this.inferOptions.useInitMethod)
 			{
 				this.currentContext.currentType=type;
-				this.currentContext.currentType=type;
 				type.isDefinition=true;
-				InferredMethod method = type.addMethod(type.name, methodDeclaration,true);
+				int nameStart = assignment.getLeftHandSide().sourceStart();
+				InferredMethod method = type.addConstructorMethod(type.name, methodDeclaration, nameStart);
 				type.updatePositions(assignment.getLeftHandSide().sourceStart(), assignment.getExpression().sourceEnd());
-				method.nameStart=assignment.getLeftHandSide().sourceStart();
 			}
 
 		}
@@ -657,9 +657,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					if( method == null ){
 						//create member method if it does not exist
 
-						method = receiverType.addMethod( fieldReference.token, methodDeclaration ,false);
+						method = receiverType.addMethod(fieldReference.token, methodDeclaration, nameStart);
 						receiverType.updatePositions(assignment.sourceStart(), assignment.sourceEnd()); // @GINO: not sure if necessary
-						method.nameStart = nameStart;
 						receiverType.isDefinition=true;
 
 						/*
@@ -686,9 +685,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					receiverType = getInferredType2(fieldReference.receiver);
 					if (receiverType!=null)
 					{
-						InferredMethod method = receiverType.addMethod(fieldReference.token,methodDeclaration,false);
+						InferredMethod method = receiverType.addMethod(fieldReference.token, methodDeclaration, nameStart);
 						method.isStatic=receiverType.isAnonymous;
-						method.nameStart=nameStart;
 						receiverType.updatePositions(assignment.sourceStart(), assignment.sourceEnd());
 					}
 				}
@@ -828,16 +826,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 				if (methodDecl!=null)
 				{
-					InferredMember method = newType.addMethod(memberName, methodDecl,false);
-					method.nameStart=nameStart;
+					InferredMember method = newType.addMethod(memberName, methodDecl, nameStart);
 				}
 				// http://bugs.eclipse.org/269053 - constructor property not supported in JSDT
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
-					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
+					InferredAttribute attribute = newType.addAttribute(memberName, assignment, nameStart);
 					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart=assignment.getExpression().sourceStart();
-					attribute.nameStart=nameStart;
 					if (attribute.type==null)
 						attribute.type=typeOf;
 				}
@@ -875,16 +871,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 				if (methodDecl!=null)
 				{
-					InferredMember method = newType.addMethod(memberName, methodDecl,false);
-					method.nameStart=nameStart;
+					InferredMember method = newType.addMethod(memberName, methodDecl, nameStart);
 				}
 				// http://bugs.eclipse.org/269053 - constructor property not supported in JSDT
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
-					InferredAttribute attribute = newType.addAttribute(memberName, assignment);
+					InferredAttribute attribute = newType.addAttribute(memberName, assignment, nameStart);
 					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart=assignment.getExpression().sourceStart();
-					attribute.nameStart=nameStart;
 					if (attribute.type==null)
 						attribute.type=typeOf;
 				}
@@ -1126,8 +1120,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					if (field.getInitializer() instanceof IFunctionExpression) {
 						IFunctionExpression functionExpression = (IFunctionExpression) field.getInitializer();
 						InferredMember method = type.addMethod(name,
-								functionExpression.getMethodDeclaration(), false);
-						method.nameStart = nameStart;
+								functionExpression.getMethodDeclaration(), nameStart);
 						method.isStatic=isStatic;
 						if (javaDoc!=null)
 						{
@@ -1144,9 +1137,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					{
 						InferredAttribute attribute = type.findAttribute(name);
 						if (attribute == null) {
-							attribute = type.addAttribute(name, field.getInitializer());
+							attribute = type.addAttribute(name, field.getInitializer(), nameStart);
 							handleAttributeDeclaration(attribute, field.getInitializer());
-							attribute.nameStart = nameStart;
 							attribute.isStatic=isStatic;
 							//@GINO: recursion might not be the best idea
 							if (returnType!=null)
@@ -1262,21 +1254,22 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				{
 					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
 					char [] name=methodName;
+					int nameStart = methodDeclaration.sourceStart();
 					if (name!=null)
-						method=type.addMethod(methodName, methodDeclaration,false);
+						method=type.addMethod(methodName, methodDeclaration, nameStart);
 				}
 				else if (javadoc.methodDef!=null && this.currentContext.isJsDocClass)
 				{
 					InferredType type=this.currentContext.currentType;
 					char[][] methName = javadoc.methodDef.getTypeName();
+					int nameStart = ((MethodDeclaration)methodDeclaration).sourceStart;
 					if (methName.length==1)
-						method=type.addMethod(methName[0], methodDeclaration,false);
+						method=type.addMethod(methName[0], methodDeclaration, nameStart);
 					else
 					{
-						method=type.addMethod(methName[methName.length-1], methodDeclaration,false);
+						method=type.addMethod(methName[methName.length-1], methodDeclaration, nameStart);
 						method.isStatic=true;
 					}
-					method.nameStart=((MethodDeclaration)methodDeclaration).sourceStart;
 						
 				}
 
@@ -1300,9 +1293,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				if (type != null) {
 					this.currentContext.currentType = type;
 					type.isDefinition = true;
-					InferredMethod method = type.addMethod(
-							methodName, methodDeclaration,true);
-					method.nameStart=methodDeclaration.sourceStart();
+					int nameStart = methodDeclaration.sourceStart();
+					InferredMethod method = type.addConstructorMethod(methodName, methodDeclaration, nameStart);
 					method.isConstructor = true;
 					methodDeclaration.setInferredType(type);
 				}
@@ -1319,8 +1311,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	protected void handleJSDocConstructor(InferredType type,IFunctionDeclaration methodDeclaration, int nameStart) {
 		Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
 		type.isDefinition=true;
-		InferredMethod method = type.addMethod(type.name, methodDeclaration,true);
-		method.nameStart=nameStart;
+		InferredMethod method = type.addConstructorMethod(type.name, methodDeclaration, nameStart);
 		method.isConstructor=true;
 
 		if (javadoc.extendsType!=null)
