@@ -5090,6 +5090,34 @@
 		</provider>
 	</extension>
 
+  	 <extension
+         point="org.eclipse.ui.popupMenus">
+  		<objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.eclipse.wst.jsdt.ui.jsdtSetup">
+       	 <visibility>
+        	<not>
+	        	<or>
+		            <objectState 
+			            name="projectNature" 
+			            value="org.eclipse.wst.jsdt.core.jsNature"/>
+			        <objectState
+			        	name="open"
+			        	value="false"/>
+	            </or>
+            </not>
+       	 </visibility>
+         <action
+            class="org.eclipse.wst.jsdt.internal.ui.util.ConvertAction"
+            label="%action.label.projectConvert"
+            menubarPath="org.eclipse.ui.projectConfigure/additions"
+            enablesFor="+"
+            id="org.eclipse.wst.jsdt.internal.web.ui.convertProjects">
+      	</action>
+   		</objectContribution>
+   </extension> 
+
 <!--
 	<extension point="org.eclipse.debug.core.launchConfigurationTypes">
     	<launchConfigurationType

@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
  * (repeatedly) as the API evolves.
  */
 public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer {
-	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
+	private static final String CONTAINER_ID = org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB; //$NON-NLS-1$
 	private static final String ContainerDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
 	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;
 	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;

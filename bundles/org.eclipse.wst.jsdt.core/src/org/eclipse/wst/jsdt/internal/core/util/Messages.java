@@ -215,6 +215,8 @@ public final class Messages extends NLS {
 	public static String process_name;
 	public static String manager_filesToIndex;
 	public static String manager_indexingInProgress;
+	public static String converter_ConfiguringForJavaScript;
+	public static String converter_ConfiguringForBrowser;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
