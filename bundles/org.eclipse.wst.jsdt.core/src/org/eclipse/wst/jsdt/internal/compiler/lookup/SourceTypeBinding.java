@@ -1374,24 +1374,30 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 	
 	public boolean checkIfDuplicateType(SourceTypeBinding binding1, SourceTypeBinding binding2) {
-		if(binding1.superclass == null && binding2.superclass != null)
+		InferredType type1 = binding1.classScope.inferredType;
+		InferredType type2 = binding2.classScope.inferredType;
+		if(type1.superClass == null && type2.superClass != null)
 			return false;
-		if(binding1.superclass != null && binding2.superclass == null)
+		if(type1.superClass != null && type2.superClass == null)
 			return false;
-		if(binding1.superclass != null && binding2.superclass != null &&
-				!CharOperation.equals(binding1.superclass.compoundName, binding2.superclass.compoundName))
+		if(type1.superClass != null && type2.superClass != null &&
+				!CharOperation.equals(type1.superClass.getName(), type2.superClass.getName()))
 			return false;
-		if(binding1.fields.length != binding2.fields.length)
+		if(type1.attributes.length != type2.attributes.length)
 			return false;
-		if(binding1.methods.length != binding2.methods.length)
+		if(type1.methods == null && type2.methods != null)
+			return false;
+		if(type1.methods != null && type2.methods == null)
+			return false;
+		if(type1.methods != null && type2.methods != null && type1.methods.size() != type2.methods.size())
 			return false;
 		
 		String checkSumString1 = ""; //$NON-NLS-1$
 		String checkSumString2 = ""; //$NON-NLS-1$
 		
-		for(int i = 0; i < binding1.fields.length; i++) {
-			checkSumString1 = checkSumString1 + new String(binding1.fields[i].name);
-			checkSumString2 = checkSumString1 + new String(binding2.fields[i].name);
+		for(int i = 0; i < type1.attributes.length; i++) {
+			checkSumString1 = checkSumString1 + (type1.attributes[i] == null ? "" : new String(type1.attributes[i].name));
+			checkSumString2 = checkSumString2 + (type2.attributes[i] == null ? "" : new String(type2.attributes[i].name));
 		}
 		checksumCalculator.reset();
 		checksumCalculator.update(checkSumString1.getBytes());
@@ -1399,6 +1405,24 @@ public class SourceTypeBinding extends ReferenceBinding {
 		checksumCalculator.reset();
 		checksumCalculator.update(checkSumString2.getBytes());
 		long checkSum2 = checksumCalculator.getValue();
+		if(checkSum1 != checkSum2)
+			return false;
+		
+		checkSumString1 = "";
+		checkSumString2 = "";
+		if(type1.methods != null && type2.methods != null) {
+			for(int i = 0; i < type1.methods.size(); i++) {
+				checkSumString1 = checkSumString1 + new String(((InferredMethod)type1.methods.get(i)).name);
+				checkSumString2 = checkSumString2 + new String(((InferredMethod)type2.methods.get(i)).name);
+			}
+		}
+		
+		checksumCalculator.reset();
+		checksumCalculator.update(checkSumString1.getBytes());
+		checkSum1 = checksumCalculator.getValue();
+		checksumCalculator.reset();
+		checksumCalculator.update(checkSumString2.getBytes());
+		checkSum2 = checksumCalculator.getValue();
 		if(checkSum1 != checkSum2)
 			return false;
 
