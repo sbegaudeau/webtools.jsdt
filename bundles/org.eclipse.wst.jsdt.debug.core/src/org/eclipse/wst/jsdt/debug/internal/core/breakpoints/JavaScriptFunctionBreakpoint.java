@@ -128,7 +128,19 @@ public class JavaScriptFunctionBreakpoint extends JavaScriptLineBreakpoint imple
 	 */
 	public void setEntry(boolean isentry) throws CoreException {
 		if (isentry != isEntry()) {
-			setAttribute(ENTRY, isentry);
+			if(isentry && !isEnabled()) {
+				setAttributes(
+					new String[] {ENTRY, ENABLED}, 
+					new Object[] {Boolean.valueOf(isentry), Boolean.TRUE});
+			}
+			else if(!isExit()) {
+				setAttributes(
+					new String[] {ENTRY, ENABLED}, 
+					new Object[] {Boolean.valueOf(isentry), Boolean.FALSE});
+			}
+			else {
+				setAttribute(ENTRY, isentry);
+			}	
 			recreateBreakpoint();
 		}
 	}
@@ -145,8 +157,19 @@ public class JavaScriptFunctionBreakpoint extends JavaScriptLineBreakpoint imple
 	 */
 	public void setExit(boolean isexit) throws CoreException {
 		if (isexit != isExit()) {
-			setAttribute(EXIT, isexit);
-			recreateBreakpoint();
+			if(isexit && !isEnabled()) {
+				setAttributes(
+					new String[] {EXIT, ENABLED}, 
+					new Object[] {Boolean.valueOf(isexit), Boolean.TRUE});
+			}
+			else if(!isEntry()) {
+				setAttributes(
+					new String[] {EXIT, ENABLED}, 
+					new Object[] {Boolean.valueOf(isexit), Boolean.FALSE});
+			}
+			else {
+				setAttribute(EXIT, isexit);
+			}
 		}
 	}
 }
