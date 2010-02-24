@@ -1392,36 +1392,36 @@ public class SourceTypeBinding extends ReferenceBinding {
 		if(type1.methods != null && type2.methods != null && type1.methods.size() != type2.methods.size())
 			return false;
 		
-		String checkSumString1 = ""; //$NON-NLS-1$
-		String checkSumString2 = ""; //$NON-NLS-1$
+		StringBuffer checkSumString1 = new StringBuffer(); //$NON-NLS-1$
+		StringBuffer checkSumString2 = new StringBuffer(); //$NON-NLS-1$
 		
 		for(int i = 0; i < type1.attributes.length; i++) {
-			checkSumString1 = checkSumString1 + (type1.attributes[i] == null ? "" : new String(type1.attributes[i].name));
-			checkSumString2 = checkSumString2 + (type2.attributes[i] == null ? "" : new String(type2.attributes[i].name));
+			checkSumString1.append((type1.attributes[i] == null ? "" : new String(type1.attributes[i].name)));
+			checkSumString2.append((type2.attributes[i] == null ? "" : new String(type2.attributes[i].name)));
 		}
 		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString1.getBytes());
+		checksumCalculator.update(checkSumString1.toString().getBytes());
 		long checkSum1 = checksumCalculator.getValue();
 		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString2.getBytes());
+		checksumCalculator.update(checkSumString2.toString().getBytes());
 		long checkSum2 = checksumCalculator.getValue();
 		if(checkSum1 != checkSum2)
 			return false;
 		
-		checkSumString1 = "";
-		checkSumString2 = "";
+		checkSumString1 = new StringBuffer();
+		checkSumString2 = new StringBuffer();
 		if(type1.methods != null && type2.methods != null) {
 			for(int i = 0; i < type1.methods.size(); i++) {
-				checkSumString1 = checkSumString1 + new String(((InferredMethod)type1.methods.get(i)).name);
-				checkSumString2 = checkSumString2 + new String(((InferredMethod)type2.methods.get(i)).name);
+				checkSumString1.append(new String(((InferredMethod)type1.methods.get(i)).name));
+				checkSumString2.append(new String(((InferredMethod)type2.methods.get(i)).name));
 			}
 		}
 		
 		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString1.getBytes());
+		checksumCalculator.update(checkSumString1.toString().getBytes());
 		checkSum1 = checksumCalculator.getValue();
 		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString2.getBytes());
+		checksumCalculator.update(checkSumString2.toString().getBytes());
 		checkSum2 = checksumCalculator.getValue();
 		if(checkSum1 != checkSum2)
 			return false;
