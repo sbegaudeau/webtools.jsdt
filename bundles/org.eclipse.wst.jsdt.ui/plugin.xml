@@ -394,40 +394,41 @@
       </perspective>    
    </extension>
    
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.eclipse.ui.resourcePerspective">
-         <perspectiveShortcut
-               id="org.eclipse.wst.jsdt.ui.JavaPerspective">
-         </perspectiveShortcut>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+      <!-- shortcuts to JS perspective -->
+      <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <perspectiveShortcut id="org.eclipse.wst.jsdt.ui.JavaPerspective"/>
       </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
-         <perspectiveShortcut
-               id="org.eclipse.wst.jsdt.ui.JavaPerspective">
-         </perspectiveShortcut>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
-         <perspectiveShortcut
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspectiveShortcut>
-      </perspectiveExtension>
-      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
-      	<viewShortcut id="org.eclipse.ui.navigator.ProjectExplorer"/>
-      </perspectiveExtension>
-      <perspectiveExtension
-            targetID="org.eclipse.debug.ui.DebugPerspective">
-         <perspectiveShortcut
-               id="org.eclipse.wst.jsdt.ui.JavaPerspective">
-         </perspectiveShortcut>
+      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+         <perspectiveShortcut id="org.eclipse.wst.jsdt.ui.JavaPerspective"/>
       </perspectiveExtension>
       <perspectiveExtension targetID="org.eclipse.wst.web.ui.webDevPerspective">
          <perspectiveShortcut id="org.eclipse.wst.jsdt.ui.JavaPerspective"/>
       </perspectiveExtension> 
+      <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut id="org.eclipse.wst.jsdt.ui.JavaPerspective"/>
+      </perspectiveExtension>
       
+      <!-- shortcuts from JS perspective -->
       <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <perspectiveShortcut id="org.eclipse.debug.ui.DebugPerspective"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <perspectiveShortcut id="org.eclipse.wst.web.ui.webDevPerspective"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
+      </perspectiveExtension>
+       
+      <!-- view shortcuts in JS perspective -->
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+      	<viewShortcut id="org.eclipse.ui.navigator.ProjectExplorer"/>
+      </perspectiveExtension>      
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <showInPart id="org.eclipse.ui.navigator.ProjectExplorer"/>
          <showInPart id="org.eclipse.wst.jsdt.ui.PackageExplorer"/>
          <showInPart id="org.eclipse.team.ui.GenericHistoryView"/>
          <showInPart id="org.eclipse.ui.views.ResourceNavigator"/>
@@ -456,13 +457,6 @@
             name="%viewCategoryName"
             id="org.eclipse.wst.jsdt.ui.java">
       </category>
-      <view
-            name="%packagesViewName"
-            icon="$nl$/icons/full/eview16/package.gif"
-            category="org.eclipse.wst.jsdt.ui.java"
-            class="org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart"
-            id="org.eclipse.wst.jsdt.ui.PackageExplorer">
-      </view>
       <view
             name="%hierarchyViewName"
             icon="$nl$/icons/full/eview16/class_hi.gif"

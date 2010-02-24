@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,8 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
  		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
-		folder.addView(JavaScriptUI.ID_PACKAGES);
+		folder.addView(IPageLayout.ID_PROJECT_EXPLORER);
+		folder.addPlaceholder(JavaScriptUI.ID_PACKAGES);
 		folder.addView(JavaScriptUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
