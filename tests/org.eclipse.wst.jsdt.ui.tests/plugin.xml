@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="%packagesViewName"
+            icon="$nl$/icons/full/eview16/package.gif"
+            category="org.eclipse.wst.jsdt.ui.java"
+            class="org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart"
+            id="org.eclipse.wst.jsdt.ui.PackageExplorer">
+      </view>
+   </extension>
+</plugin>
