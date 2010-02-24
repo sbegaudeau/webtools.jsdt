@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rhino JavaScript Debug
+Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.rhino;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin
+Bundle-Vendor: IBM
+Require-Bundle: org.eclipse.core.runtime,
+ org.mozilla.javascript;bundle-version="1.7.2";visibility:=reexport,
+ org.eclipse.wst.jsdt.debug.core
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.wst.jsdt.debug.internal.rhino;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.bundles;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.rhino.bundles,
+ org.eclipse.wst.jsdt.debug.rhino.registry
