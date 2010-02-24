@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Schema file written by PDE -->
+<schema targetNamespace="org.eclipse.wst.jsdt.debug.core" xmlns="http://www.w3.org/2001/XMLSchema">
+<annotation>
+      <appinfo>
+         <meta.schema plugin="org.eclipse.wst.jsdt.debug.core" id="org.eclipse.wst.jsdt.debug.core.connectors" name="Connectors"/>
+      </appinfo>
+      <documentation>
+         This extension point allows contributors to specify their own definition of a connector
+      </documentation>
+   </annotation>
+
+   <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
+      <complexType>
+         <sequence>
+            <element ref="connector"/>
+         </sequence>
+         <attribute name="point" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="name" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="connector">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The connector class that implements org.eclipse.e4.languages.javascript.jsdi.connect.Connector
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.e4.languages.javascript.jsdi.connect.Connector"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  An id unique to this connector
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="since"/>
+      </appinfo>
+      <documentation>
+         1.0
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="examples"/>
+      </appinfo>
+      <documentation>
+         The following example is the real life definition of the Mozilla Rhino attaching connector.
+&lt;pre&gt;
+ &lt;extension
+         point=&quot;org.eclipse.wst.jsdt.debug.core.connectors&quot;&gt;
+      &lt;connector
+            class=&quot;org.eclipse.wst.jsdt.debug.rhino.connect.RhinoAttachingConnector&quot;
+            id=&quot;rhino.attaching.connector&quot;&gt;
+      &lt;/connector&gt;
+   &lt;/extension&gt;
+&lt;/pre&gt;
+      </documentation>
+   </annotation>
+
+   <annotation>
+      <appinfo>
+         <meta.section type="apiinfo"/>
+      </appinfo>
+      <documentation>
+         The class attribute is required and must implement &lt;code&gt;org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector&lt;/code&gt;
+      </documentation>
+   </annotation>
+
+
+
+</schema>

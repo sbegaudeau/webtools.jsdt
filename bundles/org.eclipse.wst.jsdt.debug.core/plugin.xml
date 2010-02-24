@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?><!--
+    Copyright (c) 2010 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<plugin>
+   <extension-point id="org.eclipse.wst.jsdt.debug.core.connectors" name="%connectorsExtPoint.name" schema="schema/org.eclipse.wst.jsdt.debug.core.connectors.exsd"/>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.eclipse.wst.jsdt.debug.core.launchConfigurationType"
+            modes="run,debug"
+            name="%launchConfigurationType.name"
+            public="true">
+      </launchConfigurationType>
+   </extension>
+   <extension
+         id="org.eclipse.wst.jsdt.debug.core.line.breakpoint.marker"
+         name="%linebreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.lineBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="org.eclipse.wst.jsdt.debug.core.function.breakpoint.marker"
+         name="%methodbreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+      </super>
+      <super
+            type="org.eclipse.jdt.debug.javaMethodBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="org.eclipse.wst.jsdt.debug.core.scriptload.breakpoint.marker"
+         name="%scriptloadbreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+      </super>
+      <super
+            type="org.eclipse.jdt.debug.javaClassPrepareBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
+         id="org.eclipse.wst.jsdt.debug.core.breakpoint.marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.debug.core.breakpointMarker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.breakpoints">
+      <breakpoint
+            class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLineBreakpoint"
+            id="org.eclipse.wst.jsdt.debug.core.linebreakpoint"
+            markerType="org.eclipse.wst.jsdt.debug.core.line.breakpoint.marker"
+            name="%linebreakpoint.name">
+      </breakpoint>
+      <breakpoint
+            class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptFunctionBreakpoint"
+            id="org.eclipse.wst.jsdt.debug.core.functionbreakpoint"
+            markerType="org.eclipse.wst.jsdt.debug.core.function.breakpoint.marker"
+            name="%methodbreakpoint.name">
+      </breakpoint>
+      <breakpoint
+            class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint"
+            id="org.eclipse.wst.jsdt.debug.core.scriptloadbreakpoint"
+            markerType="org.eclipse.wst.jsdt.debug.core.scriptload.breakpoint.marker"
+            name="%scriptloadbreakpoint.name">
+      </breakpoint>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.launchDelegates">
+      <launchDelegate
+            delegate="org.eclipse.wst.jsdt.debug.internal.core.launching.RemoteJavaScriptLaunchDelegate"
+            delegateDescription="Remote JavaScript"
+            id="org.eclipse.wst.jsdt.debug.core.remoteLaunchDelegate"
+            modes="debug"
+            name="Remote JavaScript"
+            sourceLocatorId="org.eclipse.wst.jsdt.debug.core.sourceLocator"
+            type="org.eclipse.wst.jsdt.debug.core.launchConfigurationType">
+      </launchDelegate>
+   </extension>
+   <extension
+         point="org.eclipse.debug.core.sourceLocators">
+      <sourceLocator
+            class="org.eclipse.wst.jsdt.debug.internal.core.launching.JavascriptSourceDirector"
+            id="org.eclipse.wst.jsdt.debug.core.sourceLocator"
+            name="%sourceLocator.name">
+      </sourceLocator>
+   </extension>
+
+</plugin>
