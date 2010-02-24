@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;
+package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;

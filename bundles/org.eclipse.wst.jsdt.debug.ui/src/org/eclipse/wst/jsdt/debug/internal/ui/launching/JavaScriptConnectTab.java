@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@ import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
 /**
  * Tab to allow connection information to be specified
  * 
- * @since 0.9
+ * @since 1.0
  */
 public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab implements IPropertyChangeListener {
 	

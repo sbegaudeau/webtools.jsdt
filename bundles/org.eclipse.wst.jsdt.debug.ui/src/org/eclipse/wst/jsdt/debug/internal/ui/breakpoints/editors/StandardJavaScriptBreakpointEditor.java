@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;
+package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -27,11 +27,15 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
+import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
 import org.eclipse.wst.jsdt.debug.internal.ui.IHelpContextIds;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.Messages;
 
 /**
+ * Standard breakpoint editor that includes suspend policy and hit count options
+ * 
  * @since 1.0
  */
 public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakpointEditor {
@@ -56,15 +60,19 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
      * Property id for suspend policy.
      */
     public static final int PROP_SUSPEND_POLICY = 0x1007;
-
+    
 	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.internal.debug.ui.breakpoints.AbstractJavaBreakpointEditor#createControl(org.eclipse.swt.widgets.Composite)
+	 * @see org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.AbstractJavaScriptBreakpointEditor#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public Control createControl(Composite parent) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, IHelpContextIds.STANDARD_BREAKPOINT_EDITOR);
 		return createStandardControls(parent);
 	}
 	
+	/**
+	 * @param parent
+	 * @return
+	 */
 	protected Control createStandardControls(Composite parent) {
 		Composite composite = SWTFactory.createComposite(parent, parent.getFont(), 4, 1, 0, 0, 0);
 		fHitCountButton = SWTFactory.createCheckButton(composite, processMnemonics(Messages.hit_count), null, false, 1);
@@ -72,6 +80,8 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 		fHitCountButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				fHitCountText.setEnabled(fHitCountButton.getSelection());
+				fHitCountText.selectAll();
+				fHitCountText.setFocus();
 				setDirty(PROP_HIT_COUNT_ENABLED);
 			}
 		});
@@ -135,7 +145,7 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 		fBreakpoint = breakpoint;
 		boolean enabled = false;
 		boolean hasHitCount = false;
-		String text = ""; //$NON-NLS-1$
+		String text = Constants.EMPTY_STRING;
 		boolean suspendThread = true;
 		if (breakpoint != null) {
 			enabled = true;
@@ -189,7 +199,12 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 					hitCount = Integer.parseInt(fHitCountText.getText());
 				} 
 				catch (NumberFormatException e) {
-					JavaScriptDebugUIPlugin.log(e);
+					throw new CoreException(new Status(
+							IStatus.ERROR,
+							JavaScriptDebugUIPlugin.PLUGIN_ID,
+							IStatus.ERROR,
+							Messages.hit_count_must_be_positive,
+							e));
 				}
 			}
 			fBreakpoint.setHitCount(hitCount);
@@ -202,8 +217,8 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 	 */
 	public IStatus getStatus() {
 		if (fHitCountButton.getSelection()) {
-			String hitCountText= fHitCountText.getText();
-			int hitCount= -1;
+			String hitCountText = fHitCountText.getText();
+			int hitCount = -1;
 			try {
 				hitCount = Integer.parseInt(hitCountText);
 			} catch (NumberFormatException e1) {

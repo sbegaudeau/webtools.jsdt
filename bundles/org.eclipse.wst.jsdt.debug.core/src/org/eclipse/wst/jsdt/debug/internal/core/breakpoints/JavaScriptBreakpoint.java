@@ -17,8 +17,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.Breakpoint;
@@ -64,6 +68,32 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		setAttribute(INSTALL_COUNT, 0);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.Breakpoint#setAttribute(java.lang.String, boolean)
+	 */
+	protected void setAttribute(final String attributeName, final boolean value) throws CoreException {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				ensureMarker().setAttribute(attributeName, value);
+			}
+		};
+		workspace.run(runnable, getMarkerRule(), IWorkspace.AVOID_UPDATE, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.Breakpoint#setAttribute(java.lang.String, java.lang.Object)
+	 */
+	protected void setAttribute(final String attributeName, final Object value) throws CoreException {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspaceRunnable runnable= new IWorkspaceRunnable() {
+			public void run(IProgressMonitor monitor) throws CoreException {
+				ensureMarker().setAttribute(attributeName, value);
+			}
+		};
+		workspace.run(runnable, getMarkerRule(), IWorkspace.AVOID_UPDATE, null);
+	}
+	
 	/**
 	 * Add this breakpoint to the breakpoint manager, or sets it as unregistered.
 	 */
@@ -214,15 +244,20 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 * @see org.eclipse.debug.core.model.Breakpoint#setEnabled(boolean)
 	 */
 	public void setEnabled(boolean enabled) throws CoreException {
-		recreateBreakpoint();
-		super.setEnabled(enabled);
+		if(isEnabled() != enabled) {
+			setAttribute(ENABLED, enabled);
+			recreateBreakpoint();
+		}
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint#setSuspendPolicy(int)
 	 */
 	public void setSuspendPolicy(int policy) throws CoreException {
-		ensureMarker().setAttribute(SUSPEND_POLICY, policy);
+		if(getSuspendPolicy() != policy) {
+			setAttribute(SUSPEND_POLICY, policy);
+			recreateBreakpoint();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -271,11 +306,8 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint#setHitCount(int)
 	 */
 	public void setHitCount(int count) throws CoreException, IllegalArgumentException {
-		if (count < 0) {
-			throw new IllegalArgumentException(Messages.hit_count_must_be_greater_than_0);
-		}
 		if (count != getHitCount()) {
-			ensureMarker().setAttribute(HIT_COUNT, count);
+			setAttribute(HIT_COUNT, count);
 			recreateBreakpoint();
 		}
 	}

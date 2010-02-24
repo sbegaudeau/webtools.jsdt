@@ -18,24 +18,31 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.ui.IHelpContextIds;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors.AbstractJavaScriptBreakpointEditor;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors.CompositeBreakpointEditor;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors.FunctionBreakpointEditor;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors.JavaScriptBreakpointConditionEditor;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors.StandardJavaScriptBreakpointEditor;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Abstract class for breakpoint property pages
@@ -49,6 +56,9 @@ public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 	protected Text hitcounttext;
 	protected Combo suspendpolicycombo;
 	protected List errors = new ArrayList();
+	protected String fPrevMessage = null;
+	AbstractJavaScriptBreakpointEditor editor = null;
+	JavaScriptElementLabelProvider labelprovider = new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT);
 	
 	/**
 	 * @return the underlying {@link IJavaScriptBreakpoint} element this page was opened on
@@ -62,15 +72,87 @@ public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 	 * breakpoint page.
 	 * @param parent
 	 */
-	protected void createTypeSpecificLabels(Composite parent) {}
+	protected void createTypeSpecificLabels(Composite parent) {
+		IJavaScriptBreakpoint jb = getBreakpoint();
+		if (jb instanceof IJavaScriptLineBreakpoint) {
+			IJavaScriptLineBreakpoint breakpoint = (IJavaScriptLineBreakpoint) jb;
+			StringBuffer lineNumber = new StringBuffer(4);
+			try {
+				int lNumber = breakpoint.getLineNumber();
+				if (lNumber > 0) {
+					lineNumber.append(lNumber);
+				}
+			} catch (CoreException ce) {
+				JavaScriptDebugUIPlugin.log(ce);
+			}
+			if (lineNumber.length() > 0) {
+				SWTFactory.createLabel(parent, Messages.line_number, 1); 
+				Text text = SWTFactory.createSingleText(parent, SWT.READ_ONLY, 1, lineNumber.toString());
+				GridData gd = (GridData) text.getLayoutData();
+				gd.horizontalAlignment = GridData.HORIZONTAL_ALIGN_BEGINNING;
+				gd.grabExcessHorizontalSpace = false;
+				gd.widthHint = 50;
+				text.setBackground(parent.getBackground());
+			}
+			try {
+				IMember member = BreakpointHelper.getMember(breakpoint);
+				if (member == null) {
+					return;
+				}
+				String label = Messages.member; 
+				if (breakpoint instanceof IJavaScriptFunctionBreakpoint) {
+					label = Messages.fuction; 
+				}
+				SWTFactory.createLabel(parent, label, 1);
+				Text text = SWTFactory.createSingleText(parent, SWT.READ_ONLY, 1, labelprovider.getText(member));
+				text.setBackground(parent.getBackground());
+			} 
+			catch (CoreException exception) {
+				JavaScriptDebugUIPlugin.log(exception);
+			}
+		}
+	}
 	
 	/**
 	 * Allows subclasses to add type specific editors to the common Java
 	 * breakpoint page.
 	 * @param parent
-	 * @throws CoreException
 	 */
-	protected void createTypeSpecificEditors(Composite parent) throws CoreException {}
+	protected void createTypeSpecificEditors(Composite parent) {
+		try {
+			String type = getBreakpoint().getMarker().getType();
+			if (IJavaScriptLoadBreakpoint.MARKER_ID.equals(type)) {
+				setTitle(Messages.script_load_breakpoint);
+				this.editor = new StandardJavaScriptBreakpointEditor();
+			} else if (IJavaScriptLineBreakpoint.MARKER_ID.equals(type)) {
+				setTitle(Messages.line_breakpoint);
+				this.editor = new CompositeBreakpointEditor(new AbstractJavaScriptBreakpointEditor[]
+				    {new StandardJavaScriptBreakpointEditor(), new JavaScriptBreakpointConditionEditor()}); 
+			} else if (IJavaScriptFunctionBreakpoint.MARKER_ID.equals(type)) {
+				setTitle(Messages.function_breakpoint);
+				this.editor = new CompositeBreakpointEditor(new AbstractJavaScriptBreakpointEditor[] 
+				    {new FunctionBreakpointEditor(), new JavaScriptBreakpointConditionEditor()});
+			}
+			this.editor.createControl(parent);
+			this.editor.addPropertyListener(new IPropertyListener() {
+				public void propertyChanged(Object source, int propId) {
+					IStatus status = JavaScriptBreakpointPropertyPage.this.editor.getStatus();
+					if (status.isOK()) {
+						if (fPrevMessage != null) {
+							removeErrorMessage(fPrevMessage);
+							fPrevMessage = null;
+						}
+					} else {
+						fPrevMessage = status.getMessage();
+						addErrorMessage(fPrevMessage);
+					}
+				}
+			});
+			this.editor.setInput(getBreakpoint());
+		} catch (CoreException e) {
+			setErrorMessage(e.getMessage());
+		}
+	}
 	
 	/**
 	 * Stores the values configured in this page. This method
@@ -79,107 +161,23 @@ public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 	 */
 	protected void doStore() throws CoreException {
 		IJavaScriptBreakpoint breakpoint = getBreakpoint();
-		//store hit count
-		int hitCount = -1;
-		if (hitcountbutton.getSelection()) {
-			try {
-				hitCount = Integer.parseInt(hitcounttext.getText());
-			} 
-			catch (NumberFormatException e) {
-				JavaScriptDebugUIPlugin.log(e);
-			}
-			breakpoint.setHitCount(hitCount);
-		}
-		else {
-			breakpoint.setHitCount(0);
-		}
 		breakpoint.setEnabled(enabledbutton.getSelection());
-		breakpoint.setSuspendPolicy(suspendpolicycombo.getSelectionIndex()+1);
+		if(this.editor != null) {
+			this.editor.doSave();
+		}
 	}
 	
 	/**
 	 * Creates the button to toggle enablement of the breakpoint
 	 * @param parent
-	 * @throws CoreException
 	 */
-	protected void createEnabledButton(Composite parent) throws CoreException {
+	protected void createEnabledButton(Composite parent)  {
 		enabledbutton = SWTFactory.createCheckButton(parent, Messages.enabled, null, false, 1); 
-		enabledbutton.setSelection(getBreakpoint().isEnabled());
-	}
-	
-	/**
-	 * Creates a default hit count editor
-	 * @param parent 
-	 * @throws CoreException
-	 */
-	protected void createHitCountEditor(Composite parent) throws CoreException {
-		Composite hitCountComposite = SWTFactory.createComposite(parent, parent.getFont(), 2, 1, GridData.FILL_HORIZONTAL, 0, 0);
-		hitcountbutton = SWTFactory.createCheckButton(hitCountComposite, Messages.hit_count, null, false, 1); 
-		hitcountbutton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				hitcounttext.setEnabled(hitcountbutton.getSelection());
-				hitCountChanged();
-			}
-		});
-		int hitCount = getBreakpoint().getHitCount();
-		String hitCountString = Constants.EMPTY_STRING;
-		if (hitCount > 0) {
-			hitCountString = new Integer(hitCount).toString();
-			hitcountbutton.setSelection(true);
-		} else {
-			hitcountbutton.setSelection(false);
-		}
-		hitcounttext = SWTFactory.createSingleText(hitCountComposite, 1);
-		hitcounttext.setText(hitCountString);
-		if (hitCount <= 0) {
-			hitcounttext.setEnabled(false);
-		}
-		hitcounttext.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				hitCountChanged();
-			}
-		});
-	}
-	
-	/**
-	 * Validates the current state of the hit count editor.
-	 * Hit count value must be a positive integer.
-	 */
-	void hitCountChanged() {
-		if (!hitcountbutton.getSelection()) {
-			removeErrorMessage(Messages.hit_count_must_be_positive);
-			return;
-		}
-		String hitCountText= hitcounttext.getText();
-		int hitCount= -1;
 		try {
-			hitCount = Integer.parseInt(hitCountText);
-		} 
-		catch (NumberFormatException e1) {
-			addErrorMessage(Messages.hit_count_must_be_positive);
-			return;
+			enabledbutton.setSelection(getBreakpoint().isEnabled());
 		}
-		if (hitCount < 1) {
-			addErrorMessage(Messages.hit_count_must_be_positive);
-		} else {
-			removeErrorMessage(Messages.hit_count_must_be_positive);
-		}
-	}
-
-	/**
-	 * Creates the editor for configuring the suspend policy (suspend target or suspend thread) of the breakpoint.
-	 * @param parent 
-	 */
-	protected void createSuspendPolicyEditor(Composite parent) throws CoreException {
-		Composite comp = SWTFactory.createComposite(parent, 2, 1, GridData.FILL_HORIZONTAL);
-		SWTFactory.createLabel(comp, Messages.suspend_policy, 1); 
-		boolean suspendThread = getBreakpoint().getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_THREAD;
-		suspendpolicycombo = new Combo(comp, SWT.BORDER | SWT.READ_ONLY);
-		suspendpolicycombo.add(Messages.suspend_thread_option);
-		suspendpolicycombo.add(Messages.suspend_target);
-		suspendpolicycombo.select(1);
-		if(suspendThread) {
-			suspendpolicycombo.select(0);
+		catch(CoreException ce) {
+			JavaScriptDebugUIPlugin.log(ce);
 		}
 	}
 	
@@ -249,15 +247,9 @@ public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 		noDefaultAndApplyButton();
 		Composite comp = SWTFactory.createComposite(parent, 1, 1, GridData.FILL_BOTH);
 		createLabels(comp);
-		try {
-			createEnabledButton(comp);
-			createHitCountEditor(comp);
-			createTypeSpecificEditors(comp);
-			createSuspendPolicyEditor(comp); // Suspend policy is considered uncommon. Add it last.
-		} 
-		catch (CoreException e) {
-			JavaScriptDebugUIPlugin.log(e);
-		}
+		SWTFactory.createHorizontalSpacer(comp, 1);
+		createEnabledButton(comp);
+		createTypeSpecificEditors(comp);
 		setValid(true);
 		setControl(parent);
 		return comp;

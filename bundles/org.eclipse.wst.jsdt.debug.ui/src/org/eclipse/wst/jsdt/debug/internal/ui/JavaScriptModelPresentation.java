@@ -138,14 +138,14 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 			if(element instanceof IValue) {
 				return ((IValue)element).getValueString();
 			}
-			if(element instanceof IJavaScriptLineBreakpoint) {
-				return getLineBreakpointText((IJavaScriptLineBreakpoint) element);
-			}
 			if(element instanceof IJavaScriptFunctionBreakpoint) {
 				return getFunctionBreakpointText((IJavaScriptFunctionBreakpoint) element);
 			}
 			if(element instanceof IJavaScriptLoadBreakpoint) {
 				return getScriptLoadBreakpointText((IJavaScriptLoadBreakpoint) element);
+			}
+			if(element instanceof IJavaScriptLineBreakpoint) {
+				return getLineBreakpointText((IJavaScriptLineBreakpoint) element);
 			}
 		}
 		catch(CoreException ce) {
@@ -186,8 +186,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	String getFunctionBreakpointText(IJavaScriptFunctionBreakpoint breakpoint) throws CoreException {
 		String path = getElementPath(breakpoint.getScriptPath());
 		StringBuffer buffer = new StringBuffer();
-		String method = Signature.toString(breakpoint.getSignature(), breakpoint.getFunctionName(), null, false, false);
-		buffer.append(path).append(" - ").append(method); //$NON-NLS-1$
+		buffer.append(path);
 		if(breakpoint.isEntry()) {
 			if(breakpoint.isExit()) {
 				buffer.append(Messages.bp_entry_and_exit);
@@ -209,6 +208,8 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		if(breakpoint.getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_TARGET) {
 			buffer.append(Messages.bp_suspend_vm);
 		}
+		String method = Signature.toString(breakpoint.getSignature(), breakpoint.getFunctionName(), null, false, false);
+		buffer.append(" - ").append(method); //$NON-NLS-1$
 		return buffer.toString();
 	}
 	

@@ -135,7 +135,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint#isConditionEnabled()
 	 */
 	public boolean isConditionEnabled() throws CoreException {
-		return ensureMarker().getAttribute(CONDITION_ENABLED, false) && getCondition() != null;
+		return ensureMarker().getAttribute(CONDITION_ENABLED, false);
 	}
 
 	/* (non-Javadoc)
@@ -150,7 +150,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	 */
 	public void setConditionSuspendOnTrue(boolean suspendontrue) throws CoreException {
 		if (suspendontrue != isConditionSuspendOnTrue()) {
-			ensureMarker().setAttribute(CONDITION_SUSPEND_ON_TRUE, suspendontrue);
+			setAttribute(CONDITION_SUSPEND_ON_TRUE, suspendontrue);
 			recreateBreakpoint();
 		}
 	}
@@ -162,7 +162,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 		if (condition != null && condition.length() == 0) {
 			condition = null;
 		}
-		ensureMarker().setAttribute(CONDITION, condition);
+		setAttribute(CONDITION, condition);
 		recreateBreakpoint();
 	}
 
@@ -177,6 +177,9 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint#setConditionEnabled(boolean)
 	 */
 	public void setConditionEnabled(boolean enabled) throws CoreException {
-		ensureMarker().setAttribute(CONDITION_ENABLED, enabled);
+		if(isConditionEnabled() != enabled) {
+			setAttribute(CONDITION_ENABLED, enabled);
+			recreateBreakpoint();
+		}
 	}
 }

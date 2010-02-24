@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2009 IBM Corporation and others.
+ *  Copyright (c) 2010 IBM Corporation and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * Factory class to create some SWT resources. 
  * 
- * @since 0.9
+ * @since 1.0
  */
 public class SWTFactory {
 		
@@ -269,6 +269,26 @@ public class SWTFactory {
     	GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     	gd.horizontalSpan = hspan;
     	t.setLayoutData(gd);
+    	return t;
+    }
+	
+	/**
+	 * Creates a new text widget 
+	 * @param parent the parent composite to add this text widget to
+	 * @param the OR'd style bits for the control
+	 * @param hspan the horizontal span to take up on the parent composite
+	 * @param the initial text for the control
+	 * @return the new text widget
+	 */
+	public static Text createSingleText(Composite parent, int style, int hspan, String text) {
+    	Text t = new Text(parent, SWT.SINGLE | SWT.BORDER | style);
+    	t.setFont(parent.getFont());
+    	GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+    	gd.horizontalSpan = hspan;
+    	t.setLayoutData(gd);
+    	if(text != null) {
+    		t.setText(text);
+    	}
     	return t;
     }
 	

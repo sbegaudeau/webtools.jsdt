@@ -33,21 +33,21 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.wst.jsdt.internal.ui.javaeditor.CompilationUnitEditor"
-            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JSDIAdapterFactory">
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
          </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.wst.jsdt.core.IFunction"
-            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JSDIAdapterFactory">
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
          </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.wst.jsdt.core.IField"
-            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JSDIAdapterFactory">
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
          </adapter>
@@ -118,7 +118,7 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.LineBreakpointPropertyPage"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointPropertyPage"
             id="org.eclipse.wst.jsdt.debug.ui.proppage.linebreakpoint"
             name="%breakpointproperties.page.name">
          <enabledWhen>
@@ -133,7 +133,7 @@
          </enabledWhen>
       </page>
       <page
-            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.FunctionBreakpointPropertyPage"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointPropertyPage"
             id="org.eclipse.wst.jsdt.debug.ui.proppage.functionbreakpoints"
             name="%breakpointproperties.page.name">
          <enabledWhen>
@@ -199,6 +199,33 @@
                tooltip="%addScriptloadBreakpointAction.name">
          </action>
       </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.detailPaneFactories">
+      <detailFactories
+            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.details.BreakpointDetailPaneFactory"
+            id="org.eclipse.wst.jsdt.debug.ui.breakpoints.details.factory">
+         <enablement>
+            <with
+                  variable="selection">
+               <iterate>
+                  <or>
+                     <instanceof
+                           value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint">
+                     </instanceof>
+                     <instanceof
+                           value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint">
+                     </instanceof>
+                     <instanceof
+                           value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint">
+                     </instanceof>
+                  </or></iterate>
+               <count
+                     value="1">
+               </count>
+            </with>
+         </enablement>
+      </detailFactories>
    </extension>
 
 </plugin>
