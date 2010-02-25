@@ -65,7 +65,7 @@ public class JavaScriptVariable extends JavaScriptDebugElement implements IVaria
 	 */
 	public IValue getValue() throws DebugException {
 		if (this.value == null) {
-			this.value = new JavaScriptValue(this, this.variable);
+			this.value = new JavaScriptValue(getJSDITarget(), this.variable);
 		}
 		return this.value;
 	}

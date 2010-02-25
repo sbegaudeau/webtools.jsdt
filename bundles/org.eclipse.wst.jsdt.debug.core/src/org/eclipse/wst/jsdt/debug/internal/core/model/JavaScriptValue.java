@@ -35,33 +35,19 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScriptValue {
 
 	private Value value;
-	private String name;
 	private List properties;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param variable
+	 * @param target
 	 * @param value
 	 */
-	public JavaScriptValue(JavaScriptVariable variable, Value value) {
-		super(variable.getJSDITarget());
-		this.name = variable.getName();
+	public JavaScriptValue(JavaScriptDebugTarget target, Value value) {
+		super(target);
 		this.value = value;
 	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param variable
-	 * @param value
-	 */
-	public JavaScriptValue(JavaScriptProperty variable, Value value) {
-		super(variable.getJSDITarget());
-		this.name = variable.getName();
-		this.value = value;
-	}
-
+	
 	/**
 	 * Hook to return the underlying value for this {@link JavaScriptValue}
 	 * 
@@ -101,15 +87,6 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			return this.value.getValueTypeName();
 		}
 		return null;
-	}
-
-	/**
-	 * Return the name to display for the variable
-	 * 
-	 * @return the variable name
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/*

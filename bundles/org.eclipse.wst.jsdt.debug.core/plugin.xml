@@ -108,5 +108,12 @@
             name="%sourceLocator.name">
       </sourceLocator>
    </extension>
+   <extension
+         point="org.eclipse.debug.core.watchExpressionDelegates">
+      <watchExpressionDelegate
+            debugModel="org.eclipse.wst.jsdt.debug.model"
+            delegateClass="org.eclipse.wst.jsdt.debug.internal.core.JavaScriptWatchExpressionDelegate">
+      </watchExpressionDelegate>
+   </extension>
 
 </plugin>
