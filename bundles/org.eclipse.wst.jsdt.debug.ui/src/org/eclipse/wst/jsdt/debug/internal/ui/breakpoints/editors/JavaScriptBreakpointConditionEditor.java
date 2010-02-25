@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.IHandler;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,13 +21,14 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.TextViewerUndoManager;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -45,11 +47,17 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerActivation;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
+import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.BreakpointHelper;
 import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.Messages;
+import org.eclipse.wst.jsdt.debug.internal.ui.display.JavaScriptDebugViewerConfiguration;
+import org.eclipse.wst.jsdt.debug.internal.ui.source.JavaScriptSourceViewer;
+import org.eclipse.wst.jsdt.debug.internal.ui.source.contentassist.JavaScriptContentAssistProcessor;
+import org.eclipse.wst.jsdt.debug.internal.ui.source.contentassist.ScriptContext;
 
 /**
  * Controls to edit a breakpoint's conditional expression, condition enabled state,
@@ -63,7 +71,8 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 	private Button fConditional;
 	private Button fWhenTrue;
 	private Button fWhenChange;
-	private SourceViewer fViewer;
+	private JavaScriptSourceViewer fViewer;
+	private IContentAssistProcessor fCompletionProcessor;
 	private IJavaScriptLineBreakpoint fBreakpoint;
 	private IHandlerService fHandlerService;
 	private IHandler fHandler;
@@ -120,14 +129,37 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 		boolean controlsEnabled = false;
 		boolean conditionEnabled = false;
 		boolean whenTrue = true;
-		/*IType type = null;*/
+		ITypeRoot root = null;
 		if (breakpoint != null) {
 			controlsEnabled = true;
 			condition = breakpoint.getCondition();
 			conditionEnabled = breakpoint.isConditionEnabled();
 			whenTrue = breakpoint.isConditionSuspendOnTrue();
-			/*type = BreakpointHelper.getType(breakpoint);*/
+			root = BreakpointHelper.getTypeRoot(breakpoint);
 		}
+		ScriptContext context = null;
+		int offset = -1;
+		if(root != null) {
+			String source = root.getSource();
+			if(source != null) {
+				int lineNumber = breakpoint.getMarker().getAttribute(IMarker.LINE_NUMBER, -1);
+				if (source != null && lineNumber != -1) {
+					try {
+						offset = new Document(source).getLineOffset(lineNumber - 1);
+					} 
+					catch (BadLocationException e) {
+						JavaScriptDebugUIPlugin.log(e);
+					}
+				}
+			}
+		}
+		context = new ScriptContext(root, offset);
+		fCompletionProcessor = new JavaScriptContentAssistProcessor(context);
+		fViewer.configure(new JavaScriptDebugViewerConfiguration() {
+			public IContentAssistProcessor getProcessor() {
+					return fCompletionProcessor;
+			}
+		});
 		document.set((condition == null ? Constants.EMPTY_STRING : condition));
 		fViewer.setUndoManager(new TextViewerUndoManager(10));
 		fViewer.getUndoManager().connect(fViewer);
@@ -182,7 +214,7 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 			}
 		});
 				
-		fViewer = new SourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT_TO_RIGHT);
+		fViewer = new JavaScriptSourceViewer(parent, null, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.LEFT_TO_RIGHT);
 		fViewer.setEditable(false);
 		ControlDecoration decoration = new ControlDecoration(fViewer.getControl(), SWT.TOP | SWT.LEFT);
 		decoration.setShowOnlyOnFocus(true);
@@ -231,6 +263,7 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 		if (fDocumentListener != null) {
 			fViewer.getDocument().removeDocumentListener(fDocumentListener);
 		}
+		fViewer.dispose();
 	}
 	
 	/**
@@ -295,15 +328,15 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 	    fViewer.getTextWidget().setEnabled(enabled);
 	    fWhenChange.setEnabled(enabled);
 	    fWhenTrue.setEnabled(enabled);
-	    Color color = fViewer.getControl().getDisplay().getSystemColor(SWT.COLOR_WHITE);
 		if (enabled) {
+			fViewer.updateViewerColors();
 			if (focus) {
 				setFocus();
 			}
 		} else {
-			color = fViewer.getControl().getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+			Color color = fViewer.getControl().getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND);
+			fViewer.getTextWidget().setBackground(color);	
 		}
-		fViewer.getTextWidget().setBackground(color);	
 	}
 
 	/**

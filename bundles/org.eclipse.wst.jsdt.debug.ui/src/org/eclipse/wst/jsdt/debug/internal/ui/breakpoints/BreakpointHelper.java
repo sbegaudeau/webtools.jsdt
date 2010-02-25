@@ -15,11 +15,13 @@ import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
+import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 
 /**
  * Collection of utility methods to help get additional information
@@ -100,6 +102,33 @@ public class BreakpointHelper {
 					return ((IMember)jse).getDeclaringType();
 				}
 			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the type that the given JavaScript breakpoint refers to
+	 * 
+	 * @param breakpoint JavaScript breakpoint
+	 * @return the type the breakpoint is associated with
+	 */
+	public static ITypeRoot getTypeRoot(IJavaScriptBreakpoint breakpoint) {
+		try {
+			String handle = breakpoint.getJavaScriptElementHandle();
+			if (handle != null) {
+				IJavaScriptElement jse = JavaScriptCore.create(handle);
+				if (jse != null) {
+					if (jse instanceof IType) {
+						return ((IType)jse).getTypeRoot();
+					}
+					if (jse instanceof IMember) {
+						return ((IMember)jse).getTypeRoot();
+					}
+				}
+			}
+		}
+		catch(CoreException ce) {
+			JavaScriptDebugUIPlugin.log(ce);
 		}
 		return null;
 	}
