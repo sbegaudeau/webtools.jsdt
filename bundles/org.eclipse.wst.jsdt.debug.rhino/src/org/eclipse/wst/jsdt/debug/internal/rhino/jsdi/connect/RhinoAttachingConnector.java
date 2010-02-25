@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,12 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.SocketTransportService;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.Messages;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
 
 /**
  * Rhino {@link Connector} implementation that attaches to a running debug process
  * 
- * @since 0.9
+ * @since 1.0
  * @see Connector
  * @see AttachingConnector
  */
@@ -38,10 +37,8 @@ public class RhinoAttachingConnector implements AttachingConnector {
 	 */
 	public static final String LOCALHOST = "localhost"; //$NON-NLS-1$
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.connect.AttachingConnector#attach(java.util.Map)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector#attach(java.util.Map)
 	 */
 	public VirtualMachine attach(Map arguments) throws IOException {
 		TransportService service = new SocketTransportService();
@@ -52,10 +49,8 @@ public class RhinoAttachingConnector implements AttachingConnector {
 		return new VirtualMachineImpl(session);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector#defaultArguments()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#defaultArguments()
 	 */
 	public Map defaultArguments() {
 		Map result = new HashMap();
@@ -64,28 +59,22 @@ public class RhinoAttachingConnector implements AttachingConnector {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector#description()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#description()
 	 */
 	public String description() {
 		return Messages.RhinoAttachingConnector_description;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector#name()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#name()
 	 */
 	public String name() {
 		return Messages.RhinoAttachingConnector_name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector#id()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#id()
 	 */
 	public String id() {
 		return "rhino.attaching.connector"; //$NON-NLS-1$

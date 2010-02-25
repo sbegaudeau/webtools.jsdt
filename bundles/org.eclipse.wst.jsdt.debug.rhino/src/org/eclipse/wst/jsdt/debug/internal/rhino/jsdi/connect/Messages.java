@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
+package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect;
 
 import org.eclipse.osgi.util.NLS;
 
@@ -18,7 +18,7 @@ import org.eclipse.osgi.util.NLS;
  * @since 1.0
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.e4.languages.javascript.jsdi.rhino.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.messages"; //$NON-NLS-1$
 	public static String HostArgument_description;
 	public static String HostArgument_label;
 	public static String PortArgument_description;
