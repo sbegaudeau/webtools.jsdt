@@ -295,6 +295,11 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	 * for the receiver, it should yeild the receiver type.
 	 */
 if( this.isPrototype() ){
+		// check if receiver type is defined
+	if ((this.receiverType = receiver.resolveType(scope)) == null) {
+        return null;
+    }
+
 
 		//construc the name of the type based on the receiver
 		char [] possibleTypeName = Util.getTypeName( receiver );
