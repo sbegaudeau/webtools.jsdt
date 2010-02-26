@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * This class provides utilities for working with JSON.

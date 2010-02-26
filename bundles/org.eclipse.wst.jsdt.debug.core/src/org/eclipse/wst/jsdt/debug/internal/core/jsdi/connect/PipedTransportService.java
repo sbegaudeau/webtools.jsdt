@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * {@link TransportService} specialization for a {@link PipedConnection}

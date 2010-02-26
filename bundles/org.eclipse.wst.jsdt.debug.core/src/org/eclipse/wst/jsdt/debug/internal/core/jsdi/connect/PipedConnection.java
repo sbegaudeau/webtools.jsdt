@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONUtil;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * A {@link Connection} implementation that uses streams for communication

@@ -27,11 +27,11 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Request;
 import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Response;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event.EventQueueImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
 

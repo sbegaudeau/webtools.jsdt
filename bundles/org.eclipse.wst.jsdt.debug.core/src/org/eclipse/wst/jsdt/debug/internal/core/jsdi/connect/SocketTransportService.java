@@ -17,7 +17,7 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * Implementation of a transport service that using a {@link Socket} for communication

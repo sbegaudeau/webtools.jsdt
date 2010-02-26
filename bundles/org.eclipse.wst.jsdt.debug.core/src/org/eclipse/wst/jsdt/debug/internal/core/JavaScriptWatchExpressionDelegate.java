@@ -18,10 +18,7 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IWatchExpressionDelegate;
 import org.eclipse.debug.core.model.IWatchExpressionListener;
 import org.eclipse.debug.core.model.IWatchExpressionResult;
-import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
-import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
-import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptStackFrame;
-import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptValue;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 
 /**
  * Default watch expression delegate for the JavaScript debugging
@@ -86,12 +83,9 @@ public class JavaScriptWatchExpressionDelegate implements IWatchExpressionDelega
 		WatchResult result = new WatchResult(expression);
 		try {
 			IStackFrame fcontext  = getFrameContext(context);
-			if(fcontext instanceof JavaScriptStackFrame) {
-				JavaScriptStackFrame frame = (JavaScriptStackFrame) fcontext;
-				StackFrame jsframe = frame.getUnderlyingStackFrame();
-				if(jsframe != null) {
-					result.value = new JavaScriptValue((JavaScriptDebugTarget) frame.getDebugTarget(), jsframe.evaluate(expression));
-				}
+			if(fcontext instanceof IJavaScriptStackFrame) {
+				IJavaScriptStackFrame frame = (IJavaScriptStackFrame) fcontext;
+				result.value = frame.evaluate(expression);
 			}
 		}
 		catch(DebugException de) {

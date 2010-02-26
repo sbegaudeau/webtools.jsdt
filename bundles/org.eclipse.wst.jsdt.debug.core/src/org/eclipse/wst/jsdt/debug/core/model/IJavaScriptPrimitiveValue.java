@@ -10,33 +10,43 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.core.model;
 
-import org.eclipse.debug.core.model.IValue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 
 /**
- * Abstract definition of a {@link Value} wrt JavaScript debugging
+ * Describes a primitive value 
  * 
  * @since 1.0
- * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  */
-public interface IJavaScriptValue extends IValue {
+public interface IJavaScriptPrimitiveValue extends IJavaScriptValue {
 
+	/**
+	 * Returns the integer for the value.
+	 * 
+	 * @return the integer value
+	 */
+	public int intValue();
 	
 	/**
-	 * Returns the string to use for details display.<br>
+	 * Returns the double for the value.
+	 * 
+	 * @return the double value
+	 */
+	public double doubleValue();
+	
+	/**
+	 * Returns the boolean for the value.
+	 * 
+	 * @return the boolean value
+	 */
+	public boolean booleanValue();
+	
+	/**
+	 * Returns the String value for the value.<br>
 	 * <br>
 	 * This method can return <code>null</code>
 	 * 
-	 * @return the string to use for details display or <code>null</code>
+	 * @return the {@link String} value
 	 */
-	public String getDetailString();
-	
-	/**
-	 * Returns if the value is {@link NullValue}
-	 * 
-	 * @return if the value is {@link NullValue}
-	 */
-	public boolean isNull();
+	public String stringValue();
 }

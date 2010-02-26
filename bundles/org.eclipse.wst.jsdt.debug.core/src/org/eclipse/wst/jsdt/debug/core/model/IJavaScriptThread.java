@@ -10,33 +10,35 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.core.model;
 
-import org.eclipse.debug.core.model.IValue;
+import org.eclipse.debug.core.model.IThread;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 
 /**
- * Abstract definition of a {@link Value} wrt JavaScript debugging
+ * JavaScript thread description
  * 
  * @since 1.0
- * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
+ * @noextend This interface is not intended to be extended by clients.
  */
-public interface IJavaScriptValue extends IValue {
+public interface IJavaScriptThread extends IThread {
 
-	
 	/**
-	 * Returns the string to use for details display.<br>
+	 * Allows the given expression to be evaluated and returns the {@link Value}
+	 * of the evaluation.<br>
 	 * <br>
-	 * This method can return <code>null</code>
+	 * This method cannot return <code>null</code> and will return a value with {@link NullValue} instead.
 	 * 
-	 * @return the string to use for details display or <code>null</code>
+	 * @param expression the expression to evaluate, <code>null</code> is accepted and will cause a value
+	 * backed by {@link NullValue} to be returned
+	 * @return the {@link IJavaScriptValue} from the evaluation never <code>null</code>
 	 */
-	public String getDetailString();
+	public IJavaScriptValue evaluate(String expression);
 	
 	/**
-	 * Returns if the value is {@link NullValue}
+	 * Returns the total stack frame count
 	 * 
-	 * @return if the value is {@link NullValue}
+	 * @return the stack frame count
 	 */
-	public boolean isNull();
+	public int getFrameCount();
 }

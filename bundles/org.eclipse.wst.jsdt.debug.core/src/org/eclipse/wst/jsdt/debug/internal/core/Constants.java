@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.launching;
+package org.eclipse.wst.jsdt.debug.internal.core;
 
 /**
  * Common constants
@@ -37,10 +37,27 @@ public interface Constants {
 	 * Value is: <code>UTF-8</code>
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
+	
+	//Extension point constants
 	/**
-	 * Debug property name <br>
-	 * <br>
-	 * Value is: <code>rhino.debug</code>
+	 * the class attribute name
 	 */
-	public static final String RHINO_DEBUG = "rhino.debug"; //$NON-NLS-1$
+	public static final String CLASS = "class"; //$NON-NLS-1$
+	/**
+	 * the kind attribute
+	 */
+	public static final String KIND = "kind"; //$NON-NLS-1$
+	/**
+	 * The connector attribute
+	 */
+	static final String CONNECTOR = "connector"; //$NON-NLS-1$
+	/**
+	 * the name of the breakpoint participants extension point
+	 */
+	public static final String BREAKPOINT_PARTICIPANTS = "breakpointParticipants"; //$NON-NLS-1$
+	/**
+	 * The name of the launching connectors extension point
+	 */
+	static final String LAUNCHING_CONNECTORS = "launchingConnectors"; //$NON-NLS-1$
+	
 }

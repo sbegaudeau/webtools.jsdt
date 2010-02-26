@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
@@ -34,16 +35,13 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 public class ConnectorsManager implements IRegistryEventListener {
 
 	private static final String ID = "id"; //$NON-NLS-1$
-	private static final String JSDI_CONNECTORS = "org.eclipse.wst.jsdt.debug.core.connectors"; //$NON-NLS-1$
-	private static final String CONNECTOR = "connector"; //$NON-NLS-1$
-	private static final String CLASS = "class"; //$NON-NLS-1$
 	private HashMap connectors;
 
 	/**
 	 * Constructor
 	 */
 	public ConnectorsManager() {
-		RegistryFactory.getRegistry().addListener(this, JSDI_CONNECTORS);
+		RegistryFactory.getRegistry().addListener(this, Constants.LAUNCHING_CONNECTORS);
 	}
 
 	/**
@@ -82,23 +80,26 @@ public class ConnectorsManager implements IRegistryEventListener {
 	private synchronized void initializeConnectors() {
 		if (connectors == null) {
 			connectors = new HashMap();
-			IExtension[] extensions = RegistryFactory.getRegistry().getExtensionPoint(JSDI_CONNECTORS).getExtensions();
-			for (int i = 0; i < extensions.length; i++) {
-				IExtension extension = extensions[i];
-				try {
-					IConfigurationElement[] elements = extension.getConfigurationElements();
-					for (int j = 0; j < elements.length; j++) {
-						IConfigurationElement element = elements[j];
-						if (!CONNECTOR.equalsIgnoreCase(element.getName())) {
-							// log it
-							continue;
+			IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(JavaScriptDebugPlugin.PLUGIN_ID, Constants.LAUNCHING_CONNECTORS);
+			if(point != null) {
+				IExtension[] extensions = point.getExtensions();
+				for (int i = 0; i < extensions.length; i++) {
+					IExtension extension = extensions[i];
+					try {
+						IConfigurationElement[] elements = extension.getConfigurationElements();
+						for (int j = 0; j < elements.length; j++) {
+							IConfigurationElement element = elements[j];
+							if (!Constants.CONNECTOR.equalsIgnoreCase(element.getName())) {
+								// log it
+								continue;
+							}
+							connectors.put(element.getAttribute(ID), element.createExecutableExtension(Constants.CLASS));
 						}
-						connectors.put(element.getAttribute(ID), element.createExecutableExtension(CLASS));
+					} catch (InvalidRegistryObjectException e) {
+						JavaScriptDebugPlugin.log(e);
+					} catch (CoreException e) {
+						JavaScriptDebugPlugin.log(e);
 					}
-				} catch (InvalidRegistryObjectException e) {
-					JavaScriptDebugPlugin.log(e);
-				} catch (CoreException e) {
-					JavaScriptDebugPlugin.log(e);
 				}
 			}
 		}
@@ -138,5 +139,15 @@ public class ConnectorsManager implements IRegistryEventListener {
 	 */
 	public void removed(IExtensionPoint[] extensionPoints) {
 		connectors = null;
+	}
+	
+	/**
+	 * Dispose the manager and cleans up resources
+	 */
+	public void dispose() {
+		if(this.connectors != null) {
+			this.connectors.clear();
+			this.connectors = null;
+		}
 	}
 }

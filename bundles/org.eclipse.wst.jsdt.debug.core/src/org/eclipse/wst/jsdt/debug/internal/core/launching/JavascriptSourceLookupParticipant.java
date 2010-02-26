@@ -13,17 +13,14 @@ package org.eclipse.wst.jsdt.debug.internal.core.launching;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
-import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
-import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptStackFrame;
 
 /**
  * Default source lookup participant
@@ -41,9 +38,8 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant#getSourceName(java.lang.Object)
 	 */
 	public String getSourceName(Object object) throws CoreException {
-		if (object instanceof JavaScriptStackFrame) {
-			URI source = ((JavaScriptStackFrame) object).getUnderlyingStackFrame().location().scriptReference().sourceURI();
-			return source.getPath();
+		if (object instanceof IJavaScriptStackFrame) {
+			return ((IJavaScriptStackFrame) object).getSourceName();
 		}
 		return null;
 	}
@@ -54,18 +50,16 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @see org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant#findSourceElements(java.lang.Object)
 	 */
 	public Object[] findSourceElements(Object object) throws CoreException {
-		if (object instanceof JavaScriptStackFrame) {
-			JavaScriptStackFrame jsdiStackFrame = (JavaScriptStackFrame) object;
-			StackFrame underlyingStackFrame = jsdiStackFrame.getUnderlyingStackFrame();
-			ScriptReference script = underlyingStackFrame.location().scriptReference();
-			if (script != null) {
-				URI source = script.sourceURI();
+		if (object instanceof IJavaScriptStackFrame) {
+			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) object;
+			String path = jframe.getSourcePath();
+			if (path != null) {
 				// TODO not sure if we should do a search for the member if the URI path is a miss
-				IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(source.getPath()), false);
+				IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path), false);
 				if (file != null) {
 					return new IFile[] { file };
 				}
-				return showExternalSource(script);
+				return showExternalSource(jframe.getSource(), path);
 			}
 		}
 		return NO_SOURCE;
@@ -74,14 +68,14 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 	/**
 	 * Shows the source in an external editor
 	 * 
-	 * @param script
+	 * @param source
+	 * @param path
 	 * @return the collection of files to show in external editors
 	 */
-	Object[] showExternalSource(ScriptReference script) {
+	Object[] showExternalSource(String source, String path) {
 		try {
-			String source = script.source();
 			File tempdir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-			File file = new File(tempdir, script.sourceURI().getPath());
+			File file = new File(tempdir, path);
 			file.deleteOnExit();
 			FileWriter writer = new FileWriter(file);
 			writer.write(source);

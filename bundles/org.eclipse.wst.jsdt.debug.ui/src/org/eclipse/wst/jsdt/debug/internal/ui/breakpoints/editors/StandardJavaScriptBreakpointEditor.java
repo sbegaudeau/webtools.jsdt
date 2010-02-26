@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
-import org.eclipse.wst.jsdt.debug.internal.core.launching.Constants;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.ui.IHelpContextIds;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
@@ -79,9 +79,11 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 		fHitCountButton.setLayoutData(new GridData());
 		fHitCountButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				fHitCountText.setEnabled(fHitCountButton.getSelection());
-				fHitCountText.selectAll();
-				fHitCountText.setFocus();
+				boolean enabled = fHitCountButton.getSelection();
+				fHitCountText.setEnabled(enabled);
+				if(enabled) {
+					fHitCountText.setFocus();
+				}
 				setDirty(PROP_HIT_COUNT_ENABLED);
 			}
 		});

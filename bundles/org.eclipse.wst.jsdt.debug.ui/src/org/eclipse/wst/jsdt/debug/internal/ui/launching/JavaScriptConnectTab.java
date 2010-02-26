@@ -105,10 +105,13 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 	 * @return the selected combo
 	 */
 	Connector getSelectedConnector() {
-		int idx = this.connectorcombo.getSelectionIndex();
-		idx = (idx < 0 ? 0 : idx);
-		String name = this.connectorcombo.getItem(idx);
-		return (Connector) this.connectorcombo.getData(name);
+		if(this.connectorcombo.getItemCount() > 0) {
+			int idx = this.connectorcombo.getSelectionIndex();
+			idx = (idx < 0 ? 0 : idx);
+			String name = this.connectorcombo.getItem(idx);
+			return (Connector) this.connectorcombo.getData(name);
+		}
+		return null;
 	}
 	
 	/**
@@ -116,7 +119,7 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 	 */
 	void handleConnectorSelected() {
 		Connector connect = getSelectedConnector();
-		if(connect.equals(this.selectedconnector)) {
+		if(connect == null || connect.equals(this.selectedconnector)) {
 			//nothing changed
 			return;
 		}
@@ -196,6 +199,9 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 		setErrorMessage(null);
 		Iterator keys = this.editormap.keySet().iterator();
 		Connector connector = getSelectedConnector();
+		if(connector == null) {
+			return false;
+		}
 		while (keys.hasNext()) {
 			String key = (String)keys.next();
 			Argument arg = (Argument)connector.defaultArguments().get(key);

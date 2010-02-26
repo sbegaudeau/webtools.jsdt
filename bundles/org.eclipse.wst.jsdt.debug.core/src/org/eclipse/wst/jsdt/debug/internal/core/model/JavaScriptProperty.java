@@ -14,6 +14,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 
 /**
  * Default implementation of an {@link IVariable}
@@ -25,7 +26,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 public class JavaScriptProperty extends JavaScriptDebugElement implements IVariable {
 
 	private Property property;
-	private JavaScriptValue value = null;
+	private IJavaScriptValue value = null;
 
 	/**
 	 * Constructor
@@ -62,7 +63,7 @@ public class JavaScriptProperty extends JavaScriptDebugElement implements IVaria
 	 */
 	public IValue getValue() throws DebugException {
 		if (value == null) {
-			value = new JavaScriptValue(getJSDITarget(), this.property);
+			value = JavaScriptValue.createValue(getJSDITarget(), this.property);
 		}
 		return value;
 	}

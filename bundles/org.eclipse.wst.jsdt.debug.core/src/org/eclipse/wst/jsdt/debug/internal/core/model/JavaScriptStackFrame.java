@@ -16,19 +16,22 @@ import java.util.List;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
-import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
+import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 
 /**
- * A JSDI stack frame
+ * A JavaScript stack frame
  * 
  * @since 1.0
  */
-public final class JavaScriptStackFrame extends JavaScriptDebugElement implements IStackFrame {
+public final class JavaScriptStackFrame extends JavaScriptDebugElement implements IJavaScriptStackFrame {
 
 	/**
 	 * Owning thread.
@@ -59,7 +62,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 * 
 	 * @return the underlying JSDI {@link StackFrame}
 	 */
-	public StackFrame getUnderlyingStackFrame() {
+	StackFrame getUnderlyingStackFrame() {
 		return this.stackFrame;
 	}
 
@@ -296,6 +299,55 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		} else {
 			getJSDITarget().terminate();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame#evaluate(java.lang.String)
+	 */
+	public IJavaScriptValue evaluate(String expression) {
+		return this.thread.evaluate(expression);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame#getSourceName()
+	 */
+	public String getSourceName() {
+		Location loc = getUnderlyingStackFrame().location();
+		if(loc != null) {
+			ScriptReference script = loc.scriptReference();
+			if(script != null) {
+				return script.sourceURI().getPath();
+			}
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame#getSourcePath()
+	 */
+	public String getSourcePath() {
+		Location loc = getUnderlyingStackFrame().location();
+		if(loc != null) {
+			ScriptReference script = loc.scriptReference();
+			if(script != null) {
+				return script.sourceURI().getPath();
+			}
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame#getSource()
+	 */
+	public String getSource() {
+		Location loc = getUnderlyingStackFrame().location();
+		if(loc != null) {
+			ScriptReference script = loc.scriptReference();
+			if(script != null) {
+				return script.source();
+			}
+		}
+		return null;
 	}
 
 }

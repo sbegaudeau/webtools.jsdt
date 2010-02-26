@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference;
+import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
@@ -180,5 +181,28 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			number = number.substring(0, number.length() - 2);
 		}
 		return number;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue#isNull()
+	 */
+	public boolean isNull() {
+		return this.value instanceof NullValue;
+	}
+	
+	/**
+	 * Delegate method to create the proper kind of {@link IJavaScriptValue}
+	 * 
+	 * @param target the target to create the value for
+	 * @param value the value to wrap
+	 * @return a new {@link IJavaScriptValue}
+	 */
+	public static IJavaScriptValue createValue(JavaScriptDebugTarget target, Value value) {
+		if(value instanceof BooleanValue ||
+				value instanceof NullValue ||
+				value instanceof NumberValue) {
+			return new JavaScriptPrimitiveValue(target, value);
+		}
+		return new JavaScriptValue(target, value);
 	}
 }

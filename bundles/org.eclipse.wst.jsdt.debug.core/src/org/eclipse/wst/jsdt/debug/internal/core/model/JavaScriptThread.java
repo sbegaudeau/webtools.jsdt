@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,14 +19,11 @@ import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
-import org.eclipse.debug.core.model.IThread;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
-import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
-import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.StepEvent;
@@ -34,18 +31,22 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint;
 
 /**
- * A JSDI thread.
+ * A JavaScript thread.
  * 
- * JSDI threads act as their own event listener for suspend and step events and are called out to from JSDI breakpoints to handle suspending at a breakpoint.
+ * JavaScript threads act as their own event listener for suspend and 
+ * step events and are called out to from JavaScript breakpoints to handle 
+ * suspending at a breakpoint.
  * 
  * @since 1.0
  */
-public class JavaScriptThread extends JavaScriptDebugElement implements IThread, IJavaScriptEventListener {
+public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptThread, IJavaScriptEventListener {
 
 	/**
 	 * Constant for no stack frames
@@ -98,10 +99,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 	/**
 	 * Constructor
 	 * 
-	 * @param target
-	 *            the target the thread belongs to
-	 * @param thread
-	 *            the underlying {@link ThreadReference}
+	 * @param target the target the thread belongs to
+	 * @param thread the underlying {@link ThreadReference}
 	 */
 	public JavaScriptThread(JavaScriptDebugTarget target, ThreadReference thread) {
 		super(target);
@@ -310,41 +309,23 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 	 */
 	public boolean suspendForBreakpoint(IJavaScriptBreakpoint breakpoint, boolean vote) {
 		addBreakpoint(breakpoint);
-		try {
-			if(breakpoint instanceof IJavaScriptLineBreakpoint) {
-				IJavaScriptLineBreakpoint lbp = (IJavaScriptLineBreakpoint) breakpoint;
-				String condition = lbp.getCondition();
-				if (condition != null) {
-					// evaluate it
-					// TODO This method has the negative effect that the frames will be loaded
-					// for the underlying thread to do the evaluation
-					// Ideally we should have an evaluation engine like JDT
-					List frames = this.thread.frames();
-					if (frames.isEmpty()) {
-						return false;
-					}
-					Value value = ((StackFrame) frames.get(0)).evaluate(condition);
-					if (lbp.isConditionSuspendOnTrue()) {
-						return suspendForValue(value);
-					} 
-					return !suspendForValue(value);
-				}
-				
-			}
-		} catch (CoreException ce) {
-			JavaScriptDebugPlugin.log(ce);
-		}
-		return true;
+		return doVote(breakpoint);
 	}
 
 	/**
-	 * If the thread should suspend based on the given {@link Value}. Currently only suspend when the value is non-null and a {@link BooleanValue} that has the value <code>true</code>
+	 * Consults all of the breakpoint participants to see if we should suspend on the given breakpoint.
 	 * 
-	 * @param value
-	 * @return true if the thread should suspend false otherwise
+	 * @param breakpoint
+	 * @return
 	 */
-	private boolean suspendForValue(Value value) {
-		return value instanceof BooleanValue && ((BooleanValue) value).value();
+	boolean doVote(IJavaScriptBreakpoint breakpoint) {
+		IJavaScriptBreakpointParticipant[] participants = JavaScriptDebugPlugin.getParticipantManager().getParticipants(breakpoint);
+		int suspend = 0;
+		for (int i = 0; i < participants.length; i++) {
+			suspend |= participants[i].breakpointHit(this, breakpoint);
+		}
+		return (suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
+				suspend == IJavaScriptBreakpointParticipant.DONT_CARE;
 	}
 
 	/**
@@ -457,12 +438,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 	/**
 	 * Sends a step request and fires a step event if successful.
 	 * 
-	 * @param stepAction
-	 *            step command to send
-	 * @param eventDetail
-	 *            debug event detail to fire
-	 * @throws DebugException
-	 *             if request is not successful
+	 * @param stepAction step command to send
+	 * @param eventDetail debug event detail to fire
+	 * @throws DebugException if request is not successful
 	 */
 	private synchronized void step(int step, int debugEvent) throws DebugException {
 		if (canResume()) {
@@ -542,10 +520,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 		return this.thread == thread;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.debug.model.IJSDIEventListener#eventSetComplete(org.eclipse.e4.languages.javascript.jsdi.event.Event, org.eclipse.e4.languages.javascript.debug.model.JSDIDebugTarget, boolean, org.eclipse.e4.languages.javascript.jsdi.event.EventSet)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
 	public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {
 		if (event instanceof SuspendEvent) {
@@ -571,10 +547,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.debug.model.IJSDIEventListener#handleEvent(org.eclipse.e4.languages.javascript.jsdi.event.Event, org.eclipse.e4.languages.javascript.debug.model.JSDIDebugTarget, boolean, org.eclipse.e4.languages.javascript.jsdi.event.EventSet)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
 	public synchronized boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 		if (event instanceof SuspendEvent) {
@@ -594,5 +568,31 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IThread,
 			return false;
 		}
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#evaluate(java.lang.String)
+	 */
+	public IJavaScriptValue evaluate(String expression) {
+		try {
+			IStackFrame frame = getTopStackFrame();
+			if(frame instanceof JavaScriptStackFrame) {
+				return new JavaScriptValue(getJSDITarget(), ((JavaScriptStackFrame) frame).getUnderlyingStackFrame().evaluate(expression));
+			}
+		}
+		catch(DebugException de) {
+			//do nothing, return
+		}
+		return new JavaScriptValue(getJSDITarget(), getVM().mirrorOfNull());
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#getFrameCount()
+	 */
+	public int getFrameCount() {
+		if(isSuspended()) {
+			return this.thread.frameCount();
+		}
+		return 0;
 	}
 }

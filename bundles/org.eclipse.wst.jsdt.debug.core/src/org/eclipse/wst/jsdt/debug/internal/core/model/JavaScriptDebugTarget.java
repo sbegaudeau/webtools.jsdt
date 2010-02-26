@@ -356,8 +356,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.eclipse.debug.core.model.IDebugTarget#supportsBreakpoint(org.eclipse
-	 * .debug.core.model.IBreakpoint)
+	 * org.eclipse.debug.core.model.IDebugTarget#supportsBreakpoint(org.eclipse.debug.core.model.IBreakpoint)
 	 */
 	public boolean supportsBreakpoint(IBreakpoint breakpoint) {
 		return JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier());
@@ -568,8 +567,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	 * org.eclipse.debug.core.model.IMemoryBlockRetrieval#getMemoryBlock(long,
 	 * long)
 	 */
-	public IMemoryBlock getMemoryBlock(long startAddress, long length)
-			throws DebugException {
+	public IMemoryBlock getMemoryBlock(long startAddress, long length) throws DebugException {
 		notSupported(ModelMessages.JSDIDebugTarget_unsupported_operation, null);
 		return null;
 	}
@@ -585,11 +583,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.debug.model.JSDIDebugElement#getVM()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugElement#getVM()
 	 */
 	public VirtualMachine getVM() {
 		return this.vm;

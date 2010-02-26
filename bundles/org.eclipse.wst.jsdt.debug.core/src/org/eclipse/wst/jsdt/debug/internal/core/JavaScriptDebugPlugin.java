@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.ConnectorsManager;
+import org.eclipse.wst.jsdt.debug.internal.core.model.BreakpointParticipantManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -41,7 +42,11 @@ public class JavaScriptDebugPlugin extends Plugin {
 	/**
 	 * The singleton {@link ConnectorsManager}
 	 */
-	private static ConnectorsManager manager = null;
+	private static ConnectorsManager connectionmanager = null;
+	/**
+	 * Singleton {@link BreakpointParticipantManager}
+	 */
+	private static BreakpointParticipantManager participantmanager = null;
 	
 	/**
 	 * Returns the singleton {@link ConnectorsManager} instance
@@ -49,10 +54,22 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @return the {@link ConnectorsManager}
 	 */
 	public static synchronized ConnectorsManager getConnectionsManager() {
-		if (manager == null) {
-			manager = new ConnectorsManager();
+		if (connectionmanager == null) {
+			connectionmanager = new ConnectorsManager();
 		}
-		return manager;
+		return connectionmanager;
+	}
+	
+	/**
+	 * Returns the singleton {@link BreakpointParticipantManager}
+	 * 
+	 * @return the {@link BreakpointParticipantManager}
+	 */
+	public static synchronized BreakpointParticipantManager getParticipantManager() {
+		if(participantmanager == null) {
+			participantmanager = new BreakpointParticipantManager();
+		}
+		return participantmanager;
 	}
 	
 	/*
@@ -69,8 +86,18 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
+		try {
+			plugin = null;
+			super.stop(context);
+		}
+		finally {
+			if(connectionmanager != null) {
+				connectionmanager.dispose();
+			}
+			if(participantmanager != null) {
+				participantmanager.dispose();
+			}
+		}
 	}
 
 	/**

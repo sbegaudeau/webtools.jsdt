@@ -18,3 +18,4 @@ Export-Package: org.eclipse.wst.jsdt.debug.internal.rhino;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request;x-internal:=true,
  org.eclipse.wst.jsdt.debug.rhino.bundles,
  org.eclipse.wst.jsdt.debug.rhino.registry
+Import-Package: org.eclipse.debug.core.model

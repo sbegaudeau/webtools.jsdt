@@ -12,11 +12,18 @@
 
 <plugin>
    <extension
-         point="org.eclipse.wst.jsdt.debug.core.connectors">
+         point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
       <connector
             class="org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.RhinoAttachingConnector"
             id="rhino.attaching.connector">
       </connector>
+   </extension>
+   <extension
+         point="org.eclipse.wst.jsdt.debug.core.breakpointParticipants">
+      <participant
+            class="org.eclipse.wst.jsdt.debug.internal.rhino.breakpoints.RhinoBreakpointParticipant"
+            kind="*">
+      </participant>
    </extension>
 
 </plugin>

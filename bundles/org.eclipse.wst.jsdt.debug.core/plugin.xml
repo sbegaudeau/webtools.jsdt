@@ -11,7 +11,8 @@
  -->
 
 <plugin>
-   <extension-point id="org.eclipse.wst.jsdt.debug.core.connectors" name="%connectorsExtPoint.name" schema="schema/org.eclipse.wst.jsdt.debug.core.connectors.exsd"/>
+   <extension-point id="launchingConnectors" name="%connectorsExtPoint.name" schema="schema/launchingConnectors.exsd"/>
+   <extension-point id="breakpointParticipants" name="Breakpoint Participants" schema="schema/breakpointParticipants.exsd"/>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
