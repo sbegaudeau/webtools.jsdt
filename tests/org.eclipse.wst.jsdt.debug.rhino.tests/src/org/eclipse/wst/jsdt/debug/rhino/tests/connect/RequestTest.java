@@ -12,11 +12,11 @@ package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
 
 import junit.framework.TestCase;
 
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugger;
 import org.eclipse.wst.jsdt.debug.internal.rhino.bundles.JSFrameworkImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
 import org.mozilla.javascript.ContextFactory;
 
 public class RequestTest extends TestCase {

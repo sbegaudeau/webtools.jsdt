@@ -17,11 +17,11 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.EventPacket;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Request;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Response;
 import org.eclipse.wst.jsdt.debug.internal.rhino.bundles.RhinoClassLoader;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.bundles.JSBundleException;
 import org.eclipse.wst.jsdt.debug.rhino.bundles.JSConstants;
 import org.eclipse.wst.jsdt.debug.rhino.tests.connect.TestEventHandler.Subhandler;
