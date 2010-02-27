@@ -6,16 +6,13 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * {@link TransportService} specialization for a {@link PipedConnection}

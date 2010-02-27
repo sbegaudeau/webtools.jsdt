@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,10 +14,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 /**
  * Implementation of a transport service that using a {@link Socket} for communication

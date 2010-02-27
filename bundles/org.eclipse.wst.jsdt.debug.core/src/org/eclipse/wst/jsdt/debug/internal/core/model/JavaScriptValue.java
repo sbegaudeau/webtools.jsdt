@@ -25,6 +25,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
+import org.eclipse.wst.jsdt.debug.core.jsdi.StringValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 
@@ -85,9 +87,26 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 */
 	public String getReferenceTypeName() throws DebugException {
 		if (this.value != null) {
-			return this.value.getValueTypeName();
+			if (this.value instanceof ObjectReference) {
+				if (this.value instanceof NullValue) {
+				return NULL;
+				} else if (this.value instanceof ArrayReference) {
+					return ARRAY;
+				}else if (this.value instanceof FunctionReference) {
+					return ARRAY;
+				}
+				return OBJECT;
+			} else if (this.value instanceof BooleanValue) {
+				return BOOLEAN;
+			} else if (this.value instanceof UndefinedValue) {
+				return UNDEFINED;
+			} else if (this.value instanceof NumberValue) {
+				return NUMBER;
+			} else if (this.value instanceof StringValue) {
+				return STRING;
+			}
 		}
-		return null;
+		return UNKNOWN;
 	}
 
 	/*

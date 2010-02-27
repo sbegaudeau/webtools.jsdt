@@ -63,7 +63,7 @@ public class JavaScriptProperty extends JavaScriptDebugElement implements IVaria
 	 */
 	public IValue getValue() throws DebugException {
 		if (value == null) {
-			value = JavaScriptValue.createValue(getJSDITarget(), this.property);
+			value = JavaScriptValue.createValue(getJSDITarget(), this.property.value());
 		}
 		return value;
 	}

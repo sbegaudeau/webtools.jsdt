@@ -8,9 +8,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.core.jsdi.connect;
 
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.PacketReceiveManager;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.PacketSendManager;
-
 /**
  * This exception is thrown if the {@link PacketSendManager} or {@link PacketReceiveManager}
  * times out while waiting for a response

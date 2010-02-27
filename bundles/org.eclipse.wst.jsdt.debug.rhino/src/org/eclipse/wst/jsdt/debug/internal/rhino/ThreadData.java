@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.debug.DebugFrame;
 import org.mozilla.javascript.debug.DebuggableScript;

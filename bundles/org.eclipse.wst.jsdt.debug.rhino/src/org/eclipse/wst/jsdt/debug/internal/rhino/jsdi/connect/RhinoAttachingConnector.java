@@ -16,12 +16,9 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.*;
 
 /**
  * Rhino {@link Connector} implementation that attaches to a running debug process

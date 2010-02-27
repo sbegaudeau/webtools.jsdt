@@ -8,8 +8,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.core.jsdi.connect;
 
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.PacketReceiveManager;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.PacketSendManager;
 
 /**
  * A {@link DisconnectedException} is thrown by either of the {@link PacketSendManager}

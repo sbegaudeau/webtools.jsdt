@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 /**
  * Rhino implementation of {@link ObjectReference}
@@ -85,7 +85,7 @@ public class ObjectReferenceImpl extends MirrorImpl implements ObjectReference {
 			Map props = null;
 			for (Iterator iter = proplist.iterator(); iter.hasNext();) {
 				props = (Map) iter.next();
-				this.properties.add(new PropertyImpl(vm, (String) props.get(JSONConstants.NAME).toString(), (Number) props.get(JSONConstants.REF)));
+				this.properties.add(new PropertyImpl(vm, frame, (String) props.get(JSONConstants.NAME).toString(), (Number) props.get(JSONConstants.REF)));
 			}
 		} else {
 			this.properties = NO_PROPERTIES;
@@ -134,13 +134,6 @@ public class ObjectReferenceImpl extends MirrorImpl implements ObjectReference {
 	 */
 	public List properties() {
 		return this.properties;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.OBJECT;
 	}
 
 	/*

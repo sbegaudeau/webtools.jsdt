@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -17,9 +17,7 @@ import java.util.ListIterator;
 
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
 
 /**

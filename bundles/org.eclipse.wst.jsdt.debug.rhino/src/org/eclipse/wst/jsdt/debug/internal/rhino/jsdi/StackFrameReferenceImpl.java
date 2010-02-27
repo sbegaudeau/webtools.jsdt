@@ -22,9 +22,9 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Request;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 
 /**
  * Rhino implementation of {@link StackFrame}

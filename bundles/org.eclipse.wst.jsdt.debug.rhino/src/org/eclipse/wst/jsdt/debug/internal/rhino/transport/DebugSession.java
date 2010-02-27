@@ -6,13 +6,12 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 /**
  * A {@link DebugSession} controls a {@link PacketSendManager} and {@link PacketReceiveManager}

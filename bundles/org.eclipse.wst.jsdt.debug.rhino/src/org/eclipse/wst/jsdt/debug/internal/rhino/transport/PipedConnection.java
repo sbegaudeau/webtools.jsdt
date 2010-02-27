@@ -6,65 +6,65 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.Socket;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONUtil;
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONUtil;
 
 /**
- * A specialized {@link Connection} that communicates using {@link Socket}s
+ * A {@link Connection} implementation that uses streams for communication
  * 
  * @since 1.0
  */
-public class SocketConnection implements Connection {
+public class PipedConnection implements Connection {
 
 	private Writer writer;
 	private Reader reader;
-	private Socket socket;
+	private boolean open = true;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param socket the underlying {@link Socket}, <code>null</code> is not accepted
-	 * 
+	 * @param is the {@link InputStream} to read from, <code>null</code> is not accepted
+	 * @param os the {@link OutputStream} to write to, <code>null</code> is not accepted
 	 * @throws IOException
 	 */
-	public SocketConnection(Socket socket) throws IOException {
-		Assert.isNotNull(socket);
-		this.socket = socket;
-		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Constants.UTF_8));
-		reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Constants.UTF_8));
+	public PipedConnection(InputStream is, OutputStream os) throws IOException {
+		Assert.isNotNull(is);
+		Assert.isNotNull(os);
+		writer = new BufferedWriter(new OutputStreamWriter(os, Constants.UTF_8));
+		reader = new BufferedReader(new InputStreamReader(is, Constants.UTF_8));
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#isOpen()
 	 */
-	public boolean isOpen() {
-		return !socket.isClosed();
+	public synchronized boolean isOpen() {
+		return open;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#close()
 	 */
-	public void close() throws IOException {
-		socket.close();
+	public synchronized void close() throws IOException {
+		open = false;
+		writer.close();
+		reader.close();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#writePacket(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet)
 	 */

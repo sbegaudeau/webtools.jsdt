@@ -6,11 +6,10 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.IOException;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 
 /**
  * A transport service is used to attach and / or listen to a 

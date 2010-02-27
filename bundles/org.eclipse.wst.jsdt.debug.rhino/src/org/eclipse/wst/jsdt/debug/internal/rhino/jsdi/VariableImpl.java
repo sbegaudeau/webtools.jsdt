@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
 public class VariableImpl extends PropertyImpl implements Variable {
 
 	public VariableImpl(VirtualMachineImpl vm, StackFrameReferenceImpl frame, String name, Number ref) {
-		super(vm, name, ref);
+		super(vm, frame, name, ref);
 	}
 
 	public boolean isArgument() {

@@ -20,12 +20,10 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ScriptReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ThreadReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
@@ -34,6 +32,8 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.DebuggerStatementR
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.StepRequestImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.SuspendRequestImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 
 /**
  * Default implementation of {@link EventQueue}

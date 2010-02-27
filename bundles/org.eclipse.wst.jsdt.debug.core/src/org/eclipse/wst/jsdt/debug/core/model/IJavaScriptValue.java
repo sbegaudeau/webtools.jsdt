@@ -24,6 +24,16 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 public interface IJavaScriptValue extends IValue {
 
 	
+	public static final String UNDEFINED = "undefined"; //$NON-NLS-1$
+	public static final String UNKNOWN = "unknown"; //$NON-NLS-1$
+	public static final String NULL = "null"; //$NON-NLS-1$
+	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
+	public static final String NUMBER = "number"; //$NON-NLS-1$
+	public static final String STRING = "string"; //$NON-NLS-1$
+	public static final String OBJECT = "object"; //$NON-NLS-1$
+	public static final String ARRAY = "array"; //$NON-NLS-1$
+	public static final String FUNCTION = "function"; //$NON-NLS-1$
+
 	/**
 	 * Returns the string to use for details display.<br>
 	 * <br>

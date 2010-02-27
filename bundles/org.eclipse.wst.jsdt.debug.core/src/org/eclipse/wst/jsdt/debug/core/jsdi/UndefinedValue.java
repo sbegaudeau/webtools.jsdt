@@ -17,6 +17,6 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
  * @since 1.0
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface UndefinedValue extends StringValue {
+public interface UndefinedValue extends Value {
 
 }

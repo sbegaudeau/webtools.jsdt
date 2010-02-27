@@ -16,8 +16,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeSet;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONUtil;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONUtil;
 import org.mozilla.javascript.debug.DebuggableScript;
 
 /**

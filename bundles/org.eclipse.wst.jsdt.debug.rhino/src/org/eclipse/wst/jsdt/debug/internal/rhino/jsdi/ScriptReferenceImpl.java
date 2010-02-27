@@ -22,8 +22,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 import org.osgi.framework.Constants;
 
 /**

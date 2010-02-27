@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -15,9 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connection;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Packet;
 
 /**
  * Default implementation of {@link PacketManager} for sending packets to the 

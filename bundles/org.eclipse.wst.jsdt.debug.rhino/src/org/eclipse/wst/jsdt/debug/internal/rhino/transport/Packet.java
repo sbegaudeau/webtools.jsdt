@@ -6,13 +6,13 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 /**
  * Abstract description of a packet for sending / receiving information to the debug client

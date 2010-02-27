@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.core.jsdi.json;
+package org.eclipse.wst.jsdt.debug.internal.rhino.json;
 
 /**
  * Collection of constants used for JSON

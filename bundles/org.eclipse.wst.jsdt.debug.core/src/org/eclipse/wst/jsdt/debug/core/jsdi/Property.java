@@ -17,7 +17,7 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
  * @since 1.0
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface Property extends StringValue {
+public interface Property extends Mirror {
 
 	/**
 	 * Returns the name of this {@link Property} or <code>null</code> if one could not be determined.
@@ -25,4 +25,11 @@ public interface Property extends StringValue {
 	 * @return the name of this {@link Property} or <code>null</code>.
 	 */
 	public String name();
+	
+	/**
+	 * Returns the value of this {@link Property}.
+	 * 
+	 * @return the value of this {@link Property}.
+	 */
+	public Value value();
 }

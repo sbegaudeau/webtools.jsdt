@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
-
 
 /**
  * Rhino implementation of {@link Property}
@@ -30,9 +28,12 @@ public class PropertyImpl extends MirrorImpl implements Property {
 	 */
 	private String name;
 	/**
-	 * The reference used to look up the property value in the stackframe context
+	 * The reference used to look up the property value in the stackframe
+	 * context
 	 */
 	private Number ref;
+	private StackFrameReferenceImpl frame;
+	private Value value;
 
 	/**
 	 * Constructor
@@ -41,13 +42,17 @@ public class PropertyImpl extends MirrorImpl implements Property {
 	 * @param name
 	 * @param ref
 	 */
-	public PropertyImpl(VirtualMachineImpl vm, String name, Number ref) {
+	public PropertyImpl(VirtualMachineImpl vm, StackFrameReferenceImpl frame,
+			String name, Number ref) {
 		super(vm);
+		this.frame = frame;
 		this.name = name;
 		this.ref = ref;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Property#name()
 	 */
 	public String name() {
@@ -63,30 +68,17 @@ public class PropertyImpl extends MirrorImpl implements Property {
 		return ref;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StringValue#value()
 	 */
-	public String value() {
-		//TODO we might want to this differently
-		/*synchronized (this.frame) {
+	public Value value() {
+		synchronized (this.frame) {
 			if (this.value == null) {
 				this.value = frame.lookupValue(ref);
 			}
-		}*/
-		return name;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
-	 */
-	public String valueString() {
-		return this.name;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.PROPERTY;
+		}
+		return this.value;
 	}
 }

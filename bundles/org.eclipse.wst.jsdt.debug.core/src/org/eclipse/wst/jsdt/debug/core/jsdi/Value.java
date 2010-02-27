@@ -18,18 +18,6 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface Value extends Mirror {
-
-	/**
-	 * Returns the name of the type of this value. <br>
-	 * <br>
-	 * For example the name <code>function</code> could be the type name to describe a {@link FunctionReference}.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>
-	 * 
-	 * @return the name of the type of this {@link Value} never <code>null</code>
-	 */
-	public String getValueTypeName();
-
 	/**
 	 * Returns the string representation of the value.<br>
 	 * <br>

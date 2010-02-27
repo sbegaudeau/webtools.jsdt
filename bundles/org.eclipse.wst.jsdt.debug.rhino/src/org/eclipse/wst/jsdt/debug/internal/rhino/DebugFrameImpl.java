@@ -14,8 +14,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ScriptImpl.ScriptRecord;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.NativeArray;

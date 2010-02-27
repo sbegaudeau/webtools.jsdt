@@ -25,15 +25,14 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.EventPacket;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Request;
-import org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Response;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event.EventQueueImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 
 /**
  * Rhino implementation of {@link VirtualMachine}
@@ -42,6 +41,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManage
  */
 public class VirtualMachineImpl implements VirtualMachine {
 
+	private static final String SPACE = " ";
 	public final UndefinedValueImpl undefinedValue = new UndefinedValueImpl(this);
 	public final NullValueImpl nullValue = new NullValueImpl(this);
 
@@ -255,8 +255,8 @@ public class VirtualMachineImpl implements VirtualMachine {
 		try {
 			Response response = sendRequest(request);
 			StringBuffer buffer = new StringBuffer();
-			buffer.append((String) response.getBody().get(JSONConstants.VM_VENDOR)).append(Constants.SPACE);
-			buffer.append(response.getBody().get(JSONConstants.VM_NAME)).append(Constants.SPACE);
+			buffer.append((String) response.getBody().get(JSONConstants.VM_VENDOR)).append(SPACE);
+			buffer.append(response.getBody().get(JSONConstants.VM_NAME)).append(SPACE);
 			buffer.append(response.getBody().get(JSONConstants.VM_VERSION));
 			return buffer.toString();
 		} catch (DisconnectedException e) {

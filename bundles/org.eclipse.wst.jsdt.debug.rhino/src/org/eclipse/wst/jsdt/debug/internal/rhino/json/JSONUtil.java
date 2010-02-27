@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.core.jsdi.json;
+package org.eclipse.wst.jsdt.debug.internal.rhino.json;
 
 import java.math.BigDecimal;
 import java.text.CharacterIterator;
@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 
 /**
  * This class provides utilities for working with JSON.
@@ -298,7 +296,7 @@ public final class JSONUtil {
 		char c = it.next();
 		if (c == '"') {
 			it.next();
-			return Constants.EMPTY_STRING;
+			return ""; //$NON-NLS-1$
 		}
 		StringBuffer buffer = new StringBuffer();
 		while (c != '"') {

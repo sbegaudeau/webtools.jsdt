@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 /**
  * Rhino implementation of {@link NullValue}

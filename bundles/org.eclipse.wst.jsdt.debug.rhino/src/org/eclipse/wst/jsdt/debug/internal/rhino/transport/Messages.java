@@ -8,15 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 import org.eclipse.osgi.util.NLS;
 
 /**
+ * Rhino messages
  * 
+ * @since 1.0
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.messages"; //$NON-NLS-1$
+	public static String HostArgument_description;
+	public static String HostArgument_label;
+	public static String PortArgument_description;
+	public static String PortArgument_label;
+	public static String RhinoAttachingConnector_description;
+	public static String RhinoAttachingConnector_name;
 	public static String failure_establishing_connection;
 	public static String runtime_disconnected;
 	public static String time_out_waiting_for_command_packet;

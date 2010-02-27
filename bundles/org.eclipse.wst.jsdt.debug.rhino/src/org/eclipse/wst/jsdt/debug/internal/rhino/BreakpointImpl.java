@@ -11,7 +11,7 @@ package org.eclipse.wst.jsdt.debug.internal.rhino;
 import java.util.HashMap;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
 
 
 /**

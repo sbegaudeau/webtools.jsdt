@@ -42,7 +42,6 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
-import org.eclipse.wst.jsdt.debug.core.jsdi.json.JSONConstants;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 
 /**
@@ -321,7 +320,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @return the image
 	 */
 	Image getImageFromType(String type) {
-		if (type.equalsIgnoreCase(JSONConstants.FUNCTION)) {
+		if (type.equalsIgnoreCase(IJavaScriptValue.FUNCTION)) {
 			return JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT);
 		}
 		return JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_LOCAL_VAR);
