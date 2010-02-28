@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
@@ -32,8 +30,10 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.DebuggerStatementR
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.StepRequestImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.SuspendRequestImpl;
-import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
 
 /**
  * Default implementation of {@link EventQueue}

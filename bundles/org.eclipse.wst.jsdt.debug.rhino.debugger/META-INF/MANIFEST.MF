@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rhino Debugger
+Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.rhino.debugger
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Export-Package: org.eclipse.wst.jsdt.debug.rhino.debugger,
+ org.eclipse.wst.jsdt.debug.rhino.transport
+Import-Package: org.mozilla.javascript;resolution:=optional,
+ org.mozilla.javascript.debug;resolution:=optional

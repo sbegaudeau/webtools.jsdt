@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
-import org.eclipse.wst.jsdt.debug.internal.rhino.json.JSONConstants;
+import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link BooleanValue}
