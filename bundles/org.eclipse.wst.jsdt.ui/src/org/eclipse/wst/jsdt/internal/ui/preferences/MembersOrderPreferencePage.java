@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
@@ -187,6 +187,10 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 		
 		Dialog.applyDialogFont(sortComposite);
 		
+		// XXX: workaround until implemented
+		fUseVisibilitySortField.setEnabled(false);
+		fVisibilityOrderList.setEnabled(false);
+		
 		return sortComposite;
 	}
 	
@@ -367,6 +371,8 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 				String s= (String) element;
 				if (s.equals(PUBLIC)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccPublic);
+				} else if (s.equals(PROTECTED)) {
+					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccProtected);
 				} else if (s.equals(PRIVATE)) {
 					descriptor= JavaElementImageProvider.getMethodImageDescriptor(false, Flags.AccPrivate);
 				} else if (s.equals(DEFAULT)) {
