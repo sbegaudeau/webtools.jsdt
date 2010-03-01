@@ -1726,4 +1726,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		return IASTNode.OPERATOR_EXPRESSION;
 	
 	}
+	public int getOperator() {
+		return (bits & OperatorMASK) >> OperatorSHIFT;
+	}
 }

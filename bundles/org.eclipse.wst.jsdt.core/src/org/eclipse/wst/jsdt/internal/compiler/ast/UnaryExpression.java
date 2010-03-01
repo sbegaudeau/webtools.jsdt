@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -53,7 +54,7 @@ public class UnaryExpression extends OperatorExpression implements IUnaryExpress
 		return this.expression.printExpression(0, output);
 	}
 
-	protected final int getOperator() {
+	public final int getOperator() {
 		return (bits & OperatorMASK) >> OperatorSHIFT;
 	}
 
@@ -162,5 +163,9 @@ public class UnaryExpression extends OperatorExpression implements IUnaryExpress
 	
 	public int getASTType() {
 		return IASTNode.UNARY_EXPRESSION;
+	}
+	
+	public IExpression getExpression() {
+		return expression;
 	}
 }
