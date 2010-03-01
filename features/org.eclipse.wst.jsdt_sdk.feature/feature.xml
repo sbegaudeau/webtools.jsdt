@@ -25,4 +25,11 @@
          id="org.eclipse.wst.jsdt.feature.source"
          version="0.0.0"/>
 
+   <plugin
+         id="org.mozilla.javascript.source"
+         download-size="0"
+         install-size="0"
+         version="1.7.2.qualifier"
+         unpack="false"/>
+
 </feature>
