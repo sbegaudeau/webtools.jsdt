@@ -50,12 +50,26 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-                  
+
    <plugin
          id="org.hamcrest.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.jsdt.debug.rhino.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
+
+   <plugin
+         id="org.eclipse.wst.jsdt.debug.core.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="true"/>
 
 </feature>
