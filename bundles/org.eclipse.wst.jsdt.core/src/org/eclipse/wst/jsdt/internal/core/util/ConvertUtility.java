@@ -17,11 +17,15 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
@@ -31,7 +35,7 @@ import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 
 public class ConvertUtility {
-	private static final String NATURE_IDS[] = { JavaScriptCore.NATURE_ID };
+	private static final String NATURE_IDS[] = {JavaScriptCore.NATURE_ID};
 
 	private static final String SYSTEM_LIBRARY = org.eclipse.wst.jsdt.launching.JavaRuntime.JRE_CONTAINER; //$NON-NLS-1$
 	private static final String SYSTEM_SUPER_TYPE_NAME = "Global"; //$NON-NLS-1$
@@ -39,11 +43,11 @@ public class ConvertUtility {
 	private static final String BROWSER_LIBRARY = org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB; //$NON-NLS-1$
 	public static final IPath BROWSER_LIBRARY_PATH = new Path(BROWSER_LIBRARY);
 	private static final String BROWSER_SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
-	
+
 	public static final String VIRTUAL_CONTAINER = "org.eclipse.wst.jsdt.launching.WebProject"; //$NON-NLS-1$
-	public static final IIncludePathEntry VIRTUAL_SCOPE_ENTRY = JavaScriptCore.newContainerEntry(new Path(VIRTUAL_CONTAINER),  new IAccessRule[0], new IIncludePathAttribute[] {IIncludePathAttribute.HIDE}, false);
-	
-	
+	public static final IIncludePathEntry VIRTUAL_SCOPE_ENTRY = JavaScriptCore.newContainerEntry(new Path(VIRTUAL_CONTAINER), new IAccessRule[0], new IIncludePathAttribute[]{IIncludePathAttribute.HIDE}, false);
+
+
 	static void addJsNature(IProject project, IProgressMonitor monitor) throws CoreException {
 		if (monitor != null && monitor.isCanceled()) {
 			throw new OperationCanceledException();
@@ -59,13 +63,14 @@ public class ConvertUtility {
 			}
 			description.setNatureIds(newNatures);
 			project.setDescription(description, monitor);
-		} else {
+		}
+		else {
 			if (monitor != null) {
 				monitor.worked(1);
 			}
 		}
 	}
-	
+
 	public static boolean hasNature(IProject project) {
 		try {
 			for (int i = 0; i < NATURE_IDS.length; i++) {
@@ -73,12 +78,13 @@ public class ConvertUtility {
 					return false;
 				}
 			}
-		} catch (CoreException ex) {
+		}
+		catch (CoreException ex) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	static void removeJsNature(IProject project, IProgressMonitor monitor) throws CoreException {
 		if (monitor != null && monitor.isCanceled()) {
 			throw new OperationCanceledException();
@@ -88,7 +94,7 @@ public class ConvertUtility {
 			String[] prevNatures = description.getNatureIds();
 			String[] newNatures = new String[prevNatures.length - NATURE_IDS.length];
 			int k = 0;
-			head: for (int i = 0; i < prevNatures.length; i++) {
+			head : for (int i = 0; i < prevNatures.length; i++) {
 				for (int j = 0; j < NATURE_IDS.length; j++) {
 					if (prevNatures[i].equals(NATURE_IDS[j])) {
 						continue head;
@@ -98,28 +104,30 @@ public class ConvertUtility {
 			}
 			description.setNatureIds(newNatures);
 			project.setDescription(description, monitor);
-		} else {
+		}
+		else {
 			if (monitor != null) {
 				monitor.worked(1);
 			}
 		}
 	}
+
 	private boolean DEBUG = false;
 	private IProject fCurrProject;
 	private JavaProject fJavaProject;
 	private IPath fOutputLocation;
-	
+
 	public ConvertUtility(IProject project) {
 		fCurrProject = project;
 		fOutputLocation = fCurrProject.getFullPath();
 	}
-	
+
 	private IProgressMonitor monitorFor(IProgressMonitor monitor) {
 		if (monitor != null)
 			return monitor;
 		return new NullProgressMonitor();
 	}
-	
+
 	public void addBrowserSupport(boolean changeSuperType, IProgressMonitor monitor) throws CoreException {
 		IProgressMonitor progressMonitor = monitorFor(monitor);
 		progressMonitor.beginTask(Messages.converter_ConfiguringForBrowser, 2);
@@ -131,8 +139,8 @@ public class ConvertUtility {
 
 		IIncludePathEntry[] includePath = getRawClassPath();
 		includePath = addEntry(includePath, VIRTUAL_SCOPE_ENTRY, false);
-		includePath = addEntry(includePath, JavaScriptCore.newContainerEntry( BROWSER_LIBRARY_PATH), false);
-		
+		includePath = addEntry(includePath, JavaScriptCore.newContainerEntry(BROWSER_LIBRARY_PATH), false);
+
 		try {
 			if (!hasProjectClassPathFile()) {
 				fJavaProject.setRawIncludepath(includePath, fOutputLocation, new SubProgressMonitor(progressMonitor, 1));
@@ -144,17 +152,17 @@ public class ConvertUtility {
 		catch (Exception e) {
 			System.out.println(e);
 		}
-		
+
 		if (changeSuperType) {
 			LibrarySuperType superType = new LibrarySuperType(BROWSER_LIBRARY_PATH, getJavaScriptProject(), BROWSER_SUPER_TYPE_NAME);
 			getJavaScriptProject().setCommonSuperType(superType);
 		}
-		
+
 		// getJavaProject().addToBuildSpec(BUILDER_ID);
 		// fCurrProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		progressMonitor.done();
 	}
-	
+
 	private IIncludePathEntry[] addEntry(IIncludePathEntry[] entries, IIncludePathEntry newEntry, boolean first) {
 		for (int i = 0; i < entries.length; i++) {
 			// avoid duplicate IIncludePathEntry-s
@@ -162,72 +170,76 @@ public class ConvertUtility {
 				return entries;
 			}
 		}
-		
-		List entriesList = new ArrayList(Arrays.asList(entries)); 
+
+		List entriesList = new ArrayList(Arrays.asList(entries));
 		if (first && !entriesList.isEmpty())
 			entriesList.add(0, newEntry);
 		else
 			entriesList.add(newEntry);
 		return (IIncludePathEntry[]) entriesList.toArray(new IIncludePathEntry[entriesList.size()]);
 	}
-	
-//	private void createSourceClassPath() {
-//		if (hasAValidSourcePath()) {
-//			return;
-//		}
-//		// IPath projectPath = fCurrProject.getFullPath();
-//		// classPathEntries.add(JavaScriptCore.newSourceEntry(projectPath));
-//	}
-	
-//	public void deconfigure() throws CoreException {
-//		Vector badEntries = new Vector();
-//		IIncludePathEntry defaultJRELibrary =  createRuntimeEntry();
-//		IIncludePathEntry[] localEntries = initLocalClassPath();
-//		badEntries.add(defaultJRELibrary);
-//		badEntries.addAll(Arrays.asList(localEntries));
-//		IIncludePathEntry[] entries = getRawClassPath();
-//		List goodEntries = new ArrayList();
-//		for (int i = 0; i < entries.length; i++) {
-//			if (!badEntries.contains(entries[i])) {
-//				goodEntries.add(entries[i]);
-//			}
-//		}
-//		IPath outputLocation = getJavaScriptProject().getOutputLocation();
-//		getJavaScriptProject().setRawIncludepath((IIncludePathEntry[]) goodEntries.toArray(new IIncludePathEntry[] {}), outputLocation, monitor);
-//		
-//		// getJavaProject().removeFromBuildSpec(BUILDER_ID);
-//		getJavaScriptProject().deconfigure();
-//
-//		removeJsNature(fCurrProject, monitor);
-//		fCurrProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-//	}
-	
+
+	// private void createSourceClassPath() {
+	// if (hasAValidSourcePath()) {
+	// return;
+	// }
+	// // IPath projectPath = fCurrProject.getFullPath();
+	// // classPathEntries.add(JavaScriptCore.newSourceEntry(projectPath));
+	// }
+
+	// public void deconfigure() throws CoreException {
+	// Vector badEntries = new Vector();
+	// IIncludePathEntry defaultJRELibrary = createRuntimeEntry();
+	// IIncludePathEntry[] localEntries = initLocalClassPath();
+	// badEntries.add(defaultJRELibrary);
+	// badEntries.addAll(Arrays.asList(localEntries));
+	// IIncludePathEntry[] entries = getRawClassPath();
+	// List goodEntries = new ArrayList();
+	// for (int i = 0; i < entries.length; i++) {
+	// if (!badEntries.contains(entries[i])) {
+	// goodEntries.add(entries[i]);
+	// }
+	// }
+	// IPath outputLocation = getJavaScriptProject().getOutputLocation();
+	// getJavaScriptProject().setRawIncludepath((IIncludePathEntry[])
+	// goodEntries.toArray(new IIncludePathEntry[] {}), outputLocation,
+	// monitor);
+	//		
+	// // getJavaProject().removeFromBuildSpec(BUILDER_ID);
+	// getJavaScriptProject().deconfigure();
+	//
+	// removeJsNature(fCurrProject, monitor);
+	// fCurrProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+	// }
+
 	private IIncludePathEntry[] addSystemEntry(IIncludePathEntry[] entries) {
-		IIncludePathEntry defaultJRELibrary =  createRuntimeEntry();
+		IIncludePathEntry defaultJRELibrary = createRuntimeEntry();
 		try {
 			for (int i = 0; i < entries.length; i++) {
 				if (defaultJRELibrary.equals(entries[i])) {
 					return entries;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			if (DEBUG) {
 				System.out.println("Error checking system library in include path:" + e); //$NON-NLS-1$
 			}
 		}
 		return addEntry(entries, defaultJRELibrary, false);
 	}
-	
+
 	public void configure(IProgressMonitor monitor) throws CoreException {
 		IProgressMonitor progressMonitor = monitorFor(monitor);
 		progressMonitor.beginTask("", 2);//$NON-NLS-1$
 		addJsNature(fCurrProject, new SubProgressMonitor(progressMonitor, 1));
+
 		fJavaProject = (JavaProject) JavaScriptCore.create(fCurrProject);
 		fJavaProject.setProject(fCurrProject);
 
 		IIncludePathEntry[] includePath = getRawClassPath();
 		includePath = addSystemEntry(includePath);
-		
+
 		try {
 			if (!hasProjectClassPathFile()) {
 				fJavaProject.setRawIncludepath(includePath, fOutputLocation, new SubProgressMonitor(progressMonitor, 1));
@@ -239,19 +251,19 @@ public class ConvertUtility {
 		catch (Exception e) {
 			System.out.println(e);
 		}
-		
+
 		LibrarySuperType superType = new LibrarySuperType(new Path(SYSTEM_LIBRARY), getJavaScriptProject(), SYSTEM_SUPER_TYPE_NAME);
 		getJavaScriptProject().setCommonSuperType(superType);
 		progressMonitor.done();
-		
+
 		// getJavaProject().addToBuildSpec(BUILDER_ID);
 		// fCurrProject.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 	}
-	
+
 	private IIncludePathEntry createRuntimeEntry() {
 		return JavaScriptCore.newContainerEntry(new Path(SYSTEM_LIBRARY));
 	}
-	
+
 	private JavaProject getJavaScriptProject() {
 		if (fJavaProject == null) {
 			fJavaProject = (JavaProject) JavaScriptCore.create(fCurrProject);
@@ -259,17 +271,36 @@ public class ConvertUtility {
 		}
 		return fJavaProject;
 	}
-	
+
 	public IProject getProject() {
 		return this.fCurrProject;
 	}
-	
+
+	public IIncludePathEntry[] getDefaultSourcePaths(IProject p) {
+		IIncludePathEntry[] defaults = new IIncludePathEntry[]{JavaScriptCore.newSourceEntry(p.getFullPath())};
+		try {
+			IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.wst.jsdt.core.sourcePathProvider");
+			for (int i = 0; i < configurationElements.length; i++) {
+				DefaultSourcePathProvider provider = (DefaultSourcePathProvider) configurationElements[i].createExecutableExtension("class");
+				if (provider != null) {
+					return provider.getDefaultSourcePaths(p);
+				}
+			}
+		}
+		catch (Exception e) {
+			if (Platform.inDebugMode()) {
+				Platform.getLog(JavaScriptCore.getPlugin().getBundle()).log(new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, "Problem getting source paths", e));
+			}
+		}
+		return defaults;
+	}
+
 	private IIncludePathEntry[] getRawClassPath() {
 		JavaProject proj = new JavaProject();
 		proj.setProject(fCurrProject);
 		return proj.readRawIncludepath();
 	}
-	
+
 	private boolean hasAValidSourcePath() {
 		if (hasProjectClassPathFile()) {
 			try {
@@ -279,7 +310,8 @@ public class ConvertUtility {
 						return true;
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				if (DEBUG) {
 					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
 				}

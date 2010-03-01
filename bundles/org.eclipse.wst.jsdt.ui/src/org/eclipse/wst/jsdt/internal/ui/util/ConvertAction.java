@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -42,6 +41,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -79,15 +79,23 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 				IIncludePathEntry[] oldEntries = null;
 				try {
 					oldEntries = jp.getRawIncludepath();
+					List entries = new ArrayList();
+					for (int i = 0; i < oldEntries.length; i++) {
+						if (oldEntries[i].getContentKind() != IPackageFragmentRoot.K_SOURCE || oldEntries[i].getEntryKind() != IIncludePathEntry.CPE_SOURCE) {
+							entries.add(oldEntries[i]);
+						}
+					}
+					oldEntries = (IIncludePathEntry[]) entries.toArray(new IIncludePathEntry[entries.size()]);
 				}
 				catch (JavaScriptModelException ex1) {
 					Logger.log(Logger.ERROR_DEBUG, null, ex1);
 					oldEntries = new IIncludePathEntry[0];
 				}
-				IIncludePathEntry[] newEntries = new IIncludePathEntry[oldEntries.length + 1];
-				System.arraycopy(oldEntries, 0, newEntries, 1, oldEntries.length);
-				IPath projectPath = project.getFullPath();
-				newEntries[0] = JavaScriptCore.newSourceEntry(projectPath);
+				IIncludePathEntry[] sourcePaths = convertor.getDefaultSourcePaths(project);
+				IIncludePathEntry[] newEntries = new IIncludePathEntry[oldEntries.length + sourcePaths.length];
+				System.arraycopy(sourcePaths, 0, newEntries, 0, sourcePaths.length);
+				System.arraycopy(oldEntries, 0, newEntries, sourcePaths.length, oldEntries.length);
+				
 				
 				try {
 					jp.setRawIncludepath(newEntries, project.getFullPath(), new SubProgressMonitor(monitor, 1));
@@ -107,7 +115,7 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 		}
 		monitor.done();
 	}
-	
+
 	private void doUninstall(IProject project, IProgressMonitor monitor) {
 //		ConvertUtility nature = new ConvertUtility(project);
 //		try {
