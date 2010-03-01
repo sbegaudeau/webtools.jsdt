@@ -33,25 +33,25 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 public class CodeTemplateContextType extends TemplateContextType {
 	
 	/* context types */
-	public static final String CATCHBLOCK_CONTEXTTYPE= "catchblock_context"; //$NON-NLS-1$
-	public static final String METHODBODY_CONTEXTTYPE= "methodbody_context"; //$NON-NLS-1$
-	public static final String CONSTRUCTORBODY_CONTEXTTYPE= "constructorbody_context"; //$NON-NLS-1$
-	public static final String GETTERBODY_CONTEXTTYPE= "getterbody_context"; //$NON-NLS-1$
-	public static final String SETTERBODY_CONTEXTTYPE= "setterbody_context"; //$NON-NLS-1$
-	public static final String NEWTYPE_CONTEXTTYPE= "newtype_context"; //$NON-NLS-1$
-	public static final String CLASSBODY_CONTEXTTYPE= "classbody_context"; //$NON-NLS-1$
-	public static final String INTERFACEBODY_CONTEXTTYPE= "interfacebody_context"; //$NON-NLS-1$
-	public static final String ENUMBODY_CONTEXTTYPE= "enumbody_context"; //$NON-NLS-1$
-	public static final String ANNOTATIONBODY_CONTEXTTYPE= "annotationbody_context"; //$NON-NLS-1$
-	public static final String FILECOMMENT_CONTEXTTYPE= "filecomment_context"; //$NON-NLS-1$
-	public static final String TYPECOMMENT_CONTEXTTYPE= "typecomment_context"; //$NON-NLS-1$
-	public static final String FIELDCOMMENT_CONTEXTTYPE= "fieldcomment_context"; //$NON-NLS-1$
-	public static final String METHODCOMMENT_CONTEXTTYPE= "methodcomment_context"; //$NON-NLS-1$
-	public static final String CONSTRUCTORCOMMENT_CONTEXTTYPE= "constructorcomment_context"; //$NON-NLS-1$
-	public static final String OVERRIDECOMMENT_CONTEXTTYPE= "overridecomment_context"; //$NON-NLS-1$
-	public static final String DELEGATECOMMENT_CONTEXTTYPE= "delegatecomment_context"; //$NON-NLS-1$
-	public static final String GETTERCOMMENT_CONTEXTTYPE= "gettercomment_context"; //$NON-NLS-1$
-	public static final String SETTERCOMMENT_CONTEXTTYPE= "settercomment_context"; //$NON-NLS-1$
+	public static final String CATCHBLOCK_CONTEXTTYPE= "org.eclipse.jsdt.catchblock_context"; //$NON-NLS-1$
+	public static final String METHODBODY_CONTEXTTYPE= "org.eclipse.jsdt.methodbody_context"; //$NON-NLS-1$
+	public static final String CONSTRUCTORBODY_CONTEXTTYPE= "org.eclipse.jsdt.constructorbody_context"; //$NON-NLS-1$
+	public static final String GETTERBODY_CONTEXTTYPE= "org.eclipse.jsdt.getterbody_context"; //$NON-NLS-1$
+	public static final String SETTERBODY_CONTEXTTYPE= "org.eclipse.jsdt.setterbody_context"; //$NON-NLS-1$
+	public static final String NEWTYPE_CONTEXTTYPE= "org.eclipse.jsdt.newtype_context"; //$NON-NLS-1$
+	public static final String CLASSBODY_CONTEXTTYPE= "org.eclipse.jsdt.classbody_context"; //$NON-NLS-1$
+	public static final String INTERFACEBODY_CONTEXTTYPE= "org.eclipse.jsdt.interfacebody_context"; //$NON-NLS-1$
+	public static final String ENUMBODY_CONTEXTTYPE= "org.eclipse.jsdt.enumbody_context"; //$NON-NLS-1$
+	public static final String ANNOTATIONBODY_CONTEXTTYPE= "org.eclipse.jsdt.annotationbody_context"; //$NON-NLS-1$
+	public static final String FILECOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.filecomment_context"; //$NON-NLS-1$
+	public static final String TYPECOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.typecomment_context"; //$NON-NLS-1$
+	public static final String FIELDCOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.fieldcomment_context"; //$NON-NLS-1$
+	public static final String METHODCOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.methodcomment_context"; //$NON-NLS-1$
+	public static final String CONSTRUCTORCOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.constructorcomment_context"; //$NON-NLS-1$
+	public static final String OVERRIDECOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.overridecomment_context"; //$NON-NLS-1$
+	public static final String DELEGATECOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.delegatecomment_context"; //$NON-NLS-1$
+	public static final String GETTERCOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.gettercomment_context"; //$NON-NLS-1$
+	public static final String SETTERCOMMENT_CONTEXTTYPE= "org.eclipse.jsdt.settercomment_context"; //$NON-NLS-1$
 
 	/* templates */
 	
