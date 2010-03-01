@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?><!--
-    Copyright (c) 2009 IBM Corporation and others.
+    Copyright (c) 2010 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     which accompanies this distribution, and is available at
@@ -50,6 +50,13 @@
             class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.wst.jsdt.core.IJavaScriptElement"
+            class="">
+         <adapter
+               type="org.eclipse.debug.ui.actions.ILaunchable">
          </adapter>
       </factory>
    </extension>
@@ -226,6 +233,37 @@
             </with>
          </enablement>
       </detailFactories>
+   </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            class="org.eclipse.wst.jsdt.debug.internal.ui.launching.JavaScriptLaunchShortcut"
+            description="Allows fast connection and debugging of JavaScript"
+            helpContextId="javasript_lanch_shortcut"
+            icon="$nl$/icons/elcl16/script.gif"
+            id="org.eclipse.wst.jsdt.debug.ui.launch.shortcut"
+            label="Debug JavaScript..."
+            modes="debug">
+         <configurationType
+               id="org.eclipse.wst.jsdt.debug.core.launchConfigurationType">
+         </configurationType>
+         <contextualLaunch>
+            <enablement>
+               <with
+                     variable="selection">
+                  <iterate>
+                     <and>
+                        <adapt
+                              type="org.eclipse.wst.jsdt.core.IJavaScriptElement">
+                        </adapt>
+                     </and></iterate>
+                  <count
+                        value="1">
+                  </count>
+               </with>
+            </enablement>
+         </contextualLaunch>
+      </shortcut>
    </extension>
 
 </plugin>

@@ -38,6 +38,12 @@ public interface Constants {
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
 	
+	//Launching support
+	/**
+	 * The ID of the default JavaScript launch configuration type
+	 */
+	public static final String LAUNCH_CONFIG_ID = "org.eclipse.wst.jsdt.debug.core.launchConfigurationType"; //$NON-NLS-1$
+	
 	//Extension point constants
 	/**
 	 * the class attribute name
