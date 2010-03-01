@@ -8,9 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSBundle;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -55,10 +54,6 @@ public class Activator implements BundleActivator {
 			}
 		}
 		return null;
-	}
-
-	public static synchronized JSBundle getJSBundle(Bundle bundle) {
-		return org.eclipse.wst.jsdt.debug.internal.rhino.bundles.Activator.getJSBundle(bundle);
 	}
 	
 	public void stop(BundleContext context) throws Exception {

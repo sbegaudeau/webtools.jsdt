@@ -8,24 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
-import java.util.Collection;
+import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+public class RequestContinueTest extends RequestTest {
 
-public class RequestScriptsTest extends RequestTest {
-
-	public void testScriptsWithNoScripts() throws DisconnectedException, TimeoutException {
-		Request request = new Request("scripts");
+	public void testContinueWithNoContexts() throws DisconnectedException, TimeoutException {
+		Request request = new Request("continue");
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		Collection scripts = (Collection) response.getBody().get("scripts");
-		assertNotNull(scripts);
-		assertTrue(scripts.isEmpty());
 	}
 }

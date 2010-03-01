@@ -6,17 +6,17 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.connect.TransportService.ListenerKey;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
+import org.eclipse.wst.jsdt.debug.rhino.transport.Connection;
+import org.eclipse.wst.jsdt.debug.rhino.transport.PipedTransportService;
+import org.eclipse.wst.jsdt.debug.rhino.transport.SocketTransportService;
+import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService.ListenerKey;
 
 public class TransportTest extends TestCase {
 

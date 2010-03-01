@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 public class Util {
 

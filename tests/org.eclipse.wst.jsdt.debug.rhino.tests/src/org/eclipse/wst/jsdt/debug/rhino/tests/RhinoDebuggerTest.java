@@ -6,28 +6,17 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.wst.jsdt.debug.internal.rhino.bundles.RhinoClassLoader;
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSBundle;
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSBundleException;
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSConstants;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
-import org.osgi.framework.Constants;
 
 public class RhinoDebuggerTest extends RequestTest {
 
 	public static String TEST = "test";
 
-	public void testDebugSanityInstallResolveBundle() throws JSBundleException {
-		Map headers = new HashMap();
-		headers.put(Constants.BUNDLE_SYMBOLICNAME, "test");
-		headers.put(Constants.BUNDLE_VERSION, "1.8");
+	public void testDebugSanityInstallResolveBundle(){
 		String script = "";
 		script += "\r\n";
 		script += "var test = function() {";
@@ -44,27 +33,32 @@ public class RhinoDebuggerTest extends RequestTest {
 		script += "var z = test();\r\n";
 		script += "\r\n";
 		script += "\r\n";
-
-		headers.put(JSConstants.BUNDLE_SCRIPT, script);
-
-		framework.installBundle("testloc", headers, new RhinoClassLoader(Activator.getBundleContext().getBundle()));
-		assertEquals(1, framework.getBundles().length);
-		JSBundle jsBundle = framework.getBundles()[0];
-
-		assertEquals(JSBundle.INSTALLED, jsBundle.getState());
-		framework.resolve();
-		assertEquals(JSBundle.RESOLVED, jsBundle.getState());
-		Scriptable scope = jsBundle.getScope();
+		
+		Scriptable scope = null;
+		Context context = contextFactory.enterContext();
+		ClassLoader current = context.getApplicationClassLoader();		
+		context.setApplicationClassLoader(this.getClass().getClassLoader());
+		try {
+			scope = context.initStandardObjects();
+			context.evaluateString(scope, script, "script", 0, null);
+		} finally {
+			context.setApplicationClassLoader(current);
+			Context.exit();
+		}
 		Object obj = scope.get("test", scope);
 		assertNotSame(Scriptable.NOT_FOUND, obj);
 		assertTrue(obj instanceof Callable);
 		Callable test = (Callable) obj;
-		contextFactory.enterContext();
+		
+		context = contextFactory.enterContext();
+		current = context.getApplicationClassLoader();		
+		context.setApplicationClassLoader(this.getClass().getClassLoader());
 		try {
 			Object result = test.call(Context.getCurrentContext(), scope, scope, new Object[0]);
 			Object javaResult = Context.jsToJava(result, String.class);
 			assertEquals("test", javaResult);
 		} finally {
+			context.setApplicationClassLoader(current);
 			Context.exit();
 		}
 	}

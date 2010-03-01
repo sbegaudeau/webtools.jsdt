@@ -8,25 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.tests.connect;
+package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.core.jsdi.connect.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.rhino.bundles.RhinoClassLoader;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSBundleException;
-import org.eclipse.wst.jsdt.debug.rhino.bundles.JSConstants;
-import org.eclipse.wst.jsdt.debug.rhino.tests.connect.TestEventHandler.Subhandler;
-import org.osgi.framework.Constants;
+import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
+import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Scriptable;
 
 public class RequestClearBreakpointTest extends RequestTest {
 
@@ -38,7 +35,7 @@ public class RequestClearBreakpointTest extends RequestTest {
 		assertFalse(response.isSuccess());
 	}
 
-	public void testGetSetClearBreakpoint() throws DisconnectedException, TimeoutException, JSBundleException {
+	public void testGetSetClearBreakpoint() throws DisconnectedException, TimeoutException {
 
 		Subhandler setbreakpointHandler = new Subhandler() {
 			public boolean handleEvent(DebugSession debugSession, EventPacket event) {
@@ -131,8 +128,6 @@ public class RequestClearBreakpointTest extends RequestTest {
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 
-		Map headers = new HashMap();
-		headers.put(Constants.BUNDLE_SYMBOLICNAME, "test");
 		String script = "var line1 = true;\r\n";
 		script += "function test() { // line 2 \r\n";
 		script += " return \"line 3\";\r\n";
@@ -151,10 +146,14 @@ public class RequestClearBreakpointTest extends RequestTest {
 		script += "// line 16\r\n";
 		script += "// line 17\r\n";
 
-		headers.put(JSConstants.BUNDLE_SCRIPT, script);
-
-		framework.installBundle("testloc", headers, new RhinoClassLoader(Activator.getBundleContext().getBundle()));
-		framework.resolve();
+		Scriptable scope = null;
+		Context context = contextFactory.enterContext();
+		try {
+			scope = context.initStandardObjects();
+			context.evaluateString(scope, script, "script", 0, null);
+		} finally {
+			Context.exit();
+		}
 		waitForEvents(7);
 		request = new Request("breakpoints");
 		debugSession.sendRequest(request);
