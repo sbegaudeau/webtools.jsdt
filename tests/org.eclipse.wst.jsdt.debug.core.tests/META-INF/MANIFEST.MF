@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.core.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.wst.debug.core.tests.JSDTDebugTestPlugin
-Bundle-Vendor: Eclipse
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.jsdt.debug.core,
  org.junit;bundle-version="3.8.2"
