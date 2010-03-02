@@ -130,7 +130,7 @@ public void resolve(BlockScope scope) {
 		return;
 	}
 
-	MethodBinding methodBinding;
+	MethodBinding methodBinding = null;
 	TypeBinding methodType =
 		(methodScope.referenceContext instanceof AbstractMethodDeclaration)
 			? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
@@ -166,7 +166,8 @@ public void resolve(BlockScope scope) {
 
 		return;
 	}
-	scope.problemReporter().typeMismatchError(expressionType, methodType, this.expression);
+	if(methodBinding != null && !methodBinding.isConstructor())
+		scope.problemReporter().typeMismatchError(expressionType, methodType, this.expression);
 }
 
 public void traverse(ASTVisitor visitor, BlockScope scope) {
