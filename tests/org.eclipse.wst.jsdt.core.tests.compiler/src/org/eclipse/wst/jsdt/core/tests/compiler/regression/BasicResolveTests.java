@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1590,6 +1590,57 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					"	o += \'Move => \'+MyCar.Move()+\'<br />\';\n" + 
 					"	                ^^^^^^^^^^^^\n" + 
 					"Cannot make a static reference to the non-static function Move() from the type Car\n" + 
+					"----------\n"
+			);
+	}
+	
+	public void testbug242871() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"TestClassBase = function() {};\n" +
+							"TestFunction = function() {};\n" +
+							"TestClass = function() {\n" +
+							"	TestFunction.call(this, 1);\n" +
+							"	TestClassBase.call(this, 2);\n" +
+							"};\n" +
+							"TestClass.prototype = new TestClassBase();"
+					},
+					""
+			);
+	}
+	public void testbug242871_2() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function TestClassBase() {};\n" +
+							"TestFunction = function() {};\n" +
+							"TestClass = function() {\n" +
+							"	TestFunction.call(this, 1);\n" +
+							"	TestClassBase.call(this, 2);\n" +
+							"};\n" +
+							"TestClass.prototype = new TestClassBase();"
+					},
+					""
+			);
+	}
+	public void testbug242871_3() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"TestClassBase = function() {};\n" +
+							"TestFunction = function() {};\n" +
+							"TestClass = function() {\n" +
+							"	TestFunction.call(this, 1);\n" +
+							"	TestClassBase.call2(this, 2);\n" +
+							"};\n" +
+							"TestClass.prototype = new TestClassBase();"
+					},
+					"----------\n" + 
+					"1. ERROR in Z.js (at line 5)\n" + 
+					"	TestClassBase.call2(this, 2);\n" + 
+					"	              ^^^^^\n" + 
+					"The function call2(TestClass, Number) is undefined for the type TestClassBase\n" + 
 					"----------\n"
 			);
 	}
