@@ -315,6 +315,15 @@ public TypeBinding resolveType(BlockScope scope) {
 				   this.binding=scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
 				   receiverIsType=true;
 			   }
+			} else if(!binding.isValidBinding() && receiverIsType) {
+				// we are a type, check the alternate binding which will be a Function object
+				Binding alternateBinding = scope.getJavaLangFunction();
+				 MethodBinding tempBinding = scope.getMethod((TypeBinding)alternateBinding, selector, argumentTypes, this);
+				 if(tempBinding.isValidBinding()) {
+					 this.actualReceiverType=(TypeBinding)alternateBinding;
+					 this.binding = tempBinding;
+					 receiverIsType=false;
+				 }
 			}
 		
 		}
