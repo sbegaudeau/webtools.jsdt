@@ -22,14 +22,14 @@ public class TransportTest extends TestCase {
 
 	public void testSocketStartStopListening() throws IOException {
 		TransportService service = new SocketTransportService();
-		ListenerKey key = service.startListening("9000");
+		ListenerKey key = service.startListening("9888");
 		assertNotNull(key);
 		service.stopListening(key);
 	}
 
 	public void testSocketAcceptAttach() throws IOException, InterruptedException {
 		final TransportService service = new SocketTransportService();
-		final ListenerKey key = service.startListening("9000");
+		final ListenerKey key = service.startListening("9888");
 
 		Thread t = new Thread() {
 			public void run() {
