@@ -7,6 +7,11 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.SocketTransportService;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
 import org.mozilla.javascript.tools.shell.Main;
 
+/**
+ * Entry point for launching a Rhino debugger
+ * 
+ * @since 1.0
+ */
 public class DebugShell {
 	
     public static void main(String args[]) {
@@ -21,15 +26,16 @@ public class DebugShell {
     			port = args[++i];
     		} else if (arg.equals("-suspend")) {
     			suspend = Boolean.valueOf(args[++i]).booleanValue();
-    		}else if (arg.equals("-debug")) {
+    		} else if (arg.equals("-debug")) {
     			// skip
+    			argList.add(args[i]);
     			continue;
-    		}else if (arg.equals("-opt")) {
+    		} else if (arg.equals("-opt")) {
     			// skip
+    			argList.add(args[i]);
     			i++;
     			continue;
     		}
-    		argList.add(args[i]);
 		}
     	String[] newArgs = (String[]) argList.toArray(new String[0]); 
     	

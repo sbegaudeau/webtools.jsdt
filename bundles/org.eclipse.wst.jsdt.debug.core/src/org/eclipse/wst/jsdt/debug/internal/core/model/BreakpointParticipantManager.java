@@ -40,7 +40,7 @@ public class BreakpointParticipantManager {
 	 * proxy to a "real" {@link IJavaScriptBreakpointParticipant} to allow lazy loading
 	 * of classes from extension points
 	 */
-	class ListenerExtension implements IJavaScriptBreakpointParticipant {
+	class Participant implements IJavaScriptBreakpointParticipant {
 		
 		private IConfigurationElement element = null;
 		private IJavaScriptBreakpointParticipant delegate = null;
@@ -49,7 +49,7 @@ public class BreakpointParticipantManager {
 		 * Constructor
 		 * @param element
 		 */
-		public ListenerExtension(IConfigurationElement element) {
+		public Participant(IConfigurationElement element) {
 			this.element = element;
 		}
 		
@@ -111,15 +111,27 @@ public class BreakpointParticipantManager {
 	public IJavaScriptBreakpointParticipant[] getParticipants(IJavaScriptBreakpoint breakpoint) {
 		initialize();
 		ArrayList parts = new ArrayList();
-		parts.addAll((ArrayList)this.participants.get(ALL));
+		ArrayList existing = (ArrayList)this.participants.get(ALL);
+		if(existing != null) {
+			parts.addAll(existing);
+		}
 		if(breakpoint instanceof IJavaScriptFunctionBreakpoint) {
-			parts.addAll((ArrayList)this.participants.get(FUNCTION));
+			existing = (ArrayList)this.participants.get(FUNCTION);
+			if(existing != null) {
+				parts.addAll(existing);
+			}
 		}
 		else if(breakpoint instanceof IJavaScriptLoadBreakpoint) {
-			parts.addAll((ArrayList)this.participants.get(SCRIPT));
+			existing = (ArrayList)this.participants.get(SCRIPT);
+			if(existing != null) {
+				parts.addAll(existing);
+			}
 		}
 		else if(breakpoint instanceof IJavaScriptLineBreakpoint) {
-			parts.addAll((ArrayList)this.participants.get(LINE));
+			existing = (ArrayList)this.participants.get(LINE);
+			if(existing != null) {
+				parts.addAll(existing);
+			}
 		}
 		if(parts.size() < 1) {
 			return NO_PARTICIPANTS;
@@ -135,7 +147,14 @@ public class BreakpointParticipantManager {
 	public void addParticipant(String kind, IJavaScriptBreakpointParticipant participant) {
 		initialize();
 		Assert.isNotNull(kind);
-		this.participants.put(kind, participant);
+		ArrayList parts = (ArrayList) this.participants.get(kind);
+		if(parts == null) {
+			parts = new ArrayList();
+			this.participants.put(kind, parts);
+		}
+		if(!parts.contains(participant)) {
+			parts.add(participant);
+		}
 	}
 	
 	/**
@@ -146,8 +165,16 @@ public class BreakpointParticipantManager {
 			this.participants = Collections.synchronizedMap(new HashMap());
 			IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(JavaScriptDebugPlugin.PLUGIN_ID, Constants.BREAKPOINT_PARTICIPANTS);
 			IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+			String kind = null;
+			ArrayList parts = null;
 			for (int i = 0; i < elements.length; i++) {
-				this.participants.put(elements[i].getAttribute(Constants.KIND), elements[i]);
+				kind = elements[i].getAttribute(Constants.KIND);
+				parts = (ArrayList) this.participants.get(kind);
+				if(parts == null) {
+					parts = new ArrayList();
+					this.participants.put(kind, parts);
+				}
+				parts.add(new Participant(elements[i]));
 			}
 		}
 	}
