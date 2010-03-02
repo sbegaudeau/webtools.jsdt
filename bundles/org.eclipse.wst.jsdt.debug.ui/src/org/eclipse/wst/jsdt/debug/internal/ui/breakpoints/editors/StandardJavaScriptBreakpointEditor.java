@@ -44,7 +44,7 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 	private Button fHitCountButton;
 	private Text fHitCountText;
 	private Button fSuspendThread;
-	private Button fSuspendVM;
+	private Button fSuspendTarget;
 	
 	/**
      * Property id for hit count enabled state.
@@ -99,14 +99,14 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 		Composite radios = SWTFactory.createComposite(composite, composite.getFont(), 2, 1, GridData.FILL_HORIZONTAL, 0, 0);
 		fSuspendThread = SWTFactory.createRadioButton(radios, processMnemonics(Messages.suspend_thread));
 		fSuspendThread.setLayoutData(new GridData());
-		fSuspendVM = SWTFactory.createRadioButton(radios, processMnemonics(Messages.suspend_vm));
-		fSuspendVM.setLayoutData(new GridData());
+		fSuspendTarget = SWTFactory.createRadioButton(radios, processMnemonics(Messages.suspend_target));
+		fSuspendTarget.setLayoutData(new GridData());
 		fSuspendThread.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				setDirty(PROP_SUSPEND_POLICY);
 			}
 		});	
-		fSuspendVM.addSelectionListener(new SelectionAdapter() {
+		fSuspendTarget.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				setDirty(PROP_SUSPEND_POLICY);
 			}
@@ -163,9 +163,9 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 		fHitCountText.setEnabled(hasHitCount);
 		fHitCountText.setText(text);
 		fSuspendThread.setEnabled(enabled);
-		fSuspendVM.setEnabled(enabled);
+		fSuspendTarget.setEnabled(enabled);
 		fSuspendThread.setSelection(suspendThread);
-		fSuspendVM.setSelection(!suspendThread);
+		fSuspendTarget.setSelection(!suspendThread);
 		setDirty(false);
 	}
 	
@@ -191,7 +191,7 @@ public class StandardJavaScriptBreakpointEditor extends AbstractJavaScriptBreakp
 	public void doSave() throws CoreException {
 		if (fBreakpoint != null) {
 			int suspendPolicy = IJavaScriptBreakpoint.SUSPEND_THREAD;
-			if(fSuspendVM.getSelection()) {
+			if(fSuspendTarget.getSelection()) {
 				suspendPolicy = IJavaScriptBreakpoint.SUSPEND_TARGET;
 			}
 			fBreakpoint.setSuspendPolicy(suspendPolicy);

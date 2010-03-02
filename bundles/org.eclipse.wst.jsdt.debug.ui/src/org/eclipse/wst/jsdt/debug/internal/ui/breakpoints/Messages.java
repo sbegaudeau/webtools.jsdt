@@ -42,10 +42,9 @@ public class Messages extends NLS {
 	public static String script_load_breakpoint;
 	public static String script_path;
 	public static String suspend_policy;
-	public static String suspend_target;
 	public static String suspend_thread_option;
 	public static String suspend_thread;
-	public static String suspend_vm;
+	public static String suspend_target;
 	public static String suspend_when_changed;
 	public static String suspend_when_entering;
 	public static String suspend_when_exiting;

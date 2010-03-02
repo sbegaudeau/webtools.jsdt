@@ -26,12 +26,20 @@ public class Messages extends NLS {
 	public static String bp_hit_count;
 	public static String bp_line_number;
 	public static String bp_suspend_vm;
+	public static String breakpoint_configuration;
 	public static String connect;
 	public static String connector;
 	public static String connector_properties;
 	public static String creating_script_load_bp;
+	public static String enable_hit_count;
+	public static String enter_new_hit_count;
+	public static String exception_occurred_setting_bp_properties;
+	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
 	public static String select_javascript_file;
+	public static String set_bp_hit_count;
+	public static String suspend_target;
+	public static String suspend_thread;
 	public static String the_argument_0_is_not_valid;
 	static {
 		// initialize resource bundle

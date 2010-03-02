@@ -59,6 +59,13 @@
                type="org.eclipse.debug.ui.actions.ILaunchable">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
@@ -76,42 +83,84 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <viewerContribution
-            id="org.eclipse.wst.jsdt.debug.ui.RulerPopupActions"
+            id="org.eclipse.wst.jsdt.debug.ui.ruler.popup.actions"
             targetID="org.eclipse.wst.jsdt.ui.CompilationUnitEditor.RulerContext">
          <action
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
                icon="$nl$/icons/elcl16/brkp_obj.gif"
-               id="org.eclipse.wst.jsdt.debug.ui.ManageBreakpointRulerActionDelegate"
+               id="org.eclipse.wst.jsdt.debug.ui.toggle.breakpoint.ruler.delegate"
                label="%togglebreakpointRulerAction.name"
                menubarPath="debug">
          </action>
       </viewerContribution>
       <objectContribution
             adaptable="true"
-            id="org.eclipse.wst.jsdt.debug.ui.breakpointactions"
+            id="org.eclipse.wst.jsdt.debug.ui.general.breakpoint.actions"
             objectClass="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint">
          <action
                class="org.eclipse.wst.jsdt.debug.internal.ui.actions.BreakpointPropertiesAction"
                definitionId="org.eclipse.wst.jsdt.debug.ui.breakpoint.properties"
                enablesFor="1"
-               id="org.eclipse.wst.jsdt.debug.ui.javascriptbreakpoints"
+               id="org.eclipse.wst.jsdt.debug.ui.breakpoint.properties.action"
                label="%breakpointPropertiesAction.name"
                menubarPath="additions">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.BreakpointHitCountAction"
+               enablesFor="1"
+               helpContextId="hit_count_action_context"
+               icon="$nl$/icons/elcl16/sethitcount_co.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.breakpoint.hitcount.action"
+               label="%hitCount.label"
+               menubarPath="emptyBreakpointGroup">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.BreakpointSuspendPolicyToggleAction"
+               enablesFor="1"
+               helpContextId="breakpoint_suspend_policy_toggle_action_context"
+               icon="$nl$/icons/elcl16/suspend_co.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.breakpoint.suspend.policy.action"
+               label="%suspendPolicy.label"
+               menubarPath="emptyBreakpointGroup"
+               tooltip="%suspendpolicy.tooltip">
          </action>
       </objectContribution>
       <objectContribution
             adaptable="true"
-            id="org.eclipse.wst.jsdt.debug.ui.outline.togglefunctionbreakpoint"
+            id="org.eclipse.wst.jsdt.debug.ui.function.toggle.breakpoint"
             objectClass="org.eclipse.wst.jsdt.core.IFunction">
          <action
                class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleFunctionBreakpointActionDelegate"
                enablesFor="+"
                helpContextId="toggle_function_bp_outline"
                icon="icons/elcl16/brkp_obj.gif"
-               id="org.eclipse.wst.jsdt.debug.ui.outline.togglefunction"
+               id="org.eclipse.wst.jsdt.debug.ui.outline.function.toggle.breakpoint.action"
                label="%toggleFunctionBreakpointAction.name"
                menubarPath="additions"
                tooltip="%toggleFunctionBreakpointAction.tooltip">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="org.eclipse.wst.jsdt.debug.ui.function.breakpoint.actions"
+            objectClass="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint">
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ExitToggleAction"
+               enablesFor="+"
+               helpContextId="exit_toggle_action_context"
+               id="org.eclipse.wst.jsdt.debug.ui.breakpoint.toggle.exit.action"
+               label="%exitAction.label"
+               menubarPath="emptyBreakpointGroup"
+               state="false">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.EntryToggleAction"
+               enablesFor="+"
+               helpContextId="entry_toggle_action_context"
+               id="org.eclipse.wst.jsdt.debug.ui.breakpoint.toggle.entry.action"
+               label="%entryAction.label"
+               menubarPath="emptyBreakpointGroup"
+               state="false">
          </action>
       </objectContribution>
    </extension>
@@ -126,7 +175,7 @@
          point="org.eclipse.ui.propertyPages">
       <page
             class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointPropertyPage"
-            id="org.eclipse.wst.jsdt.debug.ui.proppage.linebreakpoint"
+            id="org.eclipse.wst.jsdt.debug.ui.breakpoints.propertypage"
             name="%breakpointproperties.page.name">
          <enabledWhen>
             <or>
@@ -136,36 +185,6 @@
                <instanceof
                      value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint">
                </instanceof>
-            </or>
-         </enabledWhen>
-      </page>
-      <page
-            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointPropertyPage"
-            id="org.eclipse.wst.jsdt.debug.ui.proppage.functionbreakpoints"
-            name="%breakpointproperties.page.name">
-         <enabledWhen>
-            <or>
-               <instanceof
-                     value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint">
-               </instanceof>
-               <adapt
-                     type="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint">
-               </adapt>
-            </or>
-         </enabledWhen>
-      </page>
-      <page
-            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointPropertyPage"
-            id="org.eclipse.wst.jsdt.debug.ui.proppage.scriptloadbreakpoint"
-            name="%breakpointproperties.page.name">
-         <enabledWhen>
-            <or>
-               <instanceof
-                     value="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint">
-               </instanceof>
-               <adapt
-                     type="org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint">
-               </adapt>
             </or>
          </enabledWhen>
       </page>

@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.ui.adapters;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
+import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointAdapter;
 
 /**
@@ -21,6 +26,48 @@ import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointAdapte
  */
 public class JavaScriptAdapterFactory implements IAdapterFactory {
 
+	class WorkbenchAdapter implements IWorkbenchAdapter {
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getChildren(java.lang.Object)
+		 */
+		public Object[] getChildren(Object o) {
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getImageDescriptor(java.lang.Object)
+		 */
+		public ImageDescriptor getImageDescriptor(Object object) {
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getLabel(java.lang.Object)
+		 */
+		public String getLabel(Object o) {
+			if(o instanceof IJavaScriptBreakpoint) {
+				try {
+					return ((IJavaScriptBreakpoint)o).getScriptPath();
+				}
+				catch(CoreException ce) {
+					JavaScriptDebugUIPlugin.log(ce);
+				}
+			}
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.ui.model.IWorkbenchAdapter#getParent(java.lang.Object)
+		 */
+		public Object getParent(Object o) {
+			return null;
+		}
+	}
+	
+	static IWorkbenchAdapter wadapter = null;
+	static ToggleBreakpointAdapter tbadapter = null;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -28,7 +75,10 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	 */
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if(adapterType.equals(IToggleBreakpointsTarget.class)) {
-			return new ToggleBreakpointAdapter();
+			return getToggleBreakpointAdapter();
+		}
+		if(adapterType.equals(IWorkbenchAdapter.class) && adaptableObject instanceof IJavaScriptBreakpoint) {
+			return getWorkbenchAdapter();
 		}
 		return null;
 	}
@@ -39,6 +89,26 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
 	public Class[] getAdapterList() {
-		return new Class[] {IToggleBreakpointsTarget.class};
+		return new Class[] {IToggleBreakpointsTarget.class, IWorkbenchAdapter.class};
+	}
+	
+	/**
+	 * @return the singleton {@link IWorkbenchAdapter}
+	 */
+	synchronized IWorkbenchAdapter getWorkbenchAdapter() {
+		if(wadapter == null) {
+			wadapter = new WorkbenchAdapter();
+		}
+		return wadapter;
+	}
+	
+	/**
+	 * @return the singleton {@link ToggleBreakpointAdapter}
+	 */
+	synchronized ToggleBreakpointAdapter getToggleBreakpointAdapter() {
+		if(tbadapter == null) {
+			tbadapter = new ToggleBreakpointAdapter();
+		}
+		return tbadapter;
 	}
 }
