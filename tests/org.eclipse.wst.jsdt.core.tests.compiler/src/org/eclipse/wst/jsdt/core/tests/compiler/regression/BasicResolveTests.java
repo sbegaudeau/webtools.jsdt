@@ -420,7 +420,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var foo;\n" +
+						"var foo = {};\n" +
 						" foo.onMouseDown = function () { return 1; };\n" +
 						" foo.onMouseDown();\n" +
 						"" 
@@ -434,7 +434,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var foo;\n" +
+						"var foo = {};\n" +
 						" foo.level1=new Object();\n" +
 						" foo.level1.onMouseDown = function () { return 1; };\n" +
 						" foo.level1.onMouseDown();\n" +
@@ -1538,6 +1538,59 @@ public class BasicResolveTests extends AbstractRegressionTest {
 							"x.call();"
 					},
 					""
+			);
+	}
+	
+	public void testbug247201() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function Car() { this.color = 'red'; this.Move = function() {};};\n" +
+							"Car.Stop = function() {};\n" +
+							"Car.engine = 'diesel';\n" +
+							"var o = '';\n" +
+							"o += 'color => '+Car.color.prototype+'<br />';\n" +
+							"var p = new Car();\n" +
+							"o += 'Stop => '+p.Stop()+'<br />';\n" +
+							"o += 'engine => '+p.engine+'<br />';\n" +
+							"o += 'engine => '+p.engine.prototype+'<br />';\n" +
+							"var MyCar = Car;\n" +
+							"c = MyCar.Move;\n" +
+							"o += 'Move => '+MyCar.Move()+'<br />';\n" +
+							"o += 'Stop => '+MyCar.Stop+'<br />';\n" +
+							"o += 'engine => '+MyCar.engine+'<br />';"
+					},
+					"----------\n" + 
+					"1. ERROR in Z.js (at line 5)\n" + 
+					"	o += \'color => \'+Car.color.prototype+\'<br />\';\n" + 
+					"	                     ^^^^^\n" + 
+					"Cannot make a static reference to the non-static field color\n" + 
+					"----------\n" + 
+					"2. WARNING in Z.js (at line 7)\n" + 
+					"	o += \'Stop => \'+p.Stop()+\'<br />\';\n" + 
+					"	                ^^^^^^^^\n" + 
+					"The static function Stop() from the type Car should be accessed in a static way\n" + 
+					"----------\n" + 
+					"3. WARNING in Z.js (at line 8)\n" + 
+					"	o += \'engine => \'+p.engine+\'<br />\';\n" + 
+					"	                    ^^^^^^\n" + 
+					"The static field Car.engine should be accessed in a static way\n" + 
+					"----------\n" + 
+					"4. WARNING in Z.js (at line 9)\n" + 
+					"	o += \'engine => \'+p.engine.prototype+\'<br />\';\n" + 
+					"	                    ^^^^^^\n" + 
+					"The static field Car.engine should be accessed in a static way\n" + 
+					"----------\n" + 
+					"5. ERROR in Z.js (at line 11)\n" + 
+					"	c = MyCar.Move;\n" + 
+					"	    ^^^^^^^^^^\n" + 
+					"Cannot make a static reference to the non-static function Move() from the type Car\n" + 
+					"----------\n" + 
+					"6. ERROR in Z.js (at line 12)\n" + 
+					"	o += \'Move => \'+MyCar.Move()+\'<br />\';\n" + 
+					"	                ^^^^^^^^^^^^\n" + 
+					"Cannot make a static reference to the non-static function Move() from the type Car\n" + 
+					"----------\n"
 			);
 	}
 	
