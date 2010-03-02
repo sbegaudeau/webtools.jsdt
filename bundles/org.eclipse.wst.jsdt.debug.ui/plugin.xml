@@ -284,5 +284,26 @@
          </contextualLaunch>
       </shortcut>
    </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerSupport">
+      <markerTypeCategory
+            name="%breakpointMarkerCategory.name">
+         <markerTypeReference
+               id="org.eclipse.wst.jsdt.debug.core.function.breakpoint.marker">
+         </markerTypeReference>
+         <markerTypeReference
+               id="org.eclipse.wst.jsdt.debug.core.line.breakpoint.marker">
+         </markerTypeReference>
+         <markerTypeReference
+               id="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+         </markerTypeReference>
+         <markerTypeReference
+               id="org.eclipse.wst.jsdt.debug.core.exception.breakpoint.marker">
+         </markerTypeReference>
+         <markerTypeReference
+               id="org.eclipse.wst.jsdt.debug.core.scriptload.breakpoint.marker">
+         </markerTypeReference>
+      </markerTypeCategory>
+   </extension>
 
 </plugin>

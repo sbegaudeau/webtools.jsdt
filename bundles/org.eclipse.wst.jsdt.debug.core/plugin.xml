@@ -69,6 +69,20 @@
       </super>
    </extension>
    <extension
+         id="org.eclipse.wst.jsdt.debug.core.exception.breakpoint.marker"
+         name="%exceptionbreakpoint.name"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+      </super>
+      <super
+            type="org.eclipse.jdt.debug.javaExceptionBreakpointMarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+   <extension
          point="org.eclipse.debug.core.breakpoints">
       <breakpoint
             class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLineBreakpoint"
@@ -87,6 +101,12 @@
             id="org.eclipse.wst.jsdt.debug.core.scriptloadbreakpoint"
             markerType="org.eclipse.wst.jsdt.debug.core.scriptload.breakpoint.marker"
             name="%scriptloadbreakpoint.name">
+      </breakpoint>
+      <breakpoint
+            class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptExceptionBreakpoint"
+            id="org.eclipse.wst.jsdt.debug.core.exceptionbreakpoint"
+            markerType="org.eclipse.wst.jsdt.debug.core.exception.breakpoint.marker"
+            name="%exceptionbreakpoint.name">
       </breakpoint>
    </extension>
    <extension
