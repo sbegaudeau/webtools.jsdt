@@ -391,13 +391,13 @@ public int nullStatus(FlowInfo flowInfo) {
 //								scope.problemReporter().cannotReferToNonFinalOuterLocal((LocalVariableBinding)variable, this);
 //							}
 							TypeBinding fieldType = variable.type;
-							if (fieldType.isAnonymousType() && !fieldType.isObjectLiteralType()) {
-								LocalDeclaration declaration = ((LocalVariableBinding)binding).declaration;
-								if(declaration != null && !(declaration.getInitialization() instanceof AllocationExpression) &&
-										! (declaration.getInitialization() instanceof Literal)) {
-									bits |= Binding.TYPE;
-								}
-							}
+//							if (fieldType.isAnonymousType() && !fieldType.isObjectLiteralType()) {
+//								LocalDeclaration declaration = ((LocalVariableBinding)binding).declaration;
+//								if(declaration != null && !(declaration.getInitialization() instanceof AllocationExpression) &&
+//										! (declaration.getInitialization() instanceof Literal)) {
+//									bits |= Binding.TYPE;
+//								}
+//							}
 								
 							if (useType!=null && !(useType.id==T_null ||useType.id==T_any))
 							{

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,9 @@ import org.eclipse.wst.jsdt.core.ast.INameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FunctionTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -77,6 +79,13 @@ public Binding alternateBinding()
 	   {
 		   MethodBinding constructorBinding=(MethodBinding)alternateBinding;
 		   alternateBinding=constructorBinding.returnType;
+	   } else if(alternateBinding instanceof LocalVariableBinding) {
+		   if(((LocalVariableBinding)alternateBinding).type instanceof FunctionTypeBinding) {
+			   FunctionTypeBinding functionBinding = (FunctionTypeBinding)((LocalVariableBinding)alternateBinding).type;
+			   if(functionBinding.functionBinding.isConstructor()) {
+				   alternateBinding = functionBinding.functionBinding.returnType;
+			   }
+		   }
 	   }
 	
 	return alternateBinding;

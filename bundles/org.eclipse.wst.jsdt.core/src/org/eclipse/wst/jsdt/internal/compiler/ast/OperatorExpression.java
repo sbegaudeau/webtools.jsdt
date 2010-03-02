@@ -1472,7 +1472,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_JavaLangString<<4)+T_undefined] 	= T_undefined;
 		table[(T_JavaLangString<<4)+T_long] 		= (String2String<<12)+(Long2Long<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_short] 		= (String2String<<12)+(Short2Short<<4)+T_JavaLangString;
-		//	table[(T_JavaLangString<<4)+T_void] 		= T_undefined;
+		table[(T_JavaLangString<<4)+T_void] 		= T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_JavaLangString] 		= (String2String<<12)+(String2String<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_JavaLangObject] 		= (String2String<<12)+(Object2Object<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_double] 		= (String2String<<12)+(Double2Double<<4)+T_JavaLangString;
@@ -1482,6 +1482,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_JavaLangString<<4)+T_int] 			= (String2String<<12)+(Int2Int<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_null] 		= (String2String<<12)+(T_null<<8)+(T_null<<4)+T_JavaLangString;
 		table[(T_JavaLangString<<4)+T_any] 			= T_JavaLangString;
+		table[(T_JavaLangString<<4)+T_function]		= T_any;
 
 		//	table[(T_Object<<4)+T_undefined] 	= T_undefined;
 		//	table[(T_Object<<4)+T_byte] 		= T_undefined;

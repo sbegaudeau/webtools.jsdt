@@ -432,6 +432,9 @@ if( this.isPrototype() ){
 					&& fieldBinding.declaringClass.canBeSeenBy(scope)) {
 				scope.problemReporter().indirectAccessToStaticField(this, fieldBinding);
 			}
+		} else {
+			if(receiverIsType)
+				scope.problemReporter().staticFieldAccessToNonStaticVariable(this, fieldBinding);
 		}
 		// perform capture conversion if read access
 		return this.resolvedType = fieldBinding.type;
