@@ -68,7 +68,7 @@ public class AddScriptLoadBreakpointAction implements IViewActionDelegate {
 						attributes.put(IJavaScriptBreakpoint.TYPE_NAME, scriptname);
 						attributes.put(IJavaScriptBreakpoint.SCRIPT_PATH, scriptpath);
 						try {
-							JavaScriptDebugModel.createScriptLoadBreakpoint(0, 0, attributes, true);
+							JavaScriptDebugModel.createScriptLoadBreakpoint(file, 0, 0, attributes, true);
 						}
 						catch(DebugException de) {
 							JavaScriptDebugUIPlugin.log(de);
