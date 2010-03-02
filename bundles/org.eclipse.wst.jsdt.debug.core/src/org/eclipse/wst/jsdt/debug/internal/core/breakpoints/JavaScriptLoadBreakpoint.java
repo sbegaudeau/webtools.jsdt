@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -48,18 +49,25 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	/**
 	 * Constructor
 	 * 
+	 * @param resource
 	 * @param charstart
 	 * @param charend
 	 * @param attributes
 	 * @param register
 	 * @throws DebugException
 	 */
-	public JavaScriptLoadBreakpoint(final int charstart, final int charend, final Map attributes, final boolean register) throws DebugException {
+	public JavaScriptLoadBreakpoint(final IResource resource, final int charstart, final int charend, final Map attributes, final boolean register) throws DebugException {
 		IWorkspaceRunnable wr = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-
+				IMarker marker = null;
+				if(resource == null) {
+					marker = ResourcesPlugin.getWorkspace().getRoot().createMarker(IJavaScriptLoadBreakpoint.MARKER_ID);
+				}
+				else {
+					marker = resource.createMarker(IJavaScriptLoadBreakpoint.MARKER_ID);
+				}
 				// create the marker
-				setMarker(ResourcesPlugin.getWorkspace().getRoot().createMarker(IJavaScriptLoadBreakpoint.MARKER_ID));
+				setMarker(marker);
 
 				// add attributes
 				attributes.put(IBreakpoint.ID, getModelIdentifier());

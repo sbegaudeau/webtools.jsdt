@@ -55,6 +55,7 @@ public class JavaScriptDebugModel {
 	/**
 	 * Creates a new {@link IJavaScriptLoadBreakpoint}
 	 * 
+	 * @param resource the resource to associate the breakpoint with, or <code>null</code>
 	 * @param charstart the char start or -1
 	 * @param charend the char end or -1
 	 * @param attributes the optional map of attributes or <code>null</code>
@@ -63,8 +64,8 @@ public class JavaScriptDebugModel {
 	 * @return a new {@link IJavaScriptLoadBreakpoint}
 	 * @throws DebugException if breakpoint creation fails
 	 */
-	public static IJavaScriptLoadBreakpoint createScriptLoadBreakpoint(final int charstart, final int charend, final Map attributes, final boolean register) throws DebugException {
-		return new JavaScriptLoadBreakpoint(charstart, charend, attributes, register);
+	public static IJavaScriptLoadBreakpoint createScriptLoadBreakpoint(final IResource resource, final int charstart, final int charend, final Map attributes, final boolean register) throws DebugException {
+		return new JavaScriptLoadBreakpoint(resource, charstart, charend, attributes, register);
 	}
 	
 	/**
