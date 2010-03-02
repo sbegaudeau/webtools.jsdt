@@ -1645,4 +1645,73 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			);
 	}
 	
+	public void testbug269094() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function myFunc() {\n" +
+							"return myFunc.a++;\n" +
+							"}\n" +
+							"myFunc.a = 0;"
+					},
+					""
+			);
+	}
+	
+	public void testbug269094_2() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function myFunc() {\n" +
+							"return 3;\n" +
+							"}\n" +
+							"myFunc.a = 0;"
+					},
+					""
+			);
+	}
+	
+	public void testbug269094_3() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"function myFunc() {\n" +
+							"return 3;\n" +
+							"}"
+					},
+					""
+			);
+	}
+	
+	public void testbug269094_4() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**@returns {String}*/\n" +
+							"function myFunc() {\n" +
+							"return 3;\n" +
+							"}"
+					},
+					"----------\n" + 
+					"1. WARNING in Z.js (at line 3)\n" + 
+					"	return 3;\n" + 
+					"	       ^\n" + 
+					"Type mismatch: cannot convert from Number to String\n" + 
+					"----------\n"
+			);
+	}
+	
+	public void testbug269094_5() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**@returns {Number}*/\n" +
+							"function myFunc() {\n" +
+							"return 3;\n" +
+							"}"
+					},
+					""
+			);
+	}
+	
 }
