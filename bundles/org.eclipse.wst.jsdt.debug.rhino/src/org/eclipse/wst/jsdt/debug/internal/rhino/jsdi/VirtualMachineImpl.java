@@ -158,19 +158,18 @@ public class VirtualMachineImpl implements VirtualMachine {
 		return session.receiveResponse(request.getSequence(), timeout);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#sendRequest(org .eclipse.e4.languages.javascript.debug.connect.Request)
+	/**
+	 * @param request
+	 * @return
+	 * @throws TimeoutException
+	 * @throws DisconnectedException
 	 */
 	public Response sendRequest(Request request) throws TimeoutException, DisconnectedException {
 		return sendRequest(request, 30000);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#allThreads()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allThreads()
 	 */
 	public synchronized List allThreads() {
 		Request request = new Request(JSONConstants.THREADS);
@@ -220,8 +219,9 @@ public class VirtualMachineImpl implements VirtualMachine {
 		try {
 			Response response = sendRequest(request, 30000);
 			Map jsonThread = (Map) response.getBody().get(JSONConstants.THREAD);
-			if (jsonThread == null)
-				return ThreadReferenceImpl.zombie(this, threadId);
+			if (jsonThread == null) {
+				return null;
+			}
 			return new ThreadReferenceImpl(this, jsonThread);
 		} catch (DisconnectedException e) {
 			disconnectVM();

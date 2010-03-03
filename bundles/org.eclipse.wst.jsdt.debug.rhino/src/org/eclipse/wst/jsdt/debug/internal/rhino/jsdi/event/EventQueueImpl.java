@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,20 +55,16 @@ public class EventQueueImpl implements EventQueue {
 		this.vm = vm;
 		this.eventRequestManager = eventRequestManager;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.event.EventQueue#remove()
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue#remove()
 	 */
 	public EventSet remove() {
 		return remove(-1);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.event.EventQueue#remove(int)
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue#remove(int)
 	 */
 	public EventSet remove(int timeout) {
 		try {

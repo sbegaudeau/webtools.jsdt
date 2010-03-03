@@ -53,49 +53,27 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 			// TODO NLS this
 			this.name = "Rhino - " + threadId; //$NON-NLS-1$
 		}
-		this.suspended = JSONConstants.SUSPENDED.equals(jsonThread
-				.get(JSONConstants.STATE));
+		this.suspended = JSONConstants.SUSPENDED.equals(jsonThread.get(JSONConstants.STATE));
 	}
 
-	/**
-	 * Constructor
-	 * 
-	 * @param vm
-	 * @param threadId
-	 */
-	private ThreadReferenceImpl(VirtualMachineImpl vm, Long threadId) {
-		super(vm);
-		this.threadId = threadId;
-		// TODO NLS this
-		this.name = "Rhino - " + threadId; //$NON-NLS-1$
-		this.status = THREAD_STATUS_ZOMBIE;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.ThreadReference#frameCount()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frameCount()
 	 */
 	public synchronized int frameCount() {
 		frames();
 		return frames.size();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#frame(int)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frame(int)
 	 */
 	public synchronized StackFrame frame(int index) {
 		frames();
 		return (StackFrame) frames.get(index);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#frames()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frames()
 	 */
 	public synchronized List frames() {
 		if (!suspended || status == THREAD_STATUS_ZOMBIE)
@@ -124,7 +102,10 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		} catch (TimeoutException e) {
 			e.printStackTrace();
 		}
-		return frames;
+		if(frames != null) {
+			return frames;
+		}
+		return Collections.EMPTY_LIST;
 	}
 
 	/**
@@ -150,11 +131,8 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.ThreadReference#isAtBreakpoint()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#isAtBreakpoint()
 	 */
 	public synchronized boolean isAtBreakpoint() {
 		return suspended && atBreakpoint;
@@ -170,29 +148,22 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		this.atBreakpoint = atBreakpoint;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.ThreadReference#isSuspended()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#isSuspended()
 	 */
 	public synchronized boolean isSuspended() {
 		return suspended;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#name()
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */
 	public String name() {
 		return name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#resume()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#resume()
 	 */
 	public synchronized void resume() {
 		if (status == THREAD_STATUS_ZOMBIE) {
@@ -218,10 +189,8 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#suspend()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#suspend()
 	 */
 	public void suspend() {
 		if (status == THREAD_STATUS_ZOMBIE) {
@@ -238,19 +207,15 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#interrupt()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#interrupt()
 	 */
 	public void interrupt() {
 		throw new UnsupportedOperationException();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.ThreadReference#status()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#status()
 	 */
 	public synchronized int status() {
 		return status;
@@ -278,18 +243,5 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	 */
 	public synchronized void setStep(String step) {
 		this.step = step;
-	}
-
-	/**
-	 * Creates a new thread that is in the zombie state - i.e. not running and
-	 * not initialized
-	 * 
-	 * @param vm
-	 * @param threadId
-	 * @return a new {@link ThreadReference}
-	 */
-	public static ThreadReferenceImpl zombie(VirtualMachineImpl vm,
-			Long threadId) {
-		return new ThreadReferenceImpl(vm, threadId);
 	}
 }

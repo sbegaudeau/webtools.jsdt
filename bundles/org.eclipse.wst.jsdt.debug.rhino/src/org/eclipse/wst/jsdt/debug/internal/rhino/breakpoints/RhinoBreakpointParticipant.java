@@ -15,10 +15,12 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptPrimitiveValue;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 
 /**
  * Participant for Rhino
@@ -61,6 +63,21 @@ public class RhinoBreakpointParticipant implements IJavaScriptBreakpointParticip
 		} 
 		catch (CoreException ce) {
 			//ignore, just don't suspend
+		}
+		return DONT_SUSPEND;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant#scriptLoaded(org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread, org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference, org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint)
+	 */
+	public int scriptLoaded(IJavaScriptThread thread, ScriptReference script, IJavaScriptBreakpoint breakpoint) {
+		try {
+			if(breakpoint.getScriptPath().equals(script.sourceURI().getPath())) {
+				return SUSPEND;
+			}
+		}
+		catch(CoreException ce) {
+			RhinoDebugPlugin.log(ce);
 		}
 		return DONT_SUSPEND;
 	}

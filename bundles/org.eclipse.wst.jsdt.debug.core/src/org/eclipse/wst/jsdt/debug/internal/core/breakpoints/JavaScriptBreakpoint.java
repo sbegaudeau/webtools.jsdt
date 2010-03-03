@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.BreakpointRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
@@ -323,7 +324,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint#getScriptPath()
 	 */
 	public String getScriptPath() throws CoreException {
-		return ensureMarker().getAttribute(SCRIPT_PATH, null);
+		return ensureMarker().getAttribute(SCRIPT_PATH, Constants.EMPTY_STRING);
 	}
 
 	/* (non-Javadoc)

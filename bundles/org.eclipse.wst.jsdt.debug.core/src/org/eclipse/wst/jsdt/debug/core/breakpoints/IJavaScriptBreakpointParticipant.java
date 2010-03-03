@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.core.breakpoints;
 
+import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 
 /**
@@ -60,4 +61,27 @@ public interface IJavaScriptBreakpointParticipant {
 	 *  <code>DONT_SUSPEND</code>, or <code>DONT_CARE</code>
 	 */
 	public int breakpointHit(IJavaScriptThread thread, IJavaScriptBreakpoint breakpoint);
+	
+	/**
+	 * Notification that the given {@link ScriptReference} has been loaded
+	 * in the specified thread. Allows this listener to
+	 * vote to determine if the given thread should be suspended in
+	 * response to the breakpoint. If at least one listener votes to
+	 * <code>SUSPEND</code>, the thread will suspend. If there
+	 * are no votes to suspend the thread, there must be at least one
+	 * <code>DONT_SUSPEND</code> vote to avoid the suspension (resume). If all
+	 * listeners vote <code>DONT_CARE</code>, the thread will suspend by default.
+	 * <p>
+	 * The thread the breakpoint has been encountered in is now suspended. Listeners
+	 * may query thread state and perform evaluations. All subsequent breakpoints
+	 * in this thread will be ignored until voting has completed.
+	 * </p>
+	 * @param thread the JavaScript thread
+	 * @param script the {@link ScriptReference} that has been loaded
+	 * @param breakpoint the {@link IJavaScriptBreakpoint}
+	 * @return whether the thread should suspend or whether this
+	 *  listener doesn't care - one of <code>SUSPEND</code>, 
+	 *  <code>DONT_SUSPEND</code>, or <code>DONT_CARE</code>
+	 */
+	public int scriptLoaded(IJavaScriptThread thread, ScriptReference script, IJavaScriptBreakpoint breakpoint);
 }

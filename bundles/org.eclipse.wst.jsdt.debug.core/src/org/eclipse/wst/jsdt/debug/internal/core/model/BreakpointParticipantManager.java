@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticip
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
@@ -76,6 +77,17 @@ public class BreakpointParticipantManager {
 				}
 			}
 			return delegate;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant#scriptLoaded(org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread, org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference, org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint)
+		 */
+		public int scriptLoaded(IJavaScriptThread thread, ScriptReference script, IJavaScriptBreakpoint breakpoint) {
+			IJavaScriptBreakpointParticipant part = getDelegate();
+			if(part != null) {
+				return part.scriptLoaded(thread, script, breakpoint);
+			}
+			return DONT_CARE;
 		}
 	}
 	

@@ -130,8 +130,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 		// by all listeners
 		plugin.asyncExec(new Runnable() {
 			public void run() {
-				Thread t = new Thread(eventDispatcher,
-						"JavaScriptDebugModel.EventDispatcher"); //$NON-NLS-1$
+				Thread t = new Thread(eventDispatcher, "JavaScriptDebugModel.EventDispatcher"); //$NON-NLS-1$
 				t.setDaemon(true);
 				t.start();
 			}

@@ -93,24 +93,17 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
 	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
-		try {
-			if (event instanceof ScriptLoadEvent) {
-				ScriptLoadEvent sevent = (ScriptLoadEvent) event;
-				ScriptReference script = sevent.script();
-				JavaScriptThread thread = target.findThread((sevent).thread());
-				if (thread != null) {
-					if(isGlobalLoadSuspend()) {
-						thread.addBreakpoint(this);
-						return false;
-					}
-					//TODO this needs to be pushed to the participants
-					// for the script comparison
-					return !thread.suspendForBreakpoint(this, suspendVote) && 
-							!getScriptPath().equals(script.sourceURI().getPath());
+		if (event instanceof ScriptLoadEvent) {
+			ScriptLoadEvent sevent = (ScriptLoadEvent) event;
+			ScriptReference script = sevent.script();
+			JavaScriptThread thread = target.findThread((sevent).thread());
+			if (thread != null) {
+				if(isGlobalLoadSuspend()) {
+					thread.addBreakpoint(this);
+					return false;
 				}
+				return !thread.suspendForScriptLoad(this, script, suspendVote);
 			}
-		} catch (CoreException ce) {
-			JavaScriptDebugPlugin.log(ce);
 		}
 		return true;
 	}
@@ -166,7 +159,8 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 		if (event instanceof ScriptLoadEvent) {
 			JavaScriptThread thread = target.findThread(((ScriptLoadEvent) event).thread());
 			if (thread != null) {
-				thread.suspendForBreakpointComplete(this, suspend, eventSet);
+				ScriptLoadEvent sevent = (ScriptLoadEvent) event;
+				thread.suspendForScriptLoadComplete(this, sevent.script(), suspend, eventSet);
 			}
 		}
 	}

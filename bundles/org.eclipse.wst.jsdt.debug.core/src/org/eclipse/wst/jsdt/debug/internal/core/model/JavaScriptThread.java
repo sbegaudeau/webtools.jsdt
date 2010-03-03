@@ -22,6 +22,7 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
+import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
@@ -33,6 +34,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint;
@@ -120,8 +122,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 					JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
 					if (breakpoint instanceof JavaScriptLoadBreakpoint) {
 						String name = breakpoint.getScriptPath();
-						if(name == null) {
-							name = "<evaluated script>"; //$NON-NLS-1$
+						if(Constants.EMPTY_STRING.equals(name)) {
+							name = ModelMessages.JavaScriptThread_evaluated_script;
 						}
 						return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
 					}
@@ -296,43 +298,40 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	public synchronized void suspend() throws DebugException {
 		if (canSuspend()) {
-			EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
-			SuspendRequest suspendRequest = requestManager.createSuspendRequest(this.thread);
-			suspendRequest.setEnabled(true);
-			getJSDITarget().addJSDIEventListener(this, suspendRequest);
-			this.thread.suspend();
+			suspendUnderlyingThread();
 		}
 	}
 
+	/**
+	 * Delegate method to suspend the underlying thread
+	 */
+	void suspendUnderlyingThread() {
+		EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
+		SuspendRequest suspendRequest = requestManager.createSuspendRequest(this.thread);
+		suspendRequest.setEnabled(true);
+		getJSDITarget().addJSDIEventListener(this, suspendRequest);
+		this.thread.suspend();
+	}
+	
 	/**
 	 * Call-back from a breakpoint that has been hit
 	 * 
 	 * @param breakpoint
 	 * @param vote
-	 * @return if the thread should suspended
+	 * @return if the thread should stay suspended
 	 */
 	public boolean suspendForBreakpoint(IJavaScriptBreakpoint breakpoint, boolean vote) {
-		if(doVote(breakpoint)) {
-			addBreakpoint(breakpoint);
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Consults all of the breakpoint participants to see if we should suspend on the given breakpoint.
-	 * 
-	 * @param breakpoint
-	 * @return
-	 */
-	boolean doVote(IJavaScriptBreakpoint breakpoint) {
 		IJavaScriptBreakpointParticipant[] participants = JavaScriptDebugPlugin.getParticipantManager().getParticipants(breakpoint);
 		int suspend = 0;
 		for (int i = 0; i < participants.length; i++) {
 			suspend |= participants[i].breakpointHit(this, breakpoint);
 		}
-		return (suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
-				suspend == IJavaScriptBreakpointParticipant.DONT_CARE;
+		if((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
+				suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
+			addBreakpoint(breakpoint);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -358,7 +357,53 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 		}
 	}
-
+	
+	/**
+	 * Call-back for a script that has been loaded
+	 * @param breakpoint
+	 * @param script
+	 * @param vote
+	 * @return if the thread should stay suspended
+	 */
+	public boolean suspendForScriptLoad(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean vote) {
+		IJavaScriptBreakpointParticipant[] participants = JavaScriptDebugPlugin.getParticipantManager().getParticipants(breakpoint);
+		int suspend = 0;
+		for (int i = 0; i < participants.length; i++) {
+			suspend |= participants[i].scriptLoaded(this, script, breakpoint);
+		}
+		if((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
+				suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
+			addBreakpoint(breakpoint);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Call-back from {@link JavaScriptLoadBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)} to handle suspending / cleanup
+	 * 
+	 * @param breakpoint
+	 * @param script
+	 * @param suspend if the thread should suspend
+	 * @param eventSet
+	 */
+	public void suspendForScriptLoadComplete(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean suspend, EventSet eventSet) {
+		// TODO clean up after voting - when added - and handle state / policy changes
+		if (suspend) {
+			try {
+				if (breakpoint.getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_THREAD) {
+					markSuspended();
+				} else {
+					getDebugTarget().suspend();
+				}
+				suspendUnderlyingThread();
+				fireSuspendEvent(DebugEvent.BREAKPOINT);
+			} catch (CoreException ce) {
+				JavaScriptDebugPlugin.log(ce);
+			}
+		}
+	}
+	
 	/**
 	 * Adds the given breakpoint to the collection for this thread
 	 * 
