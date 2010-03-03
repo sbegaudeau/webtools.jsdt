@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -467,6 +467,10 @@ public final class JavaScriptConventions {
 				}
 		}
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IStatus status = workspace.validateName(new String(name), IResource.FOLDER);
+		if (!status.isOK()) {
+			return status;
+		}
 		StringTokenizer st = new StringTokenizer(name, "."); //$NON-NLS-1$
 		boolean firstToken = true;
 		IStatus warningStatus = null;
@@ -475,9 +479,9 @@ public final class JavaScriptConventions {
 			typeName = typeName.trim(); // grammar allows spaces
 			char[] scannedID = scannedIdentifier(typeName, sourceLevel, complianceLevel);
 			if (scannedID == null) {
-				return new Status(IStatus.ERROR, JavaScriptCore.PLUGIN_ID, -1, Messages.bind(Messages.convention_illegalIdentifier, typeName), null);
+				return new Status(IStatus.WARNING, JavaScriptCore.PLUGIN_ID, -1, Messages.bind(Messages.convention_illegalIdentifier, typeName), null);
 			}
-			IStatus status = workspace.validateName(new String(scannedID), IResource.FOLDER);
+			status = workspace.validateName(new String(name), IResource.FOLDER);
 			if (!status.isOK()) {
 				return status;
 			}

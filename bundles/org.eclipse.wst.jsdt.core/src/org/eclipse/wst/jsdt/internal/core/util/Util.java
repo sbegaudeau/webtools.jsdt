@@ -1321,7 +1321,7 @@ public class Util {
 	 * @param complianceLevel the compliance level
 	 */
 	public static boolean isValidFolderNameForPackage(String folderName, String sourceLevel, String complianceLevel) {
-		return JavaScriptConventions.validateIdentifier(folderName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
+		return JavaScriptConventions.validatePackageName(folderName, sourceLevel, complianceLevel).getSeverity() != IStatus.ERROR;
 	}
 
 	/**
