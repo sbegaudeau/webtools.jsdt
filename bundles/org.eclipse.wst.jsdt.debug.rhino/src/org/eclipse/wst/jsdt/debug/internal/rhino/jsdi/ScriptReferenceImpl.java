@@ -147,7 +147,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 						this.sourceuri = new URI("file", null, path.makeAbsolute().toString(), null); //$NON-NLS-1$
 					}
 					else {
-						this.sourceuri = new URI("file", null, "/<stdin>", null);
+						this.sourceuri = new URI("file", null, "/evaluated_source", null);
 					}
 				} catch (URISyntaxException urise) {
 					RhinoDebugPlugin.log(urise);
