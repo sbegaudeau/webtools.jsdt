@@ -17,6 +17,7 @@ package org.eclipse.wst.jsdt.debug.internal.core;
  */
 public interface Constants {
 
+//#########  MISC  ############
 	/**
 	 * Constant representing a space
 	 */
@@ -38,13 +39,13 @@ public interface Constants {
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
 	
-	//Launching support
+//#########  LAUNCHING  ############
 	/**
 	 * The ID of the default JavaScript launch configuration type
 	 */
 	public static final String LAUNCH_CONFIG_ID = "org.eclipse.wst.jsdt.debug.core.launchConfigurationType"; //$NON-NLS-1$
 	
-	//Extension point constants
+//#########  EXTENSION POINTS  ############
 	/**
 	 * the class attribute name
 	 */
@@ -65,5 +66,11 @@ public interface Constants {
 	 * The name of the launching connectors extension point
 	 */
 	static final String LAUNCHING_CONNECTORS = "launchingConnectors"; //$NON-NLS-1$
+	
+//#########  PREFERENCES  ############
+	/**
+	 * Preference to suspend execution when any script loads, i.e. for evey script load event
+	 */
+	public static final String SUSPEND_ON_ALL_SCRIPT_LOADS = JavaScriptDebugPlugin.PLUGIN_ID + ".suspend_on_all_script_loads"; //$NON-NLS-1$
 	
 }

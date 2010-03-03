@@ -40,6 +40,11 @@ import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptThread;
 public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implements IJavaScriptLoadBreakpoint {
 
 	/**
+	 * Attribute flag to tag a script load breakpoint as a global suspend load breakpoint
+	 */
+	public static final String GLOBAL_SUSPEND = JavaScriptDebugPlugin.PLUGIN_ID + ".global_suspend"; //$NON-NLS-1$
+	
+	/**
 	 * Constructor
 	 */
 	public JavaScriptLoadBreakpoint() {
@@ -94,8 +99,14 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 				ScriptReference script = sevent.script();
 				JavaScriptThread thread = target.findThread((sevent).thread());
 				if (thread != null) {
-					thread.suspendForBreakpoint(this, suspendVote);
-					return !getScriptPath().equals(script.sourceURI().getPath());
+					if(isGlobalLoadSuspend()) {
+						thread.addBreakpoint(this);
+						return false;
+					}
+					//TODO this needs to be pushed to the participants
+					// for the script comparison
+					return !thread.suspendForBreakpoint(this, suspendVote) && 
+							!getScriptPath().equals(script.sourceURI().getPath());
 				}
 			}
 		} catch (CoreException ce) {
@@ -104,6 +115,21 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 		return true;
 	}
 
+	/**
+	 * Returns if this breakpoint supports global suspend
+	 * 
+	 * @return <code>true</code> if we should suspend on all script loads <code>false</code> otherwise
+	 */
+	boolean isGlobalLoadSuspend() {
+		try {
+			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false);
+		}
+		catch(CoreException ce) {
+			JavaScriptDebugPlugin.log(ce);
+		}
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint#registerRequest(org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest)
 	 */

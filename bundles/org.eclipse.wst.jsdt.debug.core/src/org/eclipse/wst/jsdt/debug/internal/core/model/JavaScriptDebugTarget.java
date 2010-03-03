@@ -30,6 +30,7 @@ import org.eclipse.debug.core.model.IMemoryBlock;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -46,6 +47,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptPreferencesManager;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint;
 
 /**
@@ -330,12 +332,16 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 		debuggerStatementRequest.setEnabled(true);
 		eventDispatcher.addEventListener(this, debuggerStatementRequest);
 
-		IBreakpointManager manager = DebugPlugin.getDefault()
-				.getBreakpointManager();
+		IBreakpointManager manager = DebugPlugin.getDefault().getBreakpointManager();
 		manager.addBreakpointListener(this);
-		IBreakpoint[] managerBreakpoints = manager.getBreakpoints();
+		IBreakpoint[] managerBreakpoints = manager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
 		for (int i = 0; i < managerBreakpoints.length; i++) {
 			breakpointAdded(managerBreakpoints[i]);
+		}
+		//add the managed breakpoints
+		IJavaScriptBreakpoint[] breakpoints = JavaScriptPreferencesManager.getAllManagedBreakpoints();
+		for (int i = 0; i < breakpoints.length; i++) {
+			breakpointAdded(breakpoints[i]);
 		}
 	}
 
@@ -451,8 +457,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public void resume() throws DebugException {
-		if (!isSuspended() || !isAvailable()) {
-			// no-op if the target is not suspended or not ready
+		if (!isAvailable()) {
+			// no-op if the target is not ready
 			return;
 		}
 		// if we are resuming the target resume all of the threads before

@@ -48,6 +48,8 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 */
 	private static BreakpointParticipantManager participantmanager = null;
 	
+	private static JavaScriptPreferencesManager prefmanager = null;
+	
 	/**
 	 * Returns the singleton {@link ConnectorsManager} instance
 	 * 
@@ -79,6 +81,8 @@ public class JavaScriptDebugPlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		prefmanager = new JavaScriptPreferencesManager();
+		prefmanager.start();
 	}
 
 	/*
@@ -88,15 +92,18 @@ public class JavaScriptDebugPlugin extends Plugin {
 	public void stop(BundleContext context) throws Exception {
 		try {
 			plugin = null;
-			super.stop(context);
-		}
-		finally {
 			if(connectionmanager != null) {
 				connectionmanager.dispose();
 			}
 			if(participantmanager != null) {
 				participantmanager.dispose();
 			}
+			if(prefmanager != null) {
+				prefmanager.stop();
+			}
+		}
+		finally {
+			super.stop(context);
 		}
 	}
 

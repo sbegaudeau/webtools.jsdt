@@ -419,6 +419,8 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			ScriptReference script = sevent.script();
 			try {
 				// TODO need something fancier in the future
+				// perhaps add this to the participants so each can decide what makes
+				// a script "equal" to suspend on
 				if (new Path(getScriptPath()).equals(script.sourceURI().getPath())) {
 					createRequest(target, sevent.script());
 				}
@@ -428,7 +430,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		}
 		return true;
 	}
-
+	
 	/**
 	 * If the breakpoint event should be skipped - i.e. if the thread should resume and ignore the event
 	 * 

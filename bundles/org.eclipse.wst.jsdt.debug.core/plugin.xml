@@ -136,5 +136,11 @@
             delegateClass="org.eclipse.wst.jsdt.debug.internal.core.JavaScriptWatchExpressionDelegate">
       </watchExpressionDelegate>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

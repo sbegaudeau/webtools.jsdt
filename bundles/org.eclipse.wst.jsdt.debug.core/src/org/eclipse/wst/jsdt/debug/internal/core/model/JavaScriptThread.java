@@ -119,7 +119,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 				try {
 					JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
 					if (breakpoint instanceof JavaScriptLoadBreakpoint) {
-						return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, breakpoint.getScriptPath());
+						String name = breakpoint.getScriptPath();
+						if(name == null) {
+							name = "<evaluated script>"; //$NON-NLS-1$
+						}
+						return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
 					}
 				} catch (CoreException ce) {
 					JavaScriptDebugPlugin.log(ce);
@@ -308,8 +312,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @return if the thread should suspended
 	 */
 	public boolean suspendForBreakpoint(IJavaScriptBreakpoint breakpoint, boolean vote) {
-		addBreakpoint(breakpoint);
-		return doVote(breakpoint);
+		if(doVote(breakpoint)) {
+			addBreakpoint(breakpoint);
+			return true;
+		}
+		return false;
 	}
 
 	/**

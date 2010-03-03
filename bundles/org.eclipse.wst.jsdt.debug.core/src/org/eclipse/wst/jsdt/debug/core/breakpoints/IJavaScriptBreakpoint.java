@@ -32,7 +32,7 @@ public interface IJavaScriptBreakpoint extends IBreakpoint {
 	/**
 	 * Breakpoint attribute for the path of the script
 	 */
-	public static final String SCRIPT_PATH = JavaScriptDebugPlugin.PLUGIN_ID + "script_path"; //$NON-NLS-1$
+	public static final String SCRIPT_PATH = JavaScriptDebugPlugin.PLUGIN_ID + ".script_path"; //$NON-NLS-1$
 	/**
 	 * The hit count set in the breakpoint
 	 */
