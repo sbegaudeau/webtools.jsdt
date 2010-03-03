@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1259,7 +1259,7 @@ public class NameLookup implements SuffixConstants {
 //			className= name.substring(index + 1);
 //		}
 		if (USE_BINDING_SEARCH && searchFiles)
-			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor,false,null);
+			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor,true,null);
 		return findType(className, packageName, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
 	}
 

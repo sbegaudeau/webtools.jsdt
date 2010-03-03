@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1263,6 +1263,13 @@ public class JavaProject
 	public IType findType(String fullyQualifiedName) throws JavaScriptModelException {
 		return findType(fullyQualifiedName, DefaultWorkingCopyOwner.PRIMARY);
 	}
+	
+	/**
+	 * @see IJavaScriptProject#findTypes(String)
+	 */
+	public IType[] findTypes(String fullyQualifiedName) throws JavaScriptModelException {
+		return findTypes(fullyQualifiedName, DefaultWorkingCopyOwner.PRIMARY);
+	}
 	/**
 	 * @see IJavaScriptProject#findType(String, IProgressMonitor)
 	 */
@@ -1299,7 +1306,55 @@ public class JavaProject
 		{
 			answer.type=((ITypeRoot)answer.element).getType(fullyQualifiedName);
 		}
+		else if (answer.type==null && answer.element!=null && answer.element.getClass().isArray())
+		{
+			Object [] elements=(Object [])answer.element;
+			if(elements[0] instanceof ITypeRoot)
+				answer.type=((ITypeRoot)elements[0]).getType(fullyQualifiedName);
+		}
 		return answer.type;
+	}
+	
+	/*
+	 * Internal findType with instanciated name lookup - can return multiple IType's
+	 */
+	IType[] findTypes(String fullyQualifiedName, NameLookup lookup, boolean considerSecondaryTypes, IProgressMonitor progressMonitor) throws JavaScriptModelException {
+		NameLookup.Answer answer = lookup.findType(
+			fullyQualifiedName,
+			false,
+			NameLookup.ACCEPT_ALL,
+			considerSecondaryTypes,
+			true, /* wait for indexes (only if consider secondary types)*/
+			false/*don't check restrictions*/,
+			progressMonitor);
+		if (answer == null) {
+			// try to find enclosing type
+			int lastDot = fullyQualifiedName.lastIndexOf('.');
+			if (lastDot == -1) return null;
+			IType type = findType(fullyQualifiedName.substring(0, lastDot), lookup, considerSecondaryTypes, progressMonitor);
+			if (type != null) {
+				type = type.getType(fullyQualifiedName.substring(lastDot+1));
+				if (!type.exists()) {
+					return null;
+				}
+			}
+			return new IType[]{type};
+		}
+		if (answer.type==null && answer.element instanceof ITypeRoot)
+		{
+			answer.type=((ITypeRoot)answer.element).getType(fullyQualifiedName);
+		}
+		else if (answer.type==null && answer.element!=null && answer.element.getClass().isArray())
+		{
+			Object [] elements=(Object [])answer.element;
+			IType[] iTypes = new IType[elements.length];
+			for(int i = 0; i < elements.length; i++) {
+				if(elements[i] instanceof ITypeRoot)
+					iTypes[i] =((ITypeRoot)elements[i]).getType(fullyQualifiedName);
+			}
+			return iTypes;
+		}
+		return new IType[] {answer.type};
 	}
 	/**
 	 * @see IJavaScriptProject#findType(String, String)
@@ -1360,6 +1415,14 @@ public class JavaProject
 	public IType findType(String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException {
 		NameLookup lookup = newNameLookup(owner);
 		return findType(fullyQualifiedName, lookup, false, null);
+	}
+	
+	/**
+	 * @see IJavaScriptProject#findTypes(String, WorkingCopyOwner)
+	 */
+	public IType[] findTypes(String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException {
+		NameLookup lookup = newNameLookup(owner);
+		return findTypes(fullyQualifiedName, lookup, false, null);
 	}
 
 	/**
