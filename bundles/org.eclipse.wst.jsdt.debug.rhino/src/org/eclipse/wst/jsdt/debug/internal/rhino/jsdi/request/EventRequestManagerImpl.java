@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
  * 
  * @since 1.0
  */
-public class EventRequestManagerImpl implements EventRequestManager {
+public final class EventRequestManagerImpl implements EventRequestManager {
 
 	private final Map eventsMap = new HashMap();
 	private final List breakpointRequests = new ArrayList();
@@ -73,63 +73,40 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		eventsMap.put(VMDisconnectRequestImpl.class, vmDisconnectRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createBreakpointRequest
-	 * (org.eclipse.e4.languages.javascript.jsdi.Location)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createBreakpointRequest(org.eclipse.wst.jsdt.debug.core.jsdi.Location)
 	 */
-	public synchronized BreakpointRequest createBreakpointRequest(
-			Location location) {
+	public synchronized BreakpointRequest createBreakpointRequest(Location location) {
 		BreakpointRequestImpl request = new BreakpointRequestImpl(vm, location);
 		breakpointRequests.add(request);
 		return request;
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * breakpointRequests()
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#debuggerStatementRequests()
 	 */
 	public synchronized List debuggerStatementRequests() {
 		return Collections.unmodifiableList(debuggerStatementRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createDebuggerStatementRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createDebuggerStatementRequest()
 	 */
 	public synchronized DebuggerStatementRequest createDebuggerStatementRequest() {
-		DebuggerStatementRequestImpl request = new DebuggerStatementRequestImpl(
-				vm);
+		DebuggerStatementRequestImpl request = new DebuggerStatementRequestImpl(vm);
 		debuggerStatementRequests.add(request);
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * breakpointRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#breakpointRequests()
 	 */
 	public synchronized List breakpointRequests() {
 		return Collections.unmodifiableList(breakpointRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createExceptionRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createExceptionRequest()
 	 */
 	public synchronized ExceptionRequest createExceptionRequest() {
 		ExceptionRequest request = new ExceptionRequestImpl(vm);
@@ -137,23 +114,15 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * exceptionRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#exceptionRequests()
 	 */
 	public synchronized List exceptionRequests() {
 		return Collections.unmodifiableList(exceptionRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createScriptLoadRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createScriptLoadRequest()
 	 */
 	public synchronized ScriptLoadRequest createScriptLoadRequest() {
 		ScriptLoadRequest request = new ScriptLoadRequestImpl(vm);
@@ -161,75 +130,47 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * scriptLoadRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#scriptLoadRequests()
 	 */
 	public synchronized List scriptLoadRequests() {
 		return Collections.unmodifiableList(scriptLoadRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createStepRequest
-	 * (org.eclipse.e4.languages.javascript.jsdi.ThreadReference, int)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createStepRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference, int)
 	 */
-	public synchronized StepRequest createStepRequest(ThreadReference thread,
-			int step) {
+	public synchronized StepRequest createStepRequest(ThreadReference thread, int step) {
 		StepRequest request = new StepRequestImpl(vm, thread, step);
 		stepRequests.add(request);
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * stepRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#stepRequests()
 	 */
 	public synchronized List stepRequests() {
 		return Collections.unmodifiableList(stepRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createSuspendRequest
-	 * (org.eclipse.e4.languages.javascript.jsdi.ThreadReference)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createSuspendRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
 	 */
-	public synchronized SuspendRequest createSuspendRequest(
-			ThreadReference thread) {
+	public synchronized SuspendRequest createSuspendRequest(ThreadReference thread) {
 		SuspendRequest request = new SuspendRequestImpl(vm, thread);
 		suspendRequests.add(request);
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * suspendRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#suspendRequests()
 	 */
 	public synchronized List suspendRequests() {
 		return Collections.unmodifiableList(suspendRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createThreadEnterRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadEnterRequest()
 	 */
 	public synchronized ThreadEnterRequest createThreadEnterRequest() {
 		ThreadEnterRequest request = new ThreadEnterRequestImpl(vm);
@@ -237,23 +178,15 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * threadEnterRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#threadEnterRequests()
 	 */
 	public List threadEnterRequests() {
 		return Collections.unmodifiableList(threadEnterRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createThreadExitRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadExitRequest()
 	 */
 	public synchronized ThreadExitRequest createThreadExitRequest() {
 		ThreadExitRequest request = new ThreadExitRequestImpl(vm);
@@ -261,24 +194,15 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * threadExitRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#threadExitRequests()
 	 */
 	public List threadExitRequests() {
 		return Collections.unmodifiableList(threadExitRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * deleteEventRequest
-	 * (org.eclipse.e4.languages.javascript.jsdi.request.EventRequest)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#deleteEventRequest(org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest)
 	 */
 	public synchronized void deleteEventRequest(EventRequest eventRequest) {
 		Class clazz = eventRequest.getClass();
@@ -293,12 +217,8 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		eventRequestImpl.delete();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * deleteEventRequest(java.util.List)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#deleteEventRequest(java.util.List)
 	 */
 	public synchronized void deleteEventRequest(List eventRequests) {
 		for (Iterator iterator = eventRequests.iterator(); iterator.hasNext();) {
@@ -307,12 +227,8 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createVMDeathRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createVMDeathRequest()
 	 */
 	public VMDeathRequest createVMDeathRequest() {
 		VMDeathRequest request = new VMDeathRequestImpl(this.vm);
@@ -320,23 +236,15 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * vmDeathRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#vmDeathRequests()
 	 */
 	public List vmDeathRequests() {
 		return Collections.unmodifiableList(vmDeathRequests);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * createVMDisconnectRequest()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createVMDisconnectRequest()
 	 */
 	public VMDisconnectRequest createVMDisconnectRequest() {
 		VMDisconnectRequest request = new VMDisconnectRequestImpl(this.vm);
@@ -344,12 +252,8 @@ public class EventRequestManagerImpl implements EventRequestManager {
 		return request;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.e4.languages.javascript.jsdi.request.EventRequestManager#
-	 * vmDisconnectRequests()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#vmDisconnectRequests()
 	 */
 	public List vmDisconnectRequests() {
 		return Collections.unmodifiableList(vmDisconnectRequests);
