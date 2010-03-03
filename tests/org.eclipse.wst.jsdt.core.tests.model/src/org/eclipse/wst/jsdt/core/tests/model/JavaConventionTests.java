@@ -239,7 +239,7 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	public void testValidPackageName() {
 		
 		String pkgName= "org.eclipse.wst.jsdt.core.t\\u0065sts.MyPackage";
-		assertEquals("unicode package name not handled", IStatus.OK, validate(pkgName, PACKAGE_NAME));
+		assertEquals("unicode package name not recognized as not handled", IStatus.ERROR, validate(pkgName, PACKAGE_NAME));
 	
 		assertEquals("package name not recognized as invalid1", IStatus.ERROR, validate("", PACKAGE_NAME));
 		assertEquals("package name not recognized as valid1", IStatus.OK, validate("java . lang", PACKAGE_NAME));
@@ -248,8 +248,9 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		assertEquals("package name not recognized as invalid4", IStatus.ERROR, validate(null, PACKAGE_NAME));
 		assertEquals("package name not recognized as unconventional1", IStatus.WARNING, validate("Java.lang", PACKAGE_NAME));
 		assertEquals("package name not recognized as valid2", IStatus.OK, validate("java.Lang", PACKAGE_NAME));
-		assertEquals("package name not recognized as invalid5", IStatus.ERROR, validate("Test.sample&plugin", PACKAGE_NAME));
+		assertEquals("package name not recognized as invalid5", IStatus.WARNING, validate("Test.sample&plugin", PACKAGE_NAME));
 		assertEquals("package name not recognized as unconventional2", IStatus.WARNING, validate("Test.sample", PACKAGE_NAME));
+		assertEquals("package name not recognized as unconventional3", IStatus.WARNING, validate("white space", PACKAGE_NAME));
 	}
 	/**
 	 * @see JavaScriptConventions
