@@ -561,7 +561,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		else
 		{
 			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
-			name = CharOperation.concat(ANONYMOUS_MARKER,possibleTypeName,cs);
+			name = CharOperation.concat(ANONYMOUS_PREFIX,possibleTypeName,cs);
 		}
 		InferredType type = addType(name,true);
 		type.isAnonymous=true;
