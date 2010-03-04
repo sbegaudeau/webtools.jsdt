@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link NullValue}
@@ -31,14 +30,7 @@ public final class NullValueImpl extends MirrorImpl implements NullValue {
 	public NullValueImpl(VirtualMachineImpl vm) {
 		super(vm);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.NULL;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */

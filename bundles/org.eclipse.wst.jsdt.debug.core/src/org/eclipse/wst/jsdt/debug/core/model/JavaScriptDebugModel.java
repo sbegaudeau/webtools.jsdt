@@ -17,6 +17,7 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint;
@@ -84,5 +85,37 @@ public class JavaScriptDebugModel {
 	 */
 	public static IJavaScriptFunctionBreakpoint createFunctionBreakpoint(final IResource resource, final String name, final String signature, final int charstart, final int charend, final Map attributes, final boolean register) throws DebugException {
 		return new JavaScriptFunctionBreakpoint(resource, name, signature, charstart, charend, attributes, register);
+	}
+
+	/**
+	 * Converts the given double value to a {@link String} removing the trailing .0 in the event the precision is 1
+	 * 
+	 * @param n the number to convert
+	 * @return the {@link String} value of the number with trailing .0 removed iff the precision is 1
+	 */
+	public static String numberToString(Number n) {
+		if(n == null) {
+			return NumberValue.NAN;
+		}
+		double d = n.doubleValue();
+		if (d != d) {
+			return NumberValue.NAN;
+		}
+		if (d == Double.POSITIVE_INFINITY) {
+			return NumberValue.INFINITY;
+		}
+		if (d == Double.NEGATIVE_INFINITY) {
+			return NumberValue.NEG_INFINITY;
+		}
+		if (d == 0.0) {
+			return "0"; //$NON-NLS-1$
+		}
+		// we only care about base 10
+		String number = Double.toString(d);
+		// we only convert for a precision equal to 1
+		if (number.endsWith(".0")) { //$NON-NLS-1$
+			number = number.substring(0, number.length() - 2);
+		}
+		return number;
 	}
 }

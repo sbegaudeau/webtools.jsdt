@@ -17,7 +17,7 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
  * @since 1.0
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface NumberValue extends Value {
+public interface NumberValue extends PrimitiveValue {
 
 	/**
 	 * Represents the value for 'Not A Number'

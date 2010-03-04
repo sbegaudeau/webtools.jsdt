@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
+import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 
 /**
@@ -54,14 +55,7 @@ public class NumberValueImpl extends MirrorImpl implements NumberValue {
 	public Number value() {
 		return value;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.NUMBER;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue#isNaN()
 	 */
@@ -73,9 +67,41 @@ public class NumberValueImpl extends MirrorImpl implements NumberValue {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */
 	public String valueString() {
-		if (value == null) {
-			return NAN;
-		}
-		return value.toString();
+		return JavaScriptDebugModel.numberToString(value);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#intValue()
+	 */
+	public int intValue() {
+		return value.intValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#doubleValue()
+	 */
+	public double doubleValue() {
+		return value.doubleValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#booleanValue()
+	 */
+	public boolean booleanValue() {
+		return (value.intValue() > 0 ? true : false);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#stringValue()
+	 */
+	public String stringValue() {
+		return JavaScriptDebugModel.numberToString(value);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return stringValue();
 	}
 }

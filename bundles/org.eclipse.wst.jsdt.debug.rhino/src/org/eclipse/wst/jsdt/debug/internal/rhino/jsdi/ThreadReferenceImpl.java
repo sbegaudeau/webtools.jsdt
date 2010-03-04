@@ -94,7 +94,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 			frames = new ArrayList();
 			for (Iterator iterator = frameIds.iterator(); iterator.hasNext();) {
 				Long frameId = new Long(((Number) iterator.next()).longValue());
-				StackFrameReferenceImpl frame = createStackFrame(frameId);
+				StackFrameImpl frame = createStackFrame(frameId);
 				frames.add(frame);
 			}
 		} catch (DisconnectedException e) {
@@ -115,14 +115,14 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	 * @param frameId
 	 * @return a new {@link StackFrameReference} or <code>null</code>
 	 */
-	private StackFrameReferenceImpl createStackFrame(Long frameId) {
+	private StackFrameImpl createStackFrame(Long frameId) {
 		Request request = new Request(JSONConstants.FRAME);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 		try {
 			Response response = vm.sendRequest(request, 30000);
 			Map jsonFrame = (Map) response.getBody().get(JSONConstants.FRAME);
-			return new StackFrameReferenceImpl(vm, jsonFrame);
+			return new StackFrameImpl(vm, jsonFrame);
 		} catch (DisconnectedException e) {
 			e.printStackTrace();
 		} catch (TimeoutException e) {

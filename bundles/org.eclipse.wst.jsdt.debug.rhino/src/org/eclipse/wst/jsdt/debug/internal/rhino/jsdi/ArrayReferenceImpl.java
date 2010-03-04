@@ -19,7 +19,6 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link ArrayReference}
@@ -48,7 +47,7 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 	 * @param stackFrameImpl
 	 * @param body
 	 */
-	public ArrayReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameReferenceImpl stackFrameImpl) {
+	public ArrayReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameImpl stackFrameImpl) {
 		super(vm, body, stackFrameImpl);
 		this.size = properties().size();
 	}
@@ -97,12 +96,5 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(NLS.bind("Array [{0}]", new String[] {Integer.toString(this.size)}));
 		return buffer.toString();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.ARRAY;
 	}
 }

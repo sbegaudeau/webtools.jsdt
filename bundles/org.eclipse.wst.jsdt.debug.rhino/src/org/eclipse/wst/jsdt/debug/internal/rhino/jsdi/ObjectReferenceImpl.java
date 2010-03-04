@@ -51,7 +51,7 @@ public class ObjectReferenceImpl extends MirrorImpl implements ObjectReference {
 	/**
 	 * The stackframe context for this object
 	 */
-	protected StackFrameReferenceImpl frame;
+	protected StackFrameImpl frame;
 	/**
 	 * The JSDI handle to the constructor for this object - lazily computed in {@link #constructor()}
 	 */
@@ -72,7 +72,7 @@ public class ObjectReferenceImpl extends MirrorImpl implements ObjectReference {
 	 * @param body
 	 * @param frame
 	 */
-	public ObjectReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameReferenceImpl frame) {
+	public ObjectReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameImpl frame) {
 		super(vm);
 		this.frame = frame;
 		this.className = (String) body.get(JSONConstants.CLASS_NAME);

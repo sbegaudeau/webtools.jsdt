@@ -27,7 +27,7 @@ public class VariableImpl extends PropertyImpl implements Variable {
 	 * @param name
 	 * @param ref
 	 */
-	public VariableImpl(VirtualMachineImpl vm, StackFrameReferenceImpl frame, String name, Number ref) {
+	public VariableImpl(VirtualMachineImpl vm, StackFrameImpl frame, String name, Number ref) {
 		super(vm, frame, name, ref);
 	}
 
@@ -42,7 +42,7 @@ public class VariableImpl extends PropertyImpl implements Variable {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Variable#isVisible(org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame)
 	 */
 	public boolean isVisible(StackFrame frame) {
-		StackFrameReferenceImpl frameImpl = (StackFrameReferenceImpl) frame;
+		StackFrameImpl frameImpl = (StackFrameImpl) frame;
 		return frameImpl.isVisible(this);
 	}
 }

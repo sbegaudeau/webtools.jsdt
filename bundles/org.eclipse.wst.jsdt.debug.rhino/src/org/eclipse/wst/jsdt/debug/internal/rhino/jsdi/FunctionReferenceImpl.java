@@ -33,7 +33,7 @@ public class FunctionReferenceImpl extends ObjectReferenceImpl implements Functi
 	 * @param body
 	 * @param stackFrameImpl
 	 */
-	public FunctionReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameReferenceImpl stackFrameImpl) {
+	public FunctionReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameImpl stackFrameImpl) {
 		super(vm, body, stackFrameImpl);
 		this.functionName = (String) body.get(JSONConstants.NAME);
 	}
@@ -57,5 +57,12 @@ public class FunctionReferenceImpl extends ObjectReferenceImpl implements Functi
 	 */
 	public String functionBody() {
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#toString()
+	 */
+	public String toString() {
+		return valueString();
 	}
 }

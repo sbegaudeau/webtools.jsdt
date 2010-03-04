@@ -33,7 +33,7 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
  * @see StackFrame
  * @since 1.0
  */
-public class StackFrameReferenceImpl extends MirrorImpl implements StackFrame {
+public class StackFrameImpl extends MirrorImpl implements StackFrame {
 
 	private final Number frameId;
 	private final Number threadId;
@@ -50,7 +50,7 @@ public class StackFrameReferenceImpl extends MirrorImpl implements StackFrame {
 	 * @param vm
 	 * @param jsonFrame
 	 */
-	public StackFrameReferenceImpl(VirtualMachineImpl vm, Map jsonFrame) {
+	public StackFrameImpl(VirtualMachineImpl vm, Map jsonFrame) {
 		super(vm);
 		this.threadId = (Number) jsonFrame.get(JSONConstants.THREAD_ID);
 		this.frameId = (Number) jsonFrame.get(JSONConstants.FRAME_ID);

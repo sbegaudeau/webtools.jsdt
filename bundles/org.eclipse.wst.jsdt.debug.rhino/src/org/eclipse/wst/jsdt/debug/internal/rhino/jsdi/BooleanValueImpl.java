@@ -44,25 +44,46 @@ public class BooleanValueImpl extends MirrorImpl implements BooleanValue {
 		super(vm);
 		this.value = bool;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue#value()
-	 */
-	public boolean value() {
-		return value.booleanValue();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#getValueTypeName()
-	 */
-	public String getValueTypeName() {
-		return JSONConstants.BOOLEAN;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */
 	public String valueString() {
 		return value.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#intValue()
+	 */
+	public int intValue() {
+		return (value.booleanValue() ? 1 : 0);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#doubleValue()
+	 */
+	public double doubleValue() {
+		return intValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#booleanValue()
+	 */
+	public boolean booleanValue() {
+		return value.booleanValue();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#stringValue()
+	 */
+	public String stringValue() {
+		return value.toString();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return stringValue();
 	}
 }

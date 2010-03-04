@@ -32,7 +32,7 @@ public class PropertyImpl extends MirrorImpl implements Property {
 	 * context
 	 */
 	private Number ref;
-	private StackFrameReferenceImpl frame;
+	private StackFrameImpl frame;
 	private Value value;
 
 	/**
@@ -42,7 +42,7 @@ public class PropertyImpl extends MirrorImpl implements Property {
 	 * @param name
 	 * @param ref
 	 */
-	public PropertyImpl(VirtualMachineImpl vm, StackFrameReferenceImpl frame,
+	public PropertyImpl(VirtualMachineImpl vm, StackFrameImpl frame,
 			String name, Number ref) {
 		super(vm);
 		this.frame = frame;

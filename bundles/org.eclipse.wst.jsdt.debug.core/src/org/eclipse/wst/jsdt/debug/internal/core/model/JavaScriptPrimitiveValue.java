@@ -12,9 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
-import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptPrimitiveValue;
 
@@ -52,11 +50,8 @@ public class JavaScriptPrimitiveValue extends JavaScriptValue implements IJavaSc
 	 */
 	public int intValue() {
 		Value value = getUnderlyingValue();
-		if(value instanceof NumberValue) {
-			return ((NumberValue)value).value().intValue();
-		}
-		else if(value instanceof BooleanValue) {
-			return (((BooleanValue) value).value() ? 1 : 0);
+		if(value instanceof PrimitiveValue) {
+			return ((PrimitiveValue)value).intValue();
 		}
 		return 0;
 	}
@@ -65,6 +60,10 @@ public class JavaScriptPrimitiveValue extends JavaScriptValue implements IJavaSc
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptPrimitiveValue#doubleValue()
 	 */
 	public double doubleValue() {
+		Value value = getUnderlyingValue();
+		if(value instanceof PrimitiveValue) {
+			return ((PrimitiveValue)value).doubleValue();
+		}
 		return intValue();
 	}
 	
@@ -73,11 +72,8 @@ public class JavaScriptPrimitiveValue extends JavaScriptValue implements IJavaSc
 	 */
 	public boolean booleanValue() {
 		Value value = getUnderlyingValue();
-		if(value instanceof NumberValue) {
-			return ((NumberValue)value).value().intValue() != 0;
-		}
-		else if(value instanceof BooleanValue) {
-			return ((BooleanValue) value).value();
+		if(value instanceof PrimitiveValue) {
+			return ((PrimitiveValue)value).booleanValue();
 		}
 		return false;
 	}
@@ -87,16 +83,16 @@ public class JavaScriptPrimitiveValue extends JavaScriptValue implements IJavaSc
 	 */
 	public String stringValue() {
 		Value value = getUnderlyingValue();
-		if(value instanceof NullValue) {
-			return ((NullValue)value).valueString();
-		}
-		else if(value instanceof NumberValue) {
-			return numberToString(((NumberValue)value).value());
-		}
-		else if(value instanceof BooleanValue) {
-			return value.valueString();
+		if(value instanceof PrimitiveValue) {
+			return ((PrimitiveValue)value).valueString();
 		}
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return stringValue();
+	}
 }

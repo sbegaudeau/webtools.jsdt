@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.StringValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
+import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 
 /**
  * Default implementation of {@link IValue}
@@ -71,11 +72,9 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		if (this.value instanceof FunctionReference) {
 			return ((FunctionReference) this.value).valueString();
 		}
-		if (this.value instanceof NumberValue) {
-			NumberValue nvalue = (NumberValue) this.value;
-			if (!nvalue.isNaN()) {
-				return numberToString(nvalue.value());
-			}
+		if (this.value instanceof JavaScriptPrimitiveValue) {
+			JavaScriptPrimitiveValue nvalue = (JavaScriptPrimitiveValue)this.value;
+			return nvalue.stringValue();
 		}
 		return this.value.toString();
 	}
@@ -124,7 +123,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		if (this.value instanceof NumberValue) {
 			NumberValue nvalue = (NumberValue) this.value;
 			if (!nvalue.isNaN()) {
-				return numberToString(nvalue.value());
+				return JavaScriptDebugModel.numberToString(nvalue.value());
 			}
 		}
 		return this.value.valueString();
@@ -171,35 +170,6 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 */
 	public boolean isAllocated() throws DebugException {
 		return this.properties != null;
-	}
-	
-	/**
-	 * Converts the given double value to a {@link String} removing the trailing .0 in the event the precision is 1
-	 * 
-	 * @param n the number to convert
-	 * @return the {@link String} value of the number with trailing .0 removed iff the precision is 1
-	 */
-	public static String numberToString(Number n) {
-		double d = n.doubleValue();
-		if (d != d) {
-			return NumberValue.NAN;
-		}
-		if (d == Double.POSITIVE_INFINITY) {
-			return NumberValue.INFINITY;
-		}
-		if (d == Double.NEGATIVE_INFINITY) {
-			return NumberValue.NEG_INFINITY;
-		}
-		if (d == 0.0) {
-			return "0"; //$NON-NLS-1$
-		}
-		// we only care about base 10
-		String number = Double.toString(d);
-		// we only convert for a precision equal to 1
-		if (number.endsWith(".0")) { //$NON-NLS-1$
-			number = number.substring(0, number.length() - 2);
-		}
-		return number;
 	}
 	
 	/* (non-Javadoc)

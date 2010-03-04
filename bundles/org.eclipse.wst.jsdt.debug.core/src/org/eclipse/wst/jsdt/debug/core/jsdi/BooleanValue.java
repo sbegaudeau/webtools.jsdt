@@ -17,13 +17,6 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
  * @since 1.0
  * @noextend This interface is not intended to be extended by clients.
  */
-public interface BooleanValue extends Value {
-
-	/**
-	 * Returns the boolean value for this {@link Value}
-	 * 
-	 * @return the boolean value
-	 */
-	boolean value();
+public interface BooleanValue extends PrimitiveValue {
 
 }
