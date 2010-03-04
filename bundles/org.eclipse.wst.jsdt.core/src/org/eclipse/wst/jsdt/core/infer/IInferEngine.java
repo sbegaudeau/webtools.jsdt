@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.wst.jsdt.core.infer;
 
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 /**
@@ -18,7 +29,9 @@ public interface IInferEngine {
 
 	public final static char[] ANONYMOUS_PREFIX = {'_','_','_'};
 	
-	public static final char[] ANONYMOUS_CLASS_ID= {'a','n','o','n','y','m','o','u','s'};
+	public static final char[] ANONYMOUS_CLASS_ID= {'a','n','o','n','y','m','o','u','s', '_'};
+	
+	char[] ANONYMOUS_MARKER = CharOperation.concat(IInferEngine.ANONYMOUS_PREFIX, IInferEngine.ANONYMOUS_CLASS_ID);
 	
 	/**
      * Initializes inference engine. Always called before {@link #setCompilationUnit()}

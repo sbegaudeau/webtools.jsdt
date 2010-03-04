@@ -2669,7 +2669,7 @@ public class Util {
 	 *
 	 * marker and label
 	 */
-	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(IInferEngine.ANONYMOUS_PREFIX, IInferEngine.ANONYMOUS_CLASS_ID) );
+	public static final String ANONYMOUS_MARKER = new String( IInferEngine.ANONYMOUS_MARKER );
 	public static final String ANONYMOUS_LABEL = "{}"; //$NON-NLS-1$
 
 	/*
