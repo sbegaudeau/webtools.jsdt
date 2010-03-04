@@ -129,7 +129,13 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 	 */
 	private Value createValue(Map body, boolean iseval) throws IllegalStateException {
 		Map value = (Map) body.get((iseval ? JSONConstants.EVALUATE : JSONConstants.LOOKUP));
+		if(value == null) {
+			return vm.nullValue;
+		}
 		String type = (String) value.get(JSONConstants.TYPE);
+		if(type == null) {
+			return vm.nullValue;
+		}
 		// "undefined", "null", "boolean", "number", "string", "object",
 		// "function"
 
