@@ -388,7 +388,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @param eventSet
 	 */
 	public void suspendForScriptLoadComplete(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean suspend, EventSet eventSet) {
-		// TODO clean up after voting - when added - and handle state / policy changes
 		if (suspend) {
 			try {
 				if (breakpoint.getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_THREAD) {

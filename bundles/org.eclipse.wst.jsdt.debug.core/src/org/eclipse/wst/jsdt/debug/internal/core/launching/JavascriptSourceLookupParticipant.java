@@ -19,6 +19,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
@@ -75,6 +76,9 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 	Object[] showExternalSource(String source, String path) {
 		try {
 			File tempdir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
+			if(!JavaScriptCore.isJavaScriptLikeFileName(path)) {
+				path += "."+JavaScriptCore.getJavaScriptLikeExtensions()[0]; //$NON-NLS-1$
+			}
 			File file = new File(tempdir, path);
 			file.deleteOnExit();
 			FileWriter writer = new FileWriter(file);
