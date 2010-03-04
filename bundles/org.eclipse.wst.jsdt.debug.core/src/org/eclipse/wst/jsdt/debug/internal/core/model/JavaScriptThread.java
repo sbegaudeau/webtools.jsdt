@@ -374,7 +374,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		if((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
 				suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
 			addBreakpoint(breakpoint);
-			return true;
+			registerStepRequest(StepRequest.STEP_INTO);
 		}
 		return false;
 	}
@@ -496,15 +496,24 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	private synchronized void step(int step, int debugEvent) throws DebugException {
 		if (canResume()) {
-			EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
-			StepRequest stepRequest = requestManager.createStepRequest(this.thread, step);
-			stepRequest.setEnabled(true);
-			getJSDITarget().addJSDIEventListener(this, stepRequest);
+			registerStepRequest(step);
 			this.thread.resume();
 			this.state = STEPPING;
 			clearFrames();
 			fireResumeEvent(debugEvent);
 		}
+	}
+
+	/**
+	 * registers a  step request
+	 * 
+	 * @param stepAction step command to send
+	 */
+	public void registerStepRequest(int step) {
+		EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
+		StepRequest stepRequest = requestManager.createStepRequest(this.thread, step);
+		stepRequest.setEnabled(true);
+		getJSDITarget().addJSDIEventListener(this, stepRequest);
 	}
 
 	/*
@@ -595,7 +604,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 			EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
 			requestManager.deleteEventRequest(event.request());
-			getJSDITarget().addJSDIEventListener(this, event.request());
+			getJSDITarget().removeJSDIEventListener(this, event.request());
 		}
 	}
 
@@ -610,8 +619,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 				markSuspended();
 			}
 			return false;
-		}
-		if (event instanceof StepEvent) {
+		} else if (event instanceof StepEvent) {
 			StepEvent stepEvent = (StepEvent) event;
 			ThreadReference threadReference = stepEvent.thread();
 			if (threadReference == this.thread) {
@@ -619,7 +627,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
