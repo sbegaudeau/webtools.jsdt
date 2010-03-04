@@ -58,7 +58,7 @@ public class StackFrameReferenceImpl extends MirrorImpl implements StackFrame {
 		this.ref = (Number) jsonFrame.get(JSONConstants.REF);
 
 		Long scriptId = new Long(((Number) jsonFrame.get(JSONConstants.SCRIPT_ID)).longValue());
-		ScriptReferenceImpl script = vm.script(scriptId);
+		ScriptReferenceImpl script = vm.getScript(scriptId);
 
 		String function = (String) jsonFrame.get(JSONConstants.FUNCTION);
 		if (function != null) {

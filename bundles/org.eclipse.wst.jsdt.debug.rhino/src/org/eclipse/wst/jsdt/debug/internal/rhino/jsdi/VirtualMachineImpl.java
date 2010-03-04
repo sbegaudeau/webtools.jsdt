@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event.EventQueueImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
@@ -63,7 +64,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 	}
 
 	/**
-	 * 
+	 * loads the scripts
 	 */
 	private void initalizeScripts() {
 		Request request = new Request(JSONConstants.SCRIPTS);
@@ -77,15 +78,16 @@ public class VirtualMachineImpl implements VirtualMachine {
 				scripts.put(scriptId, script);
 			}
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 
 	/**
+	 * Creates a new {@link ScriptReferenceImpl} for the given ID
 	 * @param scriptId
-	 * @return
+	 * @return the new {@link ScriptReferenceImpl} or <code>null</code>
 	 */
 	private ScriptReferenceImpl createScriptReference(Long scriptId) {
 		Request request = new Request(JSONConstants.SCRIPT);
@@ -95,40 +97,43 @@ public class VirtualMachineImpl implements VirtualMachine {
 			Map jsonScript = (Map) response.getBody().get(JSONConstants.SCRIPT);
 			return new ScriptReferenceImpl(this, jsonScript);
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#allScripts()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allScripts()
 	 */
 	public synchronized List allScripts() {
 		return new ArrayList(scripts.values());
 	}
 
 	/**
+	 * Adds a new script to the {@link VirtualMachine} with the given ID and returns
+	 * it.
 	 * @param scriptId
 	 * @param script
 	 */
 	public synchronized ScriptReferenceImpl addScript(Long scriptId) {
 		ScriptReferenceImpl script = (ScriptReferenceImpl) scripts.get(scriptId);
-		if (script != null)
+		if (script != null) {
 			return script;
-
+		}
 		script = createScriptReference(scriptId);
-		if (script != null)
+		if (script != null) {
 			scripts.put(scriptId, script);
+		}
 		return script;
 	}
 
 	/**
+	 * Returns the {@link ScriptReferenceImpl} for the given ID or <code>null</code>
+	 * if no such {@link ScriptReferenceImpl} exists.
 	 * @param scriptId
-	 * @return
+	 * @return the {@link ScriptReferenceImpl} for the given ID or <code>null</code>
 	 */
 	public synchronized ScriptReferenceImpl getScript(Long scriptId) {
 		return (ScriptReferenceImpl) scripts.get(scriptId);
@@ -159,8 +164,9 @@ public class VirtualMachineImpl implements VirtualMachine {
 	}
 
 	/**
+	 * Sends the given {@link Request} using the default timeout
 	 * @param request
-	 * @return
+	 * @return the {@link Response} from the request
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
@@ -189,29 +195,24 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return new ArrayList(threads.values());
 	}
 
-	public synchronized ThreadReferenceImpl addThread(Long threadId) {
-		ThreadReferenceImpl thread = (ThreadReferenceImpl) threads.get(threadId);
-		if (thread != null)
-			return thread;
-
-		thread = createThreadReference(threadId);
-		if (thread != null)
-			threads.put(threadId, thread);
-		return thread;
-	}
-
+	/**
+	 * Removes the thread with the given ID
+	 * @param threadId
+	 * @return the {@link ThreadReferenceImpl} that has been removed
+	 */
 	public synchronized ThreadReferenceImpl removeThread(Long threadId) {
 		return (ThreadReferenceImpl) threads.remove(threadId);
 	}
 
 	/**
+	 * Creates a new {@link ThreadReferenceImpl} with the given ID
 	 * @param threadId
-	 * @return
+	 * @return the new {@link ThreadReferenceImpl} or <code>null</code>
 	 */
 	private ThreadReferenceImpl createThreadReference(Long threadId) {
 		Request request = new Request(JSONConstants.THREAD);
@@ -226,29 +227,30 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
 
 	/**
+	 * Returns the {@link ThreadReferenceImpl} with the given ID or 
+	 * create and return a new one if it does not exist
 	 * @param threadId
-	 * @return
+	 * @return the {@link ThreadReferenceImpl} for the given ID
 	 */
 	public synchronized ThreadReferenceImpl getThread(Long threadId) {
 		ThreadReferenceImpl thread = (ThreadReferenceImpl) threads.get(threadId);
 		if (thread == null) {
 			thread = createThreadReference(threadId);
-			if (thread != null)
+			if (thread != null) {
 				threads.put(threadId, thread);
+			}
 		}
 		return thread;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#description()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#description()
 	 */
 	public String description() {
 		Request request = new Request(JSONConstants.VERSION);
@@ -262,15 +264,13 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#dispose()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#dispose()
 	 */
 	public void dispose() {
 		Request request = new Request(JSONConstants.DISPOSE);
@@ -279,17 +279,15 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} finally {
 			disconnectVM();
 			this.eventRequestManager.createVMDeathRequest();
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#name()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#name()
 	 */
 	public String name() {
 		Request request = new Request(JSONConstants.VERSION);
@@ -299,15 +297,13 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#resume()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#resume()
 	 */
 	public void resume() {
 		Request request = new Request(JSONConstants.CONTINUE);
@@ -316,14 +312,12 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#suspend()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#suspend()
 	 */
 	public void suspend() {
 		Request request = new Request(JSONConstants.SUSPEND);
@@ -332,23 +326,19 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#terminate()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#terminate()
 	 */
 	public void terminate() {
 		dispose();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#version()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
 		Request request = new Request(JSONConstants.VERSION);
@@ -358,7 +348,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 		} catch (DisconnectedException e) {
 			disconnectVM();
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
@@ -379,70 +369,52 @@ public class VirtualMachineImpl implements VirtualMachine {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#mirrorOf(boolean)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#mirrorOf(boolean)
 	 */
 	public BooleanValue mirrorOf(boolean bool) {
 		return new BooleanValueImpl(this, Boolean.valueOf(bool));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#mirrorOf(int)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#mirrorOf(java.lang.Number)
 	 */
 	public NumberValue mirrorOf(Number number) {
 		return new NumberValueImpl(this, number);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#mirrorOf(java .lang.String)
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#mirrorOf(java.lang.String)
 	 */
 	public StringValue mirrorOf(String string) {
 		return new StringValueImpl(this, string);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#mirrorOfNull()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#mirrorOfNull()
 	 */
 	public NullValue mirrorOfNull() {
 		return nullValue;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#mirrorOfUndefined ()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#mirrorOfUndefined()
 	 */
 	public UndefinedValue mirrorOfUndefined() {
 		return undefinedValue;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#eventRequestManager ()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#eventRequestManager()
 	 */
 	public EventRequestManager eventRequestManager() {
 		return eventRequestManager;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.e4.languages.javascript.jsdi.VirtualMachine#eventQueue()
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#eventQueue()
 	 */
 	public EventQueue eventQueue() {
 		return eventQueue;
-	}
-
-	public ScriptReferenceImpl script(Long scriptId) {
-		return (ScriptReferenceImpl) scripts.get(scriptId);
 	}
 }
