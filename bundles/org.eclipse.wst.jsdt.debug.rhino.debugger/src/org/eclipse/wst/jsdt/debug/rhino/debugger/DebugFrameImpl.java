@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,6 +18,7 @@ import org.eclipse.wst.jsdt.debug.rhino.debugger.ScriptImpl.ScriptRecord;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
+import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Script;
@@ -168,7 +169,11 @@ public class DebugFrameImpl implements DebugFrame {
 			Object result = ScriptRuntime.evalSpecial(evalContext, activation, thisObj, new Object[] { source }, "eval", 0); //$NON-NLS-1$
 			Long handle = createHandle(result);
 			return serialize(handle, result);
-		} finally {
+		}
+		catch (EcmaError ecma) {
+			return null;
+		}
+		finally {
 			evalContext.setDebugger(debugger, debuggerContextData);
 			Context.exit();
 			rhinoDebugger.enableThread();
