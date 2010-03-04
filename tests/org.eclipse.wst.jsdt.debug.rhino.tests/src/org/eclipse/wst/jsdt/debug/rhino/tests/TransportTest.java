@@ -20,16 +20,16 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService.ListenerKey;
 
 public class TransportTest extends TestCase {
 
-	public void testSocketStartStopListening() throws IOException {
+	public void disabled_testSocketStartStopListening() throws IOException {
 		TransportService service = new SocketTransportService();
-		ListenerKey key = service.startListening("9888");
+		ListenerKey key = service.startListening("9000");
 		assertNotNull(key);
 		service.stopListening(key);
 	}
 
-	public void testSocketAcceptAttach() throws IOException, InterruptedException {
+	public void disabled_testSocketAcceptAttach() throws IOException, InterruptedException {
 		final TransportService service = new SocketTransportService();
-		final ListenerKey key = service.startListening("9888");
+		final ListenerKey key = service.startListening("9000");
 
 		Thread t = new Thread() {
 			public void run() {
