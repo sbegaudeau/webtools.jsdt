@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,22 +16,21 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.DebuggerStatementEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
 
-public class DebuggerStatementEventImpl extends EventImpl implements DebuggerStatementEvent {
+/**
+ * Rhino implementation of {@link DebuggerStatementEvent}
+ * 
+ * @since 1.0
+ */
+public final class DebuggerStatementEventImpl extends LocatableEventImpl implements DebuggerStatementEvent {
 
-	private final ThreadReference thread;
-	private final Location location;
-
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param thread
+	 * @param location
+	 * @param request
+	 */
 	public DebuggerStatementEventImpl(VirtualMachineImpl vm, ThreadReference thread, Location location, DebuggerStatementRequest request) {
-		super(vm, request);
-		this.thread = thread;
-		this.location = location;
-	}
-
-	public ThreadReference thread() {
-		return thread;
-	}
-
-	public Location location() {
-		return location;
+		super(vm, thread, location, request);
 	}
 }

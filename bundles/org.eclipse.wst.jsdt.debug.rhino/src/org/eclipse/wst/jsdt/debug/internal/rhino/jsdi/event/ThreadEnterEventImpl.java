@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,29 +10,25 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.ThreadEnterEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
 
-public class ThreadEnterEventImpl extends EventImpl implements ThreadEnterEvent {
+/**
+ * Rhino implementation of {@link ThreadEnterEvent}
+ * 
+ * @since 1.0
+ */
+public final class ThreadEnterEventImpl extends LocatableEventImpl implements ThreadEnterEvent {
 
-	private final ThreadReference thread;
-
-	public ThreadEnterEventImpl(VirtualMachineImpl vm, ThreadReference thread, ThreadEnterRequest request) {
-		super(vm, request);
-		this.thread = thread;
-	}
-
-	public ThreadReference thread() {
-		return thread;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Locatable#location()
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param thread
+	 * @param request
 	 */
-	public Location location() {
-		return null;
+	public ThreadEnterEventImpl(VirtualMachineImpl vm, ThreadReference thread, ThreadEnterRequest request) {
+		super(vm, thread, null, request);
 	}
 }

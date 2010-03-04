@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ScriptReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ThreadReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
@@ -40,7 +41,7 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
  * 
  * @since 1.0
  */
-public class EventQueueImpl implements EventQueue {
+public final class EventQueueImpl implements EventQueue {
 
 	private VirtualMachineImpl vm;
 	private EventRequestManagerImpl eventRequestManager;
@@ -76,29 +77,24 @@ public class EventQueueImpl implements EventQueue {
 					Long threadId = new Long(((Number) event.getBody().get(JSONConstants.THREAD_ID)).longValue());
 					ThreadReferenceImpl thread = vm.getThread(threadId);
 					eventSet.setThread(thread);
-
 					Long scriptId = new Long(((Number) event.getBody().get(JSONConstants.SCRIPT_ID)).longValue());
 					ScriptReferenceImpl script = vm.addScript(scriptId);
-
 					List scriptLoadRequests = eventRequestManager.scriptLoadRequests();
 					for (Iterator iterator = scriptLoadRequests.iterator(); iterator.hasNext();) {
 						ScriptLoadRequest request = (ScriptLoadRequest) iterator.next();
-						if (request.isEnabled())
+						if (request.isEnabled()) {
 							eventSet.add(new ScriptLoadEventImpl(vm, thread, script, request));
+						}
 					}
 				} else if (eventName.equals(JSONConstants.BREAK)) {
 					Long threadId = new Long(((Number) event.getBody().get(JSONConstants.THREAD_ID)).longValue());
 					ThreadReferenceImpl thread = vm.getThread(threadId);
 					eventSet.setThread(thread);
-
 					Long scriptId = new Long(((Number) event.getBody().get(JSONConstants.SCRIPT_ID)).longValue());
 					ScriptReferenceImpl script = vm.getScript(scriptId);
-
 					int lineNumber = ((Number) event.getBody().get(JSONConstants.LINE_NUMBER)).intValue();
 					Location location = script.lineLocation(lineNumber);
-
 					boolean atBreakpoint = false;
-
 					List jsonBreakpoints = (List) event.getBody().get(JSONConstants.BREAKPOINTS);
 					if (jsonBreakpoints != null) {
 						List breakpoints = new ArrayList(jsonBreakpoints.size());
@@ -106,7 +102,6 @@ public class EventQueueImpl implements EventQueue {
 							Number breakpointId = (Number) iterator.next();
 							breakpoints.add(new Long(breakpointId.longValue()));
 						}
-
 						List breakpointRequests = eventRequestManager.breakpointRequests();
 						for (Iterator iterator = breakpointRequests.iterator(); iterator.hasNext();) {
 							BreakpointRequestImpl request = (BreakpointRequestImpl) iterator.next();
@@ -117,7 +112,6 @@ public class EventQueueImpl implements EventQueue {
 							}
 						}
 					}
-
 					String stepType = (String) event.getBody().get(JSONConstants.STEP);
 					if (JSONConstants.SUSPENDED.equals(stepType)) {
 						List suspendRequests = eventRequestManager.suspendRequests();
@@ -138,7 +132,6 @@ public class EventQueueImpl implements EventQueue {
 							}
 						}
 					}
-
 					Boolean debuggerStatement = (Boolean) event.getBody().get(JSONConstants.DEBUGGER_STATEMENT);
 					if (debuggerStatement.booleanValue()) {
 						List debuggerStatementRequests = eventRequestManager.debuggerStatementRequests();
@@ -150,22 +143,17 @@ public class EventQueueImpl implements EventQueue {
 							}
 						}
 					}
-
 					if (!eventSet.isEmpty())
 						thread.markSuspended(atBreakpoint);
 				} else if (eventName.equals(JSONConstants.EXCEPTION)) {
 					Long threadId = new Long(((Number) event.getBody().get(JSONConstants.THREAD_ID)).longValue());
 					ThreadReferenceImpl thread = vm.getThread(threadId);
 					eventSet.setThread(thread);
-
 					Long scriptId = new Long(((Number) event.getBody().get(JSONConstants.SCRIPT_ID)).longValue());
 					ScriptReferenceImpl script = vm.getScript(scriptId);
-
 					int lineNumber = ((Number) event.getBody().get(JSONConstants.LINE_NUMBER)).intValue();
 					Location location = script.lineLocation(lineNumber);
-
 					String message = (String) event.getBody().get(JSONConstants.MESSAGE);
-
 					List exceptionRequests = eventRequestManager.exceptionRequests();
 					for (Iterator iterator = exceptionRequests.iterator(); iterator.hasNext();) {
 						ExceptionRequest request = (ExceptionRequest) iterator.next();
@@ -173,29 +161,30 @@ public class EventQueueImpl implements EventQueue {
 							eventSet.add(new ExceptionEventImpl(vm, thread, location, message, request));
 						}
 					}
-					if (!eventSet.isEmpty())
+					if (!eventSet.isEmpty()) {
 						thread.markSuspended(false);
+					}
 				} else if (eventName.equals(JSONConstants.THREAD)) {
 					Long threadId = new Long(((Number) event.getBody().get(JSONConstants.THREAD_ID)).longValue());
-
 					String type = (String) event.getBody().get(JSONConstants.TYPE);
-
 					if (JSONConstants.ENTER.equals(type)) {
-						ThreadReferenceImpl thread = vm.addThread(threadId);
+						ThreadReferenceImpl thread = vm.getThread(threadId);
 						eventSet.setThread(thread);
 						List threadEnterRequests = eventRequestManager.threadEnterRequests();
 						for (Iterator iterator = threadEnterRequests.iterator(); iterator.hasNext();) {
 							ThreadEnterRequest request = (ThreadEnterRequest) iterator.next();
-							if (request.isEnabled())
+							if (request.isEnabled()) {
 								eventSet.add(new ThreadEnterEventImpl(vm, thread, request));
+							}
 						}
 					} else if (JSONConstants.EXIT.equals(type)) {
 						ThreadReferenceImpl thread = vm.removeThread(threadId);
 						List threadExitRequests = eventRequestManager.threadExitRequests();
 						for (Iterator iterator = threadExitRequests.iterator(); iterator.hasNext();) {
 							ThreadExitRequest request = (ThreadExitRequest) iterator.next();
-							if (request.isEnabled())
+							if (request.isEnabled()) {
 								eventSet.add(new ThreadExitEventImpl(vm, thread, request));
+							}
 						}
 					}
 				}
@@ -206,7 +195,7 @@ public class EventQueueImpl implements EventQueue {
 				return eventSet;
 			}
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} catch (DisconnectedException e) {
 			vm.disconnectVM();
 		}
