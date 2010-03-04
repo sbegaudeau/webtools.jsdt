@@ -61,8 +61,7 @@ public final class EventRequestManagerImpl implements EventRequestManager {
 	public EventRequestManagerImpl(VirtualMachineImpl vm) {
 		this.vm = vm;
 		eventsMap.put(BreakpointRequestImpl.class, breakpointRequests);
-		eventsMap.put(DebuggerStatementRequestImpl.class,
-				debuggerStatementRequests);
+		eventsMap.put(DebuggerStatementRequestImpl.class, debuggerStatementRequests);
 		eventsMap.put(ExceptionRequestImpl.class, exceptionRequests);
 		eventsMap.put(ScriptLoadRequestImpl.class, scriptLoadRequests);
 		eventsMap.put(StepRequestImpl.class, stepRequests);
@@ -211,7 +210,6 @@ public final class EventRequestManagerImpl implements EventRequestManager {
 			throw new IllegalArgumentException(
 					"bad event request class - " + clazz.getName()); //$NON-NLS-1$
 		}
-
 		eventList.remove(eventRequest);
 		EventRequestImpl eventRequestImpl = (EventRequestImpl) eventRequest;
 		eventRequestImpl.delete();
