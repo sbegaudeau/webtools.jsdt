@@ -821,8 +821,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJSDIEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.core.model.JSDIDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
-	public synchronized boolean handleEvent(Event event,
-			JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
+	public synchronized boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 		if (event instanceof ThreadEnterEvent) {
 			ThreadEnterEvent threadEnterEvent = (ThreadEnterEvent) event;
 			createThread(threadEnterEvent.thread(), true);
