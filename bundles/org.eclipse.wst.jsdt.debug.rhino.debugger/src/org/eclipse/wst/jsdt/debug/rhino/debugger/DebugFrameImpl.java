@@ -102,7 +102,6 @@ public class DebugFrameImpl implements DebugFrame {
 	 */
 	public void onDebuggerStatement(Context cx) {
 		initializeHandles();
-		lineNumber++;
 		contextData.debuggerStatement(script, new Integer(lineNumber));
 	}
 
