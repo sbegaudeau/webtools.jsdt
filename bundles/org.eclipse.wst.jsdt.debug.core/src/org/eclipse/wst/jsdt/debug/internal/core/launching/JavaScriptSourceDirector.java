@@ -18,7 +18,7 @@ import org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant;
  * 
  * @since 1.0
  */
-public class JavascriptSourceDirector extends AbstractSourceLookupDirector {
+public class JavaScriptSourceDirector extends AbstractSourceLookupDirector {
 
 	/*
 	 * (non-Javadoc)
@@ -26,6 +26,6 @@ public class JavascriptSourceDirector extends AbstractSourceLookupDirector {
 	 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupDirector#initializeParticipants()
 	 */
 	public void initializeParticipants() {
-		addParticipants(new ISourceLookupParticipant[] { new JavascriptSourceLookupParticipant() });
+		addParticipants(new ISourceLookupParticipant[] { new JavaScriptSourceLookupParticipant() });
 	}
 }

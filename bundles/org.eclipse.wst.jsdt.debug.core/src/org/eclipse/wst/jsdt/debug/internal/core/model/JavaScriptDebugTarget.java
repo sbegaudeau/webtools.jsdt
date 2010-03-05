@@ -616,8 +616,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	 * @param thread the underlying {@link ThreadReference}
 	 * @return a new {@link JavaScriptThread}
 	 */
-	private synchronized JavaScriptThread createThread(ThreadReference thread,
-			boolean fireEvent) {
+	private synchronized JavaScriptThread createThread(ThreadReference thread, boolean fireEvent) {
 		if (isDisconnected()) {
 			return null;
 		}

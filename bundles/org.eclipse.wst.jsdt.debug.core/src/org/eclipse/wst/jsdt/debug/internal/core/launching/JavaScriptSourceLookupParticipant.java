@@ -17,9 +17,9 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
@@ -28,10 +28,11 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
  * 
  * @since 1.0
  */
-public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParticipant {
+public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParticipant {
 
 	static final Object[] NO_SOURCE = new Object[0];
 	static final Object[] FILE = new Object[1];
+	private static int source_counter = 1; 
 
 	/*
 	 * (non-Javadoc)
@@ -76,10 +77,7 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 	Object[] showExternalSource(String source, String path) {
 		try {
 			File tempdir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-			if(!JavaScriptCore.isJavaScriptLikeFileName(path)) {
-				path += "."+JavaScriptCore.getJavaScriptLikeExtensions()[0]; //$NON-NLS-1$
-			}
-			File file = new File(tempdir, path);
+			File file = new File(tempdir, formatExternalName(path));
 			file.deleteOnExit();
 			FileWriter writer = new FileWriter(file);
 			writer.write(source);
@@ -93,6 +91,28 @@ public class JavascriptSourceLookupParticipant extends AbstractSourceLookupParti
 		}
 	}
 
+	/**
+	 * Formats the name of the external source to be:
+	 * <code>[name]_[counter].js</code>.<br><br>
+	 * If the given name is <code>null</code> the default
+	 * name of <code>script_[counter].js</code> will be used
+	 * @param basename
+	 * @return the formatted external source name
+	 */
+	String formatExternalName(String basename) {
+		IPath path = null;
+		if(basename == null) {
+			path = new Path("script"); //$NON-NLS-1$
+		}
+		else {
+			path = new Path(basename);
+		}
+		path = path.removeFileExtension();
+		StringBuffer buffer = new StringBuffer(path.toString());
+		buffer.append("_").append(source_counter++).append(".js"); //$NON-NLS-1$ //$NON-NLS-2$
+		return buffer.toString();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

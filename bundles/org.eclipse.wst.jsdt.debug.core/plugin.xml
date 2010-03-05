@@ -124,7 +124,7 @@
    <extension
          point="org.eclipse.debug.core.sourceLocators">
       <sourceLocator
-            class="org.eclipse.wst.jsdt.debug.internal.core.launching.JavascriptSourceDirector"
+            class="org.eclipse.wst.jsdt.debug.internal.core.launching.JavaScriptSourceDirector"
             id="org.eclipse.wst.jsdt.debug.core.sourceLocator"
             name="%sourceLocator.name">
       </sourceLocator>
