@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
@@ -98,9 +99,9 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 				frames.add(frame);
 			}
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		if(frames != null) {
 			return frames;
@@ -124,9 +125,9 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 			Map jsonFrame = (Map) response.getBody().get(JSONConstants.FRAME);
 			return new StackFrameImpl(vm, jsonFrame);
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
@@ -183,9 +184,9 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 				atBreakpoint = false;
 			}
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 
@@ -201,9 +202,9 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		try {
 			vm.sendRequest(request, 30000);
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 
