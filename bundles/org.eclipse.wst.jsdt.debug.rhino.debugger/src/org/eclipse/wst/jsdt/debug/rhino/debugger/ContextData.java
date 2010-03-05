@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
@@ -137,7 +138,6 @@ public class ContextData {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-				// TODO log this
 				e.printStackTrace();
 			}
 		}
@@ -150,15 +150,18 @@ public class ContextData {
 	 * @param resultOrException
 	 */
 	public synchronized void popFrame(boolean byThrow, Object resultOrException) {
-		frames.removeFirst();
-		if (frames.isEmpty()) {
-			return;
-		}
-		boolean isStepBreak = stepBreak(STEP_OUT);
-		if (isStepBreak) {
-			DebugFrameImpl frame = (DebugFrameImpl) frames.getFirst();
-			if (sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, Collections.EMPTY_LIST, isStepBreak, false)) {
-				suspendState();
+		if(!frames.isEmpty()) {
+			frames.removeFirst();
+			if (frames.isEmpty()) {
+				//no frames left, continue
+				return;
+			}
+			boolean isStepBreak = stepBreak(STEP_OUT);
+			if (isStepBreak) {
+				DebugFrameImpl frame = getTopFrame();
+				if (sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, Collections.EMPTY_LIST, isStepBreak, false)) {
+					suspendState();
+				}
 			}
 		}
 	}
@@ -169,34 +172,50 @@ public class ContextData {
 	 * @param stepType
 	 */
 	public synchronized void resume(String stepType) {
-		if (stepType == null) {
-			stepState = STEP_CONTINUE;
-			stepFrame = null;
-		} else if (stepType.equals(JSONConstants.STEP_IN)) {
-			stepState = STEP_IN;
-			stepFrame = null;
-		} else if (stepType.equals(JSONConstants.STEP_NEXT)) {
-			stepState = STEP_NEXT;
-			stepFrame = (DebugFrameImpl) frames.getFirst();
-		} else if (stepType.equals(JSONConstants.STEP_OUT)) {
-			if (frames.size() > 1) {
-				stepState = STEP_OUT;
-				stepFrame = (DebugFrameImpl) frames.get(1);
-			} else {
+		try {
+			if (stepType == null) {
 				stepState = STEP_CONTINUE;
 				stepFrame = null;
+			} else if (stepType.equals(JSONConstants.STEP_IN)) {
+				stepState = STEP_IN;
+				stepFrame = null;
+			} else if (stepType.equals(JSONConstants.STEP_NEXT)) {
+				stepState = STEP_NEXT;
+				stepFrame = getTopFrame();
+			} else if (stepType.equals(JSONConstants.STEP_OUT)) {
+				if (frames.size() > 1) {
+					stepState = STEP_OUT;
+					stepFrame = (DebugFrameImpl) frames.get(1);
+				} else {
+					stepState = STEP_CONTINUE;
+					stepFrame = null;
+				}
+			} else if (stepType.equals(JSONConstants.STEP_ANY)) {
+				stepState = STEP_IN | STEP_OUT | STEP_NEXT;
+				stepFrame = null;
+			} else {
+				throw new IllegalStateException("bad stepType: " + stepType); //$NON-NLS-1$
 			}
-		} else if (stepType.equals(JSONConstants.STEP_ANY)) {
-			stepState = STEP_IN | STEP_OUT | STEP_NEXT;
-			stepFrame = null;
-		} else {
-			// TODO NLS this
-			throw new IllegalStateException("bad stepType: " + stepType); //$NON-NLS-1$
 		}
-		contextState = CONTEXT_RUNNING;
-		notifyAll();
+		finally {
+			contextState = CONTEXT_RUNNING;
+			notifyAll();
+		}
 	}
 
+	/**
+	 * Returns the top stack frame iff there are frames.
+	 * Delegate method to prevent {@link NoSuchElementException}s
+	 * 
+	 * @return the top frame or <code>null</code>
+	 */
+	DebugFrameImpl getTopFrame() {
+		if(this.frames != null && !this.frames.isEmpty()) {
+			return (DebugFrameImpl) this.frames.getFirst();
+		}
+		return null;
+	}
+	
 	/**
 	 * Set the step state to the suspend equivalent
 	 */
@@ -212,7 +231,7 @@ public class ContextData {
 	 * @param lineNumber
 	 */
 	public synchronized void debuggerStatement(ScriptImpl script, Integer lineNumber) {
-		DebugFrameImpl frame = (DebugFrameImpl) frames.getFirst();
+		DebugFrameImpl frame = getTopFrame();
 		Collection breakpoints = script.getBreakpoints(null, lineNumber, frame);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (sendBreakEvent(script, lineNumber, null, breakpoints, isStepBreak, true)) {
@@ -227,7 +246,7 @@ public class ContextData {
 	 * @param lineNumber
 	 */
 	public synchronized void lineChange(ScriptImpl script, Integer lineNumber) {
-		DebugFrameImpl frame = (DebugFrameImpl) frames.getFirst();
+		DebugFrameImpl frame = getTopFrame();
 		Collection breakpoints = script.getBreakpoints(null, lineNumber, frame);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (isStepBreak || !breakpoints.isEmpty()) {
@@ -243,7 +262,7 @@ public class ContextData {
 	 * @param ex
 	 */
 	public synchronized void exceptionThrown(Throwable ex) {
-		DebugFrameImpl frame = (DebugFrameImpl) frames.getFirst();
+		DebugFrameImpl frame = getTopFrame();
 		if (sendExceptionEvent(frame.getScript(), frame.getLineNumber(), ex)) {
 			suspendState();
 		}

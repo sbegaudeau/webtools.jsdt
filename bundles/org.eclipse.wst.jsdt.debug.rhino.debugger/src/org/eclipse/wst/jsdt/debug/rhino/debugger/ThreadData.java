@@ -92,9 +92,11 @@ public class ThreadData {
 	 * @param context
 	 */
 	public synchronized void contextReleased(Context context) {
-		contexts.removeFirst();
-		if (contexts.isEmpty()) {
-			sendThreadEvent(JSONConstants.EXIT);
+		if(hasContext()) {
+			contexts.removeFirst();
+			if (contexts.isEmpty()) {
+				sendThreadEvent(JSONConstants.EXIT);
+			}
 		}
 	}
 
@@ -140,12 +142,14 @@ public class ThreadData {
 	 * Suspends the first context on the stack. has no effect if there are no known contexts for this thread data
 	 */
 	public synchronized void suspend() {
-		Context context = (Context) contexts.getFirst();
-		if (context == null) {
-			return;
+		if(hasContext()) {
+			Context context = (Context) contexts.getFirst();
+			if (context == null) {
+				return;
+			}
+			ContextData data = (ContextData) context.getDebuggerContextData();
+			data.suspend();
 		}
-		ContextData data = (ContextData) context.getDebuggerContextData();
-		data.suspend();
 	}
 
 	/**
@@ -159,12 +163,14 @@ public class ThreadData {
 	 * @see JSONConstants#STEP_ANY
 	 */
 	public synchronized void resume(String stepType) {
-		Context context = (Context) contexts.getFirst();
-		if (context == null) {
-			return;
+		if(hasContext()) {
+			Context context = (Context) contexts.getFirst();
+			if (context == null) {
+				return;
+			}
+			ContextData data = (ContextData) context.getDebuggerContextData();
+			data.resume(stepType);
 		}
-		ContextData data = (ContextData) context.getDebuggerContextData();
-		data.resume(stepType);
 	}
 
 	/**
