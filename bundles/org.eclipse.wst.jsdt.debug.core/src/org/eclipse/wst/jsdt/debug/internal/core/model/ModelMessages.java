@@ -29,6 +29,12 @@ public class ModelMessages extends NLS {
 	public static String JSDIStackFrame_stackframe_name;
 	public static String JSDIThread_thread_title;
 	public static String JSDIThread_suspended_loading_script;
+	public static String thread_running;
+	public static String thread_state_unknown;
+	public static String thread_stepping;
+	public static String thread_suspended;
+	public static String thread_terminated;
+	public static String thread_zombie;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, ModelMessages.class);

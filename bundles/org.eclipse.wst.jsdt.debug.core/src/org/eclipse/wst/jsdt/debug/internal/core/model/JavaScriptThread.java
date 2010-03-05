@@ -64,13 +64,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	static final IBreakpoint[] NO_BREAKPOINTS = new IBreakpoint[0];
 
-	/**
-	 * State text meta-data for thread naming
-	 */
-	public static final String RUNNING_STATUS = "running"; //$NON-NLS-1$
-	public static final String SUSPENDED_STATUS = "suspended"; //$NON-NLS-1$
-	public static final String ZOMBIE_STATUS = "zombie"; //$NON-NLS-1$
-
 	// states
 	private static final int UNKNOWN = 0;
 	private static final int SUSPENDED = 1;
@@ -114,26 +107,40 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @return the status text for the thread
 	 */
 	private String statusText() {
-		if (thread.status() == ThreadReference.THREAD_STATUS_ZOMBIE) {
-			return ZOMBIE_STATUS;
-		} else if (state == SUSPENDED) {
-			if (breakpoints.size() > 0) {
-				try {
-					JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
-					if (breakpoint instanceof JavaScriptLoadBreakpoint) {
-						String name = breakpoint.getScriptPath();
-						if(Constants.EMPTY_STRING.equals(name)) {
-							name = ModelMessages.JavaScriptThread_evaluated_script;
+		switch(state) {
+			case SUSPENDED: {
+				if(this.breakpoints.size() > 0) {
+					try {
+						JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
+						if (breakpoint instanceof JavaScriptLoadBreakpoint) {
+							String name = breakpoint.getScriptPath();
+							if(Constants.EMPTY_STRING.equals(name)) {
+								name = ModelMessages.JavaScriptThread_evaluated_script;
+							}
+							return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
 						}
-						return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
+					} catch (CoreException ce) {
+						JavaScriptDebugPlugin.log(ce);
 					}
-				} catch (CoreException ce) {
-					JavaScriptDebugPlugin.log(ce);
 				}
+				return ModelMessages.thread_suspended;
 			}
-			return SUSPENDED_STATUS;
+			case RUNNING: {
+				return ModelMessages.thread_running;
+			}
+			case STEPPING: {
+				return ModelMessages.thread_stepping;
+			}
+			case TERMINATED: {
+				return ModelMessages.thread_terminated;
+			}
+			case ThreadReference.THREAD_STATUS_ZOMBIE: {
+				return ModelMessages.thread_zombie;
+			}
+			default: {
+				return ModelMessages.thread_state_unknown;
+			}
 		}
-		return RUNNING_STATUS;
 	}
 
 	/*
@@ -343,7 +350,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @param eventSet
 	 */
 	public void suspendForBreakpointComplete(IJavaScriptBreakpoint breakpoint, boolean suspend, EventSet eventSet) {
-		// TODO clean up after voting - when added - and handle state / policy changes
 		if (suspend) {
 			try {
 				if (breakpoint.getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_THREAD) {
