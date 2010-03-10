@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -111,16 +111,19 @@ public class MethodExitsFinder extends ASTVisitor {
 		if (block != null) {
 			List statements= block.statements();
 			if (statements.size() > 0) {
-				Statement last= (Statement)statements.get(statements.size() - 1);
-				int maxVariableId= LocalVariableIndex.perform(fMethodDeclaration);
-				FlowContext flowContext= new FlowContext(0, maxVariableId + 1);
-				flowContext.setConsiderAccessMode(false);
-				flowContext.setComputeMode(FlowContext.ARGUMENTS);
-				InOutFlowAnalyzer flowAnalyzer= new InOutFlowAnalyzer(flowContext);
-				FlowInfo info= flowAnalyzer.perform(new ASTNode[] {last});
-				if (!info.isNoReturn() && !isVoid) {
-					if (!info.isPartialReturn())
-						return;
+				Object lastObject = statements.get(statements.size() - 1);
+				if(lastObject instanceof Statement) {
+					Statement last = (Statement) lastObject;
+					int maxVariableId= LocalVariableIndex.perform(fMethodDeclaration);
+					FlowContext flowContext= new FlowContext(0, maxVariableId + 1);
+					flowContext.setConsiderAccessMode(false);
+					flowContext.setComputeMode(FlowContext.ARGUMENTS);
+					InOutFlowAnalyzer flowAnalyzer= new InOutFlowAnalyzer(flowContext);
+					FlowInfo info= flowAnalyzer.perform(new ASTNode[] {last});
+					if (!info.isNoReturn() && !isVoid) {
+						if (!info.isPartialReturn())
+							return;
+					}
 				}
 			}
 			SimpleName name= fAST.newSimpleName("x"); //$NON-NLS-1$
