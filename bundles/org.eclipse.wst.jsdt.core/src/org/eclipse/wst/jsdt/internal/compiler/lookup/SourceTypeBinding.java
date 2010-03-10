@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.zip.CRC32;
 
 import org.eclipse.wst.jsdt.core.UnimplementedException;
@@ -346,6 +348,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 
 	// NOTE: the type of each field of a source type is resolved when needed
 	public FieldBinding[] fields() {
+		Map fieldCache = new HashMap();
 		if ((this.tagBits & TagBits.AreFieldsComplete) == 0) {
 
 			int failed = 0;
@@ -370,6 +373,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 						resolvedFields[i] = null;
 						failed++;
 					}
+					fieldCache.put(this.fields[i].name, this.fields[i]);
 				}
 			} finally {
 				if (failed > 0) {
@@ -390,6 +394,11 @@ public class SourceTypeBinding extends ReferenceBinding {
 		}
 		if (this.nextType != null) {
 			FieldBinding[] moreFields = this.nextType.fields();
+			for(int i = 0; i < moreFields.length; i++) {
+				if(fieldCache.get(moreFields[i].name) == null) {
+					fieldCache.put(moreFields[i].name, moreFields[i]);
+				}
+			}
 			FieldBinding[] combinedFields = new FieldBinding[this.fields.length
 					+ moreFields.length];
 			System.arraycopy(this.fields, 0, combinedFields, 0,
@@ -397,7 +406,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 			System.arraycopy(moreFields, 0, combinedFields, this.fields.length,
 					moreFields.length);
 
-			return combinedFields;
+			return (FieldBinding[]) fieldCache.values().toArray(new FieldBinding[0]);
+			//return combinedFields;
 
 		} else
 			return this.fields;
