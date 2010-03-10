@@ -5384,7 +5384,7 @@
 				</or>
 		     </enablement>
 		  </commonWizard>
-  		  <dropAssistant
+  		<!--  <dropAssistant
     			class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaDropAdapterAssistant"
    				id="org.eclipse.wst.jsdt.ui.dropAssistant">
  				<possibleDropTargets>
@@ -5393,7 +5393,8 @@
        					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement"/>
     				</or>
  				</possibleDropTargets>
- 			</dropAssistant>		   
+ 			</dropAssistant>	
+ 			-->	   
 		</navigatorContent>
 		<!--
   		<commonFilter
@@ -5402,7 +5403,6 @@
 		        name="%HideEmptyPackages.label"
 		        description="%HideEmptyPackages.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideEmptyPackages"/>
-    	-->
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.navigator.NonEssentialEmptyInnerPackageFilter"
@@ -5414,14 +5414,13 @@
 		        name="%HideFields.label"
 		        description="%HideFields.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideFields"/>
-		 <!--
+		
   		<commonFilter
 		        activeByDefault="true"
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.ImportDeclarationFilter"
 		        name="%HideImportDeclaration.label"
 		        description="%HideImportDeclaration.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideImportDeclaration"/> 
-  		-->
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.JavaFileFilter"
 		        name="%HideJavaFiles.label"
@@ -5432,13 +5431,13 @@
 		        name="%HideLocalTypes.label"
 		        description="%HideLocalTypes.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideLocalTypes"/>
-  		<!--  
+ 
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.NonPublicFilter"
 		        name="%HideNonPublic.label"
 		        description="%HideNonPublic.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideNonPublic"/>   
-  		-->
+  		
   		<commonFilter 
 		        class="org.eclipse.wst.jsdt.internal.ui.filters.LibraryFilter"
 		        name="%HideReferencedLibraries.label"
@@ -5449,6 +5448,7 @@
 		        name="%HideStatics.label"
 		        description="%HideStatics.description"
 		        id="org.eclipse.wst.jsdt.java.ui.filters.HideStatics"/>
+	-->
    </extension>
    <extension
        point="org.eclipse.ui.navigator.linkHelper">

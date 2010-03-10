@@ -416,13 +416,13 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				if (isProjectPackageFragmentRoot(root)) {
 					// filter out package fragments that correspond to projects and
 					// replace them with the package fragments directly
-					Object[] fragments= getPackageFragmentRootContent(root);
-					for (int j= 0; j < fragments.length; j++) {
-						result.add(fragments[j]);
-					}
-				} else if(!shouldHide){
+//					Object[] fragments= getPackageFragmentRootContent(root);
+//					for (int j= 0; j < fragments.length; j++) {
+//						result.add(fragments[j]);
+//					}
+				} /*else if(!shouldHide){
 					result.add(root);
-				}
+				}*/
 			}
 		}
 		
