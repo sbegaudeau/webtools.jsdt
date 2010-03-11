@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2009 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -309,14 +309,14 @@ public class JavaNavigatorContentProvider extends
 		return convertToJavaElements(updateSynchronization.getRefreshTargets());
 	}
 
-	protected void postAdd(final Object parent, final Object element, Collection runnables) {
-		if (parent instanceof IJavaScriptModel)
-			super.postAdd(((IJavaScriptModel) parent).getWorkspace(), element, runnables);
-		else if (parent instanceof IJavaScriptProject) 
-			super.postAdd( ((IJavaScriptProject)parent).getProject(), element, runnables);
-		else
-			super.postAdd(parent, element, runnables);
-	}
+//	protected void postAdd(final Object parent, final Object element, Collection runnables) {
+//		if (parent instanceof IJavaScriptModel)
+//			super.postAdd(((IJavaScriptModel) parent).getWorkspace(), element, runnables);
+//		else if (parent instanceof IJavaScriptProject) 
+//			super.postAdd( ((IJavaScriptProject)parent).getProject(), element, runnables);
+//		else
+//			super.postAdd(parent, element, runnables);
+//	}
 	
 
 	protected void postRefresh(final List toRefresh, final boolean updateLabels, Collection runnables) {

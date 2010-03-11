@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,8 +33,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
@@ -789,7 +787,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			} else if (kind == IJavaScriptElementDelta.ADDED) {
 				final Object parent = getHierarchicalPackageParent((IPackageFragment) element);
 				if (parent instanceof IPackageFragmentRoot) {
-					postAdd(parent, element,  runnables);
+					//postAdd(parent, element,  runnables);
 					return false;
 				} else {
 					postRefresh(internalGetParent(parent), GRANT_PARENT, element, runnables);
@@ -834,8 +832,8 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			// if added it could be that the corresponding IProject is already shown. Remove it first.
 			// bug 184296
 			if (kind == IJavaScriptElementDelta.ADDED) { 
-				postRemove(element.getResource(), runnables);
-				postAdd(element.getParent(), element, runnables);
+				//postRemove(element.getResource(), runnables);
+				//postAdd(element.getParent(), element, runnables);
 				return false;
 			}
 		}
@@ -882,7 +880,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				}
 				return true;		
 			} else {  
-				postAdd(parent, element, runnables);
+				//postAdd(parent, element, runnables);
 			}
 		}
 	
@@ -1072,7 +1070,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				return true;
 			} else
 			{
-				postAdd(parent, resource, runnables);
+				//postAdd(parent, resource, runnables);
 				return false;
 			}
 		}
@@ -1156,23 +1154,23 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		});
 	}
 
-	protected void postAdd(final Object parent, final Object element, Collection runnables) {
-		runnables.add(new Runnable() {
-			public void run() {
-				Widget[] items= fViewer.testFindItems(element);
-				for (int i= 0; i < items.length; i++) {
-					Widget item= items[i];
-					if (item instanceof TreeItem && !item.isDisposed()) {
-						TreeItem parentItem= ((TreeItem) item).getParentItem();
-						if (parentItem != null && !parentItem.isDisposed() && parent.equals(parentItem.getData())) {
-							return; // no add, element already added (most likely by a refresh)
-						}
-					}
-				}
-				fViewer.add(parent, element);
-			}
-		});
-	}
+//	protected void postAdd(final Object parent, final Object element, Collection runnables) {
+//		runnables.add(new Runnable() {
+//			public void run() {
+//				Widget[] items= fViewer.testFindItems(element);
+//				for (int i= 0; i < items.length; i++) {
+//					Widget item= items[i];
+//					if (item instanceof TreeItem && !item.isDisposed()) {
+//						TreeItem parentItem= ((TreeItem) item).getParentItem();
+//						if (parentItem != null && !parentItem.isDisposed() && parent.equals(parentItem.getData())) {
+//							return; // no add, element already added (most likely by a refresh)
+//						}
+//					}
+//				}
+//				fViewer.add(parent, element);
+//			}
+//		});
+//	}
 
 	protected void postRemove(final Object element, Collection runnables) {
 		runnables.add(new Runnable() {

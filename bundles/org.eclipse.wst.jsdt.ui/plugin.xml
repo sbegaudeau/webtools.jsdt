@@ -5358,9 +5358,9 @@
 				</enablement>
 		   </actionProvider> 
 		   
-			<override
+			<!--<override
 					policy="InvokeAlwaysRegardlessOfSuppressedExt"
-					suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>
+					suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>-->
 			<commonSorter
 					class="org.eclipse.wst.jsdt.ui.JavaElementSorter"
 					id="org.eclipse.wst.jsdt.ui.javaElementSorter"/>
