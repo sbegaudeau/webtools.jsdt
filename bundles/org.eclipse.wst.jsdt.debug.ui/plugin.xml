@@ -75,6 +75,8 @@
          <action
                actionID="RulerDoubleClick"
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               helpContextId="editor_toggle_breakpoint_action_context"
+               icon="$nl$/icons/elcl16/brkp_obj.gif"
                id="org.eclipse.wst.jsdt.debug.ui.RulerToggleBreakpoint"
                label="%togglebreakpointRulerAction.name">
          </action>
@@ -87,6 +89,7 @@
             targetID="org.eclipse.wst.jsdt.ui.CompilationUnitEditor.RulerContext">
          <action
                class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               helpContextId="editor_toggle_breakpoint_action_context"
                icon="$nl$/icons/elcl16/brkp_obj.gif"
                id="org.eclipse.wst.jsdt.debug.ui.toggle.breakpoint.ruler.delegate"
                label="%togglebreakpointRulerAction.name"
@@ -101,6 +104,7 @@
                class="org.eclipse.wst.jsdt.debug.internal.ui.actions.BreakpointPropertiesAction"
                definitionId="org.eclipse.wst.jsdt.debug.ui.breakpoint.properties"
                enablesFor="1"
+               helpContextId="breakpoint_properties_popup_menu_context"
                id="org.eclipse.wst.jsdt.debug.ui.breakpoint.properties.action"
                label="%breakpointPropertiesAction.name"
                menubarPath="additions">

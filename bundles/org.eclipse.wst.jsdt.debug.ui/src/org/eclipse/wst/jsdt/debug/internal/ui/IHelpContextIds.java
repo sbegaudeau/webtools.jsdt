@@ -20,13 +20,13 @@ public interface IHelpContextIds {
 	/**
 	 * Help constant for the line breakpoint editor
 	 */
-	public static final String STANDARD_BREAKPOINT_EDITOR = JavaScriptDebugUIPlugin.PLUGIN_ID + ".standard.breakpoint.editor"; //$NON-NLS-1$
+	public static final String STANDARD_BREAKPOINT_EDITOR = JavaScriptDebugUIPlugin.PLUGIN_ID + ".standard_breakpoint_editor"; //$NON-NLS-1$
 	/**
 	 * Help constant for the general breakpoint property page
 	 */
-	public static final String JAVASCRIPT_BREAKPOINT_PROPERTY_PAGE = JavaScriptDebugUIPlugin.PLUGIN_ID + ".breakpoint.property.page"; //$NON-NLS-1$
+	public static final String JAVASCRIPT_BREAKPOINT_PROPERTY_PAGE = JavaScriptDebugUIPlugin.PLUGIN_ID + ".breakpoint_property_page"; //$NON-NLS-1$
 	/**
 	 * Help constant for the connect tab
 	 */
-	public static final String CONNECT_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".connect.tab"; //$NON-NLS-1$
+	public static final String CONNECT_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".connect_tab"; //$NON-NLS-1$
 }
