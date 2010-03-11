@@ -62,7 +62,9 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	public void stop() {
 		new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID).removePreferenceChangeListener(this);
 		try {
-			allLoadsBreakpoint.delete();
+			if(allLoadsBreakpoint != null) {
+				allLoadsBreakpoint.delete();
+			}
 		} catch (CoreException e) {
 			JavaScriptDebugPlugin.log(e);
 		}
