@@ -101,6 +101,14 @@
       </appinfo>
       <documentation>
          The following example is the real life definition of the Mozilla Rhino participant for line breakpoints.
+&lt;pre&gt;
+&lt;extension point=&quot;org.eclipse.wst.jsdt.debug.core.breakpointParticipants&quot;&gt;
+  &lt;participant
+     class=&quot;org.eclipse.wst.jsdt.debug.internal.rhino.breakpoints.RhinoBreakpointParticipant&quot;
+     kind=&quot;*&quot;&gt;
+  &lt;/participant&gt;
+&lt;/extension&gt;
+&lt;/pre&gt;
       </documentation>
    </annotation>
 
