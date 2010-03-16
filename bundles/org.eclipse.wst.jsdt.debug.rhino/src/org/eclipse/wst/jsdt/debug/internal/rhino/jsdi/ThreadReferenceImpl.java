@@ -62,7 +62,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	 */
 	public synchronized int frameCount() {
 		frames();
-		return frames.size();
+		return (frames == null ? 0 : frames.size());
 	}
 
 	/* (non-Javadoc)
@@ -77,20 +77,19 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frames()
 	 */
 	public synchronized List frames() {
-		if (!suspended || status == THREAD_STATUS_ZOMBIE)
+		if (!suspended || status == THREAD_STATUS_ZOMBIE) {
 			return Collections.EMPTY_LIST;
-
-		if (frames != null)
+		}
+		if (frames != null) {
 			return frames;
-
+		}
 		Request request = new Request(JSONConstants.FRAMES);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
 			Response response = vm.sendRequest(request, 30000);
 			List frameIds = (List) response.getBody().get(JSONConstants.FRAMES);
 			if (frameIds.isEmpty()) {
-				frames = Collections.EMPTY_LIST;
-				return frames;
+				return Collections.EMPTY_LIST;
 			}
 			frames = new ArrayList();
 			for (Iterator iterator = frameIds.iterator(); iterator.hasNext();) {
@@ -176,7 +175,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 			request.getArguments().put(JSONConstants.STEP, step);
 		}
 		try {
-			Response response = vm.sendRequest(request, 30000);
+			Response response = vm.sendRequest(request);
 			if (response.isSuccess()) {
 				step = null;
 				frames = null;
@@ -200,7 +199,10 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		Request request = new Request(JSONConstants.SUSPEND);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
-			vm.sendRequest(request, 30000);
+			Response response = vm.sendRequest(request);
+			if(response.isSuccess()) {
+				markSuspended(false);
+			}
 		} catch (DisconnectedException e) {
 			RhinoDebugPlugin.log(e);
 		} catch (TimeoutException e) {

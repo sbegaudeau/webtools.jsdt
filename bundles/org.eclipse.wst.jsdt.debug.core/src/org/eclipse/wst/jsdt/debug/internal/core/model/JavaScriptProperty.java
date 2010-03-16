@@ -34,7 +34,7 @@ public class JavaScriptProperty extends JavaScriptDebugElement implements IVaria
 	 * @param target
 	 */
 	public JavaScriptProperty(JavaScriptValue jsdiValue, Property property) {
-		super(jsdiValue.getJSDITarget());
+		super(jsdiValue.getJavaScriptDebugTarget());
 		this.property = property;
 	}
 
@@ -63,7 +63,7 @@ public class JavaScriptProperty extends JavaScriptDebugElement implements IVaria
 	 */
 	public IValue getValue() throws DebugException {
 		if (value == null) {
-			value = JavaScriptValue.createValue(getJSDITarget(), this.property.value());
+			value = JavaScriptValue.createValue(getJavaScriptDebugTarget(), this.property.value());
 		}
 		return value;
 	}

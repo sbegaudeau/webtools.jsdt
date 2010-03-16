@@ -49,6 +49,7 @@ public final class JavaScriptImageRegistry {
 	private static void declareImages() {
 		//ELCL
 		declareRegistryImage(ISharedImages.IMG_SCRIPT, ELCL + "script.gif"); //$NON-NLS-1$
+		declareRegistryImage(ISharedImages.IMG_SCRIPT_GRP, ELCL + "script_grp.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_LOCAL_VAR, ELCL + "localvariable.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_CONNECT, ELCL + "connect.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_BRKP, ELCL + "brkp_obj.gif"); //$NON-NLS-1$

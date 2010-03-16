@@ -39,7 +39,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 	 * The id of the script - this can be used to look it up in the {@link VirtualMachineImpl}
 	 */
 	private final Long scriptId;
-//	private String sourcePath = null;
+	private String sourcePath = null;
 	private URI sourceuri = null;
 	private final String source;
 	private final Boolean generated;
@@ -56,7 +56,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 	public ScriptReferenceImpl(VirtualMachineImpl vm, Map jsonScript) {
 		super(vm);
 		this.scriptId = new Long(((Number) jsonScript.get(JSONConstants.SCRIPT_ID)).longValue());
-//		this.sourcePath = (String) jsonScript.get(JSONConstants.LOCATION);
+		this.sourcePath = (String) jsonScript.get(JSONConstants.LOCATION);
 		this.sourceProperties = (Map) jsonScript.get(JSONConstants.PROPERTIES);
 		this.source = (String) jsonScript.get(JSONConstants.SOURCE);
 		this.generated = (Boolean) jsonScript.get(JSONConstants.GENERATED);
@@ -126,11 +126,13 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 		return scriptId;
 	}
 
+	
 	/**
-	 * @return true if this {@link ScriptReference} was generated
+	 * Return if the script is generated or not
+	 * @return <code>true</code> if the script was generated <code>false</code> otherwise
 	 */
-	public Boolean isGenerated() {
-		return generated;
+	public boolean isGenerated() {
+		return generated.booleanValue();
 	}
 
 	/* (non-Javadoc)
@@ -145,6 +147,16 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 						path = path.append((String) this.sourceProperties.get(JSONConstants.PATH));
 						path = path.append((String) this.sourceProperties.get(JSONConstants.NAME));
 						this.sourceuri = new URI("file", null, path.makeAbsolute().toString(), null); //$NON-NLS-1$
+					}
+					else if(this.sourcePath != null) {
+						IPath path = null;
+						if(this.sourcePath.equals("<stdin>")) {
+							path = new Path("stdin");
+						}
+						else {
+							path = new Path(this.sourcePath);
+						}
+						this.sourceuri = new URI("file", null, path.makeAbsolute().toString(), null);
 					}
 					else {
 						this.sourceuri = new URI("file", null, "/script", null);

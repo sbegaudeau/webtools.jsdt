@@ -20,6 +20,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IStackFrame;
@@ -43,6 +44,8 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
+import org.eclipse.wst.jsdt.debug.core.model.IScript;
+import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 
 /**
  * Default model presentation for JSDI model elements
@@ -146,6 +149,12 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 			if(element instanceof IJavaScriptLineBreakpoint) {
 				return getLineBreakpointText((IJavaScriptLineBreakpoint) element);
 			}
+			if(element instanceof IScriptGroup) {
+				return Messages.scripts;
+			}
+			if(element instanceof IScript) {
+				return getScriptText((IScript) element);
+			}
 		}
 		catch(CoreException ce) {
 			JavaScriptDebugUIPlugin.log(ce);
@@ -153,6 +162,20 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		return element.toString();
 	}
 	
+	/**
+	 * Returns the display text for the given script element
+	 * @param script
+	 * @return the display text for the given script
+	 */
+	String getScriptText(IScript script) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(URIUtil.lastSegment(script.sourceURI()));
+		buffer.append(" ("); //$NON-NLS-1$
+		buffer.append(script.sourceURI().toString());
+		buffer.append(")"); //$NON-NLS-1$
+		return buffer.toString();
+	}
+
 	/**
 	 * Returns the text for a line breakpoint
 	 * @param breakpoint
@@ -269,6 +292,12 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 					return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPTBRKP), flags));
 				}
 				return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_BRKP_DISABLED), flags));
+			}
+			if(element instanceof IScript) {
+				return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT), 0));
+			}
+			if(element instanceof IScriptGroup) {
+				return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT_GRP), 0));
 			}
 		}
 		catch(DebugException de) {

@@ -15,6 +15,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
@@ -25,13 +27,13 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticip
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
+import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.StepEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
-import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
@@ -91,6 +93,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	private final ThreadReference thread;
 
+	private boolean suspending = false;
 	/**
 	 * Constructor
 	 * 
@@ -313,11 +316,54 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Delegate method to suspend the underlying thread
 	 */
 	void suspendUnderlyingThread() {
-		EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
+		if(suspending) {
+			return;
+		}
+		if (isSuspended()) {
+			fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
+			return;
+		}
+		suspending = true;
+		Thread thread = new Thread(new Runnable() {
+			public void run() {
+				try {
+					JavaScriptThread.this.thread.suspend();
+					long stop = System.currentTimeMillis() + VirtualMachine.DEFAULT_TIMEOUT;
+					boolean suspended = JavaScriptThread.this.thread.isSuspended();
+					while (System.currentTimeMillis() < stop && !suspended) {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+						}
+						suspended = JavaScriptThread.this.thread.isSuspended();
+						if (suspended) {
+							break;
+						}
+					}
+					if (!suspended) {
+						IStatus status= new Status(
+								IStatus.ERROR, 
+								JavaScriptDebugPlugin.PLUGIN_ID, 
+								100, 
+								NLS.bind(ModelMessages.thread_timed_out_trying_to_suspend, new String[] {new Integer(VirtualMachine.DEFAULT_TIMEOUT).toString()}), 
+								null); 
+						JavaScriptDebugPlugin.log(status);
+					}
+					markSuspended();
+					fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
+				} catch (RuntimeException exception) {
+				} finally {
+					suspending = false;
+				}
+			}
+		});
+		thread.setDaemon(true);
+		thread.start();
+		/*EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
 		SuspendRequest suspendRequest = requestManager.createSuspendRequest(this.thread);
 		suspendRequest.setEnabled(true);
 		getJSDITarget().addJSDIEventListener(this, suspendRequest);
-		this.thread.suspend();
+		this.thread.suspend();*/
 	}
 	
 	/**
@@ -518,7 +564,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
 		StepRequest stepRequest = requestManager.createStepRequest(this.thread, step);
 		stepRequest.setEnabled(true);
-		getJSDITarget().addJSDIEventListener(this, stepRequest);
+		getJavaScriptDebugTarget().addJSDIEventListener(this, stepRequest);
 	}
 
 	/*
@@ -573,7 +619,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	public synchronized void terminate() throws DebugException {
 		this.state = TERMINATED;
-		getJSDITarget().terminate();
+		getJavaScriptDebugTarget().terminate();
 	}
 
 	/**
@@ -598,7 +644,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 			EventRequestManager requestManager = thread.virtualMachine().eventRequestManager();
 			requestManager.deleteEventRequest(event.request());
-			getJSDITarget().removeJSDIEventListener(this, event.request());
+			getJavaScriptDebugTarget().removeJSDIEventListener(this, event.request());
 		}
 
 		if (event instanceof StepEvent) {
@@ -609,7 +655,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 			EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
 			requestManager.deleteEventRequest(event.request());
-			getJSDITarget().removeJSDIEventListener(this, event.request());
+			getJavaScriptDebugTarget().removeJSDIEventListener(this, event.request());
 		}
 	}
 
@@ -642,13 +688,13 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		try {
 			IStackFrame frame = getTopStackFrame();
 			if(frame instanceof JavaScriptStackFrame) {
-				return new JavaScriptValue(getJSDITarget(), ((JavaScriptStackFrame) frame).getUnderlyingStackFrame().evaluate(expression));
+				return new JavaScriptValue(getJavaScriptDebugTarget(), ((JavaScriptStackFrame) frame).getUnderlyingStackFrame().evaluate(expression));
 			}
 		}
 		catch(DebugException de) {
 			//do nothing, return
 		}
-		return new JavaScriptValue(getJSDITarget(), getVM().mirrorOfNull());
+		return new JavaScriptValue(getJavaScriptDebugTarget(), getVM().mirrorOfNull());
 	}
 	
 	/* (non-Javadoc)

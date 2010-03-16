@@ -93,7 +93,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 		Request request = new Request(JSONConstants.SCRIPT);
 		request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 		try {
-			Response response = sendRequest(request, 30000);
+			Response response = sendRequest(request, DEFAULT_TIMEOUT);
 			Map jsonScript = (Map) response.getBody().get(JSONConstants.SCRIPT);
 			return new ScriptReferenceImpl(this, jsonScript);
 		} catch (DisconnectedException e) {
@@ -171,7 +171,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 	 * @throws DisconnectedException
 	 */
 	public Response sendRequest(Request request) throws TimeoutException, DisconnectedException {
-		return sendRequest(request, 30000);
+		return sendRequest(request, DEFAULT_TIMEOUT);
 	}
 
 	/* (non-Javadoc)
@@ -218,7 +218,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 		Request request = new Request(JSONConstants.THREAD);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
-			Response response = sendRequest(request, 30000);
+			Response response = sendRequest(request, DEFAULT_TIMEOUT);
 			Map jsonThread = (Map) response.getBody().get(JSONConstants.THREAD);
 			if (jsonThread == null) {
 				return null;

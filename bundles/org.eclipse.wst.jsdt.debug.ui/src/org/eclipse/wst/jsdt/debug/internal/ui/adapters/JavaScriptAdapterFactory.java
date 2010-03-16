@@ -12,10 +12,14 @@ package org.eclipse.wst.jsdt.debug.internal.ui.adapters;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider;
+import org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory2;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
+import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointAdapter;
 
@@ -67,6 +71,8 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	
 	static IWorkbenchAdapter wadapter = null;
 	static ToggleBreakpointAdapter tbadapter = null;
+	static JavaScriptAsyncContentProvider jscontent = null;
+	static JavaScriptModelProxyFactory jsproxyfactory = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -80,6 +86,15 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 		if(adapterType.equals(IWorkbenchAdapter.class) && adaptableObject instanceof IJavaScriptBreakpoint) {
 			return getWorkbenchAdapter();
 		}
+		if (adapterType.equals(IElementContentProvider.class)) {
+			if (adaptableObject instanceof IJavaScriptDebugTarget ||
+					adaptableObject instanceof IScriptGroup) {
+				return getJSContentProvider();
+			}
+		}
+		if(adapterType.equals(IModelProxyFactory2.class)) {
+			return getJSProxyFactory();
+		}
 		return null;
 	}
 
@@ -89,7 +104,30 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
 	public Class[] getAdapterList() {
-		return new Class[] {IToggleBreakpointsTarget.class, IWorkbenchAdapter.class};
+		return new Class[] {IToggleBreakpointsTarget.class, 
+				IWorkbenchAdapter.class, 
+				IElementContentProvider.class,
+				IModelProxyFactory2.class};
+	}
+	
+	/**
+	 * @return the singleton {@link JavaScriptModelProxyFactory}
+	 */
+	synchronized JavaScriptModelProxyFactory getJSProxyFactory() {
+		if(jsproxyfactory == null) {
+			jsproxyfactory = new JavaScriptModelProxyFactory();
+		}
+		return jsproxyfactory;
+	}
+	
+	/**
+	 * @return the singleton {@link JavaScriptAsyncContentProvider}
+	 */
+	synchronized JavaScriptAsyncContentProvider getJSContentProvider() {
+		if(jscontent == null) {
+			jscontent = new JavaScriptAsyncContentProvider();
+		}
+		return jscontent;
 	}
 	
 	/**

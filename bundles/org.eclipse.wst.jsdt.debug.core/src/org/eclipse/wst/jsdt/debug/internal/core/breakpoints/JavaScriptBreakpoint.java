@@ -147,7 +147,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			return;
 		}
 		script = new Path(script).lastSegment();
-		List/* ScriptReference */scripts = target.allScriptsByName(script);
+		List/* ScriptReference */scripts = target.underyingScripts(script);
 		boolean success = true;
 		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 			success &= createRequest(target, (ScriptReference) iter.next());

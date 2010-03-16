@@ -23,6 +23,9 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
  * @noextend This interface is not intended to be extended by clients.
  */
 public interface VirtualMachine {
+	
+	public final int DEFAULT_TIMEOUT = 30000;
+	
 	/**
 	 * Sends a resume request to the VM
 	 */

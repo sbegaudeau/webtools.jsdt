@@ -61,6 +61,12 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 				if (file != null) {
 					return new IFile[] { file };
 				}
+				//try to find it using the source tab infos
+				Object[] sources = super.findSourceElements(object);
+				if(sources != null && sources.length > 0) {
+					return sources;
+				}
+				//else show the temp source
 				return showExternalSource(jframe.getSource(), path);
 			}
 		}

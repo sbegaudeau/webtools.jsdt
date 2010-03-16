@@ -36,6 +36,7 @@ public class Messages extends NLS {
 	public static String exception_occurred_setting_bp_properties;
 	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
+	public static String scripts;
 	public static String select_javascript_file;
 	public static String set_bp_hit_count;
 	public static String suspend_target;

@@ -34,6 +34,7 @@ public class ModelMessages extends NLS {
 	public static String thread_stepping;
 	public static String thread_suspended;
 	public static String thread_terminated;
+	public static String thread_timed_out_trying_to_suspend;
 	public static String thread_zombie;
 	static {
 		// initialize resource bundle

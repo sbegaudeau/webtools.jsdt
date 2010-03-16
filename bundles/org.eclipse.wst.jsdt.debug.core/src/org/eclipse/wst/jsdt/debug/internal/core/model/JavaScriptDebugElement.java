@@ -16,6 +16,7 @@ import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 
 /**
@@ -30,7 +31,7 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * 
 	 * @param target
 	 */
-	public JavaScriptDebugElement(JavaScriptDebugTarget target) {
+	public JavaScriptDebugElement(IJavaScriptDebugTarget target) {
 		super(target);
 	}
 
@@ -48,7 +49,7 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * 
 	 * @return debug target
 	 */
-	protected JavaScriptDebugTarget getJSDITarget() {
+	protected JavaScriptDebugTarget getJavaScriptDebugTarget() {
 		return (JavaScriptDebugTarget) getDebugTarget();
 	}
 
@@ -56,7 +57,7 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * @return the {@link VirtualMachine} associated with this debug element
 	 */
 	protected VirtualMachine getVM() {
-		return getJSDITarget().getVM();
+		return getJavaScriptDebugTarget().getVM();
 	}
 
 	/**
@@ -102,7 +103,7 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * @see org.eclipse.debug.core.model.IDisconnect#canDisconnect()
 	 */
 	public boolean canDisconnect() {
-		return getJSDITarget().canDisconnect();
+		return getJavaScriptDebugTarget().canDisconnect();
 	}
 
 	/*
@@ -111,7 +112,7 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * @see org.eclipse.debug.core.model.IDisconnect#disconnect()
 	 */
 	public void disconnect() throws DebugException {
-		getJSDITarget().disconnect();
+		getJavaScriptDebugTarget().disconnect();
 	}
 
 	/*
@@ -120,6 +121,6 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 	 * @see org.eclipse.debug.core.model.IDisconnect#isDisconnected()
 	 */
 	public boolean isDisconnected() {
-		return getJSDITarget().isDisconnected();
+		return getJavaScriptDebugTarget().isDisconnected();
 	}
 }

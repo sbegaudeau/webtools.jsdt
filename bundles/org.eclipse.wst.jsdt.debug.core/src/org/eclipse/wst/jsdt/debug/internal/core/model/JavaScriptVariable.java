@@ -36,7 +36,7 @@ public class JavaScriptVariable extends JavaScriptDebugElement implements IVaria
 	 * @param variable
 	 */
 	public JavaScriptVariable(JavaScriptStackFrame frame, Variable variable) {
-		super(frame.getJSDITarget());
+		super(frame.getJavaScriptDebugTarget());
 		this.variable = variable;
 	}
 
@@ -65,7 +65,7 @@ public class JavaScriptVariable extends JavaScriptDebugElement implements IVaria
 	 */
 	public IValue getValue() throws DebugException {
 		if (this.value == null) {
-			this.value = new JavaScriptValue(getJSDITarget(), this.variable.value());
+			this.value = new JavaScriptValue(getJavaScriptDebugTarget(), this.variable.value());
 		}
 		return this.value;
 	}

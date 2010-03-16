@@ -22,7 +22,11 @@ public interface ISharedImages {
 	 * Default script image
 	 */
 	public static final String IMG_SCRIPT = "IMG_SCRIPT"; //$NON-NLS-1$
-	
+	/**
+	 * Default script group image
+	 */
+	public static final String IMG_SCRIPT_GRP = "IMG_SCRIPT_GRP"; //$NON-NLS-1$
+
 	/**
 	 * Image for a local variable
 	 */

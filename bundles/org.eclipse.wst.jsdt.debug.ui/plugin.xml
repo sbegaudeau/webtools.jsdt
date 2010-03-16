@@ -54,7 +54,7 @@
       </factory>
       <factory
             adaptableType="org.eclipse.wst.jsdt.core.IJavaScriptElement"
-            class="">
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.debug.ui.actions.ILaunchable">
          </adapter>
@@ -64,6 +64,26 @@
             class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
          <adapter
                type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
+         </adapter>
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory2">
+         </adapter>
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxy">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.wst.jsdt.debug.core.model.IScriptGroup"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
          </adapter>
       </factory>
    </extension>
@@ -237,6 +257,27 @@
                menubarPath="javascriptActions"
                style="toggle"
                tooltip="Suspends when any script is loaded">
+         </action>
+      </viewContribution>
+      <viewContribution
+            id="debugViewActions"
+            targetID="org.eclipse.debug.ui.DebugView">
+         <menu
+               id="org.eclipse.wst.jsdt.debug.ui.javascript.menu"
+               label="JavaScript">
+            <groupMarker
+                  name="js">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ShowLoadedScriptsAction"
+               helpContextId="show_all_scripts_debug_view_action"
+               icon="$nl$/icons/elcl16/script_grp.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.show.all.scripts"
+               label="%showAllScripts.name"
+               menubarPath="org.eclipse.wst.jsdt.debug.ui.javascript.menu/js"
+               style="toggle"
+               tooltip="%showAllScripts.tooltip">
          </action>
       </viewContribution>
    </extension>

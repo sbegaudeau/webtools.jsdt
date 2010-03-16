@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IThread;
@@ -52,7 +53,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 * @param thread
 	 */
 	public JavaScriptStackFrame(JavaScriptThread thread, StackFrame stackFrame) {
-		super(thread.getJSDITarget());
+		super(thread.getJavaScriptDebugTarget());
 		this.thread = thread;
 		this.stackFrame = stackFrame;
 	}
@@ -297,7 +298,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		if (this.thread.canTerminate()) {
 			this.thread.terminate();
 		} else {
-			getJSDITarget().terminate();
+			getJavaScriptDebugTarget().terminate();
 		}
 	}
 
@@ -316,7 +317,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		if(loc != null) {
 			ScriptReference script = loc.scriptReference();
 			if(script != null) {
-				return script.sourceURI().getPath();
+				return URIUtil.lastSegment(script.sourceURI());
 			}
 		}
 		return null;

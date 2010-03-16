@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -45,6 +46,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.VMDisconnectEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptPreferencesManager;
@@ -55,7 +57,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint
  * 
  * @since 1.0
  */
-public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDebugTarget, IDebugEventSetListener, ILaunchListener, IJavaScriptEventListener {
+public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJavaScriptDebugTarget, IDebugEventSetListener, ILaunchListener, IJavaScriptEventListener {
 
 	static final String DEFAULT_NAME = ModelMessages.JSDIDebugTarget_jsdi_debug_target;
 
@@ -243,26 +245,62 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IDe
 	}
 
 	/**
-	 * Returns all of the scripts currently loaded in the VM that have the
-	 * matching name.
-	 * 
+	 * Returns the collection of underlying {@link ScriptReference}s
+	 * whose name matches the given name
 	 * @param name
-	 * @return the complete list of scripts loaded in the VM that have the given
-	 *         name.
+	 * @return the complete list of {@link ScriptReference}s matching the given name
+	 * or an empty collection, never <code>null</code>
+	 */
+	public synchronized List underyingScripts(String name) {
+		List scripts = getVM().allScripts();
+		if(!scripts.isEmpty()) {
+			List byname = new ArrayList();
+			ScriptReference script = null;
+			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+				script = (ScriptReference) iter.next();
+				if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
+					byname.add(script);
+				}
+			}
+			return byname;
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget#allScriptsByName(java.lang.String)
 	 */
 	public synchronized List allScriptsByName(String name) {
-		List byname = new ArrayList();
 		List scripts = getVM().allScripts();
-		ScriptReference script = null;
-		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-			script = (ScriptReference) iter.next();
-			if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
-				byname.add(script);
+		if(!scripts.isEmpty()) {
+			List byname = new ArrayList();
+			ScriptReference script = null;
+			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+				script = (ScriptReference) iter.next();
+				if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
+					byname.add(new Script(this, script));
+				}
 			}
+			return byname;
 		}
-		return byname;
+		return Collections.EMPTY_LIST;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget#allScripts()
+	 */
+	public synchronized List allScripts() {
+		ArrayList all = (ArrayList) getVM().allScripts();
+		if(!all.isEmpty()) {
+			ArrayList scripts = new ArrayList(all.size());
+			for (int i = 0; i < all.size(); i++) {
+				scripts.add(new Script(this, (ScriptReference) all.get(i)));
+			}
+			return scripts;
+		}
+		return Collections.EMPTY_LIST; 
+	}
+	
 	/**
 	 * Collects all of the current threads from the {@link VirtualMachine} and
 	 * adds them to the cached list
