@@ -69,8 +69,7 @@ public interface Constants {
 	
 //#########  PREFERENCES  ############
 	/**
-	 * Preference to suspend execution when any script loads, i.e. for evey script load event
+	 * Preference to suspend execution when any script loads, i.e. for every script load event
 	 */
-	public static final String SUSPEND_ON_ALL_SCRIPT_LOADS = JavaScriptDebugPlugin.PLUGIN_ID + ".suspend_on_all_script_loads"; //$NON-NLS-1$
-	
+	public static final String SUSPEND_ON_ALL_SCRIPT_LOADS = JavaScriptDebugPlugin.PLUGIN_ID + ".suspend_on_all_script_loads"; //$NON-NLS-1$	
 }
