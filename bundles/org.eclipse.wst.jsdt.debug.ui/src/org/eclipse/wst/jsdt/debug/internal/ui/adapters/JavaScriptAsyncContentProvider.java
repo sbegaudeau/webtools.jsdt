@@ -5,7 +5,6 @@ import java.util.Comparator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.URIUtil;
-import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.internal.ui.model.elements.ElementContentProvider;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
@@ -14,7 +13,6 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
-import org.eclipse.wst.jsdt.debug.internal.core.model.ScriptGroup;
 import org.eclipse.wst.jsdt.debug.internal.ui.PreferencesManager;
 
 /**
@@ -34,6 +32,9 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		}
 	}
 	
+	/**
+	 * Comparator for scripts
+	 */
 	static Comparator scriptcompare = new ScriptComparator(); 
 	
 	/* (non-Javadoc)
@@ -41,10 +42,21 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 	 */
 	protected Object[] getChildren(Object parent, int index, int length, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		if(parent instanceof IJavaScriptDebugTarget) {
-			return getTargetChildren((IJavaScriptDebugTarget) parent, index, length);
+			IJavaScriptDebugTarget target = (IJavaScriptDebugTarget) parent;
+			Object[] threads = target.getThreads();
+			if(PreferencesManager.getManager().showLoadedScripts()) {
+				Object[] children = new Object[threads.length + 1];
+				children[0] = target.getScriptGroup();
+				System.arraycopy(threads, 0, children, 1, threads.length);
+				return getElements(children, index, length);
+			}
+			return threads;
 		}
 		if(parent instanceof IScriptGroup) {
-			return getScriptGroupChildren((IScriptGroup) parent, index, length);
+			IScriptGroup group = (IScriptGroup) parent;
+			Object[] scripts = getElements(group.allScripts().toArray(), index, length);
+			Arrays.sort(scripts, scriptcompare);
+			return scripts;
 		}
 		if(parent instanceof IJavaScriptThread) {
 			return ((IJavaScriptThread)parent).getStackFrames();
@@ -52,42 +64,17 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		return NO_CHILDREN;
 	}
 	
-	/**
-	 * Returns the complete listing of children for the given {@link IJavaScriptDebugTarget}
-	 * @param target
-	 * @param index
-	 * @param length
-	 * @return the children for the given {@link IJavaScriptDebugTarget}
-	 * @throws DebugException
-	 */
-	Object[] getTargetChildren(IJavaScriptDebugTarget target, int index, int length) throws DebugException {
-		Object[] threads = target.getThreads();
-		if(PreferencesManager.getManager().showLoadedScripts()) {
-			Object[] children = new Object[threads.length + 1];
-			children[0] = new ScriptGroup(target);
-			System.arraycopy(threads, 0, children, 1, threads.length);
-			return getElements(children, index, length);
-		}
-		return threads;
-	}
-	
-	/**
-	 * Returns the collection of children from the given {@link IScriptGroup}
-	 * @param group
-	 * @return the children of the {@link IScriptGroup}
-	 */
-	Object[] getScriptGroupChildren(IScriptGroup group, int index, int length) {
-		Object[] scripts = getElements(group.allScripts().toArray(), index, length);
-		Arrays.sort(scripts, scriptcompare);
-		return scripts;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.internal.ui.model.elements.DebugTargetContentProvider#getChildCount(java.lang.Object, org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext, org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate)
 	 */
 	protected int getChildCount(Object element, IPresentationContext context, IViewerUpdate monitor) throws CoreException {
 		if(element instanceof IJavaScriptDebugTarget) {
-			return targetChildCount((IJavaScriptDebugTarget) element);
+			IJavaScriptDebugTarget target = (IJavaScriptDebugTarget) element;
+			int count = target.getThreads().length;
+			if(target.getScriptGroup() != null && PreferencesManager.getManager().showLoadedScripts()) {
+				count = count + 1;
+			}
+			return count;
 		}
 		if(element instanceof IScriptGroup) {
 			return ((IScriptGroup) element).allScripts().size();
@@ -96,20 +83,6 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 			return ((IJavaScriptThread)element).getFrameCount();
 		}
 		return 0;
-	}
-	
-	/**
-	 * Returns the total known child count for the given {@link IJavaScriptDebugTarget}
-	 * @param target
-	 * @return the total known child count for the given target
-	 * @throws DebugException
-	 */
-	int targetChildCount(IJavaScriptDebugTarget target) throws DebugException {
-		int count = target.getThreads().length;
-		if(PreferencesManager.getManager().showLoadedScripts()) {
-			count = count + 1;
-		}
-		return count;
 	}
 	
 	/* (non-Javadoc)

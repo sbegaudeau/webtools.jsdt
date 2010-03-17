@@ -48,4 +48,13 @@ public interface IJavaScriptDebugTarget extends IDebugTarget {
 	 */
 	public List/*<IScript>*/ allScriptsByName(String name);
 	
+	/**
+	 * Returns the singleton {@link IScriptGroup} for this target.<br>
+	 * <br>
+	 * This method can return <code>null</code> if the target has been disconnected or terminated
+	 * 
+	 * @return the singleton {@link IScriptGroup} for this target
+	 */
+	public IScriptGroup getScriptGroup();
+	
 }

@@ -47,6 +47,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
+import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptPreferencesManager;
@@ -71,6 +72,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 
 	private ArrayList threads = new ArrayList();
 	private ArrayList breakpoints = new ArrayList();
+	
+	private IScriptGroup scriptgroup = null;
 
 	private boolean disconnected = false;
 	private boolean terminating = false;
@@ -108,7 +111,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			this.name = DEFAULT_NAME;
 		}
 		this.eventDispatcher = new EventDispatcher(this);
-
+		this.scriptgroup = new ScriptGroup(this);
 		// TODO: consider calling this outside of constructor
 		initialize();
 	}
@@ -164,12 +167,10 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		DebugPlugin plugin = DebugPlugin.getDefault();
 		plugin.getLaunchManager().removeLaunchListener(this);
 		plugin.removeDebugEventListener(this);
-		try {
-			removeAllBreakpoints();
-			removeAllThreads();
-		} finally {
-			getEventDispatcher().shutdown();
-		}
+		getEventDispatcher().shutdown();
+		removeAllThreads();
+		removeAllBreakpoints();
+		this.scriptgroup = null;
 	}
 
 	/*
@@ -546,6 +547,13 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget#getScriptGroup()
+	 */
+	public IScriptGroup getScriptGroup() {
+		return scriptgroup;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

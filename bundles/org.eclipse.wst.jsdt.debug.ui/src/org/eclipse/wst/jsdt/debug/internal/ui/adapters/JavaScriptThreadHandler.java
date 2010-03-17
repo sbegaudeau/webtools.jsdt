@@ -48,8 +48,7 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 	 * @see org.eclipse.debug.internal.ui.viewers.update.ThreadEventHandler#indexOf(org.eclipse.debug.core.model.IThread)
 	 */
 	protected int indexOf(IThread thread) {
-		int offset = (PreferencesManager.getManager().showLoadedScripts() ? 1 : 0);
-		return super.indexOf(thread) + offset;
+		return super.indexOf(thread) + getOffset(thread);
 	}
 	
 	/* (non-Javadoc)
@@ -61,11 +60,15 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 		delta = delta.addNode(launch, indexOf(getLaunchManager().getLaunches(), launch), IModelDelta.NO_CHANGE, children.length);
 		IDebugTarget debugTarget = thread.getDebugTarget();
 		int numThreads = -1;
-		int offset = (PreferencesManager.getManager().showLoadedScripts() ? 1 : 0);
+		int offset = getOffset(thread);
 		try {
 			numThreads = debugTarget.getThreads().length + offset;
 		} catch (DebugException e) {
 		}
 		return delta.addNode(debugTarget, indexOf(children, debugTarget) + offset, IModelDelta.NO_CHANGE, numThreads);
+	}
+	
+	int getOffset(IThread thread) {
+		return (PreferencesManager.getManager().showLoadedScripts() ? 1 : 0);
 	}
 }
