@@ -198,9 +198,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		getEventDispatcher().shutdown();
 		removeAllThreads();
 		removeAllBreakpoints();
-		scriptLoadrequest.setEnabled(false);
 		removeJSDIEventListener(this, scriptLoadrequest);
-		getEventRequestManager().deleteEventRequest(scriptLoadrequest);
 		this.scriptgroup = null;
 	}
 
@@ -374,9 +372,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		}
 		threads.clear();
 		removeJSDIEventListener(this, threadEnterRequest);
-		getEventRequestManager().deleteEventRequest(threadEnterRequest);
 		removeJSDIEventListener(this, threadExitRequest);
-		getEventRequestManager().deleteEventRequest(threadExitRequest);
 	}
 
 	/*
@@ -606,7 +602,12 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 					getName()), null);
 		}
 		try {
-			this.vm.dispose();
+			// first resume the VM, do not leave it in a suspended state
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=304574
+			if(this.vm != null) {
+				this.vm.resume();
+				this.vm.dispose();
+			}
 		} finally {
 			cleanup();
 			this.disconnected = true;
@@ -631,9 +632,11 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		}
 		this.terminating = true;
 		try {
-			// first terminate the VM
+			// first resume the VM, do not leave it in a suspended state
+			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=304574
 			if (this.vm != null) {
-				this.vm.terminate();
+				this.vm.resume();
+				this.vm.dispose();
 			}
 			// next terminate the underlying process
 			if (this.process != null) {
