@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.debug.internal.ui.adapters;
 
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.internal.ui.viewers.update.DebugEventHandler;
-import org.eclipse.debug.internal.ui.viewers.update.DebugTargetEventHandler;
 import org.eclipse.debug.internal.ui.viewers.update.DebugTargetProxy;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 
@@ -23,9 +22,6 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
  */
 public class JavaScriptDebugTargetProxy extends DebugTargetProxy {
 
-	static DebugTargetEventHandler fgTargetHandle = null;
-	JavaScriptThreadHandler threadHandler = null;
-	
 	/**
 	 * Constructor
 	 * @param target
@@ -38,24 +34,6 @@ public class JavaScriptDebugTargetProxy extends DebugTargetProxy {
 	 * @see org.eclipse.debug.internal.ui.viewers.update.DebugTargetProxy#createEventHandlers()
 	 */
 	protected DebugEventHandler[] createEventHandlers() {
-		return new DebugEventHandler[] {getTargetHandler(), getThreadHandler()};
-	}
-	
-	/**
-	 * @return the singleton {@link DebugTargetEventHandler}
-	 */
-	synchronized DebugTargetEventHandler getTargetHandler() {
-		if(fgTargetHandle == null) {
-			fgTargetHandle = new DebugTargetEventHandler(this);
-		}
-		return fgTargetHandle;
-	}
-
-	/**
-	 * @return the {@link JavaScriptThreadHandler}
-	 */
-	JavaScriptThreadHandler getThreadHandler() {
-		threadHandler = new JavaScriptThreadHandler(this);
-		return threadHandler;
+		return new DebugEventHandler[] {new JavaScriptDebugTargetEventHandler(this), new JavaScriptThreadHandler(this)};
 	}
 }

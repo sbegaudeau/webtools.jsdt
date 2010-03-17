@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,9 +45,11 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.ThreadExitEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.VMDeathEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.VMDisconnectEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
+import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
@@ -62,6 +65,25 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 
 	static final String DEFAULT_NAME = ModelMessages.JSDIDebugTarget_jsdi_debug_target;
 
+	/**
+	 * Comparator to sort scripts by name
+	 */
+	static class ScriptComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			return URIUtil.lastSegment(((IScript)o1).sourceURI()).compareTo(URIUtil.lastSegment(((IScript)o2).sourceURI()));
+		}
+	}
+	
+	/**
+	 * Comparator for scripts
+	 */
+	static Comparator scriptcompare = new ScriptComparator(); 
+	
+	/**
+	 * The cached collection of scripts, sorted by name
+	 */
+	private ArrayList iScriptCache = null;
+	
 	private final IProcess process;
 	private final VirtualMachine vm;
 	private final ILaunch launch;
@@ -82,6 +104,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 
 	private ThreadEnterRequest threadEnterRequest;
 	private ThreadExitRequest threadExitRequest;
+	private ScriptLoadRequest scriptLoadrequest;
 
 	private DebuggerStatementRequest debuggerStatementRequest;
 
@@ -125,6 +148,11 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		initializeThreads();
 		initializeBreakpoints();
 
+		//register listening for script load request
+		scriptLoadrequest = getEventRequestManager().createScriptLoadRequest();
+		scriptLoadrequest.setEnabled(true);
+		addJSDIEventListener(this, scriptLoadrequest);
+		
 		getLaunch().addDebugTarget(this);
 
 		DebugPlugin plugin = DebugPlugin.getDefault();
@@ -170,6 +198,9 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		getEventDispatcher().shutdown();
 		removeAllThreads();
 		removeAllBreakpoints();
+		scriptLoadrequest.setEnabled(false);
+		removeJSDIEventListener(this, scriptLoadrequest);
+		getEventRequestManager().deleteEventRequest(scriptLoadrequest);
 		this.scriptgroup = null;
 	}
 
@@ -272,14 +303,14 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget#allScriptsByName(java.lang.String)
 	 */
 	public synchronized List allScriptsByName(String name) {
-		List scripts = getVM().allScripts();
-		if(!scripts.isEmpty()) {
+		List scripts = allScripts();
+		if(scripts.size() > 0) {
 			List byname = new ArrayList();
-			ScriptReference script = null;
+			IScript script = null;
 			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-				script = (ScriptReference) iter.next();
+				script = (IScript) iter.next();
 				if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
-					byname.add(new Script(this, script));
+					byname.add(script);
 				}
 			}
 			return byname;
@@ -291,15 +322,20 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget#allScripts()
 	 */
 	public synchronized List allScripts() {
-		ArrayList all = (ArrayList) getVM().allScripts();
-		if(!all.isEmpty()) {
-			ArrayList scripts = new ArrayList(all.size());
-			for (int i = 0; i < all.size(); i++) {
-				scripts.add(new Script(this, (ScriptReference) all.get(i)));
+		if(iScriptCache == null) {
+			ArrayList all = (ArrayList) getVM().allScripts();
+			if(all.size() > 0) { 
+				iScriptCache = new ArrayList(all.size());
+				for (int i = 0; i < all.size(); i++) {
+					iScriptCache.add(new Script(this, (ScriptReference) all.get(i)));
+				}
+				Collections.sort(iScriptCache, scriptcompare);
 			}
-			return scripts;
 		}
-		return Collections.EMPTY_LIST; 
+		if(iScriptCache == null) {
+			return Collections.EMPTY_LIST;
+		}
+		return iScriptCache;
 	}
 	
 	/**
@@ -307,8 +343,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * adds them to the cached list
 	 */
 	private synchronized void initializeThreads() {
-		threadEnterRequest = vm.eventRequestManager()
-				.createThreadEnterRequest();
+		threadEnterRequest = vm.eventRequestManager().createThreadEnterRequest();
 		threadEnterRequest.setEnabled(true);
 		eventDispatcher.addEventListener(this, threadEnterRequest);
 
@@ -338,8 +373,10 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			}
 		}
 		threads.clear();
-		eventDispatcher.removeEventListener(this, threadEnterRequest);
-		eventDispatcher.removeEventListener(this, threadExitRequest);
+		removeJSDIEventListener(this, threadEnterRequest);
+		getEventRequestManager().deleteEventRequest(threadEnterRequest);
+		removeJSDIEventListener(this, threadExitRequest);
+		getEventRequestManager().deleteEventRequest(threadExitRequest);
 	}
 
 	/*
@@ -365,10 +402,9 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * breakpoint manager
 	 */
 	synchronized void initializeBreakpoints() {
-		debuggerStatementRequest = vm.eventRequestManager()
-				.createDebuggerStatementRequest();
+		debuggerStatementRequest = getEventRequestManager().createDebuggerStatementRequest();
 		debuggerStatementRequest.setEnabled(true);
-		eventDispatcher.addEventListener(this, debuggerStatementRequest);
+		addJSDIEventListener(this, debuggerStatementRequest);
 
 		IBreakpointManager manager = DebugPlugin.getDefault().getBreakpointManager();
 		manager.addBreakpointListener(this);
@@ -850,8 +886,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJSDIEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.core.model.JSDIDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
-	public void eventSetComplete(Event event, JavaScriptDebugTarget target,
-			boolean suspend, EventSet eventSet) {
+	public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {
 		// thread enter
 		// thread exit
 		// script?
@@ -879,6 +914,11 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			return false;
 		}
 		if (event instanceof ScriptLoadEvent) {
+			if(iScriptCache != null) {
+				iScriptCache.clear();
+				iScriptCache = null;
+			}
+			fireEvent(new DebugEvent(this.scriptgroup, DebugEvent.MODEL_SPECIFIC, EventDispatcher.EVENT_SCRIPT_LOADED));
 			return true;
 		}
 

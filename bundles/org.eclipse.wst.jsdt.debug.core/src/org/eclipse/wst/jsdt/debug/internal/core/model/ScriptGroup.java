@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
  * @since 1.0
  */
 public class ScriptGroup extends JavaScriptDebugElement implements IScriptGroup {
-
+	
 	/**
 	 * Constructor
 	 */
@@ -33,7 +33,7 @@ public class ScriptGroup extends JavaScriptDebugElement implements IScriptGroup 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IScriptGroup#allScripts()
 	 */
-	public List allScripts() {
+	public synchronized List allScripts() {
 		return getJavaScriptDebugTarget().allScripts();
 	}
 	

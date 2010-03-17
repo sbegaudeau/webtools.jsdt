@@ -29,6 +29,11 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
  */
 public final class EventDispatcher implements Runnable {
 
+	/**
+	 * Custom debug event kind for when a script is loaded
+	 */
+	public static final int EVENT_SCRIPT_LOADED = 0x0001;
+	
 	private HashMap listeners = null;
 	private boolean shutdown = false;
 	private JavaScriptDebugTarget target = null;

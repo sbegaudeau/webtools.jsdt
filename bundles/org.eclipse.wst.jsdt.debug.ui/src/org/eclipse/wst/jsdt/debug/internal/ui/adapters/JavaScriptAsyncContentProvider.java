@@ -1,17 +1,14 @@
 package org.eclipse.wst.jsdt.debug.internal.ui.adapters;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.internal.ui.model.elements.ElementContentProvider;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
-import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.internal.ui.PreferencesManager;
 
@@ -23,19 +20,7 @@ import org.eclipse.wst.jsdt.debug.internal.ui.PreferencesManager;
 public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 
 	static final Object[] NO_CHILDREN = {};
-	/**
-	 * Comparator to sort scripts by name
-	 */
-	static class ScriptComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			return URIUtil.lastSegment(((IScript)o1).sourceURI()).compareTo(URIUtil.lastSegment(((IScript)o2).sourceURI()));
-		}
-	}
 	
-	/**
-	 * Comparator for scripts
-	 */
-	static Comparator scriptcompare = new ScriptComparator(); 
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.internal.ui.model.elements.DebugTargetContentProvider#getChildren(java.lang.Object, int, int, org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext, org.eclipse.debug.internal.ui.viewers.model.provisional.IViewerUpdate)
@@ -54,9 +39,8 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		}
 		if(parent instanceof IScriptGroup) {
 			IScriptGroup group = (IScriptGroup) parent;
-			Object[] scripts = getElements(group.allScripts().toArray(), index, length);
-			Arrays.sort(scripts, scriptcompare);
-			return scripts;
+			List scripts = group.allScripts();
+			return getElements(scripts.toArray(), index, length);
 		}
 		if(parent instanceof IJavaScriptThread) {
 			return ((IJavaScriptThread)parent).getStackFrames();

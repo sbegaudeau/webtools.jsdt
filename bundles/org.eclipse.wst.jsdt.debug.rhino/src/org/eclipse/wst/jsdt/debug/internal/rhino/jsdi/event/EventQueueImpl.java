@@ -182,7 +182,7 @@ public final class EventQueueImpl implements EventQueue {
 					String type = (String) event.getBody().get(JSONConstants.TYPE);
 					if (JSONConstants.ENTER.equals(type)) {
 						ThreadReferenceImpl thread = vm.getThread(threadId);
-						if(thread == null) {
+						if(thread != null) {
 							eventSet.setThread(thread);
 							List threadEnterRequests = eventRequestManager.threadEnterRequests();
 							for (Iterator iterator = threadEnterRequests.iterator(); iterator.hasNext();) {
