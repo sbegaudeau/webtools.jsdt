@@ -417,18 +417,13 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @param vote
 	 * @return if the thread should stay suspended
 	 */
-	public boolean suspendForScriptLoad(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean vote) {
+	public int suspendForScriptLoad(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean vote) {
 		IJavaScriptBreakpointParticipant[] participants = JavaScriptDebugPlugin.getParticipantManager().getParticipants(breakpoint);
 		int suspend = 0;
 		for (int i = 0; i < participants.length; i++) {
 			suspend |= participants[i].scriptLoaded(this, script, breakpoint);
 		}
-		if((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
-				suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
-			addBreakpoint(breakpoint);
-			registerStepRequest(StepRequest.STEP_INTO);
-		}
-		return false;
+		return suspend;
 	}
 	
 	/**

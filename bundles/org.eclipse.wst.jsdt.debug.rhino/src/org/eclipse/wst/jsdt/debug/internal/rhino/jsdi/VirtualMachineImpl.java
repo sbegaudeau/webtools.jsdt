@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.internal.rhino.Constants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event.EventQueueImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
@@ -42,7 +43,6 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
  */
 public class VirtualMachineImpl implements VirtualMachine {
 
-	private static final String SPACE = " ";
 	public final UndefinedValueImpl undefinedValue = new UndefinedValueImpl(this);
 	public final NullValueImpl nullValue = new NullValueImpl(this);
 
@@ -71,11 +71,12 @@ public class VirtualMachineImpl implements VirtualMachine {
 		try {
 			Response response = sendRequest(request);
 			List scriptIds = (List) response.getBody().get(JSONConstants.SCRIPTS);
-
 			for (Iterator iterator = scriptIds.iterator(); iterator.hasNext();) {
 				Long scriptId = new Long(((Number) iterator.next()).longValue());
 				ScriptReferenceImpl script = createScriptReference(scriptId);
-				scripts.put(scriptId, script);
+				if(script != null) {
+					scripts.put(scriptId, script);
+				}
 			}
 		} catch (DisconnectedException e) {
 			disconnectVM();
@@ -236,7 +237,8 @@ public class VirtualMachineImpl implements VirtualMachine {
 	 * Returns the {@link ThreadReferenceImpl} with the given ID or 
 	 * create and return a new one if it does not exist
 	 * @param threadId
-	 * @return the {@link ThreadReferenceImpl} for the given ID
+	 * @return the {@link ThreadReferenceImpl} for the given ID or <code>null</code>
+	 * if the request to create a new one fails
 	 */
 	public synchronized ThreadReferenceImpl getThread(Long threadId) {
 		ThreadReferenceImpl thread = (ThreadReferenceImpl) threads.get(threadId);
@@ -257,8 +259,8 @@ public class VirtualMachineImpl implements VirtualMachine {
 		try {
 			Response response = sendRequest(request);
 			StringBuffer buffer = new StringBuffer();
-			buffer.append((String) response.getBody().get(JSONConstants.VM_VENDOR)).append(SPACE);
-			buffer.append(response.getBody().get(JSONConstants.VM_NAME)).append(SPACE);
+			buffer.append((String) response.getBody().get(JSONConstants.VM_VENDOR)).append(Constants.SPACE);
+			buffer.append(response.getBody().get(JSONConstants.VM_NAME)).append(Constants.SPACE);
 			buffer.append(response.getBody().get(JSONConstants.VM_VERSION));
 			return buffer.toString();
 		} catch (DisconnectedException e) {

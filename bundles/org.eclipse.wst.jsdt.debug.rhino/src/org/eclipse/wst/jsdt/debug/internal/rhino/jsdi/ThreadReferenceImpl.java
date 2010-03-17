@@ -120,7 +120,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 		try {
-			Response response = vm.sendRequest(request, 30000);
+			Response response = vm.sendRequest(request);
 			Map jsonFrame = (Map) response.getBody().get(JSONConstants.FRAME);
 			return new StackFrameImpl(vm, jsonFrame);
 		} catch (DisconnectedException e) {

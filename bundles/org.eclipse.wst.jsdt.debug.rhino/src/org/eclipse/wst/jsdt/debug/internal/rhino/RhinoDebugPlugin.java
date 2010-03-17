@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -108,5 +112,15 @@ public class RhinoDebugPlugin extends Plugin {
 	 */
 	public static IStatus newErrorStatus(String message, Throwable exception) {
 		return new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, message, exception);
+	}
+	
+	/**
+	 * Creates a new {@link URI} with the <code>file</code> scheme
+	 * @param path
+	 * @return a new {@link URI}
+	 * @throws URISyntaxException
+	 */
+	public static URI fileURI(IPath path) throws URISyntaxException {
+		return new URI(Constants.URI_FILE_SCHEME, null, path.makeAbsolute().toString(), null);
 	}
 }

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
@@ -99,25 +100,26 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 			ScriptReference script = sevent.script();
 			JavaScriptThread thread = target.findThread((sevent).thread());
 			if (thread != null) {
-				if(isGlobalLoadSuspend()) {
+				int vote = thread.suspendForScriptLoad(this, script, suspendVote);
+				if(isGlobalLoadSuspend(vote) ||
+						((vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE)) {
 					thread.addBreakpoint(this);
 					thread.registerStepRequest(StepRequest.STEP_INTO);
-					return true;
 				}
-				return !thread.suspendForScriptLoad(this, script, suspendVote);
 			}
 		}
 		return true;
 	}
-
+	
 	/**
 	 * Returns if this breakpoint supports global suspend
 	 * 
 	 * @return <code>true</code> if we should suspend on all script loads <code>false</code> otherwise
 	 */
-	boolean isGlobalLoadSuspend() {
+	boolean isGlobalLoadSuspend(int vote) {
 		try {
-			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false);
+			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false) && 
+				(vote & IJavaScriptBreakpointParticipant.DONT_SUSPEND) < 1;
 		}
 		catch(CoreException ce) {
 			JavaScriptDebugPlugin.log(ce);

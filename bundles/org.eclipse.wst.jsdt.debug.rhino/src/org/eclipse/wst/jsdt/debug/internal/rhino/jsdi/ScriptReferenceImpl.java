@@ -146,20 +146,20 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 						IPath path = new Path((String) this.sourceProperties.get(Constants.BUNDLE_SYMBOLICNAME));
 						path = path.append((String) this.sourceProperties.get(JSONConstants.PATH));
 						path = path.append((String) this.sourceProperties.get(JSONConstants.NAME));
-						this.sourceuri = new URI("file", null, path.makeAbsolute().toString(), null); //$NON-NLS-1$
+						this.sourceuri = RhinoDebugPlugin.fileURI(path);
 					}
 					else if(this.sourcePath != null) {
 						IPath path = null;
-						if(this.sourcePath.equals("<stdin>")) {
-							path = new Path("stdin");
+						if(this.sourcePath.equals(org.eclipse.wst.jsdt.debug.internal.rhino.Constants.STD_IN_URI)) {
+							path = new Path(org.eclipse.wst.jsdt.debug.internal.rhino.Constants.STD_IN);
 						}
 						else {
 							path = new Path(this.sourcePath);
 						}
-						this.sourceuri = new URI("file", null, path.makeAbsolute().toString(), null);
+						this.sourceuri = RhinoDebugPlugin.fileURI(path);
 					}
 					else {
-						this.sourceuri = new URI("file", null, "/script", null);
+						this.sourceuri = RhinoDebugPlugin.fileURI(new Path("script")); //$NON-NLS-1$
 					}
 				} catch (URISyntaxException urise) {
 					RhinoDebugPlugin.log(urise);

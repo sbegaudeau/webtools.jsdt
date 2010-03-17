@@ -94,7 +94,7 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(NLS.bind("Array [{0}]", new String[] {Integer.toString(this.size)}));
+		buffer.append(NLS.bind(Messages.ArrayReferenceImpl_array_count_, new String[] {Integer.toString(this.size)}));
 		return buffer.toString();
 	}
 }
