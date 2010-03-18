@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.breakpoints;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
@@ -79,7 +81,10 @@ public class RhinoBreakpointParticipant implements IJavaScriptBreakpointParticip
 					!RhinoPreferencesManager.suspendOnStdinLoad()) {
 				return DONT_SUSPEND;
 			}
-			if(breakpoint.getScriptPath().equals(script.sourceURI().getPath())) {
+			IPath path = new Path(breakpoint.getScriptPath());
+			if(path.isEmpty() ||
+					path.lastSegment().equals(URIUtil.lastSegment(script.sourceURI())) ||
+					path.toString().equals(script.sourceURI().getPath())) {
 				return SUSPEND;
 			}
 		}
