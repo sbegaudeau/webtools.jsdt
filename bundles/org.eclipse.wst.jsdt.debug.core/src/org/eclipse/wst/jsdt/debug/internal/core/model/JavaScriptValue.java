@@ -76,7 +76,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			JavaScriptPrimitiveValue nvalue = (JavaScriptPrimitiveValue)this.value;
 			return nvalue.stringValue();
 		}
-		return this.value.toString();
+		return this.value.valueString();
 	}
 
 	/*
