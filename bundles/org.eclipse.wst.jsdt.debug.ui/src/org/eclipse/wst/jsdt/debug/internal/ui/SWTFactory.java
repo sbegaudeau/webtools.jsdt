@@ -281,7 +281,7 @@ public class SWTFactory {
 	 * @return the new text widget
 	 */
 	public static Text createSingleText(Composite parent, int style, int hspan, String text) {
-    	Text t = new Text(parent, SWT.SINGLE | SWT.BORDER | style);
+    	Text t = new Text(parent, SWT.SINGLE | style);
     	t.setFont(parent.getFont());
     	GridData gd = new GridData(GridData.FILL_HORIZONTAL);
     	gd.horizontalSpan = hspan;
