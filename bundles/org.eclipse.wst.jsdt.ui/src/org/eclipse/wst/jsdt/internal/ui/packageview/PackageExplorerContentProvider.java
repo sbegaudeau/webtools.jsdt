@@ -436,10 +436,10 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				projectPackageFragmentRoots.add(new JsGlobalScopeContainer(project, classpathEntry));
 			}	
 		}	
-		Object[] resources= project.getNonJavaScriptResources();
-		for (int i= 0; i < resources.length; i++) {
-			result.add(resources[i]);
-		}
+//		Object[] resources= project.getNonJavaScriptResources();
+//		for (int i= 0; i < resources.length; i++) {
+//			result.add(resources[i]);
+//		}
 		ProjectLibraryRoot projectLibs = new ProjectLibraryRoot(project);
 		result.add(0,projectLibs);
 		return result.toArray();
