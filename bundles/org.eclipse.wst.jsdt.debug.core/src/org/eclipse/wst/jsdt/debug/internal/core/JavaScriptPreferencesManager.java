@@ -60,7 +60,10 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	 * Stops the manager and clean up
 	 */
 	public void stop() {
-		new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID).removePreferenceChangeListener(this);
+		IEclipsePreferences node = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
+		if(node != null) {
+			node.removePreferenceChangeListener(this);
+		}
 		try {
 			if(allLoadsBreakpoint != null) {
 				allLoadsBreakpoint.delete();
