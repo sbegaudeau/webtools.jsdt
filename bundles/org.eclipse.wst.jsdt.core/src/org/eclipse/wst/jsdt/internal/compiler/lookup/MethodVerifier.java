@@ -114,7 +114,7 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 	nextMethod : for (int i = length; --i >= 0;) {
 		MethodBinding inheritedMethod = methods[i];
 		if (overriddenInheritedMethods == null || overriddenInheritedMethods[i] == 0) {
-			if (currentMethod.isStatic() != inheritedMethod.isStatic()) {  // Cannot override a static method or hide an instance method
+			if (currentMethod.isStatic() != inheritedMethod.isStatic() && currentMethod.declaringClass == type) {  // Cannot override a static method or hide an instance method
 				problemReporter(currentMethod).staticAndInstanceConflict(currentMethod, inheritedMethod);
 				continue nextMethod;
 			}
