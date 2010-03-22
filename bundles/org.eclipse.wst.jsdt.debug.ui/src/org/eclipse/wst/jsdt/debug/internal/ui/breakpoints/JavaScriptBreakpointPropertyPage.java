@@ -51,6 +51,8 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
  */
 public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 
+	public static String PAGE_ID = "org.eclipse.wst.jsdt.debug.ui.breakpoints.propertypage"; //$NON-NLS-1$
+	
 	protected Button enabledbutton;
 	protected Button hitcountbutton;
 	protected Text hitcounttext;

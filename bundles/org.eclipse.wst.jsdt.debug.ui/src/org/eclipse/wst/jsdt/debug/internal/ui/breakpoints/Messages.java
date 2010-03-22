@@ -18,8 +18,11 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.messages"; //$NON-NLS-1$
 	public static String breakpoint_condition;
+	public static String breakpoint_properties;
 	public static String breakpoint_settings;
 	public static String conditional;
+	public static String disable_breakpoint;
+	public static String enable_breakpoint;
 	public static String enabled;
 	public static String enter_condition;
 	public static String entry;

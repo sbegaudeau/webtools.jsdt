@@ -115,6 +115,22 @@
                label="%togglebreakpointRulerAction.name"
                menubarPath="debug">
          </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.BreakpointPropertiesEditorActionDelegate"
+               helpContextId="breakpoint_properties_editor_ruler_context"
+               id="org.eclipse.wst.jsdt.debug.ui.ruler.breakpoint.properties"
+               label="%breakpointpropertiesRulerAction.name"
+               menubarPath="group.properties"
+               tooltip="%breakpointpropertiesRulerAction.tooltip">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointEnablementEditorDelegate"
+               helpContextId="toggle_breakpoint_anablement_ruler_context"
+               id="org.eclipse.wst.jsdt.debug.ui.toggle.breakpoint.enablement"
+               label="%togglebreakpointenablementRulerAction.name"
+               menubarPath="debug"
+               tooltip="%togglebreakpointenablementRulerAction.tooltip">
+         </action>/action>
       </viewerContribution>
       <objectContribution
             adaptable="true"
