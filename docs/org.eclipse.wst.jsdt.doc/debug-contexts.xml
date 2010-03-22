@@ -39,4 +39,10 @@
    <context id="javasript_lanch_shortcut" title="JavaScript Launch Shortcut">
       <description>This launch shortcut allows quick access to the most recently launched JavaScript configuration</description>
    </context>
+   <context id="breakpoint_properties_editor_ruler_context">
+      <description>This action allows quick access to the properties of the breakpoint without having to open the Breakpoints View</description>
+   </context>
+   <context id="toggle_breakpoint_anablement_ruler_context">
+      <description>This action allows quick access to enabling or disabling a breakpoint without having to open the Breakpoints View</description>
+   </context>
 </contexts>
