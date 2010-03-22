@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,12 +39,12 @@ public class WhileStatement extends Statement implements IWhileStatement {
 		FlowInfo flowInfo) {
 
 		Constant cst = this.condition.constant;
-		boolean isConditionTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
-		boolean isConditionFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
+		boolean isConditionTrue = cst == null ? false : cst != Constant.NotAConstant && cst.booleanValue() == true;
+		boolean isConditionFalse = cst == null ? false : cst != Constant.NotAConstant && cst.booleanValue() == false;
 
 		cst = this.condition.optimizedBooleanConstant();
-		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
-		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
+		boolean isConditionOptimizedTrue = cst == null ? false : cst != Constant.NotAConstant && cst.booleanValue() == true;
+		boolean isConditionOptimizedFalse = cst == null ? false : cst != Constant.NotAConstant && cst.booleanValue() == false;
 
 		LoopingFlowContext condLoopContext;
 		FlowInfo condInfo =	flowInfo.nullInfoLessUnconditionalCopy();
