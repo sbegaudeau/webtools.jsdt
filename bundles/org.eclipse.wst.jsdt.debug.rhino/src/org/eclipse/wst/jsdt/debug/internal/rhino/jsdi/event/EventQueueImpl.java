@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ScriptReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ThreadReferenceImpl;
@@ -199,6 +200,15 @@ public final class EventQueueImpl implements EventQueue {
 							ThreadExitRequest request = (ThreadExitRequest) iterator.next();
 							if (request.isEnabled()) {
 								eventSet.add(new ThreadExitEventImpl(vm, thread, request));
+							}
+						}
+					}
+					else if(JSONConstants.VMDEATH.equals(type)) {
+						List requests = eventRequestManager.vmDeathRequests();
+						for (Iterator iter = requests.iterator(); iter.hasNext();) {
+							VMDeathRequest request = (VMDeathRequest) iter.next();
+							if(request.isEnabled()) {
+								eventSet.add(new VMDeathEventImpl(vm, request));
 							}
 						}
 					}

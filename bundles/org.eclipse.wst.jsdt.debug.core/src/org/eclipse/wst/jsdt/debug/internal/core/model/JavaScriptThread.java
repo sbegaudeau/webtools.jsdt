@@ -219,6 +219,13 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 	}
 
+	/**
+	 * Clears out the cached collection of breakpoints
+	 */
+	private synchronized void clearBreakpoints() {
+		this.breakpoints.clear();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -489,7 +496,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	synchronized void markResumed() {
 		this.state = RUNNING;
 		clearFrames();
-		this.breakpoints.clear();
+		clearBreakpoints();
 	}
 
 	/**
@@ -548,6 +555,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			this.thread.resume();
 			this.state = STEPPING;
 			clearFrames();
+			clearBreakpoints();
 			fireResumeEvent(debugEvent);
 		}
 	}

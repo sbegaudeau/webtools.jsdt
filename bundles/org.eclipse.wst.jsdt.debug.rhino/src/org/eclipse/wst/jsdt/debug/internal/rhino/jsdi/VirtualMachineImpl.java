@@ -190,7 +190,9 @@ public class VirtualMachineImpl implements VirtualMachine {
 				if (thread == null) {
 					thread = createThreadReference(threadId);
 				}
-				allThreads.put(threadId, thread);
+				if(thread != null) {
+					allThreads.put(threadId, thread);
+				}
 			}
 			threads = allThreads;
 		} catch (DisconnectedException e) {
@@ -365,7 +367,6 @@ public class VirtualMachineImpl implements VirtualMachine {
 		}
 		try {
 			this.session.dispose();
-			this.eventRequestManager.createVMDisconnectRequest();
 		} finally {
 			this.disconnected = true;
 		}

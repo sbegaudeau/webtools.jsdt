@@ -40,6 +40,10 @@ public interface JSONConstants {
 	public static final String FUNCTION_NAME = "functionName"; //$NON-NLS-1$
 	public static final String EVENT = "event"; //$NON-NLS-1$
 	public static final String NOT_FOUND = "not found"; //$NON-NLS-1$
+	/**
+	 * The type for a VMDeathEvent
+	 */
+	public static final String VMDEATH = "vmdeath";
 
 	// value constants
 	public static final String UNDEFINED = "undefined"; //$NON-NLS-1$

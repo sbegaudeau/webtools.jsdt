@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.debug.DebugFrame;
@@ -81,9 +80,6 @@ public class ThreadData {
 		ContextData contextData = new ContextData(threadId, new Long(currentContextId++), debugger);
 		context.setDebugger(debugger, contextData);
 		contexts.addFirst(context);
-		if (contexts.size() == 1) {
-			sendThreadEvent(JSONConstants.ENTER);
-		}
 	}
 
 	/**
@@ -94,26 +90,7 @@ public class ThreadData {
 	public synchronized void contextReleased(Context context) {
 		if(hasContext()) {
 			contexts.removeFirst();
-			if (contexts.isEmpty()) {
-				sendThreadEvent(JSONConstants.EXIT);
-			}
 		}
-	}
-
-	/**
-	 * Sends a thread event for the given type
-	 * 
-	 * @param type
-	 * 
-	 * @see JSONConstants#ENTER
-	 * @see JSONConstants#EXIT
-	 */
-	private void sendThreadEvent(String type) {
-		EventPacket threadEvent = new EventPacket(JSONConstants.THREAD);
-		Map body = threadEvent.getBody();
-		body.put(JSONConstants.TYPE, type);
-		body.put(JSONConstants.THREAD_ID, threadId);
-		debugger.sendEvent(threadEvent);
 	}
 
 	/**

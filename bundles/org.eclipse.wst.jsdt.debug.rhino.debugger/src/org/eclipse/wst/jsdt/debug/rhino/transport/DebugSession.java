@@ -64,8 +64,9 @@ public class DebugSession {
 	 * @throws DisconnectedException if the {@link PacketSendManager} has been disconnected
 	 */
 	public void sendRequest(Request request) throws DisconnectedException {
-		if(request==null)
+		if(request == null) {
 			throw new NullPointerException();
+		}
 		packetSendManager.sendPacket(request);
 	}
 
@@ -76,8 +77,9 @@ public class DebugSession {
 	 * @throws DisconnectedException if the {@link PacketSendManager} has been disconnected
 	 */
 	public void sendEvent(EventPacket event) throws DisconnectedException {
-		if(event==null)
+		if(event == null) {
 			throw new NullPointerException();
+		}
 		packetSendManager.sendPacket(event);
 	}
 	
@@ -88,8 +90,9 @@ public class DebugSession {
 	 * @throws DisconnectedException if the {@link PacketSendManager} has been disconnected
 	 */
 	public void sendResponse(Response response) throws DisconnectedException {
-		if(response==null)
+		if(response == null) {
 			throw new NullPointerException();
+		}
 		packetSendManager.sendPacket(response);
 	}
 	

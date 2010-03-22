@@ -105,7 +105,8 @@ public class PacketReceiveManager extends PacketManager {
 		synchronized (this.commandPackets) {
 			long remainingTime = timeToWait;
 			// Wait until command is available.
-			while (!isDisconnected()) {
+			//even if disconnected try to send the remaining events
+			while (!isDisconnected() || !this.commandPackets.isEmpty()) {
 				Packet packet = removeCommandPacket(type);
 				if (packet != null)
 					return packet;

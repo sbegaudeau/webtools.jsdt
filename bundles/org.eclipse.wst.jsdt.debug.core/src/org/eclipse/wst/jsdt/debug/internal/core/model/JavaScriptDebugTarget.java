@@ -181,7 +181,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 				disconnect();
 			}
 		} catch (DebugException e) {
-			e.printStackTrace();
+			JavaScriptDebugPlugin.log(e);
 		} finally {
 			cleanup();
 			fireTerminateEvent();
@@ -909,12 +909,12 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		if (event instanceof ThreadEnterEvent) {
 			ThreadEnterEvent threadEnterEvent = (ThreadEnterEvent) event;
 			createThread(threadEnterEvent.thread(), true);
-			return false;
+			return true;
 		}
 		if (event instanceof ThreadExitEvent) {
 			ThreadExitEvent threadExitEvent = (ThreadExitEvent) event;
 			terminateThread(threadExitEvent.thread());
-			return false;
+			return true;
 		}
 		if (event instanceof ScriptLoadEvent) {
 			if(iScriptCache != null) {
@@ -929,7 +929,9 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			DebuggerStatementEvent debuggerStatementEvent = (DebuggerStatementEvent) event;
 			ThreadReference threadReference = debuggerStatementEvent.thread();
 			JavaScriptThread thread = findThread(threadReference);
-			thread.markSuspended();
+			if(!thread.isSuspended()) {
+				thread.markSuspended();
+			}
 			return false;
 		}
 

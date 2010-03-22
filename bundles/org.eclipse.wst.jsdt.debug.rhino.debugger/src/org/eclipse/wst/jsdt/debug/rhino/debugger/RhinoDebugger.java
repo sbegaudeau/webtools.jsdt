@@ -134,8 +134,8 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 				acceptConnection(300000);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			sendDeathEvent();
+			/*e.printStackTrace();*/
 		}
 	}
 
@@ -171,11 +171,11 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			if (listenerKey == null) {
 				listenerKey = transportService.startListening(address);
 			}
+			requestHandlerThread.start();
 		} catch (IOException e) {
-			// TODO log this
-			e.printStackTrace();
+			sendDeathEvent();
+			/*e.printStackTrace();*/
 		}
-		requestHandlerThread.start();
 	}
 
 	/**
@@ -187,13 +187,13 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			requestHandlerThread.interrupt();
 			requestHandlerThread.join();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			/*e.printStackTrace();*/
 		}
 		try {
 			transportService.stopListening(listenerKey);
 		} catch (IOException e) {
-			// TODO log this
-			e.printStackTrace();
+			sendDeathEvent();
+			/*e.printStackTrace();*/
 		}
 	}
 
@@ -208,8 +208,9 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 				try {
 					acceptConnection(10000);
 				} catch (IOException e) {
-					if (connection == null)
+					if (connection == null) {
 						continue;
+					}
 				}
 				while (!shutdown && connection.isOpen()) {
 					try {
@@ -226,7 +227,8 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			sendDeathEvent();
+			/*e.printStackTrace();*/
 		}
 	}
 
@@ -295,7 +297,6 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 		ScriptImpl script = new ScriptImpl(scriptId, debuggableScript, source);
 		scripts.put(scriptId, script);
 		debuggableScripts.put(debuggableScript, script);
-
 		ContextData contextData = (ContextData) context.getDebuggerContextData();
 		contextData.scriptLoaded(script);
 	}
@@ -328,10 +329,40 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 		if (threadData == null) {
 			threadData = new ThreadData(threadId, this);
 			threadIdToData.put(threadId, threadData);
+			sendThreadEvent(JSONConstants.ENTER, threadId);
 		}
 		threadData.contextCreated(context);
 	}
 
+	/**
+	 * Sends a thread event for the given type
+	 * 
+	 * @param type the type of event to send
+	 * @param threadId the id of the thread the even is for
+	 * 
+	 * @see JSONConstants#ENTER
+	 * @see JSONConstants#EXIT
+	 */
+	public void sendThreadEvent(String type, Long threadId) {
+		EventPacket threadEvent = new EventPacket(JSONConstants.THREAD);
+		Map body = threadEvent.getBody();
+		body.put(JSONConstants.TYPE, type);
+		body.put(JSONConstants.THREAD_ID, threadId);
+		sendEvent(threadEvent);
+	}
+	
+	/**
+	 * Sends out an event that the debugger has died in an unexpected way. Debugger death can result from:
+	 * <ul>
+	 * <li>an {@link IOException} while the debugger is running</li>
+	 * <li>an {@link InterruptedException} processing I/O</li>
+	 * </ul>
+	 */
+	public void sendDeathEvent() {
+		EventPacket event = new EventPacket(JSONConstants.VMDEATH);
+		sendEvent(event);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -351,6 +382,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 		if (!threadData.hasContext()) {
 			threadToThreadId.remove(thread);
 			threadIdToData.remove(threadId);
+			sendThreadEvent(JSONConstants.EXIT, threadId);
 		}
 	}
 
@@ -514,8 +546,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 				return true;
 			}
 		} catch (DisconnectedException e) {
-			// ignore
-			e.printStackTrace(); // for now for debugging purposes
+			e.printStackTrace();
 		}
 		return false;
 	}
