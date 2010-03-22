@@ -2229,7 +2229,10 @@ public class NameLookup implements SuffixConstants {
 			} catch (JavaScriptModelException e) {
 				return findBinding( bindingName,packageName,bindingType,partialMatch,acceptFlags,considerSecondaryTypes,waitForIndexes,
 						checkRestrictions,progressMonitor);
-				}
+			}
+			
+			if (foundAnswers.size()>0 && returnMultiple)
+				return new Answer(foundAnswers.toArray(),null);
 			return null;
 		}
 		/* creates an openable from PackageFragmentRoots in this lookup
