@@ -168,4 +168,29 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 		}
 		return this.sourceuri;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("ScriptReferenceImpl: "); //$NON-NLS-1$
+		buffer.append("[sourceuri - ").append(sourceURI()).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append("Line locations: \n"); //$NON-NLS-1$
+		List list = new ArrayList(allLineLocations());
+		Collections.sort(list, LocationImpl.getLocationComparator());
+		for (Iterator iter = list.iterator(); iter.hasNext();) {
+			Location loc = (Location) iter.next();
+			buffer.append("\t").append(loc.toString()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		buffer.append("Function locations: \n"); //$NON-NLS-1$
+		list = new ArrayList(allFunctionLocations());
+		Collections.sort(list, LocationImpl.getLocationComparator());
+		for (Iterator iter = list.iterator(); iter.hasNext();) {
+			Location loc = (Location) iter.next();
+			buffer.append("\t").append(loc.toString()).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		buffer.append("\n"); //$NON-NLS-1$
+		return buffer.toString();
+	}
 }

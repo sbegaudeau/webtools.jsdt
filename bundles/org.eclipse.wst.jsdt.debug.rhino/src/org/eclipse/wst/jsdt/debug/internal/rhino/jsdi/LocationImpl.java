@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
+import java.util.Comparator;
+
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 
@@ -19,6 +21,31 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
  * @since 1.0
  */
 public class LocationImpl extends MirrorImpl implements Location {
+	
+	/**
+	 * Comparator that orders {@link Location}s by line number - useful for debugging
+	 */
+	static class LocationComparator implements Comparator {
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		public int compare(Object o1, Object o2) {
+			int value = -1;
+			if(o1 instanceof Location && o2 instanceof Location) {
+				int first = ((Location)o1).lineNumber();
+				int second = ((Location)o2).lineNumber(); 
+				if(first == second) {
+					value = 0;
+				}
+				else if(first > second) {
+					value = 1;
+				}
+			}
+			return value;
+		}
+		
+	}
+	private static LocationComparator comparator = new LocationComparator();
 	private String functionName;
 	private int lineNumber;
 	private ScriptReferenceImpl scriptReference;
@@ -38,6 +65,10 @@ public class LocationImpl extends MirrorImpl implements Location {
 		this.scriptReference = scriptReference;
 	}
 
+	static LocationComparator getLocationComparator() {
+		return comparator;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Location#functionName()
 	 */
@@ -57,5 +88,17 @@ public class LocationImpl extends MirrorImpl implements Location {
 	 */
 	public ScriptReference scriptReference() {
 		return scriptReference;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("LocationImpl: "); //$NON-NLS-1$
+		buffer.append("[script - ").append(scriptReference.sourceURI()).append("] "); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append("[function - ").append(functionName).append("] "); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append("[line - ").append(lineNumber).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
+		return buffer.toString();
 	}
 }
