@@ -17,7 +17,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
@@ -116,16 +115,16 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		/* Add imports if the preference is on. */
 		fImportRewrite= createImportRewrite();
 
-		if (fImportRewrite != null) {
-			String packageName=null;
-			try {
-				IJavaScriptElement javaElement = this.getProposalInfo().getJavaElement();
-				 packageName=JavaModelUtil.getFilePackage(javaElement);
-			} catch (JavaScriptModelException e) {
-				JavaScriptPlugin.log(e);
-			}
-			return fImportRewrite.addImport(qualifiedTypeName,packageName, fImportContext);
-		}
+//		if (fImportRewrite != null) {
+//			String packageName=null;
+//			try {
+//				IJavaScriptElement javaElement = this.getProposalInfo().getJavaElement();
+//				 packageName=JavaModelUtil.getFilePackage(javaElement);
+//			} catch (JavaScriptModelException e) {
+//				JavaScriptPlugin.log(e);
+//			}
+//			return fImportRewrite.addImport(qualifiedTypeName,packageName, fImportContext);
+//		}
 		
 		// fall back for the case we don't have an import rewrite (see allowAddingImports)
 		
