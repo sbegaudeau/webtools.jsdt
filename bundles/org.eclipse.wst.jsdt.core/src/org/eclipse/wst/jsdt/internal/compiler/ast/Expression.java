@@ -416,7 +416,9 @@ public void markAsNonNull() {
 	 * @return Constant known to be of boolean type
 	 */
 	public Constant optimizedBooleanConstant() {
-		return this.constant;
+		if(this.constant != null)
+			return this.constant;
+		return Constant.NotAConstant;
 	}
 
 	/**
