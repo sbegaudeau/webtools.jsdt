@@ -108,7 +108,11 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					this.foundPaths.add(path);
 					return true;
-				}else if(HACK_DOJO) {
+				} else if(includedFiles[i].equals("*")) { //$NON-NLS-1$
+					this.foundPaths.add(path);
+					return true;
+				}
+				else if(HACK_DOJO) {
 					String includeString = includedFiles[i];
 					if(path.toLowerCase().indexOf(DOJO_COMPRESSED)>0 && (includeString.toLowerCase().indexOf(UNCOMPRESSED_DOJO)>0)) {
 						this.foundPaths.add(path);
@@ -313,9 +317,13 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		
 		for(int i = 0; i<fileNames.length;i++) {
 			File importFile = isValidImport(fileNames[i]);
-			if(importFile==null) continue;
-			IPath importPath = resolveChildPath(fileNames[i]);	
-			newImports[arrayLength++] = importPath.toString();
+			if(importFile==null && !fileNames[i].equals("*")) continue; //$NON-NLS-1$
+			if(fileNames[i].equals("*")) {
+				newImports[arrayLength++] = fileNames[i];
+			} else {
+				IPath importPath = resolveChildPath(fileNames[i]);	
+				newImports[arrayLength++] = importPath.toString();
+			}
 			//newTimestamps[arrayLength] = new Long(importFile.lastModified());	
 
 			//arrayLength++;
@@ -403,7 +411,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 
 		for(int i = 0;i<includedFiles.length;i++) {
 			IResource theFile = folder.findMember(includedFiles[i]);
-			if(javaProject.isOnIncludepath(theFile)) continue;
+			if(theFile == null || javaProject.isOnIncludepath(theFile)) continue;
 			IIncludePathEntry entry = JavaScriptCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IIncludePathAttribute[] {IIncludePathAttribute.HIDE}, true);
 
 			newEntriesList.add(entry);
