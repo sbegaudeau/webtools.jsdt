@@ -269,10 +269,10 @@
                helpContextId="suspend_for_all_loads_action_context"
                icon="$nl$/icons/elcl16/script.gif"
                id="org.eclipse.jdt.debug.ui.breakpointViewActions.ShowQualified"
-               label="Suspend For All Script Loads"
+               label="%suspendForAllScriptLoadsAction.name"
                menubarPath="javascriptActions"
                style="toggle"
-               tooltip="Suspends when any script is loaded">
+               tooltip="%suspendForAllScriptLoadsAction.tooltip">
          </action>
       </viewContribution>
       <viewContribution
@@ -280,7 +280,7 @@
             targetID="org.eclipse.debug.ui.DebugView">
          <menu
                id="org.eclipse.wst.jsdt.debug.ui.javascript.menu"
-               label="JavaScript">
+               label="%javascriptMenu.name">
             <groupMarker
                   name="js">
             </groupMarker>
@@ -328,11 +328,11 @@
          point="org.eclipse.debug.ui.launchShortcuts">
       <shortcut
             class="org.eclipse.wst.jsdt.debug.internal.ui.launching.JavaScriptLaunchShortcut"
-            description="Allows fast connection and debugging of JavaScript"
+            description="%javascriptLaunchShortcut.description"
             helpContextId="javasript_lanch_shortcut"
             icon="$nl$/icons/elcl16/script.gif"
             id="org.eclipse.wst.jsdt.debug.ui.launch.shortcut"
-            label="Debug JavaScript..."
+            label="%javascriptLaunchShortcut.label"
             modes="debug">
          <configurationType
                id="org.eclipse.wst.jsdt.debug.core.launchConfigurationType">

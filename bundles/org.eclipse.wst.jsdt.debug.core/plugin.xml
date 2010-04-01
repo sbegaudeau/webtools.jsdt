@@ -12,7 +12,7 @@
 
 <plugin>
    <extension-point id="launchingConnectors" name="%connectorsExtPoint.name" schema="schema/launchingConnectors.exsd"/>
-   <extension-point id="breakpointParticipants" name="Breakpoint Participants" schema="schema/breakpointParticipants.exsd"/>
+   <extension-point id="breakpointParticipants" name="%breakpointParticipantsExt.name" schema="schema/breakpointParticipants.exsd"/>
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
@@ -116,7 +116,7 @@
             delegateDescription="Remote JavaScript"
             id="org.eclipse.wst.jsdt.debug.core.remoteLaunchDelegate"
             modes="debug"
-            name="Remote JavaScript"
+            name="%remoteJsLaunchDelegate.name"
             sourceLocatorId="org.eclipse.wst.jsdt.debug.core.sourceLocator"
             type="org.eclipse.wst.jsdt.debug.core.launchConfigurationType">
       </launchDelegate>
