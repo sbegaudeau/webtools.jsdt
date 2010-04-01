@@ -142,5 +142,12 @@
             class="org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.wst.jsdt.debug.core.breakpointParticipants">
+      <participant
+            class="org.eclipse.wst.jsdt.debug.internal.core.breakpoints.DefaultJavaScriptBreakpointParticipant"
+            kind="*">
+      </participant>
+   </extension>
 
 </plugin>

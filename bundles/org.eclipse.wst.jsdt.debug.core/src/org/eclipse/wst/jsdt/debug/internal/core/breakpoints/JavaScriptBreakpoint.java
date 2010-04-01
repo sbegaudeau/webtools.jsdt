@@ -406,9 +406,6 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 		// get the thread and suspend it
 		if (event instanceof BreakpointEvent) {
-			if (skipEvent((BreakpointEvent) event)) {
-				return true;
-			}
 			JavaScriptThread thread = target.findThread(((BreakpointEvent) event).thread());
 			if (thread != null) {
 				return !thread.suspendForBreakpoint(this, suspendVote);
@@ -429,26 +426,6 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			} catch (CoreException ce) {
 				JavaScriptDebugPlugin.log(ce);
 			}
-		}
-		return true;
-	}
-	
-	/**
-	 * If the breakpoint event should be skipped - i.e. if the thread should resume and ignore the event
-	 * 
-	 * @param event
-	 * @return true if the event should be skipped, false otherwise
-	 */
-	boolean skipEvent(BreakpointEvent event) {
-		try {
-			Path root = new Path(getScriptPath());
-			if (root.segmentCount() == 1) {
-				return false;
-			}
-			ScriptReference script = event.location().scriptReference();
-			return !getScriptPath().equals(script.sourceURI().getPath());
-		} catch (CoreException ce) {
-			JavaScriptDebugPlugin.log(ce);
 		}
 		return true;
 	}

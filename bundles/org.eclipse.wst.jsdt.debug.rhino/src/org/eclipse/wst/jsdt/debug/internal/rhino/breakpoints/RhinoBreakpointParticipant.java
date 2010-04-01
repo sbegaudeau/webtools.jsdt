@@ -63,7 +63,7 @@ public class RhinoBreakpointParticipant implements IJavaScriptBreakpointParticip
 						return SUSPEND; 
 					}
 				}
-				
+				return SUSPEND;
 			}
 		} 
 		catch (CoreException ce) {

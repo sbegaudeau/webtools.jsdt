@@ -25,6 +25,7 @@ import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
@@ -121,16 +122,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 						if (breakpoint instanceof JavaScriptLoadBreakpoint) {
 							String name = breakpoint.getScriptPath();
 							if(Constants.EMPTY_STRING.equals(name)) {
-								IJavaScriptStackFrame frame = (IJavaScriptStackFrame) getTopStackFrame();
-								if(frame != null) {
-									name = frame.getSourceName();
-								}
-								else {
-									//all else failed say "evaluated_script"
-									name = ModelMessages.JavaScriptThread_evaluated_script;
-								}
+								name = getSourceName();
 							}
 							return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
+						}
+						//TODO support function breakpoints here
+						if(breakpoint instanceof IJavaScriptLineBreakpoint) {
+							IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+							return NLS.bind(ModelMessages.breakpoint_at_line_location, new String[] {Integer.toString(bp.getLineNumber()), getSourceName()});
 						}
 					} catch (CoreException ce) {
 						JavaScriptDebugPlugin.log(ce);
@@ -156,6 +155,22 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 	}
 
+	/**
+	 * Returns the name of the source from the top stackframe or a 
+	 * default name <code>&lt;evaluated_source&gt;</code>
+	 * 
+	 * @return the name for the source
+	 * @throws DebugException
+	 */
+	String getSourceName() throws DebugException {
+		IJavaScriptStackFrame frame = (IJavaScriptStackFrame) getTopStackFrame();
+		if(frame != null) {
+			return frame.getSourceName();
+		}
+		//all else failed say "evaluated_script"
+		return ModelMessages.JavaScriptThread_evaluated_script;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
