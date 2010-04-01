@@ -283,7 +283,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 */
 	public DebugFrame getFrame(Context context, DebuggableScript debuggableScript) {
 		ScriptSource script = getScript(debuggableScript);
-		if(script != null) {
+		if(script != null && !script.isStdIn()) {
 			ContextData contextData = (ContextData) context.getDebuggerContextData();
 			ThreadData thread = (ThreadData) threadIdToData.get(contextData.getThreadId());
 			FunctionSource function = script.getFunction(debuggableScript);

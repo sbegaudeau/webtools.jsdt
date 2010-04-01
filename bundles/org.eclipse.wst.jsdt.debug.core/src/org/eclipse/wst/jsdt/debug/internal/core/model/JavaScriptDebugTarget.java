@@ -840,8 +840,13 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	public void handleDebugEvents(DebugEvent[] events) {
 		if (events.length == 1) {
 			DebugEvent event = events[0];
-			if (event.getSource().equals(getProcess()) && event.getKind() == DebugEvent.TERMINATE) {
-				shutdown();
+			switch(event.getKind()) {
+				case DebugEvent.TERMINATE: {
+					if(event.getSource().equals(getProcess())) {
+						shutdown();
+					}
+					break;
+				}
 			}
 		}
 	}

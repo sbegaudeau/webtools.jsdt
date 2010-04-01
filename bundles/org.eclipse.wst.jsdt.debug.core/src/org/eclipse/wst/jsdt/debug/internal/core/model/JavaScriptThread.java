@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
 import org.eclipse.osgi.util.NLS;
@@ -53,7 +55,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakp
  * 
  * @since 1.0
  */
-public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptThread, IJavaScriptEventListener {
+public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEventSetListener, IJavaScriptThread, IJavaScriptEventListener {
 
 	/**
 	 * Constant for no stack frames
@@ -330,6 +332,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			if (fireevent) {
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 			}
+			removeDebugEventListener();
 		}
 	}
 
@@ -345,6 +348,22 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
+	 * Adds this thread as a debug event listener
+	 */
+	void addDebugEventListener() {
+		DebugPlugin plugin = DebugPlugin.getDefault();
+		plugin.addDebugEventListener(this);
+	}
+	
+	/**
+	 * Remove the thread an event listener
+	 */
+	void removeDebugEventListener() {
+		DebugPlugin plugin = DebugPlugin.getDefault();
+		plugin.removeDebugEventListener(this);
+	}
+	
+	/**
 	 * Delegate method to suspend the underlying thread
 	 */
 	void suspendUnderlyingThread() {
@@ -355,6 +374,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
 			return;
 		}
+		addDebugEventListener();
 		suspending = true;
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
@@ -391,11 +411,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		});
 		thread.setDaemon(true);
 		thread.start();
-		/*EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
-		SuspendRequest suspendRequest = requestManager.createSuspendRequest(this.thread);
-		suspendRequest.setEnabled(true);
-		getJSDITarget().addJSDIEventListener(this, suspendRequest);
-		this.thread.suspend();*/
 	}
 	
 	/**
@@ -593,6 +608,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		StepRequest stepRequest = requestManager.createStepRequest(this.thread, step);
 		stepRequest.setEnabled(true);
 		getJavaScriptDebugTarget().addJSDIEventListener(this, stepRequest);
+		addDebugEventListener();
 	}
 
 	/*
@@ -733,5 +749,22 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			return this.thread.frameCount();
 		}
 		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.IDebugEventSetListener#handleDebugEvents(org.eclipse.debug.core.DebugEvent[])
+	 */
+	public void handleDebugEvents(DebugEvent[] events) {
+		for (int i = 0; i < events.length; i++) {
+			switch(events[i].getKind()) {
+				case DebugEvent.RESUME: {
+					if(state == STEPPING) {
+						state = SUSPENDED;
+						resume(true);
+					}
+					break;
+				}
+			}
+		}
 	}
 }

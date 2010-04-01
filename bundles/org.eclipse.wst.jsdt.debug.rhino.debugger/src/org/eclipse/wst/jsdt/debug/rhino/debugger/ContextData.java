@@ -151,6 +151,7 @@ public class ContextData {
 			frames.removeFirst();
 			if (frames.isEmpty()) {
 				//no frames left, continue
+				resume(JSONConstants.STEP_OUT);
 				return;
 			}
 			boolean isStepBreak = stepBreak(STEP_OUT);

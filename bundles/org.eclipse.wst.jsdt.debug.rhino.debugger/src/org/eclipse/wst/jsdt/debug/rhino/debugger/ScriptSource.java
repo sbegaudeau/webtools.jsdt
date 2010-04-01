@@ -123,6 +123,13 @@ public class ScriptSource {
 	}
 
 	/**
+	 * @return if this script represents the stdin script
+	 */
+	public boolean isStdIn() {
+		return this.uri.getPath().endsWith("stdin"); //$NON-NLS-1$
+	}
+	
+	/**
 	 * Collects all of the {@link DebuggableScript} objects for the functions
 	 * @param root the root script
 	 * @return the collected array of functions - {@link DebuggableScript} - objects or an empty array
