@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
@@ -28,11 +29,11 @@ import org.mozilla.javascript.Scriptable;
 public class RequestBreakpointsTest extends RequestTest {
 
 	public void testBreakpointsWithNoBreakpoints() throws DisconnectedException, TimeoutException {
-		Request request = new Request("breakpoints");
+		Request request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		Collection breakpoints = (Collection) response.getBody().get("breakpoints");
+		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 	}
@@ -94,11 +95,11 @@ public class RequestBreakpointsTest extends RequestTest {
 		};
 		eventHandler.addSubhandler(setbreakpointHandler);
 
-		Request request = new Request("breakpoints");
+		Request request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		Collection breakpoints = (Collection) response.getBody().get("breakpoints");
+		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 
@@ -131,11 +132,11 @@ public class RequestBreakpointsTest extends RequestTest {
 
 		waitForEvents(1);
 
-		request = new Request("breakpoints");
+		request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		breakpoints = (Collection) response.getBody().get("breakpoints");
+		breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
 		assertEquals(10, breakpoints.size());
 
@@ -212,7 +213,7 @@ public class RequestBreakpointsTest extends RequestTest {
 		Subhandler clearbreakpointHandler = new Subhandler() {
 			public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 				if (event.getEvent().equals("break")) {
-					List breakpoints = (List) event.getBody().get("breakpoints");
+					List breakpoints = (List) event.getBody().get(JSONConstants.BREAKPOINTS);
 					for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
 						Number breakpointId = (Number) iterator.next();
 						Request request = new Request("clearbreakpoint");
@@ -236,11 +237,11 @@ public class RequestBreakpointsTest extends RequestTest {
 		};
 		eventHandler.addSubhandler(clearbreakpointHandler);
 
-		Request request = new Request("breakpoints");
+		Request request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		Collection breakpoints = (Collection) response.getBody().get("breakpoints");
+		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 
@@ -270,12 +271,12 @@ public class RequestBreakpointsTest extends RequestTest {
 		} finally {
 			Context.exit();
 		}
-		waitForEvents(7);
-		request = new Request("breakpoints");
+		waitForEvents(8);
+		request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());
-		breakpoints = (Collection) response.getBody().get("breakpoints");
+		breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
 		assertEquals(3, breakpoints.size());
 

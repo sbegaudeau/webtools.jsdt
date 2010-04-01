@@ -210,7 +210,7 @@ public class RequestBreakpointTest extends RequestTest {
 		} finally {
 			Context.exit();
 		}
-		waitForEvents(7);
+		waitForEvents(8);
 		request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		response = debugSession.receiveResponse(request.getSequence(), 30000);

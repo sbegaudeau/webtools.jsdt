@@ -18,7 +18,7 @@
         value="org.eclipse.wst.jsdt.debug.rhino.tests" />
     <property
         name="classname"
-        value="org.eclipse.wst.jsdt.debug.rhino.tests.AllTests" />
+        value="org.eclipse.wst.jsdt.debug.rhino.tests.RhinoDebugTestSuite" />
     <property
         name="testType"
         value="core-test" />

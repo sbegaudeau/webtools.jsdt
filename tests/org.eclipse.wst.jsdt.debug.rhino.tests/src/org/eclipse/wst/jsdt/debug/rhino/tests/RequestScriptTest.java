@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.rhino.tests;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,13 +73,13 @@ public class RequestScriptTest extends RequestTest {
 		assertEquals(script, result.get("source"));
 		List lineNumbers = (List) result.get("lines");
 		assertEquals(7, lineNumbers.size());
-		assertEquals(2, Util.numberAsInt(lineNumbers.get(0)));
-		assertEquals(3, Util.numberAsInt(lineNumbers.get(1)));
-		assertEquals(6, Util.numberAsInt(lineNumbers.get(2)));
-		assertEquals(7, Util.numberAsInt(lineNumbers.get(3)));
-		assertEquals(10, Util.numberAsInt(lineNumbers.get(4)));
-		assertEquals(13, Util.numberAsInt(lineNumbers.get(5)));
-		assertEquals(14, Util.numberAsInt(lineNumbers.get(6)));
+		assertTrue("The line number [2] should be returned", lineNumbers.contains(new BigDecimal(2)));
+		assertTrue("The line number [3] should be returned", lineNumbers.contains(new BigDecimal(3)));
+		assertTrue("The line number [6] should be returned", lineNumbers.contains(new BigDecimal(6)));
+		assertTrue("The line number [7] should be returned", lineNumbers.contains(new BigDecimal(7)));
+		assertTrue("The line number [10] should be returned", lineNumbers.contains(new BigDecimal(10)));
+		assertTrue("The line number [13] should be returned", lineNumbers.contains(new BigDecimal(13)));
+		assertTrue("The line number [14] should be returned", lineNumbers.contains(new BigDecimal(14)));
 
 		List functionNames = (List) result.get("functions");
 		assertEquals(2, functionNames.size());

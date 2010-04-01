@@ -11,13 +11,13 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllTests extends TestSuite {
+public class RhinoDebugTestSuite extends TestSuite {
 
 	public static Test suite() {
-		return new AllTests();
+		return new RhinoDebugTestSuite();
 	}
 
-	public AllTests() {
+	public RhinoDebugTestSuite() {
 		addTestSuite(TransportTest.class);
 		addTestSuite(DebugSessionTest.class);
 		addTestSuite(RhinoDebuggerTest.class);
