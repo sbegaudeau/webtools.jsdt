@@ -14,7 +14,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.rhino.debugger.ScriptImpl.ScriptRecord;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
@@ -27,7 +26,6 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.debug.DebugFrame;
-import org.mozilla.javascript.debug.DebuggableScript;
 import org.mozilla.javascript.debug.Debugger;
 
 /**
@@ -35,15 +33,13 @@ import org.mozilla.javascript.debug.Debugger;
  * 
  * @since 1.0
  */
-public class DebugFrameImpl implements DebugFrame {
+public class StackFrame implements DebugFrame {
 
 	private final Long id;
 	private final Context context;
 	private final ContextData contextData;
-	private final DebuggableScript debuggableScript;
-	private final ScriptImpl script;
-	private final ScriptRecord record;
-
+	private final ScriptSource script;
+	private FunctionSource function = null;
 	private final HashMap handles = new HashMap();
 	private final IdentityHashMap handledObjects = new IdentityHashMap();
 	private Scriptable activation;
@@ -58,14 +54,13 @@ public class DebugFrameImpl implements DebugFrame {
 	 * @param debuggableScript
 	 * @param script
 	 */
-	public DebugFrameImpl(Long frameId, Context context, DebuggableScript debuggableScript, ScriptImpl script) {
+	public StackFrame(Long frameId, Context context, FunctionSource function, ScriptSource script) {
 		this.id = frameId;
 		this.context = context;
 		this.contextData = (ContextData) context.getDebuggerContextData();
-		this.debuggableScript = debuggableScript;
+		this.function = function;
 		this.script = script;
-		this.record = script.getRecord(debuggableScript);
-		this.lineNumber = record.firstLine;
+		this.lineNumber = 1;
 	}
 
 	/**
@@ -82,7 +77,7 @@ public class DebugFrameImpl implements DebugFrame {
 	 * 
 	 * @return the underlying {@link Script}
 	 */
-	public ScriptImpl getScript() {
+	public ScriptSource getScript() {
 		return script;
 	}
 
@@ -114,7 +109,7 @@ public class DebugFrameImpl implements DebugFrame {
 		this.activation = activation;
 		this.thisObj = thisObj;
 		initializeHandles();
-		contextData.pushFrame(this, script, new Integer(lineNumber), debuggableScript.getFunctionName());
+		contextData.pushFrame(this, this.script, new Integer(lineNumber), (this.function == null ? null : this.function.name()));
 	}
 
 	/*
@@ -126,7 +121,7 @@ public class DebugFrameImpl implements DebugFrame {
 		this.activation = null;
 		this.thisObj = null;
 		clearHandles();
-		contextData.popFrame(byThrow, resultOrException);
+		this.contextData.popFrame(byThrow, resultOrException);
 	}
 
 	/*
@@ -136,7 +131,7 @@ public class DebugFrameImpl implements DebugFrame {
 	 */
 	public void onExceptionThrown(Context cx, Throwable ex) {
 		initializeHandles();
-		contextData.exceptionThrown(ex);
+		this.contextData.exceptionThrown(ex);
 	}
 
 	/*
@@ -147,7 +142,7 @@ public class DebugFrameImpl implements DebugFrame {
 	public void onLineChange(Context cx, int lineNumber) {
 		initializeHandles();
 		this.lineNumber = 1 + lineNumber;
-		contextData.lineChange(script, new Integer(this.lineNumber));
+		this.contextData.lineChange(this.script, new Integer(this.lineNumber));
 	}
 
 	/**
@@ -242,7 +237,8 @@ public class DebugFrameImpl implements DebugFrame {
 		result.put(JSONConstants.SCRIPT_ID, script.getId());
 		result.put(JSONConstants.LINE, new Integer(lineNumber));
 		result.put(JSONConstants.REF, new Integer(0));
-		result.put(JSONConstants.SCOPE_NAME, record.name);
+		//TODO update this
+		result.put(JSONConstants.SCOPE_NAME, null);
 		return result;
 	}
 

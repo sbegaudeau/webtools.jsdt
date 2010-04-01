@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.debug.DebugFrame;
-import org.mozilla.javascript.debug.DebuggableScript;
 
 /**
  * Rhino implementation of thread data
@@ -156,11 +155,11 @@ public class ThreadData {
 	 * @param frameId
 	 * @return the {@link DebugFrame} with the given id or <code>null</code>
 	 */
-	public DebugFrameImpl getFrame(Long frameId) {
+	public StackFrame getFrame(Long frameId) {
 		for (Iterator iterator = contexts.iterator(); iterator.hasNext();) {
 			Context context = (Context) iterator.next();
 			ContextData data = (ContextData) context.getDebuggerContextData();
-			DebugFrameImpl frame = data.getFrame(frameId);
+			StackFrame frame = data.getFrame(frameId);
 			if (frame != null)
 				return frame;
 		}
@@ -171,11 +170,11 @@ public class ThreadData {
 	 * Creates a new {@link DebugFrame} for the given attributes.
 	 * 
 	 * @param context
-	 * @param debuggableScript
+	 * @param function
 	 * @param script
 	 * @return a new {@link DebugFrame}
 	 */
-	public synchronized DebugFrame getFrame(Context context, DebuggableScript debuggableScript, ScriptImpl script) {
-		return new DebugFrameImpl(new Long(currentFrameId++), context, debuggableScript, script);
+	public synchronized DebugFrame getFrame(Context context, FunctionSource function, ScriptSource script) {
+		return new StackFrame(new Long(currentFrameId++), context, function, script);
 	}
 }

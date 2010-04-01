@@ -73,4 +73,13 @@ public class EventPacket extends Packet {
 		json.put(JSONConstants.BODY, body);
 		return json;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("EventPacket: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		return buffer.toString();
+	}
 }

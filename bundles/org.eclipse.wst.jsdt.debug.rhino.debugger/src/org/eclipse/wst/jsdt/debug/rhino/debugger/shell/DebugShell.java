@@ -16,21 +16,21 @@ public class DebugShell {
 	
     public static void main(String args[]) {
     	
-    	String port = "9888";
+    	String port = "9888"; //$NON-NLS-1$
     	boolean suspend = false;
     	
     	ArrayList argList = new ArrayList();
     	for (int i = 0; i < args.length; i++) {
     		String arg = args[i];
-    		if (arg.equals("-port")) {
+    		if (arg.equals("-port")) { //$NON-NLS-1$
     			port = args[++i];
-    		} else if (arg.equals("-suspend")) {
+    		} else if (arg.equals("-suspend")) { //$NON-NLS-1$
     			suspend = Boolean.valueOf(args[++i]).booleanValue();
-    		} else if (arg.equals("-debug")) {
+    		} else if (arg.equals("-debug")) { //$NON-NLS-1$
     			// skip
     			argList.add(args[i]);
     			continue;
-    		} else if (arg.equals("-opt")) {
+    		} else if (arg.equals("-opt")) { //$NON-NLS-1$
     			// skip
     			argList.add(args[i]);
     			i++;
@@ -41,7 +41,7 @@ public class DebugShell {
     	
 		TransportService service = new SocketTransportService();
 		if (suspend) {
-			System.out.println("Waiting for debugger connection on port " + port + "...");
+			System.out.println("Waiting for debugger connection on port " + port + "..."); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		RhinoDebugger debugger = new RhinoDebugger(service, port, suspend);
 		debugger.start();

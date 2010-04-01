@@ -91,20 +91,21 @@ public class SocketTransportService implements TransportService {
 		if (serverSocket == null) {
 			throw new IllegalStateException("Accept failed. Not listening for address: key.address()"); //$NON-NLS-1$
 		}
-		if (attachTimeout > 0) {
-			if (attachTimeout > Integer.MAX_VALUE) {
-				attachTimeout = Integer.MAX_VALUE; // approximately 25 days!
+		int timeout = (int) attachTimeout;
+		if (timeout > 0) {
+			if (timeout > Integer.MAX_VALUE) {
+				timeout = Integer.MAX_VALUE; // approximately 25 days!
 			}
-			serverSocket.setSoTimeout((int) attachTimeout);
+			serverSocket.setSoTimeout(timeout);
 		}
 		Connection connection = new SocketConnection(serverSocket.accept());
 		Packet packet = connection.readPacket();
 		if (!(packet instanceof Request)) {
-			throw new IOException("failure establishing_connection");
+			throw new IOException("failure establishing_connection"); //$NON-NLS-1$
 		}
 		Request request = (Request) packet;
 		if (!request.getCommand().equals(JSONConstants.CONNECT)) {
-			throw new IOException("failure establishing connection");
+			throw new IOException("failure establishing connection"); //$NON-NLS-1$
 		}
 		Response response = new Response(request.getSequence(), request.getCommand());
 		connection.writePacket(response);

@@ -66,10 +66,7 @@ public class PipedTransportService implements TransportService {
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#startListening(java.lang.String)
 	 */
 	public synchronized ListenerKey startListening(String address) throws IOException {
-		if (address == null) {
-			address = Constants.EMPTY_STRING;
-		}
-		ListenerKey key = new PipedListenerKey(address);
+		ListenerKey key = new PipedListenerKey(address == null ? Constants.EMPTY_STRING : address);
 		listeners.put(key, null);
 		return key;
 	};
@@ -89,9 +86,10 @@ public class PipedTransportService implements TransportService {
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#accept(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService.ListenerKey, long, long)
 	 */
 	public Connection accept(ListenerKey key, long attachTimeout, long handshakeTimeout) throws IOException {
-		if (attachTimeout > 0) {
-			if (attachTimeout > Integer.MAX_VALUE) {
-				attachTimeout = Integer.MAX_VALUE; // approximately 25 days!
+		long timeout = attachTimeout;
+		if (timeout > 0) {
+			if (timeout > Integer.MAX_VALUE) {
+				timeout = Integer.MAX_VALUE; // approximately 25 days!
 			}
 		}
 
@@ -115,7 +113,7 @@ public class PipedTransportService implements TransportService {
 			long startTime = System.currentTimeMillis();
 			while (true) {
 				try {
-					listeners.wait(attachTimeout);
+					listeners.wait(timeout);
 				} catch (InterruptedException e) {
 					throw new IOException("accept failed: interrupted"); //$NON-NLS-1$
 				}
@@ -123,7 +121,7 @@ public class PipedTransportService implements TransportService {
 					throw new IOException("accept failed: stopped listening"); //$NON-NLS-1$
 
 				if (listeners.get(key) != null) {
-					if (System.currentTimeMillis() - startTime > attachTimeout) {
+					if (System.currentTimeMillis() - startTime > timeout) {
 						listeners.put(key, null);
 						throw new IOException("accept failed: timed out"); //$NON-NLS-1$
 					}
@@ -138,10 +136,7 @@ public class PipedTransportService implements TransportService {
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#attach(java.lang.String, long, long)
 	 */
 	public Connection attach(String address, long attachTimeout, long handshakeTimeout) throws IOException {
-		if (address == null)
-			address = ""; //$NON-NLS-1$
-
-		ListenerKey key = new PipedListenerKey(address);
+		ListenerKey key = new PipedListenerKey(address == null ? Constants.EMPTY_STRING : address);
 		Connection connection;
 		long startTime = System.currentTimeMillis();
 		synchronized (listeners) {

@@ -43,7 +43,7 @@ public class ContextData {
 
 	private int contextState = CONTEXT_RUNNING;
 	private int stepState = STEP_CONTINUE;
-	private DebugFrameImpl stepFrame;
+	private StackFrame stepFrame;
 
 	/**
 	 * Constructor
@@ -75,7 +75,7 @@ public class ContextData {
 	public synchronized List getFrameIds() {
 		List result = new ArrayList();
 		for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
-			result.add(((DebugFrameImpl) iterator.next()).getId());
+			result.add(((StackFrame) iterator.next()).getId());
 		}
 		return result;
 	}
@@ -86,10 +86,10 @@ public class ContextData {
 	 * @param frameId
 	 * @return the {@link DebugFrame} with the given id or <code>null</code>
 	 */
-	public synchronized DebugFrameImpl getFrame(Long frameId) {
-		DebugFrameImpl frame = null;
+	public synchronized StackFrame getFrame(Long frameId) {
+		StackFrame frame = null;
 		for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
-			frame = (DebugFrameImpl) iterator.next();
+			frame = (StackFrame) iterator.next();
 			if (frame.getId().equals(frameId)) {
 				return frame;
 			}
@@ -105,12 +105,9 @@ public class ContextData {
 	 * @param lineNumber
 	 * @param functionName
 	 */
-	public synchronized void pushFrame(DebugFrameImpl frame, ScriptImpl script, Integer lineNumber, String functionName) {
+	public synchronized void pushFrame(StackFrame frame, ScriptSource script, Integer lineNumber, String functionName) {
 		frames.addFirst(frame);
 		Collection breakpoints = script.getBreakpoints(functionName, lineNumber, frame);
-		if (functionName == null) {
-			functionName = "(toplevel)"; //$NON-NLS-1$
-		}
 		boolean isStepBreak = stepBreak(STEP_IN);
 		if (isStepBreak || !breakpoints.isEmpty()) {
 			if (sendBreakEvent(script, frame.getLineNumber(), functionName, breakpoints, isStepBreak, false)) {
@@ -158,7 +155,7 @@ public class ContextData {
 			}
 			boolean isStepBreak = stepBreak(STEP_OUT);
 			if (isStepBreak) {
-				DebugFrameImpl frame = getTopFrame();
+				StackFrame frame = getTopFrame();
 				if (sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, Collections.EMPTY_LIST, isStepBreak, false)) {
 					suspendState();
 				}
@@ -185,7 +182,7 @@ public class ContextData {
 			} else if (stepType.equals(JSONConstants.STEP_OUT)) {
 				if (frames.size() > 1) {
 					stepState = STEP_OUT;
-					stepFrame = (DebugFrameImpl) frames.get(1);
+					stepFrame = (StackFrame) frames.get(1);
 				} else {
 					stepState = STEP_CONTINUE;
 					stepFrame = null;
@@ -209,9 +206,9 @@ public class ContextData {
 	 * 
 	 * @return the top frame or <code>null</code>
 	 */
-	DebugFrameImpl getTopFrame() {
+	StackFrame getTopFrame() {
 		if(this.frames != null && !this.frames.isEmpty()) {
-			return (DebugFrameImpl) this.frames.getFirst();
+			return (StackFrame) this.frames.getFirst();
 		}
 		return null;
 	}
@@ -230,8 +227,8 @@ public class ContextData {
 	 * @param script
 	 * @param lineNumber
 	 */
-	public synchronized void debuggerStatement(ScriptImpl script, Integer lineNumber) {
-		DebugFrameImpl frame = getTopFrame();
+	public synchronized void debuggerStatement(ScriptSource script, Integer lineNumber) {
+		StackFrame frame = getTopFrame();
 		Collection breakpoints = script.getBreakpoints(null, lineNumber, frame);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (sendBreakEvent(script, lineNumber, null, breakpoints, isStepBreak, true)) {
@@ -245,8 +242,8 @@ public class ContextData {
 	 * @param script
 	 * @param lineNumber
 	 */
-	public synchronized void lineChange(ScriptImpl script, Integer lineNumber) {
-		DebugFrameImpl frame = getTopFrame();
+	public synchronized void lineChange(ScriptSource script, Integer lineNumber) {
+		StackFrame frame = getTopFrame();
 		Collection breakpoints = script.getBreakpoints(null, lineNumber, frame);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (isStepBreak || !breakpoints.isEmpty()) {
@@ -262,7 +259,7 @@ public class ContextData {
 	 * @param ex
 	 */
 	public synchronized void exceptionThrown(Throwable ex) {
-		DebugFrameImpl frame = getTopFrame();
+		StackFrame frame = getTopFrame();
 		if (sendExceptionEvent(frame.getScript(), frame.getLineNumber(), ex)) {
 			suspendState();
 		}
@@ -276,7 +273,7 @@ public class ContextData {
 	 * @param ex
 	 * @return true if the message was sent successfully, false otherwise
 	 */
-	private boolean sendExceptionEvent(ScriptImpl script, Integer lineNumber, Throwable ex) {
+	private boolean sendExceptionEvent(ScriptSource script, Integer lineNumber, Throwable ex) {
 		EventPacket exceptionEvent = new EventPacket(JSONConstants.EXCEPTION);
 		Map body = exceptionEvent.getBody();
 		body.put(JSONConstants.CONTEXT_ID, contextId);
@@ -298,7 +295,7 @@ public class ContextData {
 	 * @param isDebuggerStatement
 	 * @return true if the message was sent successfully, false otherwise
 	 */
-	private boolean sendBreakEvent(ScriptImpl script, Integer lineNumber, String functionName, Collection breakpoints, boolean isStepBreak, boolean isDebuggerStatement) {
+	private boolean sendBreakEvent(ScriptSource script, Integer lineNumber, String functionName, Collection breakpoints, boolean isStepBreak, boolean isDebuggerStatement) {
 		EventPacket breakEvent = new EventPacket(JSONConstants.BREAK);
 		Map body = breakEvent.getBody();
 		body.put(JSONConstants.THREAD_ID, threadId);
@@ -336,7 +333,7 @@ public class ContextData {
 	 * 
 	 * @param script
 	 */
-	public synchronized void scriptLoaded(ScriptImpl script) {
+	public synchronized void scriptLoaded(ScriptSource script) {
 		if (sendScriptEvent(script)) {
 			suspendState();
 		}
@@ -348,7 +345,7 @@ public class ContextData {
 	 * @param script
 	 * @return
 	 */
-	private boolean sendScriptEvent(ScriptImpl script) {
+	private boolean sendScriptEvent(ScriptSource script) {
 		EventPacket scriptEvent = new EventPacket(JSONConstants.SCRIPT);
 		Map body = scriptEvent.getBody();
 		body.put(JSONConstants.THREAD_ID, threadId);

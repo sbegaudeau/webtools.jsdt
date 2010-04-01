@@ -42,8 +42,10 @@ public interface JSONConstants {
 	public static final String NOT_FOUND = "not found"; //$NON-NLS-1$
 	/**
 	 * The type for a VMDeathEvent
+	 * 
+	 * @see EventPacket#getType()
 	 */
-	public static final String VMDEATH = "vmdeath";
+	public static final String VMDEATH = "vmdeath"; //$NON-NLS-1$
 
 	// value constants
 	public static final String UNDEFINED = "undefined"; //$NON-NLS-1$

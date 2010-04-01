@@ -29,8 +29,9 @@ public class Request extends Packet {
 	 */
 	public Request(String command) {
 		super(JSONConstants.REQUEST);
-		if(command==null)
-			throw new NullPointerException();
+		if(command == null) {
+			throw new IllegalArgumentException("The command kind cannot be null"); //$NON-NLS-1$
+		}
 		this.command = command.intern();
 	}
 
@@ -41,8 +42,9 @@ public class Request extends Packet {
 	 */
 	public Request(Map json) {
 		super(json);
-		if(json==null)
-			throw new NullPointerException();
+		if(json == null) {
+			throw new IllegalArgumentException("The JSON map for a Request packet cannot be null"); //$NON-NLS-1$
+		}
 		String packetCommand = (String) json.get(JSONConstants.COMMAND);
 		this.command = packetCommand.intern();
 		Map packetArguments = (Map) json.get(JSONConstants.ARGUMENTS);
@@ -79,10 +81,12 @@ public class Request extends Packet {
 	 * @param argument the value for the argument, <code>null</code> is not accepted
 	 */
 	public void setArgument(String key, Object argument) {
-		if(key==null)
-			throw new NullPointerException();
-		if(argument==null)
-			throw new NullPointerException();
+		if(key == null) {
+			throw new IllegalArgumentException("The argument key cannot be null"); //$NON-NLS-1$
+		}
+		if(argument == null) {
+			throw new IllegalArgumentException("A null argument is not allowed"); //$NON-NLS-1$
+		}
 		arguments.put(key, argument);
 	}
 
@@ -94,5 +98,14 @@ public class Request extends Packet {
 		json.put(JSONConstants.COMMAND, command);
 		json.put(JSONConstants.ARGUMENTS, arguments);
 		return json;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Response: ").append(toJSON()); //$NON-NLS-1$
+		return buffer.toString();
 	}
 }

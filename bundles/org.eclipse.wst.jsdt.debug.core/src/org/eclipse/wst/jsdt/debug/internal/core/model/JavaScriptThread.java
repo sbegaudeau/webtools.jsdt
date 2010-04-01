@@ -35,6 +35,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.StepEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
+import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
@@ -120,7 +121,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 						if (breakpoint instanceof JavaScriptLoadBreakpoint) {
 							String name = breakpoint.getScriptPath();
 							if(Constants.EMPTY_STRING.equals(name)) {
-								name = ModelMessages.JavaScriptThread_evaluated_script;
+								IJavaScriptStackFrame frame = (IJavaScriptStackFrame) getTopStackFrame();
+								if(frame != null) {
+									name = frame.getSourceName();
+								}
+								else {
+									//all else failed say "evaluated_script"
+									name = ModelMessages.JavaScriptThread_evaluated_script;
+								}
 							}
 							return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
 						}

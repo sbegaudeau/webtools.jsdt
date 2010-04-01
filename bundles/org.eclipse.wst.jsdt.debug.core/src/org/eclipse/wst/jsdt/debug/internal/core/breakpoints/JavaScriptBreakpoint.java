@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -358,8 +359,9 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 */
 	protected synchronized void addRequestForTarget(JavaScriptDebugTarget target, EventRequest request) {
 		ArrayList requests = getRequests(target);
-		if (requests.isEmpty()) {
+		if (requests == null) {
 			synchronized (this.requestspertarget) {
+				requests = new ArrayList(2);
 				this.requestspertarget.put(target, requests);
 			}
 		}
@@ -377,9 +379,6 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		ArrayList list = null;
 		synchronized (this.requestspertarget) {
 			list = (ArrayList) this.requestspertarget.get(target);
-		}
-		if (list == null) {
-			list = new ArrayList(2);
 		}
 		return list;
 	}
@@ -422,7 +421,9 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 				// TODO need something fancier in the future
 				// perhaps add this to the participants so each can decide what makes
 				// a script "equal" to suspend on
-				if (new Path(getScriptPath()).equals(script.sourceURI().getPath())) {
+				IPath path = new Path(getScriptPath());
+				if (path.equals(script.sourceURI().getPath()) || 
+						path.lastSegment().equals(URIUtil.lastSegment(script.sourceURI()))) {
 					createRequest(target, sevent.script());
 				}
 			} catch (CoreException ce) {

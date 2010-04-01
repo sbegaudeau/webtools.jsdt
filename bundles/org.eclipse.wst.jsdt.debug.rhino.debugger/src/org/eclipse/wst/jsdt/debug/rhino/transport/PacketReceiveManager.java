@@ -126,10 +126,10 @@ public class PacketReceiveManager extends PacketManager {
 		}
 		// Check for an IO Exception.
 		if (isDisconnected()) {
-			throw new DisconnectedException("runtime disconnected", getDisconnectedException());
+			throw new DisconnectedException("Runtime disconnected", getDisconnectedException()); //$NON-NLS-1$
 		}
 		// Check for a timeout.
-		throw new TimeoutException("time_out_waiting_for_command_packet:" + type);
+		throw new TimeoutException("Timed out waiting for command packet: " + type); //$NON-NLS-1$
 	}
 
 	/**

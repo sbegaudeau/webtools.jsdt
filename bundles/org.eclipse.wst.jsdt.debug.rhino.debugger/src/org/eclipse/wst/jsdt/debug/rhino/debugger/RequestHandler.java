@@ -103,7 +103,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.BREAKPOINT_ID));
 			return;
 		}
-		BreakpointImpl breakpoint = debugger.clearBreakpoint(breakpointId);
+		Breakpoint breakpoint = debugger.clearBreakpoint(breakpointId);
 		if (breakpoint == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);
@@ -125,7 +125,7 @@ public class RequestHandler {
 		String function = (String) arguments.get(JSONConstants.FUNCTION);
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		String condition = (String) arguments.get(JSONConstants.CONDITION);
-		BreakpointImpl breakpoint = debugger.setBreakpoint(scriptId, line, function, condition, threadId);
+		Breakpoint breakpoint = debugger.setBreakpoint(scriptId, line, function, condition, threadId);
 		response.getBody().put(JSONConstants.BREAKPOINT, breakpoint.toJSON());
 	}
 
@@ -143,7 +143,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.BREAKPOINT_ID));
 			return;
 		}
-		BreakpointImpl breakpoint = debugger.getBreakpoint(breakpointId);
+		Breakpoint breakpoint = debugger.getBreakpoint(breakpointId);
 		if (breakpoint == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);
@@ -189,7 +189,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.EXPRESSION));
 			return;
 		}
-		DebugFrameImpl frame = debugger.getFrame(threadId, frameId);
+		StackFrame frame = debugger.getFrame(threadId, frameId);
 		if (frame == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);
@@ -225,7 +225,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.HANDLE));
 			return;
 		}
-		DebugFrameImpl frame = debugger.getFrame(threadId, frameId);
+		StackFrame frame = debugger.getFrame(threadId, frameId);
 		if (frame == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);
@@ -249,7 +249,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.SCRIPT_ID));
 			return;
 		}
-		ScriptImpl script = debugger.getScript(scriptId);
+		ScriptSource script = debugger.getScript(scriptId);
 		if (script == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);
@@ -289,7 +289,7 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.FRAME_ID));
 			return;
 		}
-		DebugFrameImpl frame = debugger.getFrame(threadId, frameId);
+		StackFrame frame = debugger.getFrame(threadId, frameId);
 		if (frame == null) {
 			response.setSuccess(false);
 			response.setMessage(JSONConstants.NOT_FOUND);

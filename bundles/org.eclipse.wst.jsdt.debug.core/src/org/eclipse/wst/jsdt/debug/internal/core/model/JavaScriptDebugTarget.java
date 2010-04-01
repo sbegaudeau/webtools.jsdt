@@ -909,12 +909,12 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		if (event instanceof ThreadEnterEvent) {
 			ThreadEnterEvent threadEnterEvent = (ThreadEnterEvent) event;
 			createThread(threadEnterEvent.thread(), true);
-			return true;
+			return false;
 		}
 		if (event instanceof ThreadExitEvent) {
 			ThreadExitEvent threadExitEvent = (ThreadExitEvent) event;
 			terminateThread(threadExitEvent.thread());
-			return true;
+			return false;
 		}
 		if (event instanceof ScriptLoadEvent) {
 			if(iScriptCache != null) {

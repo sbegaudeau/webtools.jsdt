@@ -132,12 +132,13 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	 */
 	protected void registerRequest(JavaScriptDebugTarget target, EventRequest request) {
 		ArrayList requests = getRequests(target);
-		if (requests.isEmpty()) {
+		if (requests == null || requests.isEmpty()) {
 			// only add it once per target
 			addRequestForTarget(target, request);
 			try {
-				if (isRegistered())
+				if (isRegistered()) {
 					incrementInstallCount();
+				}
 			} catch (CoreException ce) {
 				JavaScriptDebugPlugin.log(ce);
 			}

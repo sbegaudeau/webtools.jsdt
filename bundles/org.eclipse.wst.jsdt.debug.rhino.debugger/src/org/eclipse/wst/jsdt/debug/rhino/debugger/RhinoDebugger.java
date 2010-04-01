@@ -9,6 +9,8 @@
 package org.eclipse.wst.jsdt.debug.rhino.debugger;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,6 +27,7 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.rhino.transport.JSONUtil;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.transport.SocketTransportService;
@@ -44,6 +47,8 @@ import org.mozilla.javascript.debug.Debugger;
  */
 public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnable {
 
+	public static final DebuggableScript[] NO_SCRIPTS = new DebuggableScript[0];
+	
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
 	private static final String TRANSPORT = "transport"; //$NON-NLS-1$
@@ -56,8 +61,6 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 
 	private final Map threadToThreadId = new HashMap();
 	private final Map threadIdToData = new HashMap();
-	private final Map scripts = new HashMap();
-	private final Map debuggableScripts = new HashMap();
 	private final Map breakpoints = new HashMap();
 
 	private long currentThreadId = 0L;
@@ -70,6 +73,20 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	private ListenerKey listenerKey;
 	private volatile Connection connection;
 
+	/**
+	 * Mapping of the URI string to the {@link ScriptSource}
+	 */
+	private HashMap/*<String, ScriptSource>*/ uriToScript = new HashMap();
+	/**
+	 * Mapping of the id to the {@link ScriptSource}
+	 */
+	private HashMap/*<Long, ScriptSource>*/ idToScript = new HashMap();
+	
+	/**
+	 * A counter for composing {@link URI}s for stdin
+	 */
+	static int stdinCounter = 1;
+	
 	/**
 	 * Constructor
 	 * 
@@ -265,23 +282,34 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @see org.mozilla.javascript.debug.Debugger#getFrame(org.mozilla.javascript.Context, org.mozilla.javascript.debug.DebuggableScript)
 	 */
 	public DebugFrame getFrame(Context context, DebuggableScript debuggableScript) {
-		ScriptImpl script = getScript(debuggableScript);
-		ContextData contextData = (ContextData) context.getDebuggerContextData();
-		ThreadData thread = (ThreadData) threadIdToData.get(contextData.getThreadId());
-		return thread.getFrame(context, debuggableScript, script);
-	}
-
-	/**
-	 * Returns the debuggable script context
-	 * 
-	 * @param debuggableScript
-	 * @return the debuggable script context
-	 */
-	private ScriptImpl getScript(DebuggableScript debuggableScript) {
-		while (!debuggableScript.isTopLevel()) {
-			debuggableScript = debuggableScript.getParent();
+		ScriptSource script = getScript(debuggableScript);
+		if(script != null) {
+			ContextData contextData = (ContextData) context.getDebuggerContextData();
+			ThreadData thread = (ThreadData) threadIdToData.get(contextData.getThreadId());
+			FunctionSource function = script.getFunction(debuggableScript);
+			return thread.getFrame(context, function, script);
 		}
-		return (ScriptImpl) debuggableScripts.get(debuggableScript);
+		return null;
+	}
+	
+	/**
+	 * Returns the root {@link ScriptSource} context
+	 * 
+	 * @param script
+	 * @return the root {@link ScriptSource} context
+	 */
+	private ScriptSource getScript(DebuggableScript script) {
+		synchronized (uriToScript) {
+			DebuggableScript root = script;
+			while (!root.isTopLevel()) {
+				root = root.getParent();
+			}
+			URI uri = getSourceUri(root, parseSourceProperties(root.getSourceName()));
+			if(uri != null) {
+				return (ScriptSource) uriToScript.get(uri);
+			}
+		}
+		return null;
 	}
 
 	/*
@@ -289,27 +317,100 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * 
 	 * @see org.mozilla.javascript.debug.Debugger#handleCompilationDone(org.mozilla.javascript.Context, org.mozilla.javascript.debug.DebuggableScript, java.lang.String)
 	 */
-	public void handleCompilationDone(Context context, DebuggableScript debuggableScript, String source) {
-		if (!debuggableScript.isTopLevel()) {
+	public void handleCompilationDone(Context context, DebuggableScript script, String source) {
+		if (!script.isTopLevel()) {
 			return;
 		}
-		Long scriptId = nextScriptId();
-		ScriptImpl script = new ScriptImpl(scriptId, debuggableScript, source);
-		scripts.put(scriptId, script);
-		debuggableScripts.put(debuggableScript, script);
+		Map properties = parseSourceProperties(script.getSourceName());
+		URI uri = getSourceUri(script, properties);
+		if(uri == null) {
+			//if the source cannot be located don't load or notify
+			return;
+		}
+		final ScriptSource newscript = new ScriptSource(script, source, uri, script.isGeneratedScript(), properties);
+		synchronized (uriToScript) {
+			ScriptSource old = (ScriptSource) uriToScript.remove(uri);
+			Long id = null;
+			if(old != null) {
+				//recycle the id for a re-loaded script
+				//https://bugs.eclipse.org/bugs/show_bug.cgi?id=306832
+				id = old.getId();
+				idToScript.remove(old.getId());
+				newscript.clone(old);
+			}
+			else {
+				//a totally new script is loaded
+				id = scriptId();
+				newscript.setId(id);
+			}
+			uriToScript.put(uri, newscript);
+			idToScript.put(id, newscript);
+		}
 		ContextData contextData = (ContextData) context.getDebuggerContextData();
-		contextData.scriptLoaded(script);
+		contextData.scriptLoaded(newscript);
 	}
 
+	/**
+	 * Composes a {@link URI} representing the path to the source of the given script
+	 * 
+	 * @param script the script to create a {@link URI} for
+	 * @param properties any special properties @see {@link #parseSourceProperties(String)}
+	 * @return the {@link URI} for the source or <code>null</code>
+	 */
+	URI getSourceUri(DebuggableScript script, Map properties) {
+		try {
+			if(properties != null) {
+				return new URI((String) properties.get(JSONConstants.NAME));
+			}
+			String path = script.getSourceName();
+			if("<stdin>".equals(path)) { //$NON-NLS-1$
+				path = "stdin"; //$NON-NLS-1$
+			}
+			try {
+				//try to just create a URI from the name
+				return new URI(path);
+			}
+			catch(URISyntaxException urise) {
+				//do nothing
+			}
+			//fall back to creating a file URI
+			return new URI("file:", null, path, null); //$NON-NLS-1$
+		}
+		catch (URISyntaxException urise) {
+			//do nothing just return null
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns any special properties specified in the source name or <code>null</code>
+	 * 
+	 * @param sourceName
+	 * @return any special properties specified in the source name or <code>null</code>
+	 */
+	Map parseSourceProperties(String sourceName) {
+		if (sourceName != null && sourceName.charAt(0) == '{') {
+			try {
+				Object json = JSONUtil.read(sourceName);
+				if (json instanceof Map) {
+					return (Map) json;
+				}
+			} catch (RuntimeException e) {
+				// ignore
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * Returns the next script id to use
 	 * 
 	 * @return the next id
 	 */
-	private synchronized Long nextScriptId() {
+	synchronized Long scriptId() {
 		return new Long(currentScriptId++);
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -458,7 +559,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @param frameId
 	 * @return the {@link DebugFrame} with the given id from the thread with the given id
 	 */
-	public synchronized DebugFrameImpl getFrame(Long threadId, Long frameId) {
+	public synchronized StackFrame getFrame(Long threadId, Long frameId) {
 		ThreadData threadData = (ThreadData) threadIdToData.get(threadId);
 		if (threadData != null) {
 			return threadData.getFrame(frameId);
@@ -470,7 +571,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @return the ids of all of the scripts currently known to the debugger
 	 */
 	public synchronized List getScriptIds() {
-		return new ArrayList(scripts.keySet());
+		return new ArrayList(idToScript.keySet());
 	}
 
 	/**
@@ -479,8 +580,8 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @param scriptId
 	 * @return the script with the given id or <code>null</code>
 	 */
-	public synchronized ScriptImpl getScript(Long scriptId) {
-		return (ScriptImpl) scripts.get(scriptId);
+	public synchronized ScriptSource getScript(Long scriptId) {
+		return (ScriptSource) idToScript.get(scriptId);
 	}
 
 	/**
@@ -500,12 +601,12 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @param threadId
 	 * @return the new breakpoint or <code>null</code> if no script exists with the given id
 	 */
-	public synchronized BreakpointImpl setBreakpoint(Long scriptId, Integer lineNumber, String functionName, String condition, Long threadId) {
-		ScriptImpl script = (ScriptImpl) scripts.get(scriptId);
+	public synchronized Breakpoint setBreakpoint(Long scriptId, Integer lineNumber, String functionName, String condition, Long threadId) {
+		ScriptSource script = (ScriptSource) idToScript.get(scriptId);
 		if (!script.isValid(lineNumber, functionName)) {
 			return null;
 		}
-		BreakpointImpl breakpoint = new BreakpointImpl(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
+		Breakpoint breakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
 		breakpoints.put(breakpoint.getId(), breakpoint);
 		script.addBreakpoint(breakpoint);
 		return breakpoint;
@@ -524,11 +625,10 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @param breakpointId
 	 * @return the removed breakpoint or <code>null</code>
 	 */
-	public synchronized BreakpointImpl clearBreakpoint(Long breakpointId) {
-		BreakpointImpl breakpoint = (BreakpointImpl) breakpoints.remove(breakpointId);
+	public synchronized Breakpoint clearBreakpoint(Long breakpointId) {
+		Breakpoint breakpoint = (Breakpoint) breakpoints.remove(breakpointId);
 		if (breakpoint != null) {
-			ScriptImpl script = breakpoint.getScript();
-			script.removeBreakpoint(breakpoint);
+			breakpoint.delete();
 		}
 		return breakpoint;
 	}
@@ -567,8 +667,8 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	 * @param breakpointId
 	 * @return the breakpoint with the given id or <code>null</code>
 	 */
-	public BreakpointImpl getBreakpoint(Long breakpointId) {
-		return (BreakpointImpl) breakpoints.get(breakpointId);
+	public Breakpoint getBreakpoint(Long breakpointId) {
+		return (Breakpoint) breakpoints.get(breakpointId);
 	}
 
 	/**

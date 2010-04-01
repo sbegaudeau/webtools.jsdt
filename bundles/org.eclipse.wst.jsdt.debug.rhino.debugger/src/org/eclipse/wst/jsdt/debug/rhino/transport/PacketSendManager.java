@@ -76,7 +76,7 @@ public class PacketSendManager extends PacketManager {
 		if(packet==null)
 			throw new NullPointerException();
 		if (isDisconnected()) {
-			throw new DisconnectedException("runtime disconnected", getDisconnectedException());
+			throw new DisconnectedException("Runtime disconnected", getDisconnectedException()); //$NON-NLS-1$
 		}
 		synchronized (outgoingPackets) {
 			// Add packet to list of packets to send.

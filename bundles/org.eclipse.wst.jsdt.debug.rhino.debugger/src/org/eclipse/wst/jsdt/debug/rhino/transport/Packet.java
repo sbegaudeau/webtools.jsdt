@@ -42,8 +42,9 @@ abstract public class Packet {
 	 * @param json the pre-composed map of attributes for the packet, <code>null</code> is not accepted
 	 */
 	protected Packet(Map json) {
-		if(json==null)
-			throw new NullPointerException();
+		if(json == null) {
+			throw new IllegalArgumentException("The JSON map for a Packet cannot be null"); //$NON-NLS-1$
+		}
 		Number packetSeq = (Number) json.get(JSONConstants.SEQ);
 		this.sequence = packetSeq.intValue();
 		String packetType = (String) json.get(JSONConstants.TYPE);
