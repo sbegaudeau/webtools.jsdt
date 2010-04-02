@@ -289,6 +289,8 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		do {
 			if (scope instanceof ClassScope)
 				return ((ClassScope) scope).getReferenceBinding();
+			else if(scope instanceof CompilationUnitScope)
+				return ((CompilationUnitScope) scope).referenceContext.compilationUnitBinding;
 			scope = scope.parent;
 		} while (scope != null);
 		return null;
