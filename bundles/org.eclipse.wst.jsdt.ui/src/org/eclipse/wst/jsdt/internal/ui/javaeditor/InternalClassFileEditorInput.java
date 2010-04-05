@@ -16,6 +16,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
@@ -105,7 +106,9 @@ public class InternalClassFileEditorInput implements IClassFileEditorInput, IPer
 	public Object getAdapter(Class adapter) {
 		if (adapter == IClassFile.class)
 			return fClassFile;
-		return fClassFile.getAdapter(adapter);
+		else if(adapter == IJavaScriptElement.class)
+			return fClassFile;
+		return null;
 	}
 
 	/*
