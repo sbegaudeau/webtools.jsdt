@@ -391,6 +391,11 @@ public class SourceTypeBinding extends ReferenceBinding {
 				}
 			}
 			this.tagBits |= TagBits.AreFieldsComplete;
+		} else {
+			for(int i = 0; i < this.fields.length; i++) {
+				if(this.fields[i] != null)
+					fieldCache.put(this.fields[i].name, this.fields[i]);
+			}
 		}
 		if (this.nextType != null) {
 			FieldBinding[] moreFields = this.nextType.fields();
@@ -399,12 +404,12 @@ public class SourceTypeBinding extends ReferenceBinding {
 					fieldCache.put(moreFields[i].name, moreFields[i]);
 				}
 			}
-			FieldBinding[] combinedFields = new FieldBinding[this.fields.length
-					+ moreFields.length];
-			System.arraycopy(this.fields, 0, combinedFields, 0,
-					this.fields.length);
-			System.arraycopy(moreFields, 0, combinedFields, this.fields.length,
-					moreFields.length);
+//			FieldBinding[] combinedFields = new FieldBinding[this.fields.length
+//					+ moreFields.length];
+//			System.arraycopy(this.fields, 0, combinedFields, 0,
+//					this.fields.length);
+//			System.arraycopy(moreFields, 0, combinedFields, this.fields.length,
+//					moreFields.length);
 
 			return (FieldBinding[]) fieldCache.values().toArray(new FieldBinding[0]);
 			//return combinedFields;
