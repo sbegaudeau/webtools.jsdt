@@ -19,10 +19,10 @@ import org.mozilla.javascript.debug.DebuggableScript;
  */
 public class FunctionSource {
 	
-	private ScriptSource parent = null;
-	private String name = null;
-	private String source = null;
-	private int linenumber = -1;
+	final ScriptSource parent;
+	final String name;
+	String source;
+	final int linenumber;
 	
 	/**
 	 * Constructor

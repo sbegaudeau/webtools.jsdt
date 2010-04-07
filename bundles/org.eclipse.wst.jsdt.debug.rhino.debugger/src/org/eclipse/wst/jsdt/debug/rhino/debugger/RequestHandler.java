@@ -126,7 +126,9 @@ public class RequestHandler {
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		String condition = (String) arguments.get(JSONConstants.CONDITION);
 		Breakpoint breakpoint = debugger.setBreakpoint(scriptId, line, function, condition, threadId);
-		response.getBody().put(JSONConstants.BREAKPOINT, breakpoint.toJSON());
+		if(breakpoint != null) {
+			response.getBody().put(JSONConstants.BREAKPOINT, breakpoint.toJSON());
+		}
 	}
 
 	/**

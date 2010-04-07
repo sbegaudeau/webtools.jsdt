@@ -60,7 +60,12 @@ public class StackFrame implements DebugFrame {
 		this.contextData = (ContextData) context.getDebuggerContextData();
 		this.function = function;
 		this.script = script;
-		this.lineNumber = 1;
+		if(function != null) {
+			this.lineNumber = function.linenumber();
+		}
+		else {
+			this.lineNumber = 1;
+		}
 	}
 
 	/**
@@ -97,6 +102,7 @@ public class StackFrame implements DebugFrame {
 	 */
 	public void onDebuggerStatement(Context cx) {
 		initializeHandles();
+		this.lineNumber = 1+lineNumber;
 		contextData.debuggerStatement(script, new Integer(lineNumber));
 	}
 
@@ -109,9 +115,17 @@ public class StackFrame implements DebugFrame {
 		this.activation = activation;
 		this.thisObj = thisObj;
 		initializeHandles();
-		contextData.pushFrame(this, this.script, new Integer(lineNumber), (this.function == null ? null : this.function.name()));
+		contextData.pushFrame(this, this.script, new Integer(lineNumber), getFunctionName());
+		sendContextEnterEvent();
 	}
 
+	/**
+	 * Sends a context enter event
+	 */
+	void sendContextEnterEvent() {
+		//TODO make this work
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,8 +136,18 @@ public class StackFrame implements DebugFrame {
 		this.thisObj = null;
 		clearHandles();
 		this.contextData.popFrame(byThrow, resultOrException);
+		sendContextExitEvent(byThrow, resultOrException);
 	}
 
+	/**
+	 * Sends a function exit event
+	 * @param byThrow
+	 * @param resultOrException
+	 */
+	void sendContextExitEvent(boolean byThrow, Object resultOrException) {
+		//TODO make this work
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,10 +165,21 @@ public class StackFrame implements DebugFrame {
 	 */
 	public void onLineChange(Context cx, int lineNumber) {
 		initializeHandles();
-		this.lineNumber = 1 + lineNumber;
-		this.contextData.lineChange(this.script, new Integer(this.lineNumber));
+		this.lineNumber = lineNumber;
+		Integer line = new Integer(this.lineNumber);
+		if(this.script.isValid(line, getFunctionName())) {
+			this.contextData.lineChange(this.script, line);
+		}
 	}
 
+	/**
+	 * @return the name of the function backing this frame or <code>null</code> if there is no function
+	 * or it has no name.
+	 */
+	String getFunctionName() {
+		return (this.function == null ? null : this.function.name());
+	}
+	
 	/**
 	 * Evaluates the given source
 	 * 

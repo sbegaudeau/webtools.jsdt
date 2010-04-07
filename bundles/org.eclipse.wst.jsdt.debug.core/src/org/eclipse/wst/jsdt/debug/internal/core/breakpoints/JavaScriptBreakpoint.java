@@ -419,8 +419,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 				// perhaps add this to the participants so each can decide what makes
 				// a script "equal" to suspend on
 				IPath path = new Path(getScriptPath());
-				if (path.equals(script.sourceURI().getPath()) || 
-						path.lastSegment().equals(URIUtil.lastSegment(script.sourceURI()))) {
+				if (path.lastSegment().equals(URIUtil.lastSegment(script.sourceURI()))) {
 					createRequest(target, sevent.script());
 				}
 			} catch (CoreException ce) {

@@ -104,7 +104,7 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 				if(isGlobalLoadSuspend(vote) ||
 						((vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE)) {
 					thread.addBreakpoint(this);
-					thread.registerStepRequest(StepRequest.STEP_INTO);
+					thread.registerStepRequest(thread, StepRequest.STEP_INTO);
 				}
 			}
 		}

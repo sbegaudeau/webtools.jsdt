@@ -10,7 +10,6 @@ package org.eclipse.wst.jsdt.debug.rhino.debugger;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,6 +28,11 @@ import org.mozilla.javascript.debug.DebuggableScript;
  */
 public class ScriptSource {
 
+	/**
+	 * No line information
+	 */
+	static final LineData[] NO_LINES = new LineData[0];
+	
 	/**
 	 * The id of the script
 	 */
@@ -49,14 +53,7 @@ public class ScriptSource {
 	 * The ordered list of function names
 	 */
 	private ArrayList functionNames = null;
-	/**
-	 * The ordered list of line numbers
-	 */
-	private HashSet lineNumbers = null;
-	/**
-	 * The current collection of breakpoints
-	 */
-	private ArrayList breakpoints = new ArrayList();
+
 	/**
 	 * The location of the script
 	 */
@@ -65,6 +62,11 @@ public class ScriptSource {
 	 * The array of cached {@link FunctionSource}s
 	 */
 	private FunctionSource[] functionSources = null;
+	/**
+	 * Sparse array of line information. This array only has entries present for 
+	 * lines that are returned 
+	 */
+	private LineData[] lines = null;
 	/**
 	 * Mapping of the {@link DebuggableScript} backing the FunctionSource to the FunctionSource handle
 	 */
@@ -86,10 +88,15 @@ public class ScriptSource {
 		int[] rootlines = script.getLineNumbers();		
 		DebuggableScript[] functions = collectFunctions(script);
 		int flength = functions.length;
-		lineNumbers = new HashSet(flength+rootlines.length);
+		int max = 0;
+		HashSet lineNumbers = new HashSet(flength+rootlines.length+1);
 		//dump in the line #'s from the root script
 		for (int i = 0; i < rootlines.length; i++) {
-			this.lineNumbers.add(new Integer(rootlines[i]+1));
+			int line = rootlines[i];
+			if(line > max) {
+				max = line;
+			}
+			lineNumbers.add(new Integer(line));
 		}
 		//dump in the line numbers from the expanded set of functions
 		if(flength > 0) {
@@ -102,7 +109,10 @@ public class ScriptSource {
 				if(lines != null && lines.length > 0) {
 					start = lines[0] + 1;
 					for (int j = 0; j < lines.length; j++) {
-						int currentLine = lines[j] + 1;
+						int currentLine = lines[j];
+						if(currentLine > max) {
+							max = currentLine;
+						}
 						if (currentLine < start) {
 							start = currentLine;
 						}
@@ -119,6 +129,19 @@ public class ScriptSource {
 				scriptToFunction.put(functions[i], functionSources[i]);
 				start = 0;
 			}
+		}
+		//create the sparse array and populate the valid line numbers
+		if(max == 0) {
+			this.lines = NO_LINES;
+		}
+		else {
+			this.lines = new LineData[max+1];
+			for (Iterator iter = lineNumbers.iterator(); iter.hasNext();) {
+				Integer value = (Integer) iter.next();
+				this.lines[value.intValue()] = new LineData();
+				iter.remove();
+			}
+			lineNumbers = null;
 		}
 	}
 
@@ -215,7 +238,18 @@ public class ScriptSource {
 		result.put(JSONConstants.PROPERTIES, properties);
 		result.put(JSONConstants.SOURCE, source);
 		result.put(JSONConstants.GENERATED, Boolean.valueOf(generated));
+		if(lines != null) {
+		HashSet lineNumbers = new HashSet();
+		for (int i = 0; i < lines.length; i++) {
+			if(lines[i] != null) {
+				lineNumbers.add(new Integer(i));
+			}
+		}
 		result.put(JSONConstants.LINES, (lineNumbers == null ? Collections.EMPTY_SET : lineNumbers));
+		}
+		else {
+			result.put(JSONConstants.LINES, Collections.EMPTY_SET);
+		}
 		result.put(JSONConstants.FUNCTIONS, (functionNames == null ? Collections.EMPTY_LIST : functionNames));
 		return result;
 	}
@@ -226,45 +260,47 @@ public class ScriptSource {
 	public Long getId() {
 		return scriptId;
 	}
-
+	
 	/**
-	 * Returns the complete collection of breakpoints that match the given attributes or an empty collection, never <code>null</code>
-	 * 
-	 * @param functionName
+	 * Returns the {@link Breakpoint} at the given line number or <code>null</code>
+	 * if there isn't one
 	 * @param lineNumber
-	 * @param frame
-	 * @return all breakpoints that match the given attributes or an empty collection
+	 * @return
 	 */
-	public synchronized Collection getBreakpoints(String functionName, Integer lineNumber, StackFrame frame) {
-		ArrayList result = new ArrayList();
-		for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
-			Breakpoint breakpoint = (Breakpoint) iterator.next();
-			if (breakpoint.matches(functionName, lineNumber, frame)) {
-				result.add(breakpoint.getId());
+	public Breakpoint getBreakpoint(Integer lineNumber) {
+		synchronized (lines) {
+			int value = lineNumber.intValue();
+			if((value > -1 && value < lines.length) && lines[value] != null) {
+				return lines[value].breakpoint;
 			}
+			return null;
 		}
-		return result;
 	}
 
 	/**
-	 * Returns if the line number or the function is valid wrt this script
+	 * Returns if the line number is valid wrt this script
 	 * 
 	 * @param lineNumber
 	 * @param functionName
-	 * @return true if the line number or function name is valid wrt this script
+	 * @return true if the line number is valid wrt this script
 	 */
-	public boolean isValid(Integer lineNumber, String functionName) {
-		synchronized (lineNumbers) {
-			if (lineNumber != null) {
-				return lineNumbers.contains(lineNumber);
+	public boolean isValid(Integer line, String functionName) {
+		synchronized (lines) {
+			if(line != null) {
+				int value = line.intValue();
+				if (value > -1 && value < lines.length) {
+					return lines[value] != null;
+				}
+			}
+			if(functionNames != null) {
+				int index = functionNames.indexOf(functionName);
+				FunctionSource func = functionAt(index);
+				if(func != null) {
+					return lines[func.linenumber()] != null;
+				}
 			}
 		}
-		synchronized (functionNames) {
-			if (functionName != null) {
-				return functionNames.contains(functionName);
-			}
-		}
-		return functionName == null;
+		return false;
 	}
 
 	/**
@@ -273,7 +309,7 @@ public class ScriptSource {
 	 */
 	public void clone(ScriptSource script) {
 		this.scriptId = script.scriptId;
-		this.breakpoints = script.breakpoints;
+		this.lines = script.lines;
 	}
 	
 	/**
@@ -281,9 +317,24 @@ public class ScriptSource {
 	 * 
 	 * @param breakpoint
 	 */
-	public synchronized void addBreakpoint(Breakpoint breakpoint) {
-		synchronized (breakpoints) {
-			breakpoints.add(breakpoint);
+	public void addBreakpoint(Breakpoint breakpoint) {
+		synchronized (lines) {
+			Integer lineNumber = breakpoint.lineNumber;
+			if(lineNumber != null) {
+				int value = lineNumber.intValue();
+				if(lines[value] != null) {
+					lines[value].breakpoint = breakpoint;
+				}
+			}
+			else if(functionNames != null) {
+				int index = functionNames.indexOf(breakpoint.functionName);
+				FunctionSource func = functionAt(index);
+				if(func != null) {
+					if(lines[func.linenumber] != null) {
+						lines[func.linenumber].breakpoint = breakpoint;
+					}
+				}
+			}
 		}
 	}
 
@@ -292,9 +343,24 @@ public class ScriptSource {
 	 * 
 	 * @param breakpoint
 	 */
-	public synchronized void removeBreakpoint(Breakpoint breakpoint) {
-		synchronized (breakpoints) {
-			breakpoints.remove(breakpoint);
+	public void removeBreakpoint(Breakpoint breakpoint) {
+		synchronized (lines) {
+			Integer lineNumber = breakpoint.lineNumber;
+			if(lineNumber != null) {
+				int value = lineNumber.intValue();
+				if(lines[value] != null) {
+					lines[value].breakpoint = null;
+				}
+			}
+			else if(functionNames != null) {
+				int index = functionNames.indexOf(breakpoint.functionName);
+				FunctionSource func = functionAt(index);
+				if(func != null) {
+					if(lines[func.linenumber] != null) {
+						lines[func.linenumber].breakpoint = null;
+					}
+				}
+			}
 		}
 	}
 
@@ -340,12 +406,14 @@ public class ScriptSource {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ScriptSource: [id - ").append(scriptId).append("] [uri - ").append(uri.toString()).append("]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		buffer.append("[generated - ").append(generated).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		if(lineNumbers != null) {
+		if(lines != null) {
 			buffer.append("\tline numbers: {"); //$NON-NLS-1$
-			for (Iterator iter = lineNumbers.iterator(); iter.hasNext();) {
-				buffer.append(iter.next());
-				if(iter.hasNext()) {
-					buffer.append(", "); //$NON-NLS-1$
+			for (int i = 0; i < lines.length; i++) {
+				if(lines[i] != null) {
+					buffer.append(i);
+					if(i < lines.length-1) {
+						buffer.append(", "); //$NON-NLS-1$
+					}
 				}
 			}
 			buffer.append("}\n"); //$NON-NLS-1$

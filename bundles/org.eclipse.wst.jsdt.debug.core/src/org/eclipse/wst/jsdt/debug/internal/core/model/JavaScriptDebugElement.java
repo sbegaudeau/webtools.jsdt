@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.DebugElement;
+import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
@@ -44,6 +45,22 @@ public class JavaScriptDebugElement extends DebugElement implements IDisconnect 
 		return JavaScriptDebugModel.MODEL_ID;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.DebugElement#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		if(IDebugTarget.class == adapter) {
+			return getDebugTarget();
+		}
+		if(IJavaScriptDebugTarget.class == adapter) {
+			return getJavaScriptDebugTarget();
+		}
+		if(IDisconnect.class == adapter) {
+			return this;
+		}
+		return super.getAdapter(adapter);
+	}
+	
 	/**
 	 * Returns this element's target.
 	 * 

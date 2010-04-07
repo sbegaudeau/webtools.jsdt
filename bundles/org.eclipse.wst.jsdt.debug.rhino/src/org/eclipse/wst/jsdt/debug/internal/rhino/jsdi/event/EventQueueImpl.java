@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -105,18 +104,13 @@ public final class EventQueueImpl implements EventQueue {
 						int lineNumber = ((Number) event.getBody().get(JSONConstants.LINE_NUMBER)).intValue();
 						Location location = script.lineLocation(lineNumber);
 						boolean atBreakpoint = false;
-						List jsonBreakpoints = (List) event.getBody().get(JSONConstants.BREAKPOINTS);
-						if (jsonBreakpoints != null) {
-							List breakpoints = new ArrayList(jsonBreakpoints.size());
-							for (Iterator iterator = jsonBreakpoints.iterator(); iterator.hasNext();) {
-								Number breakpointId = (Number) iterator.next();
-								breakpoints.add(new Long(breakpointId.longValue()));
-							}
+						Number breakpointId = (Number) event.getBody().get(JSONConstants.BREAKPOINT);
+						if (breakpointId != null) {
 							List breakpointRequests = eventRequestManager.breakpointRequests();
 							for (Iterator iterator = breakpointRequests.iterator(); iterator.hasNext();) {
 								BreakpointRequestImpl request = (BreakpointRequestImpl) iterator.next();
 								ThreadReference requestThread = request.thread();
-								if (request.isEnabled() && (requestThread == null || thread == requestThread) && breakpoints.contains(request.breakpointId())) {
+								if (request.isEnabled() && (requestThread == null || thread == requestThread) && breakpointId.longValue() == request.breakpointId().longValue()) {
 									eventSet.add(new BreakpointEventImpl(vm, thread, location, request));
 									atBreakpoint = true;
 								}

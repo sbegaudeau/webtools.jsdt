@@ -20,10 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.IDebugEventSetListener;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.IThread;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
@@ -35,7 +34,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.StepEvent;
-import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
@@ -55,8 +54,41 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakp
  * 
  * @since 1.0
  */
-public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEventSetListener, IJavaScriptThread, IJavaScriptEventListener {
+public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptEventListener, IJavaScriptThread {
 
+	/**
+	 * handler for stepping
+	 */
+	class StepHandler implements IJavaScriptEventListener {
+
+		/**
+		 * Sends step request
+		 */
+		public void step(int kind, int detail) {
+			if (canResume()) {
+				registerStepRequest(this, kind);
+				thread.resume();
+				pendingstep = this;
+				clearFrames();
+				clearBreakpoints();
+				fireResumeEvent(detail);
+			}
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+		 */
+		public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
+			StepEvent stepEvent = (StepEvent) event;
+			return handleStepEvent(this, stepEvent);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+		 */
+		public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {}
+	}
+	
 	/**
 	 * Constant for no stack frames
 	 * 
@@ -75,7 +107,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	private static final int UNKNOWN = 0;
 	private static final int SUSPENDED = 1;
 	private static final int RUNNING = 2;
-	private static final int STEPPING = 3;
 	private static final int TERMINATED = 4;
 
 	/**
@@ -98,7 +129,16 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 */
 	private final ThreadReference thread;
 
+	/**
+	 * Flag to track if the thread is in the process of suspending
+	 */
 	private boolean suspending = false;
+	
+	/**
+	 * {@link StepHandler} handle to know if a step has been initiated
+	 */
+	private StepHandler pendingstep = null;
+	
 	/**
 	 * Constructor
 	 * 
@@ -140,10 +180,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 				return ModelMessages.thread_suspended;
 			}
 			case RUNNING: {
+				if(pendingstep != null) {
+					return ModelMessages.thread_stepping;
+				}
 				return ModelMessages.thread_running;
-			}
-			case STEPPING: {
-				return ModelMessages.thread_stepping;
 			}
 			case TERMINATED: {
 				return ModelMessages.thread_terminated;
@@ -332,7 +372,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 			if (fireevent) {
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 			}
-			removeDebugEventListener();
 		}
 	}
 
@@ -348,22 +387,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	}
 
 	/**
-	 * Adds this thread as a debug event listener
-	 */
-	void addDebugEventListener() {
-		DebugPlugin plugin = DebugPlugin.getDefault();
-		plugin.addDebugEventListener(this);
-	}
-	
-	/**
-	 * Remove the thread an event listener
-	 */
-	void removeDebugEventListener() {
-		DebugPlugin plugin = DebugPlugin.getDefault();
-		plugin.removeDebugEventListener(this);
-	}
-	
-	/**
 	 * Delegate method to suspend the underlying thread
 	 */
 	void suspendUnderlyingThread() {
@@ -374,7 +397,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 			fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
 			return;
 		}
-		addDebugEventListener();
 		suspending = true;
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
@@ -544,13 +566,63 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 		this.state = TERMINATED;
 	}
 
+	/**
+	 * registers a  step request
+	 * 
+	 * @param listener the element that will respond to the event
+	 * @param step step command to send
+	 */
+	public void registerStepRequest(IJavaScriptEventListener listener, int step) {
+		EventRequestManager requestManager = getVM().eventRequestManager();
+		StepRequest stepRequest = requestManager.createStepRequest(thread, step);
+		stepRequest.setEnabled(true);
+		getJavaScriptDebugTarget().addJSDIEventListener(listener, stepRequest);
+	}
+	
+	/**
+	 * Delete the given event request
+	 * 
+	 * @param listener the element that will be removed as a listener
+	 * @param request
+	 */
+	public void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
+		getJavaScriptDebugTarget().removeJSDIEventListener(listener, request);
+		EventRequestManager requestManager = getVM().eventRequestManager();
+		requestManager.deleteEventRequest(request);
+	}
+	
+	/**
+	 * Handles a {@link StepEvent}
+	 * 
+	 * @param listener the listener to remove
+	 * @param event
+	 * @return <code>true</code> if the event was not handled (we should resume), <code>false</code> if
+	 * the event was handled (we should suspend)
+	 */
+	boolean handleStepEvent(IJavaScriptEventListener listener, StepEvent event) {
+		ThreadReference threadReference = event.thread();
+		if (threadReference == thread) {
+			pendingstep = null;
+			if(event.location() == null) {
+				resume(true);
+			}
+			else {
+				markSuspended();
+				fireSuspendEvent(DebugEvent.STEP_END);
+			}
+			deleteRequest(listener, event.request());
+			return false;
+		}
+		return true;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.debug.core.model.IStep#canStepInto()
 	 */
 	public boolean canStepInto() {
-		return isSuspended();
+		return canStep();
 	}
 
 	/*
@@ -559,7 +631,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 * @see org.eclipse.debug.core.model.IStep#canStepOver()
 	 */
 	public boolean canStepOver() {
-		return isSuspended();
+		return canStep();
 	}
 
 	/*
@@ -568,47 +640,29 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 * @see org.eclipse.debug.core.model.IStep#canStepReturn()
 	 */
 	public boolean canStepReturn() {
-		return isSuspended();
+		return canStep();
 	}
 
+	/**
+	 * @return <code>true</code> if a step is allowed
+	 */
+	boolean canStep() {
+		try {
+			return isSuspended() && !isStepping() && getTopStackFrame() != null;
+		}
+		catch(DebugException de) {
+			JavaScriptDebugPlugin.log(de);
+		}
+		return false;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.debug.core.model.IStep#isStepping()
 	 */
 	public synchronized boolean isStepping() {
-		return this.state == STEPPING;
-	}
-
-	/**
-	 * Sends a step request and fires a step event if successful.
-	 * 
-	 * @param stepAction step command to send
-	 * @param eventDetail debug event detail to fire
-	 * @throws DebugException if request is not successful
-	 */
-	private synchronized void step(int step, int debugEvent) throws DebugException {
-		if (canResume()) {
-			registerStepRequest(step);
-			this.thread.resume();
-			this.state = STEPPING;
-			clearFrames();
-			clearBreakpoints();
-			fireResumeEvent(debugEvent);
-		}
-	}
-
-	/**
-	 * registers a  step request
-	 * 
-	 * @param stepAction step command to send
-	 */
-	public void registerStepRequest(int step) {
-		EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
-		StepRequest stepRequest = requestManager.createStepRequest(this.thread, step);
-		stepRequest.setEnabled(true);
-		getJavaScriptDebugTarget().addJSDIEventListener(this, stepRequest);
-		addDebugEventListener();
+		return pendingstep != null;
 	}
 
 	/*
@@ -617,7 +671,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 * @see org.eclipse.debug.core.model.IStep#stepInto()
 	 */
 	public void stepInto() throws DebugException {
-		step(StepRequest.STEP_INTO, DebugEvent.STEP_INTO);
+		StepHandler handler = new StepHandler();
+		handler.step(StepRequest.STEP_INTO, DebugEvent.STEP_INTO);
 	}
 
 	/*
@@ -626,7 +681,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 * @see org.eclipse.debug.core.model.IStep#stepOver()
 	 */
 	public void stepOver() throws DebugException {
-		step(StepRequest.STEP_OVER, DebugEvent.STEP_OVER);
+		StepHandler handler = new StepHandler();
+		handler.step(StepRequest.STEP_OVER, DebugEvent.STEP_OVER);
 	}
 
 	/*
@@ -635,7 +691,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
 	 */
 	public void stepReturn() throws DebugException {
-		step(StepRequest.STEP_OUT, DebugEvent.STEP_RETURN);
+		StepHandler handler = new StepHandler();
+		handler.step(StepRequest.STEP_OUT, DebugEvent.STEP_RETURN);
 	}
 
 	/*
@@ -677,54 +734,32 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+	 * @see org.eclipse.debug.core.model.DebugElement#getAdapter(java.lang.Class)
 	 */
-	public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {
-		if (event instanceof SuspendEvent) {
-			SuspendEvent suspendEvent = (SuspendEvent) event;
-			ThreadReference threadReference = suspendEvent.thread();
-			if (threadReference == this.thread) {
-				fireSuspendEvent(DebugEvent.CLIENT_REQUEST);
-			}
-			EventRequestManager requestManager = thread.virtualMachine().eventRequestManager();
-			requestManager.deleteEventRequest(event.request());
-			getJavaScriptDebugTarget().removeJSDIEventListener(this, event.request());
+	public Object getAdapter(Class adapter) {
+		if(IThread.class == adapter) {
+			return this;
 		}
-
-		if (event instanceof StepEvent) {
-			StepEvent stepEvent = (StepEvent) event;
-			ThreadReference threadReference = stepEvent.thread();
-			if (threadReference == this.thread) {
-				fireSuspendEvent(DebugEvent.STEP_END);
+		if(IStackFrame.class == adapter) {
+			try {
+				return getTopStackFrame();
+			} catch (DebugException e) {
+				JavaScriptDebugPlugin.log(e);
 			}
-			EventRequestManager requestManager = this.thread.virtualMachine().eventRequestManager();
-			requestManager.deleteEventRequest(event.request());
-			getJavaScriptDebugTarget().removeJSDIEventListener(this, event.request());
 		}
+		if(IJavaScriptThread.class == adapter) {
+			return this;
+		}
+		if(IJavaScriptStackFrame.class == adapter) {
+			try {
+				return getTopStackFrame();
+			} catch (DebugException e) {
+				JavaScriptDebugPlugin.log(e);
+			}
+		}
+		return super.getAdapter(adapter);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
-	 */
-	public synchronized boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
-		if (event instanceof SuspendEvent) {
-			SuspendEvent suspendEvent = (SuspendEvent) event;
-			ThreadReference threadReference = suspendEvent.thread();
-			if (threadReference == this.thread) {
-				markSuspended();
-			}
-			return false;
-		} else if (event instanceof StepEvent) {
-			StepEvent stepEvent = (StepEvent) event;
-			ThreadReference threadReference = stepEvent.thread();
-			if (threadReference == this.thread) {
-				markSuspended();
-			}
-			return false;
-		}
-		return true;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#evaluate(java.lang.String)
 	 */
@@ -752,19 +787,18 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IDebugEv
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.IDebugEventSetListener#handleDebugEvents(org.eclipse.debug.core.DebugEvent[])
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 	 */
-	public void handleDebugEvents(DebugEvent[] events) {
-		for (int i = 0; i < events.length; i++) {
-			switch(events[i].getKind()) {
-				case DebugEvent.RESUME: {
-					if(state == STEPPING) {
-						state = SUSPENDED;
-						resume(true);
-					}
-					break;
-				}
-			}
+	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
+		if(event instanceof StepEvent) {
+			return handleStepEvent(this, (StepEvent) event);
 		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+	 */
+	public void eventSetComplete(Event event, JavaScriptDebugTarget target,	boolean suspend, EventSet eventSet) {
 	}
 }

@@ -592,7 +592,12 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	}
 
 	/**
-	 * Creates a breakpoint in the script with the given id and the given breakpoint attributes. Returns the new breakpoint or <code>null</code> if no such script exists with the given id
+	 * Creates a breakpoint in the script with the given id and the given breakpoint attributes. 
+	 * Returns the new breakpoint or <code>null</code> if:
+	 * <ul>
+	 * <li>no such script exists with the given id</li>
+	 * <li>the given line number is not a valid line number</li>
+	 * <ul>
 	 * 
 	 * @param scriptId
 	 * @param lineNumber

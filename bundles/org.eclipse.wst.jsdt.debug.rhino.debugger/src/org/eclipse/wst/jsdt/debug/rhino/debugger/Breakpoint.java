@@ -20,12 +20,12 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
  */
 public class Breakpoint {
 
-	private final Long breakpointId;
-	private final ScriptSource script;
-	private final Integer lineNumber;
-	private final Object functionName;
-	private final String condition;
-	private final Long threadId;
+	final Long breakpointId;
+	final ScriptSource script;
+	final Integer lineNumber;
+	final Object functionName;
+	final String condition;
+	final Long threadId;
 
 	/**
 	 * Constructor
@@ -50,21 +50,24 @@ public class Breakpoint {
 	}
 
 	/**
-	 * Returns the breakpoint as a JSON entry
-	 * @return
+	 * @return the breakpoint as a JSON entry
 	 */
 	public Object toJSON() {
 		HashMap result = new HashMap();
 		result.put(JSONConstants.BREAKPOINT_ID, breakpointId);
 		result.put(JSONConstants.SCRIPT_ID, script.getId());
-		if (lineNumber != null)
+		if (lineNumber != null) {
 			result.put(JSONConstants.LINE, lineNumber);
-		if (functionName != null)
+		}
+		if (functionName != null) {
 			result.put(JSONConstants.FUNCTION, functionName);
-		if (condition != null)
+		}
+		if (condition != null) {
 			result.put(JSONConstants.CONDITION, condition);
-		if (threadId != null)
+		}
+		if (threadId != null) {
 			result.put(JSONConstants.THREAD_ID, threadId);
+		}
 		return result;
 	}
 
@@ -77,57 +80,10 @@ public class Breakpoint {
 
 	/**
 	 * Deletes the breakpoint from the script it is associated with. Does
-	 * not clear any of the handle infos so the deleted breakpoint can be 
+	 * not clear any of the handle information so the deleted breakpoint can be 
 	 * returned as an event if required.
 	 */
 	public void delete() {
 		this.script.removeBreakpoint(this);
-	}
-
-	/**
-	 * Returns if this breakpoint matches (cares about) the context that the given attributes are from
-	 * 
-	 * @param functionName the function name context - <code>null</code> is accepted
-	 * @param lineNumber the line number - <code>null</code> is accepted
-	 * @param frame the {@link StackFrame} context - <code>null</code> is not accepted
-	 * @return <code>true</code> if this breakpoint cares, <code>false</code> otherwise
-	 */
-	public boolean matches(String functionName, Integer lineNumber, StackFrame frame) {
-		if(frame == null) {
-			throw new IllegalArgumentException("The stack frame context cannot be null"); //$NON-NLS-1$
-		}
-		if (this.lineNumber == null) {
-			if (functionName == null) {
-				return lineNumber.intValue() == 1 && this.functionName == null && checkThread(frame) && checkCondition(frame);
-			}
-			return functionName.equals(this.functionName) && checkThread(frame) && checkCondition(frame);
-		}
-		return this.lineNumber.equals(lineNumber) && checkThread(frame) && checkCondition(frame);
-	}
-
-	/**
-	 * Returns if the thread id of the given {@link StackFrame} matches
-	 * the id of the thread filter this breakpoint was created with
-	 * 
-	 * @param frame
-	 * @return <code>true</code> if the thread ids match, <code>false</code> otherwise
-	 */
-	private boolean checkThread(StackFrame frame) {
-		if (threadId == null) {
-			return true;
-		}
-		return frame.getThreadId().equals(threadId);
-	}
-
-	/**
-	 * evaluates the condition in the given {@link StackFrame} context
-	 * @param frame
-	 * @return <code>true</code> if the condition succeeds, <code>false</code> otherwise
-	 */
-	private boolean checkCondition(StackFrame frame) {
-		if (condition == null) {
-			return true;
-		}
-		return frame.evaluateCondition(condition);
 	}
 }
