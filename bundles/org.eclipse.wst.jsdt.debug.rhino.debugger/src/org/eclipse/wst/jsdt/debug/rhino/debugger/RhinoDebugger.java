@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2009, 2010 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -69,7 +69,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	private ArrayList disabledThreads = new ArrayList();
 	private final TransportService transportService;
 	private final String address;
-	private boolean startSuspended;
+	private boolean startSuspended = false;
 	private ListenerKey listenerKey;
 	private volatile Connection connection;
 
@@ -100,12 +100,17 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			this.transportService = new SocketTransportService();
 			buffer.append("socket on "); //$NON-NLS-1$
 		} else {
-			// TODO NLS this
 			throw new IllegalArgumentException("transport: "+ transport); //$NON-NLS-1$
 		}
 		this.address = (String) config.get(ADDRESS);
-		buffer.append("port ").append(this.address); //$NON-NLS-1$
-		this.startSuspended = Boolean.valueOf((String) config.get(JSONConstants.SUSPEND)).booleanValue();
+		buffer.append("port: ").append(this.address); //$NON-NLS-1$
+		String suspend = (String) config.get(JSONConstants.SUSPEND);
+		if(suspend != null) {
+			this.startSuspended = (Boolean.valueOf(suspend).booleanValue() || suspend.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
+			if(this.startSuspended) {
+				buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
+			}
+		}
 		System.err.println(buffer.toString());
 	}
 
@@ -169,7 +174,6 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			try {
 				wait(timeout);
 			} catch (InterruptedException e) {
-				// TODO log this
 				e.printStackTrace();
 			}
 		return runtime != null;
