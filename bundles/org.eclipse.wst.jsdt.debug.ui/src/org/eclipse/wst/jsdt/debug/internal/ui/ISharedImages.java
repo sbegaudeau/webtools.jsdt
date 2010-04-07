@@ -46,6 +46,11 @@ public interface ISharedImages {
 	 * Image for the connect icon
 	 */
 	public static final String IMG_CONNECT = "IMG_CONNECT"; //$NON-NLS-1$
+	/**
+	 * Image for source / source lookup
+	 * @since 1.1
+	 */
+	public static final String IMG_SOURCE = "IMG_SOURCE"; //$NON-NLS-1$
 	
 	//DLCL
 	/**

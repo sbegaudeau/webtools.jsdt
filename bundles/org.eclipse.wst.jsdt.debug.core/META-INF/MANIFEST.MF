@@ -18,5 +18,5 @@ Export-Package: org.eclipse.wst.jsdt.debug.core.breakpoints,
  org.eclipse.wst.jsdt.debug.internal.core;x-friends:="org.eclipse.wst.jsdt.debug.ui",
  org.eclipse.wst.jsdt.debug.internal.core.breakpoints;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.core.launching;x-friends:="org.eclipse.wst.jsdt.debug.ui",
- org.eclipse.wst.jsdt.debug.internal.core.model;x-internal:=true
+ org.eclipse.wst.jsdt.debug.internal.core.model;x-friends:="org.eclipse.wst.jsdt.debug.ui"
 Import-Package: org.eclipse.wst.jsdt.core

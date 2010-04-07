@@ -130,7 +130,7 @@
                label="%togglebreakpointenablementRulerAction.name"
                menubarPath="debug"
                tooltip="%togglebreakpointenablementRulerAction.tooltip">
-         </action>/action>
+         </action>
       </viewerContribution>
       <objectContribution
             adaptable="true"
@@ -203,6 +203,23 @@
                state="false">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.eclipse.wst.jsdt.debug.ui.debugview.actions"
+            objectClass="org.eclipse.wst.jsdt.debug.core.model.IScript">
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.OpenSourceAction"
+               definitionId="org.eclipse.wst.jsdt.debug.ui.script.opensource"
+               enablesFor="1"
+               helpContextId="script_open_source_context"
+               icon="$nl$/icons/elcl16/source.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.script.opensource.action"
+               label="%openSourceObjectAction.name"
+               menubarPath="launchGroup"
+               style="push"
+               tooltip="%openSourceObjectAction.tooltip">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
@@ -237,15 +254,34 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+ENTER">
       </key>
+      <key
+            commandId="org.eclipse.wst.jsdt.debug.ui.script.opensource"
+            contextId="org.eclipse.debug.ui.debugging"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+3">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            categoryId="org.eclipse.debug.ui.category.run"
+            categoryId="org.eclipse.wst.jsdt.debug.ui.category"
             description="%breakpointproperties.command.description"
             id="org.eclipse.wst.jsdt.debug.ui.breakpoint.properties"
             name="%breakpointproperties.command.name">
       </command>
+      <command
+            categoryId="org.eclipse.wst.jsdt.debug.ui.category"
+            defaultHandler="org.eclipse.wst.jsdt.debug.internal.ui.actions.OpenSourceAction"
+            description="%openSourceObjectAction.tooltip"
+            helpContextId="script_open_source_context"
+            id="org.eclipse.wst.jsdt.debug.ui.script.opensource"
+            name="%openSourceObjectAction.name">
+      </command>
+      <category
+            description="%commandCategory.description"
+            id="org.eclipse.wst.jsdt.debug.ui.category"
+            name="%commandCategory.name">
+      </category>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">

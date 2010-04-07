@@ -54,6 +54,7 @@ public final class JavaScriptImageRegistry {
 		declareRegistryImage(ISharedImages.IMG_CONNECT, ELCL + "connect.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_BRKP, ELCL + "brkp_obj.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_SCRIPTBRKP, ELCL + "scriptbrkp_obj.gif"); //$NON-NLS-1$
+		declareRegistryImage(ISharedImages.IMG_SOURCE, ELCL + "source.gif"); //$NON-NLS-1$
 		
 		//DLCL
 		declareRegistryImage(ISharedImages.IMG_BRKP_DISABLED, DLCL + "brkpd_obj.gif"); //$NON-NLS-1$

@@ -19,8 +19,10 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
+import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
@@ -31,8 +33,6 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParticipant {
 
 	static final Object[] NO_SOURCE = new Object[0];
-	static final Object[] FILE = new Object[1];
-	private static int source_counter = 1; 
 
 	/*
 	 * (non-Javadoc)
@@ -43,6 +43,9 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		if (object instanceof IJavaScriptStackFrame) {
 			return ((IJavaScriptStackFrame) object).getSourceName();
 		}
+		if(object instanceof IScript) {
+			return URIUtil.lastSegment(((IScript)object).sourceURI());
+		}
 		return null;
 	}
 
@@ -52,27 +55,59 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @see org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant#findSourceElements(java.lang.Object)
 	 */
 	public Object[] findSourceElements(Object object) throws CoreException {
-		if (object instanceof IJavaScriptStackFrame) {
-			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) object;
-			String path = jframe.getSourcePath();
-			if (path != null) {
-				// TODO not sure if we should do a search for the member if the URI path is a miss
-				IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path), false);
-				if (file != null) {
-					return new IFile[] { file };
-				}
-				//try to find it using the source tab infos
-				Object[] sources = super.findSourceElements(object);
-				if(sources != null && sources.length > 0) {
-					return sources;
-				}
-				//else show the temp source
-				return showExternalSource(jframe.getSource(), path);
+		String path = getSourcePath(object);
+		if (path != null) {
+			// TODO not sure if we should do a search for the member if the URI path is a miss
+			IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(path), false);
+			if (file != null) {
+				return new IFile[] { file };
 			}
+			//try to find it using the source tab infos
+			Object[] sources = super.findSourceElements(object);
+			if(sources != null && sources.length > 0) {
+				return sources;
+			}
+			//else show the temp source
+			return showExternalSource(getSource(object), path);
 		}
 		return NO_SOURCE;
 	}
 
+	/**
+	 * Returns the raw element source to use to display an external editor
+	 * @param object
+	 * @return the raw source or <code>null</code>
+	 */
+	String getSource(Object object) {
+		if(object instanceof IJavaScriptStackFrame) {
+			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) object;
+			return jframe.getSource();
+		}
+		if(object instanceof IScript) {
+			IScript script = (IScript) object;
+			return script.source();
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns the path to use to look up source
+	 * @param object
+	 * @return the path or <code>null</code>
+	 * @since 1.1
+	 */
+	String getSourcePath(Object object) {
+		if(object instanceof IJavaScriptStackFrame) {
+			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) object;
+			return jframe.getSourcePath();
+		}
+		if(object instanceof IScript) {
+			IScript script = (IScript) object;
+			return script.sourceURI().getPath().toString();
+		}
+		return null;
+	}
+	
 	/**
 	 * Shows the source in an external editor
 	 * 
@@ -88,8 +123,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 			FileWriter writer = new FileWriter(file);
 			writer.write(source);
 			writer.close();
-			FILE[0] = file;
-			return FILE;
+			return new Object[] {file};
 
 		} catch (IOException e) {
 			JavaScriptDebugPlugin.log(e);
@@ -115,7 +149,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		}
 		path = path.removeFileExtension();
 		StringBuffer buffer = new StringBuffer(path.toString());
-		buffer.append("_").append(source_counter++).append(".js"); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append(".js"); //$NON-NLS-1$
 		return buffer.toString();
 	}
 	
