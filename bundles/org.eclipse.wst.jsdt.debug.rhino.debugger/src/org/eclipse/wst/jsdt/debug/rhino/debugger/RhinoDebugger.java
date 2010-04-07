@@ -83,11 +83,6 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	private HashMap/*<Long, ScriptSource>*/ idToScript = new HashMap();
 	
 	/**
-	 * A counter for composing {@link URI}s for stdin
-	 */
-	static int stdinCounter = 1;
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param configString
