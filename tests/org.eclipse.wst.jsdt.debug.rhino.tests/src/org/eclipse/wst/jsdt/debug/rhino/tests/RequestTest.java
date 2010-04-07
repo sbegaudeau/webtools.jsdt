@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.PipedTransportService;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
@@ -46,29 +47,44 @@ public abstract class RequestTest extends TestCase {
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
-			if (event.getEvent().equals("script")) {
-				Object scriptId = event.getBody().get("scriptId");
-				Request request = new Request("script");
-				request.getArguments().put("scriptId", scriptId);
+			if (event.getEvent().equals(JSONConstants.SCRIPT)) {
+				Number scriptId = (Number) event.getBody().get(JSONConstants.SCRIPT_ID);
+				Request request = new Request(JSONConstants.SCRIPT);
+				request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 				try {
 					debugSession.sendRequest(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(response.isSuccess());
-					Map result = (Map) response.getBody().get("script");
+					Map result = (Map) response.getBody().get(JSONConstants.SCRIPT);
 
 					// line numbers
-					List lineNumbers = (List) result.get("lines");
+					List lineNumbers = (List) result.get(JSONConstants.LINES);
 					for (Iterator iterator = lineNumbers.iterator(); iterator.hasNext();) {
 						Number lineNumber = (Number) iterator.next();
-						request = new Request("setbreakpoint");
-						request.getArguments().put("scriptId", scriptId);
-						request.getArguments().put("line", lineNumber);
+						request = new Request(JSONConstants.SETBREAKPOINT);
+						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
+						request.getArguments().put(JSONConstants.LINE, lineNumber);
+						request.getArguments().put(JSONConstants.CONDITION, "1===1");
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(response.isSuccess());
+						
+						Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
+						Number breakpointId = (Number) breakpoint.get(JSONConstants.BREAKPOINT_ID);
+						request = new Request(JSONConstants.BREAKPOINT);
+						request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointId);
+						debugSession.sendRequest(request);
+						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+						assertTrue(response.isSuccess());
+						breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
+						assertEquals(breakpointId.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.BREAKPOINT_ID)));
+						assertEquals(scriptId.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.SCRIPT_ID)));
+						assertEquals(lineNumber.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.LINE)));
+						assertEquals("1===1", breakpoint.get(JSONConstants.CONDITION));
 					}
 
-					// functions
+					//TODO the default breakpoint support only allows breakpoints on valid lines, which could be a function
+					/*// functions
 					List functionNames = (List) result.get("functions");
 					for (Iterator iterator = functionNames.iterator(); iterator.hasNext();) {
 						String functionName = (String) iterator.next();
@@ -78,14 +94,15 @@ public abstract class RequestTest extends TestCase {
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(response.isSuccess());
-					}
+					}*/
 
-					// script onEnter
+					//TODO bogus now since we only allow breakpoints on valid lines
+					/*// script onEnter
 					request = new Request("setbreakpoint");
 					request.getArguments().put("scriptId", scriptId);
 					debugSession.sendRequest(request);
 					response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-					assertTrue(response.isSuccess());
+					assertTrue(response.isSuccess());*/
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
 				} catch (TimeoutException e) {
@@ -108,23 +125,20 @@ public abstract class RequestTest extends TestCase {
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
-			if (event.getEvent().equals("break")) {
-				List breakpoints = (List) event.getBody().get("breakpoints");
-				for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
-					Number breakpointId = (Number) iterator.next();
-					Request request = new Request("clearbreakpoint");
-					request.getArguments().put("breakpointId", breakpointId);
-					try {
-						debugSession.sendRequest(request);
-						Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(response.isSuccess());
-					} catch (DisconnectedException e) {
-						e.printStackTrace();
-					} catch (TimeoutException e) {
-						e.printStackTrace();
-					}
+			if (event.getEvent().equals(JSONConstants.BREAK)) {
+				Number bid = (Number)event.getBody().get(JSONConstants.BREAKPOINT);
+				Request request = new Request(JSONConstants.CLEARBREAKPOINT);
+				request.getArguments().put(JSONConstants.BREAKPOINT_ID, bid);
+				try {
+					debugSession.sendRequest(request);
+					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+					assertTrue(response.isSuccess());
+					return true;
+				} catch (DisconnectedException e) {
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					e.printStackTrace();
 				}
-				return true;
 			}
 			return false;
 		}

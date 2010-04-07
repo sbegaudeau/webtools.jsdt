@@ -1,6 +1,6 @@
 var line1 = true;
 function test() { //line 2
-	return; "line 3"; //line 3
+	return "line 3"; //line 3
 }//line 4
 // line 5
 var line6 = test();
