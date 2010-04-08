@@ -11,7 +11,9 @@
 package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
@@ -33,11 +35,29 @@ public class TestEventHandler implements Runnable {
 	 */
 	public interface Subhandler {
 		boolean handleEvent(DebugSession debugSession, EventPacket event);
+		String testName();
 	}
 
+	/**
+	 * Sub-handler for breakpoint specific operations
+	 * @since 1.1
+	 */
+	public interface BreakpointSubHandler extends Subhandler {
+		/**
+		 * Array of line numbers to add breakpoints to
+		 * @param lines
+		 */
+		void linesToAddBreakpoints(int[] lines);
+		/**
+		 * Array of lines to remove breakpoints from
+		 * @param lines
+		 */
+		void linesToRemoveBreakpoints(int[] lines);
+	}
+	
 	private DebugSession debugSession;
 	private Thread thread;
-	private final ArrayList subhandlers = new ArrayList();
+	private final List subhandlers = Collections.synchronizedList(new ArrayList());
 	private final ArrayList expectedEvents = new ArrayList();
 	private volatile boolean shutdown = false;
 
@@ -110,7 +130,7 @@ public class TestEventHandler implements Runnable {
 	 * Add a sub handler
 	 * @param subhandler
 	 */
-	public synchronized void addSubhandler(Subhandler subhandler) {
+	public void addSubhandler(Subhandler subhandler) {
 		subhandlers.add(subhandler);
 	}
 
@@ -118,7 +138,7 @@ public class TestEventHandler implements Runnable {
 	 * Remove a sub handler
 	 * @param subhandler
 	 */
-	public synchronized void removeSubhandler(Subhandler subhandler) {
+	public void removeSubhandler(Subhandler subhandler) {
 		subhandlers.remove(subhandler);
 	}
 
@@ -132,7 +152,7 @@ public class TestEventHandler implements Runnable {
 			estring = JSONUtil.write(event.toJSON());
 			System.out.println(this.testname+" got event: "+estring);
 		}
-		for (Iterator iterator = subhandlers.iterator(); iterator.hasNext();) {
+		for (ListIterator iterator = subhandlers.listIterator(); iterator.hasNext();) {
 			Subhandler subhandler = (Subhandler) iterator.next();
 			try {
 				if (subhandler.handleEvent(debugSession, event)) {
@@ -184,7 +204,7 @@ public class TestEventHandler implements Runnable {
 		long timeout = System.currentTimeMillis() + 5000;
 		while (eventCount < count && System.currentTimeMillis() < timeout) {
 			try {
-				wait(1000);
+				wait(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -207,7 +227,7 @@ public class TestEventHandler implements Runnable {
 		long timeout = System.currentTimeMillis() + 5000;
 		while(!this.expectedEvents.isEmpty() && System.currentTimeMillis() < timeout) {
 			try {
-				wait(1000);
+				wait(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

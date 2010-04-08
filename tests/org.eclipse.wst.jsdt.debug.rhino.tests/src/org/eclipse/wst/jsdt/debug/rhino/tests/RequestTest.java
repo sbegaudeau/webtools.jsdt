@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.rhino.tests;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -28,7 +30,9 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
+import org.mozilla.javascript.Scriptable;
 
 /**
  * Abstract test for making requests
@@ -36,13 +40,124 @@ import org.mozilla.javascript.ContextFactory;
  * @since 1.0
  */
 public abstract class RequestTest extends TestCase {
+	
 	/**
-	 * This default handler handles a script load event and sets a 
-	 * breakpoint on every single debuggable line 
-	 * 
+	 * Default implementation of a {@link Subhandler}
+	 */
+	abstract class SubHandler implements Subhandler {
+
+		private String testname = null;
+		
+		public SubHandler(String testname) {
+			Assert.assertNotNull("The test name cannot be null", testname);
+			this.testname = testname;
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#testName()
+		 */
+		public String testName() {
+			return this.testname;
+		}
+	}
+	
+	/**
+	 * Handler to check that we can get frames from a suspended thread
 	 * @since 1.1
 	 */
-	protected static Subhandler setBreakpointsHandler = new Subhandler() {
+	final class FrameCheckHandler extends SubHandler {
+		/**
+		 * Constructor
+		 * @param testname
+		 */
+		public FrameCheckHandler() {
+			super(getName());
+		}
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 */
+		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
+			if (event.getEvent().equals(JSONConstants.BREAK)) {
+				Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
+				Number contextId = (Number) event.getBody().get(JSONConstants.CONTEXT_ID);
+				Request request = new Request(JSONConstants.FRAMES);
+				request.getArguments().put(JSONConstants.THREAD_ID, threadId);
+				try {
+					debugSession.sendRequest(request);
+					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+					assertTrue(testName()+": the request for frames from thread ["+threadId.intValue()+"] was not successful", response.isSuccess());
+					Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
+					for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
+						Number frameId = (Number) iterator.next();
+						request = new Request(JSONConstants.FRAME);
+						request.getArguments().put(JSONConstants.THREAD_ID, threadId);
+						request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
+						request.getArguments().put(JSONConstants.FRAME_ID, frameId);
+						debugSession.sendRequest(request);
+						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+						assertTrue(testName()+": the request for frame ["+frameId.intValue()+"] frmo thread ["+threadId.intValue()+"] was not successful", response.isSuccess());
+					}
+				} catch (DisconnectedException e) {
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Handler to check that the thread returned when suspended is the same thread
+	 * from the break event
+	 * @since 1.1
+	 */
+	final class ThreadCheckHandler extends SubHandler {
+		/**
+		 * Constructor
+		 */
+		public ThreadCheckHandler() {
+			super(getName());
+		}
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 */
+		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
+			if (event.getEvent().equals(JSONConstants.BREAK)) {
+				Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
+				Request request = new Request(JSONConstants.THREADS);
+				try {
+					debugSession.sendRequest(request);
+					Response response = debugSession.receiveResponse(request.getSequence(), 10000);
+					assertTrue(response.isSuccess());
+					List threads = (List) response.getBody().get(JSONConstants.THREADS);
+					assertTrue(testName()+": the listing of threads must not be empty", threads.size() > 0);
+					assertEquals(testName()+": the thread ids do not match", threadId.intValue(), Util.numberAsInt(threads.get(0)));
+				} catch (DisconnectedException e) {
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+			return false;
+		}
+	}
+	
+	/**
+	 * Handler for setting breakpoints on all executable lines in a loaded script
+	 * @since 1.1
+	 */
+	final class SetBreakpointsHandler extends SubHandler {
+		/**
+		 * Constructor
+		 */
+		public SetBreakpointsHandler() {
+			super(getName());
+		}
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
 		 */
@@ -67,7 +182,7 @@ public abstract class RequestTest extends TestCase {
 						request.getArguments().put(JSONConstants.CONDITION, "1===1");
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(response.isSuccess());
+						assertTrue(testName()+": the request to set a breakpoint on line ["+lineNumber+"] was not successful", response.isSuccess());
 						
 						Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 						Number breakpointId = (Number) breakpoint.get(JSONConstants.BREAKPOINT_ID);
@@ -82,27 +197,6 @@ public abstract class RequestTest extends TestCase {
 						assertEquals(lineNumber.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.LINE)));
 						assertEquals("1===1", breakpoint.get(JSONConstants.CONDITION));
 					}
-
-					//TODO the default breakpoint support only allows breakpoints on valid lines, which could be a function
-					/*// functions
-					List functionNames = (List) result.get("functions");
-					for (Iterator iterator = functionNames.iterator(); iterator.hasNext();) {
-						String functionName = (String) iterator.next();
-						request = new Request("setbreakpoint");
-						request.getArguments().put("scriptId", scriptId);
-						request.getArguments().put("function", functionName);
-						debugSession.sendRequest(request);
-						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(response.isSuccess());
-					}*/
-
-					//TODO bogus now since we only allow breakpoints on valid lines
-					/*// script onEnter
-					request = new Request("setbreakpoint");
-					request.getArguments().put("scriptId", scriptId);
-					debugSession.sendRequest(request);
-					response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-					assertTrue(response.isSuccess());*/
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
 				} catch (TimeoutException e) {
@@ -112,27 +206,87 @@ public abstract class RequestTest extends TestCase {
 			}
 			return false;
 		}
-	};
-	
+	}
+
 	/**
-	 * Default handler that handles a <code>break</code> event and clears the 
-	 * associated breakpoint
+	 * Handler to set breakpoints on a given set of lines. The lines are not checked
+	 * to see if they are valid.
 	 * 
 	 * @since 1.1
 	 */
-	protected static Subhandler clearBreakpointsHandler = new Subhandler() {
+	final class SetBreakpointHandler extends SubHandler {
+		int[] adds = null;
+		/**
+		 * Constructor
+		 * @param lines <code>null</code> is not accepted, not is an empty array
+		 */
+		public SetBreakpointHandler(int[] lines) {
+			super(getName());
+			assertNotNull(testName()+": no line numbers have been specified to set breakpoints on", lines);
+			assertTrue(testName()+": no line numbers have been specified to set breakpoints on", lines.length > 0);
+			this.adds = lines;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 */
+		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
+			if (event.getEvent().equals(JSONConstants.SCRIPT)) {
+				Number scriptId = (Number) event.getBody().get(JSONConstants.SCRIPT_ID);
+				Request request = new Request(JSONConstants.SCRIPT);
+				request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
+				try {
+					debugSession.sendRequest(request);
+					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+					assertTrue(response.isSuccess());
+					Map script = (Map) response.getBody().get(JSONConstants.SCRIPT);
+					assertNotNull(testName()+": the response body cannot be null", script);
+					for (int i = 0; i < adds.length; i++) {
+						request = new Request(JSONConstants.SETBREAKPOINT);
+						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
+						request.getArguments().put(JSONConstants.LINE, new Integer(adds[i]));
+						debugSession.sendRequest(request);
+						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
+						assertTrue(testName()+": the request to set a breakpoint on line ["+adds[i]+"] was not successful", response.isSuccess());
+					}					
+				} catch (DisconnectedException e) {
+					e.printStackTrace();
+				} catch (TimeoutException e) {
+					e.printStackTrace();
+				}
+				return true;
+			}
+			return false;
+		}
+	}
+
+	/**
+	 * Clears all of the breakpoints that are hit
+	 * 
+	 * @since 1.1
+	 */
+	final class ClearBreakpointsHandler extends SubHandler {
+		/**
+		 * Constructor
+		 */
+		public ClearBreakpointsHandler() {
+			super(getName());
+		}
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.BREAK)) {
 				Number bid = (Number)event.getBody().get(JSONConstants.BREAKPOINT);
+				if(bid == null && JSONConstants.STEP_OUT.equals(event.getBody().get(JSONConstants.STEP))) {
+					return false;
+				}
 				Request request = new Request(JSONConstants.CLEARBREAKPOINT);
 				request.getArguments().put(JSONConstants.BREAKPOINT_ID, bid);
 				try {
 					debugSession.sendRequest(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-					assertTrue(response.isSuccess());
+					assertTrue(testName()+": the request to clear breakpoint ["+bid+"] should have succeeded", response.isSuccess());
 					return true;
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
@@ -142,7 +296,7 @@ public abstract class RequestTest extends TestCase {
 			}
 			return false;
 		}
-	};
+	}
 	
 	protected RhinoDebugger debugger;
 	protected DebugSession debugSession;
@@ -173,6 +327,44 @@ public abstract class RequestTest extends TestCase {
 		return tracing;
 	}
 	
+	/**
+	 * Evaluates the given script source
+	 * @param script
+	 * @since 1.1
+	 */
+	protected void evalScript(String script) {
+		Scriptable scope = null;
+		Context context = contextFactory.enterContext();
+		try {
+			scope = context.initStandardObjects();
+			context.evaluateString(scope, script, JSONConstants.SCRIPT, 0, null);
+		} finally {
+			Context.exit();
+		}
+	}
+	
+	/**
+	 * Evaluates the given script source and waits for the given number of events
+	 * @param script
+	 * @param eventcount
+	 * @since 1.1
+	 */
+	protected void evalScript(String script, int eventcount) {
+		evalScript(script);
+		waitForEvents(eventcount);
+	}
+	
+	/**
+	 * Evaluates the given script and waits for the specific events to be received
+	 * @param script
+	 * @param events
+	 * @since 1.1
+	 */
+	protected void evalScript(String script, EventPacket[] events) {
+		evalScript(script);
+		waitForEvents(events);
+	}
+	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
@@ -187,12 +379,29 @@ public abstract class RequestTest extends TestCase {
 		eventHandler = new TestEventHandler(debugSession, getName());
 		eventHandler.start();
 
-		assertTrue(debugger.suspendForRuntime(5000));
+		assertTrue(suspendForRuntime(debugger, 100));
 		contextFactory = new ContextFactory();
 		contextFactory.addListener(debugger);
 		super.setUp();
 	}
 
+	/**
+	 * Suspend waiting for the debugger to have a connected session
+	 * 
+	 * @param debug the debugger to poll for a session connection
+	 * @param timeout the amount of time to wait
+	 * @return true when a {@link DebugSession} has connected
+	 */
+	public synchronized boolean suspendForRuntime(RhinoDebugger debug, long timeout) {
+		while (!debug.connected())
+			try {
+				wait(timeout);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		return debug.connected();
+	}
+	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#tearDown()
 	 */

@@ -21,8 +21,6 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 
 /**
  * Variety of tests for requesting breakpoint(s)
@@ -78,7 +76,8 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testBreakpoints() throws Exception {
-		eventHandler.addSubhandler(setBreakpointsHandler);
+		eventHandler.addSubhandler(new SetBreakpointsHandler());
+		
 		Request request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
@@ -89,17 +88,8 @@ public class BreakpointRequestTests extends RequestTest {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-		
-		Scriptable scope = null;
-		Context context = contextFactory.enterContext();
-		try {
-			scope = context.initStandardObjects();
-			context.evaluateString(scope, script, "script", 0, null);
-		} finally {
-			Context.exit();
-		}
 
-		waitForEvents(1);
+		evalScript(script, 1);
 
 		request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
@@ -119,6 +109,7 @@ public class BreakpointRequestTests extends RequestTest {
 			Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 			assertEquals(breakpointId.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.BREAKPOINT_ID)));
 			assertTrue(breakpoint.containsKey(JSONConstants.SCRIPT_ID));
+			deleteBreakpoint(debugSession, breakpointId);
 		}
 	}
 	
@@ -127,8 +118,8 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testGetSetClearBreakpoint() throws Exception {
-		eventHandler.addSubhandler(setBreakpointsHandler);
-		eventHandler.addSubhandler(clearBreakpointsHandler);
+		eventHandler.addSubhandler(new SetBreakpointsHandler());
+		eventHandler.addSubhandler(new ClearBreakpointsHandler());
 
 		Request request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
@@ -140,16 +131,8 @@ public class BreakpointRequestTests extends RequestTest {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
+		evalScript(script, 6);
 		
-		Scriptable scope = null;
-		Context context = contextFactory.enterContext();
-		try {
-			scope = context.initStandardObjects();
-			context.evaluateString(scope, script, "script", 0, null);
-		} finally {
-			Context.exit();
-		}
-		waitForEvents(6);
 		request = new Request(JSONConstants.BREAKPOINTS);
 		debugSession.sendRequest(request);
 		response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
@@ -172,6 +155,11 @@ public class BreakpointRequestTests extends RequestTest {
 		}
 	}
 	
+	/**
+	 * Deletes the breakpoint with the given id from the given {@link DebugSession}
+	 * @param session
+	 * @param breakpointid
+	 */
 	void deleteBreakpoint(DebugSession session, Number breakpointid) {
 		Request request = new Request(JSONConstants.CLEARBREAKPOINT);
 		request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointid);

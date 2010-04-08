@@ -22,8 +22,6 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
 import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.Scriptable;
 
 /**
  * Variety of tests for sending <code>lookup</code> requests
@@ -37,23 +35,28 @@ public class RequestLookupTest extends FrameRequestTests {
 	 * @throws Exception
 	 */
 	public void testLookup() throws Exception {
-		
-		eventHandler.addSubhandler(setBreakpointHandler);
+		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {6}));
 
 		final Object[] success = new Object[1];
 
 		Subhandler frameCheckHandler = new Subhandler() {
+			/* (non-Javadoc)
+			 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#testName()
+			 */
+			public String testName() {
+				return getName();
+			}
 			public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 				if (event.getEvent().equals(JSONConstants.BREAK)) {
 					Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
 					Number contextId = (Number) event.getBody().get(JSONConstants.CONTEXT_ID);
-					Request request = new Request("frames");
+					Request request = new Request(JSONConstants.FRAMES);
 					request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 					try {
 						debugSession.sendRequest(request);
 						Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(response.isSuccess());
-						Collection frames = (Collection) response.getBody().get("frames");
+						Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
 						for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
 							Number frameId = (Number) iterator.next();
 							request = new Request(JSONConstants.LOOKUP);
@@ -81,17 +84,7 @@ public class RequestLookupTest extends FrameRequestTests {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-
-		Scriptable scope = null;
-		Context context = contextFactory.enterContext();
-		try {
-			scope = context.initStandardObjects();
-			context.evaluateString(scope, script, "script", 0, null);
-		} finally {
-			Context.exit();
-		}
 		//script + breakpoint on line 6 + exit step event
-		waitForEvents(3);
-		assertEquals(Boolean.TRUE, success[0]);
+		evalScript(script, 3);
 	}
 }
