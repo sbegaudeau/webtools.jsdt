@@ -190,7 +190,7 @@ public class StackFrame implements DebugFrame {
 		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
 		rhinoDebugger.disableThread();
 
-		Context evalContext = context.getFactory().enterContext();
+		Context evalContext = context.getFactory().enter();
 		Debugger debugger = evalContext.getDebugger();
 		Object debuggerContextData = evalContext.getDebuggerContextData();
 		evalContext.setDebugger(null, null);
@@ -219,7 +219,7 @@ public class StackFrame implements DebugFrame {
 		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
 		rhinoDebugger.disableThread();
 
-		Context evalContext = context.getFactory().enterContext();
+		Context evalContext = context.getFactory().enter();
 		Debugger debugger = evalContext.getDebugger();
 		Object debuggerContextData = evalContext.getDebuggerContextData();
 		evalContext.setDebugger(null, null);
@@ -246,7 +246,7 @@ public class StackFrame implements DebugFrame {
 		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
 		rhinoDebugger.disableThread();
 
-		Context lookupContext = context.getFactory().enterContext();
+		Context lookupContext = context.getFactory().enter();
 		Debugger debugger = lookupContext.getDebugger();
 		Object debuggerContextData = lookupContext.getDebuggerContextData();
 		lookupContext.setDebugger(null, null);
