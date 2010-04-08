@@ -169,13 +169,13 @@ public class PacketReceiveManager extends PacketManager {
 		}
 		// Check for an IO Exception.
 		if (isDisconnected()) {
-			throw new DisconnectedException("runtime disconnected", getDisconnectedException()); //$NON-NLS-1$
+			throw new DisconnectedException("Runtime disconnected", getDisconnectedException()); //$NON-NLS-1$
 		}
 
 		synchronized (this.responsePackets) {
 			this.timedOutPackets.add(new Integer(requestSequence));
 		}
-		throw new TimeoutException("Waiting for: " + requestSequence); //$NON-NLS-1$
+		throw new TimeoutException("Timed out waiting for packet: " + requestSequence); //$NON-NLS-1$
 	}
 
 	/**

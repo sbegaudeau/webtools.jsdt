@@ -40,9 +40,6 @@ public class DebugShell {
     	String[] newArgs = (String[]) argList.toArray(new String[0]); 
     	
 		TransportService service = new SocketTransportService();
-		if (suspend) {
-			System.out.println("Waiting for debugger connection on port " + port + "..."); //$NON-NLS-1$ //$NON-NLS-2$
-		}
 		RhinoDebugger debugger = new RhinoDebugger(service, port, suspend);
 		debugger.start();
 		Main.shellContextFactory.addListener(debugger);

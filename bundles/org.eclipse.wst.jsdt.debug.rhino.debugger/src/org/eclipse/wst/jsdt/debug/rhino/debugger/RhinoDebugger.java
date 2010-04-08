@@ -42,7 +42,13 @@ import org.mozilla.javascript.debug.Debugger;
 
 /**
  * Rhino implementation of {@link Debugger}
- * 
+ * <br><br>
+ * Events fired:
+ * <ul>
+ * <li><b>Thread enter event</b> - when a new context is created see: {@link #contextCreated(Context)}</li>
+ * <li><b>Thread exit event</b> - when a context is exited see: {@link #contextReleased(Context)}</li>
+ * <li><b>VM death event</b> - if the debugger dies: this event can only be received if the underlying communication channel has not been interrupted</li>
+ * </ul>
  * @since 1.0
  */
 public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnable {
@@ -53,7 +59,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
 	private static final String TRANSPORT = "transport"; //$NON-NLS-1$
 
-	private final Thread requestHandlerThread = new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
+	private final Thread debuggerThread = new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
 	private final RequestHandler requestHandler = new RequestHandler(this);
 
 	private volatile boolean shutdown = false;
@@ -83,42 +89,67 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	private HashMap/*<Long, ScriptSource>*/ idToScript = new HashMap();
 	
 	/**
-	 * Constructor
+	 * This constructor will only accept a <code>transport</code> argument
+	 * of <code>socket</code>. I.e. <code>transport=socket</code>.<br><br>
 	 * 
-	 * @param configString
+	 * To use a differing {@link TransportService} pleas use the other constructor:
+	 * {@link #RhinoDebugger(TransportService, String, boolean)}
+	 * 
+	 * @param configString the configuration string, for example: <code>transport=socket,suspend=y,address=9000</code>
 	 */
 	public RhinoDebugger(String configString) {
 		Map config = parseConfigString(configString);
-
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("\nRhino attaching debugger\n"); //$NON-NLS-1$
-
-		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
-		buffer.append("\nListening to "); //$NON-NLS-1$
 		String transport = (String) config.get(TRANSPORT);
 		if (SOCKET.equals(transport)) {
 			this.transportService = new SocketTransportService();
-			buffer.append("socket on "); //$NON-NLS-1$
 		} else {
-			throw new IllegalArgumentException("transport: "+ transport); //$NON-NLS-1$
+			throw new IllegalArgumentException("Transport service must be 'socket': "+ transport); //$NON-NLS-1$
 		}
 		this.address = (String) config.get(ADDRESS);
-		buffer.append("port: ").append(this.address); //$NON-NLS-1$
 		String suspend = (String) config.get(JSONConstants.SUSPEND);
 		if(suspend != null) {
 			this.startSuspended = (Boolean.valueOf(suspend).booleanValue() || suspend.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
-			if(this.startSuspended) {
-				buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
-			}
 		}
-		System.err.println(buffer.toString());
+		pprintHeader();
+	}
+	
+	/**
+	 * This constructor allows you to specify a custom {@link TransportService} to use other than <code>socket</code>.
+	 * 
+	 * @param transportService the {@link TransportService} to use for debugger communication
+	 * @param address the address to communicate on
+	 * @param startSuspended if the debugger should wait while accepting a connection. The wait time for stating suspended is not indefinite, 
+	 * and is equal to 300000ms.
+	 */
+	public RhinoDebugger(TransportService transportService, String address, boolean startSuspended) {
+		this.transportService = transportService;
+		this.address = address;
+		this.startSuspended = startSuspended;
+		pprintHeader();
 	}
 
+	/**
+	 * Pretty print the header for the debugger
+	 * @since 1.1
+	 */
+	void pprintHeader() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
+		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
+		buffer.append("\nListening to "); //$NON-NLS-1$
+		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append("port: ").append(this.address); //$NON-NLS-1$
+		if(this.startSuspended) {
+			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
+		}
+		System.out.println(buffer.toString());
+	}
+	
 	/**
 	 * Parses the command line configuration string
 	 * 
 	 * @param configString
-	 * @return the map of command line args
+	 * @return the map of command line arguments
 	 */
 	private static Map parseConfigString(String configString) {
 		Map config = new HashMap();
@@ -133,29 +164,7 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 		}
 		return config;
 	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param transportService
-	 * @param address
-	 * @param startSuspended
-	 */
-	public RhinoDebugger(TransportService transportService, String address, boolean startSuspended) {
-		this.transportService = transportService;
-		this.address = address;
-		this.startSuspended = startSuspended;
-		try {
-			if (startSuspended) {
-				listenerKey = transportService.startListening(address);
-				acceptConnection(300000);
-			}
-		} catch (IOException e) {
-			sendDeathEvent();
-			/*e.printStackTrace();*/
-		}
-	}
-
+	
 	/**
 	 * @return true if the <code>suspend=true</code> command line argument is set
 	 */
@@ -164,21 +173,14 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	}
 
 	/**
-	 * Suspend the debugger waiting for a runtime to connect, polling at the given timeout interval
+	 * Returns if a {@link DebugSession} has successfully connected to this debugger.
 	 * 
-	 * @param timeout
-	 * @return true when a runtime has been found
+	 * @return <code>true</code> if the debugger has a connected {@link DebugSession} <code>false</code> otherwise
 	 */
-	public synchronized boolean suspendForRuntime(long timeout) {
-		while (runtime == null)
-			try {
-				wait(timeout);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+	public synchronized boolean connected() {
 		return runtime != null;
 	}
-
+	
 	/**
 	 * Starts the debugger
 	 */
@@ -187,7 +189,10 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 			if (listenerKey == null) {
 				listenerKey = transportService.startListening(address);
 			}
-			requestHandlerThread.start();
+			if(startSuspended) {
+				acceptConnection(300000);
+			}
+			debuggerThread.start();
 		} catch (IOException e) {
 			sendDeathEvent();
 			/*e.printStackTrace();*/
@@ -200,8 +205,8 @@ public class RhinoDebugger implements Debugger, ContextFactory.Listener, Runnabl
 	public void stop() {
 		shutdown = true;
 		try {
-			requestHandlerThread.interrupt();
-			requestHandlerThread.join();
+			debuggerThread.interrupt();
+			debuggerThread.join();
 		} catch (InterruptedException e) {
 			/*e.printStackTrace();*/
 		}
