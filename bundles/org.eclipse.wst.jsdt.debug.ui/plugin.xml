@@ -290,10 +290,10 @@
             targetID="org.eclipse.debug.ui.BreakpointView">
          <action
                class="org.eclipse.wst.jsdt.debug.internal.ui.actions.AddScriptLoadBreakpointAction"
-               disabledIcon="$nl$/icons/elcl16/script.gif"
+               disabledIcon="$nl$/icons/elcl16/scriptbp.gif"
                helpContextId="add_script_load_breakpoint_action"
-               hoverIcon="$nl$/icons/elcl16/script.gif"
-               icon="$nl$/icons/elcl16/script.gif"
+               hoverIcon="$nl$/icons/elcl16/scriptbp.gif"
+               icon="$nl$/icons/elcl16/scriptbp.gif"
                id="org.eclipse.wst.jsdt.debug.ui.add.scriptload.breakpoint"
                label="%addScriptloadBreakpointAction.name"
                style="push"
