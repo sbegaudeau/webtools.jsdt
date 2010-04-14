@@ -2244,7 +2244,7 @@ public final class CompletionEngine
 		boolean contextAccepted = false;
 		try {
 			this.fileName = sourceUnit.getFileName();
-			this.packageName=sourceUnit.getPackageName();
+			this.packageName= CharOperation.NO_CHAR_CHAR;
 			this.actualCompletionPosition = completionPosition - 1;
 			this.offset = pos;
 			// for now until we can change the UI.
@@ -7683,6 +7683,8 @@ public final class CompletionEngine
 			new CompilationResult(unit, 1, 1, this.compilerOptions.maxProblemsPerUnit);
 		try {
 			Parser localParser = new Parser(this.problemReporter, this.compilerOptions.parseLiteralExpressionsAsConstants);
+			// fix for 309133
+			localParser.scanner.taskTags = null;
 
 			CompilationUnitDeclaration parsedUnit = localParser.parse(unit, unitResult);
 			localParser.inferTypes(parsedUnit,this.compilerOptions);
