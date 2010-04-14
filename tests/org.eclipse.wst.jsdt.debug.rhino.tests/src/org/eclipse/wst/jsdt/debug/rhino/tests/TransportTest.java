@@ -13,11 +13,11 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.SocketUtil;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Connection;
-import org.eclipse.wst.jsdt.debug.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.rhino.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
 
 /**
  * Tests the two provided transport services: {@link PipedTransportService} and {@link SocketTransportService}

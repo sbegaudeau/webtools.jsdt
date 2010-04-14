@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
 
 /**
  * Variety of tests for requesting frame(s) / frame information

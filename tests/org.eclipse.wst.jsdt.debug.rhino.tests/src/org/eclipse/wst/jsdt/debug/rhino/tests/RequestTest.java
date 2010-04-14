@@ -19,17 +19,17 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
+import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
 import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
@@ -298,7 +298,7 @@ public abstract class RequestTest extends TestCase {
 		}
 	}
 	
-	protected RhinoDebugger debugger;
+	protected RhinoDebuggerImpl debugger;
 	protected DebugSession debugSession;
 	protected TestEventHandler eventHandler;
 	protected ContextFactory contextFactory;
@@ -372,7 +372,7 @@ public abstract class RequestTest extends TestCase {
 		TransportService pipedTransport = new PipedTransportService();
 		ConnectionHelper helper = new ConnectionHelper(pipedTransport, null);
 
-		debugger = new RhinoDebugger(pipedTransport, null, false);
+		debugger = new RhinoDebuggerImpl(pipedTransport, null, false);
 		debugger.start();
 
 		debugSession = new DebugSession(helper.getClientConnection());
@@ -392,7 +392,7 @@ public abstract class RequestTest extends TestCase {
 	 * @param timeout the amount of time to wait
 	 * @return true when a {@link DebugSession} has connected
 	 */
-	public synchronized boolean suspendForRuntime(RhinoDebugger debug, long timeout) {
+	public synchronized boolean suspendForRuntime(RhinoDebuggerImpl debug, long timeout) {
 		while (!debug.connected())
 			try {
 				wait(timeout);

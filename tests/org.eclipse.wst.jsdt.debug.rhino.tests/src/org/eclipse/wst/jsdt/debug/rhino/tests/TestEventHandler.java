@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONUtil;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONUtil;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 
 /**
  * Event handler for testing purposes

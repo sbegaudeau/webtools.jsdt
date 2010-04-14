@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 

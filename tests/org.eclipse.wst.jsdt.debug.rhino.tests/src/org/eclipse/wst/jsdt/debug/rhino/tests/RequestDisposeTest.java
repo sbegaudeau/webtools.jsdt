@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.rhino.tests;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 
 public class RequestDisposeTest extends RequestTest {
 

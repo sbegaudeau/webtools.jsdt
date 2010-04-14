@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 import java.util.Collection;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 
 /**
  * Variety of tests for thread requests
