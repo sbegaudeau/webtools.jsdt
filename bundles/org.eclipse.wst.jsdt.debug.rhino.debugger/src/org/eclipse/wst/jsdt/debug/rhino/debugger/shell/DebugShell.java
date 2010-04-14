@@ -2,9 +2,9 @@ package org.eclipse.wst.jsdt.debug.rhino.debugger.shell;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
-import org.eclipse.wst.jsdt.debug.rhino.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.rhino.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
 import org.mozilla.javascript.tools.shell.Main;
 
 /**
@@ -40,7 +40,7 @@ public class DebugShell {
     	String[] newArgs = (String[]) argList.toArray(new String[0]); 
     	
 		TransportService service = new SocketTransportService();
-		RhinoDebugger debugger = new RhinoDebugger(service, port, suspend);
+		RhinoDebuggerImpl debugger = new RhinoDebuggerImpl(service, port, suspend);
 		debugger.start();
 		Main.shellContextFactory.addListener(debugger);
 		

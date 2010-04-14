@@ -14,7 +14,7 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link NumberValue}

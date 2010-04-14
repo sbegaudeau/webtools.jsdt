@@ -6,15 +6,15 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.debugger;
+package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
 
 /**
  * Rhino request handler used to craft response bodies for given JSON requests
@@ -24,14 +24,14 @@ import org.eclipse.wst.jsdt.debug.rhino.transport.Response;
 public class RequestHandler {
 
 	public static final String VERSION_1_6 = "1.6"; //$NON-NLS-1$
-	private RhinoDebugger debugger;
+	private RhinoDebuggerImpl debugger;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param debugger
 	 */
-	public RequestHandler(RhinoDebugger debugger) {
+	public RequestHandler(RhinoDebuggerImpl debugger) {
 		this.debugger = debugger;
 	}
 
@@ -364,7 +364,7 @@ public class RequestHandler {
 	}
 
 	/**
-	 * Handles a dispose request by disconnecting the underlying {@link RhinoDebugger}
+	 * Handles a dispose request by disconnecting the underlying {@link RhinoDebuggerImpl}
 	 * 
 	 * @param request
 	 * @param response

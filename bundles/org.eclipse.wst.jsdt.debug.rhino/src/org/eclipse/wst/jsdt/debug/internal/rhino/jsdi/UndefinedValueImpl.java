@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link UndefinedValue}

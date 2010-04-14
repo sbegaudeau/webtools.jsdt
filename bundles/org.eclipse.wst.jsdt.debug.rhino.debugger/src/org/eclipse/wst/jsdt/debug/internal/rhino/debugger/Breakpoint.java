@@ -6,11 +6,11 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.debugger;
+package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.HashMap;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 
 
 /**

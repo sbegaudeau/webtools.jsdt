@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.StringValue;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 
 /**
  * Rhino implementation of {@link StringValue}

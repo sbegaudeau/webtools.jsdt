@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.debugger;
+package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.mozilla.javascript.debug.DebugFrame;
 
 /**
@@ -35,7 +35,7 @@ public class ContextData {
 
 	private final Long threadId;
 	private final Long contextId;
-	private final RhinoDebugger debugger;
+	private final RhinoDebuggerImpl debugger;
 
 	private final LinkedList frames = new LinkedList();
 
@@ -50,7 +50,7 @@ public class ContextData {
 	 * @param contextId
 	 * @param debugger
 	 */
-	public ContextData(Long threadId, Long contextId, RhinoDebugger debugger) {
+	public ContextData(Long threadId, Long contextId, RhinoDebuggerImpl debugger) {
 		this.threadId = threadId;
 		this.contextId = contextId;
 		this.debugger = debugger;

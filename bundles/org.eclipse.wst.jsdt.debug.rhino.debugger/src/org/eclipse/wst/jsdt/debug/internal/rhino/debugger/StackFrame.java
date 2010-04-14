@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.debugger;
+package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.mozilla.javascript.BaseFunction;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EcmaError;
@@ -187,7 +187,7 @@ public class StackFrame implements DebugFrame {
 	 * @return
 	 */
 	public Object evaluate(String source) {
-		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
+		RhinoDebuggerImpl rhinoDebugger = (RhinoDebuggerImpl) context.getDebugger();
 		rhinoDebugger.disableThread();
 
 		Context evalContext = context.getFactory().enter();
@@ -216,7 +216,7 @@ public class StackFrame implements DebugFrame {
 	 * @return the status of the condition evaluation
 	 */
 	public boolean evaluateCondition(String condition) {
-		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
+		RhinoDebuggerImpl rhinoDebugger = (RhinoDebuggerImpl) context.getDebugger();
 		rhinoDebugger.disableThread();
 
 		Context evalContext = context.getFactory().enter();
@@ -243,7 +243,7 @@ public class StackFrame implements DebugFrame {
 
 		Object result = handles.get(handle);
 
-		RhinoDebugger rhinoDebugger = (RhinoDebugger) context.getDebugger();
+		RhinoDebuggerImpl rhinoDebugger = (RhinoDebuggerImpl) context.getDebugger();
 		rhinoDebugger.disableThread();
 
 		Context lookupContext = context.getFactory().enter();

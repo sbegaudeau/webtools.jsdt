@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.debugger;
+package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.debug.rhino.transport.Constants;
-import org.eclipse.wst.jsdt.debug.rhino.transport.JSONConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Constants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.mozilla.javascript.debug.DebuggableScript;
 
 /**
@@ -162,7 +162,7 @@ public class ScriptSource {
 		collectFunctions(root, functions);
 		int size = functions.size();
 		if(size < 1) {
-			return RhinoDebugger.NO_SCRIPTS;
+			return RhinoDebuggerImpl.NO_SCRIPTS;
 		}
 		DebuggableScript[] funcs = new DebuggableScript[size];
 		functions.toArray(funcs);

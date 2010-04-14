@@ -5,9 +5,10 @@ Bundle-Vendor: %Bundle-Vendor
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.rhino.debugger
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Export-Package: org.eclipse.wst.jsdt.debug.rhino.debugger,
- org.eclipse.wst.jsdt.debug.rhino.debugger.shell,
- org.eclipse.wst.jsdt.debug.rhino.transport
+Export-Package: org.eclipse.wst.jsdt.debug.internal.rhino.debugger;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.rhino.transport;x-friends:="org.eclipse.wst.jsdt.debug.rhino",
+ org.eclipse.wst.jsdt.debug.rhino.debugger,
+ org.eclipse.wst.jsdt.debug.rhino.debugger.shell
 Import-Package: org.mozilla.javascript;resolution:=optional,
  org.mozilla.javascript.debug;resolution:=optional,
  org.mozilla.javascript.tools.shell;resolution:=optional

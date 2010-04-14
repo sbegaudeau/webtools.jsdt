@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
-import org.eclipse.wst.jsdt.debug.rhino.transport.*;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.*;
 
 /**
  * Rhino {@link Connector} implementation that attaches to a running debug process

@@ -19,4 +19,4 @@ Import-Package: org.eclipse.debug.core.model,
  org.eclipse.wst.jsdt.debug.core.jsdi.event,
  org.eclipse.wst.jsdt.debug.core.jsdi.request,
  org.eclipse.wst.jsdt.debug.core.model,
- org.eclipse.wst.jsdt.debug.rhino.transport
+ org.eclipse.wst.jsdt.debug.internal.rhino.transport

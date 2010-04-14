@@ -6,7 +6,7 @@
  * 
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.rhino.transport;
+package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
 /**
  * This exception is thrown if the {@link PacketSendManager} or {@link PacketReceiveManager}
