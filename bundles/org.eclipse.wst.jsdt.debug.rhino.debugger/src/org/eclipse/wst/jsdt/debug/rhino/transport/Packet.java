@@ -30,8 +30,9 @@ abstract public class Packet {
 	 * @param type the type for the {@link Packet} <code>null</code> is not accepted
 	 */
 	protected Packet(String type) {
-		if(type==null)
-			throw new NullPointerException();
+		if(type == null) {
+			throw new IllegalArgumentException("The type for a packet cannot be null"); //$NON-NLS-1$
+		}
 		this.sequence = nextSequence();
 		this.type = type.intern();
 	}
@@ -43,7 +44,7 @@ abstract public class Packet {
 	 */
 	protected Packet(Map json) {
 		if(json == null) {
-			throw new IllegalArgumentException("The JSON map for a Packet cannot be null"); //$NON-NLS-1$
+			throw new IllegalArgumentException("The JSON map for a packet cannot be null"); //$NON-NLS-1$
 		}
 		Number packetSeq = (Number) json.get(JSONConstants.SEQ);
 		this.sequence = packetSeq.intValue();
@@ -99,9 +100,18 @@ abstract public class Packet {
 	 * @return the type from the JSON map or <code>null</code>
 	 */
 	public static String getType(Map json) {
-		if(json==null)
-			throw new NullPointerException();
+		if(json == null) {
+			throw new IllegalArgumentException("A null JSON map is not allowed when trying to get the packet type"); //$NON-NLS-1$
+		}
 		return (String) json.get(JSONConstants.TYPE);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Packet: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		return buffer.toString();
+	}
 }

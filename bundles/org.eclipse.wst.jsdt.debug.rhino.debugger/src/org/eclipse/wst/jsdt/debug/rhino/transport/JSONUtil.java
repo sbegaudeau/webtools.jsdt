@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.mozilla.javascript.Undefined;
+
 
 /**
  * This class provides utilities for working with JSON.
@@ -186,6 +188,9 @@ public final class JSONUtil {
 				return Boolean.FALSE;
 			case 'n' :
 				parseText(JSONConstants.NULL, it);
+				return null;
+			case 'u':
+				parseText(JSONConstants.UNDEFINED, it);
 				return null;
 		}
 		throw error("Bad JSON starting character '" + it.current() + "'", it); //$NON-NLS-1$ //$NON-NLS-2$;
@@ -361,6 +366,9 @@ public final class JSONUtil {
 			writeArray((Collection) value, buffer);
 		else if (value instanceof Map)
 			writeObject((Map) value, buffer);
+		else  if(value instanceof Undefined) {
+			buffer.append(JSONConstants.UNDEFINED);
+		}
 		else
 			throw error("Unexpected object instance type was '" + value.getClass().getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$););
 	}

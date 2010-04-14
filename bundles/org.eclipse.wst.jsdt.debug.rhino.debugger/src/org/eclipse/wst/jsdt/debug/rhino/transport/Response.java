@@ -34,8 +34,9 @@ public class Response extends Packet {
 	 */
 	public Response(int requestSequence, String command) {
 		super(JSONConstants.RESPONSE);
-		if(command==null)
-			throw new NullPointerException();
+		if(command == null) {
+			throw new IllegalArgumentException("The command string for a response packet cannot be null"); //$NON-NLS-1$
+		}
 		this.requestSequence = requestSequence;
 		this.command = command.intern();
 	}
@@ -163,8 +164,18 @@ public class Response extends Packet {
 		json.put(JSONConstants.BODY, body);
 		json.put(JSONConstants.SUCCESS, new Boolean(success));
 		json.put(JSONConstants.RUNNING, new Boolean(running));
-		if (message != null)
+		if (message != null) {
 			json.put(JSONConstants.MESSAGE, message);
+		}
 		return json;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Response Packet: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		return buffer.toString();
 	}
 }

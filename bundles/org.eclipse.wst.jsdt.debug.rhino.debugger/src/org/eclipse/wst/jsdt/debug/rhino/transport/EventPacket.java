@@ -40,10 +40,8 @@ public class EventPacket extends Packet {
 	 */
 	public EventPacket(Map json) {
 		super(json);
-
 		String packetEvent = (String) json.get(JSONConstants.EVENT);
 		event = packetEvent.intern();
-
 		Map packetBody = (Map) json.get(JSONConstants.BODY);
 		body.putAll(packetBody);
 	}

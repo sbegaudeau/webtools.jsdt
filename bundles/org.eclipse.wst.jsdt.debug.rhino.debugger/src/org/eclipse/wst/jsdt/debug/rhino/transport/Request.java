@@ -30,7 +30,7 @@ public class Request extends Packet {
 	public Request(String command) {
 		super(JSONConstants.REQUEST);
 		if(command == null) {
-			throw new IllegalArgumentException("The command kind cannot be null"); //$NON-NLS-1$
+			throw new IllegalArgumentException("The request command kind cannot be null"); //$NON-NLS-1$
 		}
 		this.command = command.intern();
 	}
@@ -43,7 +43,7 @@ public class Request extends Packet {
 	public Request(Map json) {
 		super(json);
 		if(json == null) {
-			throw new IllegalArgumentException("The JSON map for a Request packet cannot be null"); //$NON-NLS-1$
+			throw new IllegalArgumentException("The JSON map for a request packet cannot be null"); //$NON-NLS-1$
 		}
 		String packetCommand = (String) json.get(JSONConstants.COMMAND);
 		this.command = packetCommand.intern();
@@ -105,7 +105,7 @@ public class Request extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Response: ").append(toJSON()); //$NON-NLS-1$
+		buffer.append("Response: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }
