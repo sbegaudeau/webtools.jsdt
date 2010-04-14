@@ -323,6 +323,14 @@ if( this.isPrototype() ){
 	}
 
 	char [] possibleTypeName = Util.getTypeName( this );
+	Binding possibleTypeBinding =null;
+	if (possibleTypeName!=null)
+	   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
+	if(possibleTypeBinding != null && possibleTypeBinding.isValidBinding() && (TypeBinding)possibleTypeBinding != scope.getJavaLangObject()) {
+		this.typeBinding=(TypeBinding)possibleTypeBinding;
+		this.bits|=Binding.TYPE;
+		return this.typeBinding;
+	}
 	boolean receiverDefined=true;
    // if this could be a qualified type name, first check if receiver is defined, and if not look up as type name
 	if (possibleTypeName!=null && receiver instanceof SingleNameReference)
@@ -335,9 +343,6 @@ if( this.isPrototype() ){
 	if (receiverDefined)
 	  this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null || this.receiverType==scope.getJavaLangObject()) {
-		Binding possibleTypeBinding =null;
-		if (possibleTypeName!=null)
-		   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
 		if (possibleTypeBinding!=null && possibleTypeBinding.isValidBinding())
 		{
 			this.typeBinding=(TypeBinding)possibleTypeBinding;
