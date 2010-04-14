@@ -2148,23 +2148,23 @@ public class NameLookup implements SuffixConstants {
 
 			MyRequestor requestor=new MyRequestor();
 			JavaElementRequestor elementRequestor = new JavaElementRequestor();
-			seekPackageFragments(packageName, false, elementRequestor);
-			IPackageFragment[] packages= elementRequestor.getPackageFragments();
-			for (int i = 0; i < packages.length; i++) {
-				seekBindingsInWorkingCopies(bindingName, bindingType,
-						packages[i], -1, partialMatch,
-						bindingName, acceptFlags, requestor);
-				if (requestor.element != null) {
-					IOpenable openable = requestor.element.getOpenable();
-					if (excludePath!=null && requestor.element.getPath().equals(excludePath))
-						continue;
-					if (!returnMultiple) {
-						return new Answer(openable, null);
-					} else
-						foundAnswers.add(openable);
-					requestor.element=null;
-				}
-			}
+//			seekPackageFragments(packageName, false, elementRequestor);
+//			IPackageFragment[] packages= elementRequestor.getPackageFragments();
+//			for (int i = 0; i < packages.length; i++) {
+//				seekBindingsInWorkingCopies(bindingName, bindingType,
+//						packages[i], -1, partialMatch,
+//						bindingName, acceptFlags, requestor);
+//				if (requestor.element != null) {
+//					IOpenable openable = requestor.element.getOpenable();
+//					if (excludePath!=null && requestor.element.getPath().equals(excludePath))
+//						continue;
+//					if (!returnMultiple) {
+//						return new Answer(openable, null);
+//					} else
+//						foundAnswers.add(openable);
+//					requestor.element=null;
+//				}
+//			}
 			/*
 			 * if (true){ findTypes(new String(prefix), storage,
 			 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return; }
