@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -27,6 +27,11 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
 
+/**
+ * Delegate for {@link DebugSession} communication
+ * 
+ * @since 1.1
+ */
 public class DebugSessionManager implements Runnable {
 
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
@@ -46,6 +51,13 @@ public class DebugSessionManager implements Runnable {
 	private volatile boolean shutdown = false;
 	private RequestHandler requestHandler;
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param transportService
+	 * @param address
+	 * @param startSuspended
+	 */
 	public DebugSessionManager(TransportService transportService, String address, boolean startSuspended) {
 		this.transportService = transportService;
 		this.address = address;
@@ -53,6 +65,11 @@ public class DebugSessionManager implements Runnable {
 		prettyPrintHeader();
 	}
 	
+	/**
+	 * Creates a new session manager
+	 * @param configString
+	 * @return
+	 */
 	static DebugSessionManager create(String configString) {
 		Map config = parseConfigString(configString);
 		String transport = (String) config.get(TRANSPORT);
@@ -96,7 +113,7 @@ public class DebugSessionManager implements Runnable {
 	private void prettyPrintHeader() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
-		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
+		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
 		buffer.append("\nListening to "); //$NON-NLS-1$
 		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("port: ").append(this.address); //$NON-NLS-1$
@@ -104,6 +121,21 @@ public class DebugSessionManager implements Runnable {
 			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
 		}
 		System.out.println(buffer.toString());
+	}
+	
+	/**
+	 * Returns the formatted date
+	 * @return the formatted date
+	 * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4981314
+	 * @since 1.1
+	 */
+	String getStartAtDate() {
+		try {		
+			return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime());
+		}
+		catch(Throwable t) {
+			return "<unknown>"; //$NON-NLS-1$
+		}
 	}
 	
 	/**
