@@ -8,32 +8,21 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONUtil;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.debug.DebugFrame;
@@ -51,19 +40,10 @@ import org.mozilla.javascript.debug.Debugger;
  * </ul>
  * @since 1.0
  */
-public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Runnable {
+public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 
 	public static final DebuggableScript[] NO_SCRIPTS = new DebuggableScript[0];
-	
-	private static final String ADDRESS = "address"; //$NON-NLS-1$
-	private static final String SOCKET = "socket"; //$NON-NLS-1$
-	private static final String TRANSPORT = "transport"; //$NON-NLS-1$
 
-	private final Thread debuggerThread = new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
-	private final RequestHandler requestHandler = new RequestHandler(this);
-
-	private volatile boolean shutdown = false;
-	private DebugSession runtime;
 
 	private final Map threadToThreadId = new HashMap();
 	private final Map threadIdToData = new HashMap();
@@ -73,11 +53,6 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	private long currentBreakpointId = 0L;
 	private long currentScriptId = 0L;
 	private ArrayList disabledThreads = new ArrayList();
-	private final TransportService transportService;
-	private final String address;
-	private boolean startSuspended = false;
-	private ListenerKey listenerKey;
-	private volatile Connection connection;
 
 	/**
 	 * Mapping of the URI string to the {@link ScriptSource}
@@ -87,6 +62,8 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * Mapping of the id to the {@link ScriptSource}
 	 */
 	private HashMap/*<Long, ScriptSource>*/ idToScript = new HashMap();
+
+	private final DebugSessionManager sessionManager;
 	
 	/**
 	 * This constructor will only accept a <code>transport</code> argument
@@ -98,19 +75,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * @param configString the configuration string, for example: <code>transport=socket,suspend=y,address=9000</code>
 	 */
 	public RhinoDebuggerImpl(String configString) {
-		Map config = parseConfigString(configString);
-		String transport = (String) config.get(TRANSPORT);
-		if (SOCKET.equals(transport)) {
-			this.transportService = new SocketTransportService();
-		} else {
-			throw new IllegalArgumentException("Transport service must be 'socket': "+ transport); //$NON-NLS-1$
-		}
-		this.address = (String) config.get(ADDRESS);
-		String suspend = (String) config.get(JSONConstants.SUSPEND);
-		if(suspend != null) {
-			this.startSuspended = (Boolean.valueOf(suspend).booleanValue() || suspend.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
-		}
-		pprintHeader();
+		sessionManager = DebugSessionManager.create(configString);
 	}
 	
 	/**
@@ -122,165 +87,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * and is equal to 300000ms.
 	 */
 	public RhinoDebuggerImpl(TransportService transportService, String address, boolean startSuspended) {
-		this.transportService = transportService;
-		this.address = address;
-		this.startSuspended = startSuspended;
-		pprintHeader();
-	}
-
-	/**
-	 * Pretty print the header for the debugger
-	 * @since 1.1
-	 */
-	void pprintHeader() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
-		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
-		buffer.append("\nListening to "); //$NON-NLS-1$
-		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
-		buffer.append("port: ").append(this.address); //$NON-NLS-1$
-		if(this.startSuspended) {
-			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
-		}
-		System.out.println(buffer.toString());
-	}
-	
-	/**
-	 * Parses the command line configuration string
-	 * 
-	 * @param configString
-	 * @return the map of command line arguments
-	 */
-	private static Map parseConfigString(String configString) {
-		Map config = new HashMap();
-		StringTokenizer tokenizer = new StringTokenizer(configString, ","); //$NON-NLS-1$
-		while (tokenizer.hasMoreTokens()) {
-			String token = tokenizer.nextToken();
-			int equalsIndex = token.indexOf('=');
-			if (equalsIndex == -1)
-				config.put(token, null);
-			else
-				config.put(token.substring(0, equalsIndex), token.substring(equalsIndex + 1));
-		}
-		return config;
-	}
-	
-	/**
-	 * @return true if the <code>suspend=true</code> command line argument is set
-	 */
-	public boolean isStartSuspended() {
-		return startSuspended;
-	}
-
-	/**
-	 * Returns if a {@link DebugSession} has successfully connected to this debugger.
-	 * 
-	 * @return <code>true</code> if the debugger has a connected {@link DebugSession} <code>false</code> otherwise
-	 */
-	public synchronized boolean connected() {
-		return runtime != null;
-	}
-	
-	/**
-	 * Starts the debugger
-	 * 
-	 * @throws Exception if the debugger could not start, for example because the port is in use already
-	 */
-	public void start() throws Exception {
-		try {
-			if (listenerKey == null) {
-				listenerKey = transportService.startListening(address);
-			}
-			if(startSuspended) {
-				acceptConnection(300000);
-			}
-			debuggerThread.start();
-		} catch (IOException e) {
-			sendDeathEvent();
-			//re-throw, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=308821
-			throw e;
-		}
-	}
-
-	/**
-	 * Stops the debugger
-	 */
-	public void stop() {
-		shutdown = true;
-		try {
-			debuggerThread.interrupt();
-			debuggerThread.join();
-		} catch (InterruptedException e) {
-			/*e.printStackTrace();*/
-		}
-		try {
-			transportService.stopListening(listenerKey);
-		} catch (IOException e) {
-			sendDeathEvent();
-			/*e.printStackTrace();*/
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-		try {
-			while (!shutdown) {
-				try {
-					acceptConnection(10000);
-				} catch (IOException e) {
-					if (connection == null) {
-						continue;
-					}
-				}
-				while (!shutdown && connection.isOpen()) {
-					try {
-						Request request = runtime.receiveRequest(1000);
-						Response response = requestHandler.handleRequest(request);
-						runtime.sendResponse(response);
-					} catch (TimeoutException e) {
-						// ignore
-					} catch (DisconnectedException e) {
-						break;
-					}
-				}
-				closeConnection();
-			}
-
-		} catch (IOException e) {
-			sendDeathEvent();
-			/*e.printStackTrace();*/
-		}
-	}
-
-	/**
-	 * Close the active connection
-	 * 
-	 * @throws IOException
-	 */
-	private void closeConnection() throws IOException {
-		if (connection != null) {
-			runtime.dispose();
-			setSession(null);
-			connection.close();
-			connection = null;
-		}
-	}
-
-	/**
-	 * Waits for a connection for the given timeout
-	 * 
-	 * @param timeout
-	 * @throws IOException
-	 */
-	private void acceptConnection(long timeout) throws IOException {
-		if (connection == null) {
-			connection = transportService.accept(listenerKey, timeout, timeout);
-			setSession(new DebugSession(connection));
-		}
+		sessionManager = new DebugSessionManager( transportService,  address,  startSuspended);
 	}
 
 	/*
@@ -288,7 +95,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * 
 	 * @see org.mozilla.javascript.debug.Debugger#getFrame(org.mozilla.javascript.Context, org.mozilla.javascript.debug.DebuggableScript)
 	 */
-	public DebugFrame getFrame(Context context, DebuggableScript debuggableScript) {
+	public synchronized DebugFrame getFrame(Context context, DebuggableScript debuggableScript) {
 		ScriptSource script = getScript(debuggableScript);
 		if(script != null && !script.isStdIn()) {
 			ContextData contextData = (ContextData) context.getDebuggerContextData();
@@ -451,24 +258,12 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * @see JSONConstants#ENTER
 	 * @see JSONConstants#EXIT
 	 */
-	public void sendThreadEvent(String type, Long threadId) {
+	private void sendThreadEvent(String type, Long threadId) {
 		EventPacket threadEvent = new EventPacket(JSONConstants.THREAD);
 		Map body = threadEvent.getBody();
 		body.put(JSONConstants.TYPE, type);
 		body.put(JSONConstants.THREAD_ID, threadId);
 		sendEvent(threadEvent);
-	}
-	
-	/**
-	 * Sends out an event that the debugger has died in an unexpected way. Debugger death can result from:
-	 * <ul>
-	 * <li>an {@link IOException} while the debugger is running</li>
-	 * <li>an {@link InterruptedException} processing I/O</li>
-	 * </ul>
-	 */
-	public void sendDeathEvent() {
-		EventPacket event = new EventPacket(JSONConstants.VMDEATH);
-		sendEvent(event);
 	}
 	
 	/*
@@ -604,10 +399,8 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * <ul>
 	 * <li>no such script exists with the given id</li>
 	 * <li>the given line number is not a valid line number</li>
-	 * </ul>
-	 * <p>
-	 * If a breakpoint already exists at the given location it is removed and the new breakpoint is set.
-	 * </p>
+	 * <ul>
+	 * 
 	 * @param scriptId
 	 * @param lineNumber
 	 * @param functionName
@@ -617,17 +410,13 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 */
 	public synchronized Breakpoint setBreakpoint(Long scriptId, Integer lineNumber, String functionName, String condition, Long threadId) {
 		ScriptSource script = (ScriptSource) idToScript.get(scriptId);
-		if (script == null || !script.isValid(lineNumber, functionName)) {
+		if (!script.isValid(lineNumber, functionName)) {
 			return null;
 		}
-		Breakpoint newbreakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
-		Breakpoint oldbp = script.getBreakpoint(lineNumber);
-		if(oldbp != null) {
-			breakpoints.remove(oldbp.breakpointId);
-		}
-		breakpoints.put(newbreakpoint.breakpointId, newbreakpoint);
-		script.addBreakpoint(newbreakpoint);
-		return newbreakpoint;
+		Breakpoint breakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
+		breakpoints.put(breakpoint.getId(), breakpoint);
+		script.addBreakpoint(breakpoint);
+		return breakpoint;
 	}
 
 	/**
@@ -658,25 +447,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * @return true if the event was sent successfully, false otherwise
 	 */
 	public synchronized boolean sendEvent(EventPacket event) {
-		try {
-			if (runtime != null) {
-				runtime.sendEvent(event);
-				return true;
-			}
-		} catch (DisconnectedException e) {
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	/**
-	 * Sets the {@link DebugSession} for this debugger to use
-	 * 
-	 * @param runtime
-	 */
-	private synchronized void setSession(DebugSession session) {
-		this.runtime = session;
-		notify();
+		return sessionManager.sendEvent(event);
 	}
 
 	/**
@@ -695,28 +466,45 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * @param threadId
 	 * @return the thread data for the thread with the given id or <code>null</code>
 	 */
-	public ThreadData getThreadData(Long threadId) {
+	public synchronized ThreadData getThreadData(Long threadId) {
 		return (ThreadData) threadIdToData.get(threadId);
 	}
 
 	/**
 	 * @return the complete list of thread ids known to the debugger
 	 */
-	public List getThreadIds() {
+	public synchronized List getThreadIds() {
 		return new ArrayList(threadIdToData.keySet());
 	}
 
 	/**
 	 * Caches the current thread as disabled
 	 */
-	public void disableThread() {
+	public synchronized void disableThread() {
 		disabledThreads.add(Thread.currentThread());
 	}
 
 	/**
 	 * Removes the current thread as being disabled
 	 */
-	public void enableThread() {
+	public synchronized void enableThread() {
 		disabledThreads.remove(Thread.currentThread());
+	}
+
+	public void start() {
+		sessionManager.start(this);
+	}
+
+	public void stop() {
+		sessionManager.stop();
+	}
+	
+	/**
+	 * Returns if a {@link DebugSession} has successfully connected to this debugger.
+	 * 
+	 * @return <code>true</code> if the debugger has a connected {@link DebugSession} <code>false</code> otherwise
+	 */
+	public synchronized boolean isConnected() {
+		return sessionManager.isConnected();
 	}
 }
