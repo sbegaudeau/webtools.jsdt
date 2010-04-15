@@ -305,7 +305,7 @@ public class ContextData {
 		}
 		body.put(JSONConstants.LINE_NUMBER, lineNumber);
 		if (breakpoint != null) {
-			body.put(JSONConstants.BREAKPOINT, breakpoint.getId());
+			body.put(JSONConstants.BREAKPOINT, breakpoint.breakpointId);
 		}
 
 		if (isStepBreak) {

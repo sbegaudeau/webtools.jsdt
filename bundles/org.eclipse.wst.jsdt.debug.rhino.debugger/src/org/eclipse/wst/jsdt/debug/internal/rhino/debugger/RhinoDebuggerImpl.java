@@ -604,8 +604,10 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 * <ul>
 	 * <li>no such script exists with the given id</li>
 	 * <li>the given line number is not a valid line number</li>
-	 * <ul>
-	 * 
+	 * </ul>
+	 * <p>
+	 * If a breakpoint already exists at the given location it is removed and the new breakpoint is set.
+	 * </p>
 	 * @param scriptId
 	 * @param lineNumber
 	 * @param functionName
@@ -615,13 +617,17 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	 */
 	public synchronized Breakpoint setBreakpoint(Long scriptId, Integer lineNumber, String functionName, String condition, Long threadId) {
 		ScriptSource script = (ScriptSource) idToScript.get(scriptId);
-		if (!script.isValid(lineNumber, functionName)) {
+		if (script == null || !script.isValid(lineNumber, functionName)) {
 			return null;
 		}
-		Breakpoint breakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
-		breakpoints.put(breakpoint.getId(), breakpoint);
-		script.addBreakpoint(breakpoint);
-		return breakpoint;
+		Breakpoint newbreakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
+		Breakpoint oldbp = script.getBreakpoint(lineNumber);
+		if(oldbp != null) {
+			breakpoints.remove(oldbp.breakpointId);
+		}
+		breakpoints.put(newbreakpoint.breakpointId, newbreakpoint);
+		script.addBreakpoint(newbreakpoint);
+		return newbreakpoint;
 	}
 
 	/**

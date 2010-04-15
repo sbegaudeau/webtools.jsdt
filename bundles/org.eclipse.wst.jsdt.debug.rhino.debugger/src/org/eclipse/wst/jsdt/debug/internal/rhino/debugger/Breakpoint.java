@@ -72,13 +72,6 @@ public class Breakpoint {
 	}
 
 	/**
-	 * @return the id of this breakpoint
-	 */
-	public Long getId() {
-		return breakpointId;
-	}
-
-	/**
 	 * Deletes the breakpoint from the script it is associated with. Does
 	 * not clear any of the handle information so the deleted breakpoint can be 
 	 * returned as an event if required.
