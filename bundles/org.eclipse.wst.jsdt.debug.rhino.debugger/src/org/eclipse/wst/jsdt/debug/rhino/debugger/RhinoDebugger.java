@@ -1,13 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors: IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.rhino.debugger;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
 
-public class RhinoDebugger {
+/**
+ * Rhino debugger
+ * 
+ * @since 1.0
+ */
+public final class RhinoDebugger {
+	
+	/**
+	 * Delegate debugger
+	 */
 	private RhinoDebuggerImpl impl;
 
 	/**
 	 * This constructor will only accept a <code>transport</code> argument
-	 * of <code>socket</code>. I.e. <code>transport=socket</code>.<br><br>
+	 * of <code>socket</code>. I.e. <code>transport=socket</code>.
 	 * 
 	 * @param configString the configuration string, for example: <code>transport=socket,suspend=y,address=9000</code>
 	 */
@@ -17,8 +34,10 @@ public class RhinoDebugger {
 	
 	/**
 	 * Starts the debugger
+	 * 
+	 * @throws Exception if the debugger could not start
 	 */
-	public void start() {
+	public void start() throws Exception {
 		impl.start();
 	}
 

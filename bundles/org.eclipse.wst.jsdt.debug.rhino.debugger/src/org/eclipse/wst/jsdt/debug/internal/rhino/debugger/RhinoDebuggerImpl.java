@@ -183,8 +183,10 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 	
 	/**
 	 * Starts the debugger
+	 * 
+	 * @throws Exception if the debugger could not start, for example because the port is in use already
 	 */
-	public void start() {
+	public void start() throws Exception {
 		try {
 			if (listenerKey == null) {
 				listenerKey = transportService.startListening(address);
@@ -195,7 +197,8 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener, Run
 			debuggerThread.start();
 		} catch (IOException e) {
 			sendDeathEvent();
-			/*e.printStackTrace();*/
+			//re-throw, see https://bugs.eclipse.org/bugs/show_bug.cgi?id=308821
+			throw e;
 		}
 	}
 
