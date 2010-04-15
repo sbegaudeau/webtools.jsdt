@@ -85,6 +85,10 @@ public class ScriptSource {
 		this.properties = properties;
 		this.generated = generated;
 
+		if(isStdIn()) {
+			//do not compute line data
+			return;
+		}
 		int[] rootlines = script.getLineNumbers();		
 		DebuggableScript[] functions = collectFunctions(script);
 		int flength = functions.length;
