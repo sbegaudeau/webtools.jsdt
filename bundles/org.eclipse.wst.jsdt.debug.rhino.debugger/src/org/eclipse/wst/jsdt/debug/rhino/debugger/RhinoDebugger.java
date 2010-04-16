@@ -46,7 +46,7 @@ public final class RhinoDebugger implements ContextFactory.Listener {
 	/**
 	 * Stops the debugger
 	 */
-	public void stop() {
+	public void stop() throws Exception {
 		impl.stop();
 	}
 
