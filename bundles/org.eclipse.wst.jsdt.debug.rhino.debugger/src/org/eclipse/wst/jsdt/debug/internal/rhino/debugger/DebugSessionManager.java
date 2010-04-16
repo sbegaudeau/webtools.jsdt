@@ -37,19 +37,20 @@ public class DebugSessionManager implements Runnable {
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
 	private static final String TRANSPORT = "transport"; //$NON-NLS-1$
-	
+
 	private final TransportService transportService;
 	private final String address;
 	private final boolean startSuspended;
-	
+
 	private ListenerKey listenerKey;
 	private Connection connection;
 	private DebugSession debugSession;
-	
+
 	private Thread debuggerThread;
 
 	private volatile boolean shutdown = false;
 	private RequestHandler requestHandler;
+
 	
 	/**
 	 * Constructor
@@ -73,19 +74,19 @@ public class DebugSessionManager implements Runnable {
 	static DebugSessionManager create(String configString) {
 		Map config = parseConfigString(configString);
 		String transport = (String) config.get(TRANSPORT);
-		if (! SOCKET.equals(transport)) {
-			throw new IllegalArgumentException("Transport service must be 'socket': "+ transport); //$NON-NLS-1$
+		if (!SOCKET.equals(transport)) {
+			throw new IllegalArgumentException("Transport service must be 'socket': " + transport); //$NON-NLS-1$
 		}
 		TransportService parsedTransportService = new SocketTransportService();
 		String parsedAddress = (String) config.get(ADDRESS);
 		String suspend = (String) config.get(JSONConstants.SUSPEND);
 		boolean parsedStartSuspended = false;
-		if(suspend != null) {
+		if (suspend != null) {
 			parsedStartSuspended = (Boolean.valueOf(suspend).booleanValue() || suspend.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
 		}
 		return new DebugSessionManager(parsedTransportService, parsedAddress, parsedStartSuspended);
 	}
-	
+
 	/**
 	 * Parses the command line configuration string
 	 * 
@@ -105,7 +106,7 @@ public class DebugSessionManager implements Runnable {
 		}
 		return config;
 	}
-	
+
 	/**
 	 * Pretty print the header for the debugger
 	 * @since 1.1
@@ -113,16 +114,16 @@ public class DebugSessionManager implements Runnable {
 	private void prettyPrintHeader() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
-		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
+		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
 		buffer.append("\nListening to "); //$NON-NLS-1$
 		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("port: ").append(this.address); //$NON-NLS-1$
-		if(this.startSuspended) {
+		if (this.startSuspended) {
 			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
 		}
 		System.out.println(buffer.toString());
 	}
-	
+
 	/**
 	 * Returns the formatted date
 	 * @return the formatted date
@@ -146,14 +147,16 @@ public class DebugSessionManager implements Runnable {
 	}
 
 	/**
-	 * Returns if a {@link DebugSession} has successfully connected to this debugger.
+	 * Returns if a {@link DebugSession} has successfully connected to this
+	 * debugger.
 	 * 
-	 * @return <code>true</code> if the debugger has a connected {@link DebugSession} <code>false</code> otherwise
+	 * @return <code>true</code> if the debugger has a connected
+	 *         {@link DebugSession} <code>false</code> otherwise
 	 */
 	public synchronized boolean isConnected() {
 		return debugSession != null;
 	}
-	
+
 	/**
 	 * Starts the debugger
 	 */
@@ -163,14 +166,20 @@ public class DebugSessionManager implements Runnable {
 			if (listenerKey == null) {
 				listenerKey = transportService.startListening(address);
 			}
-			if(startSuspended) {
-				acceptConnection(300000);
-			}
-			debuggerThread =  new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
+
+			debuggerThread = new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
 			debuggerThread.start();
+
+			if (startSuspended) {
+				try {
+					wait(300000);
+				} catch (InterruptedException e) {
+					/* e.printStackTrace(); */
+				}
+			}
 		} catch (IOException e) {
 			sendDeathEvent();
-			/*e.printStackTrace();*/
+			/* e.printStackTrace(); */
 		}
 	}
 
@@ -185,13 +194,13 @@ public class DebugSessionManager implements Runnable {
 				wait();
 			debuggerThread.join();
 		} catch (InterruptedException e) {
-			/*e.printStackTrace();*/
+			/* e.printStackTrace(); */
 		}
 		try {
 			transportService.stopListening(listenerKey);
 		} catch (IOException e) {
 			sendDeathEvent();
-			/*e.printStackTrace();*/
+			/* e.printStackTrace(); */
 		}
 		requestHandler = null;
 	}
@@ -227,7 +236,7 @@ public class DebugSessionManager implements Runnable {
 
 		} catch (IOException e) {
 			sendDeathEvent();
-			/*e.printStackTrace();*/
+			/* e.printStackTrace(); */
 		}
 	}
 
@@ -236,12 +245,20 @@ public class DebugSessionManager implements Runnable {
 	 * 
 	 * @throws IOException
 	 */
-	private synchronized void closeConnection() throws IOException {
+	private void closeConnection() throws IOException {
 		if (connection != null) {
-			debugSession.dispose();
-			debugSession = null;
+			setDebugSession(null);
 			connection.close();
 			connection = null;
+		}
+	}
+
+	private synchronized void setDebugSession(DebugSession session) {
+		if (debugSession != session) {
+			if (debugSession != null) {
+				debugSession.dispose();
+			}
+			debugSession = session;
 			notify();
 		}
 	}
@@ -252,16 +269,16 @@ public class DebugSessionManager implements Runnable {
 	 * @param timeout
 	 * @throws IOException
 	 */
-	private synchronized void acceptConnection(long timeout) throws IOException {
+	private void acceptConnection(long timeout) throws IOException {
 		if (connection == null) {
 			connection = transportService.accept(listenerKey, timeout, timeout);
-			debugSession = new DebugSession(connection);
+			setDebugSession(new DebugSession(connection));
 		}
 	}
-	
-	
+
 	/**
-	 * Sends the given {@link EventPacket} using the underlying {@link DebugRuntime} and returns if it was sent successfully
+	 * Sends the given {@link EventPacket} using the underlying
+	 * {@link DebugRuntime} and returns if it was sent successfully
 	 * 
 	 * @param event
 	 * @return true if the event was sent successfully, false otherwise
@@ -277,9 +294,10 @@ public class DebugSessionManager implements Runnable {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Sends out an event that the debugger has died in an unexpected way. Debugger death can result from:
+	 * Sends out an event that the debugger has died in an unexpected way.
+	 * Debugger death can result from:
 	 * <ul>
 	 * <li>an {@link IOException} while the debugger is running</li>
 	 * <li>an {@link InterruptedException} processing I/O</li>
