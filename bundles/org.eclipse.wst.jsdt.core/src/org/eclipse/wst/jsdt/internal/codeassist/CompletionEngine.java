@@ -7057,12 +7057,7 @@ public final class CompletionEngine
 			} else if(parent instanceof BinaryExpression) {
 				switch(operator) {
 					case OperatorIds.PLUS :
-						addExpectedType(TypeBinding.SHORT, scope);
-						addExpectedType(TypeBinding.INT, scope);
-						addExpectedType(TypeBinding.LONG, scope);
-						addExpectedType(TypeBinding.FLOAT, scope);
-						addExpectedType(TypeBinding.DOUBLE, scope);
-						addExpectedType(TypeBinding.CHAR, scope);
+						addExpectedType(TypeBinding.ANY, scope);
 						addExpectedType(scope.getJavaLangString(), scope);
 						break;
 					case OperatorIds.AND_AND :
@@ -7071,12 +7066,7 @@ public final class CompletionEngine
 						addExpectedType(TypeBinding.BOOLEAN, scope);
 						break;
 					default :
-						addExpectedType(TypeBinding.SHORT, scope);
-						addExpectedType(TypeBinding.INT, scope);
-						addExpectedType(TypeBinding.LONG, scope);
-						addExpectedType(TypeBinding.FLOAT, scope);
-						addExpectedType(TypeBinding.DOUBLE, scope);
-						addExpectedType(TypeBinding.CHAR, scope);
+						addExpectedType(TypeBinding.ANY, scope);
 						break;
 				}
 				BinaryExpression binaryExpression = (BinaryExpression) parent;
