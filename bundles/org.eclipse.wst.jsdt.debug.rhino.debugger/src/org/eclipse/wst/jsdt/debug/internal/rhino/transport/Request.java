@@ -105,7 +105,7 @@ public class Request extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Response: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		buffer.append("Request: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }
