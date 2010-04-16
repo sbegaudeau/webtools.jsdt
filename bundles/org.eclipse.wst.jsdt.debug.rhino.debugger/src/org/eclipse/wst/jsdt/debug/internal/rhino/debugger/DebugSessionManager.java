@@ -176,6 +176,7 @@ public class DebugSessionManager implements Runnable {
 				} catch (InterruptedException e) {
 					/* e.printStackTrace(); */
 				}
+				//TODO: We might want to check if debugSession is null and if so call "stop" and throw an exception
 			}
 		} catch (IOException e) {
 			sendDeathEvent();
@@ -233,7 +234,6 @@ public class DebugSessionManager implements Runnable {
 				}
 				closeConnection();
 			}
-
 		} catch (IOException e) {
 			sendDeathEvent();
 			/* e.printStackTrace(); */
