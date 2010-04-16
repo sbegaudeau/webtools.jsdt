@@ -114,11 +114,11 @@ public class DebugSessionManager implements Runnable {
 	private void prettyPrintHeader() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
-		buffer.append("Start at time: ").append(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime())); //$NON-NLS-1$
+		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
 		buffer.append("\nListening to "); //$NON-NLS-1$
 		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("port: ").append(this.address); //$NON-NLS-1$
-		if (this.startSuspended) {
+		if (startSuspended) {
 			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
 		}
 		System.out.println(buffer.toString());
