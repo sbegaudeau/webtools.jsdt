@@ -32,7 +32,89 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.List
  * 
  * @since 1.1
  */
-public class DebugSessionManager implements Runnable {
+public class DebugSessionManager {
+
+	public class DebugSessionThread extends Thread {
+
+		private ListenerKey listenerKey;
+		private Connection connection;
+		private RequestHandler requestHandler;
+
+		public DebugSessionThread(String name, RhinoDebuggerImpl debugger) {
+			super(name);
+			requestHandler = new RequestHandler(debugger);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Runnable#run()
+		 */
+		public void run() {
+			try {
+				listenerKey = transportService.startListening(address);
+				while (!shutdown) {
+					try {
+						acceptConnection(10000);
+					} catch (IOException e) {
+						if (connection == null) {
+							continue;
+						}
+					}
+					while (!shutdown && connection.isOpen()) {
+						try {
+							Request request = debugSession.receiveRequest(1000);
+							Response response = requestHandler.handleRequest(request);
+							debugSession.sendResponse(response);
+						} catch (TimeoutException e) {
+							// ignore
+						} catch (DisconnectedException e) {
+							break;
+						}
+					}
+					closeConnection();
+				}
+			} catch (IOException e) {
+				sendDeathEvent();
+				/* e.printStackTrace(); */
+			} finally {
+				try {
+					if (listenerKey != null)
+						transportService.stopListening(listenerKey);
+				} catch (IOException e) {
+					sendDeathEvent();
+					/* e.printStackTrace(); */
+				}
+			}
+		}
+
+		/**
+		 * Close the active connection
+		 * 
+		 * @throws IOException
+		 */
+		private void closeConnection() throws IOException {
+			if (connection != null) {
+				setDebugSession(null);
+				connection.close();
+				connection = null;
+			}
+		}
+
+		/**
+		 * Waits for a connection for the given timeout
+		 * 
+		 * @param timeout
+		 * @throws IOException
+		 */
+		private void acceptConnection(long timeout) throws IOException {
+			if (connection == null) {
+				connection = transportService.accept(listenerKey, timeout, timeout);
+				setDebugSession(new DebugSession(connection));
+			}
+		}
+
+	}
 
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
@@ -42,16 +124,10 @@ public class DebugSessionManager implements Runnable {
 	private final String address;
 	private final boolean startSuspended;
 
-	private ListenerKey listenerKey;
-	private Connection connection;
 	private DebugSession debugSession;
-
 	private Thread debuggerThread;
-
 	private volatile boolean shutdown = false;
-	private RequestHandler requestHandler;
 
-	
 	/**
 	 * Constructor
 	 * 
@@ -65,9 +141,10 @@ public class DebugSessionManager implements Runnable {
 		this.startSuspended = startSuspended;
 		prettyPrintHeader();
 	}
-	
+
 	/**
 	 * Creates a new session manager
+	 * 
 	 * @param configString
 	 * @return
 	 */
@@ -109,6 +186,7 @@ public class DebugSessionManager implements Runnable {
 
 	/**
 	 * Pretty print the header for the debugger
+	 * 
 	 * @since 1.1
 	 */
 	private void prettyPrintHeader() {
@@ -126,21 +204,22 @@ public class DebugSessionManager implements Runnable {
 
 	/**
 	 * Returns the formatted date
+	 * 
 	 * @return the formatted date
 	 * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4981314
 	 * @since 1.1
 	 */
 	String getStartAtDate() {
-		try {		
+		try {
 			return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime());
-		}
-		catch(Throwable t) {
+		} catch (Throwable t) {
 			return "<unknown>"; //$NON-NLS-1$
 		}
 	}
-	
+
 	/**
-	 * @return true if the <code>suspend=true</code> command line argument is set
+	 * @return true if the <code>suspend=true</code> command line argument is
+	 *         set
 	 */
 	public boolean isStartSuspended() {
 		return startSuspended;
@@ -161,26 +240,16 @@ public class DebugSessionManager implements Runnable {
 	 * Starts the debugger
 	 */
 	public synchronized void start(RhinoDebuggerImpl debugger) {
-		try {
-			requestHandler = new RequestHandler(debugger);
-			if (listenerKey == null) {
-				listenerKey = transportService.startListening(address);
+		debuggerThread = new DebugSessionThread("RhinoDebugger - Request Handler", debugger); //$NON-NLS-1$
+		debuggerThread.start();
+		if (startSuspended) {
+			try {
+				wait(300000);
+			} catch (InterruptedException e) {
+				/* e.printStackTrace(); */
 			}
-
-			debuggerThread = new Thread(this, "RhinoDebugger - Request Handler"); //$NON-NLS-1$
-			debuggerThread.start();
-
-			if (startSuspended) {
-				try {
-					wait(300000);
-				} catch (InterruptedException e) {
-					/* e.printStackTrace(); */
-				}
-				//TODO: We might want to check if debugSession is null and if so call "stop" and throw an exception
-			}
-		} catch (IOException e) {
-			sendDeathEvent();
-			/* e.printStackTrace(); */
+			// TODO: We might want to check if debugSession is null and if so
+			// call "stop" and throw an exception
 		}
 	}
 
@@ -197,60 +266,6 @@ public class DebugSessionManager implements Runnable {
 		} catch (InterruptedException e) {
 			/* e.printStackTrace(); */
 		}
-		try {
-			transportService.stopListening(listenerKey);
-		} catch (IOException e) {
-			sendDeathEvent();
-			/* e.printStackTrace(); */
-		}
-		requestHandler = null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-		try {
-			while (!shutdown) {
-				try {
-					acceptConnection(10000);
-				} catch (IOException e) {
-					if (connection == null) {
-						continue;
-					}
-				}
-				while (!shutdown && connection.isOpen()) {
-					try {
-						Request request = debugSession.receiveRequest(1000);
-						Response response = requestHandler.handleRequest(request);
-						debugSession.sendResponse(response);
-					} catch (TimeoutException e) {
-						// ignore
-					} catch (DisconnectedException e) {
-						break;
-					}
-				}
-				closeConnection();
-			}
-		} catch (IOException e) {
-			sendDeathEvent();
-			/* e.printStackTrace(); */
-		}
-	}
-
-	/**
-	 * Close the active connection
-	 * 
-	 * @throws IOException
-	 */
-	private void closeConnection() throws IOException {
-		if (connection != null) {
-			setDebugSession(null);
-			connection.close();
-			connection = null;
-		}
 	}
 
 	private synchronized void setDebugSession(DebugSession session) {
@@ -260,19 +275,6 @@ public class DebugSessionManager implements Runnable {
 			}
 			debugSession = session;
 			notify();
-		}
-	}
-
-	/**
-	 * Waits for a connection for the given timeout
-	 * 
-	 * @param timeout
-	 * @throws IOException
-	 */
-	private void acceptConnection(long timeout) throws IOException {
-		if (connection == null) {
-			connection = transportService.accept(listenerKey, timeout, timeout);
-			setDebugSession(new DebugSession(connection));
 		}
 	}
 
