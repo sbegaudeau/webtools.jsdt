@@ -9,13 +9,15 @@
 package org.eclipse.wst.jsdt.debug.rhino.debugger;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.ContextFactory;
 
 /**
  * Rhino debugger
  * 
  * @since 1.0
  */
-public final class RhinoDebugger {
+public final class RhinoDebugger implements ContextFactory.Listener {
 	
 	/**
 	 * Delegate debugger
@@ -46,5 +48,13 @@ public final class RhinoDebugger {
 	 */
 	public void stop() {
 		impl.stop();
+	}
+
+	public void contextCreated(Context context) {
+		impl.contextCreated(context);
+	}
+
+	public void contextReleased(Context context) {
+		impl.contextReleased(context);
 	}
 }
