@@ -64,7 +64,11 @@ public class DebugSessionManager {
 					while (!shutdown && connection.isOpen()) {
 						try {
 							Request request = debugSession.receiveRequest(1000);
+							if (DEBUG)
+								System.out.println(request);
 							Response response = requestHandler.handleRequest(request);
+							if (DEBUG)
+								System.out.println(response);
 							debugSession.sendResponse(response);
 						} catch (TimeoutException e) {
 							// ignore
@@ -116,6 +120,8 @@ public class DebugSessionManager {
 
 	}
 
+	private static final boolean DEBUG = false;
+	
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
 	private static final String TRANSPORT = "transport"; //$NON-NLS-1$
@@ -288,6 +294,8 @@ public class DebugSessionManager {
 	public synchronized boolean sendEvent(EventPacket event) {
 		try {
 			if (debugSession != null) {
+				if (DEBUG)
+					System.out.println(event);
 				debugSession.sendEvent(event);
 				return true;
 			}
