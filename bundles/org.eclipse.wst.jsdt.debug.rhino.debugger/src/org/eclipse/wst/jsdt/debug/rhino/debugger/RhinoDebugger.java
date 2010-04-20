@@ -50,10 +50,16 @@ public final class RhinoDebugger implements ContextFactory.Listener {
 		impl.stop();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mozilla.javascript.ContextFactory.Listener#contextCreated(org.mozilla.javascript.Context)
+	 */
 	public void contextCreated(Context context) {
 		impl.contextCreated(context);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.mozilla.javascript.ContextFactory.Listener#contextReleased(org.mozilla.javascript.Context)
+	 */
 	public void contextReleased(Context context) {
 		impl.contextReleased(context);
 	}
