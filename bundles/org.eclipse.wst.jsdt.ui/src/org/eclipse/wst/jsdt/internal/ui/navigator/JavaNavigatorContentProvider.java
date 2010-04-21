@@ -37,7 +37,9 @@ import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -53,7 +55,11 @@ public class JavaNavigatorContentProvider extends
 		super(provideMembers);
 	}
 
-	public static final String JDT_EXTENSION_ID = "org.eclipse.wst.jsdt.ui.javaContent"; //$NON-NLS-1$ 
+	public static final String JSDT_EXTENSION_ID = "org.eclipse.wst.jsdt.ui.javaContent"; //$NON-NLS-1$ 
+	/**
+	 * @deprecated
+	 */
+	public static final String JDT_EXTENSION_ID = JSDT_EXTENSION_ID; 
 
 	private IExtensionStateModel fStateModel;
 
@@ -126,6 +132,10 @@ public class JavaNavigatorContentProvider extends
 		if (element instanceof IProject) {
 			return ((IProject) element).isAccessible();
 		}
+		if (getProvideMembers() && element instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IFile) element).getName())) {
+			// TODO: gives false positives for .js files not on an Include Path
+			return JavaScriptCore.create((IFile)element) != null;
+		}
 		return super.hasChildren(element);
 	}
 	
@@ -136,6 +146,9 @@ public class JavaNavigatorContentProvider extends
 		} 
 		if (parentElement instanceof IProject) {
 			return super.getChildren(JavaScriptCore.create((IProject)parentElement));
+		}
+		if (getProvideMembers() && parentElement instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IFile) parentElement).getName())) {
+			return super.getChildren(JavaScriptCore.create((IFile) parentElement));
 		}
 		return super.getChildren(parentElement);
 	}
@@ -155,38 +168,66 @@ public class JavaNavigatorContentProvider extends
 
 	}
 
-	public void getPipelinedChildren(Object parent, Set currentChildren) { 
-		customize(getChildren(parent), currentChildren);
+	private void customize2(Object parent, Set currentChildren) {
+		if(!getProvideMembers())
+			return;
+		
+		// replace files with CUs
+		Object[] children = currentChildren.toArray();
+		for (int i = 0; i < children.length; i++) {
+			if (children[i] instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IResource) children[i]).getName())) {
+				IJavaScriptElement element = JavaScriptCore.create((IFile) children[i]);
+				if(element != null) {
+					currentChildren.remove(children[i]);
+					currentChildren.add(element);
+				}
+			}
+		}
 	}
 
+	public void getPipelinedChildren(Object parent, Set currentChildren) {
+		customize2(parent, currentChildren);
+	}
 	public void getPipelinedElements(Object input, Set currentElements) {
-		customize(getElements(input), currentElements);
+		customize2(input, currentElements);
 	}
 
 	public Object getPipelinedParent(Object object, Object suggestedParent) {
-		return getParent(object);
+		if (object instanceof IJavaScriptElement && ((IJavaScriptElement) object).getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
+			try {
+				IResource underlyingResource = ((IJavaScriptUnit) object).getUnderlyingResource();
+				if (underlyingResource != null && underlyingResource.getType() < IResource.PROJECT) {
+					return underlyingResource.getParent();
+				}
+			}
+			catch (JavaScriptModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return suggestedParent;
 	}
 
 	public PipelinedShapeModification interceptAdd(PipelinedShapeModification addModification) {
-		
-		Object parent= addModification.getParent();
-		
-		if (parent instanceof IJavaScriptProject) {
-			addModification.setParent(((IJavaScriptProject)parent).getProject());
-		} 
-		
-		if (parent instanceof IWorkspaceRoot) {		
-			deconvertJavaProjects(addModification);
-		}
-		
-		convertToJavaElements(addModification);
+//		
+//		Object parent= addModification.getParent();
+//		
+//		if (parent instanceof IJavaScriptProject) {
+//			addModification.setParent(((IJavaScriptProject)parent).getProject());
+//		} 
+//		
+//		if (parent instanceof IWorkspaceRoot) {		
+//			deconvertJavaProjects(addModification);
+//		}
+//		
+//		convertToJavaElements(addModification);
 		return addModification;
 	}
  
 	public PipelinedShapeModification interceptRemove(
 			PipelinedShapeModification removeModification) {
-		deconvertJavaProjects(removeModification);
-		convertToJavaElements(removeModification.getChildren());
+//		deconvertJavaProjects(removeModification);
+//		convertToJavaElements(removeModification.getChildren());
 		return removeModification;
 	}
 	
@@ -299,14 +340,15 @@ public class JavaNavigatorContentProvider extends
 	}
 
 
-
-	public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {		
-		return convertToJavaElements(refreshSynchronization.getRefreshTargets());
+	public boolean interceptRefresh(PipelinedViewerUpdate refreshSynchronization) {
+		return false;
+//		return convertToJavaElements(refreshSynchronization.getRefreshTargets());
 
 	}
 
 	public boolean interceptUpdate(PipelinedViewerUpdate updateSynchronization) {		
-		return convertToJavaElements(updateSynchronization.getRefreshTargets());
+		return false;
+//		return convertToJavaElements(updateSynchronization.getRefreshTargets());
 	}
 
 //	protected void postAdd(final Object parent, final Object element, Collection runnables) {
