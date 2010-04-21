@@ -5258,12 +5258,10 @@
 				priority="high">
 			<triggerPoints>
 			     <or>
-					<and>
-						<instanceof	value="org.eclipse.core.resources.IResource" />
-						<adapt type="org.eclipse.core.resources.IProject">
-							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-						</adapt>
-					</and>
+					<adapt type="org.eclipse.core.resources.IProject">
+						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+					</adapt>
+					<instanceof value="org.eclipse.core.resources.IResource" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />

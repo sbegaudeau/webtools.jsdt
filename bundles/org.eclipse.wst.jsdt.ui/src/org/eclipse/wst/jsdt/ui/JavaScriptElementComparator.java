@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,12 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IInitializer;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
@@ -140,7 +140,8 @@ public class JavaScriptElementComparator extends ViewerComparator {
 					case IJavaScriptElement.CLASS_FILE :
 						return CLASSFILES;
 					case IJavaScriptElement.JAVASCRIPT_UNIT :
-						return JAVASCRIPTUNITS;
+//						return JAVASCRIPTUNITS;
+						return RESOURCES;
 				}
 
 			} catch (JavaScriptModelException e) {
@@ -160,6 +161,8 @@ public class JavaScriptElementComparator extends ViewerComparator {
 			}
 			return RESOURCEFOLDERS;
 		} else if (element instanceof PackageFragmentRootContainer) {
+			return PACKAGEFRAGMENTROOTS;
+		} else if (element instanceof ProjectLibraryRoot) {
 			return PACKAGEFRAGMENTROOTS;
 		}
 		return OTHERS;
