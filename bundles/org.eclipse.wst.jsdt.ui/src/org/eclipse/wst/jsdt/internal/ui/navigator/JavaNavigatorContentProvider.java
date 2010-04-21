@@ -172,7 +172,7 @@ public class JavaNavigatorContentProvider extends
 		if(!getProvideMembers())
 			return;
 		
-		// replace files with CUs
+		// replace child files with CUs
 		Object[] children = currentChildren.toArray();
 		for (int i = 0; i < children.length; i++) {
 			if (children[i] instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IResource) children[i]).getName())) {
@@ -181,6 +181,13 @@ public class JavaNavigatorContentProvider extends
 					currentChildren.remove(children[i]);
 					currentChildren.add(element);
 				}
+			}
+		}
+		// append JS Model children as children of IProjects
+		if (parent instanceof IProject) {
+			Object[] projectChildren = super.getChildren(JavaScriptCore.create((IProject) parent));
+			for (int i = 0; i < projectChildren.length; i++) {
+				currentChildren.add(projectChildren[i]);
 			}
 		}
 	}
