@@ -2957,7 +2957,7 @@ public class PreferenceConstants {
 	/**
 	 * The symbolic font name for the JavaScript properties file editor text font 
 	 * (value <code>"org.eclipse.wst.jsdt.ui.PropertiesFileEditor.textfont"</code>).
-	 * 
+	 * @deprecated - we don't expose this editor
 	 * 
 	 */
 	public static final String PROPERTIES_FILE_EDITOR_TEXT_FONT= "org.eclipse.wst.jsdt.ui.PropertiesFileEditor.textfont"; //$NON-NLS-1$

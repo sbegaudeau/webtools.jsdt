@@ -823,7 +823,7 @@
             %javaEditorFontDefintion.description
          </description>
       </fontDefinition>
-      <fontDefinition
+      <!--<fontDefinition
             label="%propertiesFileEditorFontDefiniton.label"
             defaultsTo="org.eclipse.jface.textfont"
             categoryId="org.eclipse.wst.jsdt.ui.presentation"
@@ -831,7 +831,7 @@
          <description>
             %propertiesFileEditorFontDefintion.description
          </description>
-      </fontDefinition>
+      </fontDefinition>-->
       <fontDefinition
             label="%javadocDisplayFontDefiniton.label"
             defaultsTo="org.eclipse.jface.dialogfont"
@@ -1566,7 +1566,7 @@
             id="org.eclipse.wst.jsdt.internal.ui.compare.JavaMergeViewer">
          <description>%javaCompareFontDefiniton.description</description>
       </fontDefinition>
-      <fontDefinition
+      <!--<fontDefinition
             label="%propertiesFileCompareFontDefiniton.label"
             defaultsTo="org.eclipse.wst.jsdt.ui.PropertiesFileEditor.textfont"
             categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
@@ -1574,7 +1574,7 @@
          <description>
             %propertiesFileCompareFontDefiniton.description
          </description>
-      </fontDefinition>
+      </fontDefinition>-->
    </extension>
    
    <extension
