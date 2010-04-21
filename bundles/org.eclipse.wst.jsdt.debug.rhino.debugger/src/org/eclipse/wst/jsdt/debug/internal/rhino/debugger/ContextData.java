@@ -13,11 +13,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.mozilla.javascript.debug.DebugFrame;
 
 /**
  * Rhino implementation of {@link ContextData}

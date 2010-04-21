@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.debug.internal.ui.adapters;
 import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.debug.internal.ui.viewers.update.DebugEventHandler;
 import org.eclipse.debug.internal.ui.viewers.update.DebugTargetProxy;
-import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 
 /**
  * Model proxy for our {@link IJavaScriptDebugTarget}

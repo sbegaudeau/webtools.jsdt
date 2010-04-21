@@ -88,10 +88,11 @@ public class JavaScriptContentAssistProcessor implements IContentAssistProcessor
      * @param string message
      */
     private void setErrorMessage(String string) {
-    	if (string != null && string.length() == 0) {
-			string = null;
+    	String error = string;
+    	if (error != null && error.length() == 0) {
+			error = null;
 		}
-        fErrorMessage = string;
+        fErrorMessage = error;
     }
 
 	/* (non-Javadoc)

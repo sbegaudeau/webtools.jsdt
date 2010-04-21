@@ -160,9 +160,11 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	 */
 	public void setCondition(String condition) throws CoreException {
 		if (condition != null && condition.length() == 0) {
-			condition = null;
+			setAttribute(CONDITION, null);
 		}
-		setAttribute(CONDITION, condition);
+		else {
+			setAttribute(CONDITION, condition);
+		}
 		recreateBreakpoint();
 	}
 

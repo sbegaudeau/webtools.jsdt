@@ -57,7 +57,7 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 	protected ModelDelta addPathToThread(ModelDelta delta, IThread thread) {
 		ILaunch launch = thread.getLaunch();
 		Object[] children = launch.getChildren();
-		delta = delta.addNode(launch, indexOf(getLaunchManager().getLaunches(), launch), IModelDelta.NO_CHANGE, children.length);
+		ModelDelta newdelta = delta.addNode(launch, indexOf(getLaunchManager().getLaunches(), launch), IModelDelta.NO_CHANGE, children.length);
 		IDebugTarget debugTarget = thread.getDebugTarget();
 		int numThreads = -1;
 		int offset = getOffset(thread);
@@ -65,9 +65,13 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 			numThreads = debugTarget.getThreads().length + offset;
 		} catch (DebugException e) {
 		}
-		return delta.addNode(debugTarget, indexOf(children, debugTarget) + offset, IModelDelta.NO_CHANGE, numThreads);
+		return newdelta.addNode(debugTarget, indexOf(children, debugTarget) + offset, IModelDelta.NO_CHANGE, numThreads);
 	}
 	
+	/**
+	 * @param thread
+	 * @return the thread offset
+	 */
 	int getOffset(IThread thread) {
 		return (PreferencesManager.getManager().showLoadedScripts() ? 1 : 0);
 	}

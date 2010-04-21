@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
-import org.mozilla.javascript.debug.DebuggableScript;
 
 /**
  * Handle for a {@link DebuggableScript} function
