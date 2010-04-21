@@ -399,7 +399,7 @@ public int nullStatus(FlowInfo flowInfo) {
 //								}
 //							}
 								
-							if (useType!=null && !(useType.id==T_null ||useType.id==T_any))
+							if (useType!=null && !(useType.id==T_null ||useType.id==T_any || useType.id==T_undefined))
 							{
 								if (define)
 								{
