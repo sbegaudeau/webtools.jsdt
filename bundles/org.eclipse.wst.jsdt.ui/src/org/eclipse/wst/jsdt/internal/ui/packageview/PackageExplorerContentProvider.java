@@ -808,8 +808,10 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				return false;
 			}
 			
-			if ((kind == IJavaScriptElementDelta.CHANGED) && !isStructuralCUChange(flags)) {
-				return false; // test moved ahead
+			if ((kind == IJavaScriptElementDelta.CHANGED) /* && !isStructuralCUChange(flags)*/) {
+				// XXX: Remove structure change optimization until ASTConvertor is ready
+				if ((flags & IJavaScriptElementDelta.F_CONTENT) == 1)
+					return false; // test moved ahead
 			}
 			
 			if (!isOnClassPath(cu)) { // TODO: isOnClassPath expensive! Should be put after all cheap tests
