@@ -171,7 +171,7 @@ public class NameLookup implements SuffixConstants {
 	 * Allows working copies to take precedence over compilation units.
 	 */
 	protected HashMap typesInWorkingCopies;
-	protected HashMap bindingsInWorkingCopies;
+	protected HashMap[] bindingsInWorkingCopies;
 
 	public long timeSpentInSeekTypesInSourcePackage = 0;
 	public long timeSpentInSeekTypesInBinaryPackage = 0;
@@ -207,58 +207,50 @@ public class NameLookup implements SuffixConstants {
 				// ignore (implementation of HashtableOfArrayToObject supports cloning)
 			}
 			this.typesInWorkingCopies = new HashMap();
-			this.bindingsInWorkingCopies = new HashMap();
+			this.bindingsInWorkingCopies = new HashMap[Binding.NUMBER_BASIC_BINDING];
+			for (int j = 0; j <Binding.NUMBER_BASIC_BINDING; j++) {
+				this.bindingsInWorkingCopies[j] = new HashMap();
+			}
 			this.workingCopies=workingCopies;
 			for (int i = 0, length = workingCopies.length; i < length; i++) {
 				IJavaScriptUnit workingCopy = workingCopies[i];
-				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
-				HashMap typeMap = (HashMap) this.typesInWorkingCopies.get(pkg);
-				HashMap[] bindingsMap = (HashMap[]) this.bindingsInWorkingCopies.get(pkg);
-				if (typeMap == null) {
-					typeMap = new HashMap();
-					this.typesInWorkingCopies.put(pkg, typeMap);
-
-					bindingsMap = new HashMap[Binding.NUMBER_BASIC_BINDING];
-					for (int j = 0; j <Binding.NUMBER_BASIC_BINDING; j++) {
-						bindingsMap[j] = new HashMap();
-					}
-					this.bindingsInWorkingCopies.put(pkg, bindingsMap);
-				}
+				
 				try {
 					IType[] types = workingCopy.getTypes();
 					int typeLength = types.length;
 					if (typeLength == 0) {
 						String typeName = Util.getNameWithoutJavaLikeExtension(workingCopy.getElementName());
-						typeMap.put(typeName, NO_TYPES);
+						this.typesInWorkingCopies.put(typeName, NO_TYPES);
 					} else {
 						for (int j = 0; j < typeLength; j++) {
 							IType type = types[j];
 							String typeName = type.getElementName();
-							Object existing = typeMap.get(typeName);
+							Object existing = this.typesInWorkingCopies.get(typeName);
 							if (existing == null) {
-								typeMap.put(typeName, type);
+								this.typesInWorkingCopies.put(typeName, type);
 							} else if (existing instanceof IType) {
-								typeMap.put(typeName, new IType[] {(IType) existing, type});
+								this.typesInWorkingCopies.put(typeName, new IType[] {(IType) existing, type});
 							} else {
 								IType[] existingTypes = (IType[]) existing;
 								int existingTypeLength = existingTypes.length;
 								System.arraycopy(existingTypes, 0, existingTypes = new IType[existingTypeLength+1], 0, existingTypeLength);
 								existingTypes[existingTypeLength] = type;
-								typeMap.put(typeName, existingTypes);
+								this.typesInWorkingCopies.put(typeName, existingTypes);
 							}
 						}
 					}
 
-					addWorkingCopyBindings(types, bindingsMap[Binding.TYPE]);
-					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.VARIABLE]);
-					addWorkingCopyBindings(workingCopy.getFields(), bindingsMap[Binding.LOCAL]);
-					addWorkingCopyBindings(workingCopy.getFunctions(), bindingsMap[Binding.METHOD]);
+					addWorkingCopyBindings(types, this.bindingsInWorkingCopies[Binding.TYPE]);
+					addWorkingCopyBindings(workingCopy.getFields(), this.bindingsInWorkingCopies[Binding.VARIABLE]);
+					addWorkingCopyBindings(workingCopy.getFields(), this.bindingsInWorkingCopies[Binding.LOCAL]);
+					addWorkingCopyBindings(workingCopy.getFunctions(), this.bindingsInWorkingCopies[Binding.METHOD]);
 
 				} catch (JavaScriptModelException e) {
 					// working copy doesn't exist -> ignore
 				}
 
 				// add root of package fragment to cache
+				PackageFragment pkg = (PackageFragment) workingCopy.getParent();
 				IPackageFragmentRoot root = (IPackageFragmentRoot) pkg.getParent();
 				String[] pkgName = pkg.names;
 				Object existing = this.packageFragments.get(pkgName);
@@ -1516,7 +1508,7 @@ public class NameLookup implements SuffixConstants {
 							topLevelTypeName = firstDot == -1 ? matchName : matchName.substring(0, firstDot);
 					}
 					if (this.bindingsInWorkingCopies != null) {
-						if (seekBindingsInWorkingCopies(matchName,bindingType, pkg, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor))
+						if (seekBindingsInWorkingCopies(matchName,bindingType, firstDot, partialMatch, topLevelTypeName, acceptFlags, requestor))
 							return;
 					}
 
@@ -2031,13 +2023,15 @@ public class NameLookup implements SuffixConstants {
 		} else if (object instanceof IJavaScriptElement[]) {
 			if (object == NO_BINDINGS) return true; // all types where deleted -> type is hidden
 			IJavaScriptElement[] topLevelElements = (IJavaScriptElement[]) object;
+			boolean isAnyBindingAccepted = false;
 			for (int i = 0, length = topLevelElements.length; i < length; i++) {
 				if (requestor.isCanceled())
 					return false;
 				if (doAcceptBinding(topLevelElements[i], bindingType, true/*a source type*/,requestor)) {
-					return true; // return the first one
+					isAnyBindingAccepted = true;
 				}
 			}
+			return isAnyBindingAccepted;
 		}
 		return false;
 
@@ -2045,7 +2039,6 @@ public class NameLookup implements SuffixConstants {
 	protected boolean seekBindingsInWorkingCopies(
 			String name,
 			int bindingType,
-			IPackageFragment pkg,
 			int firstDot,
 			boolean partialMatch,
 			String topLevelTypeName,
@@ -2054,7 +2047,7 @@ public class NameLookup implements SuffixConstants {
 
 		bindingType=bindingType & Binding.BASIC_BINDINGS_MASK;
 		if (!partialMatch) {
-			HashMap []bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			HashMap []bindingsMap = (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies);
 			if (bindingsMap != null) {
 				if (checkBindingAccept(topLevelTypeName, bindingsMap, bindingType, requestor))
 					return true;
@@ -2072,7 +2065,7 @@ public class NameLookup implements SuffixConstants {
 						return true;
 			}
 		} else {
-			HashMap[] bindingsMap = (HashMap[]) (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies.get(pkg));
+			HashMap[] bindingsMap = (this.bindingsInWorkingCopies == null ? null : this.bindingsInWorkingCopies);
 			if (bindingsMap != null) {
 				Iterator iterator = bindingsMap[bindingType].values().iterator();
 				while (iterator.hasNext()) {
@@ -2109,20 +2102,27 @@ public class NameLookup implements SuffixConstants {
 
 			class MyRequestor implements IJavaElementRequestor
 			{
-				IJavaScriptElement element;
+				ArrayList element;
+				
 				public void acceptField(IField field) {
-					element=field;
+					if(element == null)
+						element = new ArrayList();
+					element.add(field);
 				}
 
 				public void acceptInitializer(IInitializer initializer) {
 				}
 
 				public void acceptMemberType(IType type) {
-					element=type;
+					if(element == null)
+						element = new ArrayList();
+					element.add(type);
 				}
 
 				public void acceptMethod(IFunction method) {
-					element=method;
+					if(element == null)
+						element = new ArrayList();
+					element.add(method);
 
 				}
 
@@ -2131,7 +2131,9 @@ public class NameLookup implements SuffixConstants {
 				}
 
 				public void acceptType(IType type) {
-					element=type;
+					if(element == null)
+						element = new ArrayList();
+					element.add(type);
 				}
 
 				public boolean isCanceled() {
@@ -2150,21 +2152,20 @@ public class NameLookup implements SuffixConstants {
 			JavaElementRequestor elementRequestor = new JavaElementRequestor();
 //			seekPackageFragments(packageName, false, elementRequestor);
 //			IPackageFragment[] packages= elementRequestor.getPackageFragments();
-//			for (int i = 0; i < packages.length; i++) {
-//				seekBindingsInWorkingCopies(bindingName, bindingType,
-//						packages[i], -1, partialMatch,
-//						bindingName, acceptFlags, requestor);
-//				if (requestor.element != null) {
-//					IOpenable openable = requestor.element.getOpenable();
-//					if (excludePath!=null && requestor.element.getPath().equals(excludePath))
-//						continue;
-//					if (!returnMultiple) {
-//						return new Answer(openable, null);
-//					} else
-//						foundAnswers.add(openable);
-//					requestor.element=null;
-//				}
-//			}
+			seekBindingsInWorkingCopies(bindingName, bindingType, -1, partialMatch,
+					bindingName, acceptFlags, requestor);
+			if (requestor.element != null) {
+				for(int i = 0; i < requestor.element.size(); i++) {
+					IOpenable openable = ((IJavaScriptElement)requestor.element.get(i)).getOpenable();
+					if (excludePath!=null && ((IJavaScriptElement)requestor.element.get(i)).getPath().equals(excludePath))
+						continue;
+					if (!returnMultiple) {
+						return new Answer(openable, null);
+					} else
+						foundAnswers.add(openable);
+				}
+				requestor.element=null;
+			}
 			/*
 			 * if (true){ findTypes(new String(prefix), storage,
 			 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return; }
