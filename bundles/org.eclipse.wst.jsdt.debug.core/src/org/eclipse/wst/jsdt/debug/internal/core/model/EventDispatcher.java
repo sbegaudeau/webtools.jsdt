@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -34,7 +33,7 @@ public final class EventDispatcher implements Runnable {
 	 */
 	public static final int EVENT_SCRIPT_LOADED = 0x0001;
 	
-	private HashMap listeners = null;
+	private HashMap /*<EventRequest, IJSDIEventListener>*/ listeners = null;
 	private boolean shutdown = false;
 	private JavaScriptDebugTarget target = null;
 
@@ -57,12 +56,7 @@ public final class EventDispatcher implements Runnable {
 		if(this.listeners == null) {
 			this.listeners = new HashMap(4);
 		}
-		HashSet lsts = (HashSet) this.listeners.get(request);
-		if(lsts == null) {
-			lsts = new HashSet(4);
-			this.listeners.put(request, lsts);
-		}
-		lsts.add(listener);
+		this.listeners.put(request, listener);
 	}
 
 	/**
@@ -74,10 +68,7 @@ public final class EventDispatcher implements Runnable {
 	 */
 	public synchronized boolean removeEventListener(IJavaScriptEventListener listener, EventRequest request) {
 		if(this.listeners != null) {
-			HashSet lsts = (HashSet) this.listeners.get(request);
-			if(lsts != null) {
-				return lsts.remove(listener);
-			}
+			return this.listeners.remove(request) != null;
 		}
 		return false;
 	}
@@ -112,17 +103,14 @@ public final class EventDispatcher implements Runnable {
 	void dispatch(EventSet eventSet) {
 		Event event = null;
 		boolean resume = true;
-		HashSet lsts = null;
 		for (Iterator iter = eventSet.iterator(); iter.hasNext();) {
 			event = (Event) iter.next();
 			if (event == null) {
 				continue;
 			}
-			lsts = (HashSet) this.listeners.get(event.request());
-			if(lsts != null) {
-				for (Iterator iter2 = lsts.iterator(); iter2.hasNext();) {
-					resume &= ((IJavaScriptEventListener)iter2.next()).handleEvent(event, target, false, eventSet);
-				}
+			IJavaScriptEventListener listener = (IJavaScriptEventListener) this.listeners.get(event.request());
+			if(listener != null) {
+				resume &= listener.handleEvent(event, target, false, eventSet);
 			}
 		}
 
@@ -131,11 +119,9 @@ public final class EventDispatcher implements Runnable {
 			if (event == null) {
 				continue;
 			}
-			lsts = (HashSet) this.listeners.get(event.request());
-			if(lsts != null) {
-				for (Iterator iter2 = lsts.iterator(); iter2.hasNext();) {
-					((IJavaScriptEventListener)iter2.next()).eventSetComplete(event, target, !resume, eventSet);
-				}
+			IJavaScriptEventListener listener = (IJavaScriptEventListener) this.listeners.get(event.request());
+			if(listener != null) {
+				listener.eventSetComplete(event, target, !resume, eventSet);
 			}
 		}
 		if (resume) {
