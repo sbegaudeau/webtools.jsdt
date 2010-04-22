@@ -5266,6 +5266,7 @@
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
 				</or>
 			</triggerPoints>
 			<possibleChildren>
@@ -5274,6 +5275,7 @@
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
 				</or>
 			</possibleChildren> 
 			<actionProvider

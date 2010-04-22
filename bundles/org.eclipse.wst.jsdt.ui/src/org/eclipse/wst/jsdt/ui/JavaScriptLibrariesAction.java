@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.CodeStylePreferencePage;
 
@@ -71,15 +72,18 @@ public class JavaScriptLibrariesAction implements IObjectActionDelegate {
 
 
 	public void selectionChanged(IAction arg0, ISelection arg1) {
-			if(arg1 instanceof IStructuredSelection) {
-				IStructuredSelection selection = (IStructuredSelection)arg1;
-				Object item = selection.getFirstElement();
-				
-				if(item instanceof ProjectLibraryRoot) {
-					ProjectLibraryRoot root = ((ProjectLibraryRoot)item);
-					project = root.getProject();
-				}
+		if (arg1 instanceof IStructuredSelection) {
+			IStructuredSelection selection = (IStructuredSelection) arg1;
+			Object item = selection.getFirstElement();
+
+			if (item instanceof NamespaceGroup) {
+				item = ((NamespaceGroup) item).getPackageFragmentRoot();
 			}
+			if (item instanceof ProjectLibraryRoot) {
+				ProjectLibraryRoot root = ((ProjectLibraryRoot) item);
+				project = root.getProject();
+			}
+		}
 
 	}
 	

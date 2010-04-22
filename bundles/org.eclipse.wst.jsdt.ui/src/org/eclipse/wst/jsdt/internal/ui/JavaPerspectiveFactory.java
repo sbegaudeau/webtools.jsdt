@@ -22,6 +22,8 @@ import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 
 public class JavaPerspectiveFactory implements IPerspectiveFactory {
 	
+	private static final String ID_ALL_MARKERS_VIEW = "org.eclipse.ui.views.AllMarkersView"; //$NON-NLS-1$
+
 	/**
 	 * Constructs a new Default layout engine.
 	 */
@@ -40,6 +42,8 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
+		outputfolder.addPlaceholder(ID_ALL_MARKERS_VIEW);
+		
 		outputfolder.addView(JavaScriptUI.ID_JAVADOC_VIEW);
 		outputfolder.addView(JavaScriptUI.ID_SOURCE_VIEW);
 		outputfolder.addPlaceholder(TemplatesView.ID);

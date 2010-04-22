@@ -13,8 +13,10 @@ package org.eclipse.wst.jsdt.internal.ui.packageview;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -47,6 +49,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
@@ -286,7 +289,10 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)((ContainerFolder)parentElement).getParentObject());
 			}
 			if (parentElement instanceof PackageFragmentRootContainer)
-				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, true);
+				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, fIsFlatLayout, null);
+			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRootContainer() != null) {
+				return getContainerPackageFragmentRoots(((NamespaceGroup) parentElement).getPackageFragmentRootContainer(), true, ((NamespaceGroup) parentElement).getText());
+			}
 			
 			if(parentElement instanceof ProjectLibraryRoot) {
 //				return ((ProjectLibraryRoot)parentElement).getChildren();
@@ -348,61 +354,123 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return NO_CHILDREN;
 			}			
 			if (parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
-				return getLibraryChildren((IPackageFragmentRoot)parentElement);
+				return getLibraryChildren((IPackageFragmentRoot)parentElement, fIsFlatLayout, null);
+			}
+			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRoot().isVirtual()) {
+				return getLibraryChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement).getText());
 			}
 			else if (parentElement instanceof IPackageFragmentRoot && IIncludePathEntry.CPE_SOURCE == ((IPackageFragmentRoot) parentElement).getRawIncludepathEntry().getEntryKind()) {
-				Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
-				if (rawChildren == null)
-					return new Object[0];
-
-				ArrayList allChildren = new ArrayList();
-				ArrayList expanded = new ArrayList();
-				expanded.addAll(Arrays.asList(rawChildren));
-
-
-				if (expanded == null || expanded.size() < 1)
-					return new Object[0];
-
-				Object next = expanded.remove(0);
-
-				while (next != null) {
-					if (next instanceof IPackageFragment) {
-						expanded.addAll(Arrays.asList(((IPackageFragment) next).getChildren()));
-					}
-					else if (next instanceof IPackageFragmentRoot) {
-						expanded.addAll(Arrays.asList(((IPackageFragmentRoot) next).getChildren()));
-					}
-					else if (next instanceof IClassFile) {
-						List newChildren = Arrays.asList(filter(((IClassFile) next).getChildren()));
-						allChildren.removeAll(newChildren);
-						allChildren.addAll(newChildren);
-					}
-					else if (next instanceof IJavaScriptUnit) {
-						List newChildren = Arrays.asList(filter(((IJavaScriptUnit) next).getChildren()));
-						allChildren.removeAll(newChildren);
-						allChildren.addAll(newChildren);
-
-					}
-
-					if (expanded.size() > 0)
-						next = expanded.remove(0);
-					else
-						next = null;
-
-				}
-
-				return allChildren.toArray();
+				return getSourceChildren(parentElement, fIsFlatLayout, null);
+			}
+			else if (parentElement instanceof NamespaceGroup && IIncludePathEntry.CPE_SOURCE == ((NamespaceGroup) parentElement).getPackageFragmentRoot().getRawIncludepathEntry().getEntryKind()) {
+				return getSourceChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement).getText());
 			}
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
+			e.printStackTrace();
 			return NO_CHILDREN;
 		}
 	}
-	
 
-private Object[] getLibraryChildren(IPackageFragmentRoot container) {
-		
-		
+	private Object[] getSourceChildren(Object parentElement, boolean neverGroup, String filterGroupName) throws JavaScriptModelException {
+		Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
+		if (rawChildren == null)
+			return new Object[0];
+
+		ArrayList allChildren = new ArrayList();
+		ArrayList expanded = new ArrayList();
+		expanded.addAll(Arrays.asList(rawChildren));
+
+		if (expanded.isEmpty())
+			return new Object[0];
+
+		Object next = expanded.remove(0);
+		Map groups = new HashMap();
+
+		while (next != null) {
+			if (next instanceof IPackageFragment) {
+				expanded.addAll(Arrays.asList(((IPackageFragment) next).getChildren()));
+			}
+			else if (next instanceof IPackageFragmentRoot) {
+				expanded.addAll(Arrays.asList(((IPackageFragmentRoot) next).getChildren()));
+			}
+			else if (next instanceof IClassFile || next instanceof IJavaScriptUnit) {
+				IJavaScriptElement[] filtered = filter(((IParent) next).getChildren());
+				List newChildren = Arrays.asList(filtered);
+				allChildren.removeAll(newChildren);
+				if (fIsFlatLayout || neverGroup) {
+					if (filterGroupName == null) {
+						allChildren.addAll(newChildren);
+					}
+					else {
+						for (int j = 0; j < filtered.length; j++) {
+							switch(filtered[j].getElementType()) {
+								case IJavaScriptElement.TYPE :
+								case IJavaScriptElement.FIELD :
+								case IJavaScriptElement.METHOD :
+								case IJavaScriptElement.INITIALIZER :
+								case IJavaScriptElement.LOCAL_VARIABLE : {
+									String displayName = filtered[j].getDisplayName();
+									int groupEnd = displayName.lastIndexOf('.');
+									if (groupEnd > 0) {
+										String groupName = displayName.substring(0, groupEnd);
+										if (groupName.equals(filterGroupName)) {
+											allChildren.add(filtered[j]);
+										}
+									}
+									break;
+								}
+								default : {
+									allChildren.add(filtered[j]);
+								}
+							}
+						}
+					}
+				}
+				else {
+					for (int j = 0; j < filtered.length; j++) {
+						switch(filtered[j].getElementType()) {
+							case IJavaScriptElement.TYPE :
+							case IJavaScriptElement.FIELD :
+							case IJavaScriptElement.METHOD :
+							case IJavaScriptElement.INITIALIZER :
+							case IJavaScriptElement.LOCAL_VARIABLE : {
+								String displayName = filtered[j].getDisplayName();
+								int groupEnd = displayName.lastIndexOf('.');
+								if (groupEnd > 0) {
+									String groupName = displayName.substring(0, groupEnd);
+									if (!groups.containsKey(groupName)) {
+										NamespaceGroup group = new NamespaceGroup((IPackageFragmentRoot) parentElement, groupName);
+										groups.put(groupName, group);
+										allChildren.add(group);
+									}
+								}
+								else {
+									allChildren.add(filtered[j]);
+								}
+
+								break;
+							}
+							default : {
+								allChildren.add(filtered[j]);
+							}
+						}
+					}
+				}
+			}
+
+			if (expanded.size() > 0)
+				next = expanded.remove(0);
+			else
+				next = null;
+
+		}
+
+		return allChildren.toArray();
+	}
+	
+	
+	private Object[] getLibraryChildren(IPackageFragmentRoot container, boolean neverGroup, String filterGroupName) {		
 		Object[] children=null;
 		try {
 			children = container.getChildren();
@@ -413,6 +481,11 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		if(children==null) return null;
 		ArrayList allChildren = new ArrayList();
 		
+		Map groups = null;
+		if (!fIsFlatLayout) {
+			groups = new HashMap();
+		}
+	
 		boolean unique = false;
 		try {
 			while(!unique && children!=null && children.length>0) {
@@ -425,18 +498,78 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 						break;
 					}
 				}
-				ArrayList more = new ArrayList();
+				List more = new ArrayList();
 				for(int i = 0;!unique && i<children.length;i++) {
 					if(children[i] instanceof IPackageFragment) {
 						more.addAll(Arrays.asList(((IPackageFragment)children[i]).getChildren()));
 					}else if(children[i] instanceof IPackageFragmentRoot) {
 						more.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
-					}else if(children[i] instanceof IClassFile) {
-						more.addAll(Arrays.asList( filter(((IClassFile)children[i]).getChildren())) );
-					}else if(children[i] instanceof IJavaScriptUnit) {
-						more.addAll(Arrays.asList( filter(((IJavaScriptUnit)children[i]).getChildren())) );
-					}else {
-						/* bottomed out, now at javaElement level */
+					}else if(children[i] instanceof IClassFile || children[i] instanceof IJavaScriptUnit) {
+						IJavaScriptElement[] filtered = filter(((IParent) children[i]).getChildren());
+						List newChildren = Arrays.asList(filtered);
+						allChildren.removeAll(newChildren);
+						if (fIsFlatLayout || neverGroup) {
+							if (filterGroupName == null) {
+								allChildren.addAll(newChildren);
+							}
+							else {
+								for (int j = 0; j < filtered.length; j++) {
+									switch(filtered[j].getElementType()) {
+										case IJavaScriptElement.TYPE :
+										case IJavaScriptElement.FIELD :
+										case IJavaScriptElement.METHOD :
+										case IJavaScriptElement.INITIALIZER :
+										case IJavaScriptElement.LOCAL_VARIABLE : {
+											String displayName = filtered[j].getDisplayName();
+											int groupEnd = displayName.lastIndexOf('.');
+											if (groupEnd > 0) {
+												String groupName = displayName.substring(0, groupEnd);
+												if (groupName.equals(filterGroupName)) {
+													allChildren.add(filtered[j]);
+												}
+											}
+											break;
+										}
+										default : {
+											allChildren.add(filtered[j]);
+										}
+									}
+								}
+							}
+						}
+						else {
+							for (int j = 0; j < filtered.length; j++) {
+								switch(filtered[j].getElementType()) {
+									case IJavaScriptElement.TYPE :
+									case IJavaScriptElement.FIELD :
+									case IJavaScriptElement.METHOD :
+									case IJavaScriptElement.INITIALIZER :
+									case IJavaScriptElement.LOCAL_VARIABLE : {
+										String displayName = filtered[j].getDisplayName();
+										int groupEnd = displayName.lastIndexOf('.');
+										if (groupEnd > 0) {
+											String groupName = displayName.substring(0, groupEnd);
+											if (!groups.containsKey(groupName)) {
+												NamespaceGroup group = new NamespaceGroup(container, groupName);
+												groups.put(groupName, group);
+												allChildren.add(group);
+											}
+										}
+										else {
+											allChildren.add(filtered[j]);
+										}
+
+										break;
+									}
+									default : {
+										allChildren.add(filtered[j]);
+									}
+								}
+							}
+						}
+					}
+					else {
+						/* bottomed out, now at javaScriptElement level */
 						unique=true;
 						break;
 					}
@@ -448,7 +581,6 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		
 		
 		return allChildren.toArray();
 	}
@@ -529,9 +661,9 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 //	}
 //	
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
-		return getContainerPackageFragmentRoots(container, false);
+		return getContainerPackageFragmentRoots(container, false, null);
 	}
-	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean createFolder) {
+	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean neverGroup, String filterGroupName) {
 		
 			Object[] children = container.getChildren();
 			if(children==null) return new Object[0];
@@ -541,8 +673,13 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			expanded.addAll(Arrays.asList(children));
 			
 			
-			if(expanded==null || expanded.size() < 1) return new Object[0];
+			if(expanded.isEmpty()) return new Object[0];
 			
+			Map groups = null;
+			if (!fIsFlatLayout) {
+				groups = new HashMap();
+			}
+		
 			Object next = expanded.remove(0);
 
 			while(next!=null) {
@@ -551,15 +688,69 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 						expanded.addAll(Arrays.asList(((IPackageFragment)next).getChildren()));
 					}else if(next instanceof IPackageFragmentRoot) {
 						expanded.addAll(Arrays.asList(((IPackageFragmentRoot)next).getChildren()));
-					}else if(next instanceof IClassFile) {
-						List newChildren = Arrays.asList( filter(((IClassFile)next).getChildren() ));
+					}else if(next instanceof IClassFile || next instanceof IJavaScriptUnit) {
+						IJavaScriptElement[] filtered = filter(((IParent) next).getChildren());
+						List newChildren = Arrays.asList(filtered);
 						allChildren.removeAll(newChildren);
-						allChildren.addAll(newChildren);
-					}else if(next instanceof IJavaScriptUnit) {
-						List newChildren = Arrays.asList( filter(((IJavaScriptUnit)next).getChildren()));
-						allChildren.removeAll(newChildren);
-						allChildren.addAll(newChildren);
-					
+						if (fIsFlatLayout || neverGroup) {
+							if (filterGroupName == null) {
+								allChildren.addAll(newChildren);
+							}
+							else {
+								for (int j = 0; j < filtered.length; j++) {
+									switch(filtered[j].getElementType()) {
+										case IJavaScriptElement.TYPE :
+										case IJavaScriptElement.FIELD :
+										case IJavaScriptElement.METHOD :
+										case IJavaScriptElement.INITIALIZER :
+										case IJavaScriptElement.LOCAL_VARIABLE : {
+											String displayName = filtered[j].getDisplayName();
+											int groupEnd = displayName.lastIndexOf('.');
+											if (groupEnd > 0) {
+												String groupName = displayName.substring(0, groupEnd);
+												if (groupName.equals(filterGroupName)) {
+													allChildren.add(filtered[j]);
+												}
+											}
+											break;
+										}
+										default : {
+											allChildren.add(filtered[j]);
+										}
+									}
+								}
+							}
+						}
+						else {
+							for (int j = 0; j < filtered.length; j++) {
+								switch(filtered[j].getElementType()) {
+									case IJavaScriptElement.TYPE :
+									case IJavaScriptElement.FIELD :
+									case IJavaScriptElement.METHOD :
+									case IJavaScriptElement.INITIALIZER :
+									case IJavaScriptElement.LOCAL_VARIABLE : {
+										String displayName = filtered[j].getDisplayName();
+										int groupEnd = displayName.lastIndexOf('.');
+										if (groupEnd > 0) {
+											String groupName = displayName.substring(0, groupEnd);
+											if (!groups.containsKey(groupName)) {
+												NamespaceGroup group = new NamespaceGroup(container, groupName);
+												groups.put(groupName, group);
+												allChildren.add(group);
+											}
+										}
+										else {
+											allChildren.add(filtered[j]);
+										}
+
+										break;
+									}
+									default : {
+										allChildren.add(filtered[j]);
+									}
+								}
+							}
+						}
 					}
 				} catch (JavaScriptModelException ex) {
 					// TODO Auto-generated catch block

@@ -39,6 +39,7 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.internal.ui.preferences.MembersOrderPreferenceCache;
 
@@ -163,8 +164,11 @@ public class JavaScriptElementComparator extends ViewerComparator {
 		} else if (element instanceof PackageFragmentRootContainer) {
 			return PACKAGEFRAGMENTROOTS;
 		} else if (element instanceof ProjectLibraryRoot) {
-			return PACKAGEFRAGMENTROOTS;
+			return PROJECTS;
+		} else if (element instanceof NamespaceGroup) {
+			return PROJECTS;
 		}
+
 		return OTHERS;
 	}
 	
