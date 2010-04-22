@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.core.jsdi;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 
 /**
  * Abstract representation of an object that can be mirrored in a {@link VirtualMachine}.

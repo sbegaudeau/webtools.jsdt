@@ -54,7 +54,7 @@ public class JavaScriptSourceViewer extends SourceViewer implements IPropertyCha
 	 * @param styles
 	 */
 	public JavaScriptSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
-		this(parent, ruler, null, false, styles |= SWT.LEFT_TO_RIGHT);
+		this(parent, ruler, null, false, styles | SWT.LEFT_TO_RIGHT);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class JavaScriptSourceViewer extends SourceViewer implements IPropertyCha
 	 * @param styles
 	 */
 	public JavaScriptSourceViewer(Composite parent, IVerticalRuler ruler, IOverviewRuler overviewRuler, boolean isOverviewRulerVisible, int styles) {
-		super(parent, ruler, overviewRuler, isOverviewRulerVisible, styles |= SWT.LEFT_TO_RIGHT);
+		super(parent, ruler, overviewRuler, isOverviewRulerVisible, styles | SWT.LEFT_TO_RIGHT);
 	}
 	
 	/**

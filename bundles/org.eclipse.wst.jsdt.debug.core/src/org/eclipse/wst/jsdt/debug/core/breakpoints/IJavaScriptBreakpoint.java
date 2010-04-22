@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.core.breakpoints;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
