@@ -27,6 +27,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
@@ -61,17 +62,48 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	class StepHandler implements IJavaScriptEventListener {
 
+		private StepRequest request = null;
+		
 		/**
 		 * Sends step request
 		 */
 		public void step(int kind, int detail) {
 			if (canResume()) {
-				registerStepRequest(this, kind);
+				request = createStepRequest(this, kind);
 				thread.resume();
 				pendingstep = this;
 				clearFrames();
 				clearBreakpoints();
 				fireResumeEvent(detail);
+			}
+		}
+		
+		/**
+		 * Creates a new step request
+		 * 
+		 * @param listener the element that will respond to the event
+		 * @param step step command to send
+		 * @return the newly created {@link StepRequest}
+		 */
+		StepRequest createStepRequest(IJavaScriptEventListener listener, int step) {
+			EventRequestManager requestManager = getVM().eventRequestManager();
+			StepRequest stepRequest = requestManager.createStepRequest(thread, step);
+			stepRequest.setEnabled(true);
+			getJavaScriptDebugTarget().addJSDIEventListener(listener, stepRequest);
+			return stepRequest;
+		}
+		
+		/**
+		 * Aborts the pending step
+		 */
+		void abort() {
+			try {
+				deleteRequest(this, request);
+				thread.resume();
+				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+			}
+			finally {
+				pendingstep = null;
 			}
 		}
 		
@@ -173,6 +205,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 							IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
 							return NLS.bind(ModelMessages.breakpoint_at_line_location, new String[] {Integer.toString(bp.getLineNumber()), getSourceName()});
 						}
+						//TODO also need to report stopped at debugger; statement
 					} catch (CoreException ce) {
 						JavaScriptDebugPlugin.log(ce);
 					}
@@ -367,6 +400,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	void resume(boolean fireevent) {
 		if (canResume()) {
+			abortPendingStep();
 			this.thread.resume();
 			markResumed();
 			if (fireevent) {
@@ -375,6 +409,16 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 	}
 
+	/**
+	 * Aborts a pending step and sets the pending step to <code>null</code>
+	 */
+	void abortPendingStep() {
+		if(pendingstep != null) {
+			pendingstep.abort();
+			pendingstep = null;
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -565,19 +609,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	synchronized void markTerminated() {
 		this.state = TERMINATED;
 	}
-
-	/**
-	 * registers a  step request
-	 * 
-	 * @param listener the element that will respond to the event
-	 * @param step step command to send
-	 */
-	public void registerStepRequest(IJavaScriptEventListener listener, int step) {
-		EventRequestManager requestManager = getVM().eventRequestManager();
-		StepRequest stepRequest = requestManager.createStepRequest(thread, step);
-		stepRequest.setEnabled(true);
-		getJavaScriptDebugTarget().addJSDIEventListener(listener, stepRequest);
-	}
 	
 	/**
 	 * Delete the given event request
@@ -622,9 +653,22 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @see org.eclipse.debug.core.model.IStep#canStepInto()
 	 */
 	public boolean canStepInto() {
-		return canStep();
+		return canStep() || atScriptLoadBreakpoint();
 	}
 
+	/**
+	 * Returns if the top breakpoint the thread is suspended on is an {@link IJavaScriptLoadBreakpoint}
+	 * 
+	 * @return <code>true</code> if the thread is suspended at a script load breakpoint, <code>false</code>
+	 * otherwise
+	 */
+	boolean atScriptLoadBreakpoint() {
+		if(this.breakpoints != null && this.breakpoints.size() > 1) {
+			return this.breakpoints.get(0) instanceof IJavaScriptLoadBreakpoint;
+		}
+		return false;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
