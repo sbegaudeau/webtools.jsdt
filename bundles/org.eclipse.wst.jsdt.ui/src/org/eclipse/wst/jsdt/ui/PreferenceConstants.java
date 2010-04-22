@@ -3357,7 +3357,8 @@ public class PreferenceConstants {
 		store.setDefault(PreferenceConstants.CODEGEN_USE_OVERRIDE_ANNOTATION, true);
 
 		// MembersOrderPreferencePage
-		store.setDefault(PreferenceConstants.APPEARANCE_MEMBER_SORT_ORDER, "T,SF,SI,SM,F,I,C,M"); //$NON-NLS-1$
+//		store.setDefault(PreferenceConstants.APPEARANCE_MEMBER_SORT_ORDER, "T,SF,SI,SM,F,I,C,M"); //$NON-NLS-1$
+		store.setDefault(PreferenceConstants.APPEARANCE_MEMBER_SORT_ORDER, "T,F,I,C,M"); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.APPEARANCE_VISIBILITY_SORT_ORDER, "B,V,R,D"); //$NON-NLS-1$
 		store.setDefault(PreferenceConstants.APPEARANCE_ENABLE_VISIBILITY_SORT_ORDER, false);
 

@@ -47,7 +47,7 @@ public class MembersOrderPreferencePage extends PreferencePage implements IWorkb
 	public static final String PREF_ID= "org.eclipse.wst.jsdt.ui.preferences.MembersOrderPreferencePage"; //$NON-NLS-1$
 	
 //	private static final String ALL_SORTMEMBER_ENTRIES= "T,SI,SF,SM,I,F,C,M"; //$NON-NLS-1$
-	private static final String ALL_SORTMEMBER_ENTRIES= "T,F,C,M"; //$NON-NLS-1$
+	private static final String ALL_SORTMEMBER_ENTRIES= "T,I,F,C,M"; //$NON-NLS-1$
 	private static final String ALL_VISIBILITY_ENTRIES= "B,V,R,D"; //$NON-NLS-1$
 	private static final String PREF_OUTLINE_SORT_OPTION= PreferenceConstants.APPEARANCE_MEMBER_SORT_ORDER;
 	private static final String PREF_VISIBILITY_SORT_OPTION= PreferenceConstants.APPEARANCE_VISIBILITY_SORT_ORDER;
