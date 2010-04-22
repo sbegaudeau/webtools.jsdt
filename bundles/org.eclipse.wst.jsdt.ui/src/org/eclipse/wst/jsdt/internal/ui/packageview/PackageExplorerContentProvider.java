@@ -289,7 +289,35 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, true);
 			
 			if(parentElement instanceof ProjectLibraryRoot) {
-				return ((ProjectLibraryRoot)parentElement).getChildren();
+//				return ((ProjectLibraryRoot)parentElement).getChildren();
+				// Include source folders (and also scour their model contents)
+				Object[] children1 = ((ProjectLibraryRoot) parentElement).getChildren();
+				List sourceRoots = new ArrayList();
+				try {
+					IPackageFragmentRoot[] packageFragmentRoots = ((ProjectLibraryRoot) parentElement).getProject().getPackageFragmentRoots();
+					for (int i = 0; i < packageFragmentRoots.length; i++) {
+						IIncludePathEntry entry = packageFragmentRoots[i].getRawIncludepathEntry();
+						if (IIncludePathEntry.CPE_SOURCE == entry.getEntryKind()) {
+							boolean hidden = false;
+							IIncludePathAttribute[] attribs = entry.getExtraAttributes();
+							for (int k = 0; !hidden && attribs != null && k < attribs.length; k++) {
+								hidden |= (attribs[k] == IIncludePathAttribute.HIDE);
+							}
+							if (!hidden) {
+								sourceRoots.add(packageFragmentRoots[i]);
+							}
+						}
+					}
+				}
+				catch (JavaScriptModelException e) {
+					e.printStackTrace();
+				}
+				Object[] combined = new Object[children1.length + sourceRoots.size()];
+				System.arraycopy(children1, 0, combined, 0, children1.length);
+				if (!sourceRoots.isEmpty()) {
+					System.arraycopy(sourceRoots.toArray(), 0, combined, children1.length, sourceRoots.size());
+				}
+				return combined;
 			}
 //			if (parentElement instanceof IPackageFragmentRoot) {
 //				Object[] children = super.getChildren(parentElement);
@@ -319,10 +347,52 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 					return project.members();
 				return NO_CHILDREN;
 			}			
-			if(parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
+			if (parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
 				return getLibraryChildren((IPackageFragmentRoot)parentElement);
 			}
-			
+			else if (parentElement instanceof IPackageFragmentRoot && IIncludePathEntry.CPE_SOURCE == ((IPackageFragmentRoot) parentElement).getRawIncludepathEntry().getEntryKind()) {
+				Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
+				if (rawChildren == null)
+					return new Object[0];
+
+				ArrayList allChildren = new ArrayList();
+				ArrayList expanded = new ArrayList();
+				expanded.addAll(Arrays.asList(rawChildren));
+
+
+				if (expanded == null || expanded.size() < 1)
+					return new Object[0];
+
+				Object next = expanded.remove(0);
+
+				while (next != null) {
+					if (next instanceof IPackageFragment) {
+						expanded.addAll(Arrays.asList(((IPackageFragment) next).getChildren()));
+					}
+					else if (next instanceof IPackageFragmentRoot) {
+						expanded.addAll(Arrays.asList(((IPackageFragmentRoot) next).getChildren()));
+					}
+					else if (next instanceof IClassFile) {
+						List newChildren = Arrays.asList(filter(((IClassFile) next).getChildren()));
+						allChildren.removeAll(newChildren);
+						allChildren.addAll(newChildren);
+					}
+					else if (next instanceof IJavaScriptUnit) {
+						List newChildren = Arrays.asList(filter(((IJavaScriptUnit) next).getChildren()));
+						allChildren.removeAll(newChildren);
+						allChildren.addAll(newChildren);
+
+					}
+
+					if (expanded.size() > 0)
+						next = expanded.remove(0);
+					else
+						next = null;
+
+				}
+
+				return allChildren.toArray();
+			}
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
 			return NO_CHILDREN;
@@ -829,6 +899,9 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			// if the raw class path has changed we refresh the entire project
 			if ((flags & IJavaScriptElementDelta.F_INCLUDEPATH_CHANGED) != 0) {
 				postRefresh(element, ORIGINAL, element, runnables);
+				if (element.getElementType() == IJavaScriptElement.JAVASCRIPT_PROJECT) {
+					postRefresh(((IJavaScriptProject)element).getProject(), ORIGINAL, ((IJavaScriptProject)element).getProject(), runnables);
+				}
 				return false;				
 			}
 			// if added it could be that the corresponding IProject is already shown. Remove it first.
