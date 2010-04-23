@@ -1389,58 +1389,76 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 	
 	public boolean checkIfDuplicateType(SourceTypeBinding binding1, SourceTypeBinding binding2) {
-		InferredType type1 = binding1.classScope.inferredType;
 		InferredType type2 = binding2.classScope.inferredType;
-		if(type1.superClass == null && type2.superClass != null)
-			return false;
-		if(type1.superClass != null && type2.superClass == null)
-			return false;
-		if(type1.superClass != null && type2.superClass != null &&
-				!CharOperation.equals(type1.superClass.getName(), type2.superClass.getName()))
-			return false;
-		if(type1.attributes.length != type2.attributes.length)
-			return false;
-		if(type1.methods == null && type2.methods != null)
-			return false;
-		if(type1.methods != null && type2.methods == null)
-			return false;
-		if(type1.methods != null && type2.methods != null && type1.methods.size() != type2.methods.size())
-			return false;
-		
-		StringBuffer checkSumString1 = new StringBuffer(); //$NON-NLS-1$
-		StringBuffer checkSumString2 = new StringBuffer(); //$NON-NLS-1$
-		
-		for(int i = 0; i < type1.attributes.length; i++) {
-			checkSumString1.append((type1.attributes[i] == null ? "" : new String(type1.attributes[i].name)));
-			checkSumString2.append((type2.attributes[i] == null ? "" : new String(type2.attributes[i].name)));
-		}
-		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString1.toString().getBytes());
-		long checkSum1 = checksumCalculator.getValue();
-		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString2.toString().getBytes());
-		long checkSum2 = checksumCalculator.getValue();
-		if(checkSum1 != checkSum2)
-			return false;
-		
-		checkSumString1 = new StringBuffer();
-		checkSumString2 = new StringBuffer();
-		if(type1.methods != null && type2.methods != null) {
-			for(int i = 0; i < type1.methods.size(); i++) {
-				checkSumString1.append(new String(((InferredMethod)type1.methods.get(i)).name));
-				checkSumString2.append(new String(((InferredMethod)type2.methods.get(i)).name));
-			}
-		}
-		
-		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString1.toString().getBytes());
-		checkSum1 = checksumCalculator.getValue();
-		checksumCalculator.reset();
-		checksumCalculator.update(checkSumString2.toString().getBytes());
-		checkSum2 = checksumCalculator.getValue();
-		if(checkSum1 != checkSum2)
-			return false;
+		if(binding1.classScope == null) {
+			if(binding1.superclass == null && type2.superClass != null)
+				return false;
+			if(binding1.superclass != null && type2.superClass == null)
+				return false;
+			if(binding1.superclass != null && type2.superClass != null &&
+					!CharOperation.equals(binding1.superclass.sourceName, type2.superClass.getName()))
+				return false;
+			if(binding1.fields.length != type2.attributes.length)
+				return false;
+			if(binding1.methods == null && type2.methods != null)
+				return false;
+			if(binding1.methods != null && type2.methods == null)
+				return false;
+			if(binding1.methods != null && type2.methods != null && binding1.methods.length != type2.methods.size())
+				return false;
+		} else {
+			InferredType type1 = binding1.classScope.inferredType;
 
+			if(type1.superClass == null && type2.superClass != null)
+				return false;
+			if(type1.superClass != null && type2.superClass == null)
+				return false;
+			if(type1.superClass != null && type2.superClass != null &&
+					!CharOperation.equals(type1.superClass.getName(), type2.superClass.getName()))
+				return false;
+			if(type1.attributes.length != type2.attributes.length)
+				return false;
+			if(type1.methods == null && type2.methods != null)
+				return false;
+			if(type1.methods != null && type2.methods == null)
+				return false;
+			if(type1.methods != null && type2.methods != null && type1.methods.size() != type2.methods.size())
+				return false;
+			
+			StringBuffer checkSumString1 = new StringBuffer(); //$NON-NLS-1$
+			StringBuffer checkSumString2 = new StringBuffer(); //$NON-NLS-1$
+			
+			for(int i = 0; i < type1.attributes.length; i++) {
+				checkSumString1.append((type1.attributes[i] == null ? "" : new String(type1.attributes[i].name)));
+				checkSumString2.append((type2.attributes[i] == null ? "" : new String(type2.attributes[i].name)));
+			}
+			checksumCalculator.reset();
+			checksumCalculator.update(checkSumString1.toString().getBytes());
+			long checkSum1 = checksumCalculator.getValue();
+			checksumCalculator.reset();
+			checksumCalculator.update(checkSumString2.toString().getBytes());
+			long checkSum2 = checksumCalculator.getValue();
+			if(checkSum1 != checkSum2)
+				return false;
+			
+			checkSumString1 = new StringBuffer();
+			checkSumString2 = new StringBuffer();
+			if(type1.methods != null && type2.methods != null) {
+				for(int i = 0; i < type1.methods.size(); i++) {
+					checkSumString1.append(new String(((InferredMethod)type1.methods.get(i)).name));
+					checkSumString2.append(new String(((InferredMethod)type2.methods.get(i)).name));
+				}
+			}
+			
+			checksumCalculator.reset();
+			checksumCalculator.update(checkSumString1.toString().getBytes());
+			checkSum1 = checksumCalculator.getValue();
+			checksumCalculator.reset();
+			checksumCalculator.update(checkSumString2.toString().getBytes());
+			checkSum2 = checksumCalculator.getValue();
+			if(checkSum1 != checkSum2)
+				return false;
+		}
 		return true;
 	}
 

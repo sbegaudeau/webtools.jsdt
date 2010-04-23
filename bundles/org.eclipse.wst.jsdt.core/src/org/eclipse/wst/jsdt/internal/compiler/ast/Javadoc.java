@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -324,7 +324,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 		}
 
 		// Store if a reference exists to an overriden method/constructor or the method is in a local type,
-		boolean reportMissing = methDecl == null || !((overriding && this.inheritedPositions != -1) || superRef || (methDecl.binding.declaringClass != null && methDecl.binding.declaringClass.isLocalType()));
+		boolean reportMissing = methDecl == null || !((overriding && this.inheritedPositions != -1) || superRef || (methDecl.binding != null && methDecl.binding.declaringClass != null && methDecl.binding.declaringClass.isLocalType()));
 		if (!overriding && this.inheritedPositions != -1) {
 			int start = (int) (this.inheritedPositions >>> 32);
 			int end = (int) this.inheritedPositions;
@@ -340,7 +340,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			if (reportMissing && methDecl != null) {
 				if (methDecl.isMethod()) {
 					MethodDeclaration meth = (MethodDeclaration) methDecl;
-					if (meth.binding.returnType != TypeBinding.VOID && !meth.binding.isConstructor()) {
+					if (meth.binding != null && meth.binding.returnType != TypeBinding.VOID && !meth.binding.isConstructor()) {
 						// method with return should have @return tag
 						methScope.problemReporter().javadocMissingReturnTag(meth.declarationSourceStart, meth.declarationSourceEnd, methDecl.binding.modifiers);
 					}
@@ -458,7 +458,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 			if (reportMissing) {
 				for (int i = 0; i < argumentsSize; i++) {
 					Argument arg = methodDecl.arguments[i];
-					scope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, methodDecl.binding.modifiers);
+					scope.problemReporter().javadocMissingParamTag(arg.name, arg.sourceStart, arg.sourceEnd, methodDecl.binding == null ? 0 : methodDecl.binding.modifiers);
 				}
 			}
 		} else {

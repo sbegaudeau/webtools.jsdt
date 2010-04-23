@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ public class EqualExpression extends BinaryExpression implements IEqualExpressio
 					result = right.analyseCode(currentScope, flowContext, flowInfo).asNegatedCondition();
 				}
 			}
-			else if ((right.constant != Constant.NotAConstant) && (right.constant.typeID() == T_boolean)) {
+			else if (right.constant != null && (right.constant != Constant.NotAConstant) && (right.constant.typeID() == T_boolean)) {
 				if (right.constant.booleanValue()) { //  anything == true
 					//  this is equivalent to the left argument inits
 					result = left.analyseCode(currentScope, flowContext, flowInfo);
