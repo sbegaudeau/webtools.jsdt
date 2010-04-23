@@ -52,7 +52,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
-import org.eclipse.wst.jsdt.ui.JavaScriptUI;
+import org.eclipse.wst.jsdt.debug.internal.ui.DebugWCManager;
 
 /**
  * Javascript adapter for toggling breakpoints in the JSDT editor
@@ -308,7 +308,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	ITypeRoot getTypeRoot(IEditorInput input) {
 		ITypeRoot root = (ITypeRoot) input.getAdapter(IClassFile.class);
 		if(root == null) {
-			root = JavaScriptUI.getWorkingCopyManager().getWorkingCopy(input);
+			root = DebugWCManager.getCompilationUnit(input, false);
 		}
 		return root;
 	}
