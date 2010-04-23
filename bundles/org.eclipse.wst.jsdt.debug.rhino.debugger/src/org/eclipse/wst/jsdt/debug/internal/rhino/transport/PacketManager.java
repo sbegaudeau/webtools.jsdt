@@ -36,8 +36,9 @@ public abstract class PacketManager implements Runnable {
 	 * @param connection the connection to communicate on, <code>null</code> is not accepted
 	 */
 	protected PacketManager(Connection connection) {
-		if(connection==null)
-			throw new NullPointerException();
+		if(connection == null) {
+			throw new IllegalArgumentException("You cannot create a new PacketManager with a null Connection"); //$NON-NLS-1$
+		}
 		this.connection = connection;
 	}
 
@@ -103,8 +104,9 @@ public abstract class PacketManager implements Runnable {
 	 * @param thread the new partner thread, <code>null</code> is not accepted
 	 */
 	public void setPartnerThread(Thread thread) {
-		if(thread==null)
-			throw new NullPointerException();
+		if(thread == null) {
+			throw new IllegalArgumentException("You cannot send a null partner thread on the PacketManager"); //$NON-NLS-1$
+		}
 		this.partnerThread = thread;
 	}
 }

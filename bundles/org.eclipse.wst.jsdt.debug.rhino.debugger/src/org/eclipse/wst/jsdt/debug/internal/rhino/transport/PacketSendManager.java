@@ -73,8 +73,9 @@ public class PacketSendManager extends PacketManager {
 	 * @throws DisconnectedException
 	 */
 	public void sendPacket(Packet packet) throws DisconnectedException {
-		if(packet==null)
-			throw new NullPointerException();
+		if(packet == null) {
+			throw new IllegalArgumentException("You cannot send a null packet"); //$NON-NLS-1$
+		}
 		if (isDisconnected()) {
 			throw new DisconnectedException("Runtime disconnected", getDisconnectedException()); //$NON-NLS-1$
 		}

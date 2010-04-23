@@ -39,8 +39,12 @@ public class PipedConnection implements Connection {
 	 * @throws IOException
 	 */
 	public PipedConnection(InputStream is, OutputStream os) throws IOException {
-		if(is==null || os==null)
-			throw new NullPointerException();
+		if(is == null) {
+			throw new IllegalArgumentException("You cannot create a new PipedConnection on a null InputStream"); //$NON-NLS-1$
+		}
+		if(os == null) {
+			throw new IllegalArgumentException("You cannot create a new PipedConnection on a null OutputStream"); //$NON-NLS-1$
+		}
 		writer = new BufferedWriter(new OutputStreamWriter(os, Constants.UTF_8));
 		reader = new BufferedReader(new InputStreamReader(is, Constants.UTF_8));
 	}

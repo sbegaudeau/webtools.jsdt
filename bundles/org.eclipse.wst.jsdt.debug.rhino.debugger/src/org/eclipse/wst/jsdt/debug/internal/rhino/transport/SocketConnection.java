@@ -38,8 +38,9 @@ public class SocketConnection implements Connection {
 	 * @throws IOException
 	 */
 	public SocketConnection(Socket socket) throws IOException {
-		if(socket==null)
-			throw new NullPointerException();
+		if(socket == null) {
+			throw new IllegalArgumentException("You cannot create a new SocketConnection on a null Socket"); //$NON-NLS-1$
+		}
 		this.socket = socket;
 		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Constants.UTF_8));
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Constants.UTF_8));

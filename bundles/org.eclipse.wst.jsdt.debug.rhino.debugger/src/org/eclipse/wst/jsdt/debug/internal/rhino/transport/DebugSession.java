@@ -65,7 +65,7 @@ public class DebugSession {
 	 */
 	public void sendRequest(Request request) throws DisconnectedException {
 		if(request == null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException("You cannot send a null request"); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(request);
 	}
@@ -78,7 +78,7 @@ public class DebugSession {
 	 */
 	public void sendEvent(EventPacket event) throws DisconnectedException {
 		if(event == null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException("You cannot send a null event"); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(event);
 	}
@@ -91,7 +91,7 @@ public class DebugSession {
 	 */
 	public void sendResponse(Response response) throws DisconnectedException {
 		if(response == null) {
-			throw new NullPointerException();
+			throw new IllegalArgumentException("You cannot send a null response"); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(response);
 	}
