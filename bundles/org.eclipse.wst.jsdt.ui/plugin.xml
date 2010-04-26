@@ -5267,6 +5267,7 @@
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.TypeDelegate" />
 				</or>
 			</triggerPoints>
 			<possibleChildren>
@@ -5276,6 +5277,7 @@
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.TypeDelegate" />
 				</or>
 			</possibleChildren> 
 			<actionProvider
@@ -5341,9 +5343,9 @@
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
-						<adapt type="java.util.Collection"> 
+					<!--	<adapt type="java.util.Collection"> 
 							<count value="0" />
-						</adapt>				
+						</adapt> -->				
 					</or>
 				</enablement>
 		   </actionProvider> 
@@ -5371,6 +5373,7 @@
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
 				</or>
 		     </enablement>
 		  </commonWizard>

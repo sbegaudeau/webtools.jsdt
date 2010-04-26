@@ -69,6 +69,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.navigator.TypeDelegate;
 import org.eclipse.wst.jsdt.ui.JavaScriptUI;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
@@ -127,6 +128,8 @@ public class EditorUtility {
 
 		if (inputElement instanceof IFile)
 			return openInEditor((IFile) inputElement, activate);
+		if (inputElement instanceof TypeDelegate)
+			return openInEditor(((TypeDelegate) inputElement).getDelegate(), activate);
 		
 		if(inputElement instanceof IJavaScriptElement && ((IJavaScriptElement)inputElement).isVirtual()) {
 			
@@ -409,6 +412,10 @@ public class EditorUtility {
 
 				}
 				return new InternalClassFileEditorInput((IClassFile) element);
+			}
+
+			if (element instanceof TypeDelegate) {
+				return getEditorInput(((TypeDelegate) element).getDelegate());
 			}
 
 			element= element.getParent();

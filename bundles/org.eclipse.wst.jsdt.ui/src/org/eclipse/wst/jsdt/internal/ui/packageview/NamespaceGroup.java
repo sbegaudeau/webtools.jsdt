@@ -32,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 public class NamespaceGroup implements IAdaptable {
 	String fNamePrefix;
+	int fNamePrefixLength;
 	private IPackageFragmentRoot fPackageFragmentRoot;
 	private PackageFragmentRootContainer fPackageFragmentRootContainer;
 
@@ -92,11 +93,13 @@ public class NamespaceGroup implements IAdaptable {
 	public NamespaceGroup(IPackageFragmentRoot root, String prefix) {
 		fPackageFragmentRoot = root;
 		fNamePrefix = prefix;
+		fNamePrefixLength = fNamePrefix.length();
 	}
 
 	public NamespaceGroup(PackageFragmentRootContainer root, String prefix) {
 		fPackageFragmentRootContainer = root;
 		fNamePrefix = prefix;
+		fNamePrefixLength = fNamePrefix.length();
 	}
 
 	public IPackageFragmentRoot getPackageFragmentRoot() {
@@ -110,7 +113,7 @@ public class NamespaceGroup implements IAdaptable {
 	public String getText() {
 		return fNamePrefix;
 	}
-
+	
 	/*
 	 * Copied from org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider
 	 */

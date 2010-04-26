@@ -21,7 +21,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
@@ -96,21 +95,6 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 		}else if (element instanceof IJavaScriptUnit) {
 			text = ((IJavaScriptUnit)element).getPath().lastSegment();
 		}
-		else if (!fIsFlatLayout && element instanceof IJavaScriptElement) {
-			switch (((IJavaScriptElement) element).getElementType()) {
-				case IJavaScriptElement.TYPE :
-				case IJavaScriptElement.FIELD :
-				case IJavaScriptElement.METHOD :
-				case IJavaScriptElement.INITIALIZER :
-				case IJavaScriptElement.LOCAL_VARIABLE : {
-					int groupEnd = text.lastIndexOf('.');
-					if (groupEnd > 0 && groupEnd < text.length() - 1) {
-						text = text.substring(groupEnd + 1);
-					}
-					break;
-				}
-			}
-		}
 		
 		return text;
 		
@@ -123,6 +107,10 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 			return fullName.substring(prefix.length());
 		}
 		return fullName;
+	}
+	
+	public boolean isFlatLayout() {
+		return fIsFlatLayout;
 	}
 	
 	private String getNameDelta(IFolder parent, IPackageFragment fragment) {

@@ -291,7 +291,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			if (parentElement instanceof PackageFragmentRootContainer)
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, fIsFlatLayout, null);
 			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRootContainer() != null) {
-				return getContainerPackageFragmentRoots(((NamespaceGroup) parentElement).getPackageFragmentRootContainer(), true, ((NamespaceGroup) parentElement).getText());
+				return getContainerPackageFragmentRoots(((NamespaceGroup) parentElement).getPackageFragmentRootContainer(), true, ((NamespaceGroup) parentElement));
 			}
 			
 			if(parentElement instanceof ProjectLibraryRoot) {
@@ -357,13 +357,13 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				return getLibraryChildren((IPackageFragmentRoot)parentElement, fIsFlatLayout, null);
 			}
 			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRoot().isVirtual()) {
-				return getLibraryChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement).getText());
+				return getLibraryChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement));
 			}
 			else if (parentElement instanceof IPackageFragmentRoot && IIncludePathEntry.CPE_SOURCE == ((IPackageFragmentRoot) parentElement).getRawIncludepathEntry().getEntryKind()) {
 				return getSourceChildren(parentElement, fIsFlatLayout, null);
 			}
 			else if (parentElement instanceof NamespaceGroup && IIncludePathEntry.CPE_SOURCE == ((NamespaceGroup) parentElement).getPackageFragmentRoot().getRawIncludepathEntry().getEntryKind()) {
-				return getSourceChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement).getText());
+				return getSourceChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement));
 			}
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
@@ -372,7 +372,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		}
 	}
 
-	private Object[] getSourceChildren(Object parentElement, boolean neverGroup, String filterGroupName) throws JavaScriptModelException {
+	private Object[] getSourceChildren(Object parentElement, boolean neverGroup, NamespaceGroup onlyGroup) throws JavaScriptModelException {
 		Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
 		if (rawChildren == null)
 			return new Object[0];
@@ -399,7 +399,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				List newChildren = Arrays.asList(filtered);
 				allChildren.removeAll(newChildren);
 				if (fIsFlatLayout || neverGroup) {
-					if (filterGroupName == null) {
+					if (onlyGroup == null) {
 						allChildren.addAll(newChildren);
 					}
 					else {
@@ -411,12 +411,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 								case IJavaScriptElement.INITIALIZER :
 								case IJavaScriptElement.LOCAL_VARIABLE : {
 									String displayName = filtered[j].getDisplayName();
-									int groupEnd = displayName.lastIndexOf('.');
-									if (groupEnd > 0) {
-										String groupName = displayName.substring(0, groupEnd);
-										if (groupName.equals(filterGroupName)) {
-											allChildren.add(filtered[j]);
-										}
+									int groupNamesEnd = displayName.lastIndexOf('.');
+									if (groupNamesEnd == onlyGroup.fNamePrefixLength && displayName.startsWith(onlyGroup.fNamePrefix)) {
+										allChildren.add(filtered[j]);
 									}
 									break;
 								}
@@ -470,12 +467,11 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	}
 	
 	
-	private Object[] getLibraryChildren(IPackageFragmentRoot container, boolean neverGroup, String filterGroupName) {		
+	private Object[] getLibraryChildren(IPackageFragmentRoot container, boolean neverGroup, NamespaceGroup onlyGroup) {		
 		Object[] children=null;
 		try {
 			children = container.getChildren();
 		} catch (JavaScriptModelException ex1) {
-			// TODO Auto-generated catch block
 			ex1.printStackTrace();
 		}
 		if(children==null) return null;
@@ -509,7 +505,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 						List newChildren = Arrays.asList(filtered);
 						allChildren.removeAll(newChildren);
 						if (fIsFlatLayout || neverGroup) {
-							if (filterGroupName == null) {
+							if (onlyGroup == null) {
 								allChildren.addAll(newChildren);
 							}
 							else {
@@ -521,12 +517,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 										case IJavaScriptElement.INITIALIZER :
 										case IJavaScriptElement.LOCAL_VARIABLE : {
 											String displayName = filtered[j].getDisplayName();
-											int groupEnd = displayName.lastIndexOf('.');
-											if (groupEnd > 0) {
-												String groupName = displayName.substring(0, groupEnd);
-												if (groupName.equals(filterGroupName)) {
-													allChildren.add(filtered[j]);
-												}
+											int groupNamesEnd = displayName.lastIndexOf('.');
+											if (groupNamesEnd == onlyGroup.fNamePrefixLength && displayName.startsWith(onlyGroup.fNamePrefix)) {
+												allChildren.add(filtered[j]);
 											}
 											break;
 										}
@@ -578,7 +571,6 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				if(!unique) children = more.toArray();
 			}
 		} catch (JavaScriptModelException ex) {
-			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 		
@@ -663,7 +655,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
 		return getContainerPackageFragmentRoots(container, false, null);
 	}
-	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean neverGroup, String filterGroupName) {
+	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean neverGroup, NamespaceGroup onlyGroup) {
 		
 			Object[] children = container.getChildren();
 			if(children==null) return new Object[0];
@@ -693,7 +685,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 						List newChildren = Arrays.asList(filtered);
 						allChildren.removeAll(newChildren);
 						if (fIsFlatLayout || neverGroup) {
-							if (filterGroupName == null) {
+							if (onlyGroup == null) {
 								allChildren.addAll(newChildren);
 							}
 							else {
@@ -705,12 +697,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 										case IJavaScriptElement.INITIALIZER :
 										case IJavaScriptElement.LOCAL_VARIABLE : {
 											String displayName = filtered[j].getDisplayName();
-											int groupEnd = displayName.lastIndexOf('.');
-											if (groupEnd > 0) {
-												String groupName = displayName.substring(0, groupEnd);
-												if (groupName.equals(filterGroupName)) {
-													allChildren.add(filtered[j]);
-												}
+											int groupNamesEnd = displayName.lastIndexOf('.');
+											if (groupNamesEnd == onlyGroup.fNamePrefixLength && displayName.startsWith(onlyGroup.fNamePrefix)) {
+												allChildren.add(filtered[j]);
 											}
 											break;
 										}
@@ -753,7 +742,6 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 						}
 					}
 				} catch (JavaScriptModelException ex) {
-					// TODO Auto-generated catch block
 					ex.printStackTrace();
 				}
 				

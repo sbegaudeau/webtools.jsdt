@@ -140,6 +140,26 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 	}
 
 	public String getText(Object element) {
+		if (!delegeteLabelProvider.isFlatLayout() && element instanceof TypeDelegate) {
+			return delegeteLabelProvider.getText(element);
+		}
+		if (element instanceof IJavaScriptElement) {
+			switch (((IJavaScriptElement) element).getElementType()) {
+				case IJavaScriptElement.TYPE :
+				case IJavaScriptElement.METHOD :
+				case IJavaScriptElement.FIELD :
+				case IJavaScriptElement.LOCAL_VARIABLE :
+				case IJavaScriptElement.INITIALIZER : {
+					String text = delegeteLabelProvider.getText(element);
+					int groupEnd = text.lastIndexOf('.');
+					if (groupEnd > 0 && groupEnd < text.length() - 1) {
+						text = text.substring(groupEnd + 1);
+					}
+					return text;
+				}
+			}
+		}
+
 		return delegeteLabelProvider.getText(element);
 	}
 
