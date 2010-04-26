@@ -544,9 +544,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			}
 		}
 		this.suspended = false;
-		if (this.vm != null) {
-			this.vm.resume();
-		}
+		resumeVM(false);
 		fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 	}
 
@@ -604,11 +602,11 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		try {
 			// first resume the VM, do not leave it in a suspended state
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=304574
-			if(this.vm != null) {
-				this.vm.resume();
-				this.vm.dispose();
-			}
-		} finally {
+			resumeVM(true);
+		} 
+		catch(RuntimeException rte) {}
+		finally {
+			disposeVM(true);
 			cleanup();
 			this.disconnected = true;
 			fireTerminateEvent();
@@ -634,22 +632,58 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		try {
 			// first resume the VM, do not leave it in a suspended state
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=304574
-			if (this.vm != null) {
-				this.vm.resume();
-				this.vm.dispose();
-			}
+			resumeVM(true);
 			// next terminate the underlying process
 			if (this.process != null) {
 				this.process.terminate();
 			}
 			this.terminated = true;
 		} finally {
+			disposeVM(true);
 			cleanup();
 			this.terminating = false;
 			fireTerminateEvent();
 		}
 	}
 
+	/**
+	 * disposes the underlying {@link VirtualMachine}
+	 * 
+	 * @param shutdown
+	 * @throws DebugException
+	 */
+	void disposeVM(boolean shutdown) throws DebugException {
+		if(this.vm != null) {
+			try {
+				this.vm.dispose();
+			}
+			catch(RuntimeException rte) {
+				if(!shutdown) {
+					disconnect();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * resumes the underlying {@link VirtualMachine}
+	 * 
+	 * @param shutdown if the method is being called during a terminating call
+	 * @throws DebugException 
+	 */
+	void resumeVM(boolean shutdown) throws DebugException {
+		if(this.vm != null) {
+			try {
+				this.vm.resume();
+			}
+			catch(RuntimeException rte) {
+				if(!shutdown) {
+					disconnect();
+				}
+			}
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

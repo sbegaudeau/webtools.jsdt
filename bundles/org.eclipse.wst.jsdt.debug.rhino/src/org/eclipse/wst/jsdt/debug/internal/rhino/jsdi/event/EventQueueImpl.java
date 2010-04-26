@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.MirrorImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ScriptReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ThreadReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
@@ -41,7 +42,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
  * 
  * @since 1.0
  */
-public final class EventQueueImpl implements EventQueue {
+public final class EventQueueImpl extends MirrorImpl implements EventQueue {
 
 	private VirtualMachineImpl vm;
 	private EventRequestManagerImpl eventRequestManager;
@@ -53,6 +54,7 @@ public final class EventQueueImpl implements EventQueue {
 	 * @param eventRequestManager
 	 */
 	public EventQueueImpl(VirtualMachineImpl vm, EventRequestManagerImpl eventRequestManager) {
+		super(vm);
 		this.vm = vm;
 		this.eventRequestManager = eventRequestManager;
 	}
@@ -217,6 +219,7 @@ public final class EventQueueImpl implements EventQueue {
 			RhinoDebugPlugin.log(e);
 		} catch (DisconnectedException e) {
 			vm.disconnectVM();
+			handleException(e.getMessage(), e);
 		}
 		return null;
 	}

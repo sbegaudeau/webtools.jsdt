@@ -98,7 +98,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 				frames.add(frame);
 			}
 		} catch (DisconnectedException e) {
-			RhinoDebugPlugin.log(e);
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -124,7 +124,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 			Map jsonFrame = (Map) response.getBody().get(JSONConstants.FRAME);
 			return new StackFrameImpl(vm, jsonFrame);
 		} catch (DisconnectedException e) {
-			RhinoDebugPlugin.log(e);
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -183,7 +183,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 				atBreakpoint = false;
 			}
 		} catch (DisconnectedException e) {
-			RhinoDebugPlugin.log(e);
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -204,7 +204,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 				markSuspended(false);
 			}
 		} catch (DisconnectedException e) {
-			RhinoDebugPlugin.log(e);
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}

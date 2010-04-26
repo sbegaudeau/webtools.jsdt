@@ -32,10 +32,31 @@ public class MirrorImpl implements Mirror {
 		this.vm = vm;
 	}
 
+	/**
+	 * This constructor is only to be used by {@link VirtualMachineImpl}. The name 
+	 * field is not store anywhere or used in any way.
+	 * 
+	 * @param name
+	 * @noreference This constructor is not intended to be referenced by clients.
+	 */
+	public MirrorImpl(String name) {
+		vm = (VirtualMachineImpl)this;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Mirror#virtualMachine()
 	 */
 	public VirtualMachine virtualMachine() {
 		return this.vm;
+	}
+	
+	/**
+	 * Re-throws the given exception as a {@link RuntimeException} with the given message
+	 * @param message
+	 * @param t
+	 * @since 1.1
+	 */
+	protected void handleException(String message, Throwable t) {
+		throw new RuntimeException(message, t);
 	}
 }

@@ -135,7 +135,7 @@ public class BreakpointRequestImpl extends EventRequestImpl implements Breakpoin
 			} catch (TimeoutException e) {
 				RhinoDebugPlugin.log(e);
 			} catch (DisconnectedException e) {
-				RhinoDebugPlugin.log(e);
+				handleException(e.getMessage(), e);
 			}
 		} else {
 			Request request = new Request(JSONConstants.CLEARBREAKPOINT);
@@ -145,7 +145,7 @@ public class BreakpointRequestImpl extends EventRequestImpl implements Breakpoin
 			} catch (TimeoutException e) {
 				RhinoDebugPlugin.log(e);
 			} catch (DisconnectedException e) {
-				// ignore
+				handleException(e.getMessage(), e);
 			}
 			breakpointId = null;
 		}

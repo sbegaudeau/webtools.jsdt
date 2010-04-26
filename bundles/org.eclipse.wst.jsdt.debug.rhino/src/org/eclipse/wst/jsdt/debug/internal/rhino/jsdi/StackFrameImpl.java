@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
@@ -83,9 +84,9 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 			Response response = vm.sendRequest(request, 30000);
 			return createValue(response.getBody(), true);
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 		return null;
 	}
@@ -110,9 +111,9 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 				this.cache.put(ref, value);
 				return value;
 			} catch (DisconnectedException e) {
-				e.printStackTrace();
+				handleException(e.getMessage(), e);
 			} catch (TimeoutException e) {
-				e.printStackTrace();
+				RhinoDebugPlugin.log(e);
 			}
 		}
 		return value;
@@ -209,9 +210,9 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 					variables.add(variable);
 			}
 		} catch (DisconnectedException e) {
-			e.printStackTrace();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
-			e.printStackTrace();
+			RhinoDebugPlugin.log(e);
 		}
 	}
 

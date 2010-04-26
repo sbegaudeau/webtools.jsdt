@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
  * 
  * @since 1.0
  */
-public class VirtualMachineImpl implements VirtualMachine {
+public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 
 	public final UndefinedValueImpl undefinedValue = new UndefinedValueImpl(this);
 	public final NullValueImpl nullValue = new NullValueImpl(this);
@@ -59,6 +59,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 	 * @param debugSession
 	 */
 	public VirtualMachineImpl(DebugSession debugSession) {
+		super(Constants.SPACE);
 		this.session = debugSession;
 		initalizeScripts();
 	}
@@ -80,6 +81,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			}
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -99,6 +101,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			return new ScriptReferenceImpl(this, jsonScript);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -197,6 +200,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			threads = allThreads;
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -229,6 +233,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			return new ThreadReferenceImpl(this, jsonThread);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -267,6 +272,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			return buffer.toString();
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -282,6 +288,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		} finally {
@@ -300,6 +307,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			return (String) response.getBody().get(JSONConstants.VM_NAME);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -315,6 +323,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -329,6 +338,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}
@@ -351,6 +361,7 @@ public class VirtualMachineImpl implements VirtualMachine {
 			return (String) response.getBody().get(JSONConstants.VM_VERSION);
 		} catch (DisconnectedException e) {
 			disconnectVM();
+			handleException(e.getMessage(), e);
 		} catch (TimeoutException e) {
 			RhinoDebugPlugin.log(e);
 		}

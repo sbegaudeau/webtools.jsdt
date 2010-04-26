@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.MirrorImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
 
 /**
@@ -19,18 +20,17 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
  * 
  * @since 1.0
  */
-public class EventRequestImpl implements EventRequest {
+public class EventRequestImpl extends MirrorImpl implements EventRequest {
 
 	private boolean deleted = false;
 	protected boolean enabled = false;
-	protected final VirtualMachineImpl vm;
 
 	/**
 	 * Constructor
 	 * @param vm
 	 */
 	public EventRequestImpl(VirtualMachineImpl vm) {
-		this.vm = vm;
+		super(vm);
 	}
 
 	/* (non-Javadoc)

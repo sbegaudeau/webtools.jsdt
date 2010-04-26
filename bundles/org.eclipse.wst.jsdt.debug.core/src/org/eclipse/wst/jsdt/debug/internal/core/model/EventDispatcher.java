@@ -14,11 +14,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.eclipse.debug.core.DebugException;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
  * Event dispatcher that notifies registered model elements
@@ -87,9 +89,18 @@ public final class EventDispatcher implements Runnable {
 			EventQueue queue = vm.eventQueue();
 			EventSet eventset = null;
 			while (!shutdown) {
-				eventset = queue.remove();
-				if (eventset != null) {
-					dispatch(eventset);
+				try {
+					eventset = queue.remove();
+					if (eventset != null) {
+						dispatch(eventset);
+					}
+				}
+				catch(RuntimeException rte) {
+					try {
+						this.target.terminate();
+					} catch (DebugException e) {
+						JavaScriptDebugPlugin.log(e);
+					}
 				}
 			}
 		}

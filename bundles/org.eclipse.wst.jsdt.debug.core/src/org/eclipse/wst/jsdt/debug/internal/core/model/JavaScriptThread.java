@@ -70,7 +70,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		public void step(int kind, int detail) {
 			if (canResume()) {
 				request = createStepRequest(this, kind);
-				thread.resume();
+				resumeUnderlyingThread();
 				pendingstep = this;
 				clearFrames();
 				clearBreakpoints();
@@ -99,7 +99,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		void abort() {
 			try {
 				deleteRequest(this, request);
-				thread.resume();
+				resumeUnderlyingThread();
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 			}
 			finally {
@@ -401,7 +401,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	void resume(boolean fireevent) {
 		if (canResume()) {
 			abortPendingStep();
-			this.thread.resume();
+			resumeUnderlyingThread();
 			markResumed();
 			if (fireevent) {
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
@@ -430,6 +430,24 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 	}
 
+	/**
+	 * Resumes the underlying thread
+	 */
+	void resumeUnderlyingThread() {
+		if(canResume()) {
+			try {
+				this.thread.resume();
+			}
+			catch(Exception e) {
+				try {
+					disconnect();
+				} catch (DebugException de) {
+					/*JavaScriptDebugPlugin.log(de);*/
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Delegate method to suspend the underlying thread
 	 */
@@ -663,7 +681,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * otherwise
 	 */
 	boolean atScriptLoadBreakpoint() {
-		if(this.breakpoints != null && this.breakpoints.size() > 1) {
+		if(this.breakpoints != null && this.breakpoints.size() > 0) {
 			return this.breakpoints.get(0) instanceof IJavaScriptLoadBreakpoint;
 		}
 		return false;
