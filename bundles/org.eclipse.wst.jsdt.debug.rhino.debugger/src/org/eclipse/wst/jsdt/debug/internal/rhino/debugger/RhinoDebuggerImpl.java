@@ -414,8 +414,10 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 		if (script == null || !script.isValid(lineNumber, functionName)) {
 			return null;
 		}
+
+		
 		Breakpoint newbreakpoint = new Breakpoint(nextBreakpointId(), script, lineNumber, functionName, condition, threadId);
-		Breakpoint oldbp = script.getBreakpoint(lineNumber);
+		Breakpoint oldbp = script.getBreakpoint(lineNumber, functionName);
 		if(oldbp != null) {
 			breakpoints.remove(oldbp.breakpointId);
 		}

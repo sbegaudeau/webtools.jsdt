@@ -271,11 +271,20 @@ public class ScriptSource {
 	 * @param lineNumber
 	 * @return
 	 */
-	public Breakpoint getBreakpoint(Integer lineNumber) {
+	public Breakpoint getBreakpoint(Integer line, String functionName) {
 		synchronized (lines) {
-			int value = lineNumber.intValue();
-			if((value > -1 && value < lines.length) && lines[value] != null) {
-				return lines[value].breakpoint;
+			if(line != null) {
+				int value = line.intValue();
+				if (value > -1 && value < lines.length && lines[value] != null) {
+					return lines[value].breakpoint;
+				}
+			}
+			if(functionNames != null) {
+				int index = functionNames.indexOf(functionName);
+				FunctionSource func = functionAt(index);
+				if(func != null && lines[func.linenumber()] != null) {
+					return lines[func.linenumber()].breakpoint;
+				}
 			}
 			return null;
 		}

@@ -103,7 +103,7 @@ public class ContextData {
 	 */
 	public synchronized void pushFrame(StackFrame frame, ScriptSource script, Integer lineNumber, String functionName) {
 		frames.addFirst(frame);
-		Breakpoint breakpoint = script.getBreakpoint(lineNumber);
+		Breakpoint breakpoint = script.getBreakpoint(lineNumber, functionName);
 		boolean isStepBreak = stepBreak(STEP_IN);
 		if (isStepBreak || breakpoint != null) {
 			if (sendBreakEvent(script, frame.getLineNumber(), functionName, breakpoint, isStepBreak, false)) {
@@ -227,7 +227,7 @@ public class ContextData {
 	 * @param lineNumber
 	 */
 	public synchronized void debuggerStatement(ScriptSource script, Integer lineNumber) {
-		Breakpoint breakpoint = script.getBreakpoint(lineNumber);
+		Breakpoint breakpoint = script.getBreakpoint(lineNumber, null);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (sendBreakEvent(script, lineNumber, null, breakpoint, isStepBreak, true)) {
 			suspendState();
@@ -241,7 +241,7 @@ public class ContextData {
 	 * @param lineNumber
 	 */
 	public synchronized void lineChange(ScriptSource script, Integer lineNumber) {
-		Breakpoint breakpoint = script.getBreakpoint(lineNumber);
+		Breakpoint breakpoint = script.getBreakpoint(lineNumber, null);
 		boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT);
 		if (isStepBreak || breakpoint != null) {
 			if (sendBreakEvent(script, lineNumber, null, breakpoint, isStepBreak, false)) {
