@@ -145,9 +145,12 @@ public class ContextData {
 	public synchronized void popFrame(boolean byThrow, Object resultOrException) {
 		if(!frames.isEmpty()) {
 			StackFrame frame = (StackFrame) frames.removeFirst();
-			if (stepFrame == frame)
+			if (stepFrame == frame) {
 				stepFrame = null;
-			boolean isStepBreak = stepBreak(STEP_IN | STEP_NEXT | STEP_OUT);
+				stepState = STEP_OUT;
+			}
+				
+			boolean isStepBreak = stepBreak(STEP_IN | STEP_OUT);
 			if (isStepBreak) {
 				frame = getTopFrame();
 				if (frame != null && sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, null, isStepBreak, false)) {

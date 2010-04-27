@@ -146,6 +146,8 @@ public class StackFrame implements DebugFrame {
 	 * @see org.mozilla.javascript.debug.DebugFrame#onLineChange(org.mozilla.javascript.Context, int)
 	 */
 	public void onLineChange(Context cx, int lineNumber) {
+		if (this.lineNumber == lineNumber)
+			return;
 		initializeHandles();
 		this.lineNumber = lineNumber;
 		Integer line = new Integer(this.lineNumber);
