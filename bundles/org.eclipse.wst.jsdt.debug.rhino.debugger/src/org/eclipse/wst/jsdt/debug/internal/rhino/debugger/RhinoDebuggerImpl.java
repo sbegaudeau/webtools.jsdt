@@ -451,7 +451,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 	 * @param event
 	 * @return true if the event was sent successfully, false otherwise
 	 */
-	public synchronized boolean sendEvent(EventPacket event) {
+	public boolean sendEvent(EventPacket event) {
 		return sessionManager.sendEvent(event);
 	}
 
@@ -509,7 +509,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 	 * 
 	 * @return <code>true</code> if the debugger has a connected {@link DebugSession} <code>false</code> otherwise
 	 */
-	public synchronized boolean isConnected() {
+	public boolean isConnected() {
 		return sessionManager.isConnected();
 	}
 }
