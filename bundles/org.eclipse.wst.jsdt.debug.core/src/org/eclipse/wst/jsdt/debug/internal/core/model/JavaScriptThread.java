@@ -55,7 +55,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakp
  * 
  * @since 1.0
  */
-public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptEventListener, IJavaScriptThread {
+public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptThread {
 
 	/**
 	 * handler for stepping
@@ -98,7 +98,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 */
 		void abort() {
 			try {
-				deleteRequest(this, request);
+				if(request != null) {
+					deleteRequest(this, request);
+				}
 				resumeUnderlyingThread();
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
 			}
@@ -112,13 +114,49 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 */
 		public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 			StepEvent stepEvent = (StepEvent) event;
-			return handleStepEvent(this, stepEvent);
+			return stepEvent.thread() != thread;
 		}
 
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 		 */
-		public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {}
+		public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {
+			StepEvent stepEvent = (StepEvent) event;
+			stepEnd(this, stepEvent);
+		}
+		
+		/**
+		 * Handles a {@link StepEvent}
+		 * 
+		 * @param listener the listener to remove
+		 * @param event
+		 * @return <code>true</code> if the event was not handled (we should resume), <code>false</code> if
+		 * the event was handled (we should suspend)
+		 */
+		void stepEnd(IJavaScriptEventListener listener, StepEvent event) {
+			ThreadReference threadReference = event.thread();
+			if (threadReference == thread) {
+				pendingstep = null;
+				markSuspended();
+				fireSuspendEvent(DebugEvent.STEP_END);
+				if(request == event.request()) {
+					deleteRequest(listener, event.request());
+					request = null;
+				}
+			}
+		}
+		
+		/**
+		 * Delete the given event request
+		 * 
+		 * @param listener the element that will be removed as a listener
+		 * @param request
+		 */
+		void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
+			getJavaScriptDebugTarget().removeJSDIEventListener(listener, request);
+			EventRequestManager requestManager = getVM().eventRequestManager();
+			requestManager.deleteEventRequest(request);
+		}
 	}
 	
 	/**
@@ -387,7 +425,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
-	 * Callback for the owning target to tell the thread to suspend
+	 * Call-back for the owning target to tell the thread to suspend
 	 */
 	public synchronized void targetResume() {
 		resume(false);
@@ -400,7 +438,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	void resume(boolean fireevent) {
 		if (canResume()) {
-			abortPendingStep();
+			if(pendingstep != null) {
+				pendingstep.abort();
+			}
 			resumeUnderlyingThread();
 			markResumed();
 			if (fireevent) {
@@ -409,16 +449,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 	}
 
-	/**
-	 * Aborts a pending step and sets the pending step to <code>null</code>
-	 */
-	void abortPendingStep() {
-		if(pendingstep != null) {
-			pendingstep.abort();
-			pendingstep = null;
-		}
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -616,38 +646,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		this.state = TERMINATED;
 	}
 	
-	/**
-	 * Delete the given event request
-	 * 
-	 * @param listener the element that will be removed as a listener
-	 * @param request
-	 */
-	public void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
-		getJavaScriptDebugTarget().removeJSDIEventListener(listener, request);
-		EventRequestManager requestManager = getVM().eventRequestManager();
-		requestManager.deleteEventRequest(request);
-	}
-	
-	/**
-	 * Handles a {@link StepEvent}
-	 * 
-	 * @param listener the listener to remove
-	 * @param event
-	 * @return <code>true</code> if the event was not handled (we should resume), <code>false</code> if
-	 * the event was handled (we should suspend)
-	 */
-	boolean handleStepEvent(IJavaScriptEventListener listener, StepEvent event) {
-		ThreadReference threadReference = event.thread();
-		if (threadReference == thread) {
-			pendingstep = null;
-			markSuspended();
-			fireSuspendEvent(DebugEvent.STEP_END);
-			deleteRequest(listener, event.request());
-			return false;
-		}
-		return true;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -769,6 +767,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
+	 * Call-back from the target to terminate the thread during shutdown
+	 */
+	void terminated() {
+		markTerminated();
+		fireTerminateEvent();
+	}
+	
+	/**
 	 * Returns if the underlying {@link ThreadReference} of this thread matches the given {@link ThreadReference} using pointer equality
 	 * 
 	 * @param thread
@@ -829,21 +835,5 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			return this.thread.frameCount();
 		}
 		return 0;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
-	 */
-	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
-		if(event instanceof StepEvent) {
-			return handleStepEvent(this, (StepEvent) event);
-		}
-		return true;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
-	 */
-	public void eventSetComplete(Event event, JavaScriptDebugTarget target,	boolean suspend, EventSet eventSet) {
 	}
 }

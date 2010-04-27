@@ -364,11 +364,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		Iterator iter = getThreadIterator();
 		while (iter.hasNext()) {
 			JavaScriptThread thread = (JavaScriptThread) iter.next();
-			try {
-				thread.terminate();
-			} catch (DebugException e) {
-				JavaScriptDebugPlugin.log(e);
-			}
+			thread.terminated();
 		}
 		threads.clear();
 		removeJSDIEventListener(this, threadEnterRequest);
