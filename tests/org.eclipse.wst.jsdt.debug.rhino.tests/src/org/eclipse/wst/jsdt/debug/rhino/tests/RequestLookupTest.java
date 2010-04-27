@@ -84,7 +84,7 @@ public class RequestLookupTest extends FrameRequestTests {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-		//script + breakpoint on line 6 + exit step event
-		evalScript(script, 3);
+		//script + breakpoint on line 6
+		evalScript(script, 2);
 	}
 }

@@ -39,8 +39,8 @@ public class FrameRequestTests extends RequestTest {
 		
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-		//script + breakpoint on line 6 + final step out break
-		evalScript(script, 3);
+		//script + breakpoint on line 6
+		evalScript(script, 2);
 	}
 	
 	/**
@@ -93,7 +93,7 @@ public class FrameRequestTests extends RequestTest {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-		//script + breakpoint + StepEvent when we exit context
-		evalScript(script, 3);
+		//script + breakpoint
+		evalScript(script, 2);
 	}
 }
