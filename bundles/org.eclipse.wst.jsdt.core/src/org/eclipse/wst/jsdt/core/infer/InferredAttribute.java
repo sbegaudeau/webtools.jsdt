@@ -37,10 +37,8 @@ public class InferredAttribute extends InferredMember{
 	public int modifiers;
 
 	/**
-	 * @deprecated
-	 *
 	 * Creates an attribute with this name in the given inferred type. This
-	 * method is discouraged in favor of supplying the ASTNode which declared
+	 * method is <b>discouraged</b> in favor of supplying the ASTNode which declared
 	 * the attribute.
 	 */
 	public InferredAttribute(char [] name, InferredType inType, int start, int end)
