@@ -63,7 +63,7 @@ public class StackFrame implements DebugFrame {
 			this.lineNumber = function.linenumber();
 		}
 		else {
-			this.lineNumber = 1;
+			this.lineNumber = script.firstLine().intValue();
 		}
 	}
 

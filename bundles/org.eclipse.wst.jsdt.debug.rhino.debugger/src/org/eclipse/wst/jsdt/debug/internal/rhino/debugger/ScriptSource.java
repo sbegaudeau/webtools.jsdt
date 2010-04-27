@@ -54,6 +54,8 @@ public class ScriptSource {
 	 */
 	private ArrayList functionNames = null;
 
+	private Integer firstLine = null;
+	
 	/**
 	 * The location of the script
 	 */
@@ -93,12 +95,16 @@ public class ScriptSource {
 		DebuggableScript[] functions = collectFunctions(script);
 		int flength = functions.length;
 		int max = 0;
+		int min = Integer.MAX_VALUE;
 		HashSet lineNumbers = new HashSet(flength+rootlines.length+1);
 		//dump in the line #'s from the root script
 		for (int i = 0; i < rootlines.length; i++) {
 			int line = rootlines[i];
 			if(line > max) {
 				max = line;
+			}
+			if(line < min) {
+				min = line;
 			}
 			lineNumbers.add(new Integer(line));
 		}
@@ -116,6 +122,9 @@ public class ScriptSource {
 						int currentLine = lines[j];
 						if(currentLine > max) {
 							max = currentLine;
+						}
+						if(currentLine < min) {
+							min = currentLine;
 						}
 						if (currentLine < start) {
 							start = currentLine;
@@ -147,8 +156,18 @@ public class ScriptSource {
 			}
 			lineNumbers = null;
 		}
+		this.firstLine = new Integer(min);
 	}
 
+	/**
+	 * Returns the first executable line in the script
+	 * 
+	 * @return the first executable line in the script
+	 */
+	public Integer firstLine() {
+		return this.firstLine;
+	}
+	
 	/**
 	 * @return if this script represents the stdin script
 	 */

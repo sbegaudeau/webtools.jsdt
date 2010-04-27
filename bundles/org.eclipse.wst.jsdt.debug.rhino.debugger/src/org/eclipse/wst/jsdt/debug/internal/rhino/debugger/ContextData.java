@@ -145,17 +145,10 @@ public class ContextData {
 	public synchronized void popFrame(boolean byThrow, Object resultOrException) {
 		if(!frames.isEmpty()) {
 			StackFrame frame = (StackFrame) frames.removeFirst();
-			if (frames.isEmpty()) {
-				//no frames left, continue
-				stepState = STEP_OUT;
-				sendBreakEvent(frame.getScript(), new Integer(-1), null, null, true, false);
-				resume(JSONConstants.STEP_OUT);
-				return;
-			}
 			boolean isStepBreak = stepBreak(STEP_OUT);
 			if (isStepBreak) {
 				frame = getTopFrame();
-				if (sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, null, isStepBreak, false)) {
+				if (frame != null && sendBreakEvent(frame.getScript(), frame.getLineNumber(), null, null, isStepBreak, false)) {
 					suspendState();
 				}
 			}

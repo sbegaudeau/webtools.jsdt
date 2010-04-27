@@ -566,19 +566,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @param eventSet
 	 */
 	public void suspendForScriptLoadComplete(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean suspend, EventSet eventSet) {
-		if (suspend) {
-			try {
-				if (breakpoint.getSuspendPolicy() == IJavaScriptBreakpoint.SUSPEND_THREAD) {
-					markSuspended();
-				} else {
-					getDebugTarget().suspend();
-				}
-				suspendUnderlyingThread();
-				fireSuspendEvent(DebugEvent.BREAKPOINT);
-			} catch (CoreException ce) {
-				JavaScriptDebugPlugin.log(ce);
-			}
-		}
+		suspendForBreakpointComplete(breakpoint, suspend, eventSet);
 	}
 	
 	/**
@@ -652,13 +640,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		ThreadReference threadReference = event.thread();
 		if (threadReference == thread) {
 			pendingstep = null;
-			if(event.location() == null) {
-				resume(true);
-			}
-			else {
-				markSuspended();
-				fireSuspendEvent(DebugEvent.STEP_END);
-			}
+			markSuspended();
+			fireSuspendEvent(DebugEvent.STEP_END);
 			deleteRequest(listener, event.request());
 			return false;
 		}
