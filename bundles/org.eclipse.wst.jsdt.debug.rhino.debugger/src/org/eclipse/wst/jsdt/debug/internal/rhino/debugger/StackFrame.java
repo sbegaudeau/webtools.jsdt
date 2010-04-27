@@ -20,6 +20,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EcmaError;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.Script;
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
@@ -115,16 +116,8 @@ public class StackFrame implements DebugFrame {
 		this.thisObj = thisObj;
 		initializeHandles();
 		contextData.pushFrame(this, this.script, new Integer(lineNumber), getFunctionName());
-		sendContextEnterEvent();
 	}
 
-	/**
-	 * Sends a context enter event
-	 */
-	void sendContextEnterEvent() {
-		//TODO make this work
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -135,16 +128,6 @@ public class StackFrame implements DebugFrame {
 		this.thisObj = null;
 		clearHandles();
 		this.contextData.popFrame(byThrow, resultOrException);
-		sendContextExitEvent(byThrow, resultOrException);
-	}
-
-	/**
-	 * Sends a function exit event
-	 * @param byThrow
-	 * @param resultOrException
-	 */
-	void sendContextExitEvent(boolean byThrow, Object resultOrException) {
-		//TODO make this work
 	}
 	
 	/*
