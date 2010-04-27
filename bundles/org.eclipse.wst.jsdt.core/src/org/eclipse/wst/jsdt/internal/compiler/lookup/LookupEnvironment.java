@@ -204,6 +204,17 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 			acceptedCompilationUnits.add(fileName);
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
+	} else if (answer.isCompilationUnits()) {
+		ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
+		for (int i = 0; i < compilationUnits.length; i++) {
+			String fileName=new String(compilationUnits[i].getFileName());
+			if (!acceptedCompilationUnits.contains(fileName)) {
+				// the type was found as a .js file, try to build it then search the cache
+				acceptedCompilationUnits.add(fileName);
+				typeRequestor.accept(compilationUnits[i], answer
+						.getAccessRestriction());
+			}
+		}
 	} else if (answer.isSourceType())
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), packageBinding, answer.getAccessRestriction());
