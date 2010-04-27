@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.ScriptLoadEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptPreferencesManager;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptThread;
 
@@ -102,11 +103,14 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 				int vote = thread.suspendForScriptLoad(this, script, suspendVote);
 				if(isGlobalLoadSuspend(vote) ||
 						((vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE)) {
+					JavaScriptPreferencesManager.setGlobalSuspendOn(script.sourceURI().getPath());
 					thread.addBreakpoint(this);
 					return false;
 				}
+				
 			}
 		}
+		JavaScriptPreferencesManager.setGlobalSuspendOn(null);
 		return true;
 	}
 	
