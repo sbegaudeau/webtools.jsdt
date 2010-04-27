@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -31,34 +32,41 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 public class TestEventHandler implements Runnable {
 
 	/**
-	 * Sub-handler for test to implement and add to the root {@link TestEventHandler}
+	 * Sub-handler for test to implement and add to the root
+	 * {@link TestEventHandler}
 	 */
 	public interface Subhandler {
 		boolean handleEvent(DebugSession debugSession, EventPacket event);
+
 		String testName();
 	}
 
 	/**
 	 * Sub-handler for breakpoint specific operations
+	 * 
 	 * @since 1.1
 	 */
 	public interface BreakpointSubHandler extends Subhandler {
 		/**
 		 * Array of line numbers to add breakpoints to
+		 * 
 		 * @param lines
 		 */
 		void linesToAddBreakpoints(int[] lines);
+
 		/**
 		 * Array of lines to remove breakpoints from
+		 * 
 		 * @param lines
 		 */
 		void linesToRemoveBreakpoints(int[] lines);
 	}
-	
+
 	private DebugSession debugSession;
 	private Thread thread;
-	private final List subhandlers = Collections.synchronizedList(new ArrayList());
+	private final List subhandlers = new ArrayList();
 	private final ArrayList expectedEvents = new ArrayList();
+	private final ArrayList actualEvents = new ArrayList();
 	private volatile boolean shutdown = false;
 
 	private int eventCount = 0;
@@ -67,8 +75,10 @@ public class TestEventHandler implements Runnable {
 	/**
 	 * Constructor
 	 * 
-	 * @param debugSession the current session to handle
-	 * @param testname the name of the test using this handler
+	 * @param debugSession
+	 *            the current session to handle
+	 * @param testname
+	 *            the name of the test using this handler
 	 */
 	public TestEventHandler(DebugSession debugSession, String testname) {
 		this.debugSession = debugSession;
@@ -88,29 +98,35 @@ public class TestEventHandler implements Runnable {
 	 */
 	public void stop() {
 		shutdown = true;
-		this.expectedEvents.clear();
-		this.subhandlers.clear();
-		this.eventCount = 0;
 		thread.interrupt();
 		try {
 			thread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		synchronized (this) {
+			this.expectedEvents.clear();
+			this.actualEvents.clear();
+			this.subhandlers.clear();
+			this.eventCount = 0;
+		}
 	}
 
 	/**
 	 * Sets the events that the handler is expected to receive
+	 * 
 	 * @param events
 	 */
-	public void setExpectedEvents(EventPacket[] events) {
+	public synchronized void setExpectedEvents(EventPacket[] events) {
 		this.expectedEvents.clear();
 		for (int i = 0; i < events.length; i++) {
 			this.expectedEvents.add(events[i]);
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
@@ -119,7 +135,7 @@ public class TestEventHandler implements Runnable {
 				EventPacket event = debugSession.receiveEvent(VirtualMachine.DEFAULT_TIMEOUT);
 				handleEvent(event);
 			} catch (TimeoutException e) {
-				//ignore
+				// ignore
 			} catch (DisconnectedException e) {
 				e.printStackTrace();
 			}
@@ -128,38 +144,42 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Add a sub handler
+	 * 
 	 * @param subhandler
 	 */
-	public void addSubhandler(Subhandler subhandler) {
+	public synchronized void addSubhandler(Subhandler subhandler) {
 		subhandlers.add(subhandler);
 	}
 
 	/**
 	 * Remove a sub handler
+	 * 
 	 * @param subhandler
 	 */
-	public void removeSubhandler(Subhandler subhandler) {
+	public synchronized void removeSubhandler(Subhandler subhandler) {
 		subhandlers.remove(subhandler);
 	}
 
 	/**
 	 * Handles the given event packet
+	 * 
 	 * @param event
 	 */
 	private synchronized void handleEvent(EventPacket event) {
 		String estring = null;
-		if(RequestTest.isTracing()) {
+		if (RequestTest.isTracing()) {
 			estring = JSONUtil.write(event.toJSON());
-			System.out.println(this.testname+" got event: "+estring);
+			System.out.println(this.testname + " got event: " + estring);
 		}
 		for (ListIterator iterator = subhandlers.listIterator(); iterator.hasNext();) {
 			Subhandler subhandler = (Subhandler) iterator.next();
 			try {
 				if (subhandler.handleEvent(debugSession, event)) {
-					if(RequestTest.isTracing()) {
-						System.out.println("\t"+this.testname+" handled event: "+estring);
+					if (RequestTest.isTracing()) {
+						System.out.println("\t" + this.testname + " handled event: " + estring);
 					}
 					this.expectedEvents.remove(event);
+					actualEvents.add(event);
 					eventCount++;
 					notifyAll();
 				}
@@ -175,6 +195,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Continues the handler
+	 * 
 	 * @param event
 	 * @param step
 	 */
@@ -197,7 +218,9 @@ public class TestEventHandler implements Runnable {
 	}
 
 	/**
-	 * Waits for all of the events specified from {@link #setExpectedEvents(EventPacket[])}
+	 * Waits for all of the events specified from
+	 * {@link #setExpectedEvents(EventPacket[])}
+	 * 
 	 * @param count
 	 */
 	public synchronized void waitForEvents(int count) {
@@ -211,43 +234,45 @@ public class TestEventHandler implements Runnable {
 		}
 		try {
 			if (eventCount != count) {
+				for (Iterator it = actualEvents.iterator(); it.hasNext();) {
+					System.err.println(it.next().toString());
+				}
 				throw new IllegalStateException("eventcount was: " + eventCount + " expected: " + count);
 			}
-		}
-		finally {
+		} finally {
 			this.eventCount = 0;
 		}
 	}
-	
+
 	/**
-	 * Waits for the given collection of events to be handled, or a default timeout to occur
+	 * Waits for the given collection of events to be handled, or a default
+	 * timeout to occur
+	 * 
 	 * @param events
 	 */
 	public synchronized void waitForEvents(EventPacket[] events) {
 		long timeout = System.currentTimeMillis() + 5000;
-		while(!this.expectedEvents.isEmpty() && System.currentTimeMillis() < timeout) {
+		while (!this.expectedEvents.isEmpty() && System.currentTimeMillis() < timeout) {
 			try {
 				wait(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
-		if(!this.expectedEvents.isEmpty()) {
+		if (!this.expectedEvents.isEmpty()) {
 			try {
 				throw new IllegalStateException("Some expected events were not received");
-			}
-			finally {
+			} finally {
 				this.eventCount = 0;
 				for (int i = 0; i < this.expectedEvents.size(); i++) {
-					System.out.println(this.testname+" missed expected event: "+JSONUtil.write(this.expectedEvents.get(i)));
+					System.out.println(this.testname + " missed expected event: " + JSONUtil.write(this.expectedEvents.get(i)));
 				}
 			}
 		}
-		if(this.eventCount > events.length) {
+		if (this.eventCount > events.length) {
 			try {
-				throw new IllegalStateException(this.testname+" got too many events - expected ["+events.length+"] got ["+eventCount+"]");
-			}
-			finally {
+				throw new IllegalStateException(this.testname + " got too many events - expected [" + events.length + "] got [" + eventCount + "]");
+			} finally {
 				this.eventCount = 0;
 			}
 		}
