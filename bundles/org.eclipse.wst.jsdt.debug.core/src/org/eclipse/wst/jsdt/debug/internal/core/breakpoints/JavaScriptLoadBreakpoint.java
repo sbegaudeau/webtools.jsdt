@@ -96,6 +96,7 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	 */
 	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 		if (event instanceof ScriptLoadEvent) {
+			
 			ScriptLoadEvent sevent = (ScriptLoadEvent) event;
 			ScriptReference script = sevent.script();
 			JavaScriptThread thread = target.findThread((sevent).thread());
@@ -117,12 +118,13 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	/**
 	 * Returns if this breakpoint supports global suspend
 	 * 
+	 * @param vote
 	 * @return <code>true</code> if we should suspend on all script loads <code>false</code> otherwise
 	 */
 	boolean isGlobalLoadSuspend(int vote) {
 		try {
-			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false) && 
-				(vote & IJavaScriptBreakpointParticipant.DONT_SUSPEND) < 1;
+			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false) /*&& 
+				(vote & IJavaScriptBreakpointParticipant.DONT_SUSPEND) < 1*/;
 		}
 		catch(CoreException ce) {
 			JavaScriptDebugPlugin.log(ce);
