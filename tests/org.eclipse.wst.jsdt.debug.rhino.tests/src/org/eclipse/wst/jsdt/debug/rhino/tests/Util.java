@@ -89,8 +89,16 @@ public class Util {
 	 * @throws FileNotFoundException if the source does not exist
 	 * @since 1.1
 	 */
-	public static String getTestSource(String container, String sourcename) {
-		return getFileContentAsString(getPluginDirectoryPath().append(container).append(sourcename).toFile());
+	public static String getTestSource(String container, String sourcename) throws IOException {
+		if (Platform.isRunning()) {
+			URL platformURL = Platform.getBundle("org.eclipse.wst.jsdt.debug.rhino.tests").getEntry("/" + container + "/" + sourcename);
+			char[] chars = getInputStreamAsCharArray(platformURL.openStream(), -1, "UTF-8");
+			if (chars != null) {
+				return new String(chars);
+			}
+		}
+
+		throw new IllegalStateException("Platform not running");
 	}
 	
 	/**
