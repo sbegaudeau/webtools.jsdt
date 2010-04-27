@@ -48,6 +48,9 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 	 * @see org.eclipse.debug.internal.ui.viewers.update.ThreadEventHandler#indexOf(org.eclipse.debug.core.model.IThread)
 	 */
 	protected int indexOf(IThread thread) {
+		if(thread.isTerminated()) {
+			return -1;
+		}
 		return super.indexOf(thread) + getOffset(thread);
 	}
 	
@@ -65,7 +68,7 @@ public class JavaScriptThreadHandler extends ThreadEventHandler {
 			numThreads = debugTarget.getThreads().length + offset;
 		} catch (DebugException e) {
 		}
-		return newdelta.addNode(debugTarget, indexOf(children, debugTarget) + offset, IModelDelta.NO_CHANGE, numThreads);
+		return newdelta.addNode(debugTarget, indexOf(children, debugTarget), IModelDelta.NO_CHANGE, numThreads);
 	}
 	
 	/**
