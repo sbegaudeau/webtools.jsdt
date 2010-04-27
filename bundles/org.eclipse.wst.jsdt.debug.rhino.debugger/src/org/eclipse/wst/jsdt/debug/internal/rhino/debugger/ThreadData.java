@@ -155,7 +155,7 @@ public class ThreadData {
 	 * @param frameId
 	 * @return the {@link DebugFrame} with the given id or <code>null</code>
 	 */
-	public StackFrame getFrame(Long frameId) {
+	public synchronized StackFrame getFrame(Long frameId) {
 		for (Iterator iterator = contexts.iterator(); iterator.hasNext();) {
 			Context context = (Context) iterator.next();
 			ContextData data = (ContextData) context.getDebuggerContextData();

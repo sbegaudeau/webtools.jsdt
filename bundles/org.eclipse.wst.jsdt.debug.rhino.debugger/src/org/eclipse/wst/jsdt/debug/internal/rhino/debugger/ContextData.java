@@ -205,7 +205,7 @@ public class ContextData {
 	 * 
 	 * @return the top frame or <code>null</code>
 	 */
-	StackFrame getTopFrame() {
+	private StackFrame getTopFrame() {
 		if(this.frames != null && !this.frames.isEmpty()) {
 			return (StackFrame) this.frames.getFirst();
 		}
@@ -356,7 +356,7 @@ public class ContextData {
 	 * 
 	 * @return the state text
 	 */
-	public String getState() {
+	public synchronized String getState() {
 		return contextState == CONTEXT_RUNNING ? JSONConstants.RUNNING : JSONConstants.SUSPENDED;
 	}
 
