@@ -39,8 +39,8 @@ public class FrameRequestTests extends RequestTest {
 		
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
 		assertNotNull("The test source for [script1.js] must exist", script);
-		//script + breakpoint on line 6
-		evalScript(script, 2);
+		//script + breakpoint on line 6 + final step out breakpoint
+		evalScript(script, 3);
 	}
 	
 	/**
