@@ -68,14 +68,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 * Sends step request
 		 */
 		public void step(int kind, int detail) {
-			if (canResume()) {
-				request = createStepRequest(this, kind);
-				resumeUnderlyingThread();
-				pendingstep = this;
-				clearFrames();
-				clearBreakpoints();
-				fireResumeEvent(detail);
-			}
+			pendingstep = this;
+			request = createStepRequest(this, kind);
+			resumeUnderlyingThread();
+			markResumed();
+			fireResumeEvent(detail);
 		}
 
 		/**
@@ -87,7 +84,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 *            step command to send
 		 * @return the newly created {@link StepRequest}
 		 */
-		StepRequest createStepRequest(IJavaScriptEventListener listener, int step) {
+		private StepRequest createStepRequest(IJavaScriptEventListener listener, int step) {
 			EventRequestManager requestManager = getVM().eventRequestManager();
 			StepRequest stepRequest = requestManager.createStepRequest(thread, step);
 			stepRequest.setEnabled(true);
@@ -149,18 +146,17 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 *         resume), <code>false</code> if the event was handled (we
 		 *         should suspend)
 		 */
-		void stepEnd(IJavaScriptEventListener listener, StepEvent event) {
+		private void stepEnd(IJavaScriptEventListener listener, StepEvent event) {
 			ThreadReference threadReference = event.thread();
 			if (threadReference == thread) {
 				synchronized (JavaScriptThread.this) {
 					pendingstep = null;
-					markSuspended();
-					fireSuspendEvent(DebugEvent.STEP_END);
-
 					if (request == event.request()) {
 						deleteRequest(listener, event.request());
 						request = null;
 					}
+					markSuspended();
+					fireSuspendEvent(DebugEvent.STEP_END);
 				}
 			}
 		}
@@ -172,7 +168,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		 *            the element that will be removed as a listener
 		 * @param request
 		 */
-		void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
+		private void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
 			getJavaScriptDebugTarget().removeJSDIEventListener(listener, request);
 			EventRequestManager requestManager = getVM().eventRequestManager();
 			requestManager.deleteEventRequest(request);
@@ -199,6 +195,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	private static final int RUNNING = 2;
 	private static final int TERMINATED = 4;
 
+	private static final boolean DEBUG = false;
+
 	/**
 	 * Stack frames, or <code>null</code> if none.
 	 */
@@ -222,7 +220,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	/**
 	 * Flag to track if the thread is in the process of suspending
 	 */
-	private boolean suspending = false;
+	private volatile boolean suspending = false;
 
 	/**
 	 * {@link StepHandler} handle to know if a step has been initiated
@@ -350,7 +348,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			List threadFrames = this.thread.frames();
 			for (Iterator iterator = threadFrames.iterator(); iterator.hasNext();) {
 				StackFrame stackFrame = (StackFrame) iterator.next();
-				JavaScriptStackFrame jsdiStackFrame = createJSDIStackFrame(stackFrame);
+				JavaScriptStackFrame jsdiStackFrame = new JavaScriptStackFrame(this, stackFrame);
 				this.frames.add(jsdiStackFrame);
 			}
 		}
@@ -358,19 +356,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
-	 * Delegate method to create a {@link JavaScriptStackFrame}
-	 * 
-	 * @param stackFrame
-	 * @return a new {@link JavaScriptStackFrame}
-	 */
-	JavaScriptStackFrame createJSDIStackFrame(StackFrame stackFrame) {
-		return new JavaScriptStackFrame(this, stackFrame);
-	}
-
-	/**
 	 * Clears out old stack frames after resuming.
 	 */
-	private synchronized void clearFrames() {
+	private void clearFrames() {
 		if (this.frames != null) {
 			this.frames.clear();
 			this.frames = null;
@@ -380,7 +368,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	/**
 	 * Clears out the cached collection of breakpoints
 	 */
-	private synchronized void clearBreakpoints() {
+	private void clearBreakpoints() {
 		this.breakpoints.clear();
 	}
 
@@ -458,7 +446,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * 
 	 * @param fireevent
 	 */
-	void resume(boolean fireevent) {
+	private void resume(boolean fireevent) {
 		if (canResume()) {
 			if (pendingstep != null) {
 				pendingstep.abort();
@@ -486,15 +474,13 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Resumes the underlying thread
 	 */
 	void resumeUnderlyingThread() {
-		if (canResume()) {
+		try {
+			this.thread.resume();
+		} catch (Exception e) {
 			try {
-				this.thread.resume();
-			} catch (Exception e) {
-				try {
-					disconnect();
-				} catch (DebugException de) {
-					/* JavaScriptDebugPlugin.log(de); */
-				}
+				disconnect();
+			} catch (DebugException de) {
+				/* JavaScriptDebugPlugin.log(de); */
 			}
 		}
 	}
@@ -644,8 +630,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Sets the state of the thread to {@link #SUSPENDED}
 	 */
 	synchronized void markSuspended() {
-		if (!thread.isSuspended())
-			System.err.println("Warning: model thread marked suspended when underlything thread is not suspended"); //$NON-NLS-1$
+		if (DEBUG){
+			if (!thread.isSuspended())
+				System.err.println("Warning: model thread marked suspended when underlything thread is not suspended"); //$NON-NLS-1$
+		}
 		this.state = SUSPENDED;
 	}
 
@@ -654,6 +642,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * stack frames
 	 */
 	synchronized void markResumed() {
+		if (DEBUG){
+			if (thread.isSuspended())
+				System.err.println("Warning: model thread marked resumed when underlything thread is suspended"); //$NON-NLS-1$
+		}
+
 		this.state = RUNNING;
 		clearFrames();
 		clearBreakpoints();
@@ -682,7 +675,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @return <code>true</code> if the thread is suspended at a script load
 	 *         breakpoint, <code>false</code> otherwise
 	 */
-	boolean atScriptLoadBreakpoint() {
+	private boolean atScriptLoadBreakpoint() {
 		if (this.breakpoints != null && this.breakpoints.size() > 0) {
 			return this.breakpoints.get(0) instanceof IJavaScriptLoadBreakpoint;
 		}
@@ -694,7 +687,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * 
 	 * @see org.eclipse.debug.core.model.IStep#canStepOver()
 	 */
-	public boolean canStepOver() {
+	public synchronized boolean canStepOver() {
 		return canStep();
 	}
 
@@ -703,14 +696,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * 
 	 * @see org.eclipse.debug.core.model.IStep#canStepReturn()
 	 */
-	public boolean canStepReturn() {
+	public synchronized boolean canStepReturn() {
 		return canStep();
 	}
 
 	/**
 	 * @return <code>true</code> if a step is allowed
 	 */
-	synchronized boolean canStep() {
+	private boolean canStep() {
 		try {
 			return isSuspended() && !isStepping() && getTopStackFrame() != null;
 		} catch (DebugException de) {
@@ -734,8 +727,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @see org.eclipse.debug.core.model.IStep#stepInto()
 	 */
 	public synchronized void stepInto() throws DebugException {
-		if (!canStepInto())
-			System.err.println("Warning: StepInto called on model thread when it canStepInto is false"); //$NON-NLS-1$
+		if (!canStepInto()) {
+			if (DEBUG)
+				System.err.println("Warning: StepInto called on model thread when it canStepInto is false"); //$NON-NLS-1$
+			return;
+		}
 		StepHandler handler = new StepHandler();
 		handler.step(StepRequest.STEP_INTO, DebugEvent.STEP_INTO);
 	}
@@ -746,8 +742,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @see org.eclipse.debug.core.model.IStep#stepOver()
 	 */
 	public synchronized void stepOver() throws DebugException {
-		if (!canStepOver())
-			System.err.println("Warning: stepOver called on model thread when it canStepOver is false"); //$NON-NLS-1$
+		if (!canStepOver()) {
+			if (DEBUG)
+				System.err.println("Warning: stepOver called on model thread when it canStepOver is false"); //$NON-NLS-1$
+			return;
+		}
 		StepHandler handler = new StepHandler();
 		handler.step(StepRequest.STEP_OVER, DebugEvent.STEP_OVER);
 	}
@@ -758,8 +757,11 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
 	 */
 	public synchronized void stepReturn() throws DebugException {
-		if (!canStepReturn())
-			System.err.println("Warning: stepReturn called on model thread when it canStepReturn is false"); //$NON-NLS-1$
+		if (!canStepReturn()) {
+			if (DEBUG)
+				System.err.println("Warning: stepReturn called on model thread when it canStepReturn is false"); //$NON-NLS-1$
+			return;
+		}
 		StepHandler handler = new StepHandler();
 		handler.step(StepRequest.STEP_OUT, DebugEvent.STEP_RETURN);
 	}
