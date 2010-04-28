@@ -49,9 +49,9 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakp
 /**
  * A JavaScript thread.
  * 
- * JavaScript threads act as their own event listener for suspend and 
- * step events and are called out to from JavaScript breakpoints to handle 
- * suspending at a breakpoint.
+ * JavaScript threads act as their own event listener for suspend and step
+ * events and are called out to from JavaScript breakpoints to handle suspending
+ * at a breakpoint.
  * 
  * @since 1.0
  */
@@ -63,7 +63,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	class StepHandler implements IJavaScriptEventListener {
 
 		private StepRequest request = null;
-		
+
 		/**
 		 * Sends step request
 		 */
@@ -77,12 +77,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 				fireResumeEvent(detail);
 			}
 		}
-		
+
 		/**
 		 * Creates a new step request
 		 * 
-		 * @param listener the element that will respond to the event
-		 * @param step step command to send
+		 * @param listener
+		 *            the element that will respond to the event
+		 * @param step
+		 *            step command to send
 		 * @return the newly created {@link StepRequest}
 		 */
 		StepRequest createStepRequest(IJavaScriptEventListener listener, int step) {
@@ -92,68 +94,82 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			getJavaScriptDebugTarget().addJSDIEventListener(listener, stepRequest);
 			return stepRequest;
 		}
-		
+
 		/**
 		 * Aborts the pending step
 		 */
 		void abort() {
 			try {
-				if(request != null) {
+				if (request != null) {
 					deleteRequest(this, request);
 					request = null;
 				}
 				resumeUnderlyingThread();
 				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
-			}
-			finally {
+			} finally {
 				pendingstep = null;
 			}
 		}
-		
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener
+		 * #handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event,
+		 * org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget,
+		 * boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 		 */
 		public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 			StepEvent stepEvent = (StepEvent) event;
 			return stepEvent.thread() != thread;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener#eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event, org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget, boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener
+		 * #eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event,
+		 * org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget,
+		 * boolean, org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet)
 		 */
 		public void eventSetComplete(Event event, JavaScriptDebugTarget target, boolean suspend, EventSet eventSet) {
 			StepEvent stepEvent = (StepEvent) event;
 			stepEnd(this, stepEvent);
 		}
-		
+
 		/**
 		 * Handles a {@link StepEvent}
 		 * 
-		 * @param listener the listener to remove
+		 * @param listener
+		 *            the listener to remove
 		 * @param event
-		 * @return <code>true</code> if the event was not handled (we should resume), <code>false</code> if
-		 * the event was handled (we should suspend)
+		 * @return <code>true</code> if the event was not handled (we should
+		 *         resume), <code>false</code> if the event was handled (we
+		 *         should suspend)
 		 */
 		void stepEnd(IJavaScriptEventListener listener, StepEvent event) {
 			ThreadReference threadReference = event.thread();
 			if (threadReference == thread) {
-				synchronized(JavaScriptThread.this) {
-				pendingstep = null;
-				markSuspended();
-				fireSuspendEvent(DebugEvent.STEP_END);
-				
-				if(request == event.request()) {
-					deleteRequest(listener, event.request());
-					request = null;
-				}
+				synchronized (JavaScriptThread.this) {
+					pendingstep = null;
+					markSuspended();
+					fireSuspendEvent(DebugEvent.STEP_END);
+
+					if (request == event.request()) {
+						deleteRequest(listener, event.request());
+						request = null;
+					}
 				}
 			}
 		}
-		
+
 		/**
 		 * Delete the given event request
 		 * 
-		 * @param listener the element that will be removed as a listener
+		 * @param listener
+		 *            the element that will be removed as a listener
 		 * @param request
 		 */
 		void deleteRequest(IJavaScriptEventListener listener, EventRequest request) {
@@ -162,7 +178,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			requestManager.deleteEventRequest(request);
 		}
 	}
-	
+
 	/**
 	 * Constant for no stack frames
 	 * 
@@ -207,17 +223,19 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Flag to track if the thread is in the process of suspending
 	 */
 	private boolean suspending = false;
-	
+
 	/**
 	 * {@link StepHandler} handle to know if a step has been initiated
 	 */
 	private StepHandler pendingstep = null;
-	
+
 	/**
 	 * Constructor
 	 * 
-	 * @param target the target the thread belongs to
-	 * @param thread the underlying {@link ThreadReference}
+	 * @param target
+	 *            the target the thread belongs to
+	 * @param thread
+	 *            the underlying {@link ThreadReference}
 	 */
 	public JavaScriptThread(JavaScriptDebugTarget target, ThreadReference thread) {
 		super(target);
@@ -230,64 +248,64 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @return the status text for the thread
 	 */
 	private synchronized String statusText() {
-		switch(state) {
-			case SUSPENDED: {
-				if(this.breakpoints.size() > 0) {
-					try {
-						JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
-						if (breakpoint instanceof JavaScriptLoadBreakpoint) {
-							String name = breakpoint.getScriptPath();
-							if(Constants.EMPTY_STRING.equals(name)) {
-								name = getSourceName();
-							}
-							return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
+		switch (state) {
+		case SUSPENDED: {
+			if (this.breakpoints.size() > 0) {
+				try {
+					JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
+					if (breakpoint instanceof JavaScriptLoadBreakpoint) {
+						String name = breakpoint.getScriptPath();
+						if (Constants.EMPTY_STRING.equals(name)) {
+							name = getSourceName();
 						}
-						//TODO support function breakpoints here
-						if(breakpoint instanceof IJavaScriptLineBreakpoint) {
-							IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-							return NLS.bind(ModelMessages.breakpoint_at_line_location, new String[] {Integer.toString(bp.getLineNumber()), getSourceName()});
-						}
-						//TODO also need to report stopped at debugger; statement
-					} catch (CoreException ce) {
-						JavaScriptDebugPlugin.log(ce);
+						return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
 					}
+					// TODO support function breakpoints here
+					if (breakpoint instanceof IJavaScriptLineBreakpoint) {
+						IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+						return NLS.bind(ModelMessages.breakpoint_at_line_location, new String[] { Integer.toString(bp.getLineNumber()), getSourceName() });
+					}
+					// TODO also need to report stopped at debugger; statement
+				} catch (CoreException ce) {
+					JavaScriptDebugPlugin.log(ce);
 				}
-				return ModelMessages.thread_suspended;
 			}
-			case RUNNING: {
-				if(pendingstep != null) {
-					return ModelMessages.thread_stepping;
-				}
-				return ModelMessages.thread_running;
+			return ModelMessages.thread_suspended;
+		}
+		case RUNNING: {
+			if (pendingstep != null) {
+				return ModelMessages.thread_stepping;
 			}
-			case TERMINATED: {
-				return ModelMessages.thread_terminated;
-			}
-			case ThreadReference.THREAD_STATUS_ZOMBIE: {
-				return ModelMessages.thread_zombie;
-			}
-			default: {
-				return ModelMessages.thread_state_unknown;
-			}
+			return ModelMessages.thread_running;
+		}
+		case TERMINATED: {
+			return ModelMessages.thread_terminated;
+		}
+		case ThreadReference.THREAD_STATUS_ZOMBIE: {
+			return ModelMessages.thread_zombie;
+		}
+		default: {
+			return ModelMessages.thread_state_unknown;
+		}
 		}
 	}
 
 	/**
-	 * Returns the name of the source from the top stackframe or a 
-	 * default name <code>&lt;evaluated_source&gt;</code>
+	 * Returns the name of the source from the top stackframe or a default name
+	 * <code>&lt;evaluated_source&gt;</code>
 	 * 
 	 * @return the name for the source
 	 * @throws DebugException
 	 */
 	String getSourceName() throws DebugException {
 		IJavaScriptStackFrame frame = (IJavaScriptStackFrame) getTopStackFrame();
-		if(frame != null) {
+		if (frame != null) {
 			return frame.getSourceName();
 		}
-		//all else failed say "evaluated_script"
+		// all else failed say "evaluated_script"
 		return ModelMessages.JavaScriptThread_evaluated_script;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -365,7 +383,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	private synchronized void clearBreakpoints() {
 		this.breakpoints.clear();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -442,7 +460,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	void resume(boolean fireevent) {
 		if (canResume()) {
-			if(pendingstep != null) {
+			if (pendingstep != null) {
 				pendingstep.abort();
 			}
 			resumeUnderlyingThread();
@@ -468,25 +486,24 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Resumes the underlying thread
 	 */
 	void resumeUnderlyingThread() {
-		if(canResume()) {
+		if (canResume()) {
 			try {
 				this.thread.resume();
-			}
-			catch(Exception e) {
+			} catch (Exception e) {
 				try {
 					disconnect();
 				} catch (DebugException de) {
-					/*JavaScriptDebugPlugin.log(de);*/
+					/* JavaScriptDebugPlugin.log(de); */
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Delegate method to suspend the underlying thread
 	 */
 	void suspendUnderlyingThread() {
-		if(suspending) {
+		if (suspending) {
 			return;
 		}
 		if (isSuspended()) {
@@ -511,12 +528,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 						}
 					}
 					if (!suspended) {
-						IStatus status= new Status(
-								IStatus.ERROR, 
-								JavaScriptDebugPlugin.PLUGIN_ID, 
-								100, 
-								NLS.bind(ModelMessages.thread_timed_out_trying_to_suspend, new String[] {new Integer(VirtualMachine.DEFAULT_TIMEOUT).toString()}), 
-								null); 
+						IStatus status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, 100, NLS.bind(ModelMessages.thread_timed_out_trying_to_suspend, new String[] { new Integer(VirtualMachine.DEFAULT_TIMEOUT).toString() }), null);
 						JavaScriptDebugPlugin.log(status);
 					}
 					markSuspended();
@@ -530,7 +542,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		thread.setDaemon(true);
 		thread.start();
 	}
-	
+
 	/**
 	 * Call-back from a breakpoint that has been hit
 	 * 
@@ -544,8 +556,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		for (int i = 0; i < participants.length; i++) {
 			suspend |= participants[i].breakpointHit(this, breakpoint);
 		}
-		if((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 ||
-				suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
+		if ((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
 			addBreakpoint(breakpoint);
 			return true;
 		}
@@ -553,7 +564,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
-	 * Call-back from {@link JavaScriptBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)} to handle suspending / cleanup
+	 * Call-back from
+	 * {@link JavaScriptBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)}
+	 * to handle suspending / cleanup
 	 * 
 	 * @param breakpoint
 	 * @param suspend
@@ -574,9 +587,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			}
 		}
 	}
-	
+
 	/**
 	 * Call-back for a script that has been loaded
+	 * 
 	 * @param breakpoint
 	 * @param script
 	 * @param vote
@@ -590,19 +604,22 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 		return suspend;
 	}
-	
+
 	/**
-	 * Call-back from {@link JavaScriptLoadBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)} to handle suspending / cleanup
+	 * Call-back from
+	 * {@link JavaScriptLoadBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)}
+	 * to handle suspending / cleanup
 	 * 
 	 * @param breakpoint
 	 * @param script
-	 * @param suspend if the thread should suspend
+	 * @param suspend
+	 *            if the thread should suspend
 	 * @param eventSet
 	 */
 	public void suspendForScriptLoadComplete(IJavaScriptBreakpoint breakpoint, ScriptReference script, boolean suspend, EventSet eventSet) {
 		suspendForBreakpointComplete(breakpoint, suspend, eventSet);
 	}
-	
+
 	/**
 	 * Adds the given breakpoint to the collection for this thread
 	 * 
@@ -610,7 +627,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @return if the breakpoint added removed an existing entry
 	 */
 	public synchronized boolean addBreakpoint(IJavaScriptBreakpoint breakpoint) {
-		 return breakpoints.add(breakpoint);
+		return breakpoints.add(breakpoint);
 	}
 
 	/**
@@ -627,13 +644,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Sets the state of the thread to {@link #SUSPENDED}
 	 */
 	synchronized void markSuspended() {
-		if (! thread.isSuspended())
+		if (!thread.isSuspended())
 			System.err.println("Warning: model thread marked suspended when underlything thread is not suspended"); //$NON-NLS-1$
 		this.state = SUSPENDED;
 	}
 
 	/**
-	 * Sets the state of the thread to {@link #RUNNING} and clears any cached stack frames
+	 * Sets the state of the thread to {@link #RUNNING} and clears any cached
+	 * stack frames
 	 */
 	synchronized void markResumed() {
 		this.state = RUNNING;
@@ -647,7 +665,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	synchronized void markTerminated() {
 		this.state = TERMINATED;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -658,18 +676,19 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	}
 
 	/**
-	 * Returns if the top breakpoint the thread is suspended on is an {@link IJavaScriptLoadBreakpoint}
+	 * Returns if the top breakpoint the thread is suspended on is an
+	 * {@link IJavaScriptLoadBreakpoint}
 	 * 
-	 * @return <code>true</code> if the thread is suspended at a script load breakpoint, <code>false</code>
-	 * otherwise
+	 * @return <code>true</code> if the thread is suspended at a script load
+	 *         breakpoint, <code>false</code> otherwise
 	 */
 	boolean atScriptLoadBreakpoint() {
-		if(this.breakpoints != null && this.breakpoints.size() > 0) {
+		if (this.breakpoints != null && this.breakpoints.size() > 0) {
 			return this.breakpoints.get(0) instanceof IJavaScriptLoadBreakpoint;
 		}
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -694,13 +713,12 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	synchronized boolean canStep() {
 		try {
 			return isSuspended() && !isStepping() && getTopStackFrame() != null;
-		}
-		catch(DebugException de) {
+		} catch (DebugException de) {
 			JavaScriptDebugPlugin.log(de);
 		}
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -781,9 +799,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		markTerminated();
 		fireTerminateEvent();
 	}
-	
+
 	/**
-	 * Returns if the underlying {@link ThreadReference} of this thread matches the given {@link ThreadReference} using pointer equality
+	 * Returns if the underlying {@link ThreadReference} of this thread matches
+	 * the given {@link ThreadReference} using pointer equality
 	 * 
 	 * @param thread
 	 * @return true if the {@link ThreadReference}s are the same
@@ -792,24 +811,27 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		return this.thread == thread;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.debug.core.model.DebugElement#getAdapter(java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.debug.core.model.DebugElement#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		if(IThread.class == adapter) {
+		if (IThread.class == adapter) {
 			return this;
 		}
-		if(IStackFrame.class == adapter) {
+		if (IStackFrame.class == adapter) {
 			try {
 				return getTopStackFrame();
 			} catch (DebugException e) {
 				JavaScriptDebugPlugin.log(e);
 			}
 		}
-		if(IJavaScriptThread.class == adapter) {
+		if (IJavaScriptThread.class == adapter) {
 			return this;
 		}
-		if(IJavaScriptStackFrame.class == adapter) {
+		if (IJavaScriptStackFrame.class == adapter) {
 			try {
 				return getTopStackFrame();
 			} catch (DebugException e) {
@@ -818,28 +840,34 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 		return super.getAdapter(adapter);
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#evaluate(java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#evaluate(java
+	 * .lang.String)
 	 */
 	public IJavaScriptValue evaluate(String expression) {
 		try {
 			IStackFrame frame = getTopStackFrame();
-			if(frame instanceof JavaScriptStackFrame) {
+			if (frame instanceof JavaScriptStackFrame) {
 				return new JavaScriptValue(getJavaScriptDebugTarget(), ((JavaScriptStackFrame) frame).getUnderlyingStackFrame().evaluate(expression));
 			}
-		}
-		catch(DebugException de) {
-			//do nothing, return
+		} catch (DebugException de) {
+			// do nothing, return
 		}
 		return new JavaScriptValue(getJavaScriptDebugTarget(), getVM().mirrorOfNull());
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#getFrameCount()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#getFrameCount()
 	 */
 	public int getFrameCount() {
-		if(isSuspended()) {
+		if (isSuspended()) {
 			return this.thread.frameCount();
 		}
 		return 0;
