@@ -646,7 +646,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			if (thread.isSuspended())
 				System.err.println("Warning: model thread marked resumed when underlything thread is suspended"); //$NON-NLS-1$
 		}
-
 		this.state = RUNNING;
 		clearFrames();
 		clearBreakpoints();
