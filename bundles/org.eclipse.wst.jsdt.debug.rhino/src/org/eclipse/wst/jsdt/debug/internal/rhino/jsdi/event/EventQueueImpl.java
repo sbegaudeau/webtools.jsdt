@@ -93,6 +93,9 @@ public final class EventQueueImpl extends MirrorImpl implements EventQueue {
 							}
 						}
 					}
+					if (!eventSet.isEmpty()) {
+						thread.markSuspended(false);
+					}
 				} else if (eventName.equals(JSONConstants.BREAK)) {
 					Long threadId = new Long(((Number) event.getBody().get(JSONConstants.THREAD_ID)).longValue());
 					ThreadReferenceImpl thread = vm.getThread(threadId);

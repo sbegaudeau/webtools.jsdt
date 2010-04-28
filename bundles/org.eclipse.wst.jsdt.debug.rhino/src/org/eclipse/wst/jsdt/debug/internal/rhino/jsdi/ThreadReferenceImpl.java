@@ -192,7 +192,7 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#suspend()
 	 */
-	public void suspend() {
+	public synchronized void suspend() {
 		if (status == THREAD_STATUS_ZOMBIE) {
 			return;
 		}
