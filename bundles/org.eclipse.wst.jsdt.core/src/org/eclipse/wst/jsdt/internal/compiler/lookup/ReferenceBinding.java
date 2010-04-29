@@ -517,13 +517,13 @@ public boolean hasIncompatibleSuperType(ReferenceBinding otherType) {
 			return true;
 	} while ((currentType = currentType.superclass()) != null);
 
-	for (int i = 0; i < nextPosition; i++) {
-		currentType = interfacesToVisit[i];
-		if (currentType == otherType) return false;
-		match = otherType.findSuperTypeWithSameErasure(currentType);
-		if (match != null && !match.isIntersectingWith(currentType))
-			return true;
-	}
+//	for (int i = 0; i < nextPosition; i++) {
+//		currentType = interfacesToVisit[i];
+//		if (currentType == otherType) return false;
+//		match = otherType.findSuperTypeWithSameErasure(currentType);
+//		if (match != null && !match.isIntersectingWith(currentType))
+//			return true;
+//	}
 	return false;
 }
 public boolean hasMemberTypes() {

@@ -171,17 +171,17 @@ abstract public class TypeBinding extends Binding {
 			}
 			return null;
 		}
-		ReferenceBinding[] interfacesToVisit = null;
-		int nextPosition = 0;
-		do {
-		} while ((currentType = currentType.superclass()) != null);
-
-		for (int i = 0; i < nextPosition; i++) {
-			currentType = interfacesToVisit[i];
-			if (currentType.id == wellKnownErasureID
-					|| (currentType.id == wellKnownErasureID))
-				return currentType;
-		}
+//		ReferenceBinding[] interfacesToVisit = null;
+//		int nextPosition = 0;
+//		do {
+//		} while ((currentType = currentType.superclass()) != null);
+//
+//		for (int i = 0; i < nextPosition; i++) {
+//			currentType = interfacesToVisit[i];
+//			if (currentType.id == wellKnownErasureID
+//					|| (currentType.id == wellKnownErasureID))
+//				return currentType;
+//		}
 		return null;
 	}
 

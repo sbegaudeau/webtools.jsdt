@@ -1449,13 +1449,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 	private void copyAnonymousTypeToNamed(InferredType inClass,
 			InferredType toType) {
+		if (toType==null)return;
+		
 		compUnit.inferredTypesHash.removeKey(inClass.name);
 		if (inClass.methods!=null)
 		{
-			if (toType!=null)
-				toType.methods.addAll(inClass.methods);
-			else 
-				toType.methods=inClass.methods;
+			toType.methods.addAll(inClass.methods);
+//			else 
+//				toType.methods=inClass.methods;
 			
 		}
 		if (inClass.attributes!=null)
