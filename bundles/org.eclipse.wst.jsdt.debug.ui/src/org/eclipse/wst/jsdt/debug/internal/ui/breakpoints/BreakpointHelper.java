@@ -117,7 +117,7 @@ public class BreakpointHelper {
 			String handle = breakpoint.getJavaScriptElementHandle();
 			if (handle != null) {
 				IJavaScriptElement jse = JavaScriptCore.create(handle);
-				if (jse != null) {
+				if (jse != null && jse.exists()) {
 					if (jse instanceof IType) {
 						return ((IType)jse).getTypeRoot();
 					}

@@ -58,6 +58,8 @@ import org.eclipse.wst.jsdt.debug.internal.ui.display.JavaScriptDebugViewerConfi
 import org.eclipse.wst.jsdt.debug.internal.ui.source.JavaScriptSourceViewer;
 import org.eclipse.wst.jsdt.debug.internal.ui.source.contentassist.JavaScriptContentAssistProcessor;
 import org.eclipse.wst.jsdt.debug.internal.ui.source.contentassist.ScriptContext;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 
 /**
  * Controls to edit a breakpoint's conditional expression, condition enabled state,
@@ -124,6 +126,7 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 		}
 		fViewer.unconfigure();
 		IDocument document = new Document();
+		JavaScriptPlugin.getDefault().getJavaTextTools().setupJavaDocumentPartitioner(document, IJavaScriptPartitions.JAVA_PARTITIONING);
 		fViewer.setInput(document);
 		String condition = null;
 		boolean controlsEnabled = false;
