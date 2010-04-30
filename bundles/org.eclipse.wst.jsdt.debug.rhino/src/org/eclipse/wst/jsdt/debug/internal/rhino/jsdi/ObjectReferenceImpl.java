@@ -85,7 +85,7 @@ public class ObjectReferenceImpl extends MirrorImpl implements ObjectReference {
 			Map props = null;
 			for (Iterator iter = proplist.iterator(); iter.hasNext();) {
 				props = (Map) iter.next();
-				this.properties.add(new PropertyImpl(vm, frame, (String) props.get(JSONConstants.NAME).toString(), (Number) props.get(JSONConstants.REF)));
+				this.properties.add(new PropertyImpl(vm, frame, props.get(JSONConstants.NAME).toString(), (Number) props.get(JSONConstants.REF)));
 			}
 		} else {
 			this.properties = NO_PROPERTIES;

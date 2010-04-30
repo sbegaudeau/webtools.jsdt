@@ -25,7 +25,6 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
-import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 
@@ -150,7 +149,7 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	public static void setGlobalSuspendOn(String scriptpath) {
 		if(allLoadsBreakpoint != null) {
 			try {
-				allLoadsBreakpoint.getMarker().setAttribute(JavaScriptBreakpoint.SCRIPT_PATH, scriptpath);
+				allLoadsBreakpoint.getMarker().setAttribute(IJavaScriptBreakpoint.SCRIPT_PATH, scriptpath);
 			} catch (CoreException e) {
 				JavaScriptDebugPlugin.log(e);
 			}

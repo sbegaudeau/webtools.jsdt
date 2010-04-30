@@ -108,10 +108,8 @@ public interface Connector {
 		 */
 		public boolean isValid(int intValue);
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector.Argument#isValid(java.lang.String)
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#isValid(java.lang.String)
 		 */
 		public boolean isValid(String value);
 
@@ -150,10 +148,8 @@ public interface Connector {
 		 */
 		public boolean booleanValue();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector.Argument#isValid(java.lang.String)
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#isValid(java.lang.String)
 		 */
 		public boolean isValid(String value);
 
@@ -171,10 +167,8 @@ public interface Connector {
 	 * @see Argument
 	 */
 	public interface StringArgument extends Connector.Argument {
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector.Argument#isValid(java.lang.String)
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#isValid(java.lang.String)
 		 */
 		public boolean isValid(String arg1);
 	}
@@ -190,10 +184,8 @@ public interface Connector {
 		 */
 		public List choices();
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.e4.languages.javascript.jsdi.connect.Connector.Argument#isValid(java.lang.String)
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#isValid(java.lang.String)
 		 */
 		public boolean isValid(String value);
 	}
