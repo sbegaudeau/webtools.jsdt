@@ -50,13 +50,13 @@ public class ScriptRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testScript() throws Exception {
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		Scriptable scope = null;
 		Context context = contextFactory.enterContext();
 		try {
 			scope = context.initStandardObjects();
-			context.evaluateString(scope, script, "script", 0, null);
+			context.evaluateString(scope, script, "script", 0, null); //$NON-NLS-1$
 		} finally {
 			Context.exit();
 		}
@@ -69,8 +69,8 @@ public class ScriptRequestTests extends RequestTest {
 		assertNotNull(scripts);
 		assertFalse(scripts.isEmpty());
 
-		request = new Request("script");
-		request.getArguments().put("scriptId", scripts.get(0));
+		request = new Request("script"); //$NON-NLS-1$
+		request.getArguments().put("scriptId", scripts.get(0)); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
@@ -78,18 +78,18 @@ public class ScriptRequestTests extends RequestTest {
 		assertEquals(script, result.get(JSONConstants.SOURCE));
 		List lineNumbers = (List) result.get(JSONConstants.LINES);
 		assertEquals(7, lineNumbers.size());
-		assertTrue("The line number [1] should be returned", lineNumbers.contains(new BigDecimal(1)));
-		assertTrue("The line number [2] should be returned", lineNumbers.contains(new BigDecimal(2)));
-		assertTrue("The line number [5] should be returned", lineNumbers.contains(new BigDecimal(5)));
-		assertTrue("The line number [6] should be returned", lineNumbers.contains(new BigDecimal(6)));
-		assertTrue("The line number [9] should be returned", lineNumbers.contains(new BigDecimal(9)));
-		assertTrue("The line number [12] should be returned", lineNumbers.contains(new BigDecimal(12)));
-		assertTrue("The line number [13] should be returned", lineNumbers.contains(new BigDecimal(13)));
+		assertTrue("The line number [1] should be returned", lineNumbers.contains(new BigDecimal(1))); //$NON-NLS-1$
+		assertTrue("The line number [2] should be returned", lineNumbers.contains(new BigDecimal(2))); //$NON-NLS-1$
+		assertTrue("The line number [5] should be returned", lineNumbers.contains(new BigDecimal(5))); //$NON-NLS-1$
+		assertTrue("The line number [6] should be returned", lineNumbers.contains(new BigDecimal(6))); //$NON-NLS-1$
+		assertTrue("The line number [9] should be returned", lineNumbers.contains(new BigDecimal(9))); //$NON-NLS-1$
+		assertTrue("The line number [12] should be returned", lineNumbers.contains(new BigDecimal(12))); //$NON-NLS-1$
+		assertTrue("The line number [13] should be returned", lineNumbers.contains(new BigDecimal(13))); //$NON-NLS-1$
 		//assertTrue("The line number [14] should be returned", lineNumbers.contains(new BigDecimal(14)));
 
 		List functionNames = (List) result.get(JSONConstants.FUNCTIONS);
 		assertEquals(2, functionNames.size());
-		assertEquals("test", functionNames.get(0));
-		assertEquals("test2", functionNames.get(1));
+		assertEquals("test", functionNames.get(0)); //$NON-NLS-1$
+		assertEquals("test2", functionNames.get(1)); //$NON-NLS-1$
 	}
 }

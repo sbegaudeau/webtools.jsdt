@@ -39,12 +39,12 @@ public class Util {
 	 * BiDi
 	 * @since 1.1
 	 */
-	public static final String UTF_8 = "UTF-8";
+	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
 	/**
 	 * The name of the source container <code>scripts</code> in the test bundle
 	 * @since 1.1
 	 */
-	public static final String SRC_SCRIPTS_CONTAINER = "scripts";
+	public static final String SRC_SCRIPTS_CONTAINER = "scripts"; //$NON-NLS-1$
 	
 	/**
 	 * Constant representing the default size to read from an input stream
@@ -69,13 +69,13 @@ public class Util {
 	public static IPath getPluginDirectoryPath() {
 		if (Platform.isRunning()) {
 			try {
-				URL platformURL = Platform.getBundle("org.eclipse.wst.jsdt.debug.rhino.tests").getEntry("/");
+				URL platformURL = Platform.getBundle("org.eclipse.wst.jsdt.debug.rhino.tests").getEntry("/"); //$NON-NLS-1$ //$NON-NLS-2$
 				return new Path(new File(FileLocator.toFileURL(platformURL).getFile()).getAbsolutePath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		return new Path(System.getProperty("user.dir"));
+		return new Path(System.getProperty("user.dir")); //$NON-NLS-1$
 	}
 	
 	/**
@@ -91,14 +91,14 @@ public class Util {
 	 */
 	public static String getTestSource(String container, String sourcename) throws IOException {
 		if (Platform.isRunning()) {
-			URL platformURL = Platform.getBundle("org.eclipse.wst.jsdt.debug.rhino.tests").getEntry("/" + container + "/" + sourcename);
-			char[] chars = getInputStreamAsCharArray(platformURL.openStream(), -1, "UTF-8");
+			URL platformURL = Platform.getBundle("org.eclipse.wst.jsdt.debug.rhino.tests").getEntry("/" + container + "/" + sourcename); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			char[] chars = getInputStreamAsCharArray(platformURL.openStream(), -1, "UTF-8"); //$NON-NLS-1$
 			if (chars != null) {
 				return new String(chars);
 			}
 		}
 
-		throw new IllegalStateException("Platform not running");
+		throw new IllegalStateException("Platform not running"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public class Util {
 		FileInputStream stream = null;
 		try {
 			stream = new FileInputStream(file);
-			char[] array = getInputStreamAsCharArray(stream, -1, "UTF-8");
+			char[] array = getInputStreamAsCharArray(stream, -1, "UTF-8"); //$NON-NLS-1$
 			contents = new String(array);
 		}
 		catch(IOException ioe) {

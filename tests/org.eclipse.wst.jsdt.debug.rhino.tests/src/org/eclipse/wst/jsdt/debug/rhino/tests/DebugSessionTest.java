@@ -34,7 +34,7 @@ public class DebugSessionTest extends TestCase {
 	
 	public void testReceiveEvent() throws IOException, InterruptedException, TimeoutException, DisconnectedException {
 		final TransportService service = new PipedTransportService();
-		final ListenerKey key = service.startListening("9000");
+		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$
 
 		Thread t = new Thread() {
 			public void run() {
@@ -45,7 +45,7 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					runtime.sendEvent(new EventPacket("test"));
+					runtime.sendEvent(new EventPacket("test")); //$NON-NLS-1$
 					synchronized (Thread.currentThread()) {
 						Thread.currentThread().wait();
 					}
@@ -64,12 +64,12 @@ public class DebugSessionTest extends TestCase {
 		};
 		t.start();
 
-		Connection c = service.attach("9000", 5000, 5000);
+		Connection c = service.attach("9000", 5000, 5000); //$NON-NLS-1$
 		assertNotNull(c);
 		DebugSession session = new DebugSession(c);
 		try {
 			EventPacket event = session.receiveEvent(5000);
-			assertTrue(event.getEvent().equals("test"));
+			assertTrue(event.getEvent().equals("test")); //$NON-NLS-1$
 		} finally {
 			session.dispose();
 			synchronized (t) {
@@ -82,7 +82,7 @@ public class DebugSessionTest extends TestCase {
 
 	public void testSendRequestReceiveResponse() throws IOException, InterruptedException, DisconnectedException, TimeoutException {
 		final TransportService service = new PipedTransportService();
-		final ListenerKey key = service.startListening("9000");
+		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$
 
 		Thread t = new Thread() {
 			public void run() {
@@ -115,14 +115,14 @@ public class DebugSessionTest extends TestCase {
 		};
 		t.start();
 
-		Connection c = service.attach("9000", 5000, 5000);
+		Connection c = service.attach("9000", 5000, 5000); //$NON-NLS-1$
 		assertNotNull(c);
 		DebugSession session = new DebugSession(c);
 		try {
-			Request request = new Request("test");
+			Request request = new Request("test"); //$NON-NLS-1$
 			session.sendRequest(request);
 			Response response = session.receiveResponse(request.getSequence(), 5000);
-			assertTrue(response.getCommand().equals("test"));
+			assertTrue(response.getCommand().equals("test")); //$NON-NLS-1$
 			assertTrue(response.getRequestSequence() == request.getSequence());
 		} finally {
 			session.dispose();
@@ -136,7 +136,7 @@ public class DebugSessionTest extends TestCase {
 	
 	public void testSendEvent() throws IOException, InterruptedException {
 		final TransportService service = new PipedTransportService();
-		final ListenerKey key = service.startListening("9000");
+		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$
 
 		Thread t = new Thread() {
 			public void run() {
@@ -147,7 +147,7 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					runtime.sendEvent(new EventPacket("test"));
+					runtime.sendEvent(new EventPacket("test")); //$NON-NLS-1$
 					synchronized (Thread.currentThread()) {
 						if (!complete)
 							Thread.currentThread().wait(5000);
@@ -168,13 +168,13 @@ public class DebugSessionTest extends TestCase {
 		};
 		t.start();
 
-		Connection c = service.attach("9000", 5000, 5000);
+		Connection c = service.attach("9000", 5000, 5000); //$NON-NLS-1$
 		assertNotNull(c);
 		try {
 			Packet packet = c.readPacket();
 			assertTrue(packet instanceof EventPacket);
 			EventPacket event = (EventPacket) packet;
-			assertTrue(event.getEvent().equals("test"));
+			assertTrue(event.getEvent().equals("test")); //$NON-NLS-1$
 		} finally {
 			c.close();
 			synchronized (t) {
@@ -188,7 +188,7 @@ public class DebugSessionTest extends TestCase {
 
 	public void testReceiveRequestSendResponse() throws IOException, InterruptedException {
 		final TransportService service = new PipedTransportService();
-		final ListenerKey key = service.startListening("9000");
+		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$
 
 		Thread t = new Thread() {
 			public void run() {
@@ -223,15 +223,15 @@ public class DebugSessionTest extends TestCase {
 		};
 		t.start();
 
-		Connection c = service.attach("9000", 5000, 5000);
+		Connection c = service.attach("9000", 5000, 5000); //$NON-NLS-1$
 		assertNotNull(c);
 		try {
-			Request request = new Request("test");
+			Request request = new Request("test"); //$NON-NLS-1$
 			c.writePacket(request);
 			Packet packet = c.readPacket();
 			assertTrue(packet instanceof Response);
 			Response response = (Response) packet;
-			assertTrue(response.getCommand().equals("test"));
+			assertTrue(response.getCommand().equals("test")); //$NON-NLS-1$
 			assertTrue(response.getRequestSequence() == request.getSequence());
 		} finally {
 			c.close();

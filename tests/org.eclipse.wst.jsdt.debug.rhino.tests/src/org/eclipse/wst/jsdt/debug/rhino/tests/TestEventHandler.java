@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -82,7 +81,7 @@ public class TestEventHandler implements Runnable {
 	 */
 	public TestEventHandler(DebugSession debugSession, String testname) {
 		this.debugSession = debugSession;
-		this.thread = new Thread(this, "TestEventHandler");
+		this.thread = new Thread(this, "TestEventHandler"); //$NON-NLS-1$
 		this.testname = testname;
 	}
 
@@ -169,14 +168,14 @@ public class TestEventHandler implements Runnable {
 		String estring = null;
 		if (RequestTest.isTracing()) {
 			estring = JSONUtil.write(event.toJSON());
-			System.out.println(this.testname + " got event: " + estring);
+			System.out.println(this.testname + " got event: " + estring); //$NON-NLS-1$
 		}
 		for (ListIterator iterator = subhandlers.listIterator(); iterator.hasNext();) {
 			Subhandler subhandler = (Subhandler) iterator.next();
 			try {
 				if (subhandler.handleEvent(debugSession, event)) {
 					if (RequestTest.isTracing()) {
-						System.out.println("\t" + this.testname + " handled event: " + estring);
+						System.out.println("\t" + this.testname + " handled event: " + estring); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					this.expectedEvents.remove(event);
 					actualEvents.add(event);
@@ -187,7 +186,7 @@ public class TestEventHandler implements Runnable {
 				t.printStackTrace();
 			}
 		}
-		if (!event.getEvent().equals("thread")) {
+		if (!event.getEvent().equals("thread")) { //$NON-NLS-1$
 			sendContinue(event, null);
 		}
 
@@ -200,11 +199,11 @@ public class TestEventHandler implements Runnable {
 	 * @param step
 	 */
 	protected void sendContinue(EventPacket event, String step) {
-		Number threadId = (Number) event.getBody().get("threadId");
+		Number threadId = (Number) event.getBody().get("threadId"); //$NON-NLS-1$
 
-		Request request = new Request("continue");
-		request.getArguments().put("threadId", threadId);
-		request.getArguments().put("step", step);
+		Request request = new Request("continue"); //$NON-NLS-1$
+		request.getArguments().put("threadId", threadId); //$NON-NLS-1$
+		request.getArguments().put("step", step); //$NON-NLS-1$
 		try {
 			debugSession.sendRequest(request);
 			debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
@@ -237,7 +236,7 @@ public class TestEventHandler implements Runnable {
 				for (Iterator it = actualEvents.iterator(); it.hasNext();) {
 					System.err.println(it.next().toString());
 				}
-				throw new IllegalStateException("eventcount was: " + eventCount + " expected: " + count);
+				throw new IllegalStateException("eventcount was: " + eventCount + " expected: " + count); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		} finally {
 			this.eventCount = 0;
@@ -261,17 +260,17 @@ public class TestEventHandler implements Runnable {
 		}
 		if (!this.expectedEvents.isEmpty()) {
 			try {
-				throw new IllegalStateException("Some expected events were not received");
+				throw new IllegalStateException("Some expected events were not received"); //$NON-NLS-1$
 			} finally {
 				this.eventCount = 0;
 				for (int i = 0; i < this.expectedEvents.size(); i++) {
-					System.out.println(this.testname + " missed expected event: " + JSONUtil.write(this.expectedEvents.get(i)));
+					System.out.println(this.testname + " missed expected event: " + JSONUtil.write(this.expectedEvents.get(i))); //$NON-NLS-1$
 				}
 			}
 		}
 		if (this.eventCount > events.length) {
 			try {
-				throw new IllegalStateException(this.testname + " got too many events - expected [" + events.length + "] got [" + eventCount + "]");
+				throw new IllegalStateException(this.testname + " got too many events - expected [" + events.length + "] got [" + eventCount + "]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			} finally {
 				this.eventCount = 0;
 			}

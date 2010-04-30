@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 public class RequestDisposeTest extends RequestTest {
 
 	public void testDispose() throws DisconnectedException, TimeoutException {
-		Request request = new Request("dispose");
+		Request request = new Request("dispose"); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());

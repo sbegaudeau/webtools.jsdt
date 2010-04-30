@@ -36,7 +36,7 @@ public class BreakpointRequestTests extends RequestTest {
 	 */
 	public void testInvalidBreakpoint() throws Exception {
 		Request request = new Request(JSONConstants.BREAKPOINT);
-		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999"));
+		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999")); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
@@ -64,7 +64,7 @@ public class BreakpointRequestTests extends RequestTest {
 	 */
 	public void testClearInvalidBreakpoint() throws Exception {
 		Request request = new Request(JSONConstants.CLEARBREAKPOINT);
-		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999"));
+		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999")); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
@@ -86,8 +86,8 @@ public class BreakpointRequestTests extends RequestTest {
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 
 		evalScript(script, 1);
 
@@ -129,8 +129,8 @@ public class BreakpointRequestTests extends RequestTest {
 		assertNotNull(breakpoints);
 		assertTrue(breakpoints.isEmpty());
 
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		evalScript(script, 6);
 		
 		request = new Request(JSONConstants.BREAKPOINTS);

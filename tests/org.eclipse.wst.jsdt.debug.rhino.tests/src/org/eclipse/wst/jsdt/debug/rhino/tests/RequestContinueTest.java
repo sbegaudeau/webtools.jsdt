@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 public class RequestContinueTest extends RequestTest {
 
 	public void testContinueWithNoContexts() throws DisconnectedException, TimeoutException {
-		Request request = new Request("continue");
+		Request request = new Request("continue"); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertTrue(response.isSuccess());

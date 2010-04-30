@@ -14,25 +14,25 @@ import org.mozilla.javascript.Scriptable;
 
 public class RhinoDebuggerTest extends RequestTest {
 
-	public static String TEST = "test";
+	public static String TEST = "test"; //$NON-NLS-1$
 
 	public void testDebugSanityInstallResolveBundle(){
-		String script = "";
-		script += "\r\n";
-		script += "var test = function() {";
-		script += "\r\n";
-		script += "var clazz = Packages." + this.getClass().getName() + ";";
-		script += "return clazz.TEST;";
-		script += "};\r\n";
-		script += "var v = test();\r\n";
-		script += "\r\n";
-		script += "\r\n";
-		script += "var y = test();\r\n";
-		script += "\r\n";
-		script += "\r\n";
-		script += "var z = test();\r\n";
-		script += "\r\n";
-		script += "\r\n";
+		String script = ""; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "var test = function() {"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "var clazz = Packages." + this.getClass().getName() + ";"; //$NON-NLS-1$ //$NON-NLS-2$
+		script += "return clazz.TEST;"; //$NON-NLS-1$
+		script += "};\r\n"; //$NON-NLS-1$
+		script += "var v = test();\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "var y = test();\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "var z = test();\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
+		script += "\r\n"; //$NON-NLS-1$
 		
 		Scriptable scope = null;
 		Context context = contextFactory.enterContext();
@@ -40,12 +40,12 @@ public class RhinoDebuggerTest extends RequestTest {
 		context.setApplicationClassLoader(this.getClass().getClassLoader());
 		try {
 			scope = context.initStandardObjects();
-			context.evaluateString(scope, script, "script", 0, null);
+			context.evaluateString(scope, script, "script", 0, null); //$NON-NLS-1$
 		} finally {
 			context.setApplicationClassLoader(current);
 			Context.exit();
 		}
-		Object obj = scope.get("test", scope);
+		Object obj = scope.get("test", scope); //$NON-NLS-1$
 		assertNotSame(Scriptable.NOT_FOUND, obj);
 		assertTrue(obj instanceof Callable);
 		Callable test = (Callable) obj;
@@ -56,7 +56,7 @@ public class RhinoDebuggerTest extends RequestTest {
 		try {
 			Object result = test.call(Context.getCurrentContext(), scope, scope, new Object[0]);
 			Object javaResult = Context.jsToJava(result, String.class);
-			assertEquals("test", javaResult);
+			assertEquals("test", javaResult); //$NON-NLS-1$
 		} finally {
 			context.setApplicationClassLoader(current);
 			Context.exit();

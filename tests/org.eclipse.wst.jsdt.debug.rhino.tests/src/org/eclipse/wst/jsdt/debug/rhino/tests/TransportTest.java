@@ -45,7 +45,7 @@ public class TransportTest extends TestCase {
 	public void _testSocketAcceptAttach() throws Exception {
 		final TransportService service = new SocketTransportService();
 		final String port = SocketUtil.findFreePortString();
-		assertTrue("A valid port could not be found on localhost", !"-1".equals(port));
+		assertTrue("A valid port could not be found on localhost", !"-1".equals(port)); //$NON-NLS-1$ //$NON-NLS-2$
 		final ListenerKey key = service.startListening(port);
 
 		Thread t = new Thread() {
@@ -87,7 +87,7 @@ public class TransportTest extends TestCase {
 	public void testPipedAcceptAttach() throws Exception {
 		final TransportService service = new PipedTransportService();
 		final String port = SocketUtil.findFreePortString();
-		assertTrue("A valid port could not be found on localhost", !"-1".equals(port));
+		assertTrue("A valid port could not be found on localhost", !"-1".equals(port)); //$NON-NLS-1$ //$NON-NLS-2$
 		final ListenerKey key = service.startListening(port);
 		
 		Thread t = new Thread() {

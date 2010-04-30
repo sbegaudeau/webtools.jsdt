@@ -37,8 +37,8 @@ public class FrameRequestTests extends RequestTest {
 		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {6}));
 		eventHandler.addSubhandler(new FrameCheckHandler());
 		
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		//script + breakpoint on line 6
 		evalScript(script, 2);
 	}
@@ -73,7 +73,7 @@ public class FrameRequestTests extends RequestTest {
 							request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 							request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
 							request.getArguments().put(JSONConstants.FRAME_ID, frameId);
-							request.getArguments().put(JSONConstants.EXPRESSION, "this");
+							request.getArguments().put(JSONConstants.EXPRESSION, "this"); //$NON-NLS-1$
 							debugSession.sendRequest(request);
 							response = debugSession.receiveResponse(request.getSequence(), 10000);
 							assertTrue(response.isSuccess());
@@ -91,8 +91,8 @@ public class FrameRequestTests extends RequestTest {
 		};
 		eventHandler.addSubhandler(frameCheckHandler);
 
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		//script + breakpoint
 		evalScript(script, 2);
 	}

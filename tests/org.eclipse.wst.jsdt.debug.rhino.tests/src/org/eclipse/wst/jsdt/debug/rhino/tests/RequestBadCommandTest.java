@@ -18,7 +18,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
 public class RequestBadCommandTest extends RequestTest {
 
 	public void testBadCommand() throws DisconnectedException, TimeoutException {
-		Request request = new Request("bad_command");
+		Request request = new Request("bad_command"); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), 30000);
 		assertFalse(response.isSuccess());

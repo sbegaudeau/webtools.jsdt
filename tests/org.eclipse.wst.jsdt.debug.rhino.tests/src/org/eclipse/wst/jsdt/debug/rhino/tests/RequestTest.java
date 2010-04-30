@@ -49,7 +49,7 @@ public abstract class RequestTest extends TestCase {
 		private String testname = null;
 		
 		public SubHandler(String testname) {
-			Assert.assertNotNull("The test name cannot be null", testname);
+			Assert.assertNotNull("The test name cannot be null", testname); //$NON-NLS-1$
 			this.testname = testname;
 		}
 		
@@ -85,7 +85,7 @@ public abstract class RequestTest extends TestCase {
 				try {
 					debugSession.sendRequest(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-					assertTrue(testName()+": the request for frames from thread ["+threadId.intValue()+"] was not successful", response.isSuccess());
+					assertTrue(testName()+": the request for frames from thread ["+threadId.intValue()+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
 					for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
 						Number frameId = (Number) iterator.next();
@@ -95,7 +95,7 @@ public abstract class RequestTest extends TestCase {
 						request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(testName()+": the request for frame ["+frameId.intValue()+"] frmo thread ["+threadId.intValue()+"] was not successful", response.isSuccess());
+						assertTrue(testName()+": the request for frame ["+frameId.intValue()+"] frmo thread ["+threadId.intValue()+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					}
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
@@ -133,8 +133,8 @@ public abstract class RequestTest extends TestCase {
 					Response response = debugSession.receiveResponse(request.getSequence(), 10000);
 					assertTrue(response.isSuccess());
 					List threads = (List) response.getBody().get(JSONConstants.THREADS);
-					assertTrue(testName()+": the listing of threads must not be empty", threads.size() > 0);
-					assertEquals(testName()+": the thread ids do not match", threadId.intValue(), Util.numberAsInt(threads.get(0)));
+					assertTrue(testName()+": the listing of threads must not be empty", threads.size() > 0); //$NON-NLS-1$
+					assertEquals(testName()+": the thread ids do not match", threadId.intValue(), Util.numberAsInt(threads.get(0))); //$NON-NLS-1$
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
 				} catch (TimeoutException e) {
@@ -179,10 +179,10 @@ public abstract class RequestTest extends TestCase {
 						request = new Request(JSONConstants.SETBREAKPOINT);
 						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 						request.getArguments().put(JSONConstants.LINE, lineNumber);
-						request.getArguments().put(JSONConstants.CONDITION, "1===1");
+						request.getArguments().put(JSONConstants.CONDITION, "1===1"); //$NON-NLS-1$
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(testName()+": the request to set a breakpoint on line ["+lineNumber+"] was not successful", response.isSuccess());
+						assertTrue(testName()+": the request to set a breakpoint on line ["+lineNumber+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 						
 						Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 						Number breakpointId = (Number) breakpoint.get(JSONConstants.BREAKPOINT_ID);
@@ -195,7 +195,7 @@ public abstract class RequestTest extends TestCase {
 						assertEquals(breakpointId.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.BREAKPOINT_ID)));
 						assertEquals(scriptId.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.SCRIPT_ID)));
 						assertEquals(lineNumber.intValue(), Util.numberAsInt(breakpoint.get(JSONConstants.LINE)));
-						assertEquals("1===1", breakpoint.get(JSONConstants.CONDITION));
+						assertEquals("1===1", breakpoint.get(JSONConstants.CONDITION)); //$NON-NLS-1$
 					}
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
@@ -222,8 +222,8 @@ public abstract class RequestTest extends TestCase {
 		 */
 		public SetBreakpointHandler(int[] lines) {
 			super(getName());
-			assertNotNull(testName()+": no line numbers have been specified to set breakpoints on", lines);
-			assertTrue(testName()+": no line numbers have been specified to set breakpoints on", lines.length > 0);
+			assertNotNull(testName()+": no line numbers have been specified to set breakpoints on", lines); //$NON-NLS-1$
+			assertTrue(testName()+": no line numbers have been specified to set breakpoints on", lines.length > 0); //$NON-NLS-1$
 			this.adds = lines;
 		}
 
@@ -240,14 +240,14 @@ public abstract class RequestTest extends TestCase {
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(response.isSuccess());
 					Map script = (Map) response.getBody().get(JSONConstants.SCRIPT);
-					assertNotNull(testName()+": the response body cannot be null", script);
+					assertNotNull(testName()+": the response body cannot be null", script); //$NON-NLS-1$
 					for (int i = 0; i < adds.length; i++) {
 						request = new Request(JSONConstants.SETBREAKPOINT);
 						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 						request.getArguments().put(JSONConstants.LINE, new Integer(adds[i]));
 						debugSession.sendRequest(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-						assertTrue(testName()+": the request to set a breakpoint on line ["+adds[i]+"] was not successful", response.isSuccess());
+						assertTrue(testName()+": the request to set a breakpoint on line ["+adds[i]+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					}					
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
@@ -286,7 +286,7 @@ public abstract class RequestTest extends TestCase {
 				try {
 					debugSession.sendRequest(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
-					assertTrue(testName()+": the request to clear breakpoint ["+bid+"] should have succeeded", response.isSuccess());
+					assertTrue(testName()+": the request to clear breakpoint ["+bid+"] should have succeeded", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					return true;
 				} catch (DisconnectedException e) {
 					e.printStackTrace();

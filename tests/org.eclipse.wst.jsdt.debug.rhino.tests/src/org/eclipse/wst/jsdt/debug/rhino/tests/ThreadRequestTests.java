@@ -43,8 +43,8 @@ public class ThreadRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testInvalidThread() throws Exception {
-		Request request = new Request("context");
-		request.getArguments().put(JSONConstants.THREAD_ID, new Integer("9999"));
+		Request request = new Request("context"); //$NON-NLS-1$
+		request.getArguments().put(JSONConstants.THREAD_ID, new Integer("9999")); //$NON-NLS-1$
 		debugSession.sendRequest(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
@@ -57,8 +57,8 @@ public class ThreadRequestTests extends RequestTest {
 	public void testThreads() throws Exception {
 		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {6}));
 		eventHandler.addSubhandler(new ThreadCheckHandler());
-		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js");
-		assertNotNull("The test source for [script1.js] must exist", script);
+		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
+		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		evalScript(script);
 		//script event + breakpoint on line 6
 		waitForEvents(2);
