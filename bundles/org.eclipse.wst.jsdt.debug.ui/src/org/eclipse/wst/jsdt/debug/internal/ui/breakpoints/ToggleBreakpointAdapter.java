@@ -180,6 +180,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 					return type.getFullyQualifiedName();
 				}
 			}
+			//$FALL-THROUGH$
 			default: {
 				return null;
 			}
