@@ -15,6 +15,7 @@ import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 import org.eclipse.ui.texteditor.templates.TemplatesView;
@@ -32,8 +33,14 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
  		String editorArea = layout.getEditorArea();
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
-		folder.addView(IPageLayout.ID_PROJECT_EXPLORER);
-//		folder.addPlaceholder(JavaScriptUI.ID_PACKAGES);
+		
+		String explorerViewID = ProductProperties.getProperty(IProductConstants.PERSPECTIVE_EXPLORER_VIEW);
+		// make sure the specified view ID is known
+		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null)
+			folder.addView(explorerViewID);
+		else
+			folder.addView(ProductProperties.ID_PERSPECTIVE_EXPLORER_VIEW);
+		
 		folder.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
