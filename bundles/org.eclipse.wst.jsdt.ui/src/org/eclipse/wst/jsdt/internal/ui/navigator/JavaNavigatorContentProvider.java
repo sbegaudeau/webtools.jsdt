@@ -36,9 +36,10 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
-import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.core.BinaryType;
+import org.eclipse.wst.jsdt.internal.core.SourceType;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -152,8 +153,11 @@ public class JavaNavigatorContentProvider extends
 		if (getProvideMembers() && parentElement instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IFile) parentElement).getName())) {
 			Object[] children = super.getChildren(JavaScriptCore.create((IFile) parentElement));
 			for (int i = 0; i < children.length; i++) {
-				if (children[i] instanceof IType) {
-					children[i] = new TypeDelegate((IType) children[i]);
+				if (children[i] instanceof SourceType) {
+					children[i] = new SourceTypeDelegate((SourceType) children[i]);
+				}
+				else if (children[i] instanceof BinaryType) {
+					children[i] = new BinaryTypeDelegate((BinaryType) children[i]);
 				}
 			}
 			return children;

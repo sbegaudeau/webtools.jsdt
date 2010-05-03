@@ -5275,7 +5275,8 @@
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
-					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.TypeDelegate" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.SourceTypeDelegate" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.BinaryTypeDelegate" />
 				</or>
 			</triggerPoints>
 			<possibleChildren>
@@ -5285,7 +5286,8 @@
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
 					<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 					<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup" />
-					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.TypeDelegate" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.SourceTypeDelegate" />
+					<instanceof value="org.eclipse.wst.jsdt.internal.ui.navigator.BinaryTypeDelegate" />
 				</or>
 			</possibleChildren> 
 			<actionProvider

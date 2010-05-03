@@ -1142,6 +1142,10 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			if (kind == IJavaScriptElementDelta.CHANGED) {
 				// isStructuralCUChange already performed above
 				postRefresh(element, ORIGINAL, element, runnables);
+				IResource underlyingResource = ((IJavaScriptUnit)element).getUnderlyingResource();
+				if(underlyingResource != null) {
+					postRefresh(underlyingResource, ORIGINAL, element, runnables);
+				}
 				updateSelection(delta, runnables);
 			}
 			return false;
