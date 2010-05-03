@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 
-public class BinaryTypeDelegate extends BinaryType implements TypeDelegate {
+public class BinaryTypeDelegate extends BinaryType implements ITypeDelegate {
 	private BinaryType fDelegateType;
 
 	public BinaryTypeDelegate(BinaryType delegate) {
@@ -881,7 +881,7 @@ public class BinaryTypeDelegate extends BinaryType implements TypeDelegate {
 	}
 
 	public String toString() {
-		return "TypeDelegate: " + fDelegateType.getDisplayName(); //$NON-NLS-1$
+		return "BinaryTypeDelegate: " + fDelegateType.getDisplayName(); //$NON-NLS-1$
 	}
 
 	public IType getDelegate() {

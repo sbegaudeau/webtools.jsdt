@@ -41,7 +41,7 @@ import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.core.SourceType;
 
-public class SourceTypeDelegate extends SourceType implements TypeDelegate {
+public class SourceTypeDelegate extends SourceType implements ITypeDelegate {
 	private SourceType fDelegateType;
 
 	public SourceTypeDelegate(SourceType delegate) {
@@ -886,7 +886,7 @@ public class SourceTypeDelegate extends SourceType implements TypeDelegate {
 	}
 
 	public String toString() {
-		return "TypeDelegate: " + fDelegateType.getDisplayName(); //$NON-NLS-1$
+		return "SourceTypeDelegate: " + fDelegateType.getDisplayName(); //$NON-NLS-1$
 	}
 
 	public IType getDelegate() {
