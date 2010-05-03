@@ -140,9 +140,6 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 	}
 
 	public String getText(Object element) {
-		if (!delegeteLabelProvider.isFlatLayout() && element instanceof ITypeDelegate) {
-			return delegeteLabelProvider.getText(((ITypeDelegate) element).getDelegate());
-		}
 		if (element instanceof IJavaScriptElement) {
 			switch (((IJavaScriptElement) element).getElementType()) {
 				case IJavaScriptElement.TYPE :
