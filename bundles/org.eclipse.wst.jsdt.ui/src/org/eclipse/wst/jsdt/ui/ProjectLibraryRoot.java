@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@
 package org.eclipse.wst.jsdt.ui;
 
 import java.util.ArrayList;
-
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
@@ -89,6 +88,17 @@ public class ProjectLibraryRoot implements IAdaptable{
 	public String getText() {
 		return ProjectLibraryRoot.LIBRARY_UI_DESC;
 	}
+	
+	public boolean hasChildren() {
+		try {
+			return project.getPackageFragmentRoots().length > 0;
+		}
+		catch (JavaScriptModelException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
 	public Object[] getChildren() {
 	     if (!project.getProject().isOpen())
 				return new Object[0];

@@ -371,6 +371,19 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			return NO_CHILDREN;
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.ui.StandardJavaScriptElementContentProvider#hasChildren(java.lang.Object)
+	 */
+	public boolean hasChildren(Object element) {
+		if (element instanceof JsGlobalScopeContainer) {
+			return ((JsGlobalScopeContainer) element).hasChildren();
+		}
+		if (element instanceof ProjectLibraryRoot) {
+			return ((ProjectLibraryRoot) element).hasChildren();
+		}
+		return super.hasChildren(element);
+	}
 
 	private Object[] getSourceChildren(Object parentElement, boolean neverGroup, NamespaceGroup onlyGroup) throws JavaScriptModelException {
 		Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
