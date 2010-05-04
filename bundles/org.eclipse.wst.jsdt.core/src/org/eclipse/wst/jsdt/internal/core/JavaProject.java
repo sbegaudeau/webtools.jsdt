@@ -276,7 +276,7 @@ public class JavaProject
 //			if (JavaModelManager.VERBOSE) {
 //				System.out.println("JAVA MODEL - Canonical path is original path (file system is case sensitive)");
 //			}
-			return externalPath;
+			return new Path(new File(externalPath.toOSString()).getPath());
 		}
 
 		// if not external path, return original path
