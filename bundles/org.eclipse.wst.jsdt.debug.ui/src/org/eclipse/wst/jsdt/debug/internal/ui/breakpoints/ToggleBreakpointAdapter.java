@@ -245,62 +245,6 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		return res;
 	}
 	
-    /**
-     * Returns the {@link IJavaScriptElement} that we want to set the breakpoint on or in.
-     * In the source editor case we further visit the element to find the correct location.
-     * @param part
-     * @param selection
-     * @return the {@link IJavaScriptElement} to set the breakpoint in or on, or <code>null</code> if the lookup fails
-     * @throws CoreException
-     */
-    protected IJavaScriptElement getElement(IWorkbenchPart part, ISelection selection) throws CoreException {
-    	ITextEditor textEditor = getTextEditor(part);
-        if (textEditor != null && selection instanceof ITextSelection) {
-            ITextSelection textSelection = (ITextSelection) selection;
-            IEditorInput editorInput = textEditor.getEditorInput();
-            IDocumentProvider documentProvider = textEditor.getDocumentProvider();
-            if (documentProvider == null) {
-                throw new CoreException(Status.CANCEL_STATUS);
-            }
-            IDocument document = documentProvider.getDocument(editorInput);
-            int offset = textSelection.getOffset();
-            if (document != null) {
-                try {
-                    IRegion region = document.getLineInformationOfOffset(offset);
-                    int end = region.getOffset() + region.getLength();
-                    while (Character.isWhitespace(document.getChar(offset)) && offset < end) {
-                        offset++;
-                    }
-                } catch (BadLocationException e) {}
-            }
-            ITypeRoot root = getTypeRoot(editorInput);
-            if(root instanceof IJavaScriptUnit) {
-            	IJavaScriptUnit unit = (IJavaScriptUnit) root;
-                synchronized (unit) {
-                    unit.reconcile(IJavaScriptUnit.NO_AST , false, null, null);
-                }
-            }
-            if(root != null){
-                IJavaScriptElement e = root.getElementAt(offset);
-                if (e instanceof IMember) {
-                    return e;
-                }
-                if(e == null) {
-                	return root;
-                }
-            }
-        }
-        else {
-        	//direct selection in the outline
-        	IStructuredSelection ss = (IStructuredSelection) selection;
-        	Object o = ss.getFirstElement();
-        	if(o instanceof IMember) {
-        		return (IMember) o;
-        	}
-        }
-        return null;
-    }
-	
 	/**
 	 * Returns the {@link ITypeRoot} for the given editor input
 	 * @param input
@@ -413,15 +357,25 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTargetExtension#toggleBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleBreakpoints(IWorkbenchPart part, ISelection selection) throws CoreException {
-		IJavaScriptElement element = getElement(part, selection);
 		if(selection instanceof ITextSelection) {
+			ITextEditor textEditor = getTextEditor(part);
+			if(textEditor == null) {
+				reportToStatusLine(part, Messages.no_valid_location);
+				return;
+			}
+			ITypeRoot root = getTypeRoot(textEditor.getEditorInput());
+            if(root instanceof IJavaScriptUnit) {
+            	IJavaScriptUnit unit = (IJavaScriptUnit) root;
+                synchronized (unit) {
+                    unit.reconcile(IJavaScriptUnit.NO_AST , false, null, null);
+                }
+            }
+            if(root == null) {
+            	reportToStatusLine(part, Messages.no_valid_location);
+            	return;
+            }
 			ASTParser parser = ASTParser.newParser(AST.JLS3);
-			if(element instanceof IMember) {
-				parser.setSource(((IMember)element).getTypeRoot());
-			}
-			else {
-				parser.setSource((ITypeRoot)element);
-			}
+			parser.setSource(root);
 			JavaScriptUnit jsunit = (JavaScriptUnit) parser.createAST(null);
 			BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, ((TextSelection)selection).getStartLine()+1, false);
 			jsunit.accept(finder);
@@ -431,19 +385,24 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 					return;
 				}
 				case BreakpointLocationFinder.LINE: {
-					toggleLineBreakpoint(part, (ITextSelection) selection, element, finder.getLineNumber());
+					toggleLineBreakpoint(part, (ITextSelection) selection, root.getElementAt(finder.getOffset()), finder.getLineNumber());
 					return;
 				}
 				case BreakpointLocationFinder.FUNCTION: {
-					toggleMethodBreakpoint(part, element);
+					toggleMethodBreakpoint(part, root.getElementAt(finder.getOffset()));
 					return;
 				}
 			}
 		}
 		else {
-			if(element.getElementType() == IJavaScriptElement.METHOD) {
-				toggleMethodBreakpoint(part, element);
-			}
+			IStructuredSelection ss = (IStructuredSelection) selection;
+        	Object o = ss.getFirstElement();
+        	if(o instanceof IMember) {
+        		IMember member = (IMember) o;
+        		if(member.getElementType() == IJavaScriptElement.METHOD) {
+    				toggleMethodBreakpoint(part, member);
+    			}
+        	}
 		}
 	}
 	

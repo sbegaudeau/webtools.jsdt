@@ -119,6 +119,16 @@ public class BreakpointLocationFinder extends ASTVisitor {
 	 */
 	private int location = UNKNOWN;
 	private JavaScriptUnit jsunit = null;
+	/**
+	 * The name of the function
+	 * @since 1.1
+	 */
+	private String functionName = null;
+	/**
+	 * The computed offset to the start of the element
+	 * @since 1.1
+	 */
+	private int offset = -1;
 	private boolean found = false;
 	private boolean resolvedbindings = false;
 	private ArrayList labels = new ArrayList();
@@ -188,6 +198,7 @@ public class BreakpointLocationFinder extends ASTVisitor {
 		if (isCode && (this.linenumber <= startLine)) {
 			this.linenumber = startLine;
 			this.found= true;
+			this.offset = startPosition;
 			this.location = LINE;
 			//TODO compute a type name for the script?
 			return false;
@@ -203,6 +214,29 @@ public class BreakpointLocationFinder extends ASTVisitor {
 		return this.location;
 	}
 
+	/**
+	 * Returns the computed offset into the AST at the start location of the location
+	 * element. The AST parser computes this value, we derive it from the source start location
+	 * of the ASTNode found as the valid location.
+	 * 
+	 * @return the source start position for the found location or -1 if no position was found
+	 * @since 1.1
+	 */
+	public int getOffset() {
+		return this.offset;
+	}
+	
+	/**
+	 * Returns the name of the function for the found location iff the 
+	 * found location is a function.
+	 * 
+	 *  @return the name of the function for the found location or <code>null</code>
+	 *  @since 1.1
+	 */
+	public String getFunctionName() {
+		return this.functionName;
+	}
+	
 	/**
 	 * Returns the proposed line number for this breakpoint
 	 * @return the proposed line number
@@ -281,9 +315,11 @@ public class BreakpointLocationFinder extends ASTVisitor {
 	public boolean visit(Block node) {
 		if(visit(node, false)) {
 			if(node.statements().isEmpty() && node.getParent().getNodeType() == ASTNode.FUNCTION_DECLARATION) {
-				this.linenumber = lineNumber(node.getStartPosition() + node.getLength() - 1);
+				int offset = node.getStartPosition();
+				this.linenumber = lineNumber(offset + node.getLength() - 1);
 				this.found = true;
 				this.location = LINE;
+				this.offset = offset;
 				//TODO compute a type name for the script?
 				return false;
 			}
@@ -415,6 +451,7 @@ public class BreakpointLocationFinder extends ASTVisitor {
 				int offset = ((VariableDeclarationFragment)frags.get(0)).getName().getStartPosition();
 				if (lineNumber(offset) == this.linenumber) {
 					this.location = LINE;
+					this.offset = offset;
 					this.found = true;
 					return false;
 				}
@@ -454,6 +491,8 @@ public class BreakpointLocationFinder extends ASTVisitor {
 		if (lineNumber(nameOffset) == this.linenumber) {
 			this.location = FUNCTION;
 			this.found = true;
+			this.functionName = node.getName().getIdentifier();
+			this.offset = nameOffset;
 			return false;
 		}
 		Block body = node.getBody();
@@ -836,11 +875,13 @@ public class BreakpointLocationFinder extends ASTVisitor {
 		if(visit(node, false) && init != null) {
 			init.accept(this);
 			if(!this.found) {
-				int startLine = lineNumber(node.getName().getStartPosition());
+				int offset = node.getName().getStartPosition();
+				int startLine = lineNumber(offset);
 				if (this.linenumber == startLine) {
 					this.linenumber = startLine;
 					this.found = true;
 					this.location = LINE;
+					this.offset = offset;
 					//TODO resolve script name?
 					return false;
 				}
