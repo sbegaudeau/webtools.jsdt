@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -212,11 +213,27 @@ public class JavaScriptDebugPlugin extends Plugin {
 		return new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, message, exception);
 	}
 
-	public static synchronized void addExternalScriptPath(String sourceName, String scriptPath) {
-		externalScriptPaths.put(sourceName, scriptPath);		
+	/**
+	 * Caches the original {@link URI} script path for the given external source path
+	 *  
+	 * @param path
+	 * @param scriptPath
+	 */
+	public static synchronized void addExternalScriptPath(IPath path, String scriptPath) {
+		int count = path.segmentCount();
+		int remove = count > 2 ? count-2 : 0;
+		externalScriptPaths.put(path.removeFirstSegments(remove), scriptPath);
 	}
 	
-	public static synchronized String getExternalScriptPath(String sourceName) {
-		return (String) externalScriptPaths.get(sourceName);		
+	/**
+	 * Fetches the original {@link URI} script path for the given external source path
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static synchronized String getExternalScriptPath(IPath path) {
+		int count = path.segmentCount();
+		int remove = count > 2 ? count-2 : 0;
+		return (String) externalScriptPaths.get(path.removeFirstSegments(remove).makeAbsolute());
 	}
 }

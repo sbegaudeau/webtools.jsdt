@@ -127,7 +127,8 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		try {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
 			String filename = URIUtil.lastSegment(uri);
-			IPath path = new Path(uri.getPath()).removeLastSegments(1).append(Integer.toString(source.hashCode())).append(filename);
+			String hashString = Integer.toString(source.hashCode());
+			IPath path = new Path(uri.getPath()).removeLastSegments(1).append(hashString).append(filename);
 			if(path.getFileExtension() == null) {
 				path = path.addFileExtension(Constants.JS_EXTENSION);
 			}
@@ -144,8 +145,8 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 				file.create(new ByteArrayInputStream(source.getBytes()), true, null);
 			}
 			
-			if (JavaScriptDebugPlugin.getExternalScriptPath(path.lastSegment()) == null) {
-				JavaScriptDebugPlugin.addExternalScriptPath(path.lastSegment(), uri.toString());
+			if (JavaScriptDebugPlugin.getExternalScriptPath(path) == null) {
+				JavaScriptDebugPlugin.addExternalScriptPath(path, uri.toString());
 			}	
 			return new Object[] {file};
 
