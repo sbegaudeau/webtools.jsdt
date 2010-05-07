@@ -602,8 +602,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		} 
 		catch(RuntimeException rte) {}
 		finally {
-			disposeVM(true);
 			cleanup();
+			disposeVM(true);
 			this.disconnected = true;
 			fireTerminateEvent();
 		}
