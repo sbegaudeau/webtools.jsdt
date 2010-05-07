@@ -60,7 +60,6 @@ public interface JSONConstants {
 	public static final String VARIABLE = "variable"; //$NON-NLS-1$
 	public static final String THIS = "this"; //$NON-NLS-1$
 	public static final String PROTOTYPE_OBJECT = "prototypeObject"; //$NON-NLS-1$
-	public static final String PROTO_OBJECT = "protoObject"; //$NON-NLS-1$
 	public static final String CONSTRUCTOR_FUNCTION = "constructorFunction"; //$NON-NLS-1$
 
 	// id constants

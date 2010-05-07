@@ -351,8 +351,6 @@ public class StackFrame implements DebugFrame {
 			constructorFunction = ScriptableObject.getProperty(scriptable, JSONConstants.CONSTRUCTOR);
 		}
 		result.put(JSONConstants.CONSTRUCTOR_FUNCTION, createRef(constructorFunction));
-		Scriptable protoObject = findProtoObject(scriptable);
-		result.put(JSONConstants.PROTO_OBJECT, createRef(protoObject));
 		result.put(JSONConstants.PROTOTYPE_OBJECT, createRef(scriptable.getPrototype()));
 		if (scriptable instanceof NativeJavaObject)
 			result.put(JSONConstants.PROPERTIES, createJavaObjectProperties((NativeJavaObject) scriptable));
@@ -383,25 +381,6 @@ public class StackFrame implements DebugFrame {
 		List properties = createProperties(activation);
 		properties.add(createProperty(JSONConstants.THIS, thisObj));
 		result.put(JSONConstants.PROPERTIES, properties);
-	}
-
-	/**
-	 * Finds the {@link Scriptable} object from the objects' prototype. Walks the parent hierarchy to find the first non-null {@link Scriptable} object
-	 * 
-	 * @param scriptable
-	 * @return the first non-null {@link Scriptable} object
-	 */
-	private Scriptable findProtoObject(Scriptable scriptable) {
-		// TODO: cache this more sensibly
-		Scriptable protoObject = scriptable.getPrototype();
-		while (protoObject != null) {
-			Scriptable parent = protoObject.getPrototype();
-			if (parent == null || parent.equals(protoObject)) {
-				break;
-			}
-			protoObject = parent;
-		}
-		return protoObject;
 	}
 
 	/**
