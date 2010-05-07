@@ -18,6 +18,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
@@ -52,6 +53,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.DebugWCManager;
 
 /**
@@ -133,24 +135,35 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @return the path to the script 
 	 */
 	String getScriptPath(IJavaScriptElement element) {
-		switch(element.getElementType()) {
+		String scriptPath  = getElementScriptPath(element);
+		if (! scriptPath.endsWith(").js")) //$NON-NLS-1$
+			return scriptPath;
+		
+		Path path = new Path(scriptPath);
+		String scriptName = path.lastSegment();
+		String externalScriptPath = (JavaScriptDebugPlugin.getExternalScriptPath(scriptName));
+		return (externalScriptPath == null) ? scriptPath : externalScriptPath;
+	}
+
+	private String getElementScriptPath(IJavaScriptElement element) {
+		switch (element.getElementType()) {
 		case IJavaScriptElement.TYPE: {
-			return ((IType)element).getPath().toOSString();
+			return ((IType) element).getPath().toOSString();
 		}
 		case IJavaScriptElement.METHOD:
 		case IJavaScriptElement.FIELD: {
 			IMember member = (IMember) element;
 			IType type = member.getDeclaringType();
-			if(type == null) {
+			if (type == null) {
 				IJavaScriptElement parent = element.getParent();
-				switch(parent.getElementType()) {
-					case IJavaScriptElement.TYPE: {
-						return ((IType)parent).getPath().toOSString();
-					}
-					case IJavaScriptElement.JAVASCRIPT_UNIT: 
-					case IJavaScriptElement.CLASS_FILE: {
-						return ((ITypeRoot)parent).getPath().toOSString();
-					}
+				switch (parent.getElementType()) {
+				case IJavaScriptElement.TYPE: {
+					return ((IType) parent).getPath().toOSString();
+				}
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
+				case IJavaScriptElement.CLASS_FILE: {
+					return ((ITypeRoot) parent).getPath().toOSString();
+				}
 				}
 				return element.getParent().getElementName();
 			}
@@ -159,7 +172,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		default: {
 			return element.getElementName();
 		}
-	}
+		}
 	}
 	
 	/**

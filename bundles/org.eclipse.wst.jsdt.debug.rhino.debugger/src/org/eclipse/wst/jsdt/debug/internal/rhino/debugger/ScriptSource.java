@@ -172,7 +172,7 @@ public class ScriptSource {
 	 * @return if this script represents the stdin script
 	 */
 	public boolean isStdIn() {
-		return this.uri.getPath().endsWith("stdin"); //$NON-NLS-1$
+		return this.uri.toString().endsWith("stdin"); //$NON-NLS-1$
 	}
 	
 	/**
@@ -239,7 +239,7 @@ public class ScriptSource {
 	 */
 	public boolean equals(Object obj) {
 		if(obj instanceof ScriptSource) {
-			return this.uri.getPath().equals(((ScriptSource)obj).uri.getPath());
+			return this.uri.toString().equals(((ScriptSource)obj).uri.toString());
 		}
 		return false;
 	}
@@ -248,7 +248,7 @@ public class ScriptSource {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return this.uri.getPath().hashCode();
+		return this.uri.toString().hashCode();
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class ScriptSource {
 	public Object toJSON() {
 		HashMap result = new HashMap();
 		result.put(JSONConstants.SCRIPT_ID, this.scriptId);
-		result.put(JSONConstants.LOCATION, this.uri.getPath());
+		result.put(JSONConstants.LOCATION, this.uri.toString());
 		result.put(JSONConstants.PROPERTIES, properties);
 		result.put(JSONConstants.SOURCE, source);
 		result.put(JSONConstants.GENERATED, Boolean.valueOf(generated));
@@ -400,7 +400,7 @@ public class ScriptSource {
 	 * @return the string location of this script
 	 */
 	public String getLocation() {
-		return this.uri.getPath();
+		return this.uri.toString();
 	}
 	
 	/**

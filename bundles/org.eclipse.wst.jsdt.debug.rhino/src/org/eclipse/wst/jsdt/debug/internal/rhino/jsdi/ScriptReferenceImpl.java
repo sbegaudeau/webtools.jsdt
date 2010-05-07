@@ -138,32 +138,21 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#sourceURI()
 	 */
-	public URI sourceURI() {
-		synchronized (vm) {
-			if (this.sourceuri == null) {
-				try {
-					if(this.sourceProperties != null) {
-						IPath path = new Path((String) this.sourceProperties.get(Constants.BUNDLE_SYMBOLICNAME));
-						path = path.append((String) this.sourceProperties.get(JSONConstants.PATH));
-						path = path.append((String) this.sourceProperties.get(JSONConstants.NAME));
-						this.sourceuri = RhinoDebugPlugin.fileURI(path);
-					}
-					else if(this.sourcePath != null) {
-						IPath path = null;
-						if(this.sourcePath.equals(org.eclipse.wst.jsdt.debug.internal.rhino.Constants.STD_IN_URI)) {
-							path = new Path(org.eclipse.wst.jsdt.debug.internal.rhino.Constants.STD_IN);
-						}
-						else {
-							path = new Path(this.sourcePath);
-						}
-						this.sourceuri = RhinoDebugPlugin.fileURI(path);
-					}
-					else {
-						this.sourceuri = RhinoDebugPlugin.fileURI(new Path("script")); //$NON-NLS-1$
-					}
-				} catch (URISyntaxException urise) {
-					RhinoDebugPlugin.log(urise);
+	public synchronized URI sourceURI() {
+		if (this.sourceuri == null) {
+			try {
+				if (this.sourceProperties != null) {
+					IPath path = new Path((String) this.sourceProperties.get(Constants.BUNDLE_SYMBOLICNAME));
+					path = path.append((String) this.sourceProperties.get(JSONConstants.PATH));
+					path = path.append((String) this.sourceProperties.get(JSONConstants.NAME));
+					this.sourceuri = URI.create(path.toString());
+				} else if (this.sourcePath != null) {
+					this.sourceuri = URI.create(sourcePath);
+				} else {
+					this.sourceuri = RhinoDebugPlugin.fileURI(new Path("script")); //$NON-NLS-1$
 				}
+			} catch (URISyntaxException urise) {
+				RhinoDebugPlugin.log(urise);
 			}
 		}
 		return this.sourceuri;

@@ -103,7 +103,7 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 				int vote = thread.suspendForScriptLoad(this, script, suspendVote);
 				if(isGlobalLoadSuspend(vote) ||
 						((vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE)) {
-					JavaScriptPreferencesManager.setGlobalSuspendOn(script.sourceURI().getPath());
+					JavaScriptPreferencesManager.setGlobalSuspendOn(script.sourceURI().toString());
 					thread.addBreakpoint(this);
 					return false;
 				}

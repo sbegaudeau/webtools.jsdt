@@ -8,6 +8,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -42,8 +43,8 @@ import org.mozilla.javascript.debug.Debugger;
 public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 
 	public static final DebuggableScript[] NO_SCRIPTS = new DebuggableScript[0];
-
-
+	private static final String RHINO_SCHEME = "rhino"; //$NON-NLS-1$
+	
 	private final Map threadToThreadId = new HashMap();
 	private final Map threadIdToData = new HashMap();
 	private final Map breakpoints = new HashMap();
@@ -170,29 +171,46 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 	 * @param properties any special properties @see {@link #parseSourceProperties(String)}
 	 * @return the {@link URI} for the source or <code>null</code>
 	 */
-	URI getSourceUri(DebuggableScript script, Map properties) {
-		try {
+	private URI getSourceUri(DebuggableScript script, Map properties) {
+			String sourceName = script.getSourceName();
 			if(properties != null) {
-				return new URI((String) properties.get(JSONConstants.NAME));
+				String jsonName = (String) properties.get(JSONConstants.NAME);
+				if (jsonName != null)
+					sourceName = jsonName;
 			}
-			String path = script.getSourceName();
-			if("<stdin>".equals(path)) { //$NON-NLS-1$
-				path = "stdin"; //$NON-NLS-1$
-			}
-			try {
+			
+			// handle null sourceName
+			if (sourceName == null)
+				return null;
+			
+			// handle input from the Rhino Shell
+			if (sourceName.equals("<stdin>")) { //$NON-NLS-1$
+				sourceName = "stdin"; //$NON-NLS-1$
+			} else {		
+				// try to parse it as a file
+				File sourceFile = new File(sourceName);
+				if (sourceFile.exists())
+					return sourceFile.toURI();
+				
 				//try to just create a URI from the name
-				return new URI(path);
+				try {
+					URI uri = new URI(sourceName);
+					if (uri.getScheme() != null && uri.isAbsolute())
+						return uri;
+				}
+				catch(URISyntaxException e) {
+					//do nothing and fall through
+				}
 			}
-			catch(URISyntaxException urise) {
-				//do nothing
+			
+			//fall back to creating a rhino specific URI from the script source name as a path
+			try {
+				if (! (sourceName.charAt(0) == '/'))
+					sourceName = "/" + sourceName; //$NON-NLS-1$
+				return new URI(RHINO_SCHEME, null, sourceName, null);
+			} catch (URISyntaxException e) {
+				return null;
 			}
-			//fall back to creating a file URI
-			return new URI("file:", null, path, null); //$NON-NLS-1$
-		}
-		catch (URISyntaxException urise) {
-			//do nothing just return null
-		}
-		return null;
 	}
 	
 	/**

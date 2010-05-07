@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -49,6 +51,7 @@ public class JavaScriptDebugPlugin extends Plugin {
 	private static BreakpointParticipantManager participantmanager = null;
 	
 	private static JavaScriptPreferencesManager prefmanager = null;
+	private static Map externalScriptPaths = new HashMap();
 	
 	/**
 	 * Returns the singleton {@link ConnectorsManager} instance
@@ -153,5 +156,13 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 */
 	public static IStatus newErrorStatus(String message, Throwable exception) {
 		return new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, message, exception);
+	}
+
+	public static synchronized void addExternalScriptPath(String sourceName, String scriptPath) {
+		externalScriptPaths.put(sourceName, scriptPath);		
+	}
+	
+	public static synchronized String getExternalScriptPath(String sourceName) {
+		return (String) externalScriptPaths.get(sourceName);		
 	}
 }

@@ -44,7 +44,7 @@ public class DefaultJavaScriptBreakpointParticipant implements IJavaScriptBreakp
 		if(breakpoint instanceof IJavaScriptLoadBreakpoint) {
 			try {
 				String bpath = breakpoint.getScriptPath();
-				if(bpath.equals(script.sourceURI().getPath())) {
+				if(bpath.equals(script.sourceURI().toString())) {
 					return SUSPEND;
 				}
 			} catch (CoreException e) {

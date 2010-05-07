@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -190,15 +189,17 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 */
 	public void removeFromTarget(JavaScriptDebugTarget target) {
 		List requests = getRequests(target);
-		EventRequest request = null;
-		for (Iterator iter = requests.iterator(); iter.hasNext();) {
-			try {
-				request = (EventRequest) iter.next();
-				if (target.isAvailable()) {
-					target.getEventRequestManager().deleteEventRequest(request);
+		if (requests != null) {
+			for (Iterator iter = requests.iterator(); iter.hasNext();) {
+				EventRequest request = null;
+				try {
+					request = (EventRequest) iter.next();
+					if (target.isAvailable()) {
+						target.getEventRequestManager().deleteEventRequest(request);
+					}
+				} finally {
+					deregisterRequest(target, request);
 				}
-			} finally {
-				deregisterRequest(target, request);
 			}
 		}
 		synchronized (this.requestspertarget) {
@@ -418,8 +419,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 				// TODO need something fancier in the future
 				// perhaps add this to the participants so each can decide what makes
 				// a script "equal" to suspend on
-				IPath path = new Path(getScriptPath());
-				if (path.lastSegment().equals(URIUtil.lastSegment(script.sourceURI()))) {
+				if (getScriptPath().equals(script.sourceURI().toString())) {
 					createRequest(target, sevent.script());
 				}
 			} catch (CoreException ce) {

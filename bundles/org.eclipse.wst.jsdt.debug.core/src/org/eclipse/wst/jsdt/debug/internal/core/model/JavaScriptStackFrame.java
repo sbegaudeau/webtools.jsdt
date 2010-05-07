@@ -102,7 +102,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	public String getName() throws DebugException {
 		if (this.name == null) {
 			this.name = NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
-									this.stackFrame.location().scriptReference().sourceURI().getPath(), 
+									this.stackFrame.location().scriptReference().sourceURI().toString(), 
 									Integer.toString(stackFrame.location().lineNumber()) 
 									});
 		}
@@ -331,7 +331,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		if(loc != null) {
 			ScriptReference script = loc.scriptReference();
 			if(script != null) {
-				return script.sourceURI().getPath();
+				return script.sourceURI().toString();
 			}
 		}
 		return null;
