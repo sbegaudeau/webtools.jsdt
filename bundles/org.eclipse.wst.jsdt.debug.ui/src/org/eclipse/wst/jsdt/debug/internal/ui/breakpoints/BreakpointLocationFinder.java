@@ -491,7 +491,7 @@ public class BreakpointLocationFinder extends ASTVisitor {
 		if (lineNumber(nameOffset) == this.linenumber) {
 			this.location = FUNCTION;
 			this.found = true;
-			this.functionName = node.getName().getIdentifier();
+			this.functionName = node.getName() == null ? null : node.getName().getIdentifier();
 			this.offset = nameOffset;
 			return false;
 		}
