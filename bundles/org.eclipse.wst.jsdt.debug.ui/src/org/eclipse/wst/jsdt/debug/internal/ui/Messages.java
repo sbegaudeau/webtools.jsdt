@@ -34,6 +34,7 @@ public class Messages extends NLS {
 	public static String enable_hit_count;
 	public static String enter_new_hit_count;
 	public static String exception_occurred_setting_bp_properties;
+	public static String external_javascript_source;
 	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
 	public static String scripts;

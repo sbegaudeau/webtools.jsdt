@@ -12,6 +12,11 @@ package org.eclipse.wst.jsdt.debug.internal.core;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
@@ -49,8 +54,14 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * Singleton {@link BreakpointParticipantManager}
 	 */
 	private static BreakpointParticipantManager participantmanager = null;
-	
+	/**
+	 * Singleton {@link JavaScriptPreferencesManager}
+	 */
 	private static JavaScriptPreferencesManager prefmanager = null;
+	/**
+	 * Handle to the 'External JavaScript Source' project
+	 */
+	private static IProject extSrcProject = null;
 	private static Map externalScriptPaths = new HashMap();
 	
 	/**
@@ -75,6 +86,46 @@ public class JavaScriptDebugPlugin extends Plugin {
 			participantmanager = new BreakpointParticipantManager();
 		}
 		return participantmanager;
+	}
+	
+	/**
+	 * Returns the current handle to the 'External JavaScript Source' project or <code>null</code>. If the project
+	 * is not accessible it can be created by passing <code>true</code> in for the create parameter.
+	 * 
+	 * @param create
+	 * @return the handle to the external source project or <code>null</code>
+	 */
+	public static synchronized IProject getExternalSourceProject(boolean create) {
+		if(extSrcProject == null) {
+			try {
+				IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(Messages.external_javascript_source);
+				if(project.isAccessible()) {
+					extSrcProject = project;
+				}
+				if(project.exists()) {
+					project.open(null);
+					extSrcProject = project;
+				}
+				else if(create) {
+					project.create(null);
+					project.open(null);
+					extSrcProject = project;
+				}
+			}
+			catch(CoreException ce) {
+				log(ce);
+			}
+		}
+		return extSrcProject;
+	}
+	
+	/**
+	 * Returns if the given path is for the 'External JavaScript Source' project
+	 * @param path
+	 * @return <code>true</code> if the path is in the external source project, <code>false</code> otherwise
+	 */
+	public static boolean isExternalSource(IPath path) {
+		return path.segment(0).equals(Messages.external_javascript_source);
 	}
 	
 	/*
@@ -103,6 +154,9 @@ public class JavaScriptDebugPlugin extends Plugin {
 			}
 			if(prefmanager != null) {
 				prefmanager.stop();
+			}
+			if(extSrcProject != null && extSrcProject.exists()) {
+				extSrcProject.delete(true, null);
 			}
 		}
 		finally {

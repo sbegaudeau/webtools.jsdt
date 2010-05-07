@@ -38,6 +38,13 @@ public interface Constants {
 	 * Value is: <code>UTF-8</code>
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
+	/**
+	 * The JavaScript file extension<br>
+	 * <br>
+	 * Value is <code>js</code>
+	 * @since 1.1
+	 */
+	public static final String JS_EXTENSION = "js"; //$NON-NLS-1$
 	
 //#########  LAUNCHING  ############
 	/**

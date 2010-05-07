@@ -10,20 +10,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.launching;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
+import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
@@ -67,12 +70,11 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 					return new IFile[] { file };
 				}
 			}
-
 			//try to find it using the source tab infos
-			Object[] sources = super.findSourceElements(object);
+			/*Object[] sources = super.findSourceElements(object);
 			if(sources != null && sources.length > 0) {
 				return sources;
-			}
+			}*/
 			//else show the temp source
 			return showExternalSource(getSource(object), sourceURI);
 		}
@@ -97,7 +99,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	}
 	
 	/**
-	 * Returns the uri to use to look up source
+	 * Returns the URI to use to look up source
 	 * @param object
 	 * @return the URI or <code>null</code>
 	 * @since 1.1
@@ -123,33 +125,32 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 */
 	private Object[] showExternalSource(String source, URI uri) {
 		try {
-			File tempdir = new File(System.getProperty("java.io.tmpdir")); //$NON-NLS-1$
-			File jsdt_debug = new File(tempdir, "jsdt_debug"); //$NON-NLS-1$
-			jsdt_debug.mkdir();
-			jsdt_debug.deleteOnExit();
-
-			String fileName = URIUtil.lastSegment(uri);
-			if (fileName.endsWith(".js")) //$NON-NLS-1$
-				fileName = fileName.substring(0, fileName.length()-3);
-			fileName +="(" + Integer.toString(uri.toString().hashCode() + source.hashCode()) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-			fileName += ".js"; //$NON-NLS-1$
-			
-			File file = new File(jsdt_debug, fileName);
-			file.deleteOnExit();
-			
-			if (!file.exists()) {
-				FileWriter writer = new FileWriter(file);
-				writer.write(source);
-				writer.close();				
+			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
+			String filename = URIUtil.lastSegment(uri);
+			IPath path = new Path(uri.getPath()).removeLastSegments(1).append(Integer.toString(source.hashCode())).append(filename);
+			if(path.getFileExtension() == null) {
+				path = path.addFileExtension(Constants.JS_EXTENSION);
+			}
+			IFile file = project.getFile(path);
+			if(!file.isAccessible()) {
+				IContainer folder = project;
+				for (int i = 0; i < path.segmentCount()-1; i++) {
+					IFolder f = folder.getFolder(new Path(path.segment(i)));
+					if(!f.exists()) {
+						f.create(true, true, null);
+					}
+					folder = f;
+				}
+				file.create(new ByteArrayInputStream(source.getBytes()), true, null);
 			}
 			
-			if (JavaScriptDebugPlugin.getExternalScriptPath(fileName) == null)
-				JavaScriptDebugPlugin.addExternalScriptPath(fileName, uri.toString());
-				
+			if (JavaScriptDebugPlugin.getExternalScriptPath(path.lastSegment()) == null) {
+				JavaScriptDebugPlugin.addExternalScriptPath(path.lastSegment(), uri.toString());
+			}	
 			return new Object[] {file};
 
-		} catch (IOException e) {
-			JavaScriptDebugPlugin.log(e);
+		} catch (CoreException ce) {
+			JavaScriptDebugPlugin.log(ce);
 			return NO_SOURCE;
 		}
 	}
