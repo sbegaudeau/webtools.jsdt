@@ -191,7 +191,7 @@ public final class JavaScriptBreakpointConditionEditor extends AbstractJavaScrip
 	 */
 	public Control createControl(Composite parent) {
 		Composite controls = SWTFactory.createComposite(parent, parent.getFont(), 2, 1, GridData.FILL_HORIZONTAL, 0, 0);
-		fConditional = SWTFactory.createCheckButton(parent, 
+		fConditional = SWTFactory.createCheckButton(controls, 
 				processMnemonics(Messages.conditional), 
 				null, 
 				false, 
