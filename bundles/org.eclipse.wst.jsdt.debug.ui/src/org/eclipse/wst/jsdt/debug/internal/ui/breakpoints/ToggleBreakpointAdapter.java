@@ -138,8 +138,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		String scriptPath  = getElementScriptPath(element);
 		Path path = new Path(scriptPath);
 		if(JavaScriptDebugPlugin.isExternalSource(path)) {
-			String scriptName = path.lastSegment();
-			String extpath = (JavaScriptDebugPlugin.getExternalScriptPath(scriptName));
+			String extpath = (JavaScriptDebugPlugin.getExternalScriptPath(path));
 			if(extpath != null) {
 				scriptPath = extpath;
 			}

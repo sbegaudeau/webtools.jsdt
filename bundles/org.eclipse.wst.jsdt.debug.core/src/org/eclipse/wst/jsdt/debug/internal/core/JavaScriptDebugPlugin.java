@@ -222,7 +222,7 @@ public class JavaScriptDebugPlugin extends Plugin {
 	public static synchronized void addExternalScriptPath(IPath path, String scriptPath) {
 		int count = path.segmentCount();
 		int remove = count > 2 ? count-2 : 0;
-		externalScriptPaths.put(path.removeFirstSegments(remove), scriptPath);
+		externalScriptPaths.put(path.removeFirstSegments(remove).makeAbsolute(), scriptPath);
 	}
 	
 	/**
