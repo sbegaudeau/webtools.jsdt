@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StringValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
+import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 
@@ -139,14 +140,30 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			return null;
 		}
 		if (this.properties == null) {
-			ObjectReference reference = (ObjectReference) this.value;
+			final ObjectReference reference = (ObjectReference) this.value;
 			List underlyingProperties = reference.properties();
-			this.properties = new ArrayList(underlyingProperties.size());
+			this.properties = new ArrayList(underlyingProperties.size()+1);
 			for (Iterator iterator = underlyingProperties.iterator(); iterator.hasNext();) {
 				Property property = (Property) iterator.next();
 				JavaScriptProperty jsdiProperty = new JavaScriptProperty(this, property);
 				this.properties.add(jsdiProperty);
 			}
+			
+			// add the prototype
+			Property prototype = new Property() {
+				public VirtualMachine virtualMachine() {
+					return reference.virtualMachine();
+				}
+
+				public String name() {
+					return "[proto]"; //$NON-NLS-1$
+				}
+
+				public Value value() {
+					return reference.prototype();
+				}
+			};
+			properties.add(new JavaScriptProperty(this, prototype));			
 		}
 		return (IVariable[]) this.properties.toArray(new IVariable[this.properties.size()]);
 	}
