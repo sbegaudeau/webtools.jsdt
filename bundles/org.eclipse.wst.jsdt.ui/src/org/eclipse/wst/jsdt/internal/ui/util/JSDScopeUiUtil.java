@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,11 +43,11 @@ import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
  */
 public class JSDScopeUiUtil {
 
-	private static final String CLASS="class";
-	private static final String ID="id";
+	private static final String CLASS="class"; //$NON-NLS-1$
+	private static final String ID="id"; //$NON-NLS-1$
 	
 	public static IJsGlobalScopeContainerInitializerExtension findLibraryUiInitializer(IPath compUnitPath, IJavaScriptProject javaProject) {
-		System.out.println("public static IJsGlobalScopeContainerInitializerExtension findLibraryInitializer(");
+		System.out.println("public static IJsGlobalScopeContainerInitializerExtension findLibraryInitializer("); //$NON-NLS-1$
 		JsGlobalScopeContainerInitializer init =  JSDScopeUtil.findLibraryInitializer(compUnitPath,javaProject);
 			return (IJsGlobalScopeContainerInitializerExtension)init;
 	}
@@ -55,7 +55,7 @@ public class JSDScopeUiUtil {
 	public static IJsGlobalScopeContainerInitializerExtension getContainerUiInitializer(IPath compUnitPath) {
 		try {
 			IExtensionRegistry registry = Platform.getExtensionRegistry();
-		    IExtensionPoint extensionPoint =  registry.getExtensionPoint("org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer");
+		    IExtensionPoint extensionPoint =  registry.getExtensionPoint("org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer"); //$NON-NLS-1$
 		    IConfigurationElement points[] = extensionPoint.getConfigurationElements();
 		 //   int[] priorities = new int[points.length];
 		   

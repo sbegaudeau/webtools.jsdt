@@ -56,8 +56,8 @@ import org.eclipse.wst.jsdt.internal.ui.Logger;
 public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 	IWorkbenchPart fPart;
 	Object[] fTarget;
-	private static final String FACET_NATURE = "org.eclipse.wst.common.project.facet.core.nature";
-	private static final String FACET_PROPERTY_PAGE = "org.eclipse.wst.common.project.facet.ui.FacetsPropertyPage";
+	private static final String FACET_NATURE = "org.eclipse.wst.common.project.facet.core.nature"; //$NON-NLS-1$
+	private static final String FACET_PROPERTY_PAGE = "org.eclipse.wst.common.project.facet.ui.FacetsPropertyPage"; //$NON-NLS-1$
 
 	private void doInstall(IProject project, final boolean openProperties, IProgressMonitor monitor) {
 		boolean configured = false;
@@ -235,7 +235,7 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 			if (extensions[i].getNamespaceIdentifier().startsWith("org.eclipse.wst.jsdt.")) { //$NON-NLS-1$
 				IConfigurationElement[] configurationElements = extensions[i].getConfigurationElements();
 				for (int j = 0; j < configurationElements.length; j++) {
-					if ("page".equals(configurationElements[j].getName())) {
+					if ("page".equals(configurationElements[j].getName())) { //$NON-NLS-1$
 						pageIds.add(configurationElements[j].getAttribute("id")); //$NON-NLS-1$
 					}
 				}

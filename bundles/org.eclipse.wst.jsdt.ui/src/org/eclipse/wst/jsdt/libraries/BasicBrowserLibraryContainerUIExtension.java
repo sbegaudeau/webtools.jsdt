@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2008 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class BasicBrowserLibraryContainerUIExtension implements IJsGlobalScopeCo
 		if(containerPath==null) return null;
 		/* Dont use the rino image for the individual files */
 		String requestedContainerPath = new Path(element).getFileExtension();
-		if(requestedContainerPath!=null && requestedContainerPath.equalsIgnoreCase("js")) return null;
-		return ImageDescriptor.createFromFile(this.getClass(),"rino.gif");
+		if(requestedContainerPath!=null && requestedContainerPath.equalsIgnoreCase("js")) return null; //$NON-NLS-1$
+		return ImageDescriptor.createFromFile(this.getClass(),"rino.gif"); //$NON-NLS-1$
 	}
 }

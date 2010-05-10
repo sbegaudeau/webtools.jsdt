@@ -1,3 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
 package org.eclipse.wst.jsdt.internal.ui.text.javadoc;
 
 import java.io.IOException;
@@ -30,9 +41,9 @@ public class OAADocReader extends Reader {
 				: null;
 		if (documentation != null) {
 			if (documentation.description != null) {
-				buffer.append("<p>");
+				buffer.append("<p>"); //$NON-NLS-1$
 				buffer.append(documentation.description);
-				buffer.append("</p>");
+				buffer.append("</p>"); //$NON-NLS-1$
 			}
 
 			if (method!=null)
@@ -52,9 +63,9 @@ public class OAADocReader extends Reader {
 				for (int i = 0; i < method.parameters.length; i++) {
 					Parameter parameter = method.parameters[i];
 					buffer.append("<dd>"); //$NON-NLS-1$
-					buffer.append("<b>").append(parameter.name).append("</b> ");
+					buffer.append("<b>").append(parameter.name).append("</b> "); //$NON-NLS-1$ //$NON-NLS-2$
 					if (parameter.description!=null)
-						buffer.append(parameter.description); //$NON-NLS-1$
+						buffer.append(parameter.description);
 					buffer.append("</dd>"); //$NON-NLS-1$
 				}
 			}
@@ -99,7 +110,7 @@ public class OAADocReader extends Reader {
 			buffer.append(tag);
 			buffer.append("<dd>"); //$NON-NLS-1$
 			if (name != null)
-				buffer.append("<b>").append(name).append("</b>");
+				buffer.append("<b>").append(name).append("</b>"); //$NON-NLS-1$ //$NON-NLS-2$
 			if (description != null)
 				buffer.append(description);
 			buffer.append("</dd>"); //$NON-NLS-1$
