@@ -135,7 +135,11 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	public synchronized IVariable[] getVariables() throws DebugException {
 		if (this.variables == null) {
 			List underlyingVariables = this.stackFrame.variables();
-			this.variables = new ArrayList(underlyingVariables.size());
+			this.variables = new ArrayList(underlyingVariables.size() + 1);
+
+			// add the "this" object 
+			variables.add(new JavaScriptVariable(this, stackFrame.thisObject()));
+	
 			for (Iterator iterator = underlyingVariables.iterator(); iterator.hasNext();) {
 				Variable variable = (Variable) iterator.next();
 				JavaScriptVariable jsdiVariable = new JavaScriptVariable(this, variable);

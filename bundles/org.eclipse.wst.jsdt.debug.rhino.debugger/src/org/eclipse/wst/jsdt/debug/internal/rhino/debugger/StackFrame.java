@@ -10,9 +10,11 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.mozilla.javascript.BaseFunction;
@@ -378,8 +380,14 @@ public class StackFrame implements DebugFrame {
 	 */
 	private void serializeFrame(Map result) {
 		result.put(JSONConstants.TYPE, JSONConstants.FRAME);
-		List properties = createProperties(activation);
+		Set properties = new HashSet();
 		properties.add(createProperty(JSONConstants.THIS, thisObj));
+		properties.addAll(createProperties(activation));
+		Scriptable parent = activation.getParentScope();
+		while(parent != null) {
+			properties.addAll(createProperties(parent));
+			parent = parent.getParentScope();
+		}		
 		result.put(JSONConstants.PROPERTIES, properties);
 	}
 
