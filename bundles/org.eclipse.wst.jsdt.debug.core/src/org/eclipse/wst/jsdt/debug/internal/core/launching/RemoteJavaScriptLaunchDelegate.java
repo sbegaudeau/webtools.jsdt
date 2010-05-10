@@ -23,6 +23,8 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
+import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
+import org.eclipse.wst.jsdt.debug.core.jsdi.connect.ListeningConnector;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 
@@ -42,14 +44,7 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 	 */
 	public void launch(ILaunchConfiguration configuration, String mode, final ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		String name = configuration.getAttribute(ILaunchConstants.CONNECTOR_ID, (String) null);
-		AttachingConnector connector = (AttachingConnector) JavaScriptDebugPlugin.getConnectionsManager().getConnector(name);
-		if (connector == null) {
-			Status status = new Status(
-					IStatus.ERROR, 
-					JavaScriptDebugPlugin.PLUGIN_ID, 
-					NLS.bind(Messages.could_not_locate_connector, new String[] {name}));
-			throw new CoreException(status);
-		}
+		
 		Map argmap = configuration.getAttribute(ILaunchConstants.ARGUMENT_MAP, (Map) null);
 		if (argmap == null) {
 			Status status = new Status(
@@ -58,9 +53,22 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 					Messages.argument_map_null);
 			throw new CoreException(status);
 		}
+		Connector connector = JavaScriptDebugPlugin.getConnectionsManager().getConnector(name);
 		VirtualMachine vm;
 		try {
-			vm = connector.attach(argmap);
+			if(connector instanceof AttachingConnector) {
+				vm = ((AttachingConnector)connector).attach(argmap);
+			}
+			else if(connector instanceof ListeningConnector) {
+				vm = ((ListeningConnector)connector).accept(argmap);
+			}
+			else {
+				Status status = new Status(
+						IStatus.ERROR, 
+						JavaScriptDebugPlugin.PLUGIN_ID, 
+						NLS.bind(Messages.could_not_locate_connector, new String[] {name}));
+				throw new CoreException(status);
+			}
 		} catch (IOException e) {
 			Status status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, "Error occured while launching", e); //$NON-NLS-1$
 			throw new CoreException(status);
