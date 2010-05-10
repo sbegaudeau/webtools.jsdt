@@ -53,7 +53,8 @@ public final class JavaScriptImageRegistry {
 		declareRegistryImage(ISharedImages.IMG_LOCAL_VAR, ELCL + "localvariable.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_CONNECT, ELCL + "connect.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_BRKP, ELCL + "brkp_obj.gif"); //$NON-NLS-1$
-		declareRegistryImage(ISharedImages.IMG_SCRIPTBRKP, ELCL + "scriptbrkp_obj.gif"); //$NON-NLS-1$
+		declareRegistryImage(ISharedImages.IMG_THIS_VAR, ELCL + "this_var.gif"); //$NON-NLS-1$
+		declareRegistryImage(ISharedImages.IMG_PROTO_VAR, ELCL + "proto_var.gif"); //$NON-NLS-1$
 		declareRegistryImage(ISharedImages.IMG_SOURCE, ELCL + "source.gif"); //$NON-NLS-1$
 		
 		//DLCL

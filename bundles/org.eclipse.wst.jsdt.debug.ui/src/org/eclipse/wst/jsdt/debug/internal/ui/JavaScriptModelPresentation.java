@@ -46,6 +46,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
+import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptValue;
 
 /**
  * Default model presentation for JSDI model elements
@@ -275,21 +276,13 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		try {
 			if(element instanceof IVariable) {
 				IVariable var = (IVariable) element;
-				return getImageFromType(var.getReferenceTypeName());
+				return getImageFromType(var);
 			}
 			if(element instanceof IJavaScriptLineBreakpoint || element instanceof IJavaScriptFunctionBreakpoint) {
 				IJavaScriptBreakpoint breakpoint = (IJavaScriptBreakpoint) element;
 				int flags = computeBreakpointAdornmentFlags(breakpoint);
 				if(breakpoint.isEnabled()) {
 					return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_BRKP), flags));
-				}
-				return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_BRKP_DISABLED), flags));
-			}
-			if(element instanceof IJavaScriptLoadBreakpoint) {
-				IJavaScriptBreakpoint breakpoint = (IJavaScriptBreakpoint) element;
-				int flags = computeBreakpointAdornmentFlags(breakpoint);
-				if(breakpoint.isEnabled()) {
-					return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPTBRKP), flags));
 				}
 				return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_BRKP_DISABLED), flags));
 			}
@@ -345,10 +338,19 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	
 	/**
 	 * Returns the specific image for the given type
-	 * @param type
+	 * @param variable the variable to get the image for
 	 * @return the image
+	 * @throws DebugException 
 	 */
-	Image getImageFromType(String type) {
+	Image getImageFromType(IVariable variable) throws DebugException {
+		String name = variable.getName();
+		if(JavaScriptValue.THIS.equals(name)) {
+			return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_THIS_VAR), 0));
+		}
+		if(JavaScriptValue.PROTO.equals(name)) {
+			return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_PROTO_VAR), 0));
+		}
+		String type = variable.getReferenceTypeName();
 		if (type.equalsIgnoreCase(IJavaScriptValue.FUNCTION)) {
 			return JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT);
 		}

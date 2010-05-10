@@ -39,6 +39,15 @@ import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
  */
 public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScriptValue {
 
+	/**
+	 * the '[proto]' value
+	 */
+	public static final String PROTO = "[proto]"; //$NON-NLS-1$
+	/**
+	 * The 'this' value
+	 */
+	public static final String THIS = "this"; //$NON-NLS-1$
+	
 	private Value value;
 	private List properties;
 
@@ -156,7 +165,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				}
 
 				public String name() {
-					return "[proto]"; //$NON-NLS-1$
+					return PROTO;
 				}
 
 				public Value value() {

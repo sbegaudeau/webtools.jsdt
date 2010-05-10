@@ -35,7 +35,13 @@ public interface ISharedImages {
 	/**
 	 * Image for a script load breakpoint
 	 */
-	public static final String IMG_SCRIPTBRKP = "IMG_SCRIPTBRKP"; //$NON-NLS-1$
+	public static final String IMG_THIS_VAR = "IMG_THIS_VAR"; //$NON-NLS-1$
+	
+	/**
+	 * Image for the 'proto' variable
+	 * @since 1.1
+	 */
+	public static final String IMG_PROTO_VAR = "IMG_PROTO_VAR"; //$NON-NLS-1$
 	
 	/**
 	 * Image for a normal breakpoint
