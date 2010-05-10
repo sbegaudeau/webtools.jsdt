@@ -10,9 +10,22 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.ui;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -20,7 +33,7 @@ import org.osgi.framework.BundleContext;
  * 
  * @since 1.0
  */
-public class JavaScriptDebugUIPlugin extends AbstractUIPlugin {
+public class JavaScriptDebugUIPlugin extends AbstractUIPlugin implements IWorkbenchListener {
 
 	/**
 	 * Status code indicating an unexpected internal error.
@@ -43,6 +56,7 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		PlatformUI.getWorkbench().addWorkbenchListener(this);
 	}
 
 	/*
@@ -52,6 +66,7 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		try {
 			plugin = null;
+			PlatformUI.getWorkbench().removeWorkbenchListener(this);
 			super.stop(context);
 		}
 		finally {
@@ -107,5 +122,55 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin {
 	 */
 	public static IStatus newErrorStatus(String message, Throwable exception) {
 		return new Status(IStatus.ERROR, PLUGIN_ID, INTERNAL_ERROR, message, exception);
+	}
+
+	/**
+	 * Closes any editors open on sources in the external JavaScript source project
+	 * @throws PartInitException 
+	 * 
+	 * @since 1.1
+	 */
+	protected void closeEditors() throws PartInitException {
+		IProject project = JavaScriptDebugPlugin.getExternalSourceProject(false);
+		if(project != null) {
+			IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
+			ArrayList editors = new ArrayList(8);
+			for(int l = 0; l < windows.length; l++) {
+				IWorkbenchPage[] pages = windows[l].getPages();
+				for(int i = 0; i < pages.length; i++) {
+					IEditorReference[] erefs = pages[i].getEditorReferences();
+					for(int j = 0; j < erefs.length; j++) {
+						IFile file = ResourceUtil.getFile(erefs[j].getEditorInput());
+						if(file != null) {
+							if(project.equals(file.getProject())) {
+								editors.add(erefs[j]);
+							}
+						}
+					}
+					if(editors.size() > 0) {
+						pages[i].closeEditors((IEditorReference[]) editors.toArray(new IEditorReference[editors.size()]), false);
+						editors.clear();
+					}
+				}
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchListener#preShutdown(org.eclipse.ui.IWorkbench, boolean)
+	 */
+	public boolean preShutdown(IWorkbench workbench, boolean forced) {
+		try {
+			closeEditors();
+		} catch (PartInitException e) {
+			log(e);
+		}
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchListener#postShutdown(org.eclipse.ui.IWorkbench)
+	 */
+	public void postShutdown(IWorkbench workbench) {
 	}
 }
