@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,6 +92,7 @@ public class OpenTypeHistory extends History {
 						return true;
 					}
 					// type children can be inner classes: fall through
+					//$FALL-THROUGH$
 				case IJavaScriptElement.JAVASCRIPT_MODEL:
 				case IJavaScriptElement.PACKAGE_FRAGMENT:
 				case IJavaScriptElement.CLASS_FILE:

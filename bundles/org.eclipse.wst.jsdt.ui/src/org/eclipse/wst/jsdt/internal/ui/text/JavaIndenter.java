@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -898,6 +898,7 @@ public final class JavaIndenter {
 				int pos= fPosition;
 				if (!skipScope())
 					fPosition= pos;
+			//$FALL-THROUGH$
 			case Symbols.TokenSEMICOLON:
 				// this is the 90% case: after a statement block
 				// the end of the previous statement / block previous.end
@@ -967,7 +968,7 @@ public final class JavaIndenter {
 				fPosition= offset;
 				fLine= line;
 				// else: fall through to default
-
+				//$FALL-THROUGH$
 			case Symbols.TokenCOMMA:
 				// inside a list of some type
 				// easy if there is already a list item before with its own indentation - we just align
@@ -1070,6 +1071,7 @@ public final class JavaIndenter {
 				case Symbols.TokenRPAREN:
 					if (isInBlock)
 						mayBeMethodBody= READ_PARENS;
+					//$FALL-THROUGH$
 				case Symbols.TokenRBRACKET:
 				case Symbols.TokenGREATERTHAN:
 					pos= fPreviousPos;
@@ -1288,6 +1290,7 @@ public final class JavaIndenter {
 					case Symbols.TokenIDENT:
 						if (!JavaHeuristicScanner.isGenericStarter(getTokenContent()))
 							break;
+						//$FALL-THROUGH$
 					case Symbols.TokenQUESTIONMARK:
 					case Symbols.TokenGREATERTHAN:
 						if (skipScope(Symbols.TokenLESSTHAN, Symbols.TokenGREATERTHAN))
@@ -1492,6 +1495,7 @@ public final class JavaIndenter {
 		switch (fToken) {
 			case Symbols.TokenRBRACE:
 				skipScope(); // and fall thru
+				//$FALL-THROUGH$
 			case Symbols.TokenSEMICOLON:
 				skipToStatementStart(false, false);
 				return fToken == Symbols.TokenDO;
