@@ -90,6 +90,13 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 	}
 	
 	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#valueString()
+	 */
+	public String valueString() {
+		return "Array"; //$NON-NLS-1$
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#toString()
 	 */
 	public String toString() {
