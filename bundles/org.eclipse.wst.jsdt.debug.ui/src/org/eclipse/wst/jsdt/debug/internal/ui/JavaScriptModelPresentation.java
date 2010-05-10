@@ -350,10 +350,6 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		if(JavaScriptValue.PROTO.equals(name)) {
 			return JavaScriptImageRegistry.getImage(new JavaScriptImageDescriptor(JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_PROTO_VAR), 0));
 		}
-		String type = variable.getReferenceTypeName();
-		if (type.equalsIgnoreCase(IJavaScriptValue.FUNCTION)) {
-			return JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT);
-		}
 		return JavaScriptImageRegistry.getSharedImage(ISharedImages.IMG_LOCAL_VAR);
 	}
 	
