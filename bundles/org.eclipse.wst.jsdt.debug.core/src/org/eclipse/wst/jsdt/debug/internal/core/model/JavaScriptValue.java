@@ -93,7 +93,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				} else if (this.value instanceof ArrayReference) {
 					return ARRAY;
 				}else if (this.value instanceof FunctionReference) {
-					return ARRAY;
+					return FUNCTION;
 				}
 				return OBJECT;
 			} else if (this.value instanceof BooleanValue) {
