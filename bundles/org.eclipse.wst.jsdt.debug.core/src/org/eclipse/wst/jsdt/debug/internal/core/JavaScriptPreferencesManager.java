@@ -25,6 +25,7 @@ import org.eclipse.debug.core.model.IDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
+import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptExceptionBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 
@@ -46,6 +47,12 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	private static IJavaScriptLoadBreakpoint allLoadsBreakpoint = null;
 	
 	/**
+	 * The invisible "suspend on exception" breakpoint
+	 * @since 1.1
+	 */
+	private static JavaScriptExceptionBreakpoint allExceptions = null;
+	
+	/**
 	 * Starts the manager
 	 */
 	public void start() {
@@ -53,6 +60,9 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 		node.addPreferenceChangeListener(this);
 		if(node.getBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false)) {
 			allLoadsBreakpoint = createSuspendOnAllLoads();
+		}
+		if(node.getBoolean(Constants.SUSPEN_ON_THROWN_EXCEPTION, false)) {
+			allExceptions = createSuspendOnException();
 		}
 	}
 	
@@ -67,6 +77,9 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 		try {
 			if(allLoadsBreakpoint != null) {
 				allLoadsBreakpoint.delete();
+			}
+			if(allExceptions != null) {
+				allExceptions.delete();
 			}
 		} catch (CoreException e) {
 			JavaScriptDebugPlugin.log(e);
@@ -84,6 +97,63 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 			}
 			else {
 				deleteSuspendOnAllLoads();
+			}
+		}
+		if(event.getKey().equals(Constants.SUSPEN_ON_THROWN_EXCEPTION)) {
+			if(event.getNewValue().equals(Boolean.TRUE.toString())) {
+				//create it
+				allExceptions = createSuspendOnException();
+			}
+			else {
+				deleteSuspendOnException();
+			}
+		}
+	}
+	
+	/**
+	 * Creates the singleton exception breakpoint
+	 * 
+	 * @return the new {@link JavaScriptExceptionBreakpoint}
+	 * @since 1.1
+	 */
+	private JavaScriptExceptionBreakpoint createSuspendOnException() {
+		try {
+			JavaScriptExceptionBreakpoint breakpoint = new JavaScriptExceptionBreakpoint(new HashMap());
+			IDebugTarget[] targets = DebugPlugin.getDefault().getLaunchManager().getDebugTargets();
+			for (int i = 0; i < targets.length; i++) {
+				if(targets[i] instanceof JavaScriptDebugTarget) {
+					((JavaScriptDebugTarget)targets[i]).breakpointAdded(breakpoint);
+				}
+			}
+			return breakpoint;
+		}
+		catch(DebugException de) {
+			JavaScriptDebugPlugin.log(de);
+		}
+		return null;
+	}
+	
+	/**
+	 * Deletes any set exception breakpoints
+	 * 
+	 * @since 1.1
+	 */
+	private void deleteSuspendOnException() {
+		if(allExceptions != null) {
+			//notify all the targets
+			IDebugTarget[] targets = DebugPlugin.getDefault().getLaunchManager().getDebugTargets();
+			for (int i = 0; i < targets.length; i++) {
+				if(targets[i] instanceof JavaScriptDebugTarget) {
+					((JavaScriptDebugTarget)targets[i]).breakpointRemoved(allExceptions, null);
+				}
+			}
+			try {
+				allExceptions.delete();
+			} catch (CoreException e) {
+				JavaScriptDebugPlugin.log(e);
+			}
+			finally {
+				allExceptions = null;
 			}
 		}
 	}
@@ -165,6 +235,9 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 		ArrayList breakpoints = new ArrayList();
 		if(allLoadsBreakpoint != null) {
 			breakpoints.add(allLoadsBreakpoint);
+		}
+		if(allExceptions != null) {
+			breakpoints.add(allExceptions);
 		}
 		return (IJavaScriptBreakpoint[]) breakpoints.toArray(new IJavaScriptBreakpoint[breakpoints.size()]);
 	}

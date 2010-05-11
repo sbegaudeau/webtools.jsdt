@@ -310,6 +310,15 @@
                style="toggle"
                tooltip="%suspendForAllScriptLoadsAction.tooltip">
          </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.SuspendOnExceptionsAction"
+               helpContextId="suspend_on_javascript_exceptions"
+               id="org.eclipse.wst.jsdt.debug.ui.suspend.on.exceptions"
+               label="%suspendOnExceptions.name"
+               menubarPath="javascriptActions"
+               style="toggle"
+               tooltip="%suspendOnExceptions.tooltip">
+         </action>
       </viewContribution>
       <viewContribution
             id="debugViewActions"
