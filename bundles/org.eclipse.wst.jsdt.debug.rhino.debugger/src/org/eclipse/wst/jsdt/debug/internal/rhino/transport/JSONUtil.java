@@ -358,8 +358,10 @@ public final class JSONUtil {
 	private static void writeValue(Object value, StringBuffer buffer) {
 		if (value == null)
 			buffer.append(JSONConstants.NULL);
-		else if (value instanceof Boolean || value instanceof Number)
+		else if (value instanceof Boolean)
 			buffer.append(value.toString());
+		else if (value instanceof Number)
+			writeNumber((Number) value, buffer);
 		else if (value instanceof String)
 			writeString((String) value, buffer);
 		else if (value instanceof Collection)
@@ -371,6 +373,21 @@ public final class JSONUtil {
 		}
 		else
 			throw error("Unexpected object instance type was '" + value.getClass().getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$););
+	}
+
+	private static void writeNumber(Number value, StringBuffer buffer) {
+		if (value instanceof Double) {
+			if (((Double)value).isNaN() || ((Double)value).isInfinite()) {
+				buffer.append(JSONConstants.NULL);
+				return;
+			}
+		} else if (value instanceof Float) {
+			if (((Float)value).isNaN() || ((Float)value).isInfinite()) {
+				buffer.append(JSONConstants.NULL);
+				return;
+			}
+		}
+		buffer.append(value.toString());
 	}
 
 	private static void writeObject(Map map, StringBuffer buffer) {
