@@ -28,6 +28,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.debug.DebugFrame;
+import org.mozilla.javascript.debug.DebuggableObject;
 import org.mozilla.javascript.debug.Debugger;
 
 /**
@@ -399,7 +400,7 @@ public class StackFrame implements DebugFrame {
 	 */
 	private List createProperties(Scriptable scriptable) {
 		ArrayList properties = new ArrayList();
-		Object[] ids = scriptable.getIds();
+		Object[] ids = (scriptable instanceof DebuggableObject) ? ((DebuggableObject)scriptable).getAllIds() : scriptable.getIds();
 		for (int i = 0; i < ids.length; i++) {
 			Object id = ids[i];
 			Object value = null;
