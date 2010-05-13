@@ -22,7 +22,7 @@ public class CrossFirePlugin extends Plugin {
 	/**
 	 * Packet tracing option name
 	 */
-	public static final String TRC_PACKETS = PLUGIN_ID + "packets"; //$NON-NLS-1$
+	public static final String TRC_PACKETS = PLUGIN_ID + "/packets"; //$NON-NLS-1$
 	
 	/**
 	 * Status code indicating an unexpected internal error.
@@ -36,14 +36,21 @@ public class CrossFirePlugin extends Plugin {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
+		super.start(bundleContext);
 		plugin = this;
+		configureTracing();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		plugin = null;
+		try {
+			plugin = null;
+		}
+		finally {
+			super.stop(bundleContext);
+		}
 	}
 	
 	public static CrossFirePlugin getDefault() {

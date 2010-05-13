@@ -100,9 +100,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		if(frames == null) {
 			frames = new ArrayList();
 			Request request = new Request(CMD_FRAME, id);
-			System.out.println(request);
 			Response response = crossfire().sendRequest(request);
-			System.out.println(response);
 			if(response.isSuccess()) {
 				frames.add(new CFStackFrame(virtualMachine(), response.getBody()));
 			}
@@ -176,7 +174,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	public String name() {
 		String url = href;
 		if(href.length() > 50) {
-			url = href.substring(0, 17) + "..."; //$NON-NLS-1$
+			url = href.substring(0, 47) + "..."; //$NON-NLS-1$
 		}
 		return NLS.bind(Messages.thread_name, new Object[] {id, url});
 	}

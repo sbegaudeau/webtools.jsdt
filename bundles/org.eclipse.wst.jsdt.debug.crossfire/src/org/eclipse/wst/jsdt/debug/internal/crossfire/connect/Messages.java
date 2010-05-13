@@ -19,6 +19,9 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.crossfire.connect.messages"; //$NON-NLS-1$
 	public static String attach_connector_desc;
 	public static String attach_connector_name;
+	public static String auto_attach_desc;
+	public static String auto_attach_label;
+	public static String crossfire_remote_attach;
 	public static String host_arg_desc;
 	public static String host_arg_name;
 	public static String port_arg_desc;

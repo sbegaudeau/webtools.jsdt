@@ -8,6 +8,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.transport;
 
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
+
 
 /**
  * A {@link DebugSession} controls a {@link PacketSendManager} and {@link PacketReceiveManager}
@@ -68,7 +70,7 @@ public class DebugSession {
 			throw new IllegalArgumentException("You cannot send a null request"); //$NON-NLS-1$
 		}
 		if(Packet.TRACE) {
-			System.out.println("Sending request: "+request+"\n\t- serialized as: "+JSON.serialize(request)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("SEND REQUEST: "+request); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(request);
 	}
@@ -84,7 +86,7 @@ public class DebugSession {
 			throw new IllegalArgumentException("You cannot send a null event"); //$NON-NLS-1$
 		}
 		if(Packet.TRACE) {
-			System.out.println("Sending event: "+event+"\n\t- serialized as: "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("SEND EVENT: "+event); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(event);
 	}
@@ -100,7 +102,7 @@ public class DebugSession {
 			throw new IllegalArgumentException("You cannot send a null response"); //$NON-NLS-1$
 		}
 		if(Packet.TRACE) {
-			System.out.println("Sending response: "+response+"\n\t- serialized as: "+JSON.serialize(response)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("SEND RESPONSE: "+response); //$NON-NLS-1$
 		}
 		packetSendManager.sendPacket(response);
 	}
@@ -120,7 +122,7 @@ public class DebugSession {
 	public Response receiveResponse(int requestSequence, int timeout) throws TimeoutException, DisconnectedException {
 		Response response = packetReceiveManager.getResponse(requestSequence, timeout);
 		if(Packet.TRACE) {
-			System.out.println("Recieved response: "+response+"\n\t- serialized as: "+JSON.serialize(response)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("REC RESPONSE: "+response); //$NON-NLS-1$
 		}
 		return response;
 	}
@@ -139,7 +141,7 @@ public class DebugSession {
 	public Event receiveEvent(int timeout) throws TimeoutException, DisconnectedException {
 		Event event = (Event) packetReceiveManager.getCommand(Event.EVENT, timeout);
 		if(Packet.TRACE) {
-			System.out.println("Recieved event: "+event+"\n\t- serialized as: "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("REC EVENT: "+event); //$NON-NLS-1$
 		}
 		return event;
 	}
@@ -158,7 +160,7 @@ public class DebugSession {
 	public Request receiveRequest(int timeout) throws TimeoutException, DisconnectedException {
 		Request request = (Request) packetReceiveManager.getCommand(Request.REQUEST, timeout);
 		if(Packet.TRACE) {
-			System.out.println("Recieved request: "+request+"\n\t- serialized as: "+JSON.serialize(request)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("REC REQUEST: "+request); //$NON-NLS-1$
 		}
 		return request;
 	}

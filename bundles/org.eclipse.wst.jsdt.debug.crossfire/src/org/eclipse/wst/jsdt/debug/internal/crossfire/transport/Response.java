@@ -56,7 +56,7 @@ public class Response extends Packet {
 	 * @param command the command, <code>null</code> is not accepted
 	 */
 	public Response(int requestSequence, String command) {
-		super(RESPONSE);
+		super(RESPONSE, null);
 		if(command == null) {
 			throw new IllegalArgumentException("The command string for a response packet cannot be null"); //$NON-NLS-1$
 		}
@@ -200,7 +200,9 @@ public class Response extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Response Packet: ").append(JSON.serialize(this)); //$NON-NLS-1$
+		Object json = toJSON();
+		buffer.append("Response: "); //$NON-NLS-1$
+		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}
 }

@@ -55,7 +55,7 @@ public class Event extends Packet {
 	 * @param event
 	 */
 	public Event(String event) {
-		super(EVENT);
+		super(EVENT, null);
 		this.event = event.intern();
 	}
 
@@ -107,7 +107,9 @@ public class Event extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Event: ").append(JSON.serialize(this)); //$NON-NLS-1$
+		Object json = toJSON();
+		buffer.append("Event: "); //$NON-NLS-1$
+		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}
 }

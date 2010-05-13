@@ -33,7 +33,6 @@ public class Request extends Packet {
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	
 	private final String command;
-	private final String context_id;
 	private final Map arguments = Collections.synchronizedMap(new HashMap());
 	
 	
@@ -46,12 +45,11 @@ public class Request extends Packet {
 	 * requests that do not require a context id.
 	 */
 	public Request(String command, String context_id) {
-		super(REQUEST);
+		super(REQUEST, context_id);
 		if(command == null) {
 			throw new IllegalArgumentException("The request command kind cannot be null"); //$NON-NLS-1$
 		}
 		this.command = command.intern();
-		this.context_id = context_id;
 	}
 
 	/**
@@ -66,7 +64,6 @@ public class Request extends Packet {
 		}
 		String value = (String) json.get(COMMAND);
 		this.command = value.intern();
-		this.context_id = (String) json.get(CONTEXT_ID);
 		Map packetArguments = (Map) json.get(ARGUMENTS);
 		arguments.putAll(packetArguments);
 	}
@@ -116,9 +113,8 @@ public class Request extends Packet {
 	public Map toJSON() {
 		Map json = super.toJSON();
 		json.put(COMMAND, command);
-		json.put(ARGUMENTS, arguments);
-		if(context_id != null) {
-			json.put(CONTEXT_ID, context_id);
+		if(!arguments.isEmpty()) {
+			json.put(ARGUMENTS, arguments);
 		}
 		return json;
 	}
@@ -128,7 +124,9 @@ public class Request extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Request: ").append(JSON.serialize(this)); //$NON-NLS-1$
+		Object json = toJSON();
+		buffer.append("Request: "); //$NON-NLS-1$
+		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}
 }

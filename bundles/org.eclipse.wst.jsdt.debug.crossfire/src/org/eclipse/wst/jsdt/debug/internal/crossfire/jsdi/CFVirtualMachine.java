@@ -348,8 +348,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			return;
 		}
 		try {
-			threads.clear();
-			scripts.clear();
+			if(threads != null) {
+				threads.clear();
+			}
+			if(scripts != null) {
+				scripts.clear();
+			}
 			this.session.dispose();
 			this.queue.dispose();
 			this.ermanager.dispose();

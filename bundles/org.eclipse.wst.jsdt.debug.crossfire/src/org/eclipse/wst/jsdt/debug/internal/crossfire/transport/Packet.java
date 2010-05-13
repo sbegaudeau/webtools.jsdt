@@ -55,13 +55,13 @@ public abstract class Packet {
 	 * 
 	 * @param type the type for the {@link Packet} <code>null</code> is not accepted
 	 */
-	protected Packet(String type) {
+	protected Packet(String type, String context_id) {
 		if(type == null) {
 			throw new IllegalArgumentException("The type for a packet cannot be null"); //$NON-NLS-1$
 		}
 		this.sequence = nextSequence();
 		this.type = type.intern();
-		this.context_id = null;
+		this.context_id = context_id;
 	}
 
 	/**
@@ -122,7 +122,9 @@ public abstract class Packet {
 		Map json = new HashMap();
 		json.put(SEQ, new Integer(sequence));
 		json.put(TYPE, type);
-		json.put(CONTEXT_ID, context_id);
+		if(context_id != null) {
+			json.put(CONTEXT_ID, context_id);
+		}
 		return json;
 	}
 
@@ -147,7 +149,9 @@ public abstract class Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Packet: ").append(JSON.serialize(this)); //$NON-NLS-1$
+		Object json = toJSON();
+		buffer.append("Packet: "); //$NON-NLS-1$
+		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}
 	

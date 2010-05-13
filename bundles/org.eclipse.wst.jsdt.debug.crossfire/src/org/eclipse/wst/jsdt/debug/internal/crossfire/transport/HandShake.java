@@ -41,7 +41,7 @@ public class HandShake extends Packet {
 	 * @param type
 	 */
 	protected HandShake() {
-		super(Response.RESPONSE);
+		super(Response.RESPONSE, null);
 	}
 
 	/**

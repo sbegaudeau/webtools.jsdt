@@ -20,6 +20,7 @@ import java.net.Socket;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 
 /**
  * A specialized {@link Connection} that communicates using {@link Socket}s
@@ -66,7 +67,11 @@ public class SocketConnection implements Connection {
 	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#writePacket(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet)
 	 */
 	public void writePacket(Packet packet) throws IOException {
-		writer.write(JSON.serialize(packet));
+		String serialized = JSON.serialize(packet);
+		if(Packet.TRACE) {
+			Tracing.writeString("WRITE PACKET: "+serialized); //$NON-NLS-1$
+		}
+		writer.write(serialized);
 		writer.flush();
 	}
 
@@ -77,6 +82,9 @@ public class SocketConnection implements Connection {
 	 * @throws IOException
 	 */
 	public void writeHandShake() throws IOException {
+		if(Packet.TRACE) {
+			Tracing.writeString("WRITE HANDSHAKE: "+HandShake.getHandshake()); //$NON-NLS-1$
+		}
 		writer.write(HandShake.getHandshake());
 		writer.flush();
 	}
@@ -102,7 +110,11 @@ public class SocketConnection implements Connection {
 			r = c == '\r';
 		}
 		if(buffer.toString().equals(HandShake.getHandshake())) {
-			return new HandShake();
+			HandShake ack = new HandShake();
+			if(Packet.TRACE) {
+				Tracing.writeString("ACK HANDSHAKE: "+ack); //$NON-NLS-1$
+			}
+			return ack;
 		}
 		throw new IOException("Did not get correct CrossFire handshake"); //$NON-NLS-1$
 	}
@@ -143,6 +155,9 @@ public class SocketConnection implements Connection {
 				throw new EOFException();
 			}
 			n += count;
+		}
+		if(Packet.TRACE) {
+			Tracing.writeString("READ PACKET: [length - "+length+"]"+new String(message)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		Map json = (Map) JSON.read(new String(message));
 		String type = Packet.getType(json);

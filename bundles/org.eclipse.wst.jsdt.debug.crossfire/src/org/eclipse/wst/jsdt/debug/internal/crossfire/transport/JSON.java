@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFNullValue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFUndefinedValue;
 
@@ -222,7 +223,7 @@ public final class JSON {
 		buffer.append(LINE_FEED);
 		writeContentLength(buffer, length);
 		if(Packet.TRACE) {
-			System.out.println("Serializing: " + packet +"\n\tas "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return buffer.toString();
 	}

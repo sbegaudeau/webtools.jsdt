@@ -10,4 +10,7 @@
 ###############################################################################
 
 #option file for tracing options for Crossfire debugger port
+org.eclipse.wst.jsdt.debug.crossfire/debug=true
+
+#option to trace packets being sent / recieved
 org.eclipse.wst.jsdt.debug.crossfire/packets=false
