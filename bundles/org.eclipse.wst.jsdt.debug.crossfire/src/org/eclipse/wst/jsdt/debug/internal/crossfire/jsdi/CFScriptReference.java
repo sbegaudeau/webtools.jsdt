@@ -17,10 +17,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 
@@ -59,9 +62,9 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	private int coloffset = 0;
 	private int lineoffset = 0;
 	private String source = null;
+	private URI sourceuri = null;
 	
 	private List linelocs = new ArrayList();
-	public static final String SOURCE = "source"; //$NON-NLS-1$
 	
 	/**
 	 * Constructor
@@ -74,7 +77,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 		this.context_id = context_id;
 		this.id = (String) json.get(ID);
 		if(id == null) {
-			this.id = (String) json.get(Event.DATA);
+			this.id = (String) json.get(Attributes.DATA);
 		}
 		Number value = (Number) json.get(SOURCE_LENGTH);
 		if(value != null) {
@@ -135,11 +138,10 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	public synchronized String source() {
 		if(source == null) {
-			Request request = new Request(SOURCE, context_id);
+			Request request = new Request(Commands.SOURCE, context_id);
 			request.setArgument(ID, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				System.out.println(response);
 				source = "//TODO get the actual script source for "+id; //$NON-NLS-1$
 			}
 		}
@@ -149,13 +151,20 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#sourceURI()
 	 */
-	public URI sourceURI() {
-		try {
-			return new URI(id);
-		} catch (URISyntaxException e) {
-			handleException(e.getMessage(), e);
+	public synchronized URI sourceURI() {
+		if(sourceuri == null) {
+			try {
+				sourceuri = URI.create(id);
+			}
+			catch(IllegalArgumentException iae) {
+				try {
+					sourceuri = CrossFirePlugin.fileURI(new Path(id));
+				} catch (URISyntaxException e) {
+					CrossFirePlugin.log(e);
+				}
+			}
 		}
-		return null;
+		return sourceuri;
 	}
 	
 	/* (non-Javadoc)

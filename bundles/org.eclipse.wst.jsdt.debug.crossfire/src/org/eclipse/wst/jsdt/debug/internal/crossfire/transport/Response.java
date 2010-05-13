@@ -23,21 +23,17 @@ public class Response extends Packet {
 	 * The type of this packet
 	 */
 	public static final String RESPONSE = "response"; //$NON-NLS-1$
-	/**
-	 * The message attribute for this packet
-	 */
-	public static final String MESSAGE = "message"; //$NON-NLS-1$
 	
 	static final Map failed_attributes;
 	static {
 		failed_attributes = new HashMap();
 		Integer value = new Integer(-1);
-		failed_attributes.put(SEQ, value);
-		failed_attributes.put(TYPE, RESPONSE);
-		failed_attributes.put(Request.REQUEST_SEQ, value);
-		failed_attributes.put(Packet.COMMAND, "failed"); //$NON-NLS-1$
-		failed_attributes.put(JSONConstants.SUCCESS, Boolean.FALSE);
-		failed_attributes.put(JSONConstants.RUNNING, Boolean.FALSE);
+		failed_attributes.put(Attributes.SEQ, value);
+		failed_attributes.put(Attributes.TYPE, RESPONSE);
+		failed_attributes.put(Attributes.REQUEST_SEQ, value);
+		failed_attributes.put(Attributes.COMMAND, "failed"); //$NON-NLS-1$
+		failed_attributes.put(Attributes.SUCCESS, Boolean.FALSE);
+		failed_attributes.put(Attributes.RUNNING, Boolean.FALSE);
 	}
 	
 	public static final Response FAILED = new Response(failed_attributes);
@@ -71,24 +67,24 @@ public class Response extends Packet {
 	 */
 	public Response(Map json) {
 		super(json);
-		Number packetRequestSeq = (Number) json.get(Request.REQUEST_SEQ);
+		Number packetRequestSeq = (Number) json.get(Attributes.REQUEST_SEQ);
 		requestSequence = packetRequestSeq.intValue();
 
-		String packetCommand = (String) json.get(Packet.COMMAND);
+		String packetCommand = (String) json.get(Attributes.COMMAND);
 		command = packetCommand.intern();
 
-		Map packetBody = (Map) json.get(Packet.BODY);
+		Map packetBody = (Map) json.get(Attributes.BODY);
 		if(packetBody != null) {
 			body.putAll(packetBody);
 		}
 
-		Boolean packetSuccess = (Boolean) json.get(JSONConstants.SUCCESS);
+		Boolean packetSuccess = (Boolean) json.get(Attributes.SUCCESS);
 		success = packetSuccess.booleanValue();
 
-		Boolean packetRunning = (Boolean) json.get(JSONConstants.RUNNING);
+		Boolean packetRunning = (Boolean) json.get(Attributes.RUNNING);
 		running = packetRunning.booleanValue();
 
-		message = (String) json.get(MESSAGE);
+		message = (String) json.get(Attributes.MESSAGE);
 	}
 
 	/**
@@ -184,13 +180,13 @@ public class Response extends Packet {
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
-		json.put(Request.REQUEST_SEQ, new Integer(requestSequence));
-		json.put(Packet.COMMAND, command);
-		json.put(Packet.BODY, body);
-		json.put(JSONConstants.SUCCESS, new Boolean(success));
-		json.put(JSONConstants.RUNNING, new Boolean(running));
+		json.put(Attributes.REQUEST_SEQ, new Integer(requestSequence));
+		json.put(Attributes.COMMAND, command);
+		json.put(Attributes.BODY, body);
+		json.put(Attributes.SUCCESS, new Boolean(success));
+		json.put(Attributes.RUNNING, new Boolean(running));
 		if (message != null) {
-			json.put(MESSAGE, message);
+			json.put(Attributes.MESSAGE, message);
 		}
 		return json;
 	}

@@ -25,8 +25,6 @@ public class HandShake extends Packet {
 	 * handshake
 	 */
 	private static String CROSSFIRE_HANDSHAKE;
-	public static final String HANDSHAKE = "handshake"; //$NON-NLS-1$
-
 	static {
 		String hs = "CrossfireHandshake\r\n"; //$NON-NLS-1$
 		try {
@@ -63,7 +61,7 @@ public class HandShake extends Packet {
 	 */
 	public Map toJSON() {
 		Map json = new HashMap(1);
-		json.put(HANDSHAKE, CROSSFIRE_HANDSHAKE);
+		json.put(Attributes.HANDSHAKE, CROSSFIRE_HANDSHAKE);
 		return json;
 	}
 }

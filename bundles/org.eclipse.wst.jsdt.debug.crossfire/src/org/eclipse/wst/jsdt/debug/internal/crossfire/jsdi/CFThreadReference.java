@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 
@@ -27,15 +28,14 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
  * @since 1.0
  */
 public class CFThreadReference extends CFMirror implements ThreadReference {
-
-	/**
-	 * The "frame" command
-	 */
-	public static final String CMD_FRAME = "frame"; //$NON-NLS-1$
 	/**
 	 * The "crossfire_id" attribute
 	 */
 	public static final String CROSSFIRE_ID = "crossfire_id"; //$NON-NLS-1$
+	/**
+	 * The "href" attribute
+	 */
+	public static final String HREF = "href"; //$NON-NLS-1$
 	
 	static final int RUNNING = 0;
 	static final int SUSPENDED = 1;
@@ -45,10 +45,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	private String href = null;
 	private int state = RUNNING;
 	private ArrayList frames = null;
-	/**
-	 * The "href" attribute
-	 */
-	public static final String HREF = "href"; //$NON-NLS-1$
+	
 	
 	/**
 	 * Constructor
@@ -99,7 +96,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		//unless there is only ever one frame?
 		if(frames == null) {
 			frames = new ArrayList();
-			Request request = new Request(CMD_FRAME, id);
+			Request request = new Request(Commands.FRAME, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				frames.add(new CFStackFrame(virtualMachine(), response.getBody()));

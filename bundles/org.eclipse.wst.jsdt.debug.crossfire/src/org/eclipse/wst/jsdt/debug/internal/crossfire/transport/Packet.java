@@ -24,27 +24,6 @@ public abstract class Packet {
 	 */
 	public static boolean TRACE = false;
 	
-	/**
-	 * The "context_id" attribute
-	 */
-	public static final String CONTEXT_ID = "context_id"; //$NON-NLS-1$
-	/**
-	 * The "type" attribute
-	 */
-	public static final String TYPE = "type"; //$NON-NLS-1$
-	/**
-	 * The "seq" attribute
-	 */
-	public static final String SEQ = "seq"; //$NON-NLS-1$
-	/**
-	 * The "body" attribute
-	 */
-	public static final String BODY = "body"; //$NON-NLS-1$
-	/**
-	 * The "command" attribute
-	 */
-	public static final String COMMAND = "command"; //$NON-NLS-1$
-	
 	private static int currentSequence = 0;
 	private final int sequence;
 	private final String type;
@@ -73,11 +52,11 @@ public abstract class Packet {
 		if(json == null) {
 			throw new IllegalArgumentException("The JSON map for a packet cannot be null"); //$NON-NLS-1$
 		}
-		Number packetSeq = (Number) json.get(SEQ);
+		Number packetSeq = (Number) json.get(Attributes.SEQ);
 		this.sequence = packetSeq.intValue();
-		String packetType = (String) json.get(TYPE);
+		String packetType = (String) json.get(Attributes.TYPE);
 		this.type = packetType.intern();
-		this.context_id = (String) json.get(CONTEXT_ID);
+		this.context_id = (String) json.get(Attributes.CONTEXT_ID);
 	}
 
 	/**
@@ -120,10 +99,10 @@ public abstract class Packet {
 	 */
 	public Map toJSON() {
 		Map json = new HashMap();
-		json.put(SEQ, new Integer(sequence));
-		json.put(TYPE, type);
+		json.put(Attributes.SEQ, new Integer(sequence));
+		json.put(Attributes.TYPE, type);
 		if(context_id != null) {
-			json.put(CONTEXT_ID, context_id);
+			json.put(Attributes.CONTEXT_ID, context_id);
 		}
 		return json;
 	}
@@ -141,7 +120,7 @@ public abstract class Packet {
 		if(json == null) {
 			throw new IllegalArgumentException("A null JSON map is not allowed when trying to get the packet type"); //$NON-NLS-1$
 		}
-		return (String) json.get(TYPE);
+		return (String) json.get(Attributes.TYPE);
 	}
 
 	/* (non-Javadoc)

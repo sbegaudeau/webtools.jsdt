@@ -37,5 +37,6 @@ public interface Constants {
 	 * Value is: <code>UTF-8</code>
 	 */
 	public static final String UTF_8 = "UTF-8"; //$NON-NLS-1$
+	public static String URI_FILE_SCHEME = "file"; //$NON-NLS-1$
 	public static final String UNKNOWN = "unknown"; //$NON-NLS-1$
 }

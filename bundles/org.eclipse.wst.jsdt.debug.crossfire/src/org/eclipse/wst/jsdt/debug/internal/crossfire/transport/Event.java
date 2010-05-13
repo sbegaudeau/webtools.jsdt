@@ -34,6 +34,42 @@ public class Event extends Packet {
 	 */
 	public static final String ON_SCRIPT = "onScript"; //$NON-NLS-1$
 	/**
+	 * The "onBreak" event kind
+	 */
+	public static final String ON_BREAK = "onBreak"; //$NON-NLS-1$
+	/**
+	 * The "onConsoleDebug" event kind
+	 */
+	public static final String ON_CONSOLE_DEBUG = "onConsoleDebug"; //$NON-NLS-1$
+	/**
+	 * The "onConsoleError" event kind
+	 */
+	public static final String ON_CONSOLE_ERROR = "onConsoleError"; //$NON-NLS-1$
+	/**
+	 * The "onConsoleInfo" event kind
+	 */
+	public static final String ON_CONSOLE_INFO = "onConsoleInfo"; //$NON-NLS-1$
+	/**
+	 * The "onConsoleLog" event kind
+	 */
+	public static final String ON_CONSOLE_LOG = "onConsoleLog"; //$NON-NLS-1$
+	/**
+	 * The "onConsoleWarn" event kind
+	 */
+	public static final String ON_CONSOLE_WARN = "onConsoleWarn"; //$NON-NLS-1$
+	/**
+	 * The "onInspectNode" event kind
+	 */
+	public static final String ON_INSPECT_NODE = "onInspectNode"; //$NON-NLS-1$
+	/**
+	 * The "onResume" event kind
+	 */
+	public static final String ON_RESUME = "onResume"; //$NON-NLS-1$
+	/**
+	 * The "onToggleBreakpoint" event kind
+	 */
+	public static final String ON_TOGGLE_BREAKPOINT = "onToggleBreakpoint"; //$NON-NLS-1$
+	/**
 	 * The "onContextCreated" event kind
 	 */
 	public static final String ON_CONTEXT_CREATED = "onContextCreated"; //$NON-NLS-1$
@@ -41,14 +77,9 @@ public class Event extends Packet {
 	 * The "onContextDestroyed" event kind
 	 */
 	public static final String ON_CONTEXT_DESTROYED = "onContextDestroyed"; //$NON-NLS-1$
-	/**
-	 * The "data" attribute
-	 */
-	public static final String DATA = "data"; //$NON-NLS-1$
 	
 	private final String event;
 	private final Map body = Collections.synchronizedMap(new HashMap());
-	
 	
 	/**
 	 * Constructor
@@ -67,12 +98,12 @@ public class Event extends Packet {
 		super(json);
 		String packetEvent = (String) json.get(EVENT);
 		event = packetEvent.intern();
-		Object data = json.get(DATA);
+		Object data = json.get(Attributes.DATA);
 		if(data instanceof Map) {
 			body.putAll((Map) data);
 		}
 		if(data instanceof String) {
-			body.put(DATA, data);
+			body.put(Attributes.DATA, data);
 		}
 	}
 
@@ -98,7 +129,7 @@ public class Event extends Packet {
 	public Map toJSON() {
 		Map json = super.toJSON();
 		json.put(EVENT, event);
-		json.put(BODY, body);
+		json.put(Attributes.BODY, body);
 		return json;
 	}
 	

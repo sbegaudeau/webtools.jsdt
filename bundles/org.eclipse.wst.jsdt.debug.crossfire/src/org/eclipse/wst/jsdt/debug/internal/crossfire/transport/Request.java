@@ -23,14 +23,6 @@ public class Request extends Packet {
 	 * The type of this packet
 	 */
 	public static final String REQUEST = "request"; //$NON-NLS-1$
-	/**
-	 * The "request_seq" attribute
-	 */
-	public static final String REQUEST_SEQ = "request_seq"; //$NON-NLS-1$
-	/**
-	 * The "arguments" attribute
-	 */
-	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	
 	private final String command;
 	private final Map arguments = Collections.synchronizedMap(new HashMap());
@@ -62,9 +54,9 @@ public class Request extends Packet {
 		if(json == null) {
 			throw new IllegalArgumentException("The JSON map for a request packet cannot be null"); //$NON-NLS-1$
 		}
-		String value = (String) json.get(COMMAND);
+		String value = (String) json.get(Attributes.COMMAND);
 		this.command = value.intern();
-		Map packetArguments = (Map) json.get(ARGUMENTS);
+		Map packetArguments = (Map) json.get(Attributes.ARGUMENTS);
 		arguments.putAll(packetArguments);
 	}
 
@@ -112,9 +104,9 @@ public class Request extends Packet {
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
-		json.put(COMMAND, command);
+		json.put(Attributes.COMMAND, command);
 		if(!arguments.isEmpty()) {
-			json.put(ARGUMENTS, arguments);
+			json.put(Attributes.ARGUMENTS, arguments);
 		}
 		return json;
 	}

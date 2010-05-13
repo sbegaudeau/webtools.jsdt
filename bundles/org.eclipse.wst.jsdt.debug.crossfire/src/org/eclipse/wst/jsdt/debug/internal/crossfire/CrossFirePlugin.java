@@ -1,9 +1,14 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -23,6 +28,10 @@ public class CrossFirePlugin extends Plugin {
 	 * Packet tracing option name
 	 */
 	public static final String TRC_PACKETS = PLUGIN_ID + "/packets"; //$NON-NLS-1$
+	/**
+	 * Event queue tracing option name
+	 */
+	public static final String TRC_EVENTQUEUE = PLUGIN_ID + "/eventqueue"; //$NON-NLS-1$
 	
 	/**
 	 * Status code indicating an unexpected internal error.
@@ -103,8 +112,22 @@ public class CrossFirePlugin extends Plugin {
 		if(CrossFirePlugin.getDefault().isDebugging()) {
 			String option = Platform.getDebugOption(TRC_PACKETS);
 			if(option != null) {
-				Packet.setTracing(true);
+				Packet.setTracing(Boolean.valueOf(option).booleanValue());
+			}
+			option = Platform.getDebugOption(TRC_EVENTQUEUE);
+			if(option != null) {
+				CFEventQueue.setTracing(Boolean.valueOf(option).booleanValue());
 			}
 		}
+	}
+	
+	/**
+	 * Creates a new {@link URI} with the <code>file</code> scheme
+	 * @param path
+	 * @return a new {@link URI}
+	 * @throws URISyntaxException
+	 */
+	public static URI fileURI(IPath path) throws URISyntaxException {
+		return new URI(Constants.URI_FILE_SCHEME, null, path.makeAbsolute().toString(), null);
 	}
 }

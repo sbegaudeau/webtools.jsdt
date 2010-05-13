@@ -28,6 +28,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
@@ -42,23 +44,6 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TimeoutException;
  */
 public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 
-	/**
-	 * The "listcontexts" command
-	 */
-	public static final String CMD_LISTCONTEXTS = "listcontexts"; //$NON-NLS-1$
-	/**
-	 * The "version" command
-	 */
-	public static final String CMD_VERSION = "version"; //$NON-NLS-1$
-	/**
-	 * The "scripts" command
-	 */
-	public static final String CMD_SCRIPTS = "scripts"; //$NON-NLS-1$
-	/**
-	 * The "contexts" attribute
-	 */
-	public static final String CONTEXTS = "contexts"; //$NON-NLS-1$
-	
 	private final NullValue nullvalue = new CFNullValue(this);
 	private final UndefinedValue undefinedvalue = new CFUndefinedValue(this);
 	
@@ -84,12 +69,20 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#resume()
 	 */
 	public void resume() {
+		//TODO make this work
+		Response response = sendRequest(new Request(Commands.CONTINUE, null));
+		if(response.isSuccess()) {
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#suspend()
 	 */
 	public void suspend() {
+		//TODO make this work
+		Response response = sendRequest(new Request(Commands.SUSPEND, null));
+		if(response.isSuccess()) {
+		}
 	}
 
 	/* (non-Javadoc)
@@ -117,11 +110,11 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
-		Request request = new Request(CMD_VERSION, null);
+		Request request = new Request(Commands.VERSION, null);
 		Response response = sendRequest(request);
 		if(response.isSuccess()) {
 			Map json = response.getBody();
-			return (String) json.get(CMD_VERSION);
+			return (String) json.get(Commands.VERSION);
 		}
 		return Constants.UNKNOWN;
 	}
@@ -132,10 +125,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public synchronized List allThreads() {
 		if(threads == null) {
 			threads = new HashMap();
-			Request request = new Request(CMD_LISTCONTEXTS, null);
+			Request request = new Request(Commands.LISTCONTEXTS, null);
 			Response response = sendRequest(request);
 			if(response.isSuccess()) {
-				List contexts = (List) response.getBody().get(CONTEXTS);
+				List contexts = (List) response.getBody().get(Attributes.CONTEXTS);
 				for (Iterator iter = contexts.iterator(); iter.hasNext();) {
 					Map json = (Map) iter.next();
 					CFThreadReference thread = new CFThreadReference(this, json);
@@ -195,10 +188,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			List threads = allThreads();
 			for (Iterator iter = threads.iterator(); iter.hasNext();) {
 				CFThreadReference thread = (CFThreadReference) iter.next();
-				Request request = new Request(CMD_SCRIPTS, thread.id());
+				Request request = new Request(Commands.SCRIPTS, thread.id());
 				Response response = sendRequest(request);
 				if(response.isSuccess()) {
-					List scriptz = (List) response.getBody().get(CMD_SCRIPTS);
+					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
 					for (Iterator iter2 = scriptz.iterator(); iter2.hasNext();) {
 						CFScriptReference script = new CFScriptReference(this, thread.id(), (Map) iter2.next()); 
 						scripts.put(script.id(), script);
@@ -342,7 +335,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	/**
 	 * disconnects the VM
 	 */
-	public void disconnectVM() {
+	public synchronized void disconnectVM() {
 		if (disconnected) {
 			// no-op it is already disconnected
 			return;
@@ -354,9 +347,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			if(scripts != null) {
 				scripts.clear();
 			}
-			this.session.dispose();
 			this.queue.dispose();
 			this.ermanager.dispose();
+			this.session.dispose();
 		} finally {
 			disconnected = true;
 		}

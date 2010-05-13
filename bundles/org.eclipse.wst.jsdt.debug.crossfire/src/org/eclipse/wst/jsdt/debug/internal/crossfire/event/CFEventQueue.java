@@ -21,12 +21,15 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFThreadReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TimeoutException;
 
 /**
@@ -36,6 +39,8 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TimeoutException;
  */
 public class CFEventQueue extends CFMirror implements EventQueue {
 
+	private static boolean TRACE = false;
+	
 	private EventRequestManager eventmgr = null;
 	private boolean disposed = false;
 	
@@ -73,16 +78,28 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						set.add(new CFVMDeathEvent(crossfire(), request));
 					}
 					crossfire().terminate();
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.CLOSED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_BREAK.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_BREAK+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				}
 				else if(Event.ON_SCRIPT.equals(name)) {
 					ThreadReference thread = crossfire().findThread(event.getContextId());
 					if(thread != null) {
+						set.setThread(thread);
 						CFScriptReference script = crossfire().addScript(event.getContextId(), event.getBody());
 						List scripts = eventmgr.scriptLoadRequests();
 						for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 							ScriptLoadRequest request = (ScriptLoadRequest) iter.next();
 							set.add(new CFScriptLoadEvent(crossfire(), request, thread, script));
 						}
+					}
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONTEXT_CREATED.equals(name)) {
@@ -91,6 +108,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					for (Iterator iter = threads.iterator(); iter.hasNext();) {
 						ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
 						set.add(new CFThreadEnterEvent(crossfire(), request, thread));
+					}
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONTEXT_DESTROYED.equals(name)) {
@@ -103,6 +123,54 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							set.add(new CFThreadExitEvent(crossfire(), request, thread));
 						}
 					}
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_CONSOLE_DEBUG.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_CONSOLE_ERROR.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_CONSOLE_INFO.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_INFO+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_CONSOLE_LOG.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_LOG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_CONSOLE_WARN.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_INSPECT_NODE.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_RESUME.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_RESUME+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(Event.ON_TOGGLE_BREAKPOINT.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [event - "+Event.ON_TOGGLE_BREAKPOINT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else {
+					if(TRACE) {
+						Tracing.writeString("QUEUE: [unknown event - "+name+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
 				}
 				if (set.isEmpty()) {
 					set.resume();
@@ -113,9 +181,10 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 		}
 		catch(DisconnectedException de) {
 			crossfire().disconnectVM();
+			handleException(de.getMessage(), de);
 		}
 		catch(TimeoutException te) {
-			handleException(te.getMessage(), te);
+			CrossFirePlugin.log(te);
 		}
 		return null;
 	}
@@ -125,5 +194,13 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 	 */
 	public void dispose() {
 		disposed = true;
+	}
+	
+	/**
+	 * Turns on / off tracing in the event queue
+	 * @param tracing
+	 */
+	public static void setTracing(boolean tracing) {
+		TRACE = tracing;
 	}
 }
