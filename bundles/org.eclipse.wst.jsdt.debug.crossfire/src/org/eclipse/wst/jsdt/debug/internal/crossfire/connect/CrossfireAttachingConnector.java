@@ -16,11 +16,13 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Connection;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.SocketTransportService;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService.ListenerKey;
 
 /**
  * Attaching connector for Crossfire
@@ -90,7 +92,15 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		int timeout = Integer.parseInt(timeoutstr);
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(host).append(':').append(Integer.parseInt(port));
-		Connection c = service.attach(buffer.toString(), timeout, timeout);
+		ListenerKey key = service.startListening(buffer.toString());
+		Connection c = null;
+		try {
+			c = service.accept(key, timeout, timeout);
+		}
+		catch(IOException ioe) {
+			service.stopListening(key);
+			return null;
+		}
 		DebugSession session = new DebugSession(c);
 		return new CFVirtualMachine(session);
 	}
@@ -102,7 +112,22 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 	 * @throws IOException 
 	 */
 	void launchBrowser(final String host, final String port) throws IOException {
-		StringBuffer buffer = new StringBuffer("firefox -P crossfire -no-remote -crossfire-host "); //$NON-NLS-1$
-		buffer.append(host).append(" -crossfire-port ").append(port); //$NON-NLS-1$
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					CrossFirePlugin.log(e);
+				}
+				StringBuffer buffer = new StringBuffer("firefox -P crossfire -no-remote -load-fb-modules -crossfire-host "); //$NON-NLS-1$
+				buffer.append(host).append(" -crossfire-port ").append(port); //$NON-NLS-1$
+				try {
+					Runtime.getRuntime().exec(buffer.toString());
+				} catch (IOException e) {
+					CrossFirePlugin.log(e);
+				}
+			};
+		};
+		thread.start();
 	}
 }

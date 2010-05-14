@@ -10,7 +10,9 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.transport;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Default request implementation using JSON
@@ -26,6 +28,7 @@ public class Request extends Packet {
 	
 	private final String command;
 	private final Map arguments = Collections.synchronizedMap(new HashMap());
+	private final Map params = Collections.synchronizedMap(new HashMap());
 	
 	
 	/**
@@ -60,6 +63,16 @@ public class Request extends Packet {
 		arguments.putAll(packetArguments);
 	}
 
+	/**
+	 * Allows additional parameters to be added to the request
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void addAdditionalParam(String key, Object value) {
+		params.put(key, value);
+	}
+	
 	/**
 	 * Returns the command that this {@link Request} will was created for.<br>
 	 * <br>
@@ -107,6 +120,11 @@ public class Request extends Packet {
 		json.put(Attributes.COMMAND, command);
 		if(!arguments.isEmpty()) {
 			json.put(Attributes.ARGUMENTS, arguments);
+		}
+		Entry entry = null;
+		for(Iterator iter = params.entrySet().iterator(); iter.hasNext();) {
+			entry = (Entry) iter.next();
+			json.put(entry.getKey(), entry.getValue());
 		}
 		return json;
 	}

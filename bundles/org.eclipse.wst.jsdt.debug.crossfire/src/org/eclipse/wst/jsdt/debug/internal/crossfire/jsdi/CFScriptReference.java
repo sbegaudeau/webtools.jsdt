@@ -139,10 +139,10 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public synchronized String source() {
 		if(source == null) {
 			Request request = new Request(Commands.SOURCE, context_id);
-			request.setArgument(ID, id);
+			request.addAdditionalParam(ID, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				source = "//TODO get the actual script source for "+id; //$NON-NLS-1$
+				//source = "//TODO get the actual script source for "+id; //$NON-NLS-1$
 			}
 		}
 		return source;

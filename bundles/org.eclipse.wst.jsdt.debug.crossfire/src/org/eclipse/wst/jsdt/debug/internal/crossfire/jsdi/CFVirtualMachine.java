@@ -64,14 +64,23 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		super();
 		this.session = session;
 	}
+
+	/**
+	 * @return the 'readiness' of the VM - i.e. is it in a state to process requests, etc
+	 */
+	boolean ready() {
+		return !disconnected;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#resume()
 	 */
 	public void resume() {
-		//TODO make this work
-		Response response = sendRequest(new Request(Commands.CONTINUE, null));
-		if(response.isSuccess()) {
+		if(ready()) {
+			//TODO make this work
+			Response response = sendRequest(new Request(Commands.CONTINUE, null));
+			if(response.isSuccess()) {
+			}
 		}
 	}
 
@@ -79,9 +88,11 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#suspend()
 	 */
 	public void suspend() {
-		//TODO make this work
-		Response response = sendRequest(new Request(Commands.SUSPEND, null));
-		if(response.isSuccess()) {
+		if(ready()) {
+			//TODO make this work
+			Response response = sendRequest(new Request(Commands.SUSPEND, null));
+			if(response.isSuccess()) {
+			}
 		}
 	}
 
@@ -89,7 +100,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#terminate()
 	 */
 	public void terminate() {
-		disconnectVM();
+		if(ready()) {
+			disconnectVM();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -109,12 +122,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
-	public String version() {
-		Request request = new Request(Commands.VERSION, null);
-		Response response = sendRequest(request);
-		if(response.isSuccess()) {
-			Map json = response.getBody();
-			return (String) json.get(Commands.VERSION);
+	public synchronized String version() {
+		if(ready()) {
+			Request request = new Request(Commands.VERSION, null);
+			Response response = sendRequest(request);
+			if(response.isSuccess()) {
+				Map json = response.getBody();
+				return (String) json.get(Commands.VERSION);
+			}
 		}
 		return Constants.UNKNOWN;
 	}
@@ -232,9 +247,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#dispose()
 	 */
-	public void dispose() {
-		queue.dispose();
-		ermanager.dispose();
+	public synchronized void dispose() {
+		try {
+			queue.dispose();
+			ermanager.dispose();
+		}
+		finally {
+			//fallack in case the VM has been disposed but not disconnected
+			disconnectVM();
+		}
 	}
 
 	/* (non-Javadoc)
@@ -320,7 +341,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public Response sendRequest(Request request) {
 		try {
 			session.sendRequest(request);
-			return session.receiveResponse(request.getSequence(), DEFAULT_TIMEOUT);
+			return session.receiveResponse(request.getSequence(), 3000);
 		}
 		catch(DisconnectedException de) {
 			disconnectVM();
