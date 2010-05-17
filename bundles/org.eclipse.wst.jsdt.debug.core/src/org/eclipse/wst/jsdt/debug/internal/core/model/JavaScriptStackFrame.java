@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -137,14 +139,29 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 			List underlyingVariables = this.stackFrame.variables();
 			this.variables = new ArrayList(underlyingVariables.size() + 1);
 
-			// add the "this" object 
-			variables.add(new JavaScriptVariable(this, stackFrame.thisObject()));
+
 	
 			for (Iterator iterator = underlyingVariables.iterator(); iterator.hasNext();) {
 				Variable variable = (Variable) iterator.next();
 				JavaScriptVariable jsdiVariable = new JavaScriptVariable(this, variable);
 				this.variables.add(jsdiVariable);
 			}
+			
+			Collections.sort(variables, new Comparator() {		
+				public int compare(Object arg0, Object arg1) {
+					
+					IVariable var0 = (IVariable) arg0;
+					IVariable var1 = (IVariable) arg1;
+					try {
+						return var0.getName().compareToIgnoreCase(var1.getName());
+					} catch (DebugException e) {
+						return 0;
+					}
+				}
+			});
+			
+			// add the "this" object at the front
+			variables.add(0, new JavaScriptVariable(this, stackFrame.thisObject()));			
 		}
 		return (IVariable[]) this.variables.toArray(new IVariable[this.variables.size()]);
 	}

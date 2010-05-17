@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,11 +79,21 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	public String getDetailString() {
 		if (this.value instanceof ArrayReference) {
 			ArrayReference array = (ArrayReference) this.value;
-			return array.getValues().toString();
+			List values = array.getValues();
+			Iterator iterator = values.iterator();
+			if (! iterator.hasNext())
+			    return "[]"; //$NON-NLS-1$
+			StringBuffer buffer = new StringBuffer();
+			buffer.append('[');
+			for (;;) {
+				Value jsValue = (Value) iterator.next();
+				buffer.append(getValueString(jsValue));
+				if (! iterator.hasNext())
+					return buffer.append(']').toString();
+				buffer.append(", "); //$NON-NLS-1$				
+			}
 		}
-		if (this.value instanceof FunctionReference) {
-			return ((FunctionReference) this.value).valueString();
-		}
+
 		if (this.value instanceof JavaScriptPrimitiveValue) {
 			JavaScriptPrimitiveValue nvalue = (JavaScriptPrimitiveValue)this.value;
 			return nvalue.stringValue();
@@ -124,19 +136,32 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 * @see org.eclipse.debug.core.model.IValue#getValueString()
 	 */
 	public String getValueString() throws DebugException {
-		if (this.value instanceof ObjectReference) {
-			ObjectReference ref = (ObjectReference) this.value;
+		return getValueString(value);
+	}
+	
+	private static String getValueString(Value jsValue) {
+		if (jsValue instanceof ObjectReference) {
+			ObjectReference ref = (ObjectReference) jsValue;
 			StringBuffer buffer = new StringBuffer();
-			buffer.append(NLS.bind(ModelMessages.JavaScriptValue_object_value_label, new String[] {this.value.valueString(), ref.id().toString()}));
+			buffer.append(NLS.bind(ModelMessages.JavaScriptValue_object_value_label, new String[] {jsValue.valueString(), ref.id().toString()}));
 			return buffer.toString();
 		}
-		if (this.value instanceof NumberValue) {
-			NumberValue nvalue = (NumberValue) this.value;
+		if (jsValue instanceof NumberValue) {
+			NumberValue nvalue = (NumberValue) jsValue;
 			if (!nvalue.isNaN()) {
 				return JavaScriptDebugModel.numberToString(nvalue.value());
 			}
 		}
-		return this.value.valueString();
+		
+		if (jsValue instanceof StringValue) {
+			StringBuffer buffer = new StringBuffer();
+			buffer.append('"');
+			buffer.append(jsValue.valueString().replaceAll("\"", "\\\\\"")); //$NON-NLS-1$//$NON-NLS-2$
+			buffer.append('"');
+			return buffer.toString();
+		}
+		
+		return jsValue.valueString();
 	}
 
 	/*
@@ -158,6 +183,28 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				this.properties.add(jsdiProperty);
 			}
 			
+			// sort - array values (e.g integer names) first then alphabetically
+			Collections.sort(properties, new Comparator() {		
+				public int compare(Object arg0, Object arg1) {
+					try {		
+					String name0 = ((IVariable) arg0).getName();
+					String name1 = ((IVariable) arg1).getName();
+					
+					if (Character.isDigit(name0.charAt(0))) {
+						if (Character.isDigit(name1.charAt(0))) 
+							return Integer.valueOf(name0).compareTo(Integer.valueOf(name1));
+						return -1;
+					}
+					if (Character.isDigit(name1.charAt(0)))
+						return 1;
+
+					return name0.compareToIgnoreCase(name1);
+					} catch (DebugException e) {
+						return 0;
+					}
+				}
+			});
+			
 			// add the prototype
 			Property prototype = new Property() {
 				public VirtualMachine virtualMachine() {
@@ -172,7 +219,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 					return reference.prototype();
 				}
 			};
-			properties.add(new JavaScriptProperty(this, prototype));			
+			properties.add(0, new JavaScriptProperty(this, prototype));			
 		}
 		return (IVariable[]) this.properties.toArray(new IVariable[this.properties.size()]);
 	}

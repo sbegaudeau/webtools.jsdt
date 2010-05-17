@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,6 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 	 * Raw list of {@link Value}s
 	 */
 	private ArrayList values = null;
-	private int size = 0;
 
 	/**
 	 * Constructor
@@ -49,59 +49,79 @@ public class ArrayReferenceImpl extends ObjectReferenceImpl implements ArrayRefe
 	 */
 	public ArrayReferenceImpl(VirtualMachineImpl vm, Map body, StackFrameImpl stackFrameImpl) {
 		super(vm, body, stackFrameImpl);
-		this.size = properties().size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference#getValue(int)
 	 */
 	public Value getValue(int index) throws IndexOutOfBoundsException {
-		if (index < 0 || index > length()) {
-			throw new IndexOutOfBoundsException();
-		}
 		Value value = (Value) getValues().get(index);
-		if(value == null) {
+		if (value == null) {
 			return vm.mirrorOfNull();
 		}
-		return value; 
+		return value;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference#getValues()
 	 */
-	public List getValues() {
-		synchronized (this) {
-			if (this.values == null) {
-				this.values = new ArrayList(this.size);
-				List props = properties();
-				for (Iterator iter = props.iterator(); iter.hasNext();) {
-					this.values.add(((Property) iter.next()).value());
+	public synchronized List getValues() {
+		if (values == null) {
+			Map members = new HashMap();
+			int length = 0;
+			for (Iterator iter = properties().iterator(); iter.hasNext();) {
+				Property property = (Property) iter.next();
+				if (Character.isDigit(property.name().charAt(0))) {
+					members.put(Integer.valueOf(property.name()), property.value());
+				} else if (property.name().equals("length")) { //$NON-NLS-1$
+					length = Integer.parseInt(property.value().valueString());
 				}
 			}
+			values = new ArrayList(length);
+			for (int i = 0; i < length; i++) {
+				Object value = members.get(new Integer(i));
+				if (value == null) {
+					value = new UndefinedValueImpl(vm);
+				}
+				values.add(value);
+			}
 		}
-		return this.values;
+		return values;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference#length()
 	 */
 	public int length() {
-		return this.size;
+		return getValues().size();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#valueString()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#
+	 * valueString()
 	 */
 	public String valueString() {
 		return "Array"; //$NON-NLS-1$
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#toString()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ObjectReferenceImpl#toString
+	 * ()
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(NLS.bind(Messages.ArrayReferenceImpl_array_count_, new String[] {Integer.toString(this.size)}));
+		buffer.append(NLS.bind(Messages.ArrayReferenceImpl_array_count_, new String[] {Integer.toString(length()) }));
 		return buffer.toString();
 	}
 }
