@@ -9,6 +9,7 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.debugger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -400,7 +401,12 @@ public class StackFrame implements DebugFrame {
 	 */
 	private List createProperties(Scriptable scriptable) {
 		ArrayList properties = new ArrayList();
-		Object[] ids = (scriptable instanceof DebuggableObject) ? ((DebuggableObject)scriptable).getAllIds() : scriptable.getIds();
+		Object[] ids = scriptable.getIds();
+		if (scriptable instanceof DebuggableObject) {
+			HashSet arrayIds = new HashSet(Arrays.asList(ids));
+			arrayIds.addAll(Arrays.asList(((DebuggableObject)scriptable).getAllIds()));
+			ids = arrayIds.toArray();
+		}
 		for (int i = 0; i < ids.length; i++) {
 			Object id = ids[i];
 			Object value = null;
