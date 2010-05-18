@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,13 +49,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 public class CompilationUnitDeclaration
 	extends ASTNode
 	implements ProblemSeverities, ReferenceContext, IScriptFileDeclaration, IInferenceFile {
-
-	protected void finalize() throws Throwable {
-//		System.out.println("finalize "+hashCode());
-		super.finalize();
-	}
-
-
 
 	private static final Comparator STRING_LITERAL_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
