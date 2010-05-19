@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
 package org.eclipse.wst.jsdt.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 
@@ -59,6 +60,43 @@ public static final int ENABLE_STATEMENTS_RECOVERY = 0x02;
  */
 public static final int ENABLE_BINDINGS_RECOVERY = 0x04;
 
+
+/**
+ * Changes this javaScript file handle into a working copy. A new {@link IBuffer} is
+ * created using this javaScript file handle's owner. Uses the primary owner is none was
+ * specified when this javaScript file handle was created.
+ * <p>
+ * When switching to working copy mode, problems are reported to given
+ * {@link IProblemRequestor}. Note that once in working copy mode, the given
+ * {@link IProblemRequestor} is ignored. Only the original {@link IProblemRequestor}
+ * is used to report subsequent problems.
+ * </p>
+ * <p>
+ * Once in working copy mode, changes to this javaScript file or its children are done in memory.
+ * Only the new buffer is affected. Using {@link #commitWorkingCopy(boolean, IProgressMonitor)}
+ * will bring the underlying resource in sync with this javaScript file.
+ * </p>
+ * <p>
+ * If this JavaScript file was already in working copy mode, an internal counter is incremented and no
+ * other action is taken on this javaScript file. To bring this javaScript file back into the original mode
+ * (where it reflects the underlying resource), {@link #discardWorkingCopy} must be call as many
+ * times as {@link #becomeWorkingCopy(IProblemRequestor, IProgressMonitor)}.
+ * </p>
+ *
+ * @param problemRequestor a requestor which will get notified of problems detected during
+ * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
+ * 	that the client is not interested in problems.
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
+ * 	or <code>null</code> if no progress should be reported
+ * @throws JavaScriptModelException if this javaScript file could not become a working copy.
+ * @see #discardWorkingCopy()
+  *
+ * @deprecated Use {@link #becomeWorkingCopy(IProgressMonitor)} instead.
+ * 	Note that if this deprecated method is used, problems will be reported to the given problem requestor
+ * 	as well as the problem requestor returned by the working copy owner (if not null).  While this may
+ *  be desired in <b>some</b> situations, by and large it is not.
+*/
+void becomeWorkingCopy(IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Changes this javaScript file handle into a working copy. A new {@link IBuffer} is
  * created using this javaScript file handle's owner. Uses the primary owner if none was
@@ -423,6 +461,50 @@ IType[] getTypes() throws JavaScriptModelException;
  * a working copy, or this element if this element is already a working copy
  */
 IJavaScriptUnit getWorkingCopy(IProgressMonitor monitor) throws JavaScriptModelException;
+/**
+ * Returns a shared working copy on this javaScript file using the given working copy owner to create
+ * the buffer, or this javaScript file if it is already a non-primary working copy.
+ * This API can only answer an already existing working copy if it is based on the same
+ * original javaScript file AND was using the same working copy owner (that is, as defined by {@link Object#equals}).
+ * <p>
+ * The life time of a shared working copy is as follows:
+ * <ul>
+ * <li>The first call to {@link #getWorkingCopy(WorkingCopyOwner, IProblemRequestor, IProgressMonitor)}
+ * 	creates a new working copy for this element</li>
+ * <li>Subsequent calls increment an internal counter.</li>
+ * <li>A call to {@link #discardWorkingCopy()} decrements the internal counter.</li>
+ * <li>When this counter is 0, the working copy is discarded.
+ * </ul>
+ * So users of this method must discard exactly once the working copy.
+ * <p>
+ * Note that the working copy owner will be used for the life time of this working copy, that is if the
+ * working copy is closed then reopened, this owner will be used.
+ * The buffer will be automatically initialized with the original's javaScript file content
+ * upon creation.
+ * <p>
+ * When the shared working copy instance is created, an ADDED IJavaScriptElementDelta is reported on this
+ * working copy.
+ * </p><p>
+ * Since 2.1, a working copy can be created on a not-yet existing compilation
+ * unit. In particular, such a working copy can then be committed in order to create
+ * the corresponding javaScript file.
+ * </p>
+ * @param owner the working copy owner that creates a buffer that is used to get the content
+ * 				of the working copy
+ * @param problemRequestor a requestor which will get notified of problems detected during
+ * 	reconciling as they are discovered. The requestor can be set to <code>null</code> indicating
+ * 	that the client is not interested in problems.
+ * @param monitor a progress monitor used to report progress while opening this javaScript file
+ *                 or <code>null</code> if no progress should be reported
+ * @throws JavaScriptModelException if the contents of this element can
+ *   not be determined.
+ * @return a new working copy of this element using the given factory to create
+ * the buffer, or this element if this element is already a working copy
+  * @deprecated Use {@link ITypeRoot#getWorkingCopy(WorkingCopyOwner, IProgressMonitor)} instead.
+ * 	Note that if this deprecated method is used, problems will be reported on the passed problem requester
+ * 	as well as on the problem requestor returned by the working copy owner (if not null).
+*/
+IJavaScriptUnit getWorkingCopy(WorkingCopyOwner owner, IProblemRequestor problemRequestor, IProgressMonitor monitor) throws JavaScriptModelException;
 /**
  * Returns whether the resource of this working copy has changed since the
  * inception of this working copy.
