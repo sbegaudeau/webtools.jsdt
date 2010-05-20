@@ -61,13 +61,15 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	public Object[] findSourceElements(Object object) throws CoreException {
 		URI sourceURI = getSourceURI(object);
 		if (sourceURI != null) {
-			IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-			URI workspaceURI = workspaceRoot.getRawLocationURI();			
-			URI workspaceRelativeURI = workspaceURI.relativize(sourceURI);
-			if (! workspaceRelativeURI.isAbsolute()) {
-				IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(workspaceRelativeURI.getPath()), false);
-				if (file != null) {
-					return new IFile[] { file };
+			if (!sourceURI.isAbsolute() || "file".equals(sourceURI.getScheme())) {//$NON-NLS-1$			
+				IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+				URI workspaceURI = workspaceRoot.getRawLocationURI();			
+				URI workspaceRelativeURI = workspaceURI.relativize(sourceURI);
+				if (! workspaceRelativeURI.isAbsolute()) {
+					IFile file = (IFile) workspaceRoot.findMember(new Path(workspaceRelativeURI.getPath()), false);
+					if (file != null) {
+						return new IFile[] { file };
+					}
 				}
 			}
 			//try to find it using the source tab infos
@@ -127,8 +129,9 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		try {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
 			String filename = URIUtil.lastSegment(uri);
-			String hashString = Integer.toString(source.hashCode());
-			IPath path = new Path(uri.getPath()).removeLastSegments(1).append(hashString).append(filename);
+			String uriHash =  Integer.toString(uri.toString().hashCode());
+			String sourceHash = Integer.toString(source.hashCode());
+			IPath path = new Path(uriHash).append(sourceHash).append(filename);
 			if(path.getFileExtension() == null) {
 				path = path.addFileExtension(Constants.JS_EXTENSION);
 			}

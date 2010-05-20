@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.ui;
 
 import java.io.File;
+import java.net.URI;
 import java.util.HashMap;
 
 import org.eclipse.core.filesystem.EFS;
@@ -18,7 +19,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugException;
@@ -262,11 +262,10 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @return
 	 */
 	String getElementPath(String path) {
-		IPath epath = new Path(path);
-		if(showQualifiedNames()) {
-			return epath.toOSString();
+		if(! showQualifiedNames()) {
+			return URIUtil.lastSegment(URI.create(path));
 		}
-		return epath.lastSegment();
+		return path;
 	}
 	
 	/* (non-Javadoc)

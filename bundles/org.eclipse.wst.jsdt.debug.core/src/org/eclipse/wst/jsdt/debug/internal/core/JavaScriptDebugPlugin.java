@@ -220,9 +220,7 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @param scriptPath
 	 */
 	public static synchronized void addExternalScriptPath(IPath path, String scriptPath) {
-		int count = path.segmentCount();
-		int remove = count > 2 ? count-2 : 0;
-		externalScriptPaths.put(path.removeFirstSegments(remove).makeAbsolute(), scriptPath);
+		externalScriptPaths.put(path.makeAbsolute(), scriptPath);
 	}
 	
 	/**
@@ -232,8 +230,6 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @return
 	 */
 	public static synchronized String getExternalScriptPath(IPath path) {
-		int count = path.segmentCount();
-		int remove = count > 2 ? count-2 : 0;
-		return (String) externalScriptPaths.get(path.removeFirstSegments(remove).makeAbsolute());
+		return (String) externalScriptPaths.get(path.makeAbsolute());
 	}
 }

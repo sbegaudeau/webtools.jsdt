@@ -281,7 +281,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @return the complete list of {@link ScriptReference}s matching the given name
 	 * or an empty collection, never <code>null</code>
 	 */
-	public synchronized List underyingScripts(String name) {
+	public synchronized List underlyingScripts(String name) {
 		List scripts = getVM().allScripts();
 		if(!scripts.isEmpty()) {
 			List byname = new ArrayList();

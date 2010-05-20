@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,12 +19,13 @@ import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.Breakpoint;
 import org.eclipse.debug.core.model.IDebugTarget;
@@ -142,15 +144,17 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		registerRequest(target, request);
 
 		// Add to all loaded scripts
-		String script = getScriptPath();
-		if (script == null) {
+		String scriptPath = getScriptPath();
+		if (scriptPath == null) {
 			return;
 		}
-		script = new Path(script).lastSegment();
-		List/* ScriptReference */scripts = target.underyingScripts(script);
+		
+		List/* ScriptReference */scripts = target.underlyingScripts(URIUtil.lastSegment(URI.create(scriptPath)));
 		boolean success = true;
 		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-			success &= createRequest(target, (ScriptReference) iter.next());
+			ScriptReference script = (ScriptReference) iter.next();
+			if (scriptPathMatches(script))
+				success &= createRequest(target, script);
 		}
 		if (success) {
 			if (this.targets == null) {
@@ -415,18 +419,25 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		if (event instanceof ScriptLoadEvent) {
 			ScriptLoadEvent sevent = (ScriptLoadEvent) event;
 			ScriptReference script = sevent.script();
+			
 			try {
-				// TODO need something fancier in the future
-				// perhaps add this to the participants so each can decide what makes
-				// a script "equal" to suspend on
-				if (getScriptPath().equals(script.sourceURI().toString())) {
-					createRequest(target, sevent.script());
-				}
+				if (scriptPathMatches(script)) 
+					createRequest(target, script);
 			} catch (CoreException ce) {
 				JavaScriptDebugPlugin.log(ce);
 			}
 		}
 		return true;
+	}
+
+	private boolean scriptPathMatches(ScriptReference script) throws CoreException {
+		URI sourceURI = script.sourceURI();
+		if ("file".equals(sourceURI.getScheme())) {//$NON-NLS-1$			
+			IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+			URI workspaceURI = workspaceRoot.getRawLocationURI();			
+			sourceURI = workspaceURI.relativize(sourceURI);
+		}
+		return getScriptPath().equals(script.sourceURI().toString());
 	}
 
 	/**

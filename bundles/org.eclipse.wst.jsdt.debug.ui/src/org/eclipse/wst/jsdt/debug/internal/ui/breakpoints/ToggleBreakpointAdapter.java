@@ -16,9 +16,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.core.DebugPlugin;
@@ -135,21 +135,20 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @return the path to the script 
 	 */
 	String getScriptPath(IJavaScriptElement element) {
-		String scriptPath  = getElementScriptPath(element);
-		Path path = new Path(scriptPath);
+		IPath path  = getElementScriptPath(element).makeRelative();
 		if(JavaScriptDebugPlugin.isExternalSource(path)) {
-			String extpath = (JavaScriptDebugPlugin.getExternalScriptPath(path));
+			String extpath = (JavaScriptDebugPlugin.getExternalScriptPath(path.removeFirstSegments(1)));
 			if(extpath != null) {
-				scriptPath = extpath;
+				return extpath;
 			}
 		}
-		return scriptPath;
+		return path.toString();
 	}
 
-	private String getElementScriptPath(IJavaScriptElement element) {
+	private IPath getElementScriptPath(IJavaScriptElement element) {
 		switch (element.getElementType()) {
 		case IJavaScriptElement.TYPE: {
-			return ((IType) element).getPath().toOSString();
+			return ((IType) element).getPath();
 		}
 		case IJavaScriptElement.METHOD:
 		case IJavaScriptElement.FIELD: {
@@ -159,19 +158,19 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 				IJavaScriptElement parent = element.getParent();
 				switch (parent.getElementType()) {
 				case IJavaScriptElement.TYPE: {
-					return ((IType) parent).getPath().toOSString();
+					return ((IType) parent).getPath();
 				}
 				case IJavaScriptElement.JAVASCRIPT_UNIT:
 				case IJavaScriptElement.CLASS_FILE: {
-					return ((ITypeRoot) parent).getPath().toOSString();
+					return ((ITypeRoot) parent).getPath();
 				}
 				}
-				return element.getParent().getElementName();
+				return element.getParent().getPath();
 			}
-			return type.getPath().toOSString();
+			return type.getPath();
 		}
 		default: {
-			return element.getElementName();
+			return element.getPath();
 		}
 		}
 	}

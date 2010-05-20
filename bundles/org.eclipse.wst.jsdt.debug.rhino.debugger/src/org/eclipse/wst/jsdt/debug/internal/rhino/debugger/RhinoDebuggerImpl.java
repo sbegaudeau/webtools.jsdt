@@ -194,11 +194,8 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 				
 				//try to just create a URI from the name
 				try {
-					URI uri = new URI(sourceName);
-					if (uri.getScheme() != null && uri.isAbsolute())
-						return uri;
-				}
-				catch(URISyntaxException e) {
+					return new URI(sourceName);
+				} catch(URISyntaxException e) {
 					//do nothing and fall through
 				}
 			}
