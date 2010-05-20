@@ -168,4 +168,14 @@ public class ProjectLibraryRoot implements IAdaptable{
 		
 		return null;
 	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof ProjectLibraryRoot)
+			return project.equals(((ProjectLibraryRoot) obj).project);
+		return super.equals(obj);
+	}
+	
+	public int hashCode() {
+		return project.hashCode() + super.hashCode();
+	}
 }

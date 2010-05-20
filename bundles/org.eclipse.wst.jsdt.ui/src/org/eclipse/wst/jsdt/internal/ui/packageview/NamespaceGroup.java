@@ -109,9 +109,36 @@ public class NamespaceGroup implements IAdaptable {
 	public PackageFragmentRootContainer getPackageFragmentRootContainer() {
 		return fPackageFragmentRootContainer;
 	}
+	
+	Object getParent() {
+		if (fPackageFragmentRoot != null)
+			return fPackageFragmentRoot;
+		if (fPackageFragmentRootContainer != null)
+			return fPackageFragmentRootContainer;
+		return null;
+	}
+	
+	private int computeParentHash() {
+		if (fPackageFragmentRoot != null)
+			return fPackageFragmentRoot.hashCode();
+		if (fPackageFragmentRootContainer != null)
+			return fPackageFragmentRootContainer.hashCode();
+		return 0;
+	}
 
 	public String getText() {
 		return fNamePrefix;
+	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof NamespaceGroup && getParent() != null) {
+			return fNamePrefix.equals(((NamespaceGroup) obj).fNamePrefix) && getParent().equals(((NamespaceGroup) obj).getParent());
+		}
+		return super.equals(obj);
+	}
+	
+	public int hashCode() {
+		return computeParentHash() + super.hashCode();
 	}
 	
 	/*

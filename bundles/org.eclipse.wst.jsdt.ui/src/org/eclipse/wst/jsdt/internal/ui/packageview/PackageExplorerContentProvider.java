@@ -651,6 +651,20 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		result.add(0,projectLibs);
 		return result.toArray();
 	}
+	
+	public Object getParent(Object element) {
+		if (element instanceof NamespaceGroup) {
+			return ((NamespaceGroup)element).getParent();
+		}
+		if (element instanceof IPackageFragmentRoot) {
+			IJavaScriptProject project = (IJavaScriptProject) ((IPackageFragmentRoot) element).getAncestor(IJavaScriptElement.JAVASCRIPT_PROJECT);
+			if (project != null) {
+				return new ProjectLibraryRoot(project);
+			}
+		}
+		return super.getParent(element);
+	}
+
 //	private Object[] getContainerPackageFragmentRoots3(PackageFragmentRootContainer container) {
 //		Object[] children = container.getChildren();
 //		if(children==null) return null;
@@ -1158,6 +1172,12 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				IResource underlyingResource = ((IJavaScriptUnit)element).getUnderlyingResource();
 				if(underlyingResource != null) {
 					postRefresh(underlyingResource, ORIGINAL, element, runnables);
+				}
+				if ((flags & IJavaScriptElementDelta.F_PRIMARY_RESOURCE) != 0) {
+					IJavaScriptElement parent2 = element.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
+					if (parent2 != null) {
+						postRefresh(parent2, ORIGINAL, element, runnables);
+					}
 				}
 				updateSelection(delta, runnables);
 			}
