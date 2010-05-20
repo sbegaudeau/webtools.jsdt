@@ -56,7 +56,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
@@ -1341,9 +1340,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				{
 					char []name={};
 					for (int j = 0; j < param.types.length; j++) {
-						//char []typeName=param.types[j].getSimpleTypeName();
-						//make sure we are using the type version of Boolean, even if the user entered boolean as the JSdoc type.
-						char []typeName=changePrimitiveToObject(param.types[j].getSimpleTypeName());
+						char []typeName=param.types[j].getSimpleTypeName();
 						if (j==0)
 							name=typeName;
 						else
@@ -1857,13 +1854,6 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	public InferredType findDefinedType(char [] className)
 	{
 		return compUnit.findInferredType(className);
-	}
-	
-	protected char[] changePrimitiveToObject(char[] name) {
-		//Changes the first character of the name of the primitive types to uppercase. This will allow future reference to the object wrapper instead of the primitive type.
-		if(CharOperation.equals(name, TypeConstants.BOOLEAN, false)) //$NON-NLS-1$
-			return BooleanType.getName();
-		return name;
 	}
 
 }
