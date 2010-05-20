@@ -437,7 +437,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			URI workspaceURI = workspaceRoot.getRawLocationURI();			
 			sourceURI = workspaceURI.relativize(sourceURI);
 		}
-		return getScriptPath().equals(script.sourceURI().toString());
+		return getScriptPath().equals(sourceURI.toString());
 	}
 
 	/**
