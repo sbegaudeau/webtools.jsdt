@@ -54,7 +54,7 @@ public class AddScriptLoadBreakpointAction implements IViewActionDelegate {
 			if(dialog.open() == IDialogConstants.OK_ID) {
 				final IFile file = (IFile) dialog.getFirstResult();
 				final String scriptname = file.getName();
-				final String scriptpath = file.getFullPath().toString();
+				final String scriptpath = file.getFullPath().makeRelative().toString();
 				
 				IJavaScriptLoadBreakpoint breakpoint = findBreakpoint(scriptpath, scriptname);
 				if(breakpoint != null) {

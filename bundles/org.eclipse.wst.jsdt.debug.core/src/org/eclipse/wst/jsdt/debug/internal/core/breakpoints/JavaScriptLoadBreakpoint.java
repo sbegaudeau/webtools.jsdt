@@ -100,27 +100,47 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 			ScriptReference script = sevent.script();
 			JavaScriptThread thread = target.findThread((sevent).thread());
 			if (thread != null) {
-				int vote = thread.suspendForScriptLoad(this, script, suspendVote);
-				if(isGlobalLoadSuspend(vote) ||
-						((vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE)) {
+				if(isGlobalLoadSuspend()) {
 					JavaScriptPreferencesManager.setGlobalSuspendOn(script.sourceURI().toString());
 					thread.addBreakpoint(this);
 					return false;
+				} else if(isMatchedScriptLoadSuspend(script, thread, suspendVote)){
+					thread.addBreakpoint(this);
+					return false;
 				}
-				
 			}
 		}
-		JavaScriptPreferencesManager.setGlobalSuspendOn(null);
 		return true;
+	}
+	
+	/**
+	 * Returns if this breakpoint matches this script and should suspend
+	 * 
+	 * @param script
+	 * @param thread
+	 * @param suspendVote
+	 * 
+	 * @return <code>true</code> if we should suspend on this script load <code>false</code> otherwise
+	 */
+	private boolean isMatchedScriptLoadSuspend(ScriptReference script, JavaScriptThread thread, boolean suspendVote) {
+		try {
+			if (scriptPathMatches(script)) {
+				int vote = thread.suspendForScriptLoad(this, script, suspendVote);
+				return (vote & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || vote == IJavaScriptBreakpointParticipant.DONT_CARE;
+			}
+		}
+		catch(CoreException ce) {
+			JavaScriptDebugPlugin.log(ce);
+		}
+		return false;
 	}
 	
 	/**
 	 * Returns if this breakpoint supports global suspend
 	 * 
-	 * @param vote
 	 * @return <code>true</code> if we should suspend on all script loads <code>false</code> otherwise
 	 */
-	boolean isGlobalLoadSuspend(int vote) {
+	private boolean isGlobalLoadSuspend() {
 		try {
 			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false);
 		}

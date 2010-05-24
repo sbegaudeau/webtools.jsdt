@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
-import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
-import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
  * A default breakpoint participant
@@ -41,16 +38,6 @@ public class DefaultJavaScriptBreakpointParticipant implements IJavaScriptBreakp
 	 * @see org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant#scriptLoaded(org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread, org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference, org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint)
 	 */
 	public int scriptLoaded(IJavaScriptThread thread, ScriptReference script, IJavaScriptBreakpoint breakpoint) {
-		if(breakpoint instanceof IJavaScriptLoadBreakpoint) {
-			try {
-				String bpath = breakpoint.getScriptPath();
-				if(bpath.equals(script.sourceURI().toString())) {
-					return SUSPEND;
-				}
-			} catch (CoreException e) {
-				JavaScriptDebugPlugin.log(e);
-			}
-		}
-		return DONT_SUSPEND;
+		return DONT_CARE;
 	}
 }

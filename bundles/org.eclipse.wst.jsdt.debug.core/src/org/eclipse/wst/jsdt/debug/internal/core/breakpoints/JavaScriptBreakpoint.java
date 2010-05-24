@@ -430,7 +430,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		return true;
 	}
 
-	private boolean scriptPathMatches(ScriptReference script) throws CoreException {
+	protected boolean scriptPathMatches(ScriptReference script) throws CoreException {
 		URI sourceURI = script.sourceURI();
 		if ("file".equals(sourceURI.getScheme())) {//$NON-NLS-1$			
 			IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
