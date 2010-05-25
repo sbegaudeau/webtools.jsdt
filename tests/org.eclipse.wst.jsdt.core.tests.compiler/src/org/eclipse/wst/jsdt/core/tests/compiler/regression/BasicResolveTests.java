@@ -1713,5 +1713,37 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					""
 			);
 	}
+
+	public void testbug278172() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**\n" +
+							"* @param {boolean} options\n" +
+							"*/\n" +
+							"function foo(options) {\n" +
+								"options = options || {};\n" +
+								"if (!options.bar)\n" +
+								"options.bar = 42;\n" +
+							"}"
+					},
+					""
+			);
+	}
+	
+	public void testbug278172_2() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"/**\n" +
+							"* @param {boolean} options\n" +
+							"*/\n" +
+							"function foo(options) {\n" +
+								"if(options && 1 == 1) {}\n" + 
+							"}"
+					},
+					""
+			);
+	}
 	
 }
