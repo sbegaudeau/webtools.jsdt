@@ -33,6 +33,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TimeoutException;
@@ -130,6 +131,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				Map json = response.getBody();
 				return (String) json.get(Commands.VERSION);
 			}
+			if(TRACE) {
+				System.out.println("VM [failed version request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			}
 		}
 		return Constants.UNKNOWN;
 	}
@@ -149,6 +153,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 					CFThreadReference thread = new CFThreadReference(this, json);
 					threads.put(thread.id(), thread);
 				}
+			}
+			if(TRACE) {
+				System.out.println("VM [failed allthreads request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return new ArrayList(threads.values());
@@ -177,7 +184,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 */
 	public void removeThread(String id) {
 		if(threads != null) {
-			threads.remove(id);
+			Object obj = threads.remove(id);
+			if(TRACE && obj == null) {
+				System.out.println("VM [failed to remove thread]: "+id); //$NON-NLS-1$
+			}
 		}
 	}
 	
@@ -191,7 +201,11 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		if(threads == null) {
 			allThreads();
 		}
-		return (CFThreadReference) threads.get(id);
+		CFThreadReference thread = (CFThreadReference) threads.get(id);
+		if(TRACE && thread == null) {
+			System.out.println("VM [failed to find thread]: "+id); //$NON-NLS-1$
+		}
+		return thread;
 	}
 	
 	/* (non-Javadoc)
@@ -204,6 +218,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			for (Iterator iter = threads.iterator(); iter.hasNext();) {
 				CFThreadReference thread = (CFThreadReference) iter.next();
 				Request request = new Request(Commands.SCRIPTS, thread.id());
+				request.setArgument("includeSource", Boolean.TRUE); //$NON-NLS-1$
 				Response response = sendRequest(request);
 				if(response.isSuccess()) {
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
@@ -211,6 +226,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 						CFScriptReference script = new CFScriptReference(this, thread.id(), (Map) iter2.next()); 
 						scripts.put(script.id(), script);
 					}
+				}
+				if(TRACE) {
+					System.out.println("VM [failed scripts request]: "+JSON.serialize(request)); //$NON-NLS-1$
 				}
 			}
 		}
@@ -240,7 +258,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 */
 	public void removeScript(String id) {
 		if(scripts != null) {
-			scripts.remove(id);
+			Object obj = scripts.remove(id);
+			if(TRACE && obj == null) {
+				System.out.println("VM [failed to remove script]: "+id); //$NON-NLS-1$
+			}
 		}
 	}
 	
@@ -249,11 +270,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 */
 	public synchronized void dispose() {
 		try {
+			if(TRACE) {
+				System.out.println("VM [disposing]"); //$NON-NLS-1$
+			}
 			queue.dispose();
 			ermanager.dispose();
 		}
 		finally {
-			//fallack in case the VM has been disposed but not disconnected
+			//fall-back in case the VM has been disposed but not disconnected
 			disconnectVM();
 		}
 	}
@@ -359,7 +383,13 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public synchronized void disconnectVM() {
 		if (disconnected) {
 			// no-op it is already disconnected
+			if(TRACE) {
+				System.out.println("VM [already disconnected]"); //$NON-NLS-1$
+			}
 			return;
+		}
+		if(TRACE) {
+			System.out.println("VM [disconnecting]"); //$NON-NLS-1$
 		}
 		try {
 			if(threads != null) {

@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -32,6 +33,10 @@ public class CrossFirePlugin extends Plugin {
 	 * Event queue tracing option name
 	 */
 	public static final String TRC_EVENTQUEUE = PLUGIN_ID + "/eventqueue"; //$NON-NLS-1$
+	/**
+	 * JSDI implementation tracing option name
+	 */
+	public static final String TRC_JSDI = PLUGIN_ID + "/jsdi"; //$NON-NLS-1$
 	
 	/**
 	 * Status code indicating an unexpected internal error.
@@ -117,6 +122,10 @@ public class CrossFirePlugin extends Plugin {
 			option = Platform.getDebugOption(TRC_EVENTQUEUE);
 			if(option != null) {
 				CFEventQueue.setTracing(Boolean.valueOf(option).booleanValue());
+			}
+			option = Platform.getDebugOption(TRC_JSDI);
+			if(option != null) {
+				CFMirror.setTracing(Boolean.valueOf(option).booleanValue());
 			}
 		}
 	}

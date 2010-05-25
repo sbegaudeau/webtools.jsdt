@@ -20,6 +20,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
  */
 public class CFMirror implements Mirror {
 
+	static boolean TRACE = false;
+	
 	private VirtualMachine vm = null;
 	
 	/**
@@ -61,5 +63,14 @@ public class CFMirror implements Mirror {
 	 */
 	protected CFVirtualMachine crossfire() {
 		return (CFVirtualMachine) vm;
+	}
+	
+	/**
+	 * Enables / Disables tracing in the all of the JSDI implementations
+	 * 
+	 * @param trace
+	 */
+	public static void setTracing(boolean trace) {
+		TRACE = trace;
 	}
 }

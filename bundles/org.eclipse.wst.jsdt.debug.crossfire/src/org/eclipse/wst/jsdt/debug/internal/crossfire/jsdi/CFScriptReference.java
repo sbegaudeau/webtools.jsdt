@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 
@@ -79,6 +81,15 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 		if(id == null) {
 			this.id = (String) json.get(Attributes.DATA);
 		}
+		initializeScript(json);
+	}
+
+	/**
+	 * Initialize the script from the given JSON map
+	 * 
+	 * @param json
+	 */
+	void initializeScript(Map json) {
 		Number value = (Number) json.get(SOURCE_LENGTH);
 		if(value != null) {
 			this.srclength = value.intValue();
@@ -95,8 +106,9 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 		if(value != null) {
 			this.coloffset = value.intValue();
 		}
+		source = (String) json.get("source"); //$NON-NLS-1$
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#allLineLocations()
 	 */
@@ -142,7 +154,17 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 			request.addAdditionalParam(ID, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				//source = "//TODO get the actual script source for "+id; //$NON-NLS-1$
+				//TODO ability to ask for only the source for one script and not all of them?
+				ArrayList scripts = (ArrayList) response.getBody().get(Commands.SCRIPTS);
+				for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+					Map json = (Map) iter.next();
+					if(json.get("id").equals(id)) { //$NON-NLS-1$
+						initializeScript(json);
+					}
+				}
+			}
+			if(TRACE) {
+				System.out.println("ScriptReference [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return source;

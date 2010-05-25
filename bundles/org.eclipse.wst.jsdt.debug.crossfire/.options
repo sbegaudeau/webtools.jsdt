@@ -12,8 +12,11 @@
 #option file for tracing options for Crossfire debugger port
 org.eclipse.wst.jsdt.debug.crossfire/debug=true
 
-#option to trace packets being sent / recieved
+#option to trace packets being sent / received
 org.eclipse.wst.jsdt.debug.crossfire/packets=false
 
 #option to trace the event queue
 org.eclipse.wst.jsdt.debug.crossfire/eventqueue=false
+
+#option to trace the jsdi impl* elements
+org.eclipse.wst.jsdt.debug.crossfire/jsdi=false

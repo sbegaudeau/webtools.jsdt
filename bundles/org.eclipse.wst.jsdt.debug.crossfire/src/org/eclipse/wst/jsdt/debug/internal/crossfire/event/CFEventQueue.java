@@ -180,6 +180,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 			}
 		}
 		catch(DisconnectedException de) {
+			if(TRACE) {
+				System.out.println("Processing DisconnectedException: "+de.getMessage()); //$NON-NLS-1$
+			}
 			crossfire().disconnectVM();
 			handleException(de.getMessage(), de);
 		}
