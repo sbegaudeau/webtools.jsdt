@@ -73,8 +73,9 @@ public class Response extends Packet {
 		String packetCommand = (String) json.get(Attributes.COMMAND);
 		command = packetCommand.intern();
 
-		Map packetBody = (Map) json.get(Attributes.BODY);
-		if(packetBody != null) {
+		Object bdy = json.get(Attributes.BODY);
+		if(bdy instanceof Map) {
+			Map packetBody = (Map)bdy; 
 			body.putAll(packetBody);
 		}
 

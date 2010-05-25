@@ -18,7 +18,9 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 
@@ -28,14 +30,6 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
  * @since 1.0
  */
 public class CFThreadReference extends CFMirror implements ThreadReference {
-	/**
-	 * The "crossfire_id" attribute
-	 */
-	public static final String CROSSFIRE_ID = "crossfire_id"; //$NON-NLS-1$
-	/**
-	 * The "href" attribute
-	 */
-	public static final String HREF = "href"; //$NON-NLS-1$
 	
 	static final int RUNNING = 0;
 	static final int SUSPENDED = 1;
@@ -67,8 +61,8 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 */
 	public CFThreadReference(VirtualMachine vm, Map json) {
 		super(vm);
-		this.id = (String) json.get(CROSSFIRE_ID);
-		this.href = (String) json.get(HREF);
+		this.id = (String) json.get(Attributes.CROSSFIRE_ID);
+		this.href = (String) json.get(Attributes.HREF);
 	}
 
 	/* (non-Javadoc)
@@ -96,10 +90,15 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		//unless there is only ever one frame?
 		if(frames == null) {
 			frames = new ArrayList();
-			Request request = new Request(Commands.FRAME, id);
+			Request request = new Request(Commands.BACKTRACE, id);
+			request.setArgument("fromFrame", new Integer(0)); //$NON-NLS-1$
+			request.setArgument("includeScopes", Boolean.TRUE); //$NON-NLS-1$
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				frames.add(new CFStackFrame(virtualMachine(), response.getBody()));
+				ArrayList frms = (ArrayList) response.getBody().get("frames"); //$NON-NLS-1$
+				for (int i = 0; i < frms.size(); i++) {
+					frames.add(new CFStackFrame(virtualMachine(), (Map) frms.get(i)));
+				}
 			}
 		}
 		return frames;
@@ -110,7 +109,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 */
 	public void interrupt() {
 		try {
-			
+			resume();
 		}
 		finally {
 			state = TERMINATED;
@@ -121,14 +120,17 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#resume()
 	 */
 	public void resume() {
-		try {
+		Request request = new Request(Commands.CONTINUE, id);
+		Response response = crossfire().sendRequest(request);
+		if(response.isSuccess()) {
 			if(frames != null) {
 				frames.clear();
 				frames = null;
 			}
-		}
-		finally {
 			state = RUNNING;
+		}
+		else if(TRACE) {
+			System.out.println("THREAD [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
 	}
 
@@ -136,11 +138,13 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#suspend()
 	 */
 	public void suspend() {
-		try {
-			
-		}
-		finally {
+		Request request = new Request(Commands.SUSPEND, id);
+		Response response = crossfire().sendRequest(request);
+		if(response.isSuccess()) {
 			state = SUSPENDED;
+		}
+		else if(TRACE) {
+			System.out.println("THREAD [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
 	}
 
@@ -201,5 +205,15 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 */
 	public String href() {
 		return href;
+	}
+	
+	/**
+	 * Marks the thread as suspended or not. This is a call-back from the 
+	 * VM when suspending a VM.
+	 * 
+	 * @param suspended
+	 */
+	void markSuspended(boolean suspended) {
+		state = suspended ? SUSPENDED : RUNNING;
 	}
 }

@@ -22,9 +22,17 @@ public interface Attributes {
 	 */
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	/**
+	 * The "index" attribute
+	 */
+	public static final String INDEX = "index"; //$NON-NLS-1$
+	/**
 	 * The "body" attribute
 	 */
 	public static final String BODY = "body"; //$NON-NLS-1$
+	/**
+	 * The "columnOffset" attribute
+	 */
+	public static final String COLUMN_OFFSET = "columnOffset"; //$NON-NLS-1$
 	/**
 	 * The "command" attribute
 	 */
@@ -38,6 +46,10 @@ public interface Attributes {
 	 */
 	public static final String CONTEXTS = "contexts"; //$NON-NLS-1$
 	/**
+	 * The "crossfire_id" attribute
+	 */
+	public static final String CROSSFIRE_ID = "crossfire_id"; //$NON-NLS-1$
+	/**
 	 * The "data" attribute
 	 */
 	public static final String DATA = "data"; //$NON-NLS-1$
@@ -45,6 +57,18 @@ public interface Attributes {
 	 * The "handshake" attribute
 	 */
 	public static final String HANDSHAKE = "handshake"; //$NON-NLS-1$
+	/**
+	 * The "id" attribute
+	 */
+	public static final String ID = "id"; //$NON-NLS-1$
+	/**
+	 * The "lineCount" attribute
+	 */
+	public static final String LINE_COUNT = "lineCount"; //$NON-NLS-1$
+	/**
+	 * The "lineOffset" attribute
+	 */
+	public static final String LINE_OFFSET = "lineOffset"; //$NON-NLS-1$
 	/**
 	 * The message attribute for this packet
 	 */
@@ -62,6 +86,10 @@ public interface Attributes {
 	 */
 	public static final String SEQ = "seq"; //$NON-NLS-1$
 	/**
+	 * The "sourceLength" attribute
+	 */
+	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
+	/**
 	 * The success attribute for this packet
 	 */
 	public static final String SUCCESS = "success"; //$NON-NLS-1$
@@ -69,4 +97,28 @@ public interface Attributes {
 	 * The "type" attribute
 	 */
 	public static final String TYPE = "type"; //$NON-NLS-1$
+	/**
+	 * The "source" attribute
+	 */
+	public static final String SOURCE = "source"; //$NON-NLS-1$
+	/**
+	 * The "href" attribute
+	 */
+	public static final String HREF = "href"; //$NON-NLS-1$
+	/**
+	 * The "locals" attribute
+	 */
+	public static final String LOCALS = "locals"; //$NON-NLS-1$
+	/**
+	 * The "line" attribute
+	 */
+	public static final String LINE = "line"; //$NON-NLS-1$
+	/**
+	 * The "func" attribute
+	 */
+	public static final String FUNC = "func"; //$NON-NLS-1$
+	/**
+	 * The "script" attribute
+	 */
+	public static final String SCRIPT = "script"; //$NON-NLS-1$
 }

@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
@@ -79,8 +80,22 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public void resume() {
 		if(ready()) {
 			//TODO make this work
-			Response response = sendRequest(new Request(Commands.CONTINUE, null));
+			Request request = new Request(Commands.CONTINUE, null);
+			Response response = sendRequest(request);
 			if(response.isSuccess()) {
+				if(threads != null) {
+					Entry entry = null;
+					for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
+						entry = (Entry) iter.next();
+						CFThreadReference thread = (CFThreadReference) entry.getValue();
+						if(thread.isSuspended()) {
+							thread.markSuspended(false);
+						}
+					}
+				}
+			}
+			else if(TRACE) {
+				System.out.println("VM [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -91,8 +106,22 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public void suspend() {
 		if(ready()) {
 			//TODO make this work
-			Response response = sendRequest(new Request(Commands.SUSPEND, null));
+			Request request = new Request(Commands.SUSPEND, null);
+			Response response = sendRequest(request);
 			if(response.isSuccess()) {
+				if(threads != null) {
+					Entry entry = null;
+					for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
+						entry = (Entry) iter.next();
+						CFThreadReference thread = (CFThreadReference) entry.getValue();
+						if(!thread.isSuspended()) {
+							thread.markSuspended(true);
+						}
+					}
+				}
+			}
+			else if(TRACE) {
+				System.out.println("VM [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -154,7 +183,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 					threads.put(thread.id(), thread);
 				}
 			}
-			if(TRACE) {
+			else if(TRACE) {
 				System.out.println("VM [failed allthreads request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
@@ -227,7 +256,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 						scripts.put(script.id(), script);
 					}
 				}
-				if(TRACE) {
+				else if(TRACE) {
 					System.out.println("VM [failed scripts request]: "+JSON.serialize(request)); //$NON-NLS-1$
 				}
 			}
@@ -235,6 +264,23 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		return new ArrayList(scripts.values());
 	}
 
+	/**
+	 * Returns the script with the given id or <code>null</code>
+	 * 
+	 * @param id
+	 * @return the thread or <code>null</code>
+	 */
+	public synchronized CFScriptReference findScript(String id) {
+		if(scripts == null) {
+			allScripts();
+		}
+		CFScriptReference script = (CFScriptReference) scripts.get(id);
+		if(TRACE && script == null) {
+			System.out.println("VM [failed to find script]: "+id); //$NON-NLS-1$
+		}
+		return script;
+	}
+	
 	/**
 	 * Adds the given script to the listing
 	 * 

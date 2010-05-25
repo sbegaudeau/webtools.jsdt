@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFThreadReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
@@ -104,7 +105,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 				}
 				else if(Event.ON_CONTEXT_CREATED.equals(name)) {
 					List threads = eventmgr.threadEnterRequests();
-					CFThreadReference thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(CFThreadReference.HREF));
+					CFThreadReference thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.HREF));
 					for (Iterator iter = threads.iterator(); iter.hasNext();) {
 						ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
 						set.add(new CFThreadEnterEvent(crossfire(), request, thread));

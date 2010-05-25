@@ -36,27 +36,6 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
  */
 public class CFScriptReference extends CFMirror implements ScriptReference {
 	
-	/**
-	 * The "id" attribute
-	 */
-	public static final String ID = "id"; //$NON-NLS-1$
-	/**
-	 * The "sourceLength" attribute
-	 */
-	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
-	/**
-	 * The "lineCount" attribute
-	 */
-	public static final String LINE_COUNT = "lineCount"; //$NON-NLS-1$
-	/**
-	 * The "lineOffset" attribute
-	 */
-	public static final String LINE_OFFSET = "lineOffset"; //$NON-NLS-1$
-	/**
-	 * The "columnOffset" attribute
-	 */
-	public static final String COLUMN_OFFSET = "columnOffset"; //$NON-NLS-1$
-	
 	private String context_id = null;
 	private String id = null;
 	private int srclength = 0;
@@ -77,7 +56,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public CFScriptReference(VirtualMachine vm, String context_id, Map json) {
 		super(vm);
 		this.context_id = context_id;
-		this.id = (String) json.get(ID);
+		this.id = (String) json.get(Attributes.ID);
 		if(id == null) {
 			this.id = (String) json.get(Attributes.DATA);
 		}
@@ -90,23 +69,23 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 * @param json
 	 */
 	void initializeScript(Map json) {
-		Number value = (Number) json.get(SOURCE_LENGTH);
+		Number value = (Number) json.get(Attributes.SOURCE_LENGTH);
 		if(value != null) {
 			this.srclength = value.intValue();
 		}
-		value = (Number) json.get(LINE_COUNT);
+		value = (Number) json.get(Attributes.LINE_COUNT);
 		if(value != null) {
 			this.linecount = value.intValue();
 		}
-		value = (Number) json.get(LINE_OFFSET);
+		value = (Number) json.get(Attributes.LINE_OFFSET);
 		if(value != null) {
 			this.lineoffset = value.intValue();
 		}
-		value = (Number) json.get(COLUMN_OFFSET);
+		value = (Number) json.get(Attributes.COLUMN_OFFSET);
 		if(value != null) {
 			this.coloffset = value.intValue();
 		}
-		source = (String) json.get("source"); //$NON-NLS-1$
+		source = (String) json.get(Attributes.SOURCE);
 	}
 	
 	/* (non-Javadoc)
@@ -151,14 +130,14 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public synchronized String source() {
 		if(source == null) {
 			Request request = new Request(Commands.SOURCE, context_id);
-			request.addAdditionalParam(ID, id);
+			request.addAdditionalParam(Attributes.ID, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				//TODO ability to ask for only the source for one script and not all of them?
 				ArrayList scripts = (ArrayList) response.getBody().get(Commands.SCRIPTS);
 				for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 					Map json = (Map) iter.next();
-					if(json.get("id").equals(id)) { //$NON-NLS-1$
+					if(json.get(Attributes.ID).equals(id)) {
 						initializeScript(json);
 					}
 				}
