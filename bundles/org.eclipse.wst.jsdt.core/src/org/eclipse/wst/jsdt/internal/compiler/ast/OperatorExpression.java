@@ -513,7 +513,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//     table[(T_boolean<<4)+T_short] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_void] 			= T_undefined;
 		     table[(T_boolean<<4)+T_JavaLangString] 			= T_JavaLangString;
-		//     table[(T_boolean<<4)+T_Object] 			= T_undefined;
+		     table[(T_boolean<<4)+T_JavaLangObject] 			= T_JavaLangObject;
 		//     table[(T_boolean<<4)+T_double] 			= T_undefined;
 		//     table[(T_boolean<<4)+T_float] 			= T_undefined;
 	   table[(T_boolean<<4)+T_boolean] 		= (Boolean2Boolean<<12)+(Boolean2Boolean<<4)+T_boolean;
