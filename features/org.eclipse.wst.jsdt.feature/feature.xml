@@ -19,9 +19,9 @@
    </license>
 
    <url>
-      <update label="%updateSiteName" url="http://download.eclipse.org/webtools/updates/"/>
+      <update label="%updateSiteName" url="http://download.eclipse.org/webtools/repository/helios"/>
    </url>
-
+   
    <plugin
          id="org.eclipse.wst.jsdt.core"
          download-size="0"
