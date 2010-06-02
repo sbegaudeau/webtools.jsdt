@@ -7,11 +7,11 @@
   	</topic>
   	<topic label="Embedded JavaScript">
 		<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
-		<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
-		<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
+		<topic href="started/newjsFile.html" label="Adding a JavaScript file"/>
+		<topic href="started/newhtmlFile.html" label="Adding a HTML file"/>
 	</topic>
 	<topic label="Pure JavaScript">
 		<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
-		<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+		<topic href="started/newjsFile.html" label="Adding a JavaScript file"/>
 	</topic>
 </toc>
