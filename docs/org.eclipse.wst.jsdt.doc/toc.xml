@@ -8,7 +8,7 @@
 <toc label="JavaScript Development Guide">
 	
 	
-	<topic label="Advanced Javascript Editing with the JSDT">
+	<topic label="Advanced JavaScript Editing with the JSDT">
 
 		<topic label="Managing the Projects Global Scope">
 			<topic href="advanced/global/add.html" label="Adding a Library"/>
@@ -37,7 +37,7 @@
 			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
 			<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
 		</topic>
-		<topic label="Pure Javascript">
+		<topic label="Pure JavaScript">
 			<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
 			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
 		</topic>
