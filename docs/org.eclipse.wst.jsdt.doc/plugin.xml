@@ -13,6 +13,12 @@
       <toc
             file="tocreference.xml"
             />
+      <toc
+            file="tocconcepts.xml">
+      </toc>
+      <toc
+            file="toctasks.xml">
+      </toc>
       <!--
       <toc
             file="toctutorials.xml"

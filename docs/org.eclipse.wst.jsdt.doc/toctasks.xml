@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="Book">
+  	<topic label="Managing the Projects Global Scope">
+		<topic href="advanced/global/add.html" label="Adding a Library"/>
+		<topic href="advanced/global/remove.html" label="Removing a Library"/>
+		<topic href="advanced/global/source.html" label="Source Folders"/>
+  	</topic>
+  	<topic label="Embedded JavaScript">
+		<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
+		<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+		<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
+	</topic>
+	<topic label="Pure JavaScript">
+		<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
+		<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+	</topic>
+</toc>

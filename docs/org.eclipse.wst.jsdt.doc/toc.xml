@@ -1,64 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-<!-- ////////////////////////////////////////////////////////////////////////////////
-	// Copyright (c) 2007 International Business Machines Corporation. All rights
-	// reserved. 
-	//////////////////////////////////////////////////////////////////////////////// -->
 
 <toc label="JavaScript Development Guide">
-	
-	
-	<topic label="Advanced JavaScript Editing with the JSDT">
-
-		<topic label="Managing the Projects Global Scope">
-			<topic href="advanced/global/add.html" label="Adding a Library"/>
-			<topic href="advanced/global/remove.html" label="Removing a Library"/>
-			<topic href="advanced/global/source.html" label="Source Folders"/>
-		</topic>
-	
-		<topic href="advanced/customlib.html" label="Defining Custom Libraries" />
-	<!--	<topic href="advanced/atf.html" label="AJAX, advanced HTML and Debuging Support Through ATF" /> -->
-		
-	
-
+	<topic href="started/overview.html" label="JSDT Overview" />
+	<topic label="Concepts">
+		<link toc="tocconcepts.xml"/>
 	</topic>
-
-
-	<topic label="Contributing to the JSDT Framework or Libraries">
-		<topic href="contributing/framework.html"
-			label="Contributing to Framework" />
-		<topic href="contributing/library.html"
-			label="Contributing to Libraries" />
+	<topic label="Tasks">
+		<link toc="toctasks.xml"/>
 	</topic>
-	
-	<topic label="Getting Started">
-		<topic label="Embeded JavaScript">
-			<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
-			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
-			<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
-		</topic>
-		<topic label="Pure JavaScript">
-			<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
-			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
-		</topic>
-		<topic href="started/overview.html" label="Overview" />
-	</topic>
-
-	<topic label="JSDT Framework Developers Guide">
-		<topic href="development/archOverview.html"
-			label="Component Design and Architecture Overview" />
-		<topic href="development/limitations.html"
-			label="JSDT Limitations and Work in Progress" />
-	</topic>
-	
 	<topic label="Reference">
 		<link toc="tocreference.xml" />
 	</topic>
-
 	<topic label="Legal" href="notices.html">
 	</topic>
-	
-	
-	<topic label="Features" href="features/index.html"/>
-
 </toc>
