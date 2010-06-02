@@ -1,0 +1,134 @@
+#-quiet
+-charset "utf-8"
+-sourcepath "../org.eclipse.wst.jsdt.core/src
+;../org.eclipse.wst.jsdt.debug.core/src
+;../org.eclipse.wst.jsdt.debug.rhino/src
+;../org.eclipse.wst.jsdt.debug.rhino.debugger/src
+;../org.eclipse.wst.jsdt.debug.ui/src
+;../org.eclipse.wst.jsdt.manipulation/src
+;../org.eclipse.wst.jsdt.support.firefox/src
+;../org.eclipse.wst.jsdt.support.ie/src
+;../org.eclipse.wst.jsdt.ui/src"
+-d reference/api
+-classpath @rt@
+;../org.eclipse.compare/@dot
+;../org.eclipse.compare.core/@dot
+;../org.eclipse.core.boot/@dot
+;../org.eclipse.core.contenttype/@dot
+;../org.eclipse.core.jobs/@dot
+;../org.eclipse.core.resources/@dot
+;../org.eclipse.core.runtime/@dot
+;../org.eclipse.core.runtime.content/@dot
+;../org.eclipse.core.runtime.jobs/@dot
+;../org.eclipse.core.runtime.preferences/@dot
+;../org.eclipse.core.variables/@dot
+;../org.eclipse.debug.core/@dot
+;../org.eclipse.debug.ui/@dot
+;../org.eclipse.equinox.common/@dot
+;../org.eclipse.equinox.preferences/@dot
+;../org.eclipse.equinox.registry/@dot
+;../org.eclipse.equinox.supplement/@dot
+;../org.eclipse.help/@dot
+;../org.eclipse.help.ui/@dot
+;../org.eclipse.jdt.core/@dot
+;../org.eclipse.jdt.debug/jdi.jar
+;../org.eclipse.jdt.debug.ui/@dot
+;../org.eclipse.jdt.junit/@dot
+;../org.eclipse.jdt.junit/junitsupport.jar
+;../org.eclipse.jdt.junit.core/@dot
+;../org.eclipse.jdt.launching/@dot
+;../org.eclipse.jdt.ui/@dot
+;../org.eclipse.jface/@dot
+;../org.eclipse.jface.text/@dot
+;../org.eclipse.osgi/@dot
+;../org.eclipse.osgi.services/@dot
+;../org.eclipse.osgi.util/@dot
+;../org.eclipse.pde.core/@dot
+;../org.eclipse.pde.ui/@dot
+;../org.eclipse.pde.build/@dot
+;../org.eclipse.pde.launching/@dot
+;../org.eclipse.search/@dot
+;../org.eclipse.swt.win32.win32.x86/@dot
+;../org.eclipse.text/@dot
+;../org.eclipse.ui/@dot
+;../org.eclipse.ui.editors/@dot
+;../org.eclipse.ui.ide/@dot
+;../org.eclipse.ui.views/@dot
+;../org.eclipse.ui.workbench/@dot
+;../org.eclipse.ui.workbench.texteditor/@dot
+;../org.eclipse.update.configurator/@dot
+-breakiterator
+-use
+-splitIndex
+
+-windowtitle "JavaScript Development Tools API Specification"
+-doctitle "JavaScript Development Tools API Specification"
+-header "<b>JavaScript Development Tools</b><br>Release 3.2"
+-bottom "Copyright (c) IBM Corp. and others 2000, 2010.  All Rights Reserved."
+-link http://java.sun.com/j2se/1.4/docs/api
+-linkoffline ./../../../org.eclipse.platform.doc.isv/reference/api ../org.eclipse.platform.doc.isv/reference/api
+-linkoffline ./../../../org.eclipse.jdt.doc.isv/reference/api ../org.eclipse.jdt.doc.isv/reference/api
+-link http://bundles.osgi.org/javadoc/r4
+-tag 'noimplement:a:Restriction:'
+-tag 'noextend:a:Restriction:'
+-tag 'noreference:a:Restriction:'
+-tag 'noinstantiate:a:Restriction:'
+-tag 'nooverride:a:Restriction:'
+
+#JSDT core API packages
+org.eclipse.wst.jsdt.core
+org.eclipse.wst.jsdt.core.ast
+org.eclipse.wst.jsdt.core.compiler
+org.eclipse.wst.jsdt.core.compiler.libraries
+org.eclipse.wst.jsdt.core.dom
+org.eclipse.wst.jsdt.core.dom.rewrite
+org.eclipse.wst.jsdt.core.eval
+org.eclipse.wst.jsdt.core.formatter
+org.eclipse.wst.jsdt.core.infer
+org.eclipse.wst.jsdt.core.search
+org.eclipse.wst.jsdt.core.util
+org.eclipse.wst.jsdt.launching
+org.eclipse.wst.jsdt.libraries
+
+#JSDT debug core API packages
+org.eclipse.wst.jsdt.debug.core.breakpoints
+org.eclipse.wst.jsdt.debug.core.jsdi
+org.eclipse.wst.jsdt.debug.core.jsdi.connect
+org.eclipse.wst.jsdt.debug.core.jsdi.event
+org.eclipse.wst.jsdt.debug.core.jsdi.request
+org.eclipse.wst.jsdt.debug.core.model
+
+#JSDT debug rhino API packages
+
+#JSDT debug rhino debugger API packages
+org.eclipse.wst.jsdt.debug.rhino.debugger
+org.eclipse.wst.jsdt.debug.rhino.debugger.shell
+
+#JSDT debug ui API packages
+
+#JSDT manipulation API packages
+org.eclipse.wst.jsdt.core.manipulation
+org.eclipse.wst.jsdt.core.refactoring
+org.eclipse.wst.jsdt.core.refactoring.descriptors
+
+#JSDT firefox API packages
+org.eclipse.wst.jsdt.core.compiler.libraries
+
+#JSDT ie API packages
+org.eclipse.wst.jsdt.core.compiler.libraries
+org.eclipse.wst.jsdt.jsdoc
+org.eclipse.wst.jsdt.jsdoc.msdn
+
+#JSDT ui API packages
+org.eclipse.wst.jsdt.libraries
+org.eclipse.wst.jsdt.ui
+org.eclipse.wst.jsdt.ui.actions
+org.eclipse.wst.jsdt.ui.dialogs
+org.eclipse.wst.jsdt.ui.project
+org.eclipse.wst.jsdt.ui.refactoring
+org.eclipse.wst.jsdt.ui.search
+org.eclipse.wst.jsdt.ui.text
+org.eclipse.wst.jsdt.ui.text.folding
+org.eclipse.wst.jsdt.ui.text.java
+org.eclipse.wst.jsdt.ui.text.java.hover
+org.eclipse.wst.jsdt.ui.wizards

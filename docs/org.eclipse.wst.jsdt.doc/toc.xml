@@ -5,26 +5,10 @@
 	// reserved. 
 	//////////////////////////////////////////////////////////////////////////////// -->
 
-<toc label="Javascript Development Toolkit User Guide" topic="index.html">
+<toc label="JavaScript Development Guide">
 	
 	
-	<topic label="Features" href="features/index.html"/>
-	
-	<topic label="Getting Started">
-		<topic href="started/overview.html" label="Overview" />
-		<topic label="Pure Javascript">
-			<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
-			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
-		</topic>
-		<topic label="Embeded JavaScript">
-			<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
-			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
-			<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
-		</topic>
-	</topic>
-	
-	
-	<topic label="Advanced Javascript Editing with the JSDT"  href="advanced/index.html">
+	<topic label="Advanced Javascript Editing with the JSDT">
 
 		<topic label="Managing the Projects Global Scope">
 			<topic href="advanced/global/add.html" label="Adding a Library"/>
@@ -39,22 +23,6 @@
 
 	</topic>
 
-	<topic label="JSDT Framework Developers Guide">
-		<topic href="development/extension-points/index.html"
-			label="Extension Points Reference">
-			<!-- 
-				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_action.html" label="org.eclipse.atf.mozilla.ide.ui.action"></topic>
-				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_filter.html" label="org.eclipse.atf.mozilla.ide.ui.filter"></topic>
-				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_toolbar.html" label="org.eclipse.atf.mozilla.ide.ui.toolbar"></topic>
-				<topic href="ref/extension-points/org_eclipse_atf_mozilla_ide_ui_view.html" label="org.eclipse.atf.mozilla.ide.ui.view"></topic>
-			-->
-		</topic>
-		<topic href="development/archOverview.html"
-			label="Component Design and Architecture Overview" />
-		<topic href="development/limitations.html"
-			label="JSDT Limitations and Work in Progress" />
-	</topic>
-
 
 	<topic label="Contributing to the JSDT Framework or Libraries">
 		<topic href="contributing/framework.html"
@@ -63,12 +31,34 @@
 			label="Contributing to Libraries" />
 	</topic>
 	
+	<topic label="Getting Started">
+		<topic label="Embeded JavaScript">
+			<topic href="started/htmlProject.html" label="Creating a HTML Project"/>
+			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+			<topic href="started/newhtmlFile.html" label="Adding a HTML file."/>
+		</topic>
+		<topic label="Pure Javascript">
+			<topic href="started/standaloneProject.html" label="Creating a JavaScript Project"/>
+			<topic href="started/newjsFile.html" label="Adding a JavaScript file."/>
+		</topic>
+		<topic href="started/overview.html" label="Overview" />
+	</topic>
+
+	<topic label="JSDT Framework Developers Guide">
+		<topic href="development/archOverview.html"
+			label="Component Design and Architecture Overview" />
+		<topic href="development/limitations.html"
+			label="JSDT Limitations and Work in Progress" />
+	</topic>
+	
 	<topic label="Reference">
 		<link toc="tocreference.xml" />
 	</topic>
 
-	<topic label="Legal info and Credits" href="legal/index.html">
-		<anchor id="Legal" />
+	<topic label="Legal" href="notices.html">
 	</topic>
+	
+	
+	<topic label="Features" href="features/index.html"/>
 
 </toc>

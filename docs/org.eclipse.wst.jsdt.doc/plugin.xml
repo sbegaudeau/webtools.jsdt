@@ -18,9 +18,6 @@
             file="toctutorials.xml"
             />
        -->
-      <toc
-            file="javadoctoc.xml"
-      		/>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
