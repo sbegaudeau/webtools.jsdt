@@ -123,7 +123,7 @@ public class InferrenceManager {
 			    	applies = inferenceProviders[i].applysTo(script);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					Util.log(e, "exception in inferrence provider "+inferenceProviders[i].getID());
+					Util.log(e, "exception in inference provider "+inferenceProviders[i].getID());
 				}
 			    switch (applies) {
 				case InferrenceProvider.MAYBE_THIS:
