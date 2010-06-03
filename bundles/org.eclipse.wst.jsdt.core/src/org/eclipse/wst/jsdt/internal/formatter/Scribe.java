@@ -1152,9 +1152,7 @@ public class Scribe {
 				} else {
 					this.indentationLevel = Math.max(this.indentationLevel, this.memberAlignment.breakIndentationLevel);
 				}
-			} else if (this.currentAlignment.couldBreak() && this.currentAlignment.wasSplit) {
-				this.currentAlignment.performFragmentEffect();
-			}
+			} 
 		}
 		this.scanner.resetTo(currentTokenEndPosition, this.scannerEndPosition - 1);
 	}
