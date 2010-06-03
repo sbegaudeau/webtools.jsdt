@@ -18,6 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.ui.tests.format.FormattingTests;
 
 /**
  * @author nitin
@@ -53,6 +54,11 @@ public class JSDTUITests extends TestSuite {
 			Class test = (Class) iter.next();
 			all.addTestSuite(test); 
 		}
+		
+		// $JUnit-BEGIN$
+		all.addTest(FormattingTests.suite());
+		// $JUnit-END$
+		
 		return all;
 	} 
 	}
