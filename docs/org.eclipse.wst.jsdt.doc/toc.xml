@@ -13,6 +13,9 @@
 
 <toc label="JavaScript Development Guide">
 	<topic href="started/overview.html" label="JSDT Overview" />
+ <topic label="Getting Started">
+    <link toc="tocgettingstarted.xml"/>
+ </topic>
 	<topic label="Concepts">
 		<link toc="tocconcepts.xml"/>
 	</topic>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="Book">
+   <topic href="started/htmlProject.html" label="Create an HTML Project">
+   </topic>
+   <topic href="started/standaloneProject.html" label="Create a JavaScript Project">
+   </topic>
+   <topic href="started/newjsFile.html" label="Create a New JavaScript File">
+   </topic>
+   <topic href="started/newhtmlFile.html" label="Create a New HTML File">
+   </topic>
+</toc>

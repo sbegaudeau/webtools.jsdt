@@ -29,6 +29,9 @@
       <toc
             file="toctasks.xml">
       </toc>
+      <toc
+            file="tocgettingstarted.xml">
+      </toc>
       <!--
       <toc
             file="toctutorials.xml"
