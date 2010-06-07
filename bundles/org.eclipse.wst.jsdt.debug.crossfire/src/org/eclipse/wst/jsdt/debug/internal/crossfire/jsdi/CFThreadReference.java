@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
@@ -39,7 +40,6 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	private String href = null;
 	private int state = RUNNING;
 	private ArrayList frames = null;
-	
 	
 	/**
 	 * Constructor
@@ -89,16 +89,19 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		//TODO we require some way to batch retrieve the frames from a given context
 		//unless there is only ever one frame?
 		if(frames == null) {
-			frames = new ArrayList();
 			Request request = new Request(Commands.BACKTRACE, id);
-			request.setArgument("fromFrame", new Integer(0)); //$NON-NLS-1$
-			request.setArgument("includeScopes", Boolean.TRUE); //$NON-NLS-1$
+			request.setArgument(Attributes.FROM_FRAME, new Integer(0));
+			request.setArgument(Attributes.INCLUDE_SCOPES, Boolean.TRUE);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				ArrayList frms = (ArrayList) response.getBody().get("frames"); //$NON-NLS-1$
+				frames = new ArrayList();
+				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
 				for (int i = 0; i < frms.size(); i++) {
 					frames.add(new CFStackFrame(virtualMachine(), (Map) frms.get(i)));
 				}
+			}
+			else if(TRACE) {
+				Tracing.writeString("STACKFRAME [backtrace request failed]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return frames;
@@ -123,14 +126,11 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		Request request = new Request(Commands.CONTINUE, id);
 		Response response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
-			if(frames != null) {
-				frames.clear();
-				frames = null;
-			}
+			clearFrames();
 			state = RUNNING;
 		}
 		else if(TRACE) {
-			System.out.println("THREAD [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			Tracing.writeString("THREAD [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
 	}
 
@@ -141,13 +141,25 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		Request request = new Request(Commands.SUSPEND, id);
 		Response response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
+			//XXX catch in case the last resume failed
+			clearFrames();
 			state = SUSPENDED;
 		}
 		else if(TRACE) {
-			System.out.println("THREAD [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			Tracing.writeString("THREAD [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
 	}
 
+	/**
+	 * Clears out any stale stack frames
+	 */
+	void clearFrames() {
+		if(frames != null) {
+			frames.clear();
+			frames = null;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#status()
 	 */
@@ -213,7 +225,9 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * 
 	 * @param suspended
 	 */
-	void markSuspended(boolean suspended) {
+	public void markSuspended(boolean suspended) {
+		//XXX catch - this causes a state change
+		clearFrames();
 		state = suspended ? SUSPENDED : RUNNING;
 	}
 }

@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
@@ -95,7 +96,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				}
 			}
 			else if(TRACE) {
-				System.out.println("VM [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("VM [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -121,7 +122,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				}
 			}
 			else if(TRACE) {
-				System.out.println("VM [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("VM [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -161,7 +162,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				return (String) json.get(Commands.VERSION);
 			}
 			if(TRACE) {
-				System.out.println("VM [failed version request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("VM [failed version request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return Constants.UNKNOWN;
@@ -184,7 +185,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				}
 			}
 			else if(TRACE) {
-				System.out.println("VM [failed allthreads request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("VM [failed allthreads request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return new ArrayList(threads.values());
@@ -215,7 +216,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		if(threads != null) {
 			Object obj = threads.remove(id);
 			if(TRACE && obj == null) {
-				System.out.println("VM [failed to remove thread]: "+id); //$NON-NLS-1$
+				Tracing.writeString("VM [failed to remove thread]: "+id); //$NON-NLS-1$
 			}
 		}
 	}
@@ -232,7 +233,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		}
 		CFThreadReference thread = (CFThreadReference) threads.get(id);
 		if(TRACE && thread == null) {
-			System.out.println("VM [failed to find thread]: "+id); //$NON-NLS-1$
+			Tracing.writeString("VM [failed to find thread]: "+id); //$NON-NLS-1$
 		}
 		return thread;
 	}
@@ -257,7 +258,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 					}
 				}
 				else if(TRACE) {
-					System.out.println("VM [failed scripts request]: "+JSON.serialize(request)); //$NON-NLS-1$
+					Tracing.writeString("VM [failed scripts request]: "+JSON.serialize(request)); //$NON-NLS-1$
 				}
 			}
 		}
@@ -276,7 +277,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		}
 		CFScriptReference script = (CFScriptReference) scripts.get(id);
 		if(TRACE && script == null) {
-			System.out.println("VM [failed to find script]: "+id); //$NON-NLS-1$
+			Tracing.writeString("VM [failed to find script]: "+id); //$NON-NLS-1$
 		}
 		return script;
 	}
@@ -306,7 +307,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		if(scripts != null) {
 			Object obj = scripts.remove(id);
 			if(TRACE && obj == null) {
-				System.out.println("VM [failed to remove script]: "+id); //$NON-NLS-1$
+				Tracing.writeString("VM [failed to remove script]: "+id); //$NON-NLS-1$
 			}
 		}
 	}
@@ -317,7 +318,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public synchronized void dispose() {
 		try {
 			if(TRACE) {
-				System.out.println("VM [disposing]"); //$NON-NLS-1$
+				Tracing.writeString("VM [disposing]"); //$NON-NLS-1$
 			}
 			queue.dispose();
 			ermanager.dispose();
@@ -430,12 +431,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		if (disconnected) {
 			// no-op it is already disconnected
 			if(TRACE) {
-				System.out.println("VM [already disconnected]"); //$NON-NLS-1$
+				Tracing.writeString("VM [already disconnected]"); //$NON-NLS-1$
 			}
 			return;
 		}
 		if(TRACE) {
-			System.out.println("VM [disconnecting]"); //$NON-NLS-1$
+			Tracing.writeString("VM [disconnecting]"); //$NON-NLS-1$
 		}
 		try {
 			if(threads != null) {

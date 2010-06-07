@@ -20,6 +20,7 @@ import java.net.Socket;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 
 /**
@@ -87,6 +88,31 @@ public class SocketConnection implements Connection {
 		}
 		writer.write(HandShake.getHandshake());
 		writer.flush();
+		waitForReadyRead();
+	}
+	
+	/**
+	 * Method to wait for the socket reader to become ready after the handshake
+	 * 
+	 * @throws IOException
+	 */
+	void waitForReadyRead() throws IOException {
+		long timeout = System.currentTimeMillis() + 5000;
+		boolean timedout = System.currentTimeMillis() > timeout;
+		while(!reader.ready() && !timedout) {
+			try {
+				Thread.sleep(100);
+				timedout = System.currentTimeMillis() > timeout;
+			} catch (InterruptedException e) {
+				CrossFirePlugin.log(e);
+			}
+		}
+		if(timedout) {
+			if(Packet.TRACE) {
+				Tracing.writeString("HANDSHAKE: Timed out waiting for ready read from handshake"); //$NON-NLS-1$
+			}
+			throw new IOException("Waiting for the socket to become available after receiving handshake timed out."); //$NON-NLS-1$
+		}
 	}
 	
 	/**

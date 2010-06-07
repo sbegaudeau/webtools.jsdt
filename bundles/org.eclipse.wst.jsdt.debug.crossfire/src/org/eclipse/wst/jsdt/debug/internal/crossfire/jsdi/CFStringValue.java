@@ -20,6 +20,11 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
  */
 public class CFStringValue extends CFMirror implements StringValue {
 
+	/**
+	 * The "type" of this value
+	 */
+	public static final String STRING = "string"; //$NON-NLS-1$
+	
 	private String string = null;
 	
 	/**

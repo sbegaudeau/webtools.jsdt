@@ -22,10 +22,6 @@ public interface Attributes {
 	 */
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	/**
-	 * The "index" attribute
-	 */
-	public static final String INDEX = "index"; //$NON-NLS-1$
-	/**
 	 * The "body" attribute
 	 */
 	public static final String BODY = "body"; //$NON-NLS-1$
@@ -54,13 +50,37 @@ public interface Attributes {
 	 */
 	public static final String DATA = "data"; //$NON-NLS-1$
 	/**
+	 * The "frame" attribute
+	 */
+	public static final String FRAME = "frame"; //$NON-NLS-1$
+	/**
+	 * The "func" attribute
+	 */
+	public static final String FUNC = "func"; //$NON-NLS-1$
+	/**
+	 * The "handle" attribute
+	 */
+	public static final String HANDLE = "handle"; //$NON-NLS-1$
+	/**
 	 * The "handshake" attribute
 	 */
 	public static final String HANDSHAKE = "handshake"; //$NON-NLS-1$
 	/**
+	 * The "href" attribute
+	 */
+	public static final String HREF = "href"; //$NON-NLS-1$
+	/**
 	 * The "id" attribute
 	 */
 	public static final String ID = "id"; //$NON-NLS-1$
+	/**
+	 * The "index" attribute
+	 */
+	public static final String INDEX = "index"; //$NON-NLS-1$
+	/**
+	 * The "line" attribute
+	 */
+	public static final String LINE = "line"; //$NON-NLS-1$
 	/**
 	 * The "lineCount" attribute
 	 */
@@ -70,9 +90,17 @@ public interface Attributes {
 	 */
 	public static final String LINE_OFFSET = "lineOffset"; //$NON-NLS-1$
 	/**
+	 * The "locals" attribute
+	 */
+	public static final String LOCALS = "locals"; //$NON-NLS-1$
+	/**
 	 * The message attribute for this packet
 	 */
 	public static final String MESSAGE = "message"; //$NON-NLS-1$
+	/**
+	 * The "ref" attribute
+	 */
+	public static final String REF = "ref"; //$NON-NLS-1$
 	/**
 	 * The "request_seq" attribute
 	 */
@@ -82,9 +110,17 @@ public interface Attributes {
 	 */
 	public static final String RUNNING = "running"; //$NON-NLS-1$
 	/**
+	 * The "script" attribute
+	 */
+	public static final String SCRIPT = "script"; //$NON-NLS-1$
+	/**
 	 * The "seq" attribute
 	 */
 	public static final String SEQ = "seq"; //$NON-NLS-1$
+	/**
+	 * The "source" attribute
+	 */
+	public static final String SOURCE = "source"; //$NON-NLS-1$
 	/**
 	 * The "sourceLength" attribute
 	 */
@@ -94,31 +130,35 @@ public interface Attributes {
 	 */
 	public static final String SUCCESS = "success"; //$NON-NLS-1$
 	/**
+	 * The "this" attribute
+	 */
+	public static final String THIS = "this"; //$NON-NLS-1$
+	/**
 	 * The "type" attribute
 	 */
 	public static final String TYPE = "type"; //$NON-NLS-1$
 	/**
-	 * The "source" attribute
+	 * The "url" attribute
 	 */
-	public static final String SOURCE = "source"; //$NON-NLS-1$
+	public static final String URL = "url"; //$NON-NLS-1$
 	/**
-	 * The "href" attribute
+	 * The "value" attribute
 	 */
-	public static final String HREF = "href"; //$NON-NLS-1$
+	public static final String VALUE = "value"; //$NON-NLS-1$
 	/**
-	 * The "locals" attribute
+	 * The "frames" attribute
 	 */
-	public static final String LOCALS = "locals"; //$NON-NLS-1$
+	public static final String FRAMES = "frames"; //$NON-NLS-1$
 	/**
-	 * The "line" attribute
+	 * The "includeScopes" attribute
 	 */
-	public static final String LINE = "line"; //$NON-NLS-1$
+	public static final String INCLUDE_SCOPES = "includeScopes"; //$NON-NLS-1$
 	/**
-	 * The "func" attribute
+	 * The "fromFrame" attribute
 	 */
-	public static final String FUNC = "func"; //$NON-NLS-1$
+	public static final String FROM_FRAME = "fromFrame"; //$NON-NLS-1$
 	/**
-	 * The "script" attribute
+	 * The "expression" attribute
 	 */
-	public static final String SCRIPT = "script"; //$NON-NLS-1$
+	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
 }

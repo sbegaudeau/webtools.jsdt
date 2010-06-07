@@ -18,11 +18,13 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFLocation;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFThreadReference;
@@ -80,12 +82,46 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					}
 					crossfire().terminate();
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.CLOSED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.CLOSED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_BREAK.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_BREAK+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_BREAK+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					String threadid = event.getContextId();
+					if(threadid != null) {
+						CFThreadReference thread = crossfire().findThread(threadid);
+						set.setThread(thread);
+						if(thread != null && !thread.isSuspended()) {
+							List suspends = eventmgr.suspendRequests();
+							for (Iterator iter = suspends.iterator(); iter.hasNext();) {
+								SuspendRequest request = (SuspendRequest) iter.next();
+								String url = (String) event.getBody().get(Attributes.URL);
+								Number line = (Number) event.getBody().get(Attributes.LINE);
+								CFScriptReference script = crossfire().findScript(url);
+								if(script != null) {
+									CFLocation loc = new CFLocation(crossfire(), script, null, line.intValue());
+									set.add(new CFSuspendEvent(crossfire(), request, thread, loc));
+								}
+							}
+							thread.markSuspended(true);
+						}
+						return null;
+					}
+				}
+				else if(Event.ON_RESUME.equals(name)) {
+					if(TRACE) {
+						Tracing.writeString("QUEUE [event - "+Event.ON_RESUME+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					String threadid = event.getContextId();
+					if(threadid != null) {
+						CFThreadReference thread = crossfire().findThread(threadid);
+						set.setThread(thread);
+						if(thread != null && thread.isSuspended()) {
+							thread.markSuspended(false);
+						}
+						return null;
 					}
 				}
 				else if(Event.ON_SCRIPT.equals(name)) {
@@ -100,18 +136,19 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						}
 					}
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONTEXT_CREATED.equals(name)) {
 					List threads = eventmgr.threadEnterRequests();
 					CFThreadReference thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.HREF));
+					set.setThread(thread);
 					for (Iterator iter = threads.iterator(); iter.hasNext();) {
 						ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
 						set.add(new CFThreadEnterEvent(crossfire(), request, thread));
 					}
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONTEXT_DESTROYED.equals(name)) {
@@ -125,52 +162,47 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						}
 					}
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONSOLE_DEBUG.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONSOLE_ERROR.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONSOLE_INFO.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_INFO+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONSOLE_INFO+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONSOLE_LOG.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_LOG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONSOLE_LOG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_CONSOLE_WARN.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_INSPECT_NODE.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
-					}
-				}
-				else if(Event.ON_RESUME.equals(name)) {
-					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_RESUME+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(Event.ON_TOGGLE_BREAKPOINT.equals(name)) {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [event - "+Event.ON_TOGGLE_BREAKPOINT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+Event.ON_TOGGLE_BREAKPOINT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else {
 					if(TRACE) {
-						Tracing.writeString("QUEUE: [unknown event - "+name+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [unknown event - "+name+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				if (set.isEmpty()) {
@@ -182,7 +214,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 		}
 		catch(DisconnectedException de) {
 			if(TRACE) {
-				System.out.println("Processing DisconnectedException: "+de.getMessage()); //$NON-NLS-1$
+				Tracing.writeString("QUEUE [disconnect exception]: "+de.getMessage()); //$NON-NLS-1$
 			}
 			crossfire().disconnectVM();
 			handleException(de.getMessage(), de);
