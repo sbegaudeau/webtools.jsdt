@@ -16,7 +16,8 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 
 /**
- * Description of a {@link Connector} that launches a {@link VirtualMachine}.
+ * Description of a {@link Connector} that waits and listens for a {@link VirtualMachine}
+ * to connect to it.
  * 
  * Clients can implement or extend this interface.
  * 
