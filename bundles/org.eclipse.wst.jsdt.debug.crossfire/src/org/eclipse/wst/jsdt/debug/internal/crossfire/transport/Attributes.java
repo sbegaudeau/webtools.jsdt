@@ -50,9 +50,21 @@ public interface Attributes {
 	 */
 	public static final String DATA = "data"; //$NON-NLS-1$
 	/**
+	 * The "expression" attribute
+	 */
+	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
+	/**
 	 * The "frame" attribute
 	 */
 	public static final String FRAME = "frame"; //$NON-NLS-1$
+	/**
+	 * The "frames" attribute
+	 */
+	public static final String FRAMES = "frames"; //$NON-NLS-1$
+	/**
+	 * The "fromFrame" attribute
+	 */
+	public static final String FROM_FRAME = "fromFrame"; //$NON-NLS-1$
 	/**
 	 * The "func" attribute
 	 */
@@ -73,6 +85,14 @@ public interface Attributes {
 	 * The "id" attribute
 	 */
 	public static final String ID = "id"; //$NON-NLS-1$
+	/**
+	 * The "includeScopes" attribute
+	 */
+	public static final String INCLUDE_SCOPES = "includeScopes"; //$NON-NLS-1$
+	/**
+	 * The "includeSource" attribute
+	 */
+	public static final String INCLUDE_SOURCE = "includeSource"; //$NON-NLS-1$
 	/**
 	 * The "index" attribute
 	 */
@@ -145,20 +165,4 @@ public interface Attributes {
 	 * The "value" attribute
 	 */
 	public static final String VALUE = "value"; //$NON-NLS-1$
-	/**
-	 * The "frames" attribute
-	 */
-	public static final String FRAMES = "frames"; //$NON-NLS-1$
-	/**
-	 * The "includeScopes" attribute
-	 */
-	public static final String INCLUDE_SCOPES = "includeScopes"; //$NON-NLS-1$
-	/**
-	 * The "fromFrame" attribute
-	 */
-	public static final String FROM_FRAME = "fromFrame"; //$NON-NLS-1$
-	/**
-	 * The "expression" attribute
-	 */
-	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
 }

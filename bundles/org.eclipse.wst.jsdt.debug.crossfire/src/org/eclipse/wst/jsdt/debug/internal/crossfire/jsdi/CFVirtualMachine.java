@@ -248,7 +248,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			for (Iterator iter = threads.iterator(); iter.hasNext();) {
 				CFThreadReference thread = (CFThreadReference) iter.next();
 				Request request = new Request(Commands.SCRIPTS, thread.id());
-				request.setArgument("includeSource", Boolean.TRUE); //$NON-NLS-1$
+				request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
 				Response response = sendRequest(request);
 				if(response.isSuccess()) {
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
@@ -276,6 +276,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			allScripts();
 		}
 		CFScriptReference script = (CFScriptReference) scripts.get(id);
+		//if we find we have a script id that is not cached, we should try a lookup + add in the vm
 		if(TRACE && script == null) {
 			Tracing.writeString("VM [failed to find script]: "+id); //$NON-NLS-1$
 		}

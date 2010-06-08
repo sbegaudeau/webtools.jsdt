@@ -97,7 +97,7 @@ public class SocketConnection implements Connection {
 	 * @throws IOException
 	 */
 	void waitForReadyRead() throws IOException {
-		long timeout = System.currentTimeMillis() + 5000;
+		long timeout = System.currentTimeMillis() + 1000;
 		boolean timedout = System.currentTimeMillis() > timeout;
 		while(!reader.ready() && !timedout) {
 			try {
@@ -111,7 +111,7 @@ public class SocketConnection implements Connection {
 			if(Packet.TRACE) {
 				Tracing.writeString("HANDSHAKE: Timed out waiting for ready read from handshake"); //$NON-NLS-1$
 			}
-			throw new IOException("Waiting for the socket to become available after receiving handshake timed out."); //$NON-NLS-1$
+			//throw new IOException("Waiting for the socket to become available after receiving handshake timed out."); //$NON-NLS-1$
 		}
 	}
 	
@@ -142,6 +142,13 @@ public class SocketConnection implements Connection {
 			}
 			return ack;
 		}
+		while(reader.ready()) {
+			c = reader.read();
+			if(Packet.TRACE) {
+				Tracing.writeString("Reading extra post-amble from socket: "+(char)c); //$NON-NLS-1$
+			}
+		}
+		
 		throw new IOException("Did not get correct CrossFire handshake"); //$NON-NLS-1$
 	}
 	

@@ -129,7 +129,10 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public synchronized Location location() {
 		if(loc == null) {
-			loc = new CFLocation(crossfire(), crossfire().findScript(scriptid), funcname, linenumber);
+			CFScriptReference script = crossfire().findScript(scriptid); 
+			if(script != null) {
+				loc = new CFLocation(crossfire(), script, funcname, linenumber);
+			}
 		}
 		return loc;
 	}
