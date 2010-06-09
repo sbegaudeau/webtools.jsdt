@@ -81,9 +81,9 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		TransportService service = new SocketTransportService();
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
-		if(browser && !host.equals(TransportService.LOCALHOST)) {
+		if(browser && (!host.equals(TransportService.LOCALHOST) || !host.equals(TransportService.LOCALHOST_IP))) {
 			//we cannot auto launch the browser on a different host
-			return null;
+			throw new IOException(Messages.cannot_launch_browser_not_localhost);
 		}
 		if(browser) {
 			launchBrowser(host, port);
@@ -99,7 +99,7 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		}
 		catch(IOException ioe) {
 			service.stopListening(key);
-			return null;
+			throw ioe;
 		}
 		DebugSession session = new DebugSession(c);
 		return new CFVirtualMachine(session);

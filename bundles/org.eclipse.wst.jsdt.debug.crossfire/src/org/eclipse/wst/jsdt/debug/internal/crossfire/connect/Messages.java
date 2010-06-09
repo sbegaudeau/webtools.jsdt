@@ -21,6 +21,7 @@ public class Messages extends NLS {
 	public static String attach_connector_name;
 	public static String auto_attach_desc;
 	public static String auto_attach_label;
+	public static String cannot_launch_browser_not_localhost;
 	public static String crossfire_remote_attach;
 	public static String host_arg_desc;
 	public static String host_arg_name;

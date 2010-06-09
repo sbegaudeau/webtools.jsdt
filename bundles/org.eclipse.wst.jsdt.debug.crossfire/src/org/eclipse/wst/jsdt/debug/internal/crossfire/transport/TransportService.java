@@ -30,6 +30,11 @@ public interface TransportService {
 	}
 
 	/**
+	 * The IP address representation of <code>localhost</code>
+	 */
+	public static final String LOCALHOST_IP = "127.0.0.1"; //$NON-NLS-1$
+
+	/**
 	 * Registers that this service should begin listening to the given address
 	 * 
 	 * @param address the address to listen on - e.g. localhost:12000
