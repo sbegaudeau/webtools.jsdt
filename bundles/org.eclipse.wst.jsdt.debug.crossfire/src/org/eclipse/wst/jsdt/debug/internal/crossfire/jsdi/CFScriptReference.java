@@ -57,7 +57,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public CFScriptReference(VirtualMachine vm, String context_id, Map json) {
 		super(vm);
 		this.context_id = context_id;
-		//try "href" first -> CF 0.1a3 support
+		//try "href" first -> CF 0.2 support
 		this.id = (String) json.get(Attributes.HREF);
 		if(id == null) {
 			//try "data" next -> CF 0.1a3 support

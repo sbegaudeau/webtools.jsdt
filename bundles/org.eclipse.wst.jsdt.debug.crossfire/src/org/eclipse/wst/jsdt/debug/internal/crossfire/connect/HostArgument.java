@@ -93,4 +93,13 @@ public class HostArgument implements StringArgument {
 	public String value() {
 		return host;
 	}
+
+	/**
+	 * Returns if the given host is <code>localhost</code> or <code>127.0.0.1</code>
+	 * @param host
+	 * @return true if the given host it localhost (127.0.0.1) false otherwise
+	 */
+	public static boolean isLocalhost(String host) {
+		return host.equals(TransportService.LOCALHOST) || host.equals(TransportService.LOCALHOST_IP);
+	}
 }

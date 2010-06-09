@@ -81,7 +81,7 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		TransportService service = new SocketTransportService();
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
-		if(browser && (!host.equals(TransportService.LOCALHOST) || !host.equals(TransportService.LOCALHOST_IP))) {
+		if(browser && !HostArgument.isLocalhost(host)) {
 			//we cannot auto launch the browser on a different host
 			throw new IOException(Messages.cannot_launch_browser_not_localhost);
 		}

@@ -25,6 +25,7 @@ public class Messages extends NLS {
 	public static String crossfire_remote_attach;
 	public static String host_arg_desc;
 	public static String host_arg_name;
+	public static String only_localhost_is_supported;
 	public static String port_arg_desc;
 	public static String port_arg_name;
 	public static String timeout;

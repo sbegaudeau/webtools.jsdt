@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.connect.HostArgument;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.connect.Messages;
 
 
 /**
@@ -65,8 +67,8 @@ public class SocketTransportService implements TransportService {
 		if (host == null) {
 			host = LOCALHOST;
 		}
-		if (!host.equals(LOCALHOST)) {
-			throw new IllegalArgumentException("Only localhost is supported."); //$NON-NLS-1$
+		if (!HostArgument.isLocalhost(host)) {
+			throw new IllegalArgumentException(Messages.only_localhost_is_supported);
 		}
 		ListenerKey key = new SocketListenerKey(host + Constants.COLON + port);
 		ServerSocket serverSocket = new ServerSocket(port);
