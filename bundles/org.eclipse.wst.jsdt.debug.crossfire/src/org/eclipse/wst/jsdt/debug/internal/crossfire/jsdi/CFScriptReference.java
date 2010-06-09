@@ -172,8 +172,8 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 					}
 				}
 			}
-			if(TRACE) {
-				System.out.println("ScriptReference [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			else if(TRACE) {
+				System.out.println("SCRIPTREF [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return source;
