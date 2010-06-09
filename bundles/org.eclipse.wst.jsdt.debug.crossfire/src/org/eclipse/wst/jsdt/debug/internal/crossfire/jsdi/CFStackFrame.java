@@ -75,10 +75,13 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(json != null) {
 			Map locals = (Map) json.get(Attributes.VALUE); 
 			if(locals != null) {
-				locals = (Map) locals.get(Attributes.VALUE); 
-				if(locals.size() < 1) {
-					vars = Collections.EMPTY_LIST;
-					return;
+				if(locals.containsKey(Attributes.VALUE)) {
+					//do CF 0.1 parsing
+					locals = (Map) locals.get(Attributes.VALUE); 
+					if(locals.size() < 1) {
+						vars = Collections.EMPTY_LIST;
+						return;
+					}
 				}
 				vars = new ArrayList(locals.size());
 				Entry entry = null;

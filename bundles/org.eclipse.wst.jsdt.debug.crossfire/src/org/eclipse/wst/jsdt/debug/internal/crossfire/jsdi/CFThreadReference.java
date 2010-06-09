@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -100,8 +101,11 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 					frames.add(new CFStackFrame(virtualMachine(), (Map) frms.get(i)));
 				}
 			}
-			else if(TRACE) {
-				Tracing.writeString("STACKFRAME [backtrace request failed]: "+JSON.serialize(request)); //$NON-NLS-1$
+			else {
+				if(TRACE) {
+					Tracing.writeString("STACKFRAME [backtrace request failed]: "+JSON.serialize(request)); //$NON-NLS-1$
+				}
+				return Collections.EMPTY_LIST;
 			}
 		}
 		return frames;

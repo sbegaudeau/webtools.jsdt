@@ -34,6 +34,10 @@ public interface Attributes {
 	 */
 	public static final String COMMAND = "command"; //$NON-NLS-1$
 	/**
+	 * the "context_href" attribute
+	 */
+	public static final String CONTEXT_HREF = "context_href"; //$NON-NLS-1$
+	/**
 	 * The "context_id" attribute
 	 */
 	public static final String CONTEXT_ID = "context_id"; //$NON-NLS-1$

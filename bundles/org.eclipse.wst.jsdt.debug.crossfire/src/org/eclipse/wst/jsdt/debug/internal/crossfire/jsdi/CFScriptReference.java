@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
 public class CFScriptReference extends CFMirror implements ScriptReference {
 	
 	private String context_id = null;
+	private String context_href = null;
 	private String id = null;
 	private int srclength = 0;
 	private int linecount = 0;
@@ -66,6 +67,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 			//try "id" last -> CF 0.1 support
 			this.id = (String) json.get(Attributes.ID);
 		}
+		this.context_href = (String) json.get(Attributes.CONTEXT_HREF);
 		initializeScript(json);
 	}
 
@@ -130,6 +132,28 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 		return id;
 	}
 	
+	/**
+	 * The HTTP context of the script, if any.
+	 * <br><br>
+	 * This method can return <code>null</code>
+	 * 
+	 * @return the HTTP context of the script or null
+	 */
+	public String hrefContext() {
+		return context_href;
+	}
+	
+	/**
+	 * Returns the context id of this script - this represents the id of the owning thread
+	 * <br><br>
+	 * This method can return <code>null</code>
+	 * 
+	 * @return the context id for the owning thread or <code>null</code>
+	 */
+	public String context() {
+		return context_id;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#source()
 	 */
@@ -142,7 +166,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 				//TODO ability to ask for only the source for one script and not all of them?
 				ArrayList scripts = (ArrayList) response.getBody().get(Commands.SCRIPTS);
 				for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-					Map json = (Map) iter.next();
+					Map json = (Map) ((Map) iter.next()).get(Attributes.SCRIPT);
 					if(json.get(Attributes.ID).equals(id)) {
 						initializeScript(json);
 					}
@@ -180,6 +204,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ScriptReference: [context_id - ").append(context_id).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append(" [context_href - ").append(context_href).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [id - ").append(id).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [srclength - ").append(srclength).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [linecount - ").append(linecount).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
