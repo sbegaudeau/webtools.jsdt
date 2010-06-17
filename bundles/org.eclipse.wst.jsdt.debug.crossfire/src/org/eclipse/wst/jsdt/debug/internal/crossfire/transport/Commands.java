@@ -66,6 +66,10 @@ public interface Commands {
 	 */
 	public static final String SCOPES = "scopes"; //$NON-NLS-1$
 	/**
+	 * The "script" command
+	 */
+	public static final String SCRIPT = "script"; //$NON-NLS-1$
+	/**
 	 * The "scripts" command
 	 */
 	public static final String SCRIPTS = "scripts"; //$NON-NLS-1$

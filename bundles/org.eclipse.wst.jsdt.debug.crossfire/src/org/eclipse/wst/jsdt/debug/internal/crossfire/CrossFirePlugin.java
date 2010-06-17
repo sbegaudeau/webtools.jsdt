@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -37,6 +38,10 @@ public class CrossFirePlugin extends Plugin {
 	 * JSDI implementation tracing option name
 	 */
 	public static final String TRC_JSDI = PLUGIN_ID + "/jsdi"; //$NON-NLS-1$
+	/**
+	 * JSON parser tracing option
+	 */
+	public static final String TRC_JSON = PLUGIN_ID + "/json"; //$NON-NLS-1$
 	
 	/**
 	 * Status code indicating an unexpected internal error.
@@ -126,6 +131,10 @@ public class CrossFirePlugin extends Plugin {
 			option = Platform.getDebugOption(TRC_JSDI);
 			if(option != null) {
 				CFMirror.setTracing(Boolean.valueOf(option).booleanValue());
+			}
+			option = Platform.getDebugOption(TRC_JSON);
+			if(option != null) {
+				JSON.setTracing(Boolean.valueOf(option).booleanValue());
 			}
 		}
 	}

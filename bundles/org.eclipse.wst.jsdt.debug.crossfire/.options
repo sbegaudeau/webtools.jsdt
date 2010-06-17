@@ -20,3 +20,6 @@ org.eclipse.wst.jsdt.debug.crossfire/eventqueue=false
 
 #option to trace the jsdi impl* elements
 org.eclipse.wst.jsdt.debug.crossfire/jsdi=false
+
+#option to trace the JSON parser
+org.eclipse.wst.jsdt.debug.crossfire/json=false

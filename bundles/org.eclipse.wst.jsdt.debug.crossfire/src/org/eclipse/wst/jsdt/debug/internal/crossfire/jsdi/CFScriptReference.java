@@ -14,7 +14,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +22,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
@@ -159,21 +159,15 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	public synchronized String source() {
 		if(source == null) {
-			Request request = new Request(Commands.SOURCE, context_id);
-			request.addAdditionalParam(Attributes.ID, id);
+			Request request = new Request(Commands.SCRIPT, context_id);
+			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
+			request.setArgument(Attributes.URL, id);
 			Response response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				//TODO ability to ask for only the source for one script and not all of them?
-				ArrayList scripts = (ArrayList) response.getBody().get(Commands.SCRIPTS);
-				for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-					Map json = (Map) ((Map) iter.next()).get(Attributes.SCRIPT);
-					if(json.get(Attributes.ID).equals(id)) {
-						initializeScript(json);
-					}
-				}
+				initializeScript((Map) response.getBody().get(Attributes.SCRIPT));
 			}
 			else if(TRACE) {
-				System.out.println("SCRIPTREF [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("SCRIPTREF [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return source;

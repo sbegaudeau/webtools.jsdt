@@ -42,6 +42,8 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFUndefinedValue;
  */
 public final class JSON {
 
+	static boolean TRACE = false;
+	
 	/**
 	 * Standard line feed / control feed terminus for Crossfire packets
 	 */
@@ -50,6 +52,15 @@ public final class JSON {
 	 * The default <code>Content-Length:</code> pre-amble
 	 */
 	public static final String CONTENT_LENGTH = "Content-Length:"; //$NON-NLS-1$
+	
+	/**
+	 * Enables / Disables tracing in the all of the JSDI implementations
+	 * 
+	 * @param trace
+	 */
+	public static void setTracing(boolean trace) {
+		TRACE = trace;
+	}
 	
 	/**
 	 * Constructor
@@ -222,7 +233,7 @@ public final class JSON {
 		int length = buffer.length();
 		buffer.append(LINE_FEED);
 		writeContentLength(buffer, length);
-		if(Packet.TRACE) {
+		if(TRACE) {
 			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		return buffer.toString();

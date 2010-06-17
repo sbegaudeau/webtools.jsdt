@@ -253,8 +253,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				if(response.isSuccess()) {
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
 					for (Iterator iter2 = scriptz.iterator(); iter2.hasNext();) {
-						CFScriptReference script = new CFScriptReference(this, thread.id(), (Map) iter2.next()); 
-						scripts.put(script.id(), script);
+						Map smap = (Map) iter2.next();
+						Map scriptjson = (Map) smap.get(Attributes.SCRIPT);
+						if(scriptjson != null) {
+							CFScriptReference script = new CFScriptReference(this, thread.id(), scriptjson); 
+							scripts.put(script.id(), script);
+						}
 					}
 				}
 				else if(TRACE) {
@@ -288,6 +292,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * 
 	 * @param context_id
 	 * @param json
+	 * 
 	 * @return the new script
 	 */
 	public CFScriptReference addScript(String context_id, Map json) {
