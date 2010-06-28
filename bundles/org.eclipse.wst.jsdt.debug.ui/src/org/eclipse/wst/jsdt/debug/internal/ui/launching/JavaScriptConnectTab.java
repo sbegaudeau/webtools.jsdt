@@ -154,7 +154,8 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 			else if(argument instanceof BooleanArgument) {
 				//create boolean editor
 				store.setDefault(argument.name(), ((BooleanArgument)argument).booleanValue());
-				editor = new BooleanFieldEditor(argument.name(), argument.label(), this.argumentsgroup);	
+				editor = new BooleanFieldEditor(argument.name(), argument.label(), this.argumentsgroup);
+				editor.fillIntoGrid(argumentsgroup, 2);
 			}
 			else if(argument instanceof StringArgument) {
 				//create String editor
