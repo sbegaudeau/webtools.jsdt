@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -179,7 +180,7 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	public synchronized URI sourceURI() {
 		if(sourceuri == null) {
 			try {
-				sourceuri = URI.create(id);
+				sourceuri = URIUtil.fromString(id);
 			}
 			catch(IllegalArgumentException iae) {
 				try {
@@ -187,6 +188,9 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 				} catch (URISyntaxException e) {
 					CrossFirePlugin.log(e);
 				}
+			}
+			catch(URISyntaxException urise) {
+				CrossFirePlugin.log(urise);
 			}
 		}
 		return sourceuri;
