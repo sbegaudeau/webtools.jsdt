@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
@@ -189,11 +190,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */
 	public String name() {
-		String url = href;
-		if(href.length() > 50) {
-			url = href.substring(0, 47) + "..."; //$NON-NLS-1$
-		}
-		return NLS.bind(Messages.thread_name, new Object[] {id, url});
+		return NLS.bind(Messages.thread_name, new Object[] {id, TextUtils.shortenText(href, 100)});
 	}
 	
 	/* (non-Javadoc)
