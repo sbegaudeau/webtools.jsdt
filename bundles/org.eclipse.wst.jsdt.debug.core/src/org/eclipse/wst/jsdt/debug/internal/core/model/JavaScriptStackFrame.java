@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
+import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 
 /**
  * A JavaScript stack frame
@@ -103,10 +104,10 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 */
 	public String getName() throws DebugException {
 		if (this.name == null) {
-			this.name = NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
+			this.name = TextUtils.shortenText(NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
 									this.stackFrame.location().scriptReference().sourceURI().toString(), 
 									Integer.toString(stackFrame.location().lineNumber()) 
-									});
+									}), 100);
 		}
 		return this.name;
 	}
@@ -138,9 +139,6 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		if (this.variables == null) {
 			List underlyingVariables = this.stackFrame.variables();
 			this.variables = new ArrayList(underlyingVariables.size() + 1);
-
-
-	
 			for (Iterator iterator = underlyingVariables.iterator(); iterator.hasNext();) {
 				Variable variable = (Variable) iterator.next();
 				JavaScriptVariable jsdiVariable = new JavaScriptVariable(this, variable);

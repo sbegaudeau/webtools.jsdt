@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.ui;
 
 import java.io.File;
-import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 import org.eclipse.core.filesystem.EFS;
@@ -46,6 +46,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
+import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptValue;
 
 /**
@@ -172,7 +173,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(URIUtil.lastSegment(script.sourceURI()));
 		buffer.append(" ("); //$NON-NLS-1$
-		buffer.append(script.sourceURI().toString());
+		buffer.append(TextUtils.shortenText(script.sourceURI().toString(), 100));
 		buffer.append(")"); //$NON-NLS-1$
 		return buffer.toString();
 	}
@@ -262,8 +263,13 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @return
 	 */
 	String getElementPath(String path) {
-		if(! showQualifiedNames()) {
-			return URIUtil.lastSegment(URI.create(path));
+		if(!showQualifiedNames()) {
+			try {
+				return URIUtil.lastSegment(URIUtil.fromString(path));
+			}
+			catch(URISyntaxException urise) {
+				JavaScriptDebugUIPlugin.log(urise);
+			}
 		}
 		return path;
 	}
