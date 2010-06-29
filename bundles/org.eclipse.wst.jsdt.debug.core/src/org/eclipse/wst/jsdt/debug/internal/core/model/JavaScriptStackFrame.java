@@ -104,10 +104,10 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 */
 	public String getName() throws DebugException {
 		if (this.name == null) {
-			this.name = TextUtils.shortenText(NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
-									this.stackFrame.location().scriptReference().sourceURI().toString(), 
+			this.name = NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
+									TextUtils.shortenText(this.stackFrame.location().scriptReference().sourceURI().toString(), 100), 
 									Integer.toString(stackFrame.location().lineNumber()) 
-									}), 100);
+									});
 		}
 		return this.name;
 	}
