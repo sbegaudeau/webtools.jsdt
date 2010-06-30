@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.core.launching;
 
 import java.io.ByteArrayInputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -28,6 +29,7 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.model.Script;
 
 /**
  * Default source lookup participant
@@ -72,11 +74,6 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 					}
 				}
 			}
-			//try to find it using the source tab infos
-			/*Object[] sources = super.findSourceElements(object);
-			if(sources != null && sources.length > 0) {
-				return sources;
-			}*/
 			//else show the temp source
 			return showExternalSource(getSource(object), sourceURI);
 		}
@@ -109,7 +106,11 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	private URI getSourceURI(Object object) {
 		if(object instanceof IJavaScriptStackFrame) {
 			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) object;
-			return URI.create(jframe.getSourcePath());
+			try {
+				return URIUtil.fromString(jframe.getSourcePath());
+			} catch (URISyntaxException e) {
+				JavaScriptDebugPlugin.log(e);
+			}
 		}
 		if(object instanceof IScript) {
 			IScript script = (IScript) object;
@@ -126,13 +127,17 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @return the collection of files to show in external editors
 	 */
 	private Object[] showExternalSource(String source, URI uri) {
+		if(source == null) {
+			return NO_SOURCE;
+		}
 		try {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
-			String filename = URIUtil.lastSegment(uri);
+			String filename = Script.resolveName(uri);
 			String uriHash =  Integer.toString(uri.toString().hashCode());
 			String sourceHash = Integer.toString(source.hashCode());
 			IPath path = new Path(uriHash).append(sourceHash).append(filename);
-			if(path.getFileExtension() == null) {
+			String ext = path.getFileExtension(); 
+			if(ext == null || !Constants.JS_EXTENSION.equals(ext)) {
 				path = path.addFileExtension(Constants.JS_EXTENSION);
 			}
 			IFile file = project.getFile(path);

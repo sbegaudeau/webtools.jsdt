@@ -12,13 +12,11 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugEvent;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.DebugPlugin;
@@ -64,20 +62,6 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint
 public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJavaScriptDebugTarget, IDebugEventSetListener, ILaunchListener, IJavaScriptEventListener {
 
 	static final String DEFAULT_NAME = ModelMessages.JSDIDebugTarget_jsdi_debug_target;
-
-	/**
-	 * Comparator to sort scripts by name
-	 */
-	static class ScriptComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			return URIUtil.lastSegment(((IScript)o1).sourceURI()).compareTo(URIUtil.lastSegment(((IScript)o2).sourceURI()));
-		}
-	}
-	
-	/**
-	 * Comparator for scripts
-	 */
-	static Comparator scriptcompare = new ScriptComparator(); 
 	
 	/**
 	 * The cached collection of scripts, sorted by name
@@ -107,7 +91,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	private ScriptLoadRequest scriptLoadrequest;
 
 	private DebuggerStatementRequest debuggerStatementRequest;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -288,7 +272,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			ScriptReference script = null;
 			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 				script = (ScriptReference) iter.next();
-				if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
+				if (Script.resolveName(script.sourceURI()).equals(name)) {
 					byname.add(script);
 				}
 			}
@@ -307,7 +291,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			IScript script = null;
 			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 				script = (IScript) iter.next();
-				if (URIUtil.lastSegment(script.sourceURI()).equals(name)) {
+				if (Script.resolveName(script.sourceURI()).equals(name)) {
 					byname.add(script);
 				}
 			}
@@ -327,7 +311,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 				for (int i = 0; i < all.size(); i++) {
 					iScriptCache.add(new Script(this, (ScriptReference) all.get(i)));
 				}
-				Collections.sort(iScriptCache, scriptcompare);
+				Collections.sort(iScriptCache);
 			}
 		}
 		if(iScriptCache == null) {

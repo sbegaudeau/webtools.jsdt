@@ -12,15 +12,17 @@ package org.eclipse.wst.jsdt.debug.internal.core.model;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 
 /**
- * Wrapper for a {@link ScriptReference}
+ * Wrapper for a {@link ScriptReference} to display it in the debug view
  * 
  * @since 1.0
  */
-public class Script extends JavaScriptDebugElement implements IScript {
+public class Script extends JavaScriptDebugElement implements IScript, Comparable {
 
 	private ScriptReference script = null;
 	
@@ -44,5 +46,30 @@ public class Script extends JavaScriptDebugElement implements IScript {
 	 */
 	public URI sourceURI() {
 		return this.script.sourceURI();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		if(o instanceof Script) {
+			Script s2 = (Script) o;
+			return sourceURI().toString().compareTo(s2.sourceURI().toString());
+		}
+		return 0;
+	}
+	
+	/**
+	 * Helper method to compute a usable name in the event the source URI has a path of "/"
+	 * 
+	 * @param sourceuri
+	 * @return the name to use from the URI
+	 */
+	public static String resolveName(URI sourceuri) {
+		String name = URIUtil.lastSegment(sourceuri);
+		if(name == null) {
+			name = new Path(sourceuri.getSchemeSpecificPart()).lastSegment();
+		}
+		return name;
 	}
 }

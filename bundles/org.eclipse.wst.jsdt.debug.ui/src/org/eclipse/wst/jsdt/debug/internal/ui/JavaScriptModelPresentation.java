@@ -170,12 +170,8 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @return the display text for the given script
 	 */
 	String getScriptText(IScript script) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(URIUtil.lastSegment(script.sourceURI()));
-		buffer.append(" ("); //$NON-NLS-1$
-		buffer.append(TextUtils.shortenText(script.sourceURI().toString(), 100));
-		buffer.append(")"); //$NON-NLS-1$
-		return buffer.toString();
+		String uri = script.sourceURI().toString();
+		return TextUtils.shortenText(uri, 100);
 	}
 
 	/**

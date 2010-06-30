@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptThread;
+import org.eclipse.wst.jsdt.debug.internal.core.model.Script;
 
 /**
  * Abstract representation of a JSDI breakpoint
@@ -149,18 +151,23 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			return;
 		}
 		
-		List/* ScriptReference */scripts = target.underlyingScripts(URIUtil.lastSegment(URI.create(scriptPath)));
-		boolean success = true;
-		for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-			ScriptReference script = (ScriptReference) iter.next();
-			if (scriptPathMatches(script))
-				success &= createRequest(target, script);
-		}
-		if (success) {
-			if (this.targets == null) {
-				this.targets = new HashSet();
+		try {
+			List/* ScriptReference */scripts = target.underlyingScripts(Script.resolveName(URIUtil.fromString(scriptPath)));
+			boolean success = true;
+			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+				ScriptReference script = (ScriptReference) iter.next();
+				if (scriptPathMatches(script))
+					success &= createRequest(target, script);
 			}
-			this.targets.add(target);
+			if (success) {
+				if (this.targets == null) {
+					this.targets = new HashSet();
+				}
+				this.targets.add(target);
+			}
+		}
+		catch(URISyntaxException urise) {
+			JavaScriptDebugPlugin.log(urise);
 		}
 	}
 
