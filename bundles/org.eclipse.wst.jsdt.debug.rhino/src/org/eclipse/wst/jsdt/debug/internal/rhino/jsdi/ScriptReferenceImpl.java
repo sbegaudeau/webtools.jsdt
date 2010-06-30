@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
@@ -145,9 +146,9 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 					IPath path = new Path((String) this.sourceProperties.get(Constants.BUNDLE_SYMBOLICNAME));
 					path = path.append((String) this.sourceProperties.get(JSONConstants.PATH));
 					path = path.append((String) this.sourceProperties.get(JSONConstants.NAME));
-					this.sourceuri = URI.create(path.toString());
+					this.sourceuri = URIUtil.fromString(path.toString());
 				} else if (this.sourcePath != null) {
-					this.sourceuri = URI.create(sourcePath);
+					this.sourceuri = URIUtil.fromString(sourcePath);
 				} else {
 					this.sourceuri = RhinoDebugPlugin.fileURI(new Path("script")); //$NON-NLS-1$
 				}
