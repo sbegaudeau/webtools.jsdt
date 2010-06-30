@@ -191,6 +191,7 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 		this.argumentsgroup.getParent().layout(true);
 		this.argumentsgroup.setVisible(true);
 		this.argumentsgroup.layout(true);
+		updateLaunchConfigurationDialog();
 	}
 	
 	/* (non-Javadoc)
