@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: JSDT Crossfire Debug Support
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.crossfire;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin
-Bundle-Vendor: Eclipse
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.jsdt.debug.core;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
