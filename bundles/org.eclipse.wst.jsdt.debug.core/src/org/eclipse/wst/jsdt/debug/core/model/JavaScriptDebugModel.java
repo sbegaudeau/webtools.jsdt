@@ -98,9 +98,6 @@ public class JavaScriptDebugModel {
 			return NumberValue.NAN;
 		}
 		double d = n.doubleValue();
-		if (d != d) {
-			return NumberValue.NAN;
-		}
 		if (d == Double.POSITIVE_INFINITY) {
 			return NumberValue.INFINITY;
 		}
