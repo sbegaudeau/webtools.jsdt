@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -320,6 +320,46 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		buf.append("\n");
 		buf.append("function X() {\n");
 		buf.append("}\n");
+		assertEqualString(preview, buf.toString());
+	}
+	
+	/**
+	 * insert a new function in an object literal
+	 */
+	public void test0009() throws Exception {
+		IPackageFragment pack1= fSourceFolder.createPackageFragment("test0009", false, null);
+		StringBuffer buf= new StringBuffer();
+		buf.append("var o = {\n");
+		buf.append("con : function(args){},\n");
+		buf.append("fun1 : function(args){}\n");
+		buf.append("};\n");
+		
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		
+		JavaScriptUnit astRoot= createCU(cu, false);
+		
+		astRoot.recordModifications();
+		
+		AST a = astRoot.getAST();
+		
+		List statements = astRoot.statements();
+		VariableDeclarationStatement varDeclaration = (VariableDeclarationStatement)statements.get(0);
+		VariableDeclarationFragment frag = (VariableDeclarationFragment) varDeclaration.fragments().get(0);
+		ObjectLiteral obLit = (ObjectLiteral) frag.getInitializer();
+		List fields = obLit.fields();
+		ObjectLiteralField newObjectLiteralField = a.newObjectLiteralField();
+		newObjectLiteralField.setFieldName(a.newSimpleName("newMethod"));
+		newObjectLiteralField.setInitializer(a.newFunctionExpression());
+		fields.add(newObjectLiteralField);
+
+		String preview = evaluateRewrite(cu, astRoot);
+		
+		buf= new StringBuffer();
+		buf.append("var o = {\n");
+		buf.append("con : function(args){},\n");
+		buf.append("fun1 : function(args){}, ");
+		buf.append("newMethod : function (){}\n");
+		buf.append("};\n");
 		assertEqualString(preview, buf.toString());
 	}
 }
