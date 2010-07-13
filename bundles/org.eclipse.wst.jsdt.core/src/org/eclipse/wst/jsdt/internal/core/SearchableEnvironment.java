@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -432,25 +432,34 @@ public class SearchableEnvironment implements INameEnvironment,
 			} else {
 				excludePath = null;
 			}
-			int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
+			
+			//int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
+			// just use the simple name field to hold the full type name
 			char[] qualification, simpleName;
-			if (lastDotIndex < 0) {
-				qualification = null;
-				if (camelCaseMatch) {
-					simpleName = prefix;
-				} else {
-					simpleName = CharOperation.toLowerCase(prefix);
-				}
+			qualification = null;
+			if (camelCaseMatch) {
+				simpleName = prefix;
 			} else {
-				qualification = CharOperation.subarray(prefix, 0, lastDotIndex);
-				if (camelCaseMatch) {
-					simpleName = CharOperation.subarray(prefix,
-							lastDotIndex + 1, prefix.length);
-				} else {
-					simpleName = CharOperation.toLowerCase(CharOperation
-							.subarray(prefix, lastDotIndex + 1, prefix.length));
-				}
+				simpleName = CharOperation.toLowerCase(prefix);
 			}
+			
+//			if (lastDotIndex < 0 || true) {
+//				qualification = null;
+//				if (camelCaseMatch) {
+//					simpleName = prefix;
+//				} else {
+//					simpleName = CharOperation.toLowerCase(prefix);
+//				}
+//			} else {
+//				qualification = CharOperation.subarray(prefix, 0, lastDotIndex);
+//				if (camelCaseMatch) {
+//					simpleName = CharOperation.subarray(prefix,
+//							lastDotIndex + 1, prefix.length);
+//				} else {
+//					simpleName = CharOperation.toLowerCase(CharOperation
+//							.subarray(prefix, lastDotIndex + 1, prefix.length));
+//				}
+//			}
 
 			IProgressMonitor progressMonitor = new IProgressMonitor() {
 				boolean isCanceled = false;

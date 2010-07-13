@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -199,42 +199,62 @@ public String toString() {
 }
 
 public FieldBinding[] availableFields() {
-	return referenceBinding.availableFields();
+	if(referenceBinding != null)
+		return referenceBinding.availableFields();
+	return new FieldBinding[0];
 }
 
 public MethodBinding[] availableMethods() {
-	return referenceBinding.availableMethods();
+	if(referenceBinding != null)
+		return referenceBinding.availableMethods();
+	return new MethodBinding[0];
 }
 
 public int fieldCount() {
-	return referenceBinding.fieldCount();
+	if(referenceBinding != null)
+		return referenceBinding.fieldCount();
+	return 0;
 }
 
 public FieldBinding[] fields() {
-	return referenceBinding.fields();
+	if(referenceBinding != null)
+		return referenceBinding.fields();
+	return new FieldBinding[0];
 }
 
 public InferredType getInferredType() {
-	return referenceBinding.getInferredType();
+	if(referenceBinding != null)
+		return referenceBinding.getInferredType();
+	return null;
 }
 
 public MethodBinding[] getMethods(char[] selector) {
-	return referenceBinding.getMethods(selector);
+	if(referenceBinding != null)
+		return referenceBinding.getMethods(selector);
+	return new MethodBinding[0];
 }
 
 boolean implementsMethod(MethodBinding method) {
-	return referenceBinding.implementsMethod(method);
+	if(referenceBinding != null)
+		return referenceBinding.implementsMethod(method);
+	return false;
 }
 
 public MethodBinding[] methods() {
-	return referenceBinding.methods();
+	if(referenceBinding != null)
+		return referenceBinding.methods();
+	return new MethodBinding[0];
 }
 public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
-	return referenceBinding.getExactMethod(selector, argumentTypes, refScope);
+	if(referenceBinding != null)
+		return referenceBinding.getExactMethod(selector, argumentTypes, refScope);
+	return null;
 }
 
 public FieldBinding getField(char[] fieldName, boolean needResolve) {
-	return referenceBinding.getField(fieldName, needResolve);
+	if(referenceBinding != null)
+		return referenceBinding.getField(fieldName, needResolve);
+	return null;
 }
 
 }

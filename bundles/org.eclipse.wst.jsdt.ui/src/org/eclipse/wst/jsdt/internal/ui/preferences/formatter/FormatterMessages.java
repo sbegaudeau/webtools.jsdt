@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -326,6 +326,8 @@ final class FormatterMessages extends NLS {
 	public static String BlankLinesTabPage_function_option_before_field_decls;
 	public static String BlankLinesTabPage_function_option_before_function_decls;
 	public static String BlankLinesTabPage_function_option_at_beginning_of_function_body;
+	public static String BlankLinesTabPage_preview_comment_between_here;
+	public static String BlankLinesTabPage_preview_comment_and_here_are_5_blank_lines;
 
 	public static String BracesTabPage_preview_header;
 	public static String BracesTabPage_position_same_line;

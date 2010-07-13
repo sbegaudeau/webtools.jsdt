@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -193,13 +193,7 @@ public final class WhiteSpaceOptions {
     "function foo() {};\nfunction bar(x,y){}"); //$NON-NLS-1$
 
     private final PreviewSnippet ARRAY_DECL_PREVIEW= new PreviewSnippet(
-//  CodeFormatter.K_STATEMENTS, 
-//  "int [] array0= new int [] {};\n" +  //$NON-NLS-1$
-//  "int [] array1= new int [] {1, 2, 3};\n" +  //$NON-NLS-1$
-//  "int [] array2= new int[3];"); //$NON-NLS-1$
-    CodeFormatter.K_EXPRESSION, 
-    "var arr0=new Array();\n" +  //$NON-NLS-1$
-    "var arr1=new Array(4);\n" +  //$NON-NLS-1$
+    CodeFormatter.K_STATEMENTS, 
     "var arr2=[];\n" + //$NON-NLS-1$
     "var arr3=[4];\n" + //$NON-NLS-1$
     "var arr4=[\'one\',\'two\',\'three\']"); //$NON-NLS-1$
@@ -567,8 +561,6 @@ public final class WhiteSpaceOptions {
 //		createTypecastTree(workingValues, expressions);
 		
 		final InnerNode arrays= new InnerNode(null, workingValues, FormatterMessages.WhiteSpaceTabPage_arrays); 
-		createArrayDeclarationTree(workingValues, arrays);
-		createArrayAllocTree(workingValues, arrays);
 		createArrayInitializerTree(workingValues, arrays);
 		createArrayElementAccessTree(workingValues, arrays);
 		
@@ -700,7 +692,6 @@ public final class WhiteSpaceOptions {
             createOption(functionDecl, workingValues, FormatterMessages.WhiteSpaceOptions_method, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_METHOD_DECLARATION, METHOD_DECL_PREVIEW); 
         }
         
-        createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_initializer, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_block, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_BLOCK, BLOCK_PREVIEW); 
         createOption(parent, workingValues, FormatterMessages.WhiteSpaceOptions_switch, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_SWITCH, SWITCH_PREVIEW); 
     
@@ -997,20 +988,11 @@ public final class WhiteSpaceOptions {
     private InnerNode createArrayInitializerTree(Map workingValues, InnerNode parent) {
         final InnerNode root= new InnerNode(parent, workingValues, FormatterMessages.WhiteSpaceTabPage_arrayinit); 
    
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_opening_brace, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_opening_brace, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACE_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_closing_brace, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACE_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_comma, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_COMMA_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_comma, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_COMMA_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_between_empty_braces, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_BRACES_IN_ARRAY_INITIALIZER, ARRAY_DECL_PREVIEW); 
-        return root;
-    }
-    
-    private InnerNode createArrayDeclarationTree(Map workingValues, InnerNode parent) {
-        final InnerNode root= new InnerNode(parent, workingValues, FormatterMessages.WhiteSpaceTabPage_arraydecls); 
-        
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_opening_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACKET_IN_ARRAY_TYPE_REFERENCE, ARRAY_DECL_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_between_empty_brackets, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BETWEEN_BRACKETS_IN_ARRAY_TYPE_REFERENCE, ARRAY_DECL_PREVIEW); 
         return root;
     }
     
@@ -1021,15 +1003,6 @@ public final class WhiteSpaceOptions {
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_opening_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACKET_IN_ARRAY_REFERENCE, ARRAY_REF_PREVIEW); 
         createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_closing_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACKET_IN_ARRAY_REFERENCE, ARRAY_REF_PREVIEW); 
         
-        return root;
-    }
-    
-    private InnerNode createArrayAllocTree(Map workingValues, InnerNode parent) {
-        final InnerNode root= new InnerNode(parent, workingValues, FormatterMessages.WhiteSpaceTabPage_arrayalloc); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_opening_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION, ARRAY_DECL_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_after_opening_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_AFTER_OPENING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION, ARRAY_DECL_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_before_closing_bracket, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_CLOSING_BRACKET_IN_ARRAY_ALLOCATION_EXPRESSION, ARRAY_DECL_PREVIEW); 
-        createOption(root, workingValues, FormatterMessages.WhiteSpaceTabPage_between_empty_brackets, DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BETWEEN_EMPTY_BRACKETS_IN_ARRAY_ALLOCATION_EXPRESSION, ARRAY_DECL_PREVIEW); 
         return root;
     }
     

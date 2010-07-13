@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IParent;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -35,6 +36,7 @@ public class NamespaceGroup implements IAdaptable {
 	int fNamePrefixLength;
 	private IPackageFragmentRoot fPackageFragmentRoot;
 	private PackageFragmentRootContainer fPackageFragmentRootContainer;
+	private IJavaScriptUnit fJavaScriptUnit;
 
 	public static final class WorkBenchAdapter implements IWorkbenchAdapter {
 		private static final String EMPTY_STRING = ""; //$NON-NLS-1$
@@ -90,24 +92,66 @@ public class NamespaceGroup implements IAdaptable {
 
 	}
 
+	/**
+	 * <p>Create a {@link NamespaceGroup} with a {@link IPackageFragmentRoot} as the parent</p>
+	 * 
+	 * @param root parent of this group
+	 * @param prefix the prefix of this group
+	 */
 	public NamespaceGroup(IPackageFragmentRoot root, String prefix) {
 		fPackageFragmentRoot = root;
 		fNamePrefix = prefix;
 		fNamePrefixLength = fNamePrefix.length();
+		this.fJavaScriptUnit = null;
 	}
 
+	/**
+	 * <p>Create a {@link NamespaceGroup} with a {@link PackageFragmentRootContainer} as the parent</p>
+	 * 
+	 * @param root parent of this group
+	 * @param prefix the prefix of this group
+	 */
 	public NamespaceGroup(PackageFragmentRootContainer root, String prefix) {
 		fPackageFragmentRootContainer = root;
 		fNamePrefix = prefix;
 		fNamePrefixLength = fNamePrefix.length();
+		this.fJavaScriptUnit = null;
+	}
+	
+	/**
+	 * <p>Create a {@link NamespaceGroup} with a {@link IJavaScriptUnit} as the parent</p>
+	 * 
+	 * @param unit parent of this group
+	 * @param prefix the prefix of this group
+	 */
+	public NamespaceGroup(IJavaScriptUnit unit, String prefix) {
+		fNamePrefix = prefix;
+		fNamePrefixLength = fNamePrefix.length();
+		this.fJavaScriptUnit = unit;
 	}
 
+	/**
+	 * @return If this group has a {@link IPackageFragmentRoot} as its parent then
+	 * returns that parent, else returns <code>null</code>
+	 */
 	public IPackageFragmentRoot getPackageFragmentRoot() {
 		return fPackageFragmentRoot;
 	}
 
+	/**
+	 * @return If this group has a {@link PackageFragmentRootContainer} as its parent then
+	 * returns that parent, else returns <code>null</code>
+	 */
 	public PackageFragmentRootContainer getPackageFragmentRootContainer() {
 		return fPackageFragmentRootContainer;
+	}
+	
+	/**
+	 * @return If this group has a {@link IJavaScriptUnit} as its parent then
+	 * returns that parent, else returns <code>null</code>
+	 */
+	public IJavaScriptUnit getJavaScriptUnit() {
+		return this.fJavaScriptUnit;
 	}
 	
 	Object getParent() {
@@ -115,6 +159,9 @@ public class NamespaceGroup implements IAdaptable {
 			return fPackageFragmentRoot;
 		if (fPackageFragmentRootContainer != null)
 			return fPackageFragmentRootContainer;
+		if(fJavaScriptUnit != null) {
+			return this.fJavaScriptUnit;
+		}
 		return null;
 	}
 	
@@ -188,7 +235,7 @@ public class NamespaceGroup implements IAdaptable {
 	public Object[] getChildren() {
 		Object[] children = null;
 		try {
-			children = fPackageFragmentRoot.getChildren();
+			children = ((IParent)this.getParent()).getChildren();
 		}
 		catch (JavaScriptModelException ex1) {
 			// TODO Auto-generated catch block

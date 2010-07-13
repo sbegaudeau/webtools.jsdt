@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -845,8 +845,11 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = methodDeclaration.modifiers;
-		if (method.isStatic)
+		if (method.isStatic) {
 			methodInfo.modifiers |= ClassFileConstants.AccStatic;
+		}
+		methodInfo.returnType = methodDeclaration.inferredType == null ?
+				null : methodDeclaration.inferredType.getName();
 		methodInfo.name =method.name;
 		methodInfo.nameSourceStart = method.nameStart;
 		methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2009 IBM Corporation and others.
+ * Copyright (c) 2002, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2142,7 +2142,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		final Expression[] expressions = arrayInitializer.expressions;
 		if (expressions != null) {
 			String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
-			formatOpeningBracket(array_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+			formatOpeningBracket(array_initializer_brace_position, false);
 
 			int expressionsLength = expressions.length;
 			final boolean insert_new_line_after_opening_brace = this.preferences.insert_new_line_after_opening_brace_in_array_initializer;
@@ -2224,13 +2224,14 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			}
 		} else {
 			boolean keepEmptyArrayInitializerOnTheSameLine = this.preferences.keep_empty_array_initializer_on_one_line;
-			String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
+			
 			if (keepEmptyArrayInitializerOnTheSameLine) {
-				this.scribe.printNextToken(TerminalTokens.TokenNameLBRACKET, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+				this.scribe.printNextToken(TerminalTokens.TokenNameLBRACKET, false);
 				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET, this.preferences.insert_space_between_empty_braces_in_array_initializer);
 			} else {
-				formatOpeningBracket(array_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
-				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET, false);
+				String array_initializer_brace_position = this.preferences.brace_position_for_array_initializer;
+				formatOpeningBracket(array_initializer_brace_position, false);
+				this.scribe.printNextToken(TerminalTokens.TokenNameRBRACKET, this.preferences.insert_space_between_empty_braces_in_array_initializer);
 				if (array_initializer_brace_position.equals(DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED)) {
 					this.scribe.unIndent();
 				}
@@ -2252,7 +2253,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	final ObjectLiteralField[] expressions = objectLiteral.fields;
 	if (expressions != null) {
 		String objlit_initializer_brace_position = this.preferences.brace_position_for_objlit_initializer;
-		formatOpeningBrace(objlit_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+		formatOpeningBrace(objlit_initializer_brace_position, false);
 
 		int expressionsLength = expressions.length;
 		final boolean insert_new_line_after_opening_brace = this.preferences.insert_new_line_after_opening_brace_in_objlit_initializer;
@@ -2343,10 +2344,10 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		boolean keepEmptyObjLitInitializerOnTheSameLine = this.preferences.keep_empty_objlit_initializer_on_one_line;
 		String objlit_initializer_brace_position = this.preferences.brace_position_for_objlit_initializer;
 		if (keepEmptyObjLitInitializerOnTheSameLine) {
-			this.scribe.printNextToken(TerminalTokens.TokenNameLBRACE, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+			this.scribe.printNextToken(TerminalTokens.TokenNameLBRACE, false);
 			this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE, this.preferences.insert_space_between_empty_braces_in_array_initializer);
 		} else {
-			formatOpeningBrace(objlit_initializer_brace_position, this.preferences.insert_space_before_opening_brace_in_array_initializer);
+			formatOpeningBrace(objlit_initializer_brace_position, false);
 			this.scribe.printNextToken(TerminalTokens.TokenNameRBRACE, false);
 			if (objlit_initializer_brace_position.equals(DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED)) {
 				this.scribe.unIndent();

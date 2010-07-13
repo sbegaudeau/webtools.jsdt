@@ -356,14 +356,22 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			if (parentElement instanceof IPackageFragmentRoot && ((IPackageFragmentRoot)parentElement).isVirtual()) {
 				return getLibraryChildren((IPackageFragmentRoot)parentElement, fIsFlatLayout, null);
 			}
-			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRoot().isVirtual()) {
+			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRoot() != null && ((NamespaceGroup) parentElement).getPackageFragmentRoot().isVirtual()) {
 				return getLibraryChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement));
 			}
-			else if (parentElement instanceof IPackageFragmentRoot && IIncludePathEntry.CPE_SOURCE == ((IPackageFragmentRoot) parentElement).getRawIncludepathEntry().getEntryKind()) {
+			else if(parentElement instanceof IPackageFragmentRoot && IIncludePathEntry.CPE_SOURCE == ((IPackageFragmentRoot) parentElement).getRawIncludepathEntry().getEntryKind()) {
 				return getSourceChildren(parentElement, fIsFlatLayout, null);
 			}
-			else if (parentElement instanceof NamespaceGroup && IIncludePathEntry.CPE_SOURCE == ((NamespaceGroup) parentElement).getPackageFragmentRoot().getRawIncludepathEntry().getEntryKind()) {
+			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRoot() != null && IIncludePathEntry.CPE_SOURCE == ((NamespaceGroup) parentElement).getPackageFragmentRoot().getRawIncludepathEntry().getEntryKind()) {
 				return getSourceChildren(((NamespaceGroup) parentElement).getPackageFragmentRoot(), true, ((NamespaceGroup) parentElement));
+			}
+			// if script unit
+			else if (parentElement instanceof IJavaScriptUnit) {
+				return getSourceChildren(parentElement, fIsFlatLayout, null);
+			}
+			// if group with script unit as parent
+			else if(parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getJavaScriptUnit() != null) {
+				return getSourceChildren(((NamespaceGroup) parentElement).getJavaScriptUnit(), true, ((NamespaceGroup) parentElement));
 			}
 			return super.getChildren(parentElement);
 		} catch (CoreException e) {
@@ -386,7 +394,16 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	}
 
 	private Object[] getSourceChildren(Object parentElement, boolean neverGroup, NamespaceGroup onlyGroup) throws JavaScriptModelException {
-		Object[] rawChildren = ((IPackageFragmentRoot) parentElement).getChildren();
+		/* if the parent is a fragment root use its children
+		 * else if parent element is a script unit, use it as the child
+		 */
+		Object[] rawChildren = new Object[0];
+		if(parentElement instanceof IPackageFragmentRoot) {
+			rawChildren = ((IParent) parentElement).getChildren();
+		} else if(parentElement instanceof IJavaScriptUnit) {
+			rawChildren = new Object[] { parentElement };
+		}
+		
 		if (rawChildren == null)
 			return new Object[0];
 
@@ -450,9 +467,18 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 								if (groupEnd > 0) {
 									String groupName = displayName.substring(0, groupEnd);
 									if (!groups.containsKey(groupName)) {
-										NamespaceGroup group = new NamespaceGroup((IPackageFragmentRoot) parentElement, groupName);
-										groups.put(groupName, group);
-										allChildren.add(group);
+										// create the group based on the parent type
+										NamespaceGroup group = null;
+										if(parentElement instanceof IPackageFragmentRoot) {
+											group = new NamespaceGroup((IPackageFragmentRoot) parentElement, groupName);
+										} else if(parentElement instanceof IJavaScriptUnit) {
+											group = new NamespaceGroup((IJavaScriptUnit) parentElement, groupName);
+										}
+										
+										if(group != null) {
+											groups.put(groupName, group);
+											allChildren.add(group);
+										}
 									}
 								}
 								else {

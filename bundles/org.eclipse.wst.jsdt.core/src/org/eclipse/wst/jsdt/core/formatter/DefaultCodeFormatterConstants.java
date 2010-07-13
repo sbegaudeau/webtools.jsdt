@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2540,7 +2540,9 @@ public class DefaultCodeFormatterConstants {
 	 * </pre>
 	 * @see JavaScriptCore#INSERT
 	 * @see JavaScriptCore#DO_NOT_INSERT
-	 *  
+	 * 
+	 * @deprecated No longer used internally.  Will be removed in future release. 
+	 * Preference is overshadowed by {@link #FORMATTER_INSERT_SPACE_AFTER_ASSIGNMENT_OPERATOR}
 	 */
 	public static final String FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER = JavaScriptCore.PLUGIN_ID + ".formatter.insert_space_before_opening_brace_in_array_initializer"; //$NON-NLS-1$
 	/**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -534,8 +534,8 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 						}
 					}
 					IFolder removedPackageFolder = md.binaryFolder.getFolder(removedPackagePath);
-					if (removedPackageFolder.exists())
-						removedPackageFolder.delete(IResource.FORCE, null);
+//					if (removedPackageFolder.exists())
+//						removedPackageFolder.delete(IResource.FORCE, null);
 					// add dependents even when the package thinks it does not exist to be on the safe side
 					if (JavaBuilder.DEBUG)
 						System.out.println("Found removed package " + removedPackagePath); //$NON-NLS-1$

@@ -328,6 +328,7 @@ if( this.isPrototype() ){
 	   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
 	if(possibleTypeBinding != null && possibleTypeBinding.isValidBinding() && (TypeBinding)possibleTypeBinding != scope.getJavaLangObject()) {
 		this.typeBinding=(TypeBinding)possibleTypeBinding;
+		constant = Constant.NotAConstant;
 		this.bits|=Binding.TYPE;
 		return this.typeBinding;
 	}

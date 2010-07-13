@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,27 +57,35 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 */
 	protected IMember resolveMember() throws JavaScriptModelException {
 		char[] declarationSignature= fProposal.getDeclarationSignature();
-		
+		IFunction func = null;
 		if (declarationSignature!=null) {
 			String typeName = SignatureUtil.stripSignatureToFQN(String
 					.valueOf(declarationSignature));
 			String name = String.valueOf(fProposal.getName());
 			String[] parameters = Signature.getParameterTypes(String
 					.valueOf(fProposal.getSignature()));
-			IType type = fJavaProject.findType(typeName);
-			if (type != null) {
-				boolean isConstructor = fProposal.isConstructor();
-
-				return findMethod(name, parameters, isConstructor, type);
-			}
-			else
-			{
+			//search all the possible types until a match is found
+			IType[] types = fJavaProject.findTypes(typeName);
+			if(types != null && types.length >0) {
+				for(int i = 0; i < types.length && func != null; ++i) {
+					IType type = types[i];
+					if (type != null) {
+						boolean isConstructor = fProposal.isConstructor();
+						try {
+							func = findMethod(name, parameters, isConstructor, type);
+						} catch(JavaScriptModelException e) {
+							//ignore, could not find method
+						}
+					}
+				}
+			} else {
 				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
-				if(typeRoot != null)
-					return typeRoot.getFunction(name, parameters);
+				if(typeRoot != null) {
+					func = typeRoot.getFunction(name, parameters);
+				}
 			}
 		}		
-		return null;
+		return func;
 	}
 
 	/* adapted from JavaModelUtil */

@@ -20,6 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
@@ -346,10 +349,28 @@ public class Util implements SuffixConstants {
 		}
 		return true;
 	}
-	/* TODO (philippe) should consider promoting it to CharOperation
-	 * Returns whether the given resource path matches one of the inclusion/exclusion
-	 * patterns.
-	 * NOTE: should not be asked directly using pkg root pathes
+	
+	/**
+	 * <p>If any inclusion patterns are provided then the given path is considered
+	 * excluded if it does not match one of the inclusion patterns or if it matches
+	 * an inclusion pattern and an exclusion pattern.  If no inclusion patterns are
+	 * provided then to be considered excluded the given pattern must match one of
+	 * the exclusion patterns.</p>
+	 * 
+	 * <p>NOTE: should not be asked directly using pkg root paths</p>
+	 * 
+	 * @param path determine if this path is excluded
+	 * @param inclusionPatterns if not <code>null</code> consider the given <code>path</code>
+	 * excluded if it does not match one of these paths, if <code>null</code> then a path is
+	 * only considered excluded if it matches one of the given <code>exclusionPatterns</code>
+	 * @param exclusionPatterns if the given <code>path</code> matches one
+	 * of these patterns then it is considered to be excluded
+	 * @param isFolderPath <code>true</code> if the given <code>path</code> is
+	 * a folder path, <code>false</code> otherwise
+	 * @return <code>true</code> if <code>inclusionPatterns</code> is not <code>null</code>
+	 * and the given <code>path</code> is not included, or if the given <code>path</code>
+	 * is included in the given <code>exclusionPatterns</code>
+	 * 
 	 * @see IIncludePathEntry#getInclusionPatterns
 	 * @see IIncludePathEntry#getExclusionPatterns
 	 */
@@ -371,7 +392,7 @@ public class Util implements SuffixConstants {
 						}
 					}
 				}
-				if (CharOperation.pathMatch(folderPattern, path, true, '/')) {
+				if (pathMatch(path, folderPattern)) {
 					break inclusionCheck;
 				}
 			}
@@ -382,7 +403,7 @@ public class Util implements SuffixConstants {
 		}
 		if (exclusionPatterns != null) {
 			for (int i = 0, length = exclusionPatterns.length; i < length; i++) {
-				if (CharOperation.pathMatch(exclusionPatterns[i], path, true, '/')) {
+				if (pathMatch(path, exclusionPatterns[i])) {
 					return true;
 				}
 			}
@@ -507,6 +528,54 @@ public class Util implements SuffixConstants {
 			name = singleNameReference.token;
 		}
 		return name;
+	}
+	
+	/**
+	 * <p>Determine if the given path is a match for the given match path.  If one path is
+	 * file system absolute and another is relative or absolute to the workspace then the
+	 * path that is not file system absolute will be converted to file system absolute.
+	 * The matching pattern can contain *, **, or ? wild cards.</p>
+	 * 
+	 * @param pathChars  check to see if this path matches the <code>matchpathChars</code>
+	 * @param matchPathChars check to see if the given <code>pathChars</code> match this pattern
+	 * @return <code>true</code> if the given <code>pathChars</code> match the given given
+	 * <code>matchPathChars<code>, <code>false</code> otherwise.
+	 */
+	public static boolean pathMatch(char[] pathChars, char[] matchPathChars) {
+		IPath path = new Path(new String(pathChars));
+		IPath matchPath = new Path(new String(matchPathChars));
+	
+		//determine if either path is file system absolute
+		IPath fileSystemWorkspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation();
+		boolean isPathFileSystemAbsolute = fileSystemWorkspacePath.isPrefixOf(path);
+		boolean isMatchPathFileSystemAbsolute = fileSystemWorkspacePath.isPrefixOf(matchPath);
+		
+		/* if the two paths are not both file system absolute or both workspace absolute
+		 * then transform the none file system absolute path to file system absolute
+		 */
+		if((!isPathFileSystemAbsolute && isMatchPathFileSystemAbsolute) || (isPathFileSystemAbsolute && !isMatchPathFileSystemAbsolute)){
+			if(!isPathFileSystemAbsolute) {
+				boolean hadTrailingSeparator = path.hasTrailingSeparator();
+				path = ResourcesPlugin.getWorkspace().getRoot().getFile(path).getLocation();
+				if(hadTrailingSeparator) {
+					path = path.addTrailingSeparator();
+				}
+			}
+			
+			if(!isMatchPathFileSystemAbsolute) {
+				boolean hadTrailingSeparator = matchPath.hasTrailingSeparator();
+				matchPath = ResourcesPlugin.getWorkspace().getRoot().getFile(matchPath).getLocation();
+				if(hadTrailingSeparator) {
+					matchPath = matchPath.addTrailingSeparator();
+				}
+			}
+		}
+		
+		//be sure both are absolute now (fixes 'project1\file.js' to '\project1\file.js')
+		path = path.makeAbsolute();
+		matchPath = matchPath.makeAbsolute();
+				
+		return CharOperation.pathMatch(matchPath.toPortableString().toCharArray(), path.toPortableString().toCharArray(), true, IPath.SEPARATOR);
 	}
 
 }

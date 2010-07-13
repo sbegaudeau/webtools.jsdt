@@ -662,6 +662,9 @@ public class Scribe {
 		final int editReplacementLength= edit.replacement.length();
 		final int editOffset= edit.offset;
 		if (editLength != 0) {
+			/* if edit is completely inside selected range
+			 * else if edit is spanning the beginning of the selected range
+			 */
 			if (this.textRegionStart <= editOffset && (editOffset + editLength - 1) <= this.textRegionEnd) {
 				if (editReplacementLength != 0 && editLength == editReplacementLength) {
 					for (int i = editOffset, max = editOffset + editLength; i < max; i++) {
@@ -673,7 +676,7 @@ public class Scribe {
 				} else {
 					return true;
 				}
-			} else if (editOffset + editLength == this.textRegionStart) {
+			} else if (editOffset <= this.textRegionStart && editOffset + editLength >= this.textRegionStart) {
 				int i = editOffset;
 				for (int max = editOffset + editLength; i < max; i++) {
 					int replacementStringIndex = i - editOffset;

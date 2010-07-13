@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -285,8 +285,11 @@ public class JavaScriptElementLabels {
 	 */
 	public final static long T_CATEGORY= 1L << 51;
 	
-	
+	/**
+	 * @deprecated no longer used
+	 */
 	public final static long SHOW_TYPE= 1L << 52;
+	
 	/**
 	 * Show category for all elements.
 	 * 
@@ -509,7 +512,7 @@ public class JavaScriptElementLabels {
 				String[] types= null;
 				int nParams= 0;
 				boolean renderVarargs= false;
-				if (getFlag(flags, M_PARAMETER_TYPES)&& getFlag(flags,SHOW_TYPE)) {
+				if (getFlag(flags, M_PARAMETER_TYPES)) {
 					if (resolvedSig != null) {
 						types= Signature.getParameterTypes(resolvedSig);
 					} else {
@@ -746,8 +749,7 @@ public class JavaScriptElementLabels {
 		int sigKind= Signature.getTypeSignatureKind(typeSig);
 		switch (sigKind) {
 			case Signature.BASE_TYPE_SIGNATURE:
-				if (getFlag(flags,SHOW_TYPE))
-					buf.append(Signature.toString(typeSig));
+				buf.append(Signature.toString(typeSig));
 				break;
 			case Signature.ARRAY_TYPE_SIGNATURE:
 				getTypeSignatureLabel(Signature.getElementType(typeSig), flags, buf);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * which should be replaced by the completion.
  */
 
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
@@ -99,5 +100,9 @@ public class CompletionOnMemberAccess extends FieldReference {
 		else
 			throw new CompletionNodeFound(this, this.receiverType, scope);
 		// array types are passed along to find the length field
+	}
+	
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {
+		throw new CompletionNodeFound(this, scope);
 	}
 }

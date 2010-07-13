@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -120,10 +120,12 @@ public class HandleFactory {
 			// path to a file in a directory
 			// Optimization: cache package fragment root handle and package handles
 			int rootPathLength = -1;
-			if (this.lastPkgFragmentRootPath == null
-				|| !(resourcePath.startsWith(this.lastPkgFragmentRootPath)
-					&& (rootPathLength = this.lastPkgFragmentRootPath.length()) > 0
-					&& resourcePath.charAt(rootPathLength) == '/')) {
+			//FIXME - may want to add some performance checks back here at some point
+			// Fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=317511
+//			if (this.lastPkgFragmentRootPath == null
+//				|| !(resourcePath.startsWith(this.lastPkgFragmentRootPath)
+//					&& (rootPathLength = this.lastPkgFragmentRootPath.length()) > 0
+//					&& resourcePath.charAt(rootPathLength) == '/')) {
 
 				if (resourcePath.endsWith("/")) //$NON-NLS-1$
 					resourcePath=resourcePath.substring(0,resourcePath.length()-1);
@@ -138,7 +140,7 @@ public class HandleFactory {
 				this.lastPkgFragmentRootPath = this.lastIsFullPath ? 
 						this.lastPkgFragmentRoot.getLocation().toString() : this.lastPkgFragmentRoot.getPath().toString();
 				this.packageHandles = new HashtableOfArrayToObject(5);
-			}
+			//}
 			// create handle
 			resourcePath = resourcePath.substring(this.lastPkgFragmentRootPath.length() + 1);
 			String[] simpleNames = new Path(resourcePath).segments();

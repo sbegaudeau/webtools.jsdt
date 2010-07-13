@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -145,7 +145,7 @@ public TypeDeclarationPattern(
 		if (simpleName!=null &&  (index=CharOperation.lastIndexOf('.',simpleName)) >0)
 		{
 			pkg=CharOperation.subarray(simpleName, 0, index);
-			simpleName=CharOperation.subarray(simpleName, index+1, simpleName.length);
+//			simpleName=CharOperation.subarray(simpleName, index+1, simpleName.length);
 		}
 
 	this.pkg = isCaseSensitive() ? pkg : CharOperation.toLowerCase(pkg);
@@ -232,8 +232,8 @@ public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 		return false;
 
 	// check package - exact match only
-	if (this.pkg != null && !CharOperation.equals(this.pkg, pattern.pkg, isCaseSensitive()))
-		return false;
+	//if (this.pkg != null && !CharOperation.equals(this.pkg, pattern.pkg, isCaseSensitive()))
+		//return false;
 
 	// check enclosingTypeNames - exact match only
 	if (this.enclosingTypeNames != null) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,6 +99,10 @@ public abstract class AbstractIndexer implements IIndexConstants {
 				name == null ? CharOperation.NO_CHAR : name,
 				packageName == null ? CharOperation.NO_CHAR : packageName);
 
+		addIndexEntry(TYPE_DECL, indexKey);
+		
+		// add a second key that includes the package name
+		indexKey = TypeDeclarationPattern.createIndexKey(modifiers, CharOperation.concat(packageName, name, '.'), packageName, enclosingTypeNames, secondary);
 		addIndexEntry(TYPE_DECL, indexKey);
 	}
 	public void addTypeReference(char[] typeName) {

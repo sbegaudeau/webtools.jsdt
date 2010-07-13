@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.ITypeReference;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -97,6 +98,12 @@ public char[] getSimpleTypeName()
 	char[][] typeName = getTypeName();
 	return typeName[typeName.length-1];
 }
+
+public char[] getFullTypeName() {
+	char[][] typeName = getTypeName();
+	return CharOperation.concatWith(typeName, '.');
+}
+
 public boolean isTypeReference() {
 	return true;
 }

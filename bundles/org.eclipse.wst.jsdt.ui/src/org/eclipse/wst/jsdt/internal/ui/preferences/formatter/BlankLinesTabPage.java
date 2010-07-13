@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,9 +25,9 @@ public class BlankLinesTabPage extends FormatterTabPage {
 	"var data2;\n" + //$NON-NLS-1$
 	"var data3;\n" + //$NON-NLS-1$
 	"function foo(otherdata) {\n" + //$NON-NLS-1$
-	"// Between here...\n" + //$NON-NLS-1$
+	"// " + FormatterMessages.BlankLinesTabPage_preview_comment_between_here + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 	"\n\n\n\n\n" + //$NON-NLS-1$
-	"// ...and here are 5 blank lines\n" + //$NON-NLS-1$
+	"// " + FormatterMessages.BlankLinesTabPage_preview_comment_and_here_are_5_blank_lines + "\n" + //$NON-NLS-1$ //$NON-NLS-2$
 	"  var first;\n" + //$NON-NLS-1$
 	"  var second;\n" + //$NON-NLS-1$
 	"  function foo2() {\n" + //$NON-NLS-1$

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,9 +17,11 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -34,7 +36,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 
 	private static final String SETTINGS_SECTION_NAME= "ProblemSeveritiesConfigurationBlock";  //$NON-NLS-1$
 	
-	private static final Key PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT = getJDTCoreKey("semanticValidation"); //$NON-NLS-1$
+	private static final Key PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT = getJDTCoreKey(JavaScriptCore.COMPILER_SEMANTIC_VALIDATION);
 	
 	// Preference store keys, see JavaScriptCore.getOptions
 	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNDEFINED_FIELD);
@@ -126,6 +128,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 
 	private ControlEnableState fBlockEnableState;
 	private Composite fControlsComposite;
+	private Button semanticCheckBox;
 	
 	public ProblemSeveritiesConfigurationBlock(IStatusChangeListener context, IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getKeys(), container);
@@ -177,15 +180,13 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		layout.marginHeight= 0;
 		layout.marginWidth= 0;
 		mainComp.setLayout(layout);
-
-		if (fProject == null) {
-			String label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableSemanticValidation;
-			addCheckBox(mainComp, label, PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, new String[]{"true", "false"}, 0); //$NON-NLS-1$ //$NON-NLS-2$
-			Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
-			horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
-			horizontalLine.setFont(mainComp.getFont());
-		}
-
+	
+		String label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableSemanticValidation;
+		semanticCheckBox = addCheckBox(mainComp, label, PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, new String[]{ENABLED, DISABLED}, 0);
+		Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
+		horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
+		horizontalLine.setFont(mainComp.getFont());
+		
 		Composite commonComposite= createStyleTabContent(mainComp);
 		GridData gridData= GridDataFactory.fillDefaults().grab(true, true).span(3, 1).create();
 		gridData.heightHint= fPixelConverter.convertHeightInCharsToPixels(20);
@@ -538,7 +539,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	}
 	
 	private void updateEnableStates() {
-		boolean notJustParseErrors = checkValue(PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, "true"); //$NON-NLS-1$
+		boolean notJustParseErrors = checkValue(PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, ENABLED);
 		enableConfigControls(notJustParseErrors);
 		
 		if (!notJustParseErrors) {
@@ -589,6 +590,17 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		IDialogSettings section= JavaScriptPlugin.getDefault().getDialogSettings().addNewSection(SETTINGS_SECTION_NAME);
 		storeSectionExpansionStates(section);
 		super.dispose();
+	}
+	
+	protected void controlChanged(Widget widget) {
+		if(widget == semanticCheckBox) {
+			String newValue= semanticCheckBox.getSelection() ? ENABLED : DISABLED;
+			ControlData data= (ControlData) widget.getData();
+			String oldValue= setValue(data.getKey(), newValue);
+			validateSettings(data.getKey(), oldValue, newValue);
+		} else  {
+			super.controlChanged(widget);
+		}
 	}
 	
 }

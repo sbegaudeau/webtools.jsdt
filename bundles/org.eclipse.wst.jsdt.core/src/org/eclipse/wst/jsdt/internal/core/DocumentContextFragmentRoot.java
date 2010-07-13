@@ -37,7 +37,6 @@ import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 public class DocumentContextFragmentRoot extends PackageFragmentRoot{
@@ -102,44 +101,47 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 					return false;
 				}
 			}
+			
+			this.foundPaths.add(path);
+			return true;
 
-			for(int i = 0;i<includedFiles.length;i++) {
-				if(Util.isSameResourceString(path, includedFiles[i])) {
-					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					this.foundPaths.add(path);
-					return true;
-				} else if(includedFiles[i].equals("*")) { //$NON-NLS-1$
-					this.foundPaths.add(path);
-					return true;
-				}
-				else if(HACK_DOJO) {
-					String includeString = includedFiles[i];
-					if(path.toLowerCase().indexOf(DOJO_COMPRESSED)>0 && (includeString.toLowerCase().indexOf(UNCOMPRESSED_DOJO)>0)) {
-						this.foundPaths.add(path);
-						return true;
-					}
-
-				}
-			}
-
-			String systemFiles[] = getProjectSystemFiles();
-
-			for(int i = 0;i<systemFiles.length;i++) {
-				if(Util.isSameResourceString(path, systemFiles[i]) || (new Path(systemFiles[i])).isPrefixOf(new Path(path))) {
-					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-					this.foundPaths.add(path);
-					return true;
-				}
-			}
-			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-			if(DEBUG) System.out.println("\t(relative) page includes = : " ); //$NON-NLS-1$
-			if(DEBUG) {
-				for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
-					System.out.println("\t\t" + includedFiles[i]); //$NON-NLS-1$
-				}
-			}
-			//this.foundPath=null;
-			return false;
+//			for(int i = 0;i<includedFiles.length;i++) {
+//				if(Util.isSameResourceString(path, includedFiles[i])) {
+//					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+//					this.foundPaths.add(path);
+//					return true;
+//				} else if(includedFiles[i].equals("*")) { //$NON-NLS-1$
+//					this.foundPaths.add(path);
+//					return true;
+//				}
+//				else if(HACK_DOJO) {
+//					String includeString = includedFiles[i];
+//					if(path.toLowerCase().indexOf(DOJO_COMPRESSED)>0 && (includeString.toLowerCase().indexOf(UNCOMPRESSED_DOJO)>0)) {
+//						this.foundPaths.add(path);
+//						return true;
+//					}
+//
+//				}
+//			}
+//
+//			String systemFiles[] = getProjectSystemFiles();
+//
+//			for(int i = 0;i<systemFiles.length;i++) {
+//				if(Util.isSameResourceString(path, systemFiles[i]) || (new Path(systemFiles[i])).isPrefixOf(new Path(path))) {
+//					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+//					this.foundPaths.add(path);
+//					return true;
+//				}
+//			}
+//			if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" +"REJECTING binding..\n\t" + new String(simpleTypeName) + " in " + path + " \n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+//			if(DEBUG) System.out.println("\t(relative) page includes = : " ); //$NON-NLS-1$
+//			if(DEBUG) {
+//				for(int i = 0;includedFiles!=null && i<includedFiles.length;i++) {
+//					System.out.println("\t\t" + includedFiles[i]); //$NON-NLS-1$
+//				}
+//			}
+//			//this.foundPath=null;
+//			return false;
 		}
 
 		public String getFoundPath() {

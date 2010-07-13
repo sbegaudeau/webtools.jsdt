@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -50,14 +50,19 @@ public final class FieldProposalInfo extends MemberProposalInfo {
 		if (declarationSignature == null)
 			return null;
 		String typeName= SignatureUtil.stripSignatureToFQN(String.valueOf(declarationSignature));
-		IType type= fJavaProject.findType(typeName);
-		if (type != null) {
-			String name= String.valueOf(fProposal.getName());
-			IField field= type.getField(name);
-			if (field.exists())
-				return field;
+		IType[] types = this.fJavaProject.findTypes(typeName);
+		if(types != null && types.length > 0) {
+			for(int i = 0; i < types.length; ++i) {
+				IType type = types[i];
+				if (type != null) {
+					String name= String.valueOf(fProposal.getName());
+					IField field= type.getField(name);
+					if (field.exists())
+						return field;
+				}
+			}
 		}
-
+		
 		return null;
 	}
 }

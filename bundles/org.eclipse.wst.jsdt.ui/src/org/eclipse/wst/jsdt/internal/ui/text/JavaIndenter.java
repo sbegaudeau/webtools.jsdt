@@ -1010,6 +1010,7 @@ public final class JavaIndenter {
 					case Symbols.TokenFINALLY:
 					case Symbols.TokenFOR:
 					case Symbols.TokenTRY:
+					case Symbols.TokenCOLON:
 						return fPosition;
 
 					case Symbols.TokenSTATIC:

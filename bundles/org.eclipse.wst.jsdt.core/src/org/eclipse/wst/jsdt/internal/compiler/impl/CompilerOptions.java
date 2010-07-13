@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -342,13 +342,6 @@ public class CompilerOptions {
 	 */
 	public CompilerOptions() {
 		// use default options
-
-		try {
-			this.enableSemanticValidation = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("semanticValidation"); //$NON-NLS-1$
-		}
-		catch (Exception ex) {
-			this.enableSemanticValidation = false;
-		}
 	}
 
 	/**
@@ -646,15 +639,14 @@ public class CompilerOptions {
 	}
 
 	public void set(Map optionsMap) {
-
-		try {
-			this.enableSemanticValidation = JavaScriptCore.getPlugin().getPluginPreferences().getBoolean("semanticValidation"); //$NON-NLS-1$
-		}
-		catch (Exception ex) {
-			this.enableSemanticValidation = false;
-		}
-
 		Object optionValue;
+		if ((optionValue = optionsMap.get(OPTION_SemanticValidation)) != null) {
+			if (ENABLED.equals(optionValue)) {
+				this.enableSemanticValidation = true;
+			} else if (DISABLED.equals(optionValue)) {
+				this.enableSemanticValidation = false;
+			}
+		}
 		if ((optionValue = optionsMap.get(OPTION_LocalVariableAttribute)) != null) {
 			if (GENERATE.equals(optionValue)) {
 				this.produceDebugAttributes |= ClassFileConstants.ATTR_VARS;

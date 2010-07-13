@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
   */
 public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	/** Triggers for types. Do not modify. */
-	protected static final char[] TYPE_TRIGGERS= new char[] { '.', '\t', '[', '(', ' ' };
+	protected static final char[] TYPE_TRIGGERS= new char[] { '\t', '[', '(', ' ' };
 	/** Triggers for types in javadoc. Do not modify. */
 	protected static final char[] JDOC_TYPE_TRIGGERS= new char[] { '#', '}', ' ', '.' };
 
@@ -84,10 +84,10 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		 if (fProposal.getKind() == CompletionProposal.TYPE_REF &&  fInvocationContext.getCoreContext().isInJsdocText())
 			 return getSimpleTypeName();
 		
-		String qualifiedTypeName= getQualifiedTypeName();
- 		if (qualifiedTypeName.indexOf('.') == -1)
- 			// default package - no imports needed 
- 			return qualifiedTypeName;
+		String qualifiedTypeName= replacement;
+// 		if (qualifiedTypeName.indexOf('.') == -1)
+// 			// default package - no imports needed 
+// 			return qualifiedTypeName;
 
  		/*
 		 * If the user types in the qualification, don't force import rewriting on him - insert the
@@ -295,6 +295,10 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	protected boolean isValidPrefix(String prefix) {
 		return isPrefix(prefix, getSimpleTypeName()) || isPrefix(prefix, getQualifiedTypeName());
 	}
+	
+	public boolean isValidTypePrefix(String prefix) {
+		return isValidPrefix(prefix);
+	}
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.JavaCompletionProposal#getCompletionText()
@@ -339,7 +343,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	 */
 	protected String computeSortString() {
 		// try fast sort string to avoid display string creation
-		return getSimpleTypeName() + Character.MIN_VALUE + getQualifiedTypeName();
+		return getQualifiedTypeName();
 	}
 	
 	/*

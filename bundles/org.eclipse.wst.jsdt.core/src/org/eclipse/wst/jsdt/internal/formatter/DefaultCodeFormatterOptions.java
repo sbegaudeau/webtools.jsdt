@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -258,7 +258,6 @@ public class DefaultCodeFormatterOptions {
 	public boolean insert_space_before_opening_angle_bracket_in_type_parameters;
 	public boolean insert_space_before_opening_brace_in_annotation_type_declaration;
 	public boolean insert_space_before_opening_brace_in_anonymous_type_declaration;
-	public boolean insert_space_before_opening_brace_in_array_initializer;
 	public boolean insert_space_before_opening_brace_in_block;
 	public boolean insert_space_before_opening_brace_in_constructor_declaration;
 	public boolean insert_space_before_opening_brace_in_enum_constant;
@@ -536,7 +535,6 @@ public class DefaultCodeFormatterOptions {
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_ANGLE_BRACKET_IN_TYPE_PARAMETERS, this.insert_space_before_opening_angle_bracket_in_type_parameters? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ANNOTATION_TYPE_DECLARATION, this.insert_space_before_opening_brace_in_annotation_type_declaration ? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ANONYMOUS_TYPE_DECLARATION, this.insert_space_before_opening_brace_in_anonymous_type_declaration? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
-		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER, this.insert_space_before_opening_brace_in_array_initializer? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_BLOCK, this.insert_space_before_opening_brace_in_block? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_CONSTRUCTOR_DECLARATION, this.insert_space_before_opening_brace_in_constructor_declaration? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ENUM_CONSTANT, this.insert_space_before_opening_brace_in_enum_constant? JavaScriptCore.INSERT : JavaScriptCore.DO_NOT_INSERT);
@@ -1681,10 +1679,6 @@ public class DefaultCodeFormatterOptions {
 		if (insertSpaceBeforeOpeningBraceInAnonymousTypeDeclarationOption != null) {
 			this.insert_space_before_opening_brace_in_anonymous_type_declaration = JavaScriptCore.INSERT.equals(insertSpaceBeforeOpeningBraceInAnonymousTypeDeclarationOption);
 		}
-		final Object insertSpaceBeforeOpeningBraceInArrayInitializerOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_ARRAY_INITIALIZER);
-		if (insertSpaceBeforeOpeningBraceInArrayInitializerOption != null) {
-			this.insert_space_before_opening_brace_in_array_initializer = JavaScriptCore.INSERT.equals(insertSpaceBeforeOpeningBraceInArrayInitializerOption);
-		}
 		final Object insertSpaceBeforeOpeningBraceInBlockOption = settings.get(DefaultCodeFormatterConstants.FORMATTER_INSERT_SPACE_BEFORE_OPENING_BRACE_IN_BLOCK);
 		if (insertSpaceBeforeOpeningBraceInBlockOption != null) {
 			this.insert_space_before_opening_brace_in_block = JavaScriptCore.INSERT.equals(insertSpaceBeforeOpeningBraceInBlockOption);
@@ -2158,7 +2152,6 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_opening_angle_bracket_in_type_parameters = false;
 		this.insert_space_before_opening_brace_in_annotation_type_declaration = true;
 		this.insert_space_before_opening_brace_in_anonymous_type_declaration = true;
-		this.insert_space_before_opening_brace_in_array_initializer = false;
 		this.insert_space_before_opening_brace_in_block = true;
 		this.insert_space_before_opening_brace_in_constructor_declaration = true;
 		this.insert_space_before_opening_brace_in_enum_constant = true;
@@ -2425,7 +2418,6 @@ public class DefaultCodeFormatterOptions {
 		this.insert_space_before_opening_angle_bracket_in_type_parameters = false;
 		this.insert_space_before_opening_brace_in_annotation_type_declaration = true;
 		this.insert_space_before_opening_brace_in_anonymous_type_declaration = true;
-		this.insert_space_before_opening_brace_in_array_initializer = true;
 		this.insert_space_before_opening_brace_in_block = true;
 		this.insert_space_before_opening_brace_in_constructor_declaration = true;
 		this.insert_space_before_opening_brace_in_enum_constant = true;
