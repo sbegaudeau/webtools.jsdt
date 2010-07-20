@@ -21,7 +21,7 @@
    <url>
       <update label="%updateSiteName" url="http://download.eclipse.org/webtools/repository/helios"/>
    </url>
-   
+
    <plugin
          id="org.eclipse.wst.jsdt.core"
          download-size="0"
@@ -97,6 +97,13 @@
          download-size="0"
          install-size="0"
          version="1.7.2.qualifier"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.jsdt.debug.transport"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
