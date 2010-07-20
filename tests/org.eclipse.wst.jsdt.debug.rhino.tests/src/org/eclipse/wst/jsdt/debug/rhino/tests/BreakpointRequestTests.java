@@ -15,12 +15,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 
 /**
  * Variety of tests for requesting breakpoint(s)
@@ -35,9 +35,9 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testInvalidBreakpoint() throws Exception {
-		Request request = new Request(JSONConstants.BREAKPOINT);
+		RhinoRequest request = new RhinoRequest(JSONConstants.BREAKPOINT);
 		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999")); //$NON-NLS-1$
-		debugSession.sendRequest(request);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
 	}
@@ -49,8 +49,8 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testBreakpointsWithNoBreakpoints() throws Exception {
-		Request request = new Request(JSONConstants.BREAKPOINTS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.BREAKPOINTS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
@@ -63,9 +63,9 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testClearInvalidBreakpoint() throws Exception {
-		Request request = new Request(JSONConstants.CLEARBREAKPOINT);
+		RhinoRequest request = new RhinoRequest(JSONConstants.CLEARBREAKPOINT);
 		request.getArguments().put(JSONConstants.BREAKPOINT_ID, new Integer("9999")); //$NON-NLS-1$
-		debugSession.sendRequest(request);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
 	}
@@ -78,8 +78,8 @@ public class BreakpointRequestTests extends RequestTest {
 	public void testBreakpoints() throws Exception {
 		eventHandler.addSubhandler(new SetBreakpointsHandler());
 		
-		Request request = new Request(JSONConstants.BREAKPOINTS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.BREAKPOINTS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
@@ -91,8 +91,8 @@ public class BreakpointRequestTests extends RequestTest {
 
 		evalScript(script, 1);
 
-		request = new Request(JSONConstants.BREAKPOINTS);
-		debugSession.sendRequest(request);
+		request = new RhinoRequest(JSONConstants.BREAKPOINTS);
+		debugSession.send(request);
 		response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
@@ -101,9 +101,9 @@ public class BreakpointRequestTests extends RequestTest {
 
 		for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
 			Number breakpointId = (Number) iterator.next();
-			request = new Request(JSONConstants.BREAKPOINT);
+			request = new RhinoRequest(JSONConstants.BREAKPOINT);
 			request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointId);
-			debugSession.sendRequest(request);
+			debugSession.send(request);
 			response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 			assertTrue(response.isSuccess());
 			Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
@@ -121,8 +121,8 @@ public class BreakpointRequestTests extends RequestTest {
 		eventHandler.addSubhandler(new SetBreakpointsHandler());
 		eventHandler.addSubhandler(new ClearBreakpointsHandler());
 
-		Request request = new Request(JSONConstants.BREAKPOINTS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.BREAKPOINTS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Collection breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
@@ -133,8 +133,8 @@ public class BreakpointRequestTests extends RequestTest {
 		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
 		evalScript(script, 6);
 		
-		request = new Request(JSONConstants.BREAKPOINTS);
-		debugSession.sendRequest(request);
+		request = new RhinoRequest(JSONConstants.BREAKPOINTS);
+		debugSession.send(request);
 		response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
@@ -143,9 +143,9 @@ public class BreakpointRequestTests extends RequestTest {
 
 		for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
 			Number breakpointId = (Number) iterator.next();
-			request = new Request(JSONConstants.BREAKPOINT);
+			request = new RhinoRequest(JSONConstants.BREAKPOINT);
 			request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointId);
-			debugSession.sendRequest(request);
+			debugSession.send(request);
 			response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 			assertTrue(response.isSuccess());
 			Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
@@ -161,10 +161,10 @@ public class BreakpointRequestTests extends RequestTest {
 	 * @param breakpointid
 	 */
 	void deleteBreakpoint(DebugSession session, Number breakpointid) {
-		Request request = new Request(JSONConstants.CLEARBREAKPOINT);
+		RhinoRequest request = new RhinoRequest(JSONConstants.CLEARBREAKPOINT);
 		request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointid);
 		try {
-			debugSession.sendRequest(request);
+			debugSession.send(request);
 			Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 			assertTrue(response.isSuccess());
 		} catch (DisconnectedException e) {

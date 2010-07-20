@@ -14,8 +14,8 @@ import java.util.Collection;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 
 /**
  * Variety of tests for thread requests
@@ -29,8 +29,8 @@ public class ThreadRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testThreadsWithNoThreads() throws Exception {
-		Request request = new Request(JSONConstants.THREADS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.THREADS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Collection threads = (Collection) response.getBody().get(JSONConstants.THREADS);
@@ -43,9 +43,9 @@ public class ThreadRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testInvalidThread() throws Exception {
-		Request request = new Request("context"); //$NON-NLS-1$
+		RhinoRequest request = new RhinoRequest("context"); //$NON-NLS-1$
 		request.getArguments().put(JSONConstants.THREAD_ID, new Integer("9999")); //$NON-NLS-1$
-		debugSession.sendRequest(request);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertFalse(response.isSuccess());
 	}

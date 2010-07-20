@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
 import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 
 /**
  * Variety of tests for requesting frame(s) / frame information
@@ -56,25 +56,29 @@ public class FrameRequestTests extends RequestTest {
 			public String testName() {
 				return getName();
 			}
+			
+			/* (non-Javadoc)
+			 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
+			 */
 			public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 				if (event.getEvent().equals(JSONConstants.BREAK)) {
 					Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
 					Number contextId = (Number) event.getBody().get(JSONConstants.CONTEXT_ID);
-					Request request = new Request(JSONConstants.FRAMES);
+					RhinoRequest request = new RhinoRequest(JSONConstants.FRAMES);
 					request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 					try {
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						Response response = debugSession.receiveResponse(request.getSequence(), 10000);
 						assertTrue(response.isSuccess());
 						Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
 						for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
 							Number frameId = (Number) iterator.next();
-							request = new Request(JSONConstants.EVALUATE);
+							request = new RhinoRequest(JSONConstants.EVALUATE);
 							request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 							request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
 							request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 							request.getArguments().put(JSONConstants.EXPRESSION, "this"); //$NON-NLS-1$
-							debugSession.sendRequest(request);
+							debugSession.send(request);
 							response = debugSession.receiveResponse(request.getSequence(), 10000);
 							assertTrue(response.isSuccess());
 							assertTrue(response.getBody().containsKey(JSONConstants.EVALUATE));

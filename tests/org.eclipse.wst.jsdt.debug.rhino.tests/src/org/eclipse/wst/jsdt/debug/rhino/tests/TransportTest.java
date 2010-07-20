@@ -13,14 +13,14 @@ import java.io.IOException;
 import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.SocketUtil;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoTransportService;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 
 /**
- * Tests the two provided transport services: {@link PipedTransportService} and {@link SocketTransportService}
+ * Tests the two provided transport services: {@link PipedTransportService} and {@link RhinoTransportService}
  * 
  * @since 1.0
  */
@@ -31,7 +31,7 @@ public class TransportTest extends TestCase {
 	 * @throws Exception - pass up any failures to the test framework for reporting
 	 */
 	public void testSocketStartStopListening() throws Exception {
-		TransportService service = new SocketTransportService();
+		TransportService service = new RhinoTransportService();
 		ListenerKey key = service.startListening(SocketUtil.findFreePortString());
 		assertNotNull(key);
 		service.stopListening(key);
@@ -43,7 +43,7 @@ public class TransportTest extends TestCase {
 	 * @throws Exception - pass up any failures to the test framework for reporting
 	 */
 	public void _testSocketAcceptAttach() throws Exception {
-		final TransportService service = new SocketTransportService();
+		final TransportService service = new RhinoTransportService();
 		final String port = SocketUtil.findFreePortString();
 		assertTrue("A valid port could not be found on localhost", !"-1".equals(port)); //$NON-NLS-1$ //$NON-NLS-2$
 		final ListenerKey key = service.startListening(port);

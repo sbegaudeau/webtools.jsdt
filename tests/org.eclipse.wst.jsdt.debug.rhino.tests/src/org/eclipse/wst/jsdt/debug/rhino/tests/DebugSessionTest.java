@@ -14,17 +14,20 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Packet;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.packet.Packet;
+import org.eclipse.wst.jsdt.debug.transport.packet.Request;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 
 
 
@@ -45,7 +48,7 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					runtime.sendEvent(new EventPacket("test")); //$NON-NLS-1$
+					runtime.send(new EventPacket("test")); //$NON-NLS-1$
 					synchronized (Thread.currentThread()) {
 						Thread.currentThread().wait();
 					}
@@ -68,7 +71,7 @@ public class DebugSessionTest extends TestCase {
 		assertNotNull(c);
 		DebugSession session = new DebugSession(c);
 		try {
-			EventPacket event = session.receiveEvent(5000);
+			EventPacket event = (EventPacket) session.receive(JSONConstants.EVENT, 5000);
 			assertTrue(event.getEvent().equals("test")); //$NON-NLS-1$
 		} finally {
 			session.dispose();
@@ -93,8 +96,8 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					Request request = runtime.receiveRequest(5000);
-					runtime.sendResponse(new Response(request.getSequence(), request.getCommand()));
+					Request request = (Request) runtime.receive(JSONConstants.REQUEST, 5000);
+					runtime.send(new RhinoResponse(request.getSequence(), request.getCommand()));
 					synchronized (Thread.currentThread()) {
 						Thread.currentThread().wait();
 					}
@@ -119,8 +122,8 @@ public class DebugSessionTest extends TestCase {
 		assertNotNull(c);
 		DebugSession session = new DebugSession(c);
 		try {
-			Request request = new Request("test"); //$NON-NLS-1$
-			session.sendRequest(request);
+			RhinoRequest request = new RhinoRequest("test"); //$NON-NLS-1$
+			session.send(request);
 			Response response = session.receiveResponse(request.getSequence(), 5000);
 			assertTrue(response.getCommand().equals("test")); //$NON-NLS-1$
 			assertTrue(response.getRequestSequence() == request.getSequence());
@@ -147,7 +150,7 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					runtime.sendEvent(new EventPacket("test")); //$NON-NLS-1$
+					runtime.send(new EventPacket("test")); //$NON-NLS-1$
 					synchronized (Thread.currentThread()) {
 						if (!complete)
 							Thread.currentThread().wait(5000);
@@ -199,8 +202,8 @@ public class DebugSessionTest extends TestCase {
 					assertNotNull(c);
 
 					runtime = new DebugSession(c);
-					Request request = runtime.receiveRequest(5000);
-					runtime.sendResponse(new Response(request.getSequence(), request.getCommand()));
+					Request request = (Request) runtime.receive(JSONConstants.REQUEST, 5000);
+					runtime.send(new RhinoResponse(request.getSequence(), request.getCommand()));
 					synchronized (Thread.currentThread()) {
 						Thread.currentThread().wait();
 					}
@@ -226,7 +229,7 @@ public class DebugSessionTest extends TestCase {
 		Connection c = service.attach("9000", 5000, 5000); //$NON-NLS-1$
 		assertNotNull(c);
 		try {
-			Request request = new Request("test"); //$NON-NLS-1$
+			RhinoRequest request = new RhinoRequest("test"); //$NON-NLS-1$
 			c.writePacket(request);
 			Packet packet = c.readPacket();
 			assertTrue(packet instanceof Response);

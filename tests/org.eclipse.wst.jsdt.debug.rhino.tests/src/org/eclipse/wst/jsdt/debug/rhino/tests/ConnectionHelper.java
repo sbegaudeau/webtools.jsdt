@@ -12,9 +12,9 @@ package org.eclipse.wst.jsdt.debug.rhino.tests;
 
 import java.io.IOException;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 
 
 

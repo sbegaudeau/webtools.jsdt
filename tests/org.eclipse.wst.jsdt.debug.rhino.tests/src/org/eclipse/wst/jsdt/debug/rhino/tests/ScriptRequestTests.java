@@ -17,8 +17,8 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 
@@ -35,8 +35,8 @@ public class ScriptRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testScriptsWithNoScripts() throws Exception {
-		Request request = new Request(JSONConstants.SCRIPTS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPTS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Collection scripts = (Collection) response.getBody().get(JSONConstants.SCRIPTS);
@@ -61,17 +61,17 @@ public class ScriptRequestTests extends RequestTest {
 			Context.exit();
 		}
 
-		Request request = new Request(JSONConstants.SCRIPTS);
-		debugSession.sendRequest(request);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPTS);
+		debugSession.send(request);
 		Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		List scripts = (List) response.getBody().get(JSONConstants.SCRIPTS);
 		assertNotNull(scripts);
 		assertFalse(scripts.isEmpty());
 
-		request = new Request("script"); //$NON-NLS-1$
+		request = new RhinoRequest("script"); //$NON-NLS-1$
 		request.getArguments().put("scriptId", scripts.get(0)); //$NON-NLS-1$
-		debugSession.sendRequest(request);
+		debugSession.send(request);
 		response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		assertTrue(response.isSuccess());
 		Map result = (Map) response.getBody().get(JSONConstants.SCRIPT);

@@ -14,14 +14,14 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
 import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 
 /**
  * Variety of tests for sending <code>lookup</code> requests
@@ -50,21 +50,21 @@ public class RequestLookupTest extends FrameRequestTests {
 				if (event.getEvent().equals(JSONConstants.BREAK)) {
 					Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
 					Number contextId = (Number) event.getBody().get(JSONConstants.CONTEXT_ID);
-					Request request = new Request(JSONConstants.FRAMES);
+					RhinoRequest request = new RhinoRequest(JSONConstants.FRAMES);
 					request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 					try {
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(response.isSuccess());
 						Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
 						for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
 							Number frameId = (Number) iterator.next();
-							request = new Request(JSONConstants.LOOKUP);
+							request = new RhinoRequest(JSONConstants.LOOKUP);
 							request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 							request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
 							request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 							request.getArguments().put(JSONConstants.HANDLE, new Integer(0));
-							debugSession.sendRequest(request);
+							debugSession.send(request);
 							response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 							assertTrue(response.isSuccess());
 							assertTrue(response.getBody().containsKey(JSONConstants.LOOKUP));

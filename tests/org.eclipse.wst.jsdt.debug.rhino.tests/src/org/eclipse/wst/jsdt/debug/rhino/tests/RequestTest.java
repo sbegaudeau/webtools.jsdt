@@ -20,16 +20,16 @@ import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.PipedTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
 import org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.Scriptable;
@@ -73,27 +73,28 @@ public abstract class RequestTest extends TestCase {
 		public FrameCheckHandler() {
 			super(getName());
 		}
+		
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.BREAK)) {
 				Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
 				Number contextId = (Number) event.getBody().get(JSONConstants.CONTEXT_ID);
-				Request request = new Request(JSONConstants.FRAMES);
+				RhinoRequest request = new RhinoRequest(JSONConstants.FRAMES);
 				request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 				try {
-					debugSession.sendRequest(request);
+					debugSession.send(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(testName()+": the request for frames from thread ["+threadId.intValue()+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					Collection frames = (Collection) response.getBody().get(JSONConstants.FRAMES);
 					for (Iterator iterator = frames.iterator(); iterator.hasNext();) {
 						Number frameId = (Number) iterator.next();
-						request = new Request(JSONConstants.FRAME);
+						request = new RhinoRequest(JSONConstants.FRAME);
 						request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 						request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
 						request.getArguments().put(JSONConstants.FRAME_ID, frameId);
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(testName()+": the request for frame ["+frameId.intValue()+"] frmo thread ["+threadId.intValue()+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 					}
@@ -121,15 +122,16 @@ public abstract class RequestTest extends TestCase {
 		public ThreadCheckHandler() {
 			super(getName());
 		}
+		
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.BREAK)) {
 				Number threadId = (Number) event.getBody().get(JSONConstants.THREAD_ID);
-				Request request = new Request(JSONConstants.THREADS);
+				RhinoRequest request = new RhinoRequest(JSONConstants.THREADS);
 				try {
-					debugSession.sendRequest(request);
+					debugSession.send(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), 10000);
 					assertTrue(response.isSuccess());
 					List threads = (List) response.getBody().get(JSONConstants.THREADS);
@@ -159,15 +161,15 @@ public abstract class RequestTest extends TestCase {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.SCRIPT)) {
 				Number scriptId = (Number) event.getBody().get(JSONConstants.SCRIPT_ID);
-				Request request = new Request(JSONConstants.SCRIPT);
+				RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPT);
 				request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 				try {
-					debugSession.sendRequest(request);
+					debugSession.send(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(response.isSuccess());
 					Map result = (Map) response.getBody().get(JSONConstants.SCRIPT);
@@ -176,19 +178,19 @@ public abstract class RequestTest extends TestCase {
 					List lineNumbers = (List) result.get(JSONConstants.LINES);
 					for (Iterator iterator = lineNumbers.iterator(); iterator.hasNext();) {
 						Number lineNumber = (Number) iterator.next();
-						request = new Request(JSONConstants.SETBREAKPOINT);
+						request = new RhinoRequest(JSONConstants.SETBREAKPOINT);
 						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 						request.getArguments().put(JSONConstants.LINE, lineNumber);
 						request.getArguments().put(JSONConstants.CONDITION, "1===1"); //$NON-NLS-1$
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(testName()+": the request to set a breakpoint on line ["+lineNumber+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 						
 						Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 						Number breakpointId = (Number) breakpoint.get(JSONConstants.BREAKPOINT_ID);
-						request = new Request(JSONConstants.BREAKPOINT);
+						request = new RhinoRequest(JSONConstants.BREAKPOINT);
 						request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointId);
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(response.isSuccess());
 						breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
@@ -228,24 +230,24 @@ public abstract class RequestTest extends TestCase {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.SCRIPT)) {
 				Number scriptId = (Number) event.getBody().get(JSONConstants.SCRIPT_ID);
-				Request request = new Request(JSONConstants.SCRIPT);
+				RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPT);
 				request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 				try {
-					debugSession.sendRequest(request);
+					debugSession.send(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(response.isSuccess());
 					Map script = (Map) response.getBody().get(JSONConstants.SCRIPT);
 					assertNotNull(testName()+": the response body cannot be null", script); //$NON-NLS-1$
 					for (int i = 0; i < adds.length; i++) {
-						request = new Request(JSONConstants.SETBREAKPOINT);
+						request = new RhinoRequest(JSONConstants.SETBREAKPOINT);
 						request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 						request.getArguments().put(JSONConstants.LINE, new Integer(adds[i]));
-						debugSession.sendRequest(request);
+						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(testName()+": the request to set a breakpoint on line ["+adds[i]+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					}					
@@ -272,8 +274,9 @@ public abstract class RequestTest extends TestCase {
 		public ClearBreakpointsHandler() {
 			super(getName());
 		}
+		
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.rhino.transport.DebugSession, org.eclipse.wst.jsdt.debug.rhino.transport.EventPacket)
+		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
 		public boolean handleEvent(DebugSession debugSession, EventPacket event) {
 			if (event.getEvent().equals(JSONConstants.BREAK)) {
@@ -281,10 +284,10 @@ public abstract class RequestTest extends TestCase {
 				if(bid == null && JSONConstants.STEP_OUT.equals(event.getBody().get(JSONConstants.STEP))) {
 					return false;
 				}
-				Request request = new Request(JSONConstants.CLEARBREAKPOINT);
+				RhinoRequest request = new RhinoRequest(JSONConstants.CLEARBREAKPOINT);
 				request.getArguments().put(JSONConstants.BREAKPOINT_ID, bid);
 				try {
-					debugSession.sendRequest(request);
+					debugSession.send(request);
 					Response response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 					assertTrue(testName()+": the request to clear breakpoint ["+bid+"] should have succeeded", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
 					return true;

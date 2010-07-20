@@ -16,12 +16,13 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONUtil;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Event handler for testing purposes
@@ -131,7 +132,7 @@ public class TestEventHandler implements Runnable {
 	public void run() {
 		while (!shutdown) {
 			try {
-				EventPacket event = debugSession.receiveEvent(VirtualMachine.DEFAULT_TIMEOUT);
+				EventPacket event = (EventPacket) debugSession.receive(JSONConstants.EVENT, VirtualMachine.DEFAULT_TIMEOUT);
 				handleEvent(event);
 			} catch (TimeoutException e) {
 				// ignore
@@ -201,11 +202,11 @@ public class TestEventHandler implements Runnable {
 	protected void sendContinue(EventPacket event, String step) {
 		Number threadId = (Number) event.getBody().get("threadId"); //$NON-NLS-1$
 
-		Request request = new Request("continue"); //$NON-NLS-1$
+		RhinoRequest request = new RhinoRequest("continue"); //$NON-NLS-1$
 		request.getArguments().put("threadId", threadId); //$NON-NLS-1$
 		request.getArguments().put("step", step); //$NON-NLS-1$
 		try {
-			debugSession.sendRequest(request);
+			debugSession.send(request);
 			debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		} catch (DisconnectedException e) {
 			if (!shutdown)
