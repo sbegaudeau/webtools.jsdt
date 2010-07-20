@@ -14,15 +14,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 
 /**
  * Attaching connector for Crossfire
@@ -78,56 +78,80 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 	public VirtualMachine attach(Map arguments) throws IOException {
 		String str = (String)arguments.get(BrowserArgument.BROWSER);
 		boolean browser = Boolean.valueOf(str).booleanValue();
-		TransportService service = new SocketTransportService();
-		String host = (String) arguments.get(HostArgument.HOST);
-		String port = (String) arguments.get(PortArgument.PORT);
-		if(browser && !HostArgument.isLocalhost(host)) {
+		if(browser && !HostArgument.isLocalhost((String) arguments.get(HostArgument.HOST))) {
 			//we cannot auto launch the browser on a different host
 			throw new IOException(Messages.cannot_launch_browser_not_localhost);
 		}
-		if(browser) {
-			launchBrowser(host, port);
-		}
-		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
-		int timeout = Integer.parseInt(timeoutstr);
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(host).append(':').append(Integer.parseInt(port));
-		ListenerKey key = service.startListening(buffer.toString());
 		Connection c = null;
-		try {
-			c = service.accept(key, timeout, timeout);
+		if(browser) {
+			c = launchForBrowser(arguments);
 		}
-		catch(IOException ioe) {
-			service.stopListening(key);
-			throw ioe;
+		else {
+			c = launch(arguments);
 		}
 		DebugSession session = new DebugSession(c);
 		return new CFVirtualMachine(session);
 	}
 	
 	/**
-	 * Launch the browser on the given host / port
-	 * @param host
-	 * @param port
+	 * Launches the browser and connects to it. This method will poll for the browser to be launched
+	 * but only for a fixed timeout. 
+	 * @param arguments
+	 * @return the created connection or <code>null</code> if the attempt to connect times out, the browser process
+	 * terminates before we can connect  
 	 * @throws IOException 
 	 */
-	void launchBrowser(final String host, final String port) throws IOException {
-		Thread thread = new Thread() {
-			public void run() {
+	Connection launchForBrowser(Map arguments) throws IOException {
+		TransportService service = new CFTransportService();
+		String host = (String) arguments.get(HostArgument.HOST);
+		String port = (String) arguments.get(PortArgument.PORT);
+		StringBuffer buffer = new StringBuffer("firefox -P -load-fb-modules"); //$NON-NLS-1$
+		buffer.append(host).append(" -crossfire-server-port ").append(port); //$NON-NLS-1$
+		Process proc = null;
+		try {
+			proc = Runtime.getRuntime().exec(buffer.toString());
+		} catch (IOException e) {
+			CrossFirePlugin.log(e);
+		}
+		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
+		int timeout = Integer.parseInt(timeoutstr);
+		buffer = new StringBuffer();
+		buffer.append(host).append(':').append(Integer.parseInt(port));
+		Connection c = null;
+		long timer = System.currentTimeMillis() + 60000;
+		while(proc != null && System.currentTimeMillis() < timer && c == null) {
+			try {
+				c = service.attach(buffer.toString(), timeout, timeout);
+			}
+			catch(IOException ioe) {
+				//ignore while pinging to connect
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					CrossFirePlugin.log(e);
+					e.printStackTrace();
 				}
-				StringBuffer buffer = new StringBuffer("firefox -P crossfire -no-remote -load-fb-modules -crossfire-host "); //$NON-NLS-1$
-				buffer.append(host).append(" -crossfire-port ").append(port); //$NON-NLS-1$
-				try {
-					Runtime.getRuntime().exec(buffer.toString());
-				} catch (IOException e) {
-					CrossFirePlugin.log(e);
-				}
-			};
-		};
-		thread.start();
+			}
+		}
+		if(c == null) {
+			throw new IOException(NLS.bind(Messages.failed_to_attach_to_auto_browser, new String[] {host, port}));
+		}
+		return c;
+	}
+	
+	/**
+	 * Tries to connect to the given 
+	 * @param arguments
+	 * @return the {@link Connection} or throws an exception
+	 * @throws IOException
+	 */
+	Connection launch(Map arguments) throws IOException {
+		TransportService service = new CFTransportService();
+		String host = (String) arguments.get(HostArgument.HOST);
+		String port = (String) arguments.get(PortArgument.PORT);
+		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
+		int timeout = Integer.parseInt(timeoutstr);
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(host).append(':').append(Integer.parseInt(port));
+		return service.attach(buffer.toString(), timeout, timeout);
 	}
 }

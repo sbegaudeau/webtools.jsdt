@@ -14,6 +14,10 @@ import java.io.PipedOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
+
 /**
  * {@link TransportService} specialization for a {@link PipedConnection}
  * 
@@ -63,7 +67,7 @@ public class PipedTransportService implements TransportService {
 	Map listeners = new HashMap();
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#startListening(java.lang.String)
+	 * @see org.eclipse.wst.jsdt.debug.transport.TransportService#startListening(java.lang.String)
 	 */
 	public synchronized ListenerKey startListening(String address) throws IOException {
 		ListenerKey key = new PipedListenerKey(address == null ? Constants.EMPTY_STRING : address);
@@ -72,7 +76,7 @@ public class PipedTransportService implements TransportService {
 	};
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#stopListening(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService.ListenerKey)
+	 * @see org.eclipse.wst.jsdt.debug.transport.TransportService#stopListening(org.eclipse.wst.jsdt.debug.transport.ListenerKey)
 	 */
 	public void stopListening(ListenerKey key) throws IOException {
 		synchronized (key) {
@@ -83,7 +87,7 @@ public class PipedTransportService implements TransportService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#accept(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService.ListenerKey, long, long)
+	 * @see org.eclipse.wst.jsdt.debug.transport.TransportService#accept(org.eclipse.wst.jsdt.debug.transport.ListenerKey, long, long)
 	 */
 	public Connection accept(ListenerKey key, long attachTimeout, long handshakeTimeout) throws IOException {
 		long timeout = attachTimeout;
@@ -133,7 +137,7 @@ public class PipedTransportService implements TransportService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.TransportService#attach(java.lang.String, long, long)
+	 * @see org.eclipse.wst.jsdt.debug.transport.TransportService#attach(java.lang.String, long, long)
 	 */
 	public Connection attach(String address, long attachTimeout, long handshakeTimeout) throws IOException {
 		ListenerKey key = new PipedListenerKey(address == null ? Constants.EMPTY_STRING : address);

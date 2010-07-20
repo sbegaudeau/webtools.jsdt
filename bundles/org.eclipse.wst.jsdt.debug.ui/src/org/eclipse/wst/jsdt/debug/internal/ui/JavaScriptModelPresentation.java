@@ -22,8 +22,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.IDebugElement;
 import org.eclipse.debug.core.model.IDebugTarget;
+import org.eclipse.debug.core.model.IDisconnect;
 import org.eclipse.debug.core.model.IStackFrame;
+import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
@@ -126,42 +129,61 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @see org.eclipse.jface.viewers.LabelProvider#getText(java.lang.Object)
 	 */
 	public String getText(Object element) {
+		StringBuffer buffer = new StringBuffer();
 		try {
-			if(element instanceof IDebugTarget) {
-				return ((IDebugTarget)element).getName();
+			if(element instanceof IDebugElement) {
+				if(element instanceof IDebugTarget) {
+					buffer.append(((IDebugTarget)element).getName());
+				}
+				else if(element instanceof IStackFrame) {
+					buffer.append(((IStackFrame)element).getName());
+				}
+				else if(element instanceof IThread) {
+					buffer.append(((IThread)element).getName());
+				}
+				else if(element instanceof IVariable) {
+					buffer.append(((IVariable)element).getName());
+				}
+				else if(element instanceof IValue) {
+					buffer.append(((IValue)element).getValueString());
+				}
+				else if(element instanceof IJavaScriptFunctionBreakpoint) {
+					buffer.append(getFunctionBreakpointText((IJavaScriptFunctionBreakpoint) element));
+				}
+				else if(element instanceof IJavaScriptLoadBreakpoint) {
+					buffer.append(getScriptLoadBreakpointText((IJavaScriptLoadBreakpoint) element));
+				}
+				else if(element instanceof IJavaScriptLineBreakpoint) {
+					buffer.append(getLineBreakpointText((IJavaScriptLineBreakpoint) element));
+				}
+				else if(element instanceof IScriptGroup) {
+					buffer.append(Messages.scripts);
+				}
+				else if(element instanceof IScript) {
+					buffer.append(getScriptText((IScript) element));
+				}
 			}
-			if(element instanceof IStackFrame) {
-				return ((IStackFrame)element).getName();
+			if(element instanceof ITerminate) {
+				if(((ITerminate)element).isTerminated()) {
+					buffer.insert(0, Messages.terminated);
+				}
+				else if(element instanceof IDisconnect) {
+					if(((IDisconnect)element).isDisconnected()) {
+						buffer.insert(0, Messages.disconnected);
+					}
+				}
 			}
-			if(element instanceof IThread) {
-				return ((IThread)element).getName();
-			}
-			if(element instanceof IVariable) {
-				return ((IVariable)element).getName();
-			}
-			if(element instanceof IValue) {
-				return ((IValue)element).getValueString();
-			}
-			if(element instanceof IJavaScriptFunctionBreakpoint) {
-				return getFunctionBreakpointText((IJavaScriptFunctionBreakpoint) element);
-			}
-			if(element instanceof IJavaScriptLoadBreakpoint) {
-				return getScriptLoadBreakpointText((IJavaScriptLoadBreakpoint) element);
-			}
-			if(element instanceof IJavaScriptLineBreakpoint) {
-				return getLineBreakpointText((IJavaScriptLineBreakpoint) element);
-			}
-			if(element instanceof IScriptGroup) {
-				return Messages.scripts;
-			}
-			if(element instanceof IScript) {
-				return getScriptText((IScript) element);
+			else if(element instanceof IDisconnect) {
+				if(((IDisconnect)element).isDisconnected()) {
+					buffer.insert(0, Messages.disconnected);
+				}
 			}
 		}
 		catch(CoreException ce) {
 			JavaScriptDebugUIPlugin.log(ce);
+			buffer.append(Messages.unknown);
 		}
-		return element.toString();
+		return buffer.toString();
 	}
 	
 	/**

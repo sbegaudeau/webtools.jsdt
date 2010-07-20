@@ -73,8 +73,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	private final ILaunch launch;
 	private final boolean supportsTerminate;
 	private final boolean supportsDisconnect;
-	private final String name;
 	private final EventDispatcher eventDispatcher;
+	private final String name;
 
 	private ArrayList threads = new ArrayList();
 	private ArrayList breakpoints = new ArrayList();
@@ -98,27 +98,20 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @param vm
 	 * @param process
 	 * @param launch
-	 * @param name
 	 * @param supportsTerminate
 	 * @param supportsDisconnect
 	 */
 	public JavaScriptDebugTarget(VirtualMachine vm, IProcess process, ILaunch launch,
-			String name, boolean supportsTerminate, boolean supportsDisconnect) {
+			boolean supportsTerminate, boolean supportsDisconnect) {
 		super(null);
 		this.vm = vm;
 		this.process = process;
 		this.launch = launch;
 		this.supportsTerminate = supportsTerminate;
 		this.supportsDisconnect = supportsDisconnect;
-		if (name != null) {
-			this.name = name;
-		} else if (vm.name() != null) {
-			this.name = vm.name();
-		} else {
-			this.name = DEFAULT_NAME;
-		}
 		this.eventDispatcher = new EventDispatcher(this);
 		this.scriptgroup = new ScriptGroup(this);
+		name = NLS.bind(ModelMessages.debug_target_name, new String[] {vm.name(), "", vm.version()}); //$NON-NLS-1$
 		// TODO: consider calling this outside of constructor
 		initialize();
 	}
@@ -583,7 +576,10 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			// first resume the VM, do not leave it in a suspended state
 			// https://bugs.eclipse.org/bugs/show_bug.cgi?id=304574
 			resumeVM(true);
-		} 
+			if(this.process != null) {
+				this.process.terminate();
+			}
+		}  
 		catch(RuntimeException rte) {}
 		finally {
 			cleanup();

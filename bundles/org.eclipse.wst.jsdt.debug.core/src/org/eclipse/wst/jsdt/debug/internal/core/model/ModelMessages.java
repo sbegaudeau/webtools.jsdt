@@ -20,6 +20,7 @@ import org.eclipse.osgi.util.NLS;
 public class ModelMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.core.model.modelmessages"; //$NON-NLS-1$
 	public static String breakpoint_at_line_location;
+	public static String debug_target_name;
 	public static String JavaScriptThread_evaluated_script;
 	public static String JavaScriptThread_suspended_on_exception;
 	public static String JavaScriptValue_object_value_label;

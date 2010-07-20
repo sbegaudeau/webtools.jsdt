@@ -15,17 +15,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService.ListenerKey;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoTransportService;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.ListenerKey;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Delegate for {@link DebugSession} communication
@@ -63,13 +63,13 @@ public class DebugSessionManager {
 					}
 					while (!shutdown && connection.isOpen()) {
 						try {
-							Request request = debugSession.receiveRequest(1000);
+							RhinoRequest request = (RhinoRequest) debugSession.receive(JSONConstants.REQUEST, 1000);
 							if (DEBUG)
 								System.out.println(request);
-							Response response = requestHandler.handleRequest(request);
+							RhinoResponse response = requestHandler.handleRequest(request);
 							if (DEBUG)
 								System.out.println(response);
-							debugSession.sendResponse(response);
+							debugSession.send(response);
 						} catch (TimeoutException e) {
 							// ignore
 						} catch (DisconnectedException e) {
@@ -160,7 +160,7 @@ public class DebugSessionManager {
 		if (!SOCKET.equals(transport)) {
 			throw new IllegalArgumentException("Transport service must be 'socket': " + transport); //$NON-NLS-1$
 		}
-		TransportService parsedTransportService = new SocketTransportService();
+		TransportService parsedTransportService = new RhinoTransportService();
 		String parsedAddress = (String) config.get(ADDRESS);
 		String suspend = (String) config.get(JSONConstants.SUSPEND);
 		boolean parsedStartSuspended = false;
@@ -200,7 +200,7 @@ public class DebugSessionManager {
 		buffer.append("Rhino attaching debugger\n"); //$NON-NLS-1$
 		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
 		buffer.append("\nListening to "); //$NON-NLS-1$
-		buffer.append(this.transportService instanceof SocketTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append(this.transportService instanceof RhinoTransportService ? "socket on " : "transport service on "); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("port: ").append(this.address); //$NON-NLS-1$
 		if (startSuspended) {
 			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
@@ -246,7 +246,7 @@ public class DebugSessionManager {
 	 * Starts the debugger
 	 */
 	public synchronized void start(RhinoDebuggerImpl debugger) {
-		debuggerThread = new DebugSessionThread("RhinoDebugger - Request Handler", debugger); //$NON-NLS-1$
+		debuggerThread = new DebugSessionThread("RhinoDebugger - RhinoRequest Handler", debugger); //$NON-NLS-1$
 		debuggerThread.start();
 		if (startSuspended) {
 			try {
@@ -294,9 +294,10 @@ public class DebugSessionManager {
 	public synchronized boolean sendEvent(EventPacket event) {
 		try {
 			if (debugSession != null) {
-				if (DEBUG)
+				if (DEBUG) {
 					System.out.println(event);
-				debugSession.sendEvent(event);
+				}
+				debugSession.send(event);
 				return true;
 			}
 		} catch (DisconnectedException e) {

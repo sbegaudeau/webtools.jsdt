@@ -11,7 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.connect;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.StringArgument;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.transport.Constants;
 
 /**
  * Implementation of a string argument that describes the host argument
@@ -77,7 +77,7 @@ public class HostArgument implements StringArgument {
 	 */
 	public void setValue(String host) {
 		if(host == null) {
-			this.host = TransportService.LOCALHOST;
+			this.host = Constants.LOCALHOST;
 		}
 		else {
 			if (!isValid(host)) {
@@ -100,6 +100,6 @@ public class HostArgument implements StringArgument {
 	 * @return true if the given host it localhost (127.0.0.1) false otherwise
 	 */
 	public static boolean isLocalhost(String host) {
-		return host.equals(TransportService.LOCALHOST) || host.equals(TransportService.LOCALHOST_IP);
+		return host.equals(Constants.LOCALHOST) || host.equals(Constants.LOCALHOST_IP);
 	}
 }

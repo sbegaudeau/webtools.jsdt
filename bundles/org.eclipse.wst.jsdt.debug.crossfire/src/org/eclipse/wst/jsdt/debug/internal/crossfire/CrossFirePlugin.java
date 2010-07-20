@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFMirror;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -27,11 +27,11 @@ public class CrossFirePlugin extends Plugin {
 	 */
 	public static final String PLUGIN_ID = "org.eclipse.wst.jsdt.debug.crossfire"; //$NON-NLS-1$
 	/**
-	 * Packet tracing option name
+	 * CFPacket tracing option name
 	 */
 	public static final String TRC_PACKETS = PLUGIN_ID + "/packets"; //$NON-NLS-1$
 	/**
-	 * Event queue tracing option name
+	 * CFEventPacket queue tracing option name
 	 */
 	public static final String TRC_EVENTQUEUE = PLUGIN_ID + "/eventqueue"; //$NON-NLS-1$
 	/**
@@ -72,6 +72,9 @@ public class CrossFirePlugin extends Plugin {
 		}
 	}
 	
+	/**
+	 * @return the singleton instance
+	 */
 	public static CrossFirePlugin getDefault() {
 		return plugin;
 	}
@@ -122,7 +125,7 @@ public class CrossFirePlugin extends Plugin {
 		if(CrossFirePlugin.getDefault().isDebugging()) {
 			String option = Platform.getDebugOption(TRC_PACKETS);
 			if(option != null) {
-				Packet.setTracing(Boolean.valueOf(option).booleanValue());
+				CFPacket.setTracing(Boolean.valueOf(option).booleanValue());
 			}
 			option = Platform.getDebugOption(TRC_EVENTQUEUE);
 			if(option != null) {

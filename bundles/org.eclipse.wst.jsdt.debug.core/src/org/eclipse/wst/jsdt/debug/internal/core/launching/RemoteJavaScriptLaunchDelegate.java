@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.debug.internal.core.launching;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -61,7 +64,7 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 			localmonitor.worked(4);
 			localmonitor.subTask(Messages.acquiring_connector);
 			Connector connector = JavaScriptDebugPlugin.getConnectionsManager().getConnector(name);
-			VirtualMachine vm;
+			VirtualMachine vm = null;
 			try {
 				if(localmonitor.isCanceled()) {
 					return;
@@ -83,6 +86,9 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 				}
 				localmonitor.worked(4);
 			} catch (IOException e) {
+				if(vm != null) {
+					vm.terminate();
+				}
 				Status status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, "Error occured while launching", e); //$NON-NLS-1$
 				throw new CoreException(status);
 			}
@@ -91,7 +97,9 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 			}
 			localmonitor.worked(4);
 			localmonitor.subTask(Messages.creating_debug_target);
-			JavaScriptDebugTarget target = new JavaScriptDebugTarget(vm, null, launch, vm.name(), true, true);
+			JavaScriptProcess process = new JavaScriptProcess(launch, computeProcessName(connector));
+			launch.addProcess(process);
+			JavaScriptDebugTarget target = new JavaScriptDebugTarget(vm, process, launch, true, true);
 			if(localmonitor.isCanceled()) {
 				return;
 			}
@@ -101,5 +109,32 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 		finally {
 			localmonitor.done();
 		}
+	}
+	
+	String computeCommandline(Connector connector) {
+		StringBuffer buffer = new StringBuffer();
+		Map args = connector.defaultArguments();
+		if(args != null) {
+			String arg = (String) args.get("host"); //$NON-NLS-1$
+			if(arg != null) {
+				buffer.append(arg);
+			}
+			arg = (String) args.get("port"); //$NON-NLS-1$
+			if(arg != null) {
+				buffer.append(":").append(arg); //$NON-NLS-1$
+			}
+		}
+		return buffer.toString();
+	}
+	
+	/**
+	 * Computes the display name for the {@link IProcess} given the connector
+	 * @param connector
+	 * @return the name for the process
+	 */
+	String computeProcessName(Connector connector) {
+		StringBuffer buffer = new StringBuffer(connector.name());
+		String timestamp = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(System.currentTimeMillis()));
+		return NLS.bind(Messages.javascript_process_name, new String[] {buffer.toString(), timestamp});
 	}
 }

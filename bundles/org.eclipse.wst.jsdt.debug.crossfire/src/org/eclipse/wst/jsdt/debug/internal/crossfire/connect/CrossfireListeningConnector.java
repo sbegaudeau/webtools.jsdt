@@ -17,10 +17,10 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.ListeningConnector;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Connection;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.SocketTransportService;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 
 /**
  * Default launching connector for CrossFire
@@ -76,7 +76,7 @@ public class CrossfireListeningConnector implements ListeningConnector {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.ListeningConnector#accept(java.util.Map)
 	 */
 	public VirtualMachine accept(Map arguments) throws IOException {
-		TransportService service = new SocketTransportService();
+		TransportService service = new CFTransportService();
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
 		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);

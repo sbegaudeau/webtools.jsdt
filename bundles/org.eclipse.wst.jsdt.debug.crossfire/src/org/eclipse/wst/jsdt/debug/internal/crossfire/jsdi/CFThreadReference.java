@@ -24,8 +24,8 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
 
 /**
  * Default implementation of {@link ThreadReference} for Crossfire
@@ -91,10 +91,10 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		//TODO we require some way to batch retrieve the frames from a given context
 		//unless there is only ever one frame?
 		if(frames == null) {
-			Request request = new Request(Commands.BACKTRACE, id);
+			CFRequestPacket request = new CFRequestPacket(Commands.BACKTRACE, id);
 			request.setArgument(Attributes.FROM_FRAME, new Integer(0));
 			request.setArgument(Attributes.INCLUDE_SCOPES, Boolean.TRUE);
-			Response response = crossfire().sendRequest(request);
+			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				frames = new ArrayList();
 				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
@@ -128,8 +128,8 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#resume()
 	 */
 	public void resume() {
-		Request request = new Request(Commands.CONTINUE, id);
-		Response response = crossfire().sendRequest(request);
+		CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
+		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			clearFrames();
 			state = RUNNING;
@@ -143,8 +143,8 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#suspend()
 	 */
 	public void suspend() {
-		Request request = new Request(Commands.SUSPEND, id);
-		Response response = crossfire().sendRequest(request);
+		CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, id);
+		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			//XXX catch in case the last resume failed
 			clearFrames();

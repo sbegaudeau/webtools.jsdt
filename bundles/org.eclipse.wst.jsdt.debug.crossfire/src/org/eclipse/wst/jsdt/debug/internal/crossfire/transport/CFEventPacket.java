@@ -12,14 +12,16 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.packet.Event;
+
 
 /**
- * An {@link Event} is a specialized {@link Packet}
+ * An {@link CFEventPacket} is a specialized {@link CFPacket}
  * that only handles <code>event</code> data.
  * 
  * @since 1.0
  */
-public class Event extends Packet {
+public class CFEventPacket extends CFPacket implements Event {
 
 	/**
 	 * The type of this packet
@@ -85,7 +87,7 @@ public class Event extends Packet {
 	 * Constructor
 	 * @param event
 	 */
-	public Event(String event) {
+	public CFEventPacket(String event) {
 		super(EVENT, null);
 		this.event = event.intern();
 	}
@@ -94,7 +96,7 @@ public class Event extends Packet {
 	 * Constructor
 	 * @param json
 	 */
-	public Event(Map json) {
+	public CFEventPacket(Map json) {
 		super(json);
 		String packetEvent = (String) json.get(EVENT);
 		event = packetEvent.intern();
@@ -107,24 +109,22 @@ public class Event extends Packet {
 		}
 	}
 
-	/**
-	 * Returns the underlying event data
-	 * @return the event data
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Event#getEvent()
 	 */
 	public String getEvent() {
 		return event;
 	}
 
-	/**
-	 * Returns the underlying body of the event packet
-	 * @return the body of the packet
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Event#getBody()
 	 */
 	public Map getBody() {
 		return body;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet#toJSON()
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
@@ -139,7 +139,7 @@ public class Event extends Packet {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		Object json = toJSON();
-		buffer.append("Event: "); //$NON-NLS-1$
+		buffer.append("CFEventPacket: "); //$NON-NLS-1$
 		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}

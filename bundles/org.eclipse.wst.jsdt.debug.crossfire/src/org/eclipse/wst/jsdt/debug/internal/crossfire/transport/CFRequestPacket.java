@@ -14,12 +14,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.wst.jsdt.debug.transport.packet.Request;
+
 /**
  * Default request implementation using JSON
  * 
  * @since 1.0
  */
-public class Request extends Packet {
+public class CFRequestPacket extends CFPacket implements Request {
 
 	/**
 	 * The type of this packet
@@ -29,7 +31,8 @@ public class Request extends Packet {
 	private final String command;
 	private final Map arguments = Collections.synchronizedMap(new HashMap());
 	private final Map params = Collections.synchronizedMap(new HashMap());
-	
+	private static int currentSequence = 0;
+	private final int sequence;
 	
 	/**
 	 * Constructor
@@ -39,11 +42,12 @@ public class Request extends Packet {
 	 * @see http://getfirebug.com/wiki/index.php/Crossfire_Protocol_Reference for 
 	 * requests that do not require a context id.
 	 */
-	public Request(String command, String context_id) {
+	public CFRequestPacket(String command, String context_id) {
 		super(REQUEST, context_id);
 		if(command == null) {
 			throw new IllegalArgumentException("The request command kind cannot be null"); //$NON-NLS-1$
 		}
+		this.sequence = nextSequence();
 		this.command = command.intern();
 	}
 
@@ -52,7 +56,7 @@ public class Request extends Packet {
 	 * 
 	 * @param json map of JSON attributes, <code>null</code> is not accepted
 	 */
-	public Request(Map json) {
+	public CFRequestPacket(Map json) {
 		super(json);
 		if(json == null) {
 			throw new IllegalArgumentException("The JSON map for a request packet cannot be null"); //$NON-NLS-1$
@@ -61,8 +65,24 @@ public class Request extends Packet {
 		this.command = value.intern();
 		Map packetArguments = (Map) json.get(Attributes.ARGUMENTS);
 		arguments.putAll(packetArguments);
+		Number packetSeq = (Number) json.get(Attributes.SEQ);
+		this.sequence = packetSeq.intValue();
 	}
 
+	/**
+	 * @return a next value for the sequence
+	 */
+	private static synchronized int nextSequence() {
+		return ++currentSequence;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getSequence()
+	 */
+	public int getSequence() {
+		return sequence;
+	}
+	
 	/**
 	 * Allows additional parameters to be added to the request
 	 * 
@@ -73,24 +93,15 @@ public class Request extends Packet {
 		params.put(key, value);
 	}
 	
-	/**
-	 * Returns the command that this {@link Request} will was created for.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>
-	 * 
-	 * @return the underlying command, never <code>null</code>
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getCommand()
 	 */
 	public String getCommand() {
 		return command;
 	}
 
-	/**
-	 * Returns the complete collection of JSON arguments in the {@link Request}.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>, an empty map will be returned
-	 * if there are no properties.
-	 * 
-	 * @return the arguments or an empty map never <code>null</code>
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getArguments()
 	 */
 	public Map getArguments() {
 		return arguments;
@@ -113,10 +124,11 @@ public class Request extends Packet {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet#toJSON()
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
+		json.put(Attributes.SEQ, new Integer(sequence));
 		json.put(Attributes.COMMAND, command);
 		if(!arguments.isEmpty()) {
 			json.put(Attributes.ARGUMENTS, arguments);
@@ -135,7 +147,7 @@ public class Request extends Packet {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		Object json = toJSON();
-		buffer.append("Request: "); //$NON-NLS-1$
+		buffer.append("CFRequestPacket: "); //$NON-NLS-1$
 		JSON.writeValue(json, buffer);
 		return buffer.toString();
 	}

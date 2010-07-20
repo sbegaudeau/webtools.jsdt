@@ -15,7 +15,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 
 /**
- * Default implementation of an {@link Event} for Crossfire
+ * Default implementation of an {@link CFEvent} for Crossfire
  * 
  * @since 1.0
  */

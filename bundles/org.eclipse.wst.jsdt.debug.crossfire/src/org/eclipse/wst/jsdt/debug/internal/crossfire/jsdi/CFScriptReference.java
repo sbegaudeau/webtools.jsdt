@@ -27,8 +27,8 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
 
 /**
  * Default implementation of {@link ScriptReference} for Crossfire
@@ -160,10 +160,10 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	public synchronized String source() {
 		if(source == null) {
-			Request request = new Request(Commands.SCRIPT, context_id);
+			CFRequestPacket request = new CFRequestPacket(Commands.SCRIPT, context_id);
 			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
 			request.setArgument(Attributes.URL, id);
-			Response response = crossfire().sendRequest(request);
+			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				initializeScript((Map) response.getBody().get(Attributes.SCRIPT));
 			}

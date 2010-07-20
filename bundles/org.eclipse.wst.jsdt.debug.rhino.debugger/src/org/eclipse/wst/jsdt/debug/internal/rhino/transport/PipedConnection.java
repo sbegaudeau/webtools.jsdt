@@ -20,6 +20,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.packet.Packet;
+
 /**
  * A {@link Connection} implementation that uses streams for communication
  * 
@@ -50,14 +53,14 @@ public class PipedConnection implements Connection {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#isOpen()
+	 * @see org.eclipse.wst.jsdt.debug.transport.Connection#isOpen()
 	 */
 	public synchronized boolean isOpen() {
 		return open;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#close()
+	 * @see org.eclipse.wst.jsdt.debug.transport.Connection#close()
 	 */
 	public synchronized void close() throws IOException {
 		open = false;
@@ -66,7 +69,7 @@ public class PipedConnection implements Connection {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#writePacket(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet)
+	 * @see org.eclipse.wst.jsdt.debug.transport.Connection#writePacket(org.eclipse.wst.jsdt.debug.transport.packet.Packet)
 	 */
 	public void writePacket(Packet packet) throws IOException {
 		String jsonString = JSONUtil.write(packet.toJSON());
@@ -79,7 +82,7 @@ public class PipedConnection implements Connection {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#readPacket()
+	 * @see org.eclipse.wst.jsdt.debug.transport.Connection#readPacket()
 	 */
 	public Packet readPacket() throws IOException {
 		StringBuffer buffer = new StringBuffer();
@@ -114,13 +117,13 @@ public class PipedConnection implements Connection {
 		}
 
 		Map json = (Map) JSONUtil.read(new String(message));
-		String type = Packet.getType(json);
+		String type = RhinoPacket.getType(json);
 		if (EventPacket.TYPE.equals(type))
 			return new EventPacket(json);
 		if (JSONConstants.REQUEST.equals(type))
-			return new Request(json);
+			return new RhinoRequest(json);
 		if (JSONConstants.RESPONSE.equals(type))
-			return new Response(json);
+			return new RhinoResponse(json);
 
 		throw new IOException("Unknown packet type: " + type); //$NON-NLS-1$
 	}

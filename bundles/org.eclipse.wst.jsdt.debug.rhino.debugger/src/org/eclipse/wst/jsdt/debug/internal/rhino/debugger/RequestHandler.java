@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
 
 /**
  * Rhino request handler used to craft response bodies for given JSON requests
@@ -41,9 +41,9 @@ public class RequestHandler {
 	 * @param request
 	 * @return
 	 */
-	public Response handleRequest(Request request) {
+	public RhinoResponse handleRequest(RhinoRequest request) {
 		String command = request.getCommand();
-		Response response = new Response(request.getSequence(), command);
+		RhinoResponse response = new RhinoResponse(request.getSequence(), command);
 		try {
 			if (command.equals(JSONConstants.VERSION)) {
 				handleVersionRequest(request, response);
@@ -95,7 +95,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleClearBreakpointRequest(Request request, Response response) {
+	private void handleClearBreakpointRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long breakpointId = numberToLong((Number) arguments.get(JSONConstants.BREAKPOINT_ID));
 		if (breakpointId == null) {
@@ -118,7 +118,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleSetBreakpointRequest(Request request, Response response) {
+	private void handleSetBreakpointRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long scriptId = numberToLong((Number) arguments.get(JSONConstants.SCRIPT_ID));
 		Integer line = numberToInteger((Number) arguments.get(JSONConstants.LINE));
@@ -137,7 +137,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleBreakpointRequest(Request request, Response response) {
+	private void handleBreakpointRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long breakpointId = numberToLong((Number) arguments.get(JSONConstants.BREAKPOINT_ID));
 		if (breakpointId == null) {
@@ -160,7 +160,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleBreakpointsRequest(Request request, Response response) {
+	private void handleBreakpointsRequest(RhinoRequest request, RhinoResponse response) {
 		Collection breakpoints = debugger.getBreakpoints();
 		response.getBody().put(JSONConstants.BREAKPOINTS, breakpoints);
 	}
@@ -171,7 +171,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleEvaluateRequest(Request request, Response response) {
+	private void handleEvaluateRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -207,7 +207,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleLookupRequest(Request request, Response response) {
+	private void handleLookupRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -243,7 +243,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleScriptRequest(Request request, Response response) {
+	private void handleScriptRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long scriptId = numberToLong((Number) arguments.get(JSONConstants.SCRIPT_ID));
 		if (scriptId == null) {
@@ -266,7 +266,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleScriptsRequest(Request request, Response response) {
+	private void handleScriptsRequest(RhinoRequest request, RhinoResponse response) {
 		List scriptIds = debugger.getScriptIds();
 		response.getBody().put(JSONConstants.SCRIPTS, scriptIds);
 	}
@@ -277,7 +277,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleFrameRequest(Request request, Response response) {
+	private void handleFrameRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -306,7 +306,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleFramesRequest(Request request, Response response) {
+	private void handleFramesRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -324,7 +324,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleThreadRequest(Request request, Response response) {
+	private void handleThreadRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -358,7 +358,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleThreadsRequest(Request request, Response response) {
+	private void handleThreadsRequest(RhinoRequest request, RhinoResponse response) {
 		List threadIds = debugger.getThreadIds();
 		response.getBody().put(JSONConstants.THREADS, threadIds);
 	}
@@ -369,7 +369,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleDisposeRequest(Request request, Response response) {
+	private void handleDisposeRequest(RhinoRequest request, RhinoResponse response) {
 		debugger.disconnect();
 	}
 
@@ -379,7 +379,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleContinueRequest(Request request, Response response) {
+	private void handleContinueRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -396,7 +396,7 @@ public class RequestHandler {
 	 * @param request
 	 * @param response
 	 */
-	private void handleSuspendRequest(Request request, Response response) {
+	private void handleSuspendRequest(RhinoRequest request, RhinoResponse response) {
 		Map arguments = request.getArguments();
 		Long threadId = numberToLong((Number) arguments.get(JSONConstants.THREAD_ID));
 		if (threadId == null) {
@@ -443,7 +443,7 @@ public class RequestHandler {
 	 * @see JSONConstants#VM_VENDOR
 	 * @see JSONConstants#VM_VERSION
 	 */
-	private void handleVersionRequest(Request request, Response response) {
+	private void handleVersionRequest(RhinoRequest request, RhinoResponse response) {
 		Map body = response.getBody();
 		body.put(JSONConstants.JAVASCRIPT_VERSION, VERSION_1_6);
 		body.put(JSONConstants.ECMASCRIPT_VERSION, "3"); //$NON-NLS-1$

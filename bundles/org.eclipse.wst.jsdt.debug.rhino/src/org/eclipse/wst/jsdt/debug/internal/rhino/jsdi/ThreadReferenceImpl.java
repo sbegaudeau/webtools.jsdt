@@ -19,11 +19,11 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Rhino implementation of {@link ThreadReference}
@@ -83,10 +83,10 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		if (frames != null) {
 			return frames;
 		}
-		Request request = new Request(JSONConstants.FRAMES);
+		RhinoRequest request = new RhinoRequest(JSONConstants.FRAMES);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
-			Response response = vm.sendRequest(request, 30000);
+			RhinoResponse response = vm.sendRequest(request, 30000);
 			List frameIds = (List) response.getBody().get(JSONConstants.FRAMES);
 			if (frameIds.isEmpty()) {
 				return Collections.EMPTY_LIST;
@@ -116,11 +116,11 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 	 * @return a new {@link StackFrameReference} or <code>null</code>
 	 */
 	private StackFrameImpl createStackFrame(Long frameId) {
-		Request request = new Request(JSONConstants.FRAME);
+		RhinoRequest request = new RhinoRequest(JSONConstants.FRAME);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		request.getArguments().put(JSONConstants.FRAME_ID, frameId);
 		try {
-			Response response = vm.sendRequest(request);
+			RhinoResponse response = vm.sendRequest(request);
 			Map jsonFrame = (Map) response.getBody().get(JSONConstants.FRAME);
 			return new StackFrameImpl(vm, jsonFrame);
 		} catch (DisconnectedException e) {
@@ -169,13 +169,13 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		if (status == THREAD_STATUS_ZOMBIE) {
 			return;
 		}
-		Request request = new Request(JSONConstants.CONTINUE);
+		RhinoRequest request = new RhinoRequest(JSONConstants.CONTINUE);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		if (step != null) {
 			request.getArguments().put(JSONConstants.STEP, step);
 		}
 		try {
-			Response response = vm.sendRequest(request);
+			RhinoResponse response = vm.sendRequest(request);
 			if (response.isSuccess()) {
 				step = null;
 				frames = null;
@@ -196,10 +196,10 @@ public class ThreadReferenceImpl extends MirrorImpl implements ThreadReference {
 		if (status == THREAD_STATUS_ZOMBIE) {
 			return;
 		}
-		Request request = new Request(JSONConstants.SUSPEND);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SUSPEND);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
-			Response response = vm.sendRequest(request);
+			RhinoResponse response = vm.sendRequest(request);
 			if(response.isSuccess()) {
 				markSuspended(false);
 			}

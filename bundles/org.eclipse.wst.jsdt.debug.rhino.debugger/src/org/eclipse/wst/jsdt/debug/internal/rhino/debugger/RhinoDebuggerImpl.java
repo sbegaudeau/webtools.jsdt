@@ -22,7 +22,7 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONUtil;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TransportService;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.debug.DebugFrame;

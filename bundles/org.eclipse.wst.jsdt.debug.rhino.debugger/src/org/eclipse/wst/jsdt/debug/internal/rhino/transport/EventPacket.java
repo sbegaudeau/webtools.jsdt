@@ -14,12 +14,12 @@ import java.util.Map;
 
 
 /**
- * An {@link EventPacket} is a specialized {@link Packet}
+ * An {@link EventPacket} is a specialized {@link RhinoPacket}
  * that only handles <code>event</code> data.
  * 
  * @since 1.0
  */
-public class EventPacket extends Packet {
+public class EventPacket extends RhinoPacket {
 
 	public static final String TYPE = JSONConstants.EVENT;
 	private final String event;

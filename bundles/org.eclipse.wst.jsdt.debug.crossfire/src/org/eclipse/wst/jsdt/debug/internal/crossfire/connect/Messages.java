@@ -23,6 +23,7 @@ public class Messages extends NLS {
 	public static String auto_attach_label;
 	public static String cannot_launch_browser_not_localhost;
 	public static String crossfire_remote_attach;
+	public static String failed_to_attach_to_auto_browser;
 	public static String host_arg_desc;
 	public static String host_arg_name;
 	public static String only_localhost_is_supported;

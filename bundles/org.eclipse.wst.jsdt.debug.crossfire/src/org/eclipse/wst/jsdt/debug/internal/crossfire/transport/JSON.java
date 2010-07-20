@@ -220,13 +220,13 @@ public final class JSON {
 	}
 	
 	/**
-	 * Serializes the given {@link Packet} to a {@link String}
+	 * Serializes the given {@link CFPacket} to a {@link String}
 	 * 
 	 * @param packet the packet to serialize
 	 * 
 	 * @return the serialized {@link String}, never <code>null</code>
 	 */
-	public static String serialize(Packet packet) {
+	public static String serialize(CFPacket packet) {
 		Object json = packet.toJSON();
 		StringBuffer buffer = new StringBuffer();
 		writeValue(json, buffer);

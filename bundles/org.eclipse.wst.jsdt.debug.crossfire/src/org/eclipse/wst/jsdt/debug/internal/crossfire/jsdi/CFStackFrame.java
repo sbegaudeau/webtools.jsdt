@@ -26,8 +26,8 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
 
 /**
  * Default implementation of {@link StackFrame} for Crossfire
@@ -144,10 +144,10 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame#evaluate(java.lang.String)
 	 */
 	public Value evaluate(String expression) {
-		Request request = new Request(Commands.EVALUATE, context_id);
+		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, context_id);
 		request.setArgument(Attributes.FRAME, new Integer(index));
 		request.setArgument(Attributes.EXPRESSION, expression);
-		Response response = crossfire().sendRequest(request);
+		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			return createValue(response.getBody());
 		}
@@ -174,9 +174,9 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public Value lookup(Number ref) {
 		if(ref != null) {
-			Request request = new Request(Commands.LOOKUP, context_id);
+			CFRequestPacket request = new CFRequestPacket(Commands.LOOKUP, context_id);
 			request.setArgument(Attributes.HANDLE, ref);
-			Response response = crossfire().sendRequest(request);
+			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				return createValue(response.getBody());
 			}

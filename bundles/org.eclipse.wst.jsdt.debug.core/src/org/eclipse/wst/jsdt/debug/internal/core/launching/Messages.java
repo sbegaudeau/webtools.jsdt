@@ -22,6 +22,7 @@ public class Messages extends NLS {
 	public static String attaching_to_vm;
 	public static String could_not_locate_connector;
 	public static String creating_debug_target;
+	public static String javascript_process_name;
 	public static String launching_js_debug_delegate;
 	public static String waiting_for_vm_to_connect;
 	static {

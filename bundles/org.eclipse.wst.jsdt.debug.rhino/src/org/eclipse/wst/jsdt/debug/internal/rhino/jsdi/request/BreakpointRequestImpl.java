@@ -19,11 +19,11 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.BreakpointRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.ScriptReferenceImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Rhino implementation of {@link BreakpointRequest}
@@ -118,7 +118,7 @@ public class BreakpointRequestImpl extends EventRequestImpl implements Breakpoin
 		if (enabled) {
 			ScriptReferenceImpl scriptReferenceImpl = (ScriptReferenceImpl) this.location.scriptReference();
 			Long scriptId = scriptReferenceImpl.getScriptId();
-			Request request = new Request(JSONConstants.SETBREAKPOINT);
+			RhinoRequest request = new RhinoRequest(JSONConstants.SETBREAKPOINT);
 			request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 			request.getArguments().put(JSONConstants.CONDITION, this.condition);
 			if (this.location.functionName() != null) {
@@ -128,7 +128,7 @@ public class BreakpointRequestImpl extends EventRequestImpl implements Breakpoin
 				request.getArguments().put(JSONConstants.LINE, new Integer(this.location.lineNumber()));
 			}
 			try {
-				Response response = this.vm.sendRequest(request);
+				RhinoResponse response = this.vm.sendRequest(request);
 				Map body = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 				Number id = (Number) body.get(JSONConstants.BREAKPOINT_ID);
 				this.breakpointId = new Long(id.longValue());
@@ -138,7 +138,7 @@ public class BreakpointRequestImpl extends EventRequestImpl implements Breakpoin
 				handleException(e.getMessage(), e);
 			}
 		} else {
-			Request request = new Request(JSONConstants.CLEARBREAKPOINT);
+			RhinoRequest request = new RhinoRequest(JSONConstants.CLEARBREAKPOINT);
 			request.getArguments().put(JSONConstants.BREAKPOINT_ID, breakpointId);
 			try {
 				vm.sendRequest(request);

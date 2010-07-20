@@ -28,13 +28,13 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.Constants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event.EventQueueImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request.EventRequestManagerImpl;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoRequest;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoResponse;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Rhino implementation of {@link VirtualMachine}
@@ -68,9 +68,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * loads the scripts
 	 */
 	private void initalizeScripts() {
-		Request request = new Request(JSONConstants.SCRIPTS);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPTS);
 		try {
-			Response response = sendRequest(request);
+			RhinoResponse response = sendRequest(request);
 			List scriptIds = (List) response.getBody().get(JSONConstants.SCRIPTS);
 			for (Iterator iterator = scriptIds.iterator(); iterator.hasNext();) {
 				Long scriptId = new Long(((Number) iterator.next()).longValue());
@@ -93,10 +93,10 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @return the new {@link ScriptReferenceImpl} or <code>null</code>
 	 */
 	private ScriptReferenceImpl createScriptReference(Long scriptId) {
-		Request request = new Request(JSONConstants.SCRIPT);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SCRIPT);
 		request.getArguments().put(JSONConstants.SCRIPT_ID, scriptId);
 		try {
-			Response response = sendRequest(request, DEFAULT_TIMEOUT);
+			RhinoResponse response = sendRequest(request, DEFAULT_TIMEOUT);
 			Map jsonScript = (Map) response.getBody().get(JSONConstants.SCRIPT);
 			return new ScriptReferenceImpl(this, jsonScript);
 		} catch (DisconnectedException e) {
@@ -150,7 +150,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @throws DisconnectedException
 	 */
 	public EventPacket receiveEvent(int timeout) throws TimeoutException, DisconnectedException {
-		return session.receiveEvent(timeout);
+		return (EventPacket) session.receive(EventPacket.TYPE, timeout);
 	}
 
 	/**
@@ -158,23 +158,23 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * 
 	 * @param request
 	 * @param timeout
-	 * @return the {@link Response} for the request
+	 * @return the {@link RhinoResponse} for the request
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
-	public Response sendRequest(Request request, int timeout) throws TimeoutException, DisconnectedException {
-		session.sendRequest(request);
-		return session.receiveResponse(request.getSequence(), timeout);
+	public RhinoResponse sendRequest(RhinoRequest request, int timeout) throws TimeoutException, DisconnectedException {
+		session.send(request);
+		return (RhinoResponse) session.receiveResponse(request.getSequence(), timeout);
 	}
 
 	/**
-	 * Sends the given {@link Request} using the default timeout
+	 * Sends the given {@link RhinoRequest} using the default timeout
 	 * @param request
-	 * @return the {@link Response} from the request
+	 * @return the {@link RhinoResponse} from the request
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
-	public Response sendRequest(Request request) throws TimeoutException, DisconnectedException {
+	public RhinoResponse sendRequest(RhinoRequest request) throws TimeoutException, DisconnectedException {
 		return sendRequest(request, DEFAULT_TIMEOUT);
 	}
 
@@ -182,9 +182,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allThreads()
 	 */
 	public synchronized List allThreads() {
-		Request request = new Request(JSONConstants.THREADS);
+		RhinoRequest request = new RhinoRequest(JSONConstants.THREADS);
 		try {
-			Response response = sendRequest(request);
+			RhinoResponse response = sendRequest(request);
 			List threadIds = (List) response.getBody().get(JSONConstants.THREADS);
 			HashMap allThreads = new HashMap(threadIds.size());
 			for (Iterator iterator = threadIds.iterator(); iterator.hasNext();) {
@@ -222,10 +222,10 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @return the new {@link ThreadReferenceImpl} or <code>null</code>
 	 */
 	private ThreadReferenceImpl createThreadReference(Long threadId) {
-		Request request = new Request(JSONConstants.THREAD);
+		RhinoRequest request = new RhinoRequest(JSONConstants.THREAD);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		try {
-			Response response = sendRequest(request, DEFAULT_TIMEOUT);
+			RhinoResponse response = sendRequest(request, DEFAULT_TIMEOUT);
 			Map jsonThread = (Map) response.getBody().get(JSONConstants.THREAD);
 			if (jsonThread == null) {
 				return null;
@@ -262,9 +262,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#description()
 	 */
 	public String description() {
-		Request request = new Request(JSONConstants.VERSION);
+		RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
 		try {
-			Response response = sendRequest(request);
+			RhinoResponse response = sendRequest(request);
 			StringBuffer buffer = new StringBuffer();
 			buffer.append((String) response.getBody().get(JSONConstants.VM_VENDOR)).append(Constants.SPACE);
 			buffer.append(response.getBody().get(JSONConstants.VM_NAME)).append(Constants.SPACE);
@@ -283,7 +283,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#dispose()
 	 */
 	public void dispose() {
-		Request request = new Request(JSONConstants.DISPOSE);
+		RhinoRequest request = new RhinoRequest(JSONConstants.DISPOSE);
 		try {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
@@ -301,9 +301,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#name()
 	 */
 	public String name() {
-		Request request = new Request(JSONConstants.VERSION);
+		RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
 		try {
-			Response response = sendRequest(request);
+			RhinoResponse response = sendRequest(request);
 			return (String) response.getBody().get(JSONConstants.VM_NAME);
 		} catch (DisconnectedException e) {
 			disconnectVM();
@@ -318,7 +318,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#resume()
 	 */
 	public void resume() {
-		Request request = new Request(JSONConstants.CONTINUE);
+		RhinoRequest request = new RhinoRequest(JSONConstants.CONTINUE);
 		try {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
@@ -333,7 +333,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#suspend()
 	 */
 	public void suspend() {
-		Request request = new Request(JSONConstants.SUSPEND);
+		RhinoRequest request = new RhinoRequest(JSONConstants.SUSPEND);
 		try {
 			sendRequest(request);
 		} catch (DisconnectedException e) {
@@ -355,9 +355,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
-		Request request = new Request(JSONConstants.VERSION);
+		RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
 		try {
-			Response response = sendRequest(request);
+			RhinoResponse response = sendRequest(request);
 			return (String) response.getBody().get(JSONConstants.VM_VERSION);
 		} catch (DisconnectedException e) {
 			disconnectVM();

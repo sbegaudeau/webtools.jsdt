@@ -31,6 +31,7 @@ public class Messages extends NLS {
 	public static String connector;
 	public static String connector_properties;
 	public static String creating_script_load_bp;
+	public static String disconnected;
 	public static String enable_hit_count;
 	public static String enter_new_hit_count;
 	public static String exception_occurred_setting_bp_properties;
@@ -42,7 +43,9 @@ public class Messages extends NLS {
 	public static String set_bp_hit_count;
 	public static String suspend_target;
 	public static String suspend_thread;
+	public static String terminated;
 	public static String the_argument_0_is_not_valid;
+	public static String unknown;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

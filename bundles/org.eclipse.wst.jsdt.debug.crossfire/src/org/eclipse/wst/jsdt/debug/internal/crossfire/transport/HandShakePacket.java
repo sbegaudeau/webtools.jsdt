@@ -14,12 +14,14 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.Constants;
+
 /**
- * {@link Packet} for replying to the Crossfire handshake request
+ * {@link CFPacket} for replying to the Crossfire handshake request
  * 
  * @since 1.0
  */
-public class HandShake extends Packet {
+public class HandShakePacket extends CFPacket {
 	
 	/**
 	 * handshake
@@ -28,7 +30,7 @@ public class HandShake extends Packet {
 	static {
 		String hs = "CrossfireHandshake\r\n"; //$NON-NLS-1$
 		try {
-			CROSSFIRE_HANDSHAKE = new String(hs.getBytes(), "utf-8"); //$NON-NLS-1$
+			CROSSFIRE_HANDSHAKE = new String(hs.getBytes(), Constants.UTF_8);
 		} catch (UnsupportedEncodingException e) {
 			CROSSFIRE_HANDSHAKE = hs;
 		} 
@@ -38,8 +40,8 @@ public class HandShake extends Packet {
 	 * Constructor
 	 * @param type
 	 */
-	protected HandShake() {
-		super(Response.RESPONSE, null);
+	protected HandShakePacket() {
+		super(CFResponsePacket.RESPONSE, null);
 	}
 
 	/**
@@ -50,14 +52,14 @@ public class HandShake extends Packet {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet#toString()
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#toString()
 	 */
 	public String toString() {
 		return CROSSFIRE_HANDSHAKE;
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Packet#toJSON()
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = new HashMap(1);

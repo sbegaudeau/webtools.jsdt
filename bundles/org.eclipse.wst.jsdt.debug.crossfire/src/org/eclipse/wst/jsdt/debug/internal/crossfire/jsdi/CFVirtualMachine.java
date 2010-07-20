@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
@@ -31,14 +30,14 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.event.CFEventQueue;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFEventPacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DebugSession;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.DisconnectedException;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Event;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Request;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Response;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.TimeoutException;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
+import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Default CrossFire implementation of {@link VirtualMachine}
@@ -81,8 +80,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public void resume() {
 		if(ready()) {
 			//TODO make this work
-			Request request = new Request(Commands.CONTINUE, null);
-			Response response = sendRequest(request);
+			CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, null);
+			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				if(threads != null) {
 					Entry entry = null;
@@ -107,8 +106,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public void suspend() {
 		if(ready()) {
 			//TODO make this work
-			Request request = new Request(Commands.SUSPEND, null);
-			Response response = sendRequest(request);
+			CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, null);
+			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				if(threads != null) {
 					Entry entry = null;
@@ -140,7 +139,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#name()
 	 */
 	public String name() {
-		return NLS.bind(Messages.vm_name, version());
+		return Messages.vm_name;
 	}
 
 	/* (non-Javadoc)
@@ -155,8 +154,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 */
 	public synchronized String version() {
 		if(ready()) {
-			Request request = new Request(Commands.VERSION, null);
-			Response response = sendRequest(request);
+			CFRequestPacket request = new CFRequestPacket(Commands.VERSION, null);
+			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				Map json = response.getBody();
 				return (String) json.get(Commands.VERSION);
@@ -174,8 +173,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	public synchronized List allThreads() {
 		if(threads == null) {
 			threads = new HashMap();
-			Request request = new Request(Commands.LISTCONTEXTS, null);
-			Response response = sendRequest(request);
+			CFRequestPacket request = new CFRequestPacket(Commands.LISTCONTEXTS, null);
+			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				List contexts = (List) response.getBody().get(Attributes.CONTEXTS);
 				for (Iterator iter = contexts.iterator(); iter.hasNext();) {
@@ -247,9 +246,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			List threads = allThreads();
 			for (Iterator iter = threads.iterator(); iter.hasNext();) {
 				CFThreadReference thread = (CFThreadReference) iter.next();
-				Request request = new Request(Commands.SCRIPTS, thread.id());
+				CFRequestPacket request = new CFRequestPacket(Commands.SCRIPTS, thread.id());
 				request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
-				Response response = sendRequest(request);
+				CFResponsePacket response = sendRequest(request);
 				if(response.isSuccess()) {
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
 					for (Iterator iter2 = scriptz.iterator(); iter2.hasNext();) {
@@ -385,27 +384,27 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	}
 	
 	/**
-	 * Receives an {@link Event} from the underlying {@link DebugSession}, 
+	 * Receives an {@link CFEventPacket} from the underlying {@link DebugSession}, 
 	 * waiting for the {@link VirtualMachine#DEFAULT_TIMEOUT}.
 	 * 
-	 * @return the next {@link Event} never <code>null</code>
+	 * @return the next {@link CFEventPacket} never <code>null</code>
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
-	public Event receiveEvent() throws TimeoutException, DisconnectedException {
-		return session.receiveEvent(DEFAULT_TIMEOUT);
+	public CFEventPacket receiveEvent() throws TimeoutException, DisconnectedException {
+		return (CFEventPacket) session.receive(CFEventPacket.EVENT, DEFAULT_TIMEOUT);
 	}
 
 	/**
-	 * Receives an {@link Event} from the underlying {@link DebugSession}, 
+	 * Receives an {@link CFEventPacket} from the underlying {@link DebugSession}, 
 	 * waiting for the {@link VirtualMachine#DEFAULT_TIMEOUT}.
 	 * @param timeout
-	 * @return the next {@link Event} never <code>null</code>
+	 * @return the next {@link CFEventPacket} never <code>null</code>
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
-	public Event receiveEvent(int timeout) throws TimeoutException, DisconnectedException {
-		return session.receiveEvent(timeout);
+	public CFEventPacket receiveEvent(int timeout) throws TimeoutException, DisconnectedException {
+		return (CFEventPacket) session.receive(CFEventPacket.EVENT, timeout);
 	}
 	
 	/**
@@ -413,12 +412,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 	 * for the {@link VirtualMachine#DEFAULT_TIMEOUT}.
 	 * 
 	 * @param request
-	 * @return the {@link Response} for the request
+	 * @return the {@link CFResponsePacket} for the request
 	 */
-	public Response sendRequest(Request request) {
+	public CFResponsePacket sendRequest(CFRequestPacket request) {
 		try {
-			session.sendRequest(request);
-			return session.receiveResponse(request.getSequence(), 3000);
+			session.send(request);
+			return (CFResponsePacket) session.receiveResponse(request.getSequence(), 3000);
 		}
 		catch(DisconnectedException de) {
 			disconnectVM();
@@ -427,7 +426,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		catch(TimeoutException te) {
 			CrossFirePlugin.log(te);
 		}
-		return Response.FAILED;
+		return CFResponsePacket.FAILED;
 	}
 	
 	/**

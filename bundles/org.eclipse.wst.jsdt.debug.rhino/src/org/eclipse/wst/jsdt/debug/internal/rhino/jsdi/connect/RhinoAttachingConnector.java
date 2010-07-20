@@ -18,7 +18,10 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
-import org.eclipse.wst.jsdt.debug.internal.rhino.transport.*;
+import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoTransportService;
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.DebugSession;
+import org.eclipse.wst.jsdt.debug.transport.TransportService;
 
 /**
  * Rhino {@link Connector} implementation that attaches to a running debug process
@@ -38,7 +41,7 @@ public class RhinoAttachingConnector implements AttachingConnector {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector#attach(java.util.Map)
 	 */
 	public VirtualMachine attach(Map arguments) throws IOException {
-		TransportService service = new SocketTransportService();
+		TransportService service = new RhinoTransportService();
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
 		Connection c = service.attach(host + ":" + Integer.parseInt(port), 10000, 10000); //$NON-NLS-1$

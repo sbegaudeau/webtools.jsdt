@@ -8,27 +8,23 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.transport;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
 import java.util.Map;
+
+import org.eclipse.wst.jsdt.debug.transport.Connection;
+import org.eclipse.wst.jsdt.debug.transport.packet.Packet;
+import org.eclipse.wst.jsdt.debug.transport.socket.SocketConnection;
 
 /**
  * A specialized {@link Connection} that communicates using {@link Socket}s
  * 
  * @since 1.0
  */
-public class SocketConnection implements Connection {
-
-	private Writer writer;
-	private Reader reader;
-	private Socket socket;
+public class RhinoSocketConnection extends SocketConnection {
 
 	/**
 	 * Constructor
@@ -37,35 +33,17 @@ public class SocketConnection implements Connection {
 	 * 
 	 * @throws IOException
 	 */
-	public SocketConnection(Socket socket) throws IOException {
-		if(socket == null) {
-			throw new IllegalArgumentException("You cannot create a new SocketConnection on a null Socket"); //$NON-NLS-1$
-		}
-		this.socket = socket;
-		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), Constants.UTF_8));
-		reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Constants.UTF_8));
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#isOpen()
-	 */
-	public boolean isOpen() {
-		return !socket.isClosed();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#close()
-	 */
-	public void close() throws IOException {
-		socket.close();
+	public RhinoSocketConnection(Socket socket) throws IOException {
+		super(socket);
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#writePacket(org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet)
+	 * @see org.eclipse.wst.jsdt.debug.transport.socket.SocketConnection#writePacket(org.eclipse.wst.jsdt.debug.transport.packet.Packet)
 	 */
 	public void writePacket(Packet packet) throws IOException {
 		String jsonString = JSONUtil.write(packet.toJSON());
 		String count = Integer.toString(jsonString.length());
+		Writer writer = getWriter();
 		writer.write(count);
 		writer.write('\r');
 		writer.write('\n');
@@ -74,11 +52,12 @@ public class SocketConnection implements Connection {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Connection#readPacket()
+	 * @see org.eclipse.wst.jsdt.debug.transport.socket.SocketConnection#readPacket()
 	 */
 	public Packet readPacket() throws IOException {
 		StringBuffer buffer = new StringBuffer();
 		int c;
+		Reader reader = getReader();
 		while ((c = reader.read()) != -1) {
 			if (c == '\r')
 				break;
@@ -109,13 +88,13 @@ public class SocketConnection implements Connection {
 		}
 
 		Map json = (Map) JSONUtil.read(new String(message));
-		String type = Packet.getType(json);
+		String type = RhinoPacket.getType(json);
 		if (EventPacket.TYPE.equals(type))
 			return new EventPacket(json);
 		if (JSONConstants.REQUEST.equals(type))
-			return new Request(json);
+			return new RhinoRequest(json);
 		if (JSONConstants.RESPONSE.equals(type))
-			return new Response(json);
+			return new RhinoResponse(json);
 
 		throw new IOException("Unknown packet type: " + type); //$NON-NLS-1$
 	}

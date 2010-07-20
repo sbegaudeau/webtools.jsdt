@@ -12,12 +12,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.packet.Response;
+
 /**
- * Default {@link Response} implementation using JSON
+ * Default {@link RhinoResponse} implementation using JSON
  * 
  * @since 1.0
  */
-public class Response extends Packet {
+public class RhinoResponse extends RhinoPacket implements Response {
 
 	private final String command;
 	private final int requestSequence;
@@ -32,7 +34,7 @@ public class Response extends Packet {
 	 * @param requestSequence the sequence
 	 * @param command the command, <code>null</code> is not accepted
 	 */
-	public Response(int requestSequence, String command) {
+	public RhinoResponse(int requestSequence, String command) {
 		super(JSONConstants.RESPONSE);
 		if(command == null) {
 			throw new IllegalArgumentException("The command string for a response packet cannot be null"); //$NON-NLS-1$
@@ -46,7 +48,7 @@ public class Response extends Packet {
 	 * 
 	 * @param json the JSON map for a response, <code>null</code> is not accepted
 	 */
-	public Response(Map json) {
+	public RhinoResponse(Map json) {
 		super(json);
 		Number packetRequestSeq = (Number) json.get(JSONConstants.REQUEST_SEQ);
 		requestSequence = packetRequestSeq.intValue();
@@ -66,42 +68,29 @@ public class Response extends Packet {
 		message = (String) json.get(JSONConstants.MESSAGE);
 	}
 
-	/**
-	 * Returns the request sequence
-	 * 
-	 * @return the request sequence
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#getRequestSequence()
 	 */
 	public int getRequestSequence() {
 		return requestSequence;
 	}
 
-	/**
-	 * Returns the underlying command.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>
-	 * 
-	 * @return the underlying command, never <code>null</code>
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#getCommand()
 	 */
 	public String getCommand() {
 		return command;
 	}
 
-	/**
-	 * Returns the body of the command.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>, if there is no body
-	 * an empty {@link Map} is returned.
-	 *  
-	 * @return the body of the JSON response or an empty {@link Map} never <code>null</code>
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#getBody()
 	 */
 	public Map getBody() {
 		return body;
 	}
 
-	/**
-	 * Returns <code>true</code> if the {@link Request} was successful
-	 * 
-	 * @return <code>true</code> if the {@link Request} was successful, <code>false</code> otherwise
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#isSuccess()
 	 */
 	public boolean isSuccess() {
 		return success;
@@ -116,10 +105,8 @@ public class Response extends Packet {
 		this.success = success;
 	}
 
-	/**
-	 * Returns <code>true</code> if the underlying command is currently running.
-	 * 
-	 * @return <code>true</code> if the underlying command is running, <code>false</code> otherwise
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#isRunning()
 	 */
 	public boolean isRunning() {
 		return running;
@@ -135,18 +122,18 @@ public class Response extends Packet {
 	}
 
 	/**
-	 * Returns the status message for this {@link Response}.<br>
+	 * Returns the status message for this {@link RhinoResponse}.<br>
 	 * <br>
 	 * This method can return <code>null</code>
 	 * 
-	 * @return the status message for this {@link Response} or <code>null</code>
+	 * @return the status message for this {@link RhinoResponse} or <code>null</code>
 	 */
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * Set the status message for this {@link Response}
+	 * Set the status message for this {@link RhinoResponse}
 	 * 
 	 * @param message the new message, <code>null</code> is accepted
 	 */
@@ -155,7 +142,7 @@ public class Response extends Packet {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet#toJSON()
+	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoPacket#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
@@ -175,7 +162,7 @@ public class Response extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Response Packet: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		buffer.append("RhinoResponse RhinoPacket: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }

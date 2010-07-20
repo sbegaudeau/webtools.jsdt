@@ -12,27 +12,32 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.wst.jsdt.debug.transport.packet.Request;
+
 /**
  * Default request implementation using JSON
  * 
  * @since 1.0
  */
-public class Request extends Packet {
+public class RhinoRequest extends RhinoPacket implements Request {
 
 	private final String command;
 	private final Map arguments = Collections.synchronizedMap(new HashMap());
-
+	private static int currentSequence = 0;
+	private final int sequence;
+	
 	/**
 	 * Constructor
 	 * 
 	 * @param command the command, <code>null</code> is not accepted
 	 */
-	public Request(String command) {
+	public RhinoRequest(String command) {
 		super(JSONConstants.REQUEST);
 		if(command == null) {
 			throw new IllegalArgumentException("The request command kind cannot be null"); //$NON-NLS-1$
 		}
 		this.command = command.intern();
+		this.sequence = nextSequence();
 	}
 
 	/**
@@ -40,7 +45,7 @@ public class Request extends Packet {
 	 * 
 	 * @param json map of JSON attributes, <code>null</code> is not accepted
 	 */
-	public Request(Map json) {
+	public RhinoRequest(Map json) {
 		super(json);
 		if(json == null) {
 			throw new IllegalArgumentException("The JSON map for a request packet cannot be null"); //$NON-NLS-1$
@@ -49,26 +54,33 @@ public class Request extends Packet {
 		this.command = packetCommand.intern();
 		Map packetArguments = (Map) json.get(JSONConstants.ARGUMENTS);
 		arguments.putAll(packetArguments);
+		Number packetSeq = (Number) json.get(JSONConstants.SEQ);
+		this.sequence = packetSeq.intValue();
 	}
 
 	/**
-	 * Returns the command that this {@link Request} will was created for.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>
-	 * 
-	 * @return the underlying command, never <code>null</code>
+	 * @return a next value for the sequence
+	 */
+	private static synchronized int nextSequence() {
+		return ++currentSequence;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getSequence()
+	 */
+	public int getSequence() {
+		return sequence;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getCommand()
 	 */
 	public String getCommand() {
 		return command;
 	}
 
-	/**
-	 * Returns the complete collection of JSON arguments in the {@link Request}.<br>
-	 * <br>
-	 * This method cannot return <code>null</code>, an empty map will be returned
-	 * if there are no properties.
-	 * 
-	 * @return the arguments or an empty map never <code>null</code>
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getArguments()
 	 */
 	public Map getArguments() {
 		return arguments;
@@ -91,10 +103,11 @@ public class Request extends Packet {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.core.jsdi.connect.Packet#toJSON()
+	 * @see org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoPacket#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
+		json.put(JSONConstants.SEQ, new Integer(sequence));
 		json.put(JSONConstants.COMMAND, command);
 		json.put(JSONConstants.ARGUMENTS, arguments);
 		return json;
@@ -105,7 +118,7 @@ public class Request extends Packet {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Request: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		buffer.append("RhinoRequest: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }
