@@ -15,7 +15,7 @@ public class ChromePlugin extends Plugin {
 	/**
 	 * Id of the bundle
 	 */
-	public static final String PLUGIN_ID = "org.eclipse.wst.jsdt.debug.internal.chrome"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.wst.jsdt.debug.chrome"; //$NON-NLS-1$
 	/**
 	 * PacketImpl tracing option name
 	 */
@@ -89,7 +89,7 @@ public class ChromePlugin extends Plugin {
 	 * @param t throwable to log 
 	 */
 	public static void log(Throwable t) {
-		log(newErrorStatus("Error logged from Crossfire Debug: ", t)); //$NON-NLS-1$
+		log(newErrorStatus("Error logged from Google Chrome Debug: ", t)); //$NON-NLS-1$
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public class ChromePlugin extends Plugin {
 	 * @param message the error message to log
 	 */
 	public static void logErrorMessage(String message) {
-		log(newErrorStatus("Internal message logged from Crossfire Debug: " + message, null)); //$NON-NLS-1$	
+		log(newErrorStatus("Internal message logged from Google Chrome Debug: " + message, null)); //$NON-NLS-1$	
 	}
 	
 	/**

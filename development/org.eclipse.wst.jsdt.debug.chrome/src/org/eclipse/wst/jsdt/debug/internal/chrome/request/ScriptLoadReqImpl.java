@@ -11,11 +11,22 @@
 package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link ScriptLoadRequest} impl
+ * 
+ * @since 1.0
  */
-public class ScritpLoadReqImpl extends EventReqImpl implements
-		ScriptLoadRequest {
+public class ScriptLoadReqImpl extends EventReqImpl implements ScriptLoadRequest {
+
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param enabled
+	 */
+	public ScriptLoadReqImpl(VMImpl vm, boolean enabled) {
+		super(vm, enabled);
+	}
 
 }

@@ -27,18 +27,24 @@ public class PacketImpl implements Packet {
 	 */
 	public static boolean TRACE = false;
 	
-	private String type = null;
+	private final String type;
+	private final String tool;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param type
+	 * @param type the type of the packet
+	 * @param tool the tools service expected to handle the packet
 	 */
-	public PacketImpl(String type) {
+	public PacketImpl(String type, String tool) {
 		if(type == null) {
 			throw new IllegalArgumentException(Messages.packet_type_cannot_be_null);
 		}
+		if(tool == null) {
+			throw new IllegalArgumentException(Messages.packet_tools_service_name_cannot_be_null);
+		}
 		this.type = type;
+		this.tool = tool;
 	}
 	
 	/**
@@ -54,6 +60,10 @@ public class PacketImpl implements Packet {
 		if(type == null) {
 			throw new IllegalArgumentException(Messages.no_packet_type_in_json);
 		}
+		tool = (String) json.get(Attributes.TOOL);
+		if(tool == null) {
+			throw new IllegalArgumentException(Messages.no_tool_found_in_packet_json);
+		}
 	}
 	
 	/**
@@ -62,6 +72,15 @@ public class PacketImpl implements Packet {
 	 */
 	public static void setTracing(boolean tracing) {
 		TRACE = tracing;
+	}
+	
+	/**
+	 * Returns the name of the tools service expected to handle this packet
+	 * 
+	 * @return the tools service name
+	 */
+	public String tool() {
+		return tool;
 	}
 	
 	/* (non-Javadoc)
@@ -76,7 +95,7 @@ public class PacketImpl implements Packet {
 	 */
 	public Map toJSON() {
 		Map json = new HashMap();
-		json.put(Attributes.TYPE, type);
+		//json.put(Attributes.TYPE, type);
 		return json;
 	}
 	

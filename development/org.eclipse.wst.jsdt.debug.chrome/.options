@@ -10,16 +10,16 @@
 ###############################################################################
 
 #option file for tracing options for Google Chrome debugger port
-org.eclipse.wst.jsdt.debug.crossfire/debug=true
+org.eclipse.wst.jsdt.debug.chrome/debug=true
 
 #option to trace packets being sent / received
-org.eclipse.wst.jsdt.debug.crossfire/packets=false
+org.eclipse.wst.jsdt.debug.chrome/packets=false
 
 #option to trace the event queue
-org.eclipse.wst.jsdt.debug.crossfire/eventqueue=false
+org.eclipse.wst.jsdt.debug.chrome/eventqueue=false
 
 #option to trace the jsdi impl* elements
-org.eclipse.wst.jsdt.debug.crossfire/jsdi=false
+org.eclipse.wst.jsdt.debug.chrome/jsdi=false
 
 #option to trace the JSON parser
-org.eclipse.wst.jsdt.debug.crossfire/json=false
+org.eclipse.wst.jsdt.debug.chrome/json=false

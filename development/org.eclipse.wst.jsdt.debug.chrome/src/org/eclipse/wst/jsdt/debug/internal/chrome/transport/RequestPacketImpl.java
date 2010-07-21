@@ -36,9 +36,10 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 * Constructor
 	 * 
 	 * @param command
+	 * @param tool the name of the tools service expected to handle the request
 	 */
-	public RequestPacketImpl(String command) {
-		super(REQUEST);
+	public RequestPacketImpl(String command, String tool) {
+		super(REQUEST, tool);
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.cannot_create_request_null_command);
 		}
@@ -105,7 +106,7 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
-		json.put(Attributes.SEQ, new Integer(seq));
+		//json.put(Attributes.SEQ, new Integer(seq));
 		json.put(Attributes.COMMAND, command);
 		if(!args.isEmpty()) {
 			json.put(Attributes.ARGUMENTS, args);

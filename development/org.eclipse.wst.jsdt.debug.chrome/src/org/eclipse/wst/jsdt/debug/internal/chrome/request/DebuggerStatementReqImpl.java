@@ -12,30 +12,40 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link DebuggerStatementRequest} impl
+ * 
+ * @since 1.0
  */
-public class DebuggerStatementReqImpl extends EventReqImpl implements
-		DebuggerStatementRequest {
+public class DebuggerStatementReqImpl extends EventReqImpl implements DebuggerStatementRequest {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest#isEnabled()
+	private ThreadReference thread = null;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param vm
+	 * @param enabled
 	 */
-	public boolean isEnabled() {
-		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enabled) {
+	public DebuggerStatementReqImpl(VMImpl vm, boolean enabled) {
+		super(vm, enabled);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest#addThreadFilter(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
 	 */
 	public void addThreadFilter(ThreadReference thread) {
+		this.thread = thread;
 	}
-
+	
+	/**
+	 * Returns the underlying {@link ThreadReference} this request applies to
+	 * 
+	 * @return the underlying {@link ThreadReference}
+	 */
+	public synchronized ThreadReference thread() {
+		return this.thread;
+	}
 }

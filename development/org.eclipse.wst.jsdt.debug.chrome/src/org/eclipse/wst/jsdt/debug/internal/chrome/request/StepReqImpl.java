@@ -12,24 +12,42 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link StepRequest} impl
+ * 
+ * @since 1.0
  */
 public class StepReqImpl extends EventReqImpl implements StepRequest {
+
+	private int stepkind = 0;
+	private ThreadReference thread = null;
+	
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param thread
+	 * @param step
+	 * @param enabled
+	 */
+	public StepReqImpl(VMImpl vm, ThreadReference thread, int step, boolean enabled) {
+		super(vm, enabled);
+		this.thread = thread;
+		this.stepkind = step;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest#step()
 	 */
 	public int step() {
-		return 0;
+		return stepkind;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest#thread()
 	 */
 	public ThreadReference thread() {
-		return null;
+		return thread;
 	}
-
 }

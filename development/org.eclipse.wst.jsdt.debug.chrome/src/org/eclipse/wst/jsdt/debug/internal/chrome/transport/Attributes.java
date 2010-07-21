@@ -18,6 +18,19 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.transport;
 public interface Attributes {
 
 	/**
+	 * The name for the development tools service
+	 * <br><br>
+	 * Value is: <code>DevToolsService</code>
+	 */
+	public static final String TOOL_DEVTOOLSRVC = "DevToolsService"; //$NON-NLS-1$
+	/**
+	 * The name for the V8 debugger service
+	 * <br><br>
+	 * Value is: <code>V8Debugger</code>
+	 */
+	public static final String TOOL_V8DEBUGGER = "V8Debugger"; //$NON-NLS-1$
+	
+	/**
 	 * The "arguments" attribute
 	 */
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
@@ -157,6 +170,10 @@ public interface Attributes {
 	 * The "this" attribute
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
+	/**
+	 * the "tool" attribute
+	 */
+	public static final String TOOL = "tool"; //$NON-NLS-1$
 	/**
 	 * The "type" attribute
 	 */

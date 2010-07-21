@@ -37,9 +37,10 @@ public class ResponsePacketImpl extends PacketImpl implements Response {
 	 * Constructor
 	 * @param requestSequence
 	 * @param command
+	 * @param tool the name of the tools service that issued this response
 	 */
-	public ResponsePacketImpl(int requestSequence, String command) {
-		super(RESPONSE);
+	public ResponsePacketImpl(int requestSequence, String command, String tool) {
+		super(RESPONSE, tool);
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.cannot_create_response_null_command);
 		}

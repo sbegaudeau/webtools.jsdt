@@ -12,17 +12,32 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link SuspendRequest} impl
+ * 
+ * @since 1.0
  */
 public class SuspendReqImpl extends EventReqImpl implements SuspendRequest {
+
+	private ThreadReference thread = null;
+	
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param thread
+	 * @param enabled
+	 */
+	public SuspendReqImpl(VMImpl vm, ThreadReference thread, boolean enabled) {
+		super(vm, enabled);
+		this.thread = thread;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest#thread()
 	 */
 	public ThreadReference thread() {
-		return null;
+		return thread;
 	}
-
 }

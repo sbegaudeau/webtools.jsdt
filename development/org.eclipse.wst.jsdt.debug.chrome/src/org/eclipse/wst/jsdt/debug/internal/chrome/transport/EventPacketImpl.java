@@ -32,10 +32,12 @@ public class EventPacketImpl extends PacketImpl implements Event {
 	
 	/**
 	 * Constructor
+	 * 
 	 * @param event
+	 * @param tool the name of the tools service that issued this event
 	 */
-	public EventPacketImpl(String event) {
-		super(EVENT);
+	public EventPacketImpl(String event, String tool) {
+		super(EVENT, tool);
 		if(event == null) {
 			throw new IllegalArgumentException(Messages.cannot_create_packet_with_no_event);
 		}

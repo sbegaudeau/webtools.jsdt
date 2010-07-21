@@ -45,7 +45,7 @@ public class ChromeSocketConnection extends SocketConnection {
 	 * @see org.eclipse.wst.jsdt.debug.transport.socket.SocketConnection#writePacket(org.eclipse.wst.jsdt.debug.transport.packet.Packet)
 	 */
 	public void writePacket(Packet packet) throws IOException {
-		String serialized = JSON.serialize(packet);
+		String serialized = JSON.serialize((PacketImpl) packet);
 		if(PacketImpl.TRACE) {
 			Tracing.writeString("WRITE PACKET: "+serialized); //$NON-NLS-1$
 		}
@@ -115,6 +115,9 @@ public class ChromeSocketConnection extends SocketConnection {
 				}
 			}
 			r = c == '\r';
+		}
+		if(PacketImpl.TRACE) {
+			Tracing.writeString("READ HANDSHAKE: "+buffer.toString()); //$NON-NLS-1$
 		}
 		return buffer.toString().equals(HANDSHAKE);	
 	}

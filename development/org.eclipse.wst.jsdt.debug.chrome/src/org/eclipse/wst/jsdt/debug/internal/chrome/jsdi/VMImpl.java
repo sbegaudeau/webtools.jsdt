@@ -28,6 +28,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.internal.chrome.ChromePlugin;
 import org.eclipse.wst.jsdt.debug.internal.chrome.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.chrome.event.EventQueueImpl;
+import org.eclipse.wst.jsdt.debug.internal.chrome.request.EventReqManager;
+import org.eclipse.wst.jsdt.debug.internal.chrome.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.chrome.transport.EventPacketImpl;
 import org.eclipse.wst.jsdt.debug.internal.chrome.transport.RequestPacketImpl;
 import org.eclipse.wst.jsdt.debug.internal.chrome.transport.Commands;
@@ -65,7 +67,7 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	 */
 	private static UndefinedValue undefinedValue = null;
 	
-	private EventRequestManager ermanager = null;
+	private EventRequestManager ermanager = new EventReqManager(this);
 	private EventQueue queue = new EventQueueImpl(this, ermanager);
 	private final DebugSession session;
 	
@@ -130,7 +132,7 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
-		Request request = new RequestPacketImpl(Commands.VERSION);
+		RequestPacketImpl request = new RequestPacketImpl(Commands.VERSION, Attributes.TOOL_DEVTOOLSRVC);
 		Response response = sendRequest(request);
 		if(response != null && response.isSuccess()) {
 			return (String) response.getBody().get(Commands.VERSION);
@@ -251,10 +253,10 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	}
 	
 	/**
-	 * Receives an {@link CFEvent} from the underlying {@link DebugSession}, 
+	 * Receives an {@link EventPacket} from the underlying {@link DebugSession}, 
 	 * waiting for the {@link VirtualMachine#DEFAULT_TIMEOUT}.
 	 * 
-	 * @return the next {@link CFEvent} never <code>null</code>
+	 * @return the next {@link EventPacket} never <code>null</code>
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */
@@ -263,10 +265,10 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	}
 
 	/**
-	 * Receives an {@link CFEvent} from the underlying {@link DebugSession}, 
+	 * Receives an {@link EventPacket} from the underlying {@link DebugSession}, 
 	 * waiting for the {@link VirtualMachine#DEFAULT_TIMEOUT}.
 	 * @param timeout
-	 * @return the next {@link CFEvent} never <code>null</code>
+	 * @return the next {@link EventPacket} never <code>null</code>
 	 * @throws TimeoutException
 	 * @throws DisconnectedException
 	 */

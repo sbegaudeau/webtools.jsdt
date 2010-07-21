@@ -60,23 +60,25 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 */
 	public EventReqManager(VirtualMachine vm) {
 		super(vm);
-		/*kind.put(CFBreakpointRequest.class, breakpoints);
-		kind.put(CFDebuggerRequest.class, debuggers);
-		kind.put(CFExceptionRequest.class, exceptions);
-		kind.put(CFScriptLoadRequest.class, loads);
-		kind.put(CFStepRequest.class, steps);
-		kind.put(CFSuspendRequest.class, suspends);
-		kind.put(CFThreadEnterRequest.class, threadenters);
-		kind.put(CFThreadExitRequest.class, threadexits);
-		kind.put(CFDisconnectRequest.class, disconnects);
-		kind.put(CFDeathRequest.class, deaths);*/
+		kind.put(BreakpointReqImpl.class, breakpoints);
+		kind.put(DebuggerStatementReqImpl.class, debuggers);
+		kind.put(ExceptionReqImpl.class, exceptions);
+		kind.put(ScriptLoadReqImpl.class, loads);
+		kind.put(StepReqImpl.class, steps);
+		kind.put(SuspendReqImpl.class, suspends);
+		kind.put(ThreadEnterReqImpl.class, threadenters);
+		kind.put(ThreadExitReqImpl.class, threadexits);
+		kind.put(VMDisconnectReqImpl.class, disconnects);
+		kind.put(VMDeathReqImpl.class, deaths);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createBreakpointRequest(org.eclipse.wst.jsdt.debug.core.jsdi.Location)
 	 */
 	public BreakpointRequest createBreakpointRequest(Location location) {
-		return null;
+		BreakpointReqImpl req = new BreakpointReqImpl(chromeVM(), location, true);
+		breakpoints.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -90,7 +92,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createDebuggerStatementRequest()
 	 */
 	public DebuggerStatementRequest createDebuggerStatementRequest() {
-		return null;
+		DebuggerStatementReqImpl req = new DebuggerStatementReqImpl(chromeVM(), true);
+		debuggers.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -104,6 +108,8 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createExceptionRequest()
 	 */
 	public ExceptionRequest createExceptionRequest() {
+		ExceptionReqImpl req = new ExceptionReqImpl(chromeVM(), true);
+		exceptions.add(req);
 		return null;
 	}
 
@@ -118,7 +124,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createScriptLoadRequest()
 	 */
 	public ScriptLoadRequest createScriptLoadRequest() {
-		return null;
+		ScriptLoadReqImpl req = new ScriptLoadReqImpl(chromeVM(), true);
+		loads.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -132,7 +140,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createStepRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference, int)
 	 */
 	public StepRequest createStepRequest(ThreadReference thread, int step) {
-		return null;
+		StepReqImpl req = new StepReqImpl(chromeVM(), thread, step, true);
+		steps.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -146,7 +156,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createSuspendRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
 	 */
 	public SuspendRequest createSuspendRequest(ThreadReference thread) {
-		return null;
+		SuspendReqImpl req = new SuspendReqImpl(chromeVM(), thread, true);
+		suspends.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -160,7 +172,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadEnterRequest()
 	 */
 	public ThreadEnterRequest createThreadEnterRequest() {
-		return null;
+		ThreadEnterReqImpl req = new ThreadEnterReqImpl();
+		threadenters.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -174,7 +188,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadExitRequest()
 	 */
 	public ThreadExitRequest createThreadExitRequest() {
-		return null;
+		ThreadExitReqImpl req = new ThreadExitReqImpl();
+		threadexits.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -208,7 +224,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createVMDeathRequest()
 	 */
 	public VMDeathRequest createVMDeathRequest() {
-		return null;
+		VMDeathReqImpl req = new VMDeathReqImpl();
+		deaths.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)
@@ -222,7 +240,9 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createVMDisconnectRequest()
 	 */
 	public VMDisconnectRequest createVMDisconnectRequest() {
-		return null;
+		VMDisconnectReqImpl req = new VMDisconnectReqImpl();
+		disconnects.add(req);
+		return req;
 	}
 
 	/* (non-Javadoc)

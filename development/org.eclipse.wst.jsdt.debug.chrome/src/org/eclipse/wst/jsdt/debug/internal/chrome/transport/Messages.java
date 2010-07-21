@@ -25,6 +25,8 @@ public class Messages extends NLS {
 	public static String no_command_in_request_json;
 	public static String no_event_found_in_json;
 	public static String no_packet_type_in_json;
+	public static String no_tool_found_in_packet_json;
+	public static String packet_tools_service_name_cannot_be_null;
 	public static String packet_type_cannot_be_null;
 	static {
 		// initialize resource bundle

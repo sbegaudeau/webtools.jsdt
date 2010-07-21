@@ -24,7 +24,6 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.internal.chrome.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.NullImpl;
 import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.UndefinedImpl;
-import org.eclipse.wst.jsdt.debug.transport.packet.Packet;
 
 /**
  * Class for reading / writing JSON objects
@@ -53,6 +52,11 @@ public final class JSON {
 	 * The default <code>Content-Length:</code> pre-amble
 	 */
 	public static final String CONTENT_LENGTH = "Content-Length:"; //$NON-NLS-1$
+	
+	/**
+	 * The default <code>Tools:</code> pre-amble
+	 */
+	public static final String TOOL_HEADER = "Tool:"; //$NON-NLS-1$
 	
 	/**
 	 * Enables / Disables tracing in the all of the JSDI implementations
@@ -221,19 +225,31 @@ public final class JSON {
 	}
 	
 	/**
-	 * Serializes the given {@link CFPacket} to a {@link String}
+	 * Writes the <code>Tool:name</code> pre-amble to the head of the given buffer
+	 * 
+	 * @param buffer
+	 * @param tool
+	 */
+	public static void writeToolHeader(StringBuffer buffer, String tool) {
+		StringBuffer buff = new StringBuffer(18);
+		buff.append(TOOL_HEADER).append(tool).append(LINE_FEED);
+		buffer.insert(0, buff);
+	}
+	
+	/**
+	 * Serializes the given {@link PacketImpl} to a {@link String}
 	 * 
 	 * @param packet the packet to serialize
 	 * 
 	 * @return the serialized {@link String}, never <code>null</code>
 	 */
-	public static String serialize(Packet packet) {
+	public static String serialize(PacketImpl packet) {
 		Object json = packet.toJSON();
 		StringBuffer buffer = new StringBuffer();
 		writeValue(json, buffer);
 		int length = buffer.length();
-		buffer.append(LINE_FEED);
 		writeContentLength(buffer, length);
+		writeToolHeader(buffer, packet.tool());
 		if(TRACE) {
 			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
