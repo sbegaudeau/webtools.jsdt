@@ -145,9 +145,6 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allThreads()
 	 */
 	public List allThreads() {
-		if(threads.isEmpty()) {
-			return Collections.EMPTY_LIST;
-		}
 		return new ArrayList(threads.values());
 	}
 
@@ -155,9 +152,6 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allScripts()
 	 */
 	public List allScripts() {
-		if(scripts.isEmpty()) {
-			return Collections.EMPTY_LIST;
-		}
 		return new ArrayList(scripts.values());
 	}
 

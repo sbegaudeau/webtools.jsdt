@@ -11,11 +11,21 @@
 package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDisconnectRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link VMDisconnectRequest} impl
+ * 
+ * @since 1.0
  */
-public class VMDisconnectReqImpl extends EventReqImpl implements
-		VMDisconnectRequest {
+public class VMDisconnectReqImpl extends EventReqImpl implements VMDisconnectRequest {
 
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param enabled
+	 */
+	public VMDisconnectReqImpl(VMImpl vm, boolean enabled) {
+		super(vm, enabled);
+	}
 }

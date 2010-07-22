@@ -12,17 +12,39 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.request;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
+import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.VMImpl;
 
 /**
- *
+ * {@link ThreadExitRequest} impl
+ * 
+ * @since 1.0
  */
-public class ThreadExitReqImpl extends EventReqImpl implements
-		ThreadExitRequest {
+public class ThreadExitReqImpl extends EventReqImpl implements ThreadExitRequest {
+
+	private ThreadReference thread = null;
+	
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param enabled
+	 */
+	public ThreadExitReqImpl(VMImpl vm, boolean enabled) {
+		super(vm, enabled);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest#addThreadFilter(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
 	 */
 	public void addThreadFilter(ThreadReference thread) {
+		this.thread = thread;
 	}
 
+	/**
+	 * Returns the underlying {@link ThreadReference} this request applies to
+	 * 
+	 * @return the underlying {@link ThreadReference}
+	 */
+	public synchronized ThreadReference thread() {
+		return this.thread;
+	}
 }
