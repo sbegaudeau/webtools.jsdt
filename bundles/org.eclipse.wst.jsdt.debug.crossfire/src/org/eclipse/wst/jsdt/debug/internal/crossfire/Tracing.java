@@ -27,7 +27,7 @@ public class Tracing {
 	 * @param string
 	 */
 	public static void writeString(String string) {
-		System.out.println(string.replaceAll(JSON.LINE_FEED, PRINTABLE_LINE_FEED));
+		System.out.println("[CROSSFIRE]" + string.replaceAll(JSON.LINE_FEED, PRINTABLE_LINE_FEED)); //$NON-NLS-1$
 	}
 	
 }
