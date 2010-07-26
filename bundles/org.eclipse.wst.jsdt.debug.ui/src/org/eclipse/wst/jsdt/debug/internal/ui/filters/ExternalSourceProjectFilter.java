@@ -8,7 +8,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.ui;
+package org.eclipse.wst.jsdt.debug.internal.ui.filters;
+
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;

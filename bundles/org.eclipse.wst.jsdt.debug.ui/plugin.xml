@@ -173,7 +173,7 @@
                class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleFunctionBreakpointActionDelegate"
                enablesFor="+"
                helpContextId="toggle_function_bp_outline"
-               icon="icons/elcl16/brkp_obj.gif"
+               icon="$nl$/icons/elcl16/brkp_obj.gif"
                id="org.eclipse.wst.jsdt.debug.ui.outline.function.toggle.breakpoint.action"
                label="%toggleFunctionBreakpointAction.name"
                menubarPath="additions"
@@ -424,7 +424,7 @@
    <extension
          point="org.eclipse.wst.jsdt.ui.javaElementFilters">
       <filter
-            class="org.eclipse.wst.jsdt.debug.internal.ui.ExternalSourceProjectFilter"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.filters.ExternalSourceProjectFilter"
             description="%jsdtProjectFilter.description"
             enabled="true"
             id="jsdt.external.source.project.filter"
@@ -434,7 +434,7 @@
    <extension
          point="org.eclipse.jdt.ui.javaElementFilters">
       <filter
-            class="org.eclipse.wst.jsdt.debug.internal.ui.ExternalSourceProjectFilter"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.filters.ExternalSourceProjectFilter"
             description="%jdtProjectFilter.description"
             enabled="true"
             id="jdt.external.source.project.filter"

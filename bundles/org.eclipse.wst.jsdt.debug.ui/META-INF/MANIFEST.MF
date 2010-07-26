@@ -18,10 +18,16 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Bundle-ActivationPolicy: lazy
+Bundle-ActivationPolicy: lazy;exclude:="org.eclipse.wst.jsdt.debug.internal.ui.filters"
 Export-Package: org.eclipse.wst.jsdt.debug.internal.ui;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.actions;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.adapters;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.details;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.editors;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.dialogs;x-internal:=true,
- org.eclipse.wst.jsdt.debug.internal.ui.launching;x-internal:=true
+ org.eclipse.wst.jsdt.debug.internal.ui.display;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.filters;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.launching;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.source;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.ui.source.contentassist;x-internal:=true
