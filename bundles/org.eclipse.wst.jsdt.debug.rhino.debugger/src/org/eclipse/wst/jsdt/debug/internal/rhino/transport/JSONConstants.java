@@ -28,7 +28,6 @@ public interface JSONConstants {
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	public static final String BODY = "body"; //$NON-NLS-1$
 	public static final String LINE = "line"; //$NON-NLS-1$
-	public static final String LINE_NUMBER = "lineNumber"; //$NON-NLS-1$
 	public static final String SCRIPT = "script"; //$NON-NLS-1$
 	public static final String SCRIPTS = "scripts"; //$NON-NLS-1$
 	public static final String FUNCTION = "function"; //$NON-NLS-1$
