@@ -354,8 +354,8 @@ public class StackFrame implements DebugFrame {
 		if (ScriptableObject.hasProperty(scriptable, JSONConstants.CONSTRUCTOR)) {
 			constructorFunction = ScriptableObject.getProperty(scriptable, JSONConstants.CONSTRUCTOR);
 		}
-		result.put(JSONConstants.CONSTRUCTOR_FUNCTION, createRef(constructorFunction));
-		result.put(JSONConstants.PROTOTYPE_OBJECT, createRef(scriptable.getPrototype()));
+		result.put(JSONConstants.CONSTRUCTOR_FUNCTION, createHandle(constructorFunction));
+		result.put(JSONConstants.PROTOTYPE_OBJECT, createHandle(scriptable.getPrototype()));
 		if (scriptable instanceof NativeJavaObject)
 			result.put(JSONConstants.PROPERTIES, createJavaObjectProperties((NativeJavaObject) scriptable));
 		else
