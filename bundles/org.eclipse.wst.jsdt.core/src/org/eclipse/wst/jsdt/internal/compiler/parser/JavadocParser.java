@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -743,6 +743,8 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private boolean parseExtends() throws InvalidInputException {
 		this.extendsType=(TypeReference)parseQualifiedName(true);
+		if (extendsType != null)
+			this.isConstructor = true;
 		return this.extendsType!=null;
 	}
 
