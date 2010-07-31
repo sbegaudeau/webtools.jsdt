@@ -40,7 +40,7 @@
 	<!-- Extra JavaScript-like file extensions -->
 	<extension point="org.eclipse.core.contenttype.contentTypes">
 	    <file-association 
-	        content-type="org.eclipse.wst.jsdt.core.javaSource"
+	        content-type="org.eclipse.wst.jsdt.core.jsSource"
 	        file-extensions="foo,bar"/>
 	</extension>
 
