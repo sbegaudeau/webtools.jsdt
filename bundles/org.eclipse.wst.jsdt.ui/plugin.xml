@@ -4221,11 +4221,11 @@
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.show.outline"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-      <key
+<!--      <key
             sequence="M1+T"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.hierarchy"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> -->
       <key
             sequence="M1+F3"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
@@ -4233,11 +4233,11 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
        <!-- Changing context to JavaScript Editor -->     
-      <key
+<!--      <key
             sequence="M1+M2+T"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.navigate.open.type"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>-->
       <key
             sequence="M1+M2+H"
             contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
