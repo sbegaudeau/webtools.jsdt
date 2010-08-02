@@ -401,7 +401,7 @@ public class EditorUtility {
 			if (element instanceof IClassFile)
 			{
 				String elementName = element.getElementName();
-				if (Util.isMetadataFileName(elementName))
+				if (Util.isMetadataFileName(elementName) || Util.isJavaLikeFileName(elementName))
 				{
 					IResource resource=element.getResource();
 					if (resource instanceof IFile)
