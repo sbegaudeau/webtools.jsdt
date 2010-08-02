@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicResolveTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.CharOperationTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.UtilTest;
+import org.eclipse.wst.jsdt.core.tests.compiler.util.ExclusionTests;
 import org.eclipse.wst.jsdt.core.tests.interpret.BasicInterpretTest;
 
 /**
@@ -73,6 +74,9 @@ public static Test suite() {
 //	}
 //
 	TestSuite all = new TestSuite("JSDT 'Compiler' Tests");
+	all.addTest(ExclusionTests.suite());
+	
+	
 //	int possibleComplianceLevels = AbstractCompilerTest.getPossibleComplianceLevels();
 //	if ((possibleComplianceLevels & AbstractCompilerTest.F_1_3) != 0) {
 //		ArrayList tests_1_3 = (ArrayList)standardTests.clone();

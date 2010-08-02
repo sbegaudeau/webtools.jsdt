@@ -430,6 +430,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				CompilerOptions.IGNORE);
 		defaultOptions.put(CompilerOptions.OPTION_ReportUnusedLocal, 
 				CompilerOptions.WARNING);
+		defaultOptions.put(CompilerOptions.OPTION_SemanticValidation, CompilerOptions.ENABLED);
 		return defaultOptions;
 	}
 
