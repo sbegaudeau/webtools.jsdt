@@ -385,7 +385,7 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	 */
 	public boolean hasChildren(Object element) {
 		if (element instanceof JsGlobalScopeContainer) {
-			return ((JsGlobalScopeContainer) element).hasChildren();
+			return true;//((JsGlobalScopeContainer) element).hasChildren();
 		}
 		if (element instanceof ProjectLibraryRoot) {
 			return ((ProjectLibraryRoot) element).hasChildren();
@@ -793,6 +793,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 								}
 							}
 						}
+					}
+					else {
+						allChildren.add(next);
 					}
 				} catch (JavaScriptModelException ex) {
 					ex.printStackTrace();
