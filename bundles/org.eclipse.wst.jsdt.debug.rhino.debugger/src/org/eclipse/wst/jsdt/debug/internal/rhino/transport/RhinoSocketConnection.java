@@ -50,11 +50,14 @@ public class RhinoSocketConnection extends SocketConnection {
 		writer.write(jsonString);
 		writer.flush();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.socket.SocketConnection#readPacket()
 	 */
 	public Packet readPacket() throws IOException {
+		if(!isOpen()) {
+			throw new IOException("Failed to read more packets: the socket is closed"); //$NON-NLS-1$
+		}
 		StringBuffer buffer = new StringBuffer();
 		int c;
 		Reader reader = getReader();
@@ -73,7 +76,6 @@ public class RhinoSocketConnection extends SocketConnection {
 		} catch (NumberFormatException e) {
 			throw new IOException("Failed to parse content length: " + buffer.toString()); //$NON-NLS-1$
 		}
-
 		if ('\r' != c || '\n' != (char) reader.read())
 			throw new IOException("Missing CRLF after content length"); //$NON-NLS-1$
 
@@ -86,7 +88,6 @@ public class RhinoSocketConnection extends SocketConnection {
 				throw new EOFException();
 			n += count;
 		}
-
 		Map json = (Map) JSONUtil.read(new String(message));
 		String type = RhinoPacket.getType(json);
 		if (EventPacket.TYPE.equals(type))
