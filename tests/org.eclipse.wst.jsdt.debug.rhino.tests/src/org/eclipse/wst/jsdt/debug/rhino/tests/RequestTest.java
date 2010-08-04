@@ -375,7 +375,7 @@ public abstract class RequestTest extends TestCase {
 		TransportService pipedTransport = new PipedTransportService();
 		ConnectionHelper helper = new ConnectionHelper(pipedTransport, null);
 
-		debugger = new RhinoDebuggerImpl(pipedTransport, null, false);
+		debugger = new RhinoDebuggerImpl(pipedTransport, null, false, false);
 		debugger.start();
 
 		debugSession = new DebugSession(helper.getClientConnection());
