@@ -80,14 +80,12 @@ public class DebugSessionManager {
 				}
 			} catch (IOException e) {
 				sendDeathEvent();
-				/* e.printStackTrace(); */
 			} finally {
 				try {
 					if (listenerKey != null)
 						transportService.stopListening(listenerKey);
 				} catch (IOException e) {
 					sendDeathEvent();
-					/* e.printStackTrace(); */
 				}
 			}
 		}
@@ -120,7 +118,7 @@ public class DebugSessionManager {
 
 	}
 
-	private static final boolean DEBUG = false;
+	private static boolean DEBUG = false;
 	
 	private static final String ADDRESS = "address"; //$NON-NLS-1$
 	private static final String SOCKET = "socket"; //$NON-NLS-1$
@@ -141,11 +139,14 @@ public class DebugSessionManager {
 	 * @param address
 	 * @param startSuspended
 	 */
-	public DebugSessionManager(TransportService transportService, String address, boolean startSuspended) {
+	public DebugSessionManager(TransportService transportService, String address, boolean startSuspended, boolean debug) {
 		this.transportService = transportService;
 		this.address = address;
 		this.startSuspended = startSuspended;
-		prettyPrintHeader();
+		DEBUG = debug;
+		if(DEBUG) {
+			prettyPrintHeader();
+		}
 	}
 
 	/**
@@ -167,7 +168,12 @@ public class DebugSessionManager {
 		if (suspend != null) {
 			parsedStartSuspended = (Boolean.valueOf(suspend).booleanValue() || suspend.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
 		}
-		return new DebugSessionManager(parsedTransportService, parsedAddress, parsedStartSuspended);
+		String debug = (String) config.get("trace"); //$NON-NLS-1$
+		boolean debugging = false;
+		if(debug != null) {
+			debugging = (Boolean.valueOf(debug).booleanValue() || debug.trim().equalsIgnoreCase("y")); //$NON-NLS-1$
+		}
+		return new DebugSessionManager(parsedTransportService, parsedAddress, parsedStartSuspended, debugging);
 	}
 
 	/**

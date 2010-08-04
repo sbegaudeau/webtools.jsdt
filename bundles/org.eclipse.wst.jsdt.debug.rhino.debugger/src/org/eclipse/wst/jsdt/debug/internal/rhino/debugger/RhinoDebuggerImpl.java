@@ -83,11 +83,12 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 	 * 
 	 * @param transportService the {@link TransportService} to use for debugger communication
 	 * @param address the address to communicate on
-	 * @param startSuspended if the debugger should wait while accepting a connection. The wait time for stating suspended is not indefinite, 
+	 * @param startSuspended if the debugger should wait while accepting a connection. The wait time for stating suspended is not indefinite,
+	 * @param trace if the debugger should be in tracing mode, reporting debug statements to the console 
 	 * and is equal to 300000ms.
 	 */
-	public RhinoDebuggerImpl(TransportService transportService, String address, boolean startSuspended) {
-		sessionManager = new DebugSessionManager( transportService,  address,  startSuspended);
+	public RhinoDebuggerImpl(TransportService transportService, String address, boolean startSuspended, boolean trace) {
+		sessionManager = new DebugSessionManager( transportService,  address,  startSuspended, trace);
 	}
 
 	/*

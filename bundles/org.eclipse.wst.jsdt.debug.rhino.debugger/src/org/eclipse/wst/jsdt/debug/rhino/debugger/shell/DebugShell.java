@@ -26,6 +26,7 @@ public final class DebugShell {
     	
     	String port = "9888"; //$NON-NLS-1$
     	boolean suspend = false;
+    	boolean trace = true;
     	
     	ArrayList argList = new ArrayList();
     	for (int i = 0; i < args.length; i++) {
@@ -34,7 +35,11 @@ public final class DebugShell {
     			port = args[++i];
     		} else if (arg.equals("-suspend")) { //$NON-NLS-1$
     			suspend = Boolean.valueOf(args[++i]).booleanValue();
-    		} else if (arg.equals("-debug")) { //$NON-NLS-1$
+    		}
+    		else if(arg.equals("-trace")) { //$NON-NLS-1$
+    			trace = Boolean.valueOf(args[++i]).booleanValue();
+    		}
+    		else if (arg.equals("-debug")) { //$NON-NLS-1$
     			// skip
     			argList.add(args[i]);
     			continue;
@@ -48,7 +53,7 @@ public final class DebugShell {
     	String[] newArgs = (String[]) argList.toArray(new String[0]); 
     	
 		TransportService service = new RhinoTransportService();
-		RhinoDebuggerImpl debugger = new RhinoDebuggerImpl(service, port, suspend);
+		RhinoDebuggerImpl debugger = new RhinoDebuggerImpl(service, port, suspend, trace);
 		try {
 			debugger.start();
 			Main.shellContextFactory.addListener(debugger);
