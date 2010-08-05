@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -253,6 +253,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	ReferenceBinding currentType = (ReferenceBinding) receiverType;
 	do {
 		if (declaringClass == currentType) return true;
+		if(currentType == null) return true;
 		PackageBinding currentPackage = currentType.fPackage;
 		// package could be null for wildcards/intersection types, ignore and recurse in superclass
 		if (currentPackage != null && currentPackage != declaringPackage) return false;
