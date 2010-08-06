@@ -39,16 +39,8 @@ public final class DebugShell {
     		else if(arg.equals("-trace")) { //$NON-NLS-1$
     			trace = Boolean.valueOf(args[++i]).booleanValue();
     		}
-    		else if (arg.equals("-debug")) { //$NON-NLS-1$
-    			// skip
-    			argList.add(args[i]);
-    			continue;
-    		} else if (arg.equals("-opt")) { //$NON-NLS-1$
-    			// skip
-    			argList.add(args[i]);
-    			i++;
-    			continue;
-    		}
+    		//forward all other args to Rhino
+    		argList.add(arg);
 		}
     	String[] newArgs = (String[]) argList.toArray(new String[0]); 
     	
@@ -57,7 +49,7 @@ public final class DebugShell {
 		try {
 			debugger.start();
 			Main.shellContextFactory.addListener(debugger);
-			Main.main(newArgs);
+			Main.exec(newArgs);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
