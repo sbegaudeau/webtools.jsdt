@@ -33,11 +33,14 @@ public final class DebugShell {
     		String arg = args[i];
     		if (arg.equals("-port")) { //$NON-NLS-1$
     			port = args[++i];
+    			continue;
     		} else if (arg.equals("-suspend")) { //$NON-NLS-1$
     			suspend = Boolean.valueOf(args[++i]).booleanValue();
+    			continue;
     		}
     		else if(arg.equals("-trace")) { //$NON-NLS-1$
     			trace = Boolean.valueOf(args[++i]).booleanValue();
+    			continue;
     		}
     		//forward all other args to Rhino
     		argList.add(arg);
