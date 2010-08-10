@@ -370,37 +370,6 @@
       </detailFactories>
    </extension>
    <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            class="org.eclipse.wst.jsdt.debug.internal.ui.launching.JavaScriptLaunchShortcut"
-            description="%javascriptLaunchShortcut.description"
-            helpContextId="javasript_lanch_shortcut"
-            icon="$nl$/icons/elcl16/script.gif"
-            id="org.eclipse.wst.jsdt.debug.ui.launch.shortcut"
-            label="%javascriptLaunchShortcut.label"
-            modes="debug">
-         <configurationType
-               id="org.eclipse.wst.jsdt.debug.core.launchConfigurationType">
-         </configurationType>
-         <contextualLaunch>
-            <enablement>
-               <with
-                     variable="selection">
-                  <iterate>
-                     <and>
-                        <adapt
-                              type="org.eclipse.wst.jsdt.core.IJavaScriptElement">
-                        </adapt>
-                     </and></iterate>
-                  <count
-                        value="1">
-                  </count>
-               </with>
-            </enablement>
-         </contextualLaunch>
-      </shortcut>
-   </extension>
-   <extension
          point="org.eclipse.ui.ide.markerSupport">
       <markerTypeCategory
             name="%breakpointMarkerCategory.name">
