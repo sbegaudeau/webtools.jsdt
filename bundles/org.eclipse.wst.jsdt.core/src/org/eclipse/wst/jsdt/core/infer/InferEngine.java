@@ -205,7 +205,6 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	    this.isTopLevelAnonymousFunction=false;
 	    this.anonymousCount=0;
 	    this.inferredGlobal=null;
-
 	}
 
 	public void setCompilationUnit(CompilationUnitDeclaration scriptFileDeclaration) {
@@ -326,7 +325,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 			}
 			/*
-			 * this.foo = bar //assume that bar is not a function and create a new attribute in teh current type
+			 * this.foo = bar //assume that bar is not a function and create a new attribute in the current type
 			 */
 			else{
 
@@ -362,9 +361,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				}
 				else
 					return false; //
-
 			}
-
 		}
 		/*
 		 * foo.bar = {};
@@ -819,7 +816,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				char[] memberName = fieldReference.token;
 				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
 
-				InferredType typeOf = getTypeOf(assignment.getExpression());
+				InferredType typeOf = (assignment.getJsDoc() != null && assignment.getJsDoc() instanceof Javadoc && ((Javadoc) assignment.getJsDoc()).returnType != null) ? this.addType(changePrimitiveToObject(((Javadoc) assignment.getJsDoc()).returnType.getSimpleTypeName())) : getTypeOf(assignment.getExpression());
 				IFunctionDeclaration methodDecl=null;
 
 				if (typeOf==null || typeOf==FunctionType)

@@ -1463,17 +1463,27 @@ protected void consumeAssignment() {
 	int op = this.intStack[this.intPtr--] ; //<--the encoded operator
 
 	this.expressionPtr -- ; this.expressionLengthPtr -- ;
-	this.expressionStack[this.expressionPtr] =
-		(op != EQUAL ) ?
-			new CompoundAssignment(
-				this.expressionStack[this.expressionPtr] ,
-				this.expressionStack[this.expressionPtr+1],
-				op,
-				this.scanner.startPosition - 1)	:
-			new Assignment(
-				this.expressionStack[this.expressionPtr] ,
-				this.expressionStack[this.expressionPtr+1],
-				this.scanner.startPosition - 1);
+	checkComment();
+
+	if(op != EQUAL) {
+		CompoundAssignment compoundAssignment = new CompoundAssignment(
+			this.expressionStack[this.expressionPtr] ,
+			this.expressionStack[this.expressionPtr+1],
+			op,
+			this.scanner.startPosition - 1);
+		if (this.javadoc != null)
+			compoundAssignment.javadoc = this.javadoc;
+		this.expressionStack[this.expressionPtr] = compoundAssignment;
+	}
+	else {
+		Assignment assignment = new Assignment(
+			this.expressionStack[this.expressionPtr] ,
+			this.expressionStack[this.expressionPtr+1],
+			this.scanner.startPosition - 1);
+		if (this.javadoc != null)
+			assignment.javadoc = this.javadoc;
+		this.expressionStack[this.expressionPtr] = assignment;
+	}	
 
 				if (this.pendingRecoveredType != null) {
 					// Used only in statements recovery.
