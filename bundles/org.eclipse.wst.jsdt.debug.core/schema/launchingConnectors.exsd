@@ -55,7 +55,7 @@
                   The connector class that implements org.eclipse.e4.languages.javascript.jsdi.connect.Connector
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.e4.languages.javascript.jsdi.connect.Connector"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector"/>
                </appinfo>
             </annotation>
          </attribute>
