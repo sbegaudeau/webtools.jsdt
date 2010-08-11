@@ -44,7 +44,7 @@ public class UnaryExpression extends OperatorExpression implements IUnaryExpress
 
 	public Constant optimizedBooleanConstant() {
 		return this.optimizedBooleanConstant == null
-				? this.constant
+				? this.constant == null ? Constant.NotAConstant : this.constant
 				: this.optimizedBooleanConstant;
 	}
 
