@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 
-
 /**
  * 
  * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
@@ -34,16 +33,19 @@ import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
  */
 public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer {
 	private static final String CONTAINER_ID = org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB; //$NON-NLS-1$
+	private static final String BROWSER_SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
+	
 	private static final String ContainerDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
 	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;
 	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;
+	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
+	
 	private static final char[][] LIBRARY_FILE_NAME = {
 														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
 														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'},
 														{'x','h','r','.','j','s'}
 													  };
-	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
-	
+
 	static class BasicLibLocation extends SystemLibraryLocation {
 		BasicLibLocation() {
 			super();
@@ -90,8 +92,6 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 	 */
 	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaScriptProject project) {
 		return true;
-		
-		
 	}
 
 	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaScriptProject project) {
@@ -133,12 +133,10 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_Window};
+		return new String[] {BROWSER_SUPER_TYPE_NAME};
 	}
-
 
 	public String getInferenceID() {
 		return DefaultInferrenceProvider.ID;
 	}
-	
 }
