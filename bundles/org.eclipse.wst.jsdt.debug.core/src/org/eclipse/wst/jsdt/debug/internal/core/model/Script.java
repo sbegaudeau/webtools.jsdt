@@ -14,6 +14,8 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
+import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.model.IScript;
  * 
  * @since 1.0
  */
-public class Script extends JavaScriptDebugElement implements IScript, Comparable {
+public class Script extends JavaScriptDebugElement implements IScript, Comparable, ITerminate {
 
 	private ScriptReference script = null;
 	
@@ -71,5 +73,26 @@ public class Script extends JavaScriptDebugElement implements IScript, Comparabl
 			name = new Path(sourceuri.getSchemeSpecificPart()).lastSegment();
 		}
 		return name;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
+	 */
+	public boolean canTerminate() {
+		return getJavaScriptDebugTarget().canTerminate();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
+	 */
+	public boolean isTerminated() {
+		return getJavaScriptDebugTarget().isTerminated();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
+	 */
+	public void terminate() throws DebugException {
+		getJavaScriptDebugTarget().terminate();
 	}
 }
