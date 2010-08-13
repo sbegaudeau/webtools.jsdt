@@ -1471,8 +1471,10 @@ protected void consumeAssignment() {
 			this.expressionStack[this.expressionPtr+1],
 			op,
 			this.scanner.startPosition - 1);
-		if (this.javadoc != null)
+		if (this.javadoc != null) {
 			compoundAssignment.javadoc = this.javadoc;
+			this.javadoc = null;
+		}
 		this.expressionStack[this.expressionPtr] = compoundAssignment;
 	}
 	else {
@@ -1480,8 +1482,10 @@ protected void consumeAssignment() {
 			this.expressionStack[this.expressionPtr] ,
 			this.expressionStack[this.expressionPtr+1],
 			this.scanner.startPosition - 1);
-		if (this.javadoc != null)
+		if (this.javadoc != null) {
 			assignment.javadoc = this.javadoc;
+			this.javadoc = null;
+		}
 		this.expressionStack[this.expressionPtr] = assignment;
 	}	
 
@@ -3700,8 +3704,10 @@ private void consumeLiteralField() {
 	ObjectLiteralField literalField = new ObjectLiteralField(field, value, start, end);
 	pushOnExpressionStack(literalField);
 
-	if (this.javadoc!=null)
+	if (this.javadoc!=null) {
 		literalField.javaDoc = this.javadoc;
+		this.javadoc = null;
+	}
 	else if (value instanceof FunctionExpression)
 	{
 		MethodDeclaration methodDeclaration = ((FunctionExpression)value).methodDeclaration;
