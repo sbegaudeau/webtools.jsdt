@@ -1286,7 +1286,7 @@ protected RecoveredElement recoverFunctionExpression(RecoveredElement element, A
 
 	if (isAssignment && start>=0)
 	{
-		expression=new Assignment(this.expressionStack[start],funcExpr,method.declarationSourceEnd);
+		expression=new Assignment(this.expressionStack[start],funcExpr,method.sourceEnd);
 	}
 	if (expression!=null)
 	{
