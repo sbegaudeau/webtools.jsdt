@@ -272,8 +272,9 @@ public class DebugSessionManager {
 		shutdown = true;
 		try {
 			debuggerThread.interrupt();
-			if (debuggerThread.isAlive())
-				wait();
+			while(debuggerThread.isAlive()) {
+				wait(1000);
+			}
 			debuggerThread.join();
 		} catch (InterruptedException e) {
 			/* e.printStackTrace(); */
