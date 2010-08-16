@@ -187,7 +187,11 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 			// handle input from the Rhino Shell
 			if (sourceName.equals("<stdin>")) { //$NON-NLS-1$
 				sourceName = "stdin"; //$NON-NLS-1$
-			} else {		
+			} 
+			if(sourceName.equals("<command>")) { //$NON-NLS-1$
+				sourceName = "command"; //$NON-NLS-1$
+			}
+			else {	
 				// try to parse it as a file
 				File sourceFile = new File(sourceName);
 				if (sourceFile.exists())
