@@ -30,6 +30,7 @@ import org.eclipse.debug.core.model.ITerminate;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
 import org.eclipse.debug.ui.IDebugModelPresentationExtension;
 import org.eclipse.debug.ui.IValueDetailListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -392,6 +393,9 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @see org.eclipse.debug.ui.ISourcePresentation#getEditorInput(java.lang.Object)
 	 */
 	public IEditorInput getEditorInput(Object element) {
+		if(element instanceof LocalFileStorage) {
+			return getEditorInput(((LocalFileStorage)element).getFile());
+		}
 		if(element instanceof File) {
 			return new FileStoreEditorInput(EFS.getLocalFileSystem().fromLocalFile((File) element));
 		}
