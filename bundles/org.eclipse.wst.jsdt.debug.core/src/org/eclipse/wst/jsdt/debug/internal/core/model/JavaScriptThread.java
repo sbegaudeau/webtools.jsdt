@@ -804,8 +804,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * 
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
-	public synchronized void terminate() throws DebugException {
-		this.state = TERMINATED;
+	public void terminate() throws DebugException {
 		getJavaScriptDebugTarget().terminate();
 	}
 
