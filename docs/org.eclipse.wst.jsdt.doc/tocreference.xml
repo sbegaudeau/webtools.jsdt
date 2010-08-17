@@ -134,11 +134,11 @@
  </topic>
  <topic label="Rhino Debug">
     <topic label="Launching">
-       <topic href="reference/rhino_debug/ref-include-tab.html" label="Include Tab">
+       <topic href="reference/rhino_debug/ref-include-tab.htm" label="Include Tab">
        </topic>
        <topic href="reference/rhino_debug/ref-main-tab.htm" label="Main Tab">
        </topic>
-       <topic href="reference/rhino_debug/ref-rhino-launch-shortcut.html" label="Rhino Launch Shortcut">
+       <topic href="reference/rhino_debug/ref-rhino-launch-shortcut.htm" label="Rhino Launch Shortcut">
        </topic>
        <topic href="reference/rhino_debug/ref-rhino-tab-group.htm" label="Rhino Tab Group">
        </topic>
