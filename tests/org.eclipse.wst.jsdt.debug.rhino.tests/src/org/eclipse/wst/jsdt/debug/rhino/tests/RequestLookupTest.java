@@ -63,7 +63,7 @@ public class RequestLookupTest extends FrameRequestTests {
 							request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 							request.getArguments().put(JSONConstants.CONTEXT_ID, contextId);
 							request.getArguments().put(JSONConstants.FRAME_ID, frameId);
-							request.getArguments().put(JSONConstants.HANDLE, new Integer(0));
+							request.getArguments().put(JSONConstants.REF, new Integer(0));
 							debugSession.send(request);
 							response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 							assertTrue(response.isSuccess());
