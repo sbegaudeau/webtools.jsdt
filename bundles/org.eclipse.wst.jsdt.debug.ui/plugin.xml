@@ -341,6 +341,44 @@
                tooltip="%showAllScripts.tooltip">
          </action>
       </viewContribution>
+      <viewContribution
+            id="variableViewActions"
+            targetID="org.eclipse.debug.ui.VariableView">
+         <menu
+               id="org.eclipse.wst.jsdt.debug.ui.variableview.menu"
+               label="%javascriptMenu.name">
+            <groupMarker
+                  name="js">
+            </groupMarker>
+         </menu>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.FunctionFilterAction"
+               helpContextId="show_functions_variable_help_context"
+               id="org.eclipse.wst.jsdt.debug.ui.variableview.show.functions"
+               label="%showFunctionVarAction.label"
+               menubarPath="org.eclipse.wst.jsdt.debug.ui.variableview.menu/js"
+               style="toggle"
+               tooltip="%showFunctionVarAction.tooltip">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ThisFilterAction"
+               helpContextId="show_this_variable_help_context"
+               id="org.eclipse.wst.jsdt.debug.ui.variableview.show.this"
+               label="%showThisVarAction.label"
+               menubarPath="org.eclipse.wst.jsdt.debug.ui.variableview.menu/js"
+               style="toggle"
+               tooltip="%showThisVarAction.tooltip">
+         </action>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ProtoFilterAction"
+               helpContextId="show_proto_variables_help_context"
+               id="org.eclipse.wst.jsdt.debug.ui.variableview.show.prototypes"
+               label="%showProtoVarAction.label"
+               menubarPath="org.eclipse.wst.jsdt.debug.ui.variableview.menu/js"
+               style="toggle"
+               tooltip="%showProtoVarAction.tooltip">
+         </action>
+      </viewContribution>
    </extension>
    <extension
          point="org.eclipse.debug.ui.detailPaneFactories">
@@ -433,6 +471,12 @@
       <defaultEnablement
             id="org.eclipse.wst.jsdt.debug.ui.activity">
       </defaultEnablement>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPreferenceInitializer">
+      </initializer>
    </extension>
 
 </plugin>

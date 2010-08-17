@@ -107,8 +107,7 @@ public abstract class ViewFilterAction extends ViewerFilter implements IViewActi
 			viewer.refresh();
 		}
 		IPreferenceStore store = getPreferenceStore();
-		String key = getView().getSite().getId() + "." + getPreferenceKey(); //$NON-NLS-1$
-		store.setValue(key, action.isChecked());
+		store.setValue(getPreferenceKey(), action.isChecked());
 	}
 
 	/* (non-Javadoc)
@@ -132,15 +131,8 @@ public abstract class ViewFilterAction extends ViewerFilter implements IViewActi
 	 * @return boolean
 	 */
 	protected boolean getPreferenceValue() {
-		String key = getCompositeKey();
 		IPreferenceStore store = getPreferenceStore();
-		boolean value = false;
-		if (store.contains(key)) {
-			value = store.getBoolean(key);
-		} else {
-			value = store.getBoolean(getPreferenceKey());
-		}
-		return value;		
+		return store.getBoolean(getPreferenceKey());		
 	}
 	
 	/**
