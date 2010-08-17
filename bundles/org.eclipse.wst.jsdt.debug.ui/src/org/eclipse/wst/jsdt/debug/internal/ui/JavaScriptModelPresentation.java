@@ -283,7 +283,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	String getStackframeText(IJavaScriptStackFrame frame) throws DebugException {
 		try {
 			return TextUtils.shortenText(NLS.bind(Messages.stackframe_name, new String[] {
-					URLDecoder.decode(frame.getSourceName(), Constants.UTF_8),
+					URLDecoder.decode(frame.getName(), Constants.UTF_8),
 					Integer.toString(frame.getLineNumber())}), 100);
 		}
 		catch (UnsupportedEncodingException uee) {
