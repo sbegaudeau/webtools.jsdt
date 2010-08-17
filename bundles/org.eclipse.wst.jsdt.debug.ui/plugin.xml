@@ -363,6 +363,7 @@
          <action
                class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ThisFilterAction"
                helpContextId="show_this_variable_help_context"
+               icon="$nl$/icons/elcl16/this_var.gif"
                id="org.eclipse.wst.jsdt.debug.ui.variableview.show.this"
                label="%showThisVarAction.label"
                menubarPath="org.eclipse.wst.jsdt.debug.ui.variableview.menu/js"
@@ -372,6 +373,7 @@
          <action
                class="org.eclipse.wst.jsdt.debug.internal.ui.actions.ProtoFilterAction"
                helpContextId="show_proto_variables_help_context"
+               icon="$nl$/icons/elcl16/proto_var.gif"
                id="org.eclipse.wst.jsdt.debug.ui.variableview.show.prototypes"
                label="%showProtoVarAction.label"
                menubarPath="org.eclipse.wst.jsdt.debug.ui.variableview.menu/js"
