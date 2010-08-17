@@ -84,5 +84,5 @@ public interface Constants {
 	 * Preference to suspend execution when a thrown exception is encountered
 	 * @since 1.1
 	 */
-	public static final String SUSPEN_ON_THROWN_EXCEPTION = JavaScriptDebugPlugin.PLUGIN_ID + ".suspend_on_thrown_exceptions"; //$NON-NLS-1$
+	public static final String SUSPEND_ON_THROWN_EXCEPTION = JavaScriptDebugPlugin.PLUGIN_ID + ".suspend_on_thrown_exceptions"; //$NON-NLS-1$
 }
