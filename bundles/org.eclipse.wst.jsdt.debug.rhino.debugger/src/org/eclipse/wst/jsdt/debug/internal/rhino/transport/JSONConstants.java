@@ -111,7 +111,6 @@ public interface JSONConstants {
 	// stackframe
 	public static final String EVALUATE = "evaluate"; //$NON-NLS-1$
 	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
-	public static final String HANDLE = "handle"; //$NON-NLS-1$
 	public static final String PROPERTIES = "properties"; //$NON-NLS-1$
 	public static final String NAME = "name"; //$NON-NLS-1$
 	public static final String LOOKUP = "lookup"; //$NON-NLS-1$

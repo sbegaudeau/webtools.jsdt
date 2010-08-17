@@ -104,7 +104,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 			RhinoRequest request = new RhinoRequest(JSONConstants.LOOKUP);
 			request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 			request.getArguments().put(JSONConstants.FRAME_ID, frameId);
-			request.getArguments().put(JSONConstants.HANDLE, ref);
+			request.getArguments().put(JSONConstants.REF, ref);
 			try {
 				RhinoResponse response = vm.sendRequest(request, 30000);
 				value = createValue(response.getBody(), false);
@@ -193,7 +193,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 		RhinoRequest request = new RhinoRequest(JSONConstants.LOOKUP);
 		request.getArguments().put(JSONConstants.THREAD_ID, threadId);
 		request.getArguments().put(JSONConstants.FRAME_ID, frameId);
-		request.getArguments().put(JSONConstants.HANDLE, ref);
+		request.getArguments().put(JSONConstants.REF, ref);
 		try {
 			RhinoResponse response = vm.sendRequest(request, 30000);
 			Map lookup = (Map) response.getBody().get(JSONConstants.LOOKUP);

@@ -221,10 +221,10 @@ public class RequestHandler {
 			response.setMessage(missingArgument(JSONConstants.FRAME_ID));
 			return;
 		}
-		Long handle = numberToLong((Number) arguments.get(JSONConstants.HANDLE));
+		Long handle = numberToLong((Number) arguments.get(JSONConstants.REF));
 		if (handle == null) {
 			response.setSuccess(false);
-			response.setMessage(missingArgument(JSONConstants.HANDLE));
+			response.setMessage(missingArgument(JSONConstants.REF));
 			return;
 		}
 		StackFrame frame = debugger.getFrame(threadId, frameId);

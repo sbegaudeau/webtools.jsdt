@@ -274,7 +274,7 @@ public class StackFrame implements DebugFrame {
 	 */
 	public Object serialize(Long handle, Object object) {
 		Map result = new HashMap();
-		result.put(JSONConstants.HANDLE, handle);
+		result.put(JSONConstants.REF, handle);
 
 		// "undefined", "null", "boolean", "number", "string", "object", "function" or "frame"
 		if (object == Undefined.instance) {
