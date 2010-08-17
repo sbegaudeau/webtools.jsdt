@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2007 IBM Corporation and others.
+ * Copyright (c) 2006, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,26 +15,81 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.preferences.CodeTemplatePreferencePage;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
+import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	
 	private IContentType	fContentType;
 	private List			fValidExtensions = null;
+	private Button 			commentsButton;
 	
 	public NewJSFileWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName, selection);
     }
+	
+	private void typePageLinkActivated() {
+		IProject project = getProjectFromPath(getContainerFullPath());
+		if (project != null && isWebProject(project)) {
+			PreferenceDialog dialog = PreferencesUtil.createPropertyDialogOn(getShell(), project.getProject(),
+					CodeTemplatePreferencePage.PROP_ID, null, null);
+			dialog.open();
+		} else {
+			String title = NewWizardMessages.NewTypeWizardPage_configure_templates_title;
+			String message = NewWizardMessages.NewTypeWizardPage_configure_templates_message;
+			MessageDialog.openInformation(getShell(), title, message);
+		}
+	}
+	
+	protected void createAdvancedControls(Composite parent) {
+		Link link = new Link(parent, SWT.NONE);
+    	link.setText(NewWizardMessages.NewTypeWizardPage_addcomment_description);
+    	link.addSelectionListener(new SelectionListener() {
+			
+			public void widgetSelected(SelectionEvent arg0) {
+				typePageLinkActivated();
+			}
+			
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				typePageLinkActivated();
+			}
+		});
+		DialogField.createEmptySpace(parent);
+		commentsButton = new Button(parent, SWT.CHECK);
+		commentsButton.setFont(parent.getFont());
+		commentsButton.setText(NewWizardMessages.NewTypeWizardPage_addcomment_label);
+		DialogField.createEmptySpace(parent);
+		super.createAdvancedControls(parent);
+	}
 	
 	/**
 	 * This method is overriden to set the selected folder to web contents 
@@ -252,6 +307,17 @@ path.append("/"); //$NON-NLS-1$
 		
 		return path;
 	}
-	
-	
+
+	public void addFileComment(IFile file) {
+		if (commentsButton.getSelection()) {
+			IJavaScriptUnit cu= JavaScriptCore.createCompilationUnitFrom(file);
+			try {
+				cu.becomeWorkingCopy(new NullProgressMonitor());
+				cu.getBuffer().setContents(CodeGeneration.getFileComment(cu, StubUtility.getLineDelimiterUsed(cu)));
+				cu.commitWorkingCopy(true, new NullProgressMonitor());
+			} catch (CoreException e) {
+				JavaScriptPlugin.log(e);
+			}
+		}
+	}	
 }
