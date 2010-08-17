@@ -1504,15 +1504,15 @@
                icon="$nl$/icons/full/etool16/newjscript_wiz.gif"
                tooltip="%Javascript_UI_Wizard_New_Title"
                class="org.eclipse.wst.jsdt.internal.ui.wizards.OpenJavaScriptFileWizardToolbarAction"
-               toolbarPath="Normal/JavaWizards"
-               id="org.eclipse.wst.jsdt.ui.actions.OpenProjectWizard">
+               toolbarPath="Normal/JSWizards"
+               id="org.eclipse.wst.jsdt.ui.actions.OpenFileWizard">
          </action>
          <action
                label="%OpenProjectWizardAction.label"
                icon="$nl$/icons/full/etool16/newjprj_wiz.gif"
                tooltip="%OpenProjectWizardAction.tooltip"
                class="org.eclipse.wst.jsdt.internal.ui.wizards.OpenJavaScriptProjectWizardToolbarAction"
-               toolbarPath="Normal/JavaWizards"
+               toolbarPath="Normal/JSWizards"
                id="org.eclipse.wst.jsdt.ui.actions.OpenProjectWizard">
          </action>
       </actionSet>
@@ -1755,13 +1755,13 @@
 <!-- =========================================================================== -->
 <!-- JavaScript Launching and debugging                                                -->
 <!-- =========================================================================== -->
-   <extension
+<!--   <extension
          point="org.eclipse.ui.ide.resourceFilters">
       <filter
             selected="false"
             pattern="*.class">
       </filter>
-   </extension>
+   </extension>-->
    
 <!-- =========================================================================== -->
 <!-- Export wizard category                                                      -->
@@ -5055,7 +5055,7 @@
       </view>
    </extension>
 
-<!-- classpath container -->
+<!-- include path containers -->
    
    <extension
          point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
