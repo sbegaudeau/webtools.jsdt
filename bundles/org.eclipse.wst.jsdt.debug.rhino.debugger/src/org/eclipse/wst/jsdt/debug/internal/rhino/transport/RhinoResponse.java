@@ -162,7 +162,7 @@ public class RhinoResponse extends RhinoPacket implements Response {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("RhinoResponse RhinoPacket: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
+		buffer.append("RhinoResponse: ").append(JSONUtil.write(toJSON())); //$NON-NLS-1$
 		return buffer.toString();
 	}
 }

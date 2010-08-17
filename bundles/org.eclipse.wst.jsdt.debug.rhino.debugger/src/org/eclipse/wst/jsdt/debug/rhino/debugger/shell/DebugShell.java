@@ -26,7 +26,7 @@ public final class DebugShell {
     	
     	String port = "9888"; //$NON-NLS-1$
     	boolean suspend = false;
-    	boolean trace = true;
+    	boolean trace = false;
     	
     	ArrayList argList = new ArrayList();
     	for (int i = 0; i < args.length; i++) {

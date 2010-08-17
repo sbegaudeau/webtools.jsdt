@@ -144,9 +144,7 @@ public class DebugSessionManager {
 		this.address = address;
 		this.startSuspended = startSuspended;
 		DEBUG = debug;
-		if(DEBUG) {
-			prettyPrintHeader();
-		}
+		prettyPrintHeader();
 	}
 
 	/**
