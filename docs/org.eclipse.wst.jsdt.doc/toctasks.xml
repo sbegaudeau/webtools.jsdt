@@ -9,7 +9,7 @@
         IBM Corporation - initial API and implementation
  -->
 
-<toc label="Book">
+<toc label="Book"> <topic label="Rhino Debug">    <topic href="tasks/rhino_debug/tsk-debug-single-script.htm" label="Debugging a Single Script">    </topic>    <topic href="tasks/rhino_debug/tsk-debug-multi-script.htm" label="Debugging Multiple Scripts at the Same Time">    </topic> </topic>
  <topic href="tasks/add-lib-global-scope.html" label="Add a Library to the Global Scope">
  </topic>
  <topic href="tasks/configure-source.html" label="Configuring Source Folders">

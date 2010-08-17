@@ -48,5 +48,9 @@
             file="ui-contexts.xml"
             plugin="org.eclipse.wst.jsdt.ui">
       </contexts>
+      <contexts
+            file="rhino-debug-contexts.xml"
+            plugin="org.eclipse.wst.jsdt.debug.rhino.ui">
+      </contexts>
    </extension>
 </plugin>
