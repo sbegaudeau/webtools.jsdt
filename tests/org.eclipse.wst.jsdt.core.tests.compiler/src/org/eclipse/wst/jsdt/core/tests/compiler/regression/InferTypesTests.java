@@ -242,6 +242,28 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 
+		public void test041a() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					" i= { \n"+
+					"/**\n" +
+					"   * @memberOf jsns.MyClass\n" +
+					"   * @type jsns.Number\n" +
+					" */\n" +
+					" a: 2 ,\n"+
+					"/**\n" +
+					"   * @memberOf jsns.MyClass\n" +
+					"   * @type jsns.String\n" +
+					" */\n" +
+					" b: function(){}};" + 
+					"\n",
+					"X.js",
+				"class jsns.MyClass extends Object{\n  jsns.Number a;\n  jsns.String b()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
+
 		public void test042() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
 					 "/**\n"
@@ -269,6 +291,33 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 		
+		public void test042a() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					 "/**\n"
+					+ " * @constructor \n"
+					+ " * @extends String \n"
+					+ " */\n"
+				+"function MyClass(){}"   
+
+				+"MyClass.prototype = { \n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type jsns.Number\n" +
+					" */\n" +
+					" a: 2 ,\n"+
+					"/**\n" +
+					"   * @memberOf MyClass\n" +
+					"   * @type jsns.String\n" +
+					" */\n" +
+					" b: function(){}};" + 
+					"\n",
+					"X.js",
+				"class MyClass extends String{\n  jsns.Number a;\n  MyClass()\n  jsns.String b()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 
 		public void test043() {
 			CompilationUnitDeclaration declaration = this.runInferTest(
@@ -285,6 +334,25 @@ public class InferTypesTests extends AbstractRegressionTest {
 			+"\n",
 				"X.js",
 				"class MyClass extends Object{\n  MyClass()\n  String foo(Number p1)\n}\n",
+				getDefaultOptions()
+			 );
+		}
+		
+		public void test043a() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+					 "/**\n"
+					+ " * @constructor \n"
+					+ " */\n"
+				+"function MyClass(){}"   
+			+ "/**\n"
+			+ " * @memberOf MyClass \n"
+			+ " * @param {jsns2.Number} p1\n" 
+			+ " * @type jsns.String \n"
+			+ " */\n"
+			+"function foo(p1){};"   
+			+"\n",
+				"X.js",
+				"class MyClass extends Object{\n  MyClass()\n  jsns.String foo(jsns2.Number p1)\n}\n",
 				getDefaultOptions()
 			 );
 		}
@@ -1113,4 +1181,251 @@ public class InferTypesTests extends AbstractRegressionTest {
 				
 			 );
 		}
+		public void test104() {
+			// same as 103, except events is an object literal 
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {}\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  MyTypeInner events;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test105() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"a : \"\",\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : 7\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  String a;\n  MyTypeInner events;\n  Number b;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test106() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"a : {},\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : {}\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  ___anonymous80_81 a;\n  MyTypeInner events;\n  ___anonymous220_221 b;\n}\nclass ___anonymous80_81 extends Object{\n}\nclass ___anonymous220_221 extends Object{\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test107() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"a : {},\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"/**\n"+
+				"  * Property b\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    String\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"b : {}\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  ___anonymous80_81 a;\n  MyTypeInner events;\n  String b;\n}\nclass ___anonymous80_81 extends Object{\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test108() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"a : {},\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : {}\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  ___anonymous80_81 a;\n  MyTypeInner events;\n  ___anonymous220_221 b;\n}\nclass ___anonymous80_81 extends Object{\n}\nclass ___anonymous220_221 extends Object{\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test108a() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyType = {\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @type    MyOwnNamespace.String\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : \"\"\n"+
+				"};",
+				"X.js",
+				"class MyType extends Object{\n  MyOwnNamespace.String events;\n  String b;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test108d() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"a : {},\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : 5\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  ___anonymous80_81 a;\n  MyTypeInner events;\n  Number b;\n}\nclass ___anonymous80_81 extends Object{\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test108b() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : \"\"\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  MyTypeInner events;\n  String b;\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		public void test108c() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"MyTypeInner = {\n"+
+				"/**\n"+
+				"  * @memberOf   MyTypeInner\n"+
+				" */\n"+  
+				"length: 5\n"+
+				"};\n"+
+				"MyType = {\n"+
+				"/**\n"+
+				"  * Property a\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"a : 5,\n"+
+				"/**\n"+
+				"  * Property events\n"+
+				"  * @memberOf   MyType\n"+
+				"  * @see     MyType\n"+
+				"  * @type    MyTypeInner\n"+
+				"  * @since   WTP 3.2.2\n"+
+				" */\n"+  
+				"events : {},\n"+
+				"b : {}\n"+
+				"};",
+				"X.js",
+				"class MyTypeInner extends Object{\n  Number length;\n}\nclass MyType extends Object{\n  Number a;\n  MyTypeInner events;\n  ___anonymous308_309 b;\n}\nclass ___anonymous308_309 extends Object{\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+//		public void test109() {
+//			CompilationUnitDeclaration declaration = this.runInferTest(
+//				"var foo = function () {\n"+
+//				"this.length= 5;\n"+
+//				"};\n",
+//				"X.js",
+//				"class foo extends Object{\n  Number length;\n}\n",
+//				getDefaultOptions()
+//				
+//			 );
+//		}
 }
