@@ -74,7 +74,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	private final boolean supportsTerminate;
 	private final boolean supportsDisconnect;
 	private final EventDispatcher eventDispatcher;
-	private final String name;
+	private String name;
+	private Object lock = new Object();
 
 	private ArrayList threads = new ArrayList();
 	private ArrayList breakpoints = new ArrayList();
@@ -111,8 +112,6 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		this.supportsDisconnect = supportsDisconnect;
 		this.eventDispatcher = new EventDispatcher(this);
 		this.scriptgroup = new ScriptGroup(this);
-		name = NLS.bind(ModelMessages.debug_target_name, new String[] {vm.name(), "", vm.version()}); //$NON-NLS-1$
-		// TODO: consider calling this outside of constructor
 		initialize();
 	}
 
@@ -203,6 +202,11 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @see org.eclipse.debug.core.model.IDebugTarget#getName()
 	 */
 	public String getName() throws DebugException {
+		synchronized (lock) {
+			if(name == null) {
+				name = NLS.bind(ModelMessages.debug_target_name, new String[] {vm.name(), vm.version()});
+			}
+		}
 		return name;
 	}
 

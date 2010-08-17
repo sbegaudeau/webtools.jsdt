@@ -34,18 +34,30 @@ public class Messages extends NLS {
 	public static String disconnected;
 	public static String enable_hit_count;
 	public static String enter_new_hit_count;
+	public static String evald_script;
 	public static String exception_occurred_setting_bp_properties;
 	public static String external_javascript_source;
 	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
+	public static String running_state;
 	public static String scripts;
 	public static String select_javascript_file;
 	public static String set_bp_hit_count;
+	public static String stackframe_name;
+	public static String stepping_state;
+	public static String suspend_loading_script;
 	public static String suspend_target;
 	public static String suspend_thread;
+	public static String suspended_on_exception;
+	public static String suspended_on_func_breakpoint;
+	public static String suspended_on_line_breakpoint;
+	public static String suspended_state;
 	public static String terminated;
+	public static String terminated_state;
 	public static String the_argument_0_is_not_valid;
+	public static String thread_name;
 	public static String unknown;
+	public static String unknown_state;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

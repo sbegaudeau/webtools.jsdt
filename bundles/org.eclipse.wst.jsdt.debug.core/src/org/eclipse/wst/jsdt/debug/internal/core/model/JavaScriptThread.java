@@ -26,7 +26,6 @@ import org.eclipse.debug.core.model.IThread;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
-import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
@@ -41,7 +40,6 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
-import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptExceptionBreakpoint;
@@ -243,71 +241,6 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		this.state = thread.isSuspended() ? SUSPENDED : RUNNING;
 	}
 
-	/**
-	 * @return the status text for the thread
-	 */
-	private synchronized String statusText() {
-		switch (state) {
-			case SUSPENDED: {
-				if (this.breakpoints.size() > 0) {
-					try {
-						JavaScriptBreakpoint breakpoint = (JavaScriptBreakpoint) breakpoints.get(0);
-						if (breakpoint instanceof JavaScriptLoadBreakpoint) {
-							String name = breakpoint.getScriptPath();
-							if (Constants.EMPTY_STRING.equals(name)) {
-								name = getSourceName();
-							}
-							return NLS.bind(ModelMessages.JSDIThread_suspended_loading_script, name);
-						}
-						if(breakpoint instanceof JavaScriptExceptionBreakpoint) {
-							return NLS.bind(ModelMessages.JavaScriptThread_suspended_on_exception, breakpoint.getMarker().getAttribute(JavaScriptExceptionBreakpoint.MESSAGE));
-						}
-						// TODO support function breakpoints here
-						if (breakpoint instanceof IJavaScriptLineBreakpoint) {
-							IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-							return NLS.bind(ModelMessages.breakpoint_at_line_location, new String[] { Integer.toString(bp.getLineNumber()), getSourceName() });
-						}
-						// TODO also need to report stopped at debugger; statement
-					} catch (CoreException ce) {
-						JavaScriptDebugPlugin.log(ce);
-					}
-				}
-				return ModelMessages.thread_suspended;
-			}
-			case RUNNING: {
-				if (pendingstep != null) {
-					return ModelMessages.thread_stepping;
-				}
-				return ModelMessages.thread_running;
-			}
-			case TERMINATED: {
-				return ModelMessages.thread_terminated;
-			}
-			case ThreadReference.THREAD_STATUS_ZOMBIE: {
-				return ModelMessages.thread_zombie;
-			}
-			default: {
-				return ModelMessages.thread_state_unknown;
-			}
-		}
-	}
-
-	/**
-	 * Returns the name of the source from the top stackframe or a default name
-	 * <code>&lt;evaluated_source&gt;</code>
-	 * 
-	 * @return the name for the source
-	 * @throws DebugException
-	 */
-	String getSourceName() throws DebugException {
-		IJavaScriptStackFrame frame = (IJavaScriptStackFrame) getTopStackFrame();
-		if (frame != null) {
-			return frame.getSourceName();
-		}
-		// all else failed say "evaluated_script"
-		return ModelMessages.JavaScriptThread_evaluated_script;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -326,7 +259,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * @see org.eclipse.debug.core.model.IThread#getName()
 	 */
 	public String getName() throws DebugException {
-		return NLS.bind(ModelMessages.JSDIThread_thread_title, new String[] { thread.name(), statusText() });
+		return thread.name();
 	}
 
 	/*

@@ -21,14 +21,12 @@ import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IRegisterGroup;
 import org.eclipse.debug.core.model.IThread;
 import org.eclipse.debug.core.model.IVariable;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
-import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 
 /**
  * A JavaScript stack frame
@@ -47,7 +45,6 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 */
 	private StackFrame stackFrame = null;
 
-	private String name = null;
 	private ArrayList variables;
 
 	/**
@@ -103,13 +100,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 * @see org.eclipse.debug.core.model.IStackFrame#getName()
 	 */
 	public String getName() throws DebugException {
-		if (this.name == null) {
-			this.name = NLS.bind(ModelMessages.JSDIStackFrame_stackframe_name, new String[] {
-									TextUtils.shortenText(this.stackFrame.location().scriptReference().sourceURI().toString(), 100), 
-									Integer.toString(stackFrame.location().lineNumber()) 
-									});
-		}
-		return this.name;
+		return this.stackFrame.location().scriptReference().sourceURI().toString();
 	}
 
 	/*
