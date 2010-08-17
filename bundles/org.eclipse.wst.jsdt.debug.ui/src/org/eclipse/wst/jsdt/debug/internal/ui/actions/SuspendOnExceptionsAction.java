@@ -37,7 +37,7 @@ public class SuspendOnExceptionsAction implements IViewActionDelegate {
 	public void run(IAction action) {
 		IEclipsePreferences prefs = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		if(prefs != null) {
-			prefs.putBoolean(Constants.SUSPEN_ON_THROWN_EXCEPTION, action.isChecked());
+			prefs.putBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, action.isChecked());
 			try {
 				prefs.flush();
 			} catch (BackingStoreException e) {
@@ -53,7 +53,7 @@ public class SuspendOnExceptionsAction implements IViewActionDelegate {
 		if(!initialized) {
 			boolean checked = Platform.getPreferencesService().getBoolean(
 								JavaScriptDebugPlugin.PLUGIN_ID,
-								Constants.SUSPEN_ON_THROWN_EXCEPTION, 
+								Constants.SUSPEND_ON_THROWN_EXCEPTION, 
 								false, 
 								null);
 			action.setChecked(checked);
