@@ -52,6 +52,9 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	private final EventQueue eventQueue = new EventQueueImpl(this, eventRequestManager);
 	private Map threads = new HashMap();
 	private boolean disconnected = false;
+	private String name = null;
+	private String version = null;
+	Object lock = new Object();
 
 	/**
 	 * Constructor
@@ -301,17 +304,21 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#name()
 	 */
 	public String name() {
-		RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
-		try {
-			RhinoResponse response = sendRequest(request);
-			return (String) response.getBody().get(JSONConstants.VM_NAME);
-		} catch (DisconnectedException e) {
-			disconnectVM();
-			handleException(e.getMessage(), e);
-		} catch (TimeoutException e) {
-			RhinoDebugPlugin.log(e);
+		synchronized (lock) {
+			if(this.name == null) {
+	 			RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
+				try {
+					RhinoResponse response = sendRequest(request);
+					name = (String) response.getBody().get(JSONConstants.VM_NAME);
+				} catch (DisconnectedException e) {
+					disconnectVM();
+					handleException(e.getMessage(), e);
+				} catch (TimeoutException e) {
+					RhinoDebugPlugin.log(e);
+				}
+			}
 		}
-		return null;
+		return this.name;
 	}
 
 	/* (non-Javadoc)
@@ -355,17 +362,21 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
-		RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
-		try {
-			RhinoResponse response = sendRequest(request);
-			return (String) response.getBody().get(JSONConstants.VM_VERSION);
-		} catch (DisconnectedException e) {
-			disconnectVM();
-			handleException(e.getMessage(), e);
-		} catch (TimeoutException e) {
-			RhinoDebugPlugin.log(e);
+		synchronized (lock) {
+			if(this.version == null) {
+				RhinoRequest request = new RhinoRequest(JSONConstants.VERSION);
+				try {
+					RhinoResponse response = sendRequest(request);
+					this.version = (String) response.getBody().get(JSONConstants.VM_VERSION);
+				} catch (DisconnectedException e) {
+					disconnectVM();
+					handleException(e.getMessage(), e);
+				} catch (TimeoutException e) {
+					RhinoDebugPlugin.log(e);
+				}
+			}
 		}
-		return null;
+		return this.version;
 	}
 
 	/**
