@@ -265,7 +265,8 @@ public void addUnknownRef(NameReference nameRef) {
 }
 public void checkComment() {
 	// discard obsolete comments while inside methods or fields initializer (see bug 74369)
-	if (!(this.diet && this.dietInt==0) && this.scanner.commentPtr >= 0) {
+	// don't discard if the expression being worked on is an ObjectLiteral (see bug 322412 )
+	if (!(this.diet && this.dietInt == 0) && this.scanner.commentPtr >= 0 && !(expressionPtr >= 0 && expressionStack[expressionPtr] instanceof ObjectLiteral)) {
 		flushCommentsDefinedPriorTo(this.endStatementPosition);
 	}
 

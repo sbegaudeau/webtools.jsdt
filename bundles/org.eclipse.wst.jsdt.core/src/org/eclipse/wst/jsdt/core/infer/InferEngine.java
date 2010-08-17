@@ -235,7 +235,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			InferredAttribute attribute = null;
 			if (javadoc.memberOf!=null)
 			{
-				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
+				InferredType type = this.addType(javadoc.memberOf.getFullTypeName(),true);
 				int nameStart = localDeclaration.sourceStart(); 
 				attribute = type.addAttribute(localDeclaration.getName(), localDeclaration, nameStart);
 				handleAttributeDeclaration(attribute, localDeclaration.getInitialization());
@@ -246,7 +246,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 			if (javadoc.returnType!=null)
 			{
-			   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
+			   InferredType type = this.addType(javadoc.returnType.getFullTypeName());
 			   localDeclaration.setInferredType(type);
 			   if (attribute!=null)
 				   attribute.type=type;
@@ -816,7 +816,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				char[] memberName = fieldReference.token;
 				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
 
-				InferredType typeOf = (assignment.getJsDoc() != null && assignment.getJsDoc() instanceof Javadoc && ((Javadoc) assignment.getJsDoc()).returnType != null) ? this.addType(changePrimitiveToObject(((Javadoc) assignment.getJsDoc()).returnType.getSimpleTypeName())) : getTypeOf(assignment.getExpression());
+				InferredType typeOf = (assignment.getJsDoc() != null && assignment.getJsDoc() instanceof Javadoc && ((Javadoc) assignment.getJsDoc()).returnType != null) ? this.addType(changePrimitiveToObject(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName())) : getTypeOf(assignment.getExpression());
 				IFunctionDeclaration methodDecl=null;
 
 				if (typeOf==null || typeOf==FunctionType)
@@ -1091,7 +1091,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					{
 						if (javaDoc.memberOf!=null)
 						{
-							char[] typeName = javaDoc.memberOf.getSimpleTypeName();
+							char[] typeName = javaDoc.memberOf.getFullTypeName();
 							convertAnonymousTypeToNamed(type,typeName);
 							type.isDefinition=true;
 						}
@@ -1110,7 +1110,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 						}
 						if (javaDoc.returnType!=null)
 						{
-							returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
+							returnType=this.addType(javaDoc.returnType.getFullTypeName());
 						}
 					}
 					
@@ -1139,8 +1139,13 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 							handleAttributeDeclaration(attribute, field.getInitializer());
 							attribute.isStatic=isStatic;
 							//@GINO: recursion might not be the best idea
-							if (returnType!=null)
-								attribute.type=returnType;
+							if (returnType!=null) {
+								attribute.type = returnType;
+								// apply (force) type onto OL initializer
+								if (field.getInitializer() instanceof ObjectLiteral) {
+									((ObjectLiteral) field.getInitializer()).setInferredType(returnType);
+								}
+							}
 							else
 							  attribute.type = getTypeOf(field.getInitializer());
 						}
@@ -1250,7 +1255,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				}
 				else if (javadoc.memberOf!=null)
 				{
-					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
+					InferredType type = this.addType(javadoc.memberOf.getFullTypeName(),true);
 					char [] name=methodName;
 					int nameStart = methodDeclaration.sourceStart();
 					if (name!=null)
@@ -1273,7 +1278,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 				if (javadoc.returnType!=null)
 				{
-				   InferredType type = this.addType(changePrimitiveToObject(javadoc.returnType.getSimpleTypeName()));
+				   InferredType type = this.addType(changePrimitiveToObject(javadoc.returnType.getFullTypeName()));
 				   methodDeclaration.setInferredType(type);
 				   ((MethodDeclaration)methodDeclaration).bits |= ASTNode.IsInferredJsDocType;
 				}
@@ -1338,9 +1343,9 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				{
 					char []name={};
 					for (int j = 0; j < param.types.length; j++) {
-						//char []typeName=param.types[j].getSimpleTypeName();
+						//char []typeName=param.types[j].getFullTypeName();
 						//make sure we are using the type version of Boolean, even if the user entered boolean as the JSdoc type.
-						char []typeName=changePrimitiveToObject(param.types[j].getSimpleTypeName());
+						char []typeName=changePrimitiveToObject(param.types[j].getFullTypeName());
 						if (j==0)
 							name=typeName;
 						else
