@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -989,12 +989,6 @@ protected boolean isSourceElement() {
 protected IStatus validateCompilationUnit(IResource resource) {
 	IPackageFragmentRoot root = getPackageFragmentRoot();
 	// root never null as validation is not done for working copies
-	try {
-		if (root.getKind() != IPackageFragmentRoot.K_SOURCE)
-			return new JavaModelStatus(IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES, root);
-	} catch (JavaScriptModelException e) {
-		return e.getJavaScriptModelStatus();
-	}
 	if (resource != null) {
 		char[][] inclusionPatterns = ((PackageFragmentRoot)root).fullInclusionPatternChars();
 		char[][] exclusionPatterns = ((PackageFragmentRoot)root).fullExclusionPatternChars();
