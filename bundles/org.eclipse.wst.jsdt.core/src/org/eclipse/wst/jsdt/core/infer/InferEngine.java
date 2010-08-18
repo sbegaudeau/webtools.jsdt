@@ -246,7 +246,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 			if (javadoc.returnType!=null)
 			{
-			   InferredType type = this.addType(javadoc.returnType.getFullTypeName());
+			   InferredType type = this.addType(changePrimitiveToObject(javadoc.returnType.getFullTypeName()));
 			   localDeclaration.setInferredType(type);
 			   if (attribute!=null)
 				   attribute.type=type;
@@ -1110,7 +1110,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 						}
 						if (javaDoc.returnType!=null)
 						{
-							returnType=this.addType(javaDoc.returnType.getFullTypeName());
+							returnType=this.addType(changePrimitiveToObject(javaDoc.returnType.getFullTypeName()));
 						}
 					}
 					
