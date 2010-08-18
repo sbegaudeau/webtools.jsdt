@@ -13,7 +13,9 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.text.CharacterIterator;
 import java.text.DateFormat;
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -30,13 +32,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
+import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -316,7 +319,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("load("); //$NON-NLS-1$
 		for (Iterator i = scope.iterator(); i.hasNext();) {
-			buffer.append('"').append(i.next()).append('"');
+			buffer.append(i.next());
 			if(i.hasNext()) {
 				buffer.append(',');
 			}
@@ -331,8 +334,9 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * @param configuration
 	 * @param args
 	 * @throws CoreException
+	 * @throws IOException 
 	 */
-	void addVMArgs(ILaunchConfiguration configuration, ArrayList args) throws CoreException {
+	void addVMArgs(ILaunchConfiguration configuration, ArrayList args) throws CoreException, IOException {
 		IVMInstall vm = JavaRuntime.getDefaultVMInstall();
 		File loc = vm.getInstallLocation();
 		if(loc == null) {
@@ -349,16 +353,23 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			if(bundle == null) {
 				throw new CoreException(new Status(IStatus.ERROR, RhinoUIPlugin.PLUGIN_ID, NLS.bind("Could not locate the {0} bundle", REQUIRED_BUNDLES[i]))); //$NON-NLS-1$
 			}
-			String bloc = bundle.getLocation();
-			IPath path = new Path(bloc);
-			path = path.removeFirstSegments(1);
-			if(!".jar".equals(path.getFileExtension())) { //$NON-NLS-1$
-				//add both '/' and '/bin/' just in case
-				buffer.append(path.makeAbsolute().toOSString());
-				appendSep(buffer);
-				path = path.append("bin").addTrailingSeparator(); //$NON-NLS-1$
+			File file = FileLocator.getBundleFile(bundle);
+			if(file.isDirectory()) {
+				if(MOZILLA_JAVASCRIPT_BUNDLE.equals(REQUIRED_BUNDLES[i])) {
+					buffer.append(escapePath(file, false, false));
+				}
+				else {
+					//mozilla uses the project as the class file output dir
+					//so we only have to include bin directories for the other ones
+					file = new File(file, "bin"); //$NON-NLS-1$
+					if(file.exists()) {
+						buffer.append(escapePath(file, false, false));
+					}
+				}
 			}
-			buffer.append(path.makeAbsolute().toOSString());
+			else {
+				buffer.append(escapePath(file, false, false));
+			}
 			if(i < REQUIRED_BUNDLES.length-1) {
 				appendSep(buffer);
 			}
@@ -366,6 +377,43 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		args.add("-cp"); //$NON-NLS-1$
 		args.add(buffer.toString());
 		args.add(DEBUG_SHELL_CLASS);
+	}
+	
+	/**
+	 * Escapes the path of the given file.
+	 * 
+	 * @param file the file to escape the path for
+	 * @param escapeslash if the windows '\' should be converted to a URL slash '/'
+	 * @return the escaped path
+	 */
+	String escapePath(File file, boolean escapeslash, boolean alwaysquote) {
+		String path = file.getAbsolutePath();
+		StringCharacterIterator iter = new StringCharacterIterator(path);
+		StringBuffer buffer = new StringBuffer();
+		boolean hasspace = false;
+		char c = iter.current();
+		while(c != CharacterIterator.DONE) {
+			if(c == '\\' && escapeslash) {
+				buffer.append("/"); //$NON-NLS-1$
+			}
+			else if(c == '"') {
+				buffer.append("\""); //$NON-NLS-1$
+			}
+			else if(c == ' ') {
+				hasspace = true;
+				buffer.append(c);
+			}
+			else {
+				buffer.append(c);
+			}
+			c = iter.next();
+		}
+		if(hasspace || alwaysquote){
+			buffer.insert(0, "\""); //$NON-NLS-1$
+			buffer.append("\""); //$NON-NLS-1$
+			return buffer.toString();
+		}
+		return path;
 	}
 	
 	void appendSep(StringBuffer buffer) {
@@ -506,7 +554,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				resolveScriptsFrom(files[i], scripts, subdirs);
 			}
 			else {
-				String path = files[i].getAbsolutePath();
+				String path = escapePath(files[i], true, true);
 				if(!scripts.contains(path)) {
 					scripts.add(path);
 				}
@@ -530,7 +578,8 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				case IResource.FILE: {
 					IFile file = (IFile) members[i];
 					if(JavaScriptCore.isJavaScriptLikeFileName(file.getName())) {
-						String value = file.getLocationURI().getPath();
+						File ffile = URIUtil.toFile(file.getLocationURI());
+						String value = escapePath(ffile, true, true);
 						if(!scripts.contains(value)) {
 							scripts.add(value);
 						}
@@ -556,7 +605,8 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 */
 	void addScriptAttribute(ILaunchConfiguration configuration, ArrayList args) throws CoreException {
 		ITypeRoot root = getScript(configuration);
-		String value = root.getResource().getLocationURI().getPath();
+		File file = URIUtil.toFile(root.getResource().getLocationURI());
+		String value = escapePath(file, true, true);
 		if(!args.contains(value)) {
 			args.add(value);
 		}
@@ -590,6 +640,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		monitor.subTask(Messages.computing_script_scope);
 		computeScriptScope(configuration, monitor);
 		if(this.scope.isEmpty()) {
+			this.scope = null;
 			throw new CoreException(new Status(IStatus.ERROR, RhinoUIPlugin.PLUGIN_ID, Messages.failed_to_compute_scope));
 		}
 		return true;

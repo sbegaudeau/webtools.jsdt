@@ -78,7 +78,7 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 						copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, script);
 						copy.setAttribute(ILaunchConstants.ATTR_LOG_INTERPRETER_EXCEPTIONS, true);
 						copy.setAttribute(ILaunchConstants.ATTR_ECMA_VERSION, ILaunchConstants.ECMA_170);
-						copy.setAttribute(ILaunchConstants.ATTR_OPT_LEVEL, 0);
+						copy.setAttribute(ILaunchConstants.ATTR_OPT_LEVEL, -1);
 						copy.setAttribute(ILaunchConstants.ATTR_STRICT_MODE, false);
 						copy.setMappedResources(new IResource[] {resource.getProject(), resource});
 						//add include path
