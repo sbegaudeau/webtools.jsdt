@@ -85,14 +85,14 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 				
 		// new actions - Java project creation wizard
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.JavaProjectWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
+//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.NewJSWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$
+//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
+//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
+//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSourceFolderCreationWizard");	 //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
+//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$
