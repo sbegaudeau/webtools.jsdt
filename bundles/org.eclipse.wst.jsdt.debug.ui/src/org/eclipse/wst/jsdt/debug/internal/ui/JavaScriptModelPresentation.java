@@ -217,6 +217,15 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 						if (Constants.EMPTY_STRING.equals(name)) {
 							name = getSourceName(thread);
 						}
+						else {
+							//decode it
+							try {
+								name = URLDecoder.decode(name, Constants.UTF_8);
+							}
+							catch(UnsupportedEncodingException uee) {
+								//ignore
+							}
+						}
 						adornment = NLS.bind(Messages.suspend_loading_script, name);
 					}
 					else if(breakpoint instanceof JavaScriptExceptionBreakpoint) {
