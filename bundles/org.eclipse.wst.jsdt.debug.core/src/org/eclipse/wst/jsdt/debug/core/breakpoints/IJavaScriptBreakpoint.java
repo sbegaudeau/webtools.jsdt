@@ -21,7 +21,14 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
  * @since 1.0
  */
 public interface IJavaScriptBreakpoint extends IBreakpoint {
-
+	
+	/**
+	 * The id of the root breakpoint marker type for JavaScript breakpoints
+	 * <br><br>
+	 * Value is: <code>org.eclipse.wst.jsdt.debug.core.breakpoint.marker</code>
+	 * @since 1.1
+	 */
+	public static final String MARKER_ID = "org.eclipse.wst.jsdt.debug.core.breakpoint.marker"; //$NON-NLS-1$
 	/**
 	 * The suspend policy for the breakpoint
 	 */
