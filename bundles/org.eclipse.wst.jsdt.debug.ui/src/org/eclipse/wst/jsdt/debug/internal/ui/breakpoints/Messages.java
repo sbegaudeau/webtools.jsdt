@@ -27,6 +27,10 @@ public class Messages extends NLS {
 	public static String enter_condition;
 	public static String entry;
 	public static String exit;
+	public static String failed_function_bp_no_element;
+	public static String failed_function_bp_no_resource;
+	public static String failed_line_bp_no_element;
+	public static String failed_line_bp_no_resource;
 	public static String failed_to_create_function_bp;
 	public static String failed_to_create_line_bp;
 	public static String fuction;

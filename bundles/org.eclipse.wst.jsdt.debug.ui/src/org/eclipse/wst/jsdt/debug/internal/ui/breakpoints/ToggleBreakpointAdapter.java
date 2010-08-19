@@ -31,6 +31,7 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -90,10 +91,14 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             		ITextEditor editor = getTextEditor(part);
 					if(editor != null && part instanceof IEditorPart) {
 						if(element == null) {
-							reportToStatusLine(part, Messages.failed_to_create_line_bp);
+							reportToStatusLine(part, Messages.failed_line_bp_no_element);
 							return Status.CANCEL_STATUS;
 						}
-						IResource resource = getBreakpointResource(element);
+						IResource resource = element.getResource();
+						if(resource == null) {
+							reportToStatusLine(part, NLS.bind(Messages.failed_line_bp_no_resource, element.getElementName()));
+							return Status.CANCEL_STATUS;
+						}
 						IBreakpoint bp = lineBreakpointExists(resource, linenumber);
 						if(bp != null) {
 							DebugPlugin.getDefault().getBreakpointManager().removeBreakpoint(bp, true);
@@ -288,12 +293,16 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             protected IStatus run(IProgressMonitor monitor) {
             	try {
 					if(element == null) {
-						reportToStatusLine(part, Messages.failed_to_create_function_bp);
+						reportToStatusLine(part, Messages.failed_function_bp_no_element);
 						return Status.CANCEL_STATUS;
 					}
 					if(element.getElementType() == IJavaScriptElement.METHOD) {
 						IFunction method = (IFunction) element;
-						IResource resource = getBreakpointResource(element);
+						IResource resource = element.getResource();
+						if(resource == null) {
+							reportToStatusLine(part, NLS.bind(Messages.failed_function_bp_no_resource, element.getElementName()));
+							return Status.CANCEL_STATUS;
+						}
 						IBreakpoint bp = methodBreakpointExists(resource, method.getElementName(), method.getSignature());
 						if(bp != null) {
 							DebugPlugin.getDefault().getBreakpointManager().removeBreakpoint(bp, true);
