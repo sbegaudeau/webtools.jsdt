@@ -11,8 +11,11 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching;
 
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.IStreamsProxy;
+import org.eclipse.debug.internal.core.StreamsProxy;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.JavaScriptProcess;
 import org.eclipse.wst.jsdt.debug.rhino.debugger.RhinoDebugger;
 
@@ -27,6 +30,8 @@ public class RhinoProcess extends JavaScriptProcess {
 	
 	private Process process = null;
 	
+	private StreamsProxy streamproxy = null;
+	
 	/**
 	 * Constructor
 	 * 
@@ -37,6 +42,11 @@ public class RhinoProcess extends JavaScriptProcess {
 	public RhinoProcess(ILaunch launch, Process p, String name) {
 		super(launch, name);
 		this.process = p;
+		String capture = launch.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
+		boolean needsstreams = capture == null ? true : Boolean.valueOf(capture).booleanValue();
+		if(needsstreams) {
+			streamproxy = new StreamsProxy(p, launch.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING));
+		}
 		setAttribute(IProcess.ATTR_PROCESS_TYPE, TYPE);
 	}
 	
@@ -45,6 +55,16 @@ public class RhinoProcess extends JavaScriptProcess {
 	 */
 	public void terminate() throws DebugException {
 		process.destroy();
+		if(streamproxy != null) {
+			streamproxy.close();
+		}
 		super.terminate();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.launching.JavaScriptProcess#getStreamsProxy()
+	 */
+	public IStreamsProxy getStreamsProxy() {
+		return streamproxy;
 	}
 }
