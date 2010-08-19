@@ -521,8 +521,13 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 					switch(kind) {
 						case IncludeTab.SCRIPT: {
 							String value = entry.substring(1);
-							if(!scope.contains(value)) {
-								scope.add(value);
+							IFile ifile = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(value);
+							if(ifile.exists()) {
+								File file = URIUtil.toFile(ifile.getLocationURI());
+								value = escapePath(file, true);
+								if(!scope.contains(value)) {
+									scope.add(value);
+								}
 							}
 							continue;
 						}
@@ -616,10 +621,9 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		ITypeRoot root = getScript(configuration);
 		File file = URIUtil.toFile(root.getResource().getLocationURI());
 		String value = escapePath(file, true);
-		if(args.remove(value)) {
-			//want to make sure it is interpreted last
-			args.add(value);
-		}
+		args.remove(value);
+		//want to make sure it is interpreted last
+		args.add(value);
 	}
 	
 	/* (non-Javadoc)
