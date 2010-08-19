@@ -356,19 +356,19 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			File file = FileLocator.getBundleFile(bundle);
 			if(file.isDirectory()) {
 				if(MOZILLA_JAVASCRIPT_BUNDLE.equals(REQUIRED_BUNDLES[i])) {
-					buffer.append(escapePath(file, false, false));
+					buffer.append(escapePath(file, false));
 				}
 				else {
 					//mozilla uses the project as the class file output dir
 					//so we only have to include bin directories for the other ones
 					file = new File(file, "bin"); //$NON-NLS-1$
 					if(file.exists()) {
-						buffer.append(escapePath(file, false, false));
+						buffer.append(escapePath(file, false));
 					}
 				}
 			}
 			else {
-				buffer.append(escapePath(file, false, false));
+				buffer.append(escapePath(file, false));
 			}
 			if(i < REQUIRED_BUNDLES.length-1) {
 				appendSep(buffer);
@@ -383,17 +383,16 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * Escapes the path of the given file.
 	 * 
 	 * @param file the file to escape the path for
-	 * @param escapeslash if the windows '\' should be converted to a URL slash '/'
 	 * @return the escaped path
 	 */
-	String escapePath(File file, boolean escapeslash, boolean alwaysquote) {
+	String escapePath(File file, boolean singlequote) {
 		String path = file.getAbsolutePath();
 		StringCharacterIterator iter = new StringCharacterIterator(path);
 		StringBuffer buffer = new StringBuffer();
 		boolean hasspace = false;
 		char c = iter.current();
 		while(c != CharacterIterator.DONE) {
-			if(c == '\\' && escapeslash) {
+			if(c == '\\') {
 				buffer.append("/"); //$NON-NLS-1$
 			}
 			else if(c == '"') {
@@ -408,7 +407,12 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			}
 			c = iter.next();
 		}
-		if(hasspace || alwaysquote){
+		if(singlequote) {
+			buffer.insert(0, '\'');
+			buffer.append('\'');
+			return buffer.toString();
+		}
+		else if(hasspace){
 			buffer.insert(0, "\""); //$NON-NLS-1$
 			buffer.append("\""); //$NON-NLS-1$
 			return buffer.toString();
@@ -416,6 +420,11 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 		return path;
 	}
 	
+	/**
+	 * Appends the correct version of a classpath separator to the given buffer
+	 * 
+	 * @param buffer the buffer to add the separator to
+	 */
 	void appendSep(StringBuffer buffer) {
 		if(Platform.getOS().equals(Platform.OS_WIN32)) {
 			buffer.append(';');
@@ -554,7 +563,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				resolveScriptsFrom(files[i], scripts, subdirs);
 			}
 			else {
-				String path = escapePath(files[i], true, true);
+				String path = escapePath(files[i], true);
 				if(!scripts.contains(path)) {
 					scripts.add(path);
 				}
@@ -579,7 +588,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 					IFile file = (IFile) members[i];
 					if(JavaScriptCore.isJavaScriptLikeFileName(file.getName())) {
 						File ffile = URIUtil.toFile(file.getLocationURI());
-						String value = escapePath(ffile, true, true);
+						String value = escapePath(ffile, true);
 						if(!scripts.contains(value)) {
 							scripts.add(value);
 						}
@@ -606,8 +615,9 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	void addScriptAttribute(ILaunchConfiguration configuration, ArrayList args) throws CoreException {
 		ITypeRoot root = getScript(configuration);
 		File file = URIUtil.toFile(root.getResource().getLocationURI());
-		String value = escapePath(file, true, true);
-		if(!args.contains(value)) {
+		String value = escapePath(file, true);
+		if(args.remove(value)) {
+			//want to make sure it is interpreted last
 			args.add(value);
 		}
 	}
