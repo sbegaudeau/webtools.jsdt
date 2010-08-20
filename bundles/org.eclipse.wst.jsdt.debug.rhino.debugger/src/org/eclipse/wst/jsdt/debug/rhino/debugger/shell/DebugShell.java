@@ -22,23 +22,48 @@ import org.mozilla.javascript.tools.shell.Main;
  */
 public final class DebugShell {
 	
-    public static void main(String args[]) {
+    /**
+	 * Constant representing the default port
+	 * <br><br>
+	 * Value is: <code>9888</code>
+	 */
+	public static final String DEFAULT_PORT = "9888"; //$NON-NLS-1$
+	/**
+	 * Constant representing the trace argument
+	 * <br><br>
+	 * Value is: <code>-trace</code>
+	 */
+	public static final String ARG_TRACE = "-trace"; //$NON-NLS-1$
+	/**
+	 * Constant representing the suspend argument
+	 * <br><br>
+	 * Value is: <code>-suspend</code>
+	 */
+	public static final String ARG_SUSPEND = "-suspend"; //$NON-NLS-1$
+	/**
+	 * Constant representing the port argument
+	 * <br><br>
+	 * Value is: <code>-port</code>
+	 */
+	public static final String ARG_PORT = "-port"; //$NON-NLS-1$
+
+	public static void main(String args[]) {
     	
-    	String port = "9888"; //$NON-NLS-1$
+    	String port = DEFAULT_PORT;
     	boolean suspend = false;
     	boolean trace = false;
     	
     	ArrayList argList = new ArrayList();
     	for (int i = 0; i < args.length; i++) {
     		String arg = args[i];
-    		if (arg.equals("-port")) { //$NON-NLS-1$
+    		if (ARG_PORT.equals(arg)) {
     			port = args[++i];
     			continue;
-    		} else if (arg.equals("-suspend")) { //$NON-NLS-1$
-    			suspend = Boolean.valueOf(args[++i]).booleanValue();
+    		} else if (ARG_SUSPEND.equals(arg)) {
+    			suspend = isSuspend(args[++i]);
     			continue;
     		}
-    		else if(arg.equals("-trace")) { //$NON-NLS-1$
+    		else if(ARG_TRACE.equals(arg)) {
     			trace = Boolean.valueOf(args[++i]).booleanValue();
     			continue;
     		}
@@ -57,4 +82,14 @@ public final class DebugShell {
 			e.printStackTrace();
 		}
     }
+	
+	/**
+	 * Returns if the given argument should suspend 
+	 * @param arg
+	 * @return <code>true</code> if the argument is "true" or "y"
+	 */
+	public static boolean isSuspend(String arg) {
+		return Boolean.valueOf(arg).booleanValue() || 
+		       "y".equals(arg.toLowerCase());  //$NON-NLS-1$
+	}
 }

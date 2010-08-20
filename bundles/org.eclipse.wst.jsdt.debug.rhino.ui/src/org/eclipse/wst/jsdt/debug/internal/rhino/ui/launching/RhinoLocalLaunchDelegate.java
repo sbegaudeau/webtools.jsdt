@@ -124,7 +124,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * <br><br>
 	 * Value is: <code>"org.eclipse.wst.jsdt.debug.rhino.debugger.shell.DebugShell"</code>
 	 */
-	public static final String DEBUG_SHELL_CLASS = "org.eclipse.wst.jsdt.debug.rhino.debugger.shell.DebugShell"; //$NON-NLS-1$
+	public static final String DEBUG_SHELL_CLASS = "org.eclipse.wst.jsdt.debug.rhino.debugger.shell.DebugMain"; //$NON-NLS-1$
 	/**
 	 * The name of the main class to run
 	 * <br><br>
@@ -207,7 +207,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			addEncoding(launch, cmdargs);
 			addOptLevel(configuration, cmdargs);
 			addStrictMode(configuration, cmdargs);
-			addLoadArg(cmdargs);
+			addFArg(cmdargs);
 			
 			p = DebugPlugin.exec((String[]) cmdargs.toArray(new String[cmdargs.size()]), null);
 			HashMap args = new HashMap();
@@ -310,22 +310,13 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	}
 	
 	/**
-	 * Adds the script scope to the args and a single <code>load()</code> entry
+	 * Adds the script scope to the args
 	 * 
 	 * @param args
 	 */
-	void addLoadArg(ArrayList args) {
-		args.add("-e"); //$NON-NLS-1$
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("load("); //$NON-NLS-1$
-		for (Iterator i = scope.iterator(); i.hasNext();) {
-			buffer.append(i.next());
-			if(i.hasNext()) {
-				buffer.append(',');
-			}
-		}
-		buffer.append(")"); //$NON-NLS-1$
-		args.add(buffer.toString());
+	void addFArg(ArrayList args) {
+		args.add("-f"); //$NON-NLS-1$
+		args.addAll(scope);
 	}
 	
 	/**
@@ -407,12 +398,12 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			}
 			c = iter.next();
 		}
-		if(singlequote) {
+		/*if(singlequote) {
 			buffer.insert(0, '\'');
 			buffer.append('\'');
 			return buffer.toString();
 		}
-		else if(hasspace){
+		else */if(hasspace && !singlequote){
 			buffer.insert(0, "\""); //$NON-NLS-1$
 			buffer.append("\""); //$NON-NLS-1$
 			return buffer.toString();

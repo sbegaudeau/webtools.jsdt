@@ -11,5 +11,6 @@ Export-Package: org.eclipse.wst.jsdt.debug.internal.rhino.debugger;x-internal:=t
  org.eclipse.wst.jsdt.debug.rhino.debugger.shell
 Import-Package: org.mozilla.javascript;resolution:=optional,
  org.mozilla.javascript.debug;resolution:=optional,
+ org.mozilla.javascript.tools;resolution:=optional,
  org.mozilla.javascript.tools.shell;resolution:=optional
 Require-Bundle: org.eclipse.wst.jsdt.debug.transport;bundle-version="1.0.0"
