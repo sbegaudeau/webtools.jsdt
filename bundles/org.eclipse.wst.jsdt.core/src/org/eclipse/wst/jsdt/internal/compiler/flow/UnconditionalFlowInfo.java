@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1182,8 +1182,15 @@ public void markAsDefinitelyNonNull(LocalVariableBinding local) {
     	}
     	else {
     		// use extra vector
-    		int vectorIndex ;
-    		this.extra[2][vectorIndex = (position / BitCacheSize) - 1]
+    		int vectorIndex = (position / BitCacheSize) - 1;
+			if (this.extra == null) {
+				int length = vectorIndex + 1;
+				this.extra = new long[extraLength][];
+				for (int j = 0; j < extraLength; j++) {
+					this.extra[j] = new long[length];
+				}
+			}
+    		this.extra[2][vectorIndex]
     		    |= (mask = 1L << (position % BitCacheSize));
     		this.extra[4][vectorIndex] |= mask;
     		this.extra[3][vectorIndex] &= (mask = ~mask);
