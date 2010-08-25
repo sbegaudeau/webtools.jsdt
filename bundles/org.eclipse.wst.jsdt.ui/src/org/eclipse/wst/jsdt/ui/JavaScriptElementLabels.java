@@ -809,7 +809,7 @@ public class JavaScriptElementLabels {
 			IPackageFragment pack= type.getPackageFragment();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), buf);
-				//buf.append('.');
+				buf.append(' ');
 			}
 		}
 		if (getFlag(flags, T_FULLY_QUALIFIED | T_CONTAINER_QUALIFIED)) {
