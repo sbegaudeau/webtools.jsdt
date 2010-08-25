@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -154,8 +152,6 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * Array of the bundles required to launch
 	 */
 	public static final String[] REQUIRED_BUNDLES = {MOZILLA_JAVASCRIPT_BUNDLE, DEBUG_TRANSPORT_BUNDLE, RHINO_DEBUGGER_BUNDLE};
-	
-	private Filter filefilter = new Filter();
 	
 	private ArrayList scope = null;
 	private IJavaScriptProject project = null;
@@ -504,13 +500,12 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			this.scope = new ArrayList();
 			List list = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
 			if(list != null) {
-				boolean subdirs = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, false);
 				String entry = null;
 				for (Iterator i = list.iterator(); i.hasNext();) {
 					entry = (String) i.next();
 					int kind = Integer.parseInt(entry.substring(0, 1));
 					switch(kind) {
-						case IncludeTab.SCRIPT: {
+						case IncludeTab.LOCAL_SCRIPT: {
 							String value = entry.substring(1);
 							IFile ifile = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(value);
 							if(ifile.exists()) {
@@ -522,19 +517,11 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 							}
 							continue;
 						}
-						case IncludeTab.FOLDER: {
+						case IncludeTab.EXT_SCRIPT: {
 							String f = entry.substring(1);
-							IContainer folder = (IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(f);
-							if(folder != null) {
-								resolveScriptsFrom(folder, this.scope, subdirs);
-							}
-							continue;
-						}
-						case IncludeTab.EXT_FOLDER: {
-							String f = entry.substring(1);
-							File folder = new File(f);
-							if(folder.exists()) {
-								resolveScriptsFrom(folder, this.scope, subdirs);
+							File file = new File(f);
+							if(file.exists() && !scope.contains(file.getAbsolutePath())) {
+								scope.add(file.getAbsolutePath());
 							}
 							continue;
 						}
@@ -542,62 +529,6 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				}
 			}
 			addScriptAttribute(configuration, scope);
-		}
-	}
-	
-	/**
-	 * Retrieves the complete listing of scripts in the given {@link File} and optionally recursively 
-	 * adds scripts from sub directories as well
-	 * @param folder
-	 * @param scripts
-	 * @param subdirs
-	 */
-	void resolveScriptsFrom(File folder, List scripts, boolean subdirs) {
-		File[] files = folder.listFiles(filefilter);
-		for (int i = 0; i < files.length; i++) {
-			if(files[i].isDirectory() && subdirs) {
-				resolveScriptsFrom(files[i], scripts, subdirs);
-			}
-			else {
-				String path = escapePath(files[i], true);
-				if(!scripts.contains(path)) {
-					scripts.add(path);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Retrieves the complete listing of scripts in the given {@link IFolder} and optionally recursively 
-	 * adds scripts from sub directories as well
-	 * 
-	 * @param folder
-	 * @param scripts
-	 * @param subdirs
-	 * @throws CoreException
-	 */
-	void resolveScriptsFrom(IContainer folder, List scripts, boolean subdirs) throws CoreException {
-		IResource[] members = folder.members();
-		for (int i = 0; i < members.length; i++) {
-			switch(members[i].getType()) {
-				case IResource.FILE: {
-					IFile file = (IFile) members[i];
-					if(JavaScriptCore.isJavaScriptLikeFileName(file.getName())) {
-						File ffile = URIUtil.toFile(file.getLocationURI());
-						String value = escapePath(ffile, true);
-						if(!scripts.contains(value)) {
-							scripts.add(value);
-						}
-					}
-					continue;
-				}
-				case IResource.FOLDER: {
-					if(subdirs) {
-						resolveScriptsFrom((IContainer) members[i], scripts, subdirs);
-					}
-					continue;
-				}
-			}
 		}
 	}
 	

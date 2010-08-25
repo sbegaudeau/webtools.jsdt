@@ -19,8 +19,7 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.messages"; //$NON-NLS-1$
 	public static String _project;
 	public static String _script;
-	public static String add_ext_folder_button;
-	public static String add_folder_button;
+	public static String add_ext_script_button;
 	public static String add_script_button;
 	public static String b_rowse;
 	public static String bro_wse;
@@ -35,9 +34,7 @@ public class Messages extends NLS {
 	public static String ecma_version_to_interpret_with;
 	public static String failed_to_compute_scope;
 	public static String include_path;
-	public static String include_subdirs_button;
 	public static String include_tab_name;
-	public static String interpreter_exception;
 	public static String launch_project_or_script;
 	public static String launching__;
 	public static String log_interpreter_exceptions;
@@ -53,11 +50,10 @@ public class Messages extends NLS {
 	public static String script_not_accessible;
 	public static String script_not_in_workspace;
 	public static String script_selection;
-	public static String select_a_folder_to_add;
 	public static String select_a_project;
 	public static String select_existing_config;
-	public static String select_folder;
 	public static String select_rhino_config;
+	public static String select_scripts_to_add;
 	public static String specify_a_project_or_script;
 	public static String starting_rhino_interpreter;
 	public static String starting_rhino_process;

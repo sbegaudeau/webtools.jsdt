@@ -83,9 +83,8 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 						copy.setMappedResources(new IResource[] {resource.getProject(), resource});
 						//add include path
 						ArrayList includes = new ArrayList(1);
-						includes.add(IncludeTab.FOLDER+resource.getParent().getFullPath().makeAbsolute().toOSString());
+						includes.add(IncludeTab.LOCAL_SCRIPT+resource.getFullPath().makeAbsolute().toOSString());
 						copy.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, includes);
-						copy.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, false);
 						config = copy.doSave();
 					}
 				}

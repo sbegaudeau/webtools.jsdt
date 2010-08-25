@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -44,7 +43,6 @@ public class RhinoSourcePathComputer implements ISourcePathComputerDelegate {
 	public ISourceContainer[] computeSourceContainers(ILaunchConfiguration configuration, IProgressMonitor monitor)	throws CoreException {
 		HashSet containers = new HashSet();
 		List includes = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null); 
-		boolean subdirs = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, false);
 		if(includes != null) {
 			String entry = null, name = null;
 			for (Iterator i = includes.iterator(); i.hasNext();) {
@@ -52,24 +50,17 @@ public class RhinoSourcePathComputer implements ISourcePathComputerDelegate {
 				int kind = Integer.parseInt(entry.substring(0, 1));
 				name = entry.substring(1);
 				switch(kind) {
-					case IncludeTab.SCRIPT: {
+					case IncludeTab.LOCAL_SCRIPT: {
 						IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(name);
 						if(file != null) {
-							containers.add(new FolderSourceContainer(file.getParent(), subdirs));
+							containers.add(new FolderSourceContainer(file.getParent(), false));
 						}
 						continue;
 					}
-					case IncludeTab.FOLDER: {
-						IContainer cont = (IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(name);
-						if(cont != null) {
-							containers.add(new FolderSourceContainer(cont, subdirs));
-						}
-						continue;
-					}
-					case IncludeTab.EXT_FOLDER: {
-						File dir = new File(name);
-						if(dir.exists()) {
-							containers.add(new DirectorySourceContainer(dir, subdirs));
+					case IncludeTab.EXT_SCRIPT: {
+						File file = new File(name);
+						if(file.exists()) {
+							containers.add(new DirectorySourceContainer(file.getParentFile(), false));
 						}
 						continue;
 					}
@@ -79,7 +70,7 @@ public class RhinoSourcePathComputer implements ISourcePathComputerDelegate {
 		//make sure the folder containing the original script is included
 		IFile script = Refactoring.getScript(configuration, null);
 		if(script != null) {
-			containers.add(new FolderSourceContainer(script.getParent(), subdirs));
+			containers.add(new FolderSourceContainer(script.getParent(), false));
 		}
 		return (ISourceContainer[]) containers.toArray(new ISourceContainer[containers.size()]);
 	}

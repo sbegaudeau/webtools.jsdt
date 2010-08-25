@@ -60,12 +60,6 @@ public interface ILaunchConstants {
 	 */
 	public static final String ATTR_INCLUDE_PATH = "includepath"; //$NON-NLS-1$
 	/**
-	 * The include sub-directories attribute in a Rhino configuration
-	 * <br><br>
-	 * Value is: <code>includepath_subdirs</code>
-	 */
-	public static final String ATTR_INCLUDE_PATH_SUB_DIRS = "includepath_subdirs"; //$NON-NLS-1$
-	/**
 	 * The id for the Rhino launch configuration type
 	 * <br><br>
 	 * Value is: <code>org.eclipse.wst.jsdt.debug.rhino.ui.launch.config.type</code>

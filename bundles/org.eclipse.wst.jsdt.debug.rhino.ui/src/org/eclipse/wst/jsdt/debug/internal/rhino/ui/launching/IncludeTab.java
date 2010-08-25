@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,12 +41,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.model.WorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.IHelpConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ISharedImages;
@@ -61,6 +59,10 @@ import org.eclipse.wst.jsdt.debug.internal.ui.dialogs.ScriptSelectionDialog;
  */
 public class IncludeTab extends AbstractLaunchConfigurationTab {
 
+	/**
+	 * 
+	 */
+	public static final String JS_EXTENSION = "*.js"; //$NON-NLS-1$
 	class Contents implements ITreeContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return ((Vector)inputElement).toArray();
@@ -76,12 +78,11 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		public Image getImage(Object element) {
 			IncludeEntry entry = (IncludeEntry) element;
 			switch(entry.kind) {
-				case FOLDER: 
-				case EXT_FOLDER: {
-					return PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJ_FOLDER);
-				}
-				case SCRIPT: {
+				case LOCAL_SCRIPT: {
 					return RhinoImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT);
+				}
+				case EXT_SCRIPT: {
+					return PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJ_FILE);
 				}
 			}
 			return null;
@@ -108,8 +109,27 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			this.kind = kind;
 			this.path = path;
 		}
+		/**
+		 * @return the combined entry for the configuration memento
+		 */
 		String string() {
 			return kind+path;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		public boolean equals(Object obj) {
+			if(obj instanceof IncludeEntry) {
+				IncludeEntry entry = (IncludeEntry) obj;
+				return kind == entry.kind && path.equals(entry.path);
+			}
+			return false;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		public int hashCode() {
+			return kind + path.hashCode();
 		}
 	}
 
@@ -131,21 +151,17 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	public static final String TAB_ID = "rhino.include.tab"; //$NON-NLS-1$
 	
 	private TreeViewer viewer = null;
-	private Button addfolder = null,
-	               remove = null,
-	               addexternalfolder = null,
+	private Button remove = null,
+	               addexternalscript = null,
 	               addscript = null,
 	               defaults = null,
 	               up = null,
-	               down = null,
-	               subdirs = null;
+	               down = null;
 	private Vector includes = new Vector();
 	private ILaunchConfiguration backingconfig = null;
-	private ViewerFilter vfilter = new ContainerFilter();
 	
-	public static final int FOLDER = 0;
-	public static final int EXT_FOLDER = 1;
-	public static final int SCRIPT = 2;
+	public static final int LOCAL_SCRIPT = 1;
+	public static final int EXT_SCRIPT = 2;
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
@@ -193,16 +209,10 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 				addScript();
 			}
 		});
-		addfolder = SWTFactory.createPushButton(lhs, Messages.add_folder_button, null);
-		addfolder.addSelectionListener(new SelectionAdapter() {
+		addexternalscript = SWTFactory.createPushButton(lhs, Messages.add_ext_script_button, null);
+		addexternalscript.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				addFolder();
-			}
-		});
-		addexternalfolder = SWTFactory.createPushButton(lhs, Messages.add_ext_folder_button, null);
-		addexternalfolder.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				addExtFolder();
+				addExtScript();
 			}
 		});
 		SWTFactory.createHorizontalSpacer(lhs, 1);
@@ -213,12 +223,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 		
-		subdirs = SWTFactory.createCheckButton(comp, Messages.include_subdirs_button, null, false, 2);
-		subdirs.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IHelpConstants.INCLUDE_TAB_CONTEXT);
 		setControl(comp);
 	}
@@ -246,13 +250,16 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	void addScript() {
 		ScriptSelectionDialog dialog = new ScriptSelectionDialog(getShell(), true, ResourcesPlugin.getWorkspace().getRoot());
 		if(dialog.open() == IDialogConstants.OK_ID) {
-			IFile script = (IFile) dialog.getFirstResult();
-			IncludeEntry entry = new IncludeEntry(SCRIPT, script.getFullPath().makeAbsolute().toOSString());
-			if(!includes.contains(entry)) {
-				includes.add(entry);
-				viewer.refresh();
-				updateLaunchConfigurationDialog();
+			Object[] scripts = dialog.getResult();
+			IncludeEntry newentry = null;
+			for (int i = 0; i < scripts.length; i++) {
+				newentry = new IncludeEntry(LOCAL_SCRIPT, ((IFile)scripts[i]).getFullPath().makeAbsolute().toOSString());
+				if(!includes.contains(newentry)) {
+					includes.add(newentry);
+				}
 			}
+			viewer.refresh();
+			updateLaunchConfigurationDialog();
 		}
 	}
 	
@@ -307,7 +314,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			IFile script = Refactoring.getScript(backingconfig, null);
 			if(script != null) {
 				includes.clear();
-				includes.add(new IncludeEntry(IncludeTab.FOLDER, script.getParent().getFullPath().makeAbsolute().toOSString()));
+				includes.add(new IncludeEntry(IncludeTab.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toOSString()));
 				viewer.refresh();
 			}
 		}
@@ -318,39 +325,32 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	}
 	
 	/**
-	 * Prompts the user to select a new workspace folder to add to the include path
-	 */
-	void addFolder() {
-		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(getShell(), 
-				new WorkbenchLabelProvider(), 
-				new WorkbenchContentProvider());
-		dialog.setTitle(Messages.select_folder);
-		dialog.setMessage(Messages.select_a_folder_to_add);
-		dialog.setAllowMultiple(true);
-		dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
-		dialog.addFilter(vfilter);
-		if(dialog.open() == IDialogConstants.OK_ID) {
-			Object[] folders = dialog.getResult();
-			if(folders != null && folders.length > 0) {
-				for (int i = 0; i < folders.length; i++) {
-					includes.add(new IncludeEntry(IncludeTab.FOLDER, ((IContainer)folders[i]).getFullPath().makeAbsolute().toOSString()));
-				}
-				viewer.refresh();
-				updateLaunchConfigurationDialog();
-			}
-		}
-	}
-
-	/**
 	 * Prompts the user to select a new folder from the local file system to include
 	 */
-	void addExtFolder() {
-		DirectoryDialog dialog = new DirectoryDialog(getShell());
-		String path = dialog.open(); 
-		if(path != null) {
-			includes.add(new IncludeEntry(EXT_FOLDER, path));
-			viewer.refresh();
-			updateLaunchConfigurationDialog();
+	void addExtScript() {
+		FileDialog dialog = new FileDialog(getShell(), SWT.OPEN | SWT.MULTI);
+		dialog.setFilterExtensions(new String[] {JS_EXTENSION});
+		dialog.setFilterIndex(0);
+		dialog.setText(Messages.select_scripts_to_add);
+		if(dialog.open() != null) {
+			String[] names = dialog.getFileNames();
+			if(names != null && names.length > 0) {
+				String path = dialog.getFilterPath();
+				if(path != null) {
+					boolean added = false;
+					for (int i = 0; i < names.length; i++) {
+						File script = new File(path, names[i]);
+						if(script.exists()) {
+							includes.add(new IncludeEntry(EXT_SCRIPT, script.getAbsolutePath()));
+							added = true;
+						}
+					}
+					if(added) {
+						viewer.refresh();
+						updateLaunchConfigurationDialog();
+					}
+				}
+			}
 		}
 	}
 	
@@ -361,7 +361,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		try {
 			IFile script = Refactoring.getScript(configuration, null);
 			if(script != null) {
-				includes.add(new IncludeEntry(IncludeTab.FOLDER, script.getParent().getFullPath().makeAbsolute().toOSString()));
+				includes.add(new IncludeEntry(IncludeTab.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toOSString()));
 			}
 			ArrayList list = new ArrayList(includes.size());
 			for (Iterator i = includes.iterator(); i.hasNext();) {
@@ -372,7 +372,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		catch(CoreException ce) {
 			//ignore
 		}
-		configuration.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, false);
 	}
 
 	/* (non-Javadoc)
@@ -382,7 +381,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		backingconfig = configuration;
 		includes.clear();
 		try {
-			subdirs.setSelection(configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, false));
 			List list = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
 			if(list != null) {
 				String value = null;
@@ -419,7 +417,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			}
 			configuration.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, list);
 		}
-		configuration.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH_SUB_DIRS, subdirs.getSelection());
 	}
 
 	/* (non-Javadoc)
