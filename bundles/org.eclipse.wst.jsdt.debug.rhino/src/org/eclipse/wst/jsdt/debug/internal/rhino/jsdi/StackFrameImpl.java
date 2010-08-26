@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -180,6 +181,10 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 	 */
 	public synchronized List variables() {
 		initializeVariables();
+		if(variables == null) {
+			//return this to maintain the API contract, and to allow variable initialization happen again
+			return Collections.EMPTY_LIST;
+		}
 		return variables;
 	}
 
@@ -196,18 +201,20 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 		request.getArguments().put(JSONConstants.REF, ref);
 		try {
 			RhinoResponse response = vm.sendRequest(request, 30000);
-			Map lookup = (Map) response.getBody().get(JSONConstants.LOOKUP);
-			List properties = (List) lookup.get(JSONConstants.PROPERTIES);
-			variables = new ArrayList();
-			for (Iterator iterator = properties.iterator(); iterator.hasNext();) {
-				Map property = (Map) iterator.next();
-				String name = (String) property.get(JSONConstants.NAME);
-				Number ref = (Number) property.get(JSONConstants.REF);
-				VariableImpl variable = new VariableImpl(vm, this, name, ref);
-				if (name.equals(JSONConstants.THIS))
-					thisVariable = variable;
-				else
-					variables.add(variable);
+			if(response.isSuccess()) {
+				Map lookup = (Map) response.getBody().get(JSONConstants.LOOKUP);
+				List properties = (List) lookup.get(JSONConstants.PROPERTIES);
+				variables = new ArrayList();
+				for (Iterator iterator = properties.iterator(); iterator.hasNext();) {
+					Map property = (Map) iterator.next();
+					String name = (String) property.get(JSONConstants.NAME);
+					Number ref = (Number) property.get(JSONConstants.REF);
+					VariableImpl variable = new VariableImpl(vm, this, name, ref);
+					if (name.equals(JSONConstants.THIS))
+						thisVariable = variable;
+					else
+						variables.add(variable);
+				}
 			}
 		} catch (DisconnectedException e) {
 			handleException(e.getMessage(), e);
