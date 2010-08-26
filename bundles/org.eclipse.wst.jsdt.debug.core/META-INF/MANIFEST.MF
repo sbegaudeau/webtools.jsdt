@@ -4,7 +4,7 @@ Bundle-Name: %bundleName.name
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.core;singleton:=true
 Bundle-Version: 1.0.100.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin
-Bundle-Vendor: %bundleVendor.name
+Bundle-Vendor: %providerName
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.debug.core
 Bundle-RequiredExecutionEnvironment: J2SE-1.4

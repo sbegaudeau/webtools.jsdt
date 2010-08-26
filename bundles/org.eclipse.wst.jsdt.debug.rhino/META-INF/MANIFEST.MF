@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
-Bundle-Vendor: %Bundle-Vendor
+Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.rhino;singleton:=true
 Bundle-Version: 1.0.100.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin
