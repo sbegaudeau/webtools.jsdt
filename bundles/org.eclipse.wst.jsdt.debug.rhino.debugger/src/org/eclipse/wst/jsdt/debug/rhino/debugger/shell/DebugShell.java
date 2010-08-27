@@ -8,7 +8,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.rhino.debugger.shell;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.eclipse.wst.jsdt.debug.internal.rhino.debugger.RhinoDebuggerImpl;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.RhinoTransportService;
@@ -76,12 +78,45 @@ public final class DebugShell {
 		RhinoDebuggerImpl debugger = new RhinoDebuggerImpl(service, port, suspend, trace);
 		try {
 			debugger.start();
+			prettyPrintHeader(suspend, port);
 			Main.shellContextFactory.addListener(debugger);
 			Main.exec(newArgs);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
+	
+	/**
+	 * Pretty print the header for the debugger
+	 * 
+	 * @since 1.1
+	 */
+	static void prettyPrintHeader(boolean suspended, String port) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append("Rhino debugger\n"); //$NON-NLS-1$
+		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
+		buffer.append("\nListening to socket on"); //$NON-NLS-1$
+		buffer.append("port: ").append(port); //$NON-NLS-1$
+		if (suspended) {
+			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$
+		}
+		System.out.println(buffer.toString());
+	}
+	
+	/**
+	 * Returns the formatted date
+	 * 
+	 * @return the formatted date
+	 * @see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4981314
+	 * @since 1.1
+	 */
+	static String getStartAtDate() {
+		try {
+			return DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(Calendar.getInstance().getTime());
+		} catch (Throwable t) {
+			return "<unknown>"; //$NON-NLS-1$
+		}
+	}
 	
 	/**
 	 * Returns if the given argument should suspend 
