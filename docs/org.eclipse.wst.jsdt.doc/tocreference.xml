@@ -134,6 +134,8 @@
  </topic>
  <topic label="Rhino Debug">
     <topic label="Launching">
+       <topic href="reference/rhino_debug/ref-common-tab.htm" label="Common Tab">
+       </topic>
        <topic href="reference/rhino_debug/ref-include-tab.htm" label="Include Tab">
        </topic>
        <topic href="reference/rhino_debug/ref-main-tab.htm" label="Main Tab">
@@ -141,6 +143,8 @@
        <topic href="reference/rhino_debug/ref-rhino-launch-shortcut.htm" label="Rhino Launch Shortcut">
        </topic>
        <topic href="reference/rhino_debug/ref-rhino-tab-group.htm" label="Rhino Tab Group">
+       </topic>
+       <topic href="reference/rhino_debug/ref-source-tab.htm" label="Source Tab">
        </topic>
     </topic>
  </topic>
