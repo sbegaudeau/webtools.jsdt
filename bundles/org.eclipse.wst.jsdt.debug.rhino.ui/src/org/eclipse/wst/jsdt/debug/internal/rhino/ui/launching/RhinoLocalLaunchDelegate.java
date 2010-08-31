@@ -100,7 +100,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 					catch(Exception e) {
 						inner = e;
 					}
-				} while(vm == null && System.currentTimeMillis() < start + 10000);
+				} while(vm == null && System.currentTimeMillis() < start + 15000);
 				if(vm == null) {
 					throw inner;
 				}
@@ -361,9 +361,30 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				appendSep(buffer);
 			}
 		}
+		String encoding = getEncoding(configuration);
+		if(encoding != null) {
+			args.add(encoding);
+		}
 		args.add("-cp"); //$NON-NLS-1$
 		args.add(buffer.toString());
 		args.add(DEBUG_SHELL_CLASS);
+	}
+	
+	/**
+	 * Return the <code>-Dfile.encoding</code> VM argument to use or <code>null</code> it no special encoding has been specified
+	 * 
+	 * @param configuration
+	 * @return the file encoding string or <code>null</code>
+	 * @throws CoreException
+	 */
+	String getEncoding(ILaunchConfiguration configuration) throws CoreException {
+		String encoding = configuration.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, (String)null);
+		if(encoding != null) {
+			StringBuffer buffer = new StringBuffer("-Dfile.encoding="); //$NON-NLS-1$
+			buffer.append(encoding);
+			return buffer.toString();
+		}
+		return null;
 	}
 	
 	/**
@@ -447,7 +468,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	}
 	
 	/**
-	 * Adds the encoding from the launch to the command line
+	 * Adds the encoding from the launch to the command line for the interpreter
 	 * 
 	 * @param launch
 	 * @param args
