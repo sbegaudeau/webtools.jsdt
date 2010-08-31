@@ -197,7 +197,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			localmonitor.worked(1);
 			//compute commandline args
 			ArrayList cmdargs = new ArrayList();
-			addVMArgs(configuration, cmdargs);
+			addVMArgs(configuration, launch, cmdargs);
 			addConnectionArgs(port, cmdargs);
 			addECMAVersion(configuration, cmdargs);
 			addEncoding(launch, cmdargs);
@@ -319,11 +319,12 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * Adds the VM executable location and classpath entries to the given arguments list
 	 * 
 	 * @param configuration
+	 * @param launch
 	 * @param args
 	 * @throws CoreException
 	 * @throws IOException 
 	 */
-	void addVMArgs(ILaunchConfiguration configuration, ArrayList args) throws CoreException, IOException {
+	void addVMArgs(ILaunchConfiguration configuration, ILaunch launch, ArrayList args) throws CoreException, IOException {
 		IVMInstall vm = JavaRuntime.getDefaultVMInstall();
 		File loc = vm.getInstallLocation();
 		if(loc == null) {
@@ -361,7 +362,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				appendSep(buffer);
 			}
 		}
-		String encoding = getEncoding(configuration);
+		String encoding = getEncoding(launch);
 		if(encoding != null) {
 			args.add(encoding);
 		}
@@ -375,10 +376,9 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 * 
 	 * @param configuration
 	 * @return the file encoding string or <code>null</code>
-	 * @throws CoreException
 	 */
-	String getEncoding(ILaunchConfiguration configuration) throws CoreException {
-		String encoding = configuration.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING, (String)null);
+	String getEncoding(ILaunch launch) {
+		String encoding = launch.getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING);
 		if(encoding != null) {
 			StringBuffer buffer = new StringBuffer("-Dfile.encoding="); //$NON-NLS-1$
 			buffer.append(encoding);
