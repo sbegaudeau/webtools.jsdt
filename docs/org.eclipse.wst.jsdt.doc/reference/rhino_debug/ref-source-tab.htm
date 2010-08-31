@@ -11,7 +11,64 @@
 </head>
 <body>
 <h1>Source Tab</h1>
-<p></p>
+<p>
+ The source tab allows you to customize where the launch will look for script source. By default the Source tab tracks the Include tab and automatically includes the folder location
+of the script specified on the Main tab.
+</p>
+<p>
+	For example if the script on the Main tab was located in <code>/Project/scripts/myscript.js</code> the folder <code>/Project/scripts/</code>
+	is automatically added to the Source tab. As well, if you have added a script on the Include tab from <code>/OtherProject/scripts/otherscript.js</code>,
+	the folder <code>/OtherProject/scripts/</code> is automatically added to the Source tab.
+</p>
+<p>
+	<img src="../../images/rhino_debug/source_tab.png" alt="The Source tab" border="0"/>
+</p>
+<table border="1" cellspacing="0" cellpadding= "5" width="75%">
+  <thead>
+    <tr>
+      <th rowspan="1" colspan="1" width="30%"> <p> Option </p></th>
+      <th rowspan="1" colspan="1"> <p> Description </p></th>
+      <th rowspan="1" colspan="1" width="5%"> <p> Default </p></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="1" valign="top" align="left">Add</td>
+      <td rowspan="1" colspan="1" valign="top" align="left">Allows you to add additional locations to the the source lookup path.</td>
+      <td rowspan="1" colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Edit</td>
+      <td colspan="1" valign="top" align="left">Allows you to edit the location of the selected source path element.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Remove</td>
+      <td colspan="1" valign="top" align="left">Allows you to remove the selected elements from the source lookup path.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Up</td>
+      <td colspan="1" valign="top" align="left">Allows you to move the selected element up one position in the source lookup path.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Down</td>
+      <td colspan="1" valign="top" align="left">Allows you to move the selected element down one position in the source lookup path.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Restore Default</td>
+      <td colspan="1" valign="top" align="left">Restore the source lookup path to it factory defaults.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Search for duplicate source files on the path</td>
+      <td colspan="1" valign="top" align="left">When selected, searches the source lookup path and includes duplicate entries.</td>
+      <td colspan="1" valign="top" align="left">Off</td>
+    </tr>
+  </tbody>
+</table>
 <br>
 <p><img src="../../images/ngrelc.png" alt="Related reference" border="0"></p>
 <p>
