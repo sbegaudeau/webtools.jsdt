@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -122,6 +122,7 @@ import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.MetadataFile;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.Openable;
+import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.core.SourceMapper;
 import org.eclipse.wst.jsdt.internal.core.SourceMethod;
@@ -398,7 +399,8 @@ public static void findIndexMatches(InternalSearchPattern pattern, Index index, 
 
 public static IJavaScriptElement getProjectOrJar(IJavaScriptElement element) {
 	while (!(element instanceof IJavaScriptProject) &&
-			!( element instanceof LibraryFragmentRoot)) {
+			!( element instanceof LibraryFragmentRoot) &&
+			!( element instanceof PackageFragmentRoot)) {
 		element = element.getParent();
 	}
 	return element;

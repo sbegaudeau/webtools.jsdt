@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
+import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
@@ -89,7 +90,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 					return true;
 			}
 		}
-		if (focus instanceof LibraryFragmentRoot) {
+		if (focus instanceof LibraryFragmentRoot || focus instanceof PackageFragmentRoot) {
 			// focus is part of a jar
 			IPath focusPath = focus.getPath();
 			IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
@@ -98,10 +99,15 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 				if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && entry.getPath().equals(focusPath))
 					return true;
 			}
-			return false;
+			if(focus instanceof LibraryFragmentRoot)
+				return false;
 		}
 		// look for dependent projects
-		IPath focusPath = ((JavaProject) focus).getProject().getFullPath();
+		IPath focusPath = null;
+		if(focus instanceof PackageFragmentRoot)
+			focusPath = ((JavaProject) focus.getParent()).getProject().getFullPath();
+		else
+			focusPath = ((JavaProject) focus).getProject().getFullPath();
 		IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
 		for (int i = 0, length = entries.length; i < length; i++) {
 			IIncludePathEntry entry = entries[i];
@@ -134,7 +140,7 @@ private void initializeIndexLocations() {
 			SimpleSet jarsToCheck = new SimpleSet(length);
 			IIncludePathEntry[] focusEntries = null;
 			if (this.pattern instanceof MethodPattern) { // should consider polymorphic search for method patterns
-				JavaProject focusProject = focus instanceof LibraryFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
+				JavaProject focusProject = focus instanceof LibraryFragmentRoot || focus instanceof PackageFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
 				focusEntries = focusProject.getExpandedClasspath();
 			}
 			IJavaScriptModel model = JavaModelManager.getJavaModelManager().getJavaModel();
