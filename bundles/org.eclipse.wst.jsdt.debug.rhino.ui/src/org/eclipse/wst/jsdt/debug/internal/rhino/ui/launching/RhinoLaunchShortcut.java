@@ -79,11 +79,7 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 						copy.setAttribute(ILaunchConstants.ATTR_ECMA_VERSION, ILaunchConstants.ECMA_170);
 						copy.setAttribute(ILaunchConstants.ATTR_OPT_LEVEL, -1);
 						copy.setAttribute(ILaunchConstants.ATTR_STRICT_MODE, false);
-						copy.setMappedResources(new IResource[] {resource.getProject(), resource});
-						//add include path
-						ArrayList includes = new ArrayList(1);
-						includes.add(IncludeEntry.LOCAL_SCRIPT+resource.getFullPath().makeAbsolute().toOSString());
-						copy.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, includes);
+						copy.setMappedResources(new IResource[] {resource});
 						config = copy.doSave();
 					}
 				}
