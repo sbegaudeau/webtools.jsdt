@@ -18,7 +18,6 @@ import java.util.Vector;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -327,7 +326,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		try {
+		/*try {
 			IFile script = Refactoring.getScript(configuration);
 			if(script != null) {
 				includes.add(new IncludeEntry(IncludeEntry.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toString()));
@@ -340,7 +339,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		}
 		catch(CoreException ce) {
 			//ignore
-		}
+		}*/
 	}
 
 	/* (non-Javadoc)

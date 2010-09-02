@@ -195,7 +195,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 					element.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
 				root = (ITypeRoot) element;
 				String tname = root.getElementName();
-				configuration.setAttribute(ILaunchConstants.ATTR_SCRIPT, root.getPath().toOSString());
+				configuration.setAttribute(ILaunchConstants.ATTR_SCRIPT, root.getPath().toString());
 				name = NLS.bind(Messages.config_name, new String[] {pname, tname});
 			}
 			name = getLaunchConfigurationDialog().generateName(name);
