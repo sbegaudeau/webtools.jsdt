@@ -70,11 +70,10 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 				//TODO should we select a script to launch if a container is selected?
 				ILaunchConfigurationType type = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(ILaunchConstants.LAUNCH_CONFIG_TYPE);
 				String project = resource.getProject().getName();
-				String script = (resource instanceof IFile ? resource.getFullPath().toOSString() : null);
+				String script = (resource instanceof IFile ? resource.getFullPath().toString() : null);
 				try {
 					if(script != null) {
 						ILaunchConfigurationWorkingCopy copy = type.newInstance(null, NLS.bind(Messages.config_name, new String[]{project, resource.getName()}));
-						copy.setAttribute(ILaunchConstants.ATTR_PROJECT, project);
 						copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, script);
 						copy.setAttribute(ILaunchConstants.ATTR_LOG_INTERPRETER_EXCEPTIONS, true);
 						copy.setAttribute(ILaunchConstants.ATTR_ECMA_VERSION, ILaunchConstants.ECMA_170);
@@ -83,7 +82,7 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 						copy.setMappedResources(new IResource[] {resource.getProject(), resource});
 						//add include path
 						ArrayList includes = new ArrayList(1);
-						includes.add(IncludeTab.LOCAL_SCRIPT+resource.getFullPath().makeAbsolute().toOSString());
+						includes.add(IncludeEntry.LOCAL_SCRIPT+resource.getFullPath().makeAbsolute().toOSString());
 						copy.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, includes);
 						config = copy.doSave();
 					}
@@ -115,19 +114,9 @@ public class RhinoLaunchShortcut implements ILaunchShortcut2 {
 			for (int i = 0; i < configs.length; i++) {
 				ILaunchConfiguration config = configs[i];
 				if(config.hasAttribute(ILaunchConstants.ATTR_SCRIPT)) {
-					if (config.getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING).equals(resource.getFullPath().toOSString())) {
-						if(config.hasAttribute(ILaunchConstants.ATTR_PROJECT)) {
-							if (config.getAttribute(ILaunchConstants.ATTR_PROJECT, ILaunchConstants.EMPTY_STRING).equals(resource.getProject().getName())) { 
-								candidates.add(config);
-							}
-						}
-						else {
-							candidates.add(config);
-						}
+					if (config.getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING).equals(resource.getFullPath().toString())) {
+						candidates.add(config);
 					}
-				}
-				else if(config.getAttribute(ILaunchConstants.ATTR_PROJECT, ILaunchConstants.EMPTY_STRING).equals(resource.getProject().getName())) {
-					candidates.add(config);
 				}
 			}
 		} catch (CoreException e) {

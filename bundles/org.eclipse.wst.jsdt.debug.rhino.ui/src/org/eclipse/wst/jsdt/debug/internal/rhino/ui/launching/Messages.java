@@ -17,7 +17,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.messages"; //$NON-NLS-1$
-	public static String _project;
 	public static String _script;
 	public static String add_ext_script_button;
 	public static String add_script_button;
@@ -35,7 +34,7 @@ public class Messages extends NLS {
 	public static String failed_to_compute_scope;
 	public static String include_path;
 	public static String include_tab_name;
-	public static String launch_project_or_script;
+	public static String launch_script;
 	public static String launching__;
 	public static String log_interpreter_exceptions;
 	public static String main;

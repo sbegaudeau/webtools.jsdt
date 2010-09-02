@@ -40,11 +40,12 @@ public class ProjectChange extends RhinoChange {
 	        copy.setContainer(cont);
 		}
 		//update the attributes
-		copy.setAttribute(ILaunchConstants.ATTR_PROJECT, newname);
 		value = computeNewScriptName(configuration);
 		if(value != null) {
 			copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, value);
 		}
+		//update include entries
+		updateIncludeEntries(copy);
 		//rename it
 		value = computeNewConfigurationName(configuration);
 		if(value != null) {
@@ -54,7 +55,8 @@ public class ProjectChange extends RhinoChange {
 		Refactoring.mapResources(copy);
 		if(copy.isDirty()) {
 			configuration = copy.doSave();
+			return new ProjectChange(configuration, newname, oldname);
 		}
-		return new ProjectChange(configuration, newname, oldname);
+		return null;
 	}
 }

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.debug.internal.rhino.ui.refactoring;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -31,6 +30,7 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.RhinoUIPlugin;
+import org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.IncludeEntry;
 
 /**
  * Utilities to help with refactoring
@@ -40,6 +40,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.ui.RhinoUIPlugin;
 public class Refactoring {
 
 	public static ILaunchConfiguration[] NO_CONFIGS = new ILaunchConfiguration[0];
+	public static IncludeEntry[] NO_ENTRIES = new IncludeEntry[0];
 	
 	/**
 	 * Creates one or more {@link Change}s required after an {@link IProject} rename
@@ -49,7 +50,7 @@ public class Refactoring {
 	 * @return a new {@link Change}
 	 */
 	public static Change createChangesForProjectRename(IProject project, String newname) {
-		ILaunchConfiguration[] configs = getConfigurationsForProject(project.getName());
+		ILaunchConfiguration[] configs = getConfigurationsScopedTo(project.getFullPath().makeAbsolute().toString());
 		if(configs.length < 1) {
 			return null;
 		}
@@ -68,8 +69,8 @@ public class Refactoring {
 	 * @return a new {@link Change}
 	 */
 	public static Change createChangesForScriptRename(IFile script, String newname) {
-		String scriptname = script.getFullPath().makeAbsolute().toOSString();
-		ILaunchConfiguration[] configs = getConfigurationsForScript(scriptname);
+		String scriptname = script.getFullPath().makeAbsolute().toString();
+		ILaunchConfiguration[] configs = getConfigurationsScopedTo(scriptname);
 		if(configs.length < 1) {
 			return null;
 		}
@@ -88,23 +89,14 @@ public class Refactoring {
 	 * @return a new {@link Change}
 	 */
 	public static Change createChangesForFolderRename(IFolder folder, String newname) {
-		ILaunchConfiguration[] configs = getRhinoConfigurations();
+		String foldername = folder.getFullPath().makeAbsolute().toString();
+		ILaunchConfiguration[] configs = getConfigurationsScopedTo(foldername);
 		if(configs.length < 1) {
 			return null;
 		}
 		ArrayList changes = new ArrayList(configs.length);
-		String script = null;
-		String foldername = folder.getFullPath().makeAbsolute().toOSString();
 		for (int i = 0; i < configs.length; i++) {
-			try {
-				script = configs[i].getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING);
-				if(!ILaunchConstants.EMPTY_STRING.equals(script)) {
-					if(script.startsWith(foldername)) {
-						changes.add(new FolderChange(configs[i], foldername, newname));
-					}
-				}
-			}
-			catch(CoreException ce) {}
+			changes.add(new FolderChange(configs[i], foldername, newname));
 		}
 		return createChangeFromList(changes, Messages.multi_updates);
 	}
@@ -119,13 +111,7 @@ public class Refactoring {
 	public static IResource[] getResources(ILaunchConfiguration configuration) {
 		ArrayList resources = new ArrayList(2);
 		try {
-			IProject project = null;
-			String name = configuration.getAttribute(ILaunchConstants.ATTR_PROJECT, ILaunchConstants.EMPTY_STRING);
-			if(!ILaunchConstants.EMPTY_STRING.equals(name)) {
-				project = ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-				resources.add(project);
-			}
-			IFile script = getScript(configuration, project);
+			IFile script = getScript(configuration);
 			if(script != null) {
 				resources.add(script);
 			}
@@ -137,40 +123,17 @@ public class Refactoring {
 	}
 	
 	/**
-	 * Fetches the project attribute as an {@link IProject}. This method does not check the existence
-	 * or accessibility of the {@link IProject}.
-	 * 
-	 * @param configuration
-	 * @return the {@link IProject} resource handle for the project attribute
-	 * @throws CoreException
-	 */
-	public static IProject getProject(ILaunchConfiguration configuration) throws CoreException {
-		String name = configuration.getAttribute(ILaunchConstants.ATTR_PROJECT, ILaunchConstants.EMPTY_STRING);
-		if(!ILaunchConstants.EMPTY_STRING.equals(name)) {
-			return ResourcesPlugin.getWorkspace().getRoot().getProject(name);
-		}
-		return null;
-	}
-	
-	/**
 	 * Fetches the script attribute as an {@link IFile} or returns <code>null</code> if it could not be found
 	 * 
 	 * @param configuration
-	 * @param project the project context to search in or <code>null</code>
 	 * @return the {@link IFile} backing the script attribute or <code>null</code> if not found
 	 * @throws CoreException
 	 */
-	public static IFile getScript(ILaunchConfiguration configuration, IProject project) throws CoreException {
+	public static IFile getScript(ILaunchConfiguration configuration) throws CoreException {
 		String name = configuration.getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING);
 		if(!ILaunchConstants.EMPTY_STRING.equals(name)) {
-			IResource script = null;
 			IPath spath = new Path(name); 
-			if(project != null) {
-				script = project.findMember(spath.removeFirstSegments(1));
-			}
-			else {
-				script = ResourcesPlugin.getWorkspace().getRoot().findMember(spath);
-			}
+			IResource script = ResourcesPlugin.getWorkspace().getRoot().findMember(spath);
 			if(script != null && script.getType() == IResource.FILE) {
 				return (IFile) script;
 			}
@@ -230,52 +193,124 @@ public class Refactoring {
 	}
 	
 	/**
-	 * Returns all of the Rhino launch configurations that have the project attribute set to the given project name.
-	 * 
-	 * @param name
-	 * @return all of the Rhino launch configurations that reference the given project name or an empty array, never <code>null</code>
+	 * Returns the complete listing of Rhino {@link ILaunchConfiguration}s that reference the given path in some way.
+	 * The supported reference kinds are (1) via the script attribute, and (2) via the include path where it could be an exact
+	 * match for a workspace script or a partial match for a local file system script
+	 *  
+	 * @param elementpath the absolute path of the element to find configuration for
+	 * @return the complete listing of Rhino configurations that reference the given path or an empty array, never <code>null</code>
 	 */
-	public static ILaunchConfiguration[] getConfigurationsForProject(String name) {
-		return getConfigurationsFor(ILaunchConstants.ATTR_PROJECT, name);
-	}
-	
-	/**
-	 * Returns all of the Rhino launch configurations that have the script attribute set to the given name
-	 * 
-	 * @param name
-	 * @return all of the Rhino launch configurations that reference the given script name or an empty array, never <code>null</code>
-	 */
-	public static ILaunchConfiguration[] getConfigurationsForScript(String name) {
-		return getConfigurationsFor(ILaunchConstants.ATTR_SCRIPT, name);
-	}
-	
-	/**
-	 * Delegate method to get all configurations where the given name matches the stored value of the given attribute name
-	 * 
-	 * @param attribute
-	 * @param name
-	 * @return the list of matching configurations or an empty array, never <code>null</code>
-	 */
-	static ILaunchConfiguration[] getConfigurationsFor(String attribute, String name) {
-		if(name == null) {
+	public static ILaunchConfiguration[] getConfigurationsScopedTo(String elementpath) {
+		if(elementpath == null) {
 			return NO_CONFIGS;
 		}
 		ILaunchConfiguration[] configs = getRhinoConfigurations();
-		if(configs.length < 1) {
-			return NO_CONFIGS;
-		}
-		HashSet cfgs = new HashSet();
+		ArrayList scoped = new ArrayList(4);
+		List includes = null;
+		String script = null;
 		for (int i = 0; i < configs.length; i++) {
 			try {
-				String pname = configs[i].getAttribute(attribute, ILaunchConstants.EMPTY_STRING);
-				if(name.equals(pname)) {
-					cfgs.add(configs[i]);
+				script = configs[i].getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING);
+				if(elementpath.equals(script) || script.indexOf(elementpath) > -1) {
+					scoped.add(configs[i]);
+				}
+				else {
+					includes = configs[i].getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
+					if(includes != null && hasIncludeEntryFor(includes, elementpath)) {
+						scoped.add(configs[i]);
+					}
 				}
 			}
 			catch(CoreException ce) {
-				//ignore
+				//ignore, just don't report the configuration
 			}
 		}
-		return (ILaunchConfiguration[]) cfgs.toArray(new ILaunchConfiguration[cfgs.size()]);
+		return (ILaunchConfiguration[]) scoped.toArray(new ILaunchConfiguration[scoped.size()]);
+	}
+	
+	/**
+	 * Returns <code>true</code> if the given set of include path entries contains an entry that matches
+	 * the given script path.
+	 * 
+	 * @param includes
+	 * @param elementpath
+	 * @return <code>true</code> if a matching include path entry is found
+	 */
+	public static boolean hasIncludeEntryFor(List includes, String elementpath) {
+		if(includes == null || elementpath == null) {
+			return false;
+		}
+		String entry = null;
+		String path = null;
+		for (int i = 0; i < includes.size(); i++) {
+			entry = (String) includes.get(i);
+			path = entry.substring(1);
+			if(elementpath.equals(path) || path.indexOf(elementpath) > -1) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns the {@link IncludeEntry}'s for the given absolute script path or an empty array.
+	 * <br><br>
+	 * This method avoids creating {@link IncludeEntry} objects unless potential matches are found.
+	 * 
+	 * @param includes the current list of includes to search
+	 * @param elementpath the absolute path of the element to check for
+	 * @return the {@link IncludeEntry}'s of the given script in the include path listing or an empty array, never <code>null</code>
+	 */
+	public static final IncludeEntry[] findIncludeEntries(List includes, String elementpath) {
+		if(includes == null || elementpath == null) {
+			return NO_ENTRIES;
+		}
+		String entry = null;
+		String path = null;
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < includes.size(); i++) {
+			entry = (String) includes.get(i);
+			path = entry.substring(1);
+			if(elementpath.equals(path) || path.indexOf(elementpath) > -1) {
+				try {
+					list.add(new IncludeEntry(Integer.parseInt(entry.substring(0, 1)), path));
+				}
+				catch(NumberFormatException nfe) {
+					//ignore but keep looking
+				}
+			}
+		}
+		return (IncludeEntry[]) list.toArray(new IncludeEntry[list.size()]);
+	}
+	
+	/**
+	 * Returns the complete include path from the given {@link ILaunchConfiguration} as a list of {@link IncludeEntry}s
+	 * in the order they are defined in the configuration.
+	 * 
+	 * @param configuration
+	 * @return the ordered listing of {@link IncludeEntry}s or an empty array, never <code>null</code>
+	 */
+	public static final IncludeEntry[] getIncludeEntries(ILaunchConfiguration configuration) {
+		try {
+			List includes = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
+			if(includes != null) {
+				ArrayList entries = new ArrayList(includes.size());
+				String entry = null;
+				for (int i = 0; i < includes.size(); i++) {
+					entry = (String) includes.get(i);
+					try {
+						entries.add(new IncludeEntry(Integer.parseInt(entry.substring(0, 1)), entry.substring(1)));
+					}
+					catch(NumberFormatException nfe) {
+						//ignore, keep going
+					}
+				}
+				return (IncludeEntry[]) entries.toArray(new IncludeEntry[entries.size()]);
+			}
+		}
+		catch(CoreException ce) {
+			//do nothing return none
+		}
+		return NO_ENTRIES;
 	}
 }

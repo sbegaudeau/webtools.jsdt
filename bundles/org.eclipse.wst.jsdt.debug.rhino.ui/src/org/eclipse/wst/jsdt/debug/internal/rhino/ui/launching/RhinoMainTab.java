@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -21,10 +20,8 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -43,15 +40,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
-import org.eclipse.wst.jsdt.core.IJavaScriptModel;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.IHelpConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ISharedImages;
@@ -60,7 +53,6 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.ui.RhinoUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.refactoring.Refactoring;
 import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
 import org.eclipse.wst.jsdt.debug.internal.ui.dialogs.ScriptSelectionDialog;
-import org.eclipse.wst.jsdt.ui.JavaScriptElementLabelProvider;
 
 /**
  * Rhino specific main tab
@@ -84,7 +76,6 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 		};
 	};
 	
-	Text project = null;
 	Text script = null;
 	Button logging = null,
 		   strict = null;
@@ -96,25 +87,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	 */
 	public void createControl(Composite parent) {
 		Composite comp = SWTFactory.createComposite(parent, 1, 1, GridData.FILL_HORIZONTAL);
-		Group group = SWTFactory.createGroup(comp, Messages._project, 2, 1, GridData.FILL_HORIZONTAL);
-		project = SWTFactory.createSingleText(group, 1);
-		project.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
-		((GridData) project.getLayoutData()).grabExcessHorizontalSpace = true;
-		Button browse = SWTFactory.createPushButton(group, Messages.b_rowse, null);
-		browse.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				IJavaScriptProject pj = chooseProject();
-				if(pj != null) {
-					project.setText(pj.getElementName());
-				}
-			}
-		});		
-		
-		group = SWTFactory.createGroup(comp, Messages._script, 2, 1, GridData.FILL_HORIZONTAL);
+		Group group = SWTFactory.createGroup(comp, Messages._script, 2, 1, GridData.FILL_HORIZONTAL);
 		script = SWTFactory.createSingleText(group, 1);
 		script.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -122,12 +95,12 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 			}
 		});
 		((GridData) script.getLayoutData()).grabExcessHorizontalSpace = true;
-		browse = SWTFactory.createPushButton(group, Messages.bro_wse, null);
+		Button browse = SWTFactory.createPushButton(group, Messages.bro_wse, null);
 		browse.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				IJavaScriptUnit unit = chooseScript();
 				if(unit != null) {
-					script.setText(unit.getPath().toOSString());
+					script.setText(unit.getPath().toString());
 				}
 			}
 		});
@@ -153,36 +126,6 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IHelpConstants.MAIN_TAB_CONTEXT);
 		setControl(comp);
 	}
-
-	/**
-	 * Allows users to select a JavaScript project from the workspace
-	 * 
-	 * @return the selected project or <code>null</code> if the dialog was cancelled
-	 */
-	IJavaScriptProject chooseProject() {
-		ILabelProvider labelProvider= new JavaScriptElementLabelProvider(JavaScriptElementLabelProvider.SHOW_DEFAULT);
-		ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), labelProvider);
-		dialog.setTitle(Messages.project_selection); 
-		dialog.setMessage(Messages.select_a_project); 
-		IJavaScriptModel model = JavaScriptCore.create(ResourcesPlugin.getWorkspace().getRoot());
-		try {
-			dialog.setElements(model.getJavaScriptProjects());
-		}
-		catch (JavaScriptModelException jme) {
-			RhinoUIPlugin.log(jme);
-		}
-		String name = project.getText().trim();
-		if(name.length() > 0) {
-			IJavaScriptProject pj = model.getJavaScriptProject(name);
-			if (pj != null && pj.exists()) {
-				dialog.setInitialSelections(new Object[] { pj });
-			}
-		}
-		if (dialog.open() == Window.OK) {			
-			return (IJavaScriptProject) dialog.getFirstResult();
-		}		
-		return null;		
-	}
 	
 	/**
 	 * Allows users to select a script from either a project context, if there is one or the workspace
@@ -190,15 +133,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	 * @return the selected script or <code>null</code>
 	 */
 	IJavaScriptUnit chooseScript() {
-		IContainer context = ResourcesPlugin.getWorkspace().getRoot();
-		String pj = project.getText().trim();
-		if(pj.length() > 0) {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(pj);
-			if(project.isAccessible()) {
-				context = project;
-			}
-		}
-		ScriptSelectionDialog dialog = new ScriptSelectionDialog(getShell(), false, context);
+		ScriptSelectionDialog dialog = new ScriptSelectionDialog(getShell(), false, ResourcesPlugin.getWorkspace().getRoot());
 		dialog.setTitle(Messages.script_selection);
 		if(dialog.open() == IDialogConstants.OK_ID) {
 			IFile file = (IFile) dialog.getFirstResult();
@@ -212,44 +147,29 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTab#isValid(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public boolean isValid(ILaunchConfiguration launchConfig) {
-		String text = project.getText().trim();
 		String text2 = script.getText().trim();
-		boolean haspj = text.length() > 0;
 		boolean hasscript = text2.length() > 0;
-		if(!haspj && !hasscript) {
-			setErrorMessage(Messages.specify_a_project_or_script);
+		if(!hasscript) {
+			setErrorMessage(Messages.provide_script_for_project);
 			return false;
 		}
-		if(haspj) {
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(text);
-			if(!project.isAccessible()) {
-				setErrorMessage(NLS.bind(Messages.project_not_accessible, text));
+		IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(text2));
+		if(resource != null) {
+			if(resource.getType() != IResource.FILE) {
+				setErrorMessage(NLS.bind(Messages.script_not_a_file, text2));
 				return false;
 			}
-			if(!hasscript) {
-				setErrorMessage(Messages.provide_script_for_project);
+			if(!resource.isAccessible()) {
+				setErrorMessage(NLS.bind(Messages.script_not_accessible, text2));
 				return false;
 			}
 		}
-		if(hasscript) {
-			IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(text2));
-			if(resource != null) {
-				if(resource.getType() != IResource.FILE) {
-					setErrorMessage(NLS.bind(Messages.script_not_a_file, text2));
-					return false;
-				}
-				if(!resource.isAccessible()) {
-					setErrorMessage(NLS.bind(Messages.script_not_accessible, text2));
-					return false;
-				}
-			}
-			else {
-				setErrorMessage(NLS.bind(Messages.script_not_in_workspace, text2));
-				return false;
-			}
+		else {
+			setErrorMessage(NLS.bind(Messages.script_not_in_workspace, text2));
+			return false;
 		}
 		setErrorMessage(null);
-		setMessage(Messages.launch_project_or_script);
+		setMessage(Messages.launch_script);
 		return true;
 	}
 	
@@ -259,8 +179,6 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		IJavaScriptElement element = getContext();
 		if(element != null) {
-			String pname = element.getJavaScriptProject().getElementName();
-			configuration.setAttribute(ILaunchConstants.ATTR_PROJECT, pname);
 			if(element instanceof IMember) {
 				IMember member = (IMember) element;
 				if(member.isBinary()) {
@@ -270,6 +188,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 					element = member.getJavaScriptUnit();
 				}
 			}
+			String pname = element.getJavaScriptProject().getProject().getName();
 			String name = pname;
 			ITypeRoot root = null;
 			if(element.getElementType() == IJavaScriptElement.CLASS_FILE ||
@@ -337,11 +256,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String text = configuration.getAttribute(ILaunchConstants.ATTR_PROJECT, (String)null);
-			if(text != null) {
-				project.setText(text);
-			}
-			text = configuration.getAttribute(ILaunchConstants.ATTR_SCRIPT, (String)null);
+			String text = configuration.getAttribute(ILaunchConstants.ATTR_SCRIPT, (String)null);
 			if(text != null) {
 				script.setText(text);
 			}
@@ -365,13 +280,6 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		String pj = project.getText().trim();
-		if(pj.length() < 1) {
-			configuration.removeAttribute(ILaunchConstants.ATTR_PROJECT);
-		}
-		else {
-			configuration.setAttribute(ILaunchConstants.ATTR_PROJECT, pj);
-		}
 		String scpt = script.getText().trim();
 		if(scpt.length() < 1) {
 			configuration.removeAttribute(ILaunchConstants.ATTR_SCRIPT);

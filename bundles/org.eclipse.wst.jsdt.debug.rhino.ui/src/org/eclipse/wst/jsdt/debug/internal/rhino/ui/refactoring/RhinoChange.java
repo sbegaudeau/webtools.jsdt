@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.rhino.ui.refactoring;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -17,10 +19,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
+import org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.IncludeEntry;
 
 /**
  * Abstract {@link Change} for Rhino configurations.
@@ -122,17 +126,57 @@ public abstract class RhinoChange extends Change {
 	protected String computeNewScriptName(ILaunchConfiguration configuration) {
 		try {
 			String attr = configuration.getAttribute(ILaunchConstants.ATTR_SCRIPT, ILaunchConstants.EMPTY_STRING);
-			IPath path = new Path(attr);
-			IPath old = new Path(oldname);
-			if(old.isPrefixOf(path)) {
-				path = path.removeFirstSegments(old.segmentCount());
-				path = new Path(newname).append(path);
-				return path.makeAbsolute().toOSString();
-			}
+			return computeNewName(attr);
 		}
 		catch(CoreException ce) {
 			//ignore
 		}
 		return null;
+	}
+	
+	/**
+	 * Updates any include entries with matching elements to the {@link #oldname}
+	 * 
+	 * @param copy
+	 * @throws CoreException
+	 */
+	protected void updateIncludeEntries(ILaunchConfigurationWorkingCopy copy) throws CoreException {
+		//update the include path
+		List includes = copy.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
+		if(includes != null) {
+			IncludeEntry[] entries = Refactoring.findIncludeEntries(includes, oldname);
+			String sname = null;
+			for (int i = 0; i < entries.length; i++) {
+				sname = computeNewName(entries[i].getPath());
+				if(sname != null && !oldname.equals(sname)) {
+					int idx = includes.indexOf(entries[i].string());
+					if(idx > -1) {
+						includes.remove(idx);
+						includes.add(idx, new IncludeEntry(entries[i].getKind(), sname).string());
+					}
+				}
+			}
+			copy.setAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, includes);
+		}
+	}
+	
+	/**
+	 * Computes a new element name using {@link #newname} iff: (1) the given name
+	 * has the {@link #oldname} as a prefix or (2) the old name appears in the given name.
+	 * <br><br>
+	 * The computed new name is not guaranteed to exist in any way.
+	 * 
+	 * @param name
+	 * @return the new name to use or <code>null</code>
+	 */
+	protected String computeNewName(String name) {
+		IPath path = new Path(name);
+		IPath old = new Path(oldname);
+		if(old.isPrefixOf(path)) {
+			path = path.removeFirstSegments(old.segmentCount());
+			path = new Path(newname).append(path);
+			return path.makeAbsolute().toString();
+		}
+		return path.toString().replaceAll(oldname, newname);
 	}
 }

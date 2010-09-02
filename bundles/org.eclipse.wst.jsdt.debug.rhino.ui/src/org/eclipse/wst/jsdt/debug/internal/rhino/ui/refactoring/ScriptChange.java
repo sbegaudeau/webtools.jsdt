@@ -36,8 +36,14 @@ public class ScriptChange extends RhinoChange {
 	 */
 	public Change perform(IProgressMonitor pm) throws CoreException {
 		ILaunchConfigurationWorkingCopy copy = configuration.getWorkingCopy();
-		//update the attributes
-		copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, newname);
+		//update the script only if matches
+		//this check is in case the configuration has include path-only updates
+		String oldscript = copy.getAttribute(ILaunchConstants.ATTR_SCRIPT, (String)null);
+		if(oldname.equals(oldscript)) {
+			copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, newname);
+		}
+		//update include entries
+		updateIncludeEntries(copy);
 		//rename it
 		String value = computeNewConfigurationName(configuration);
 		if(value != null) {
@@ -47,7 +53,8 @@ public class ScriptChange extends RhinoChange {
 		Refactoring.mapResources(copy);
 		if(copy.isDirty()) {
 			configuration = copy.doSave();
+			return new ScriptChange(configuration, newname, oldname);
 		}
-		return new ScriptChange(configuration, newname, oldname);
+		return null;
 	}
 }

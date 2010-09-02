@@ -25,7 +25,7 @@ import org.eclipse.debug.core.sourcelookup.ISourcePathComputerDelegate;
 import org.eclipse.debug.core.sourcelookup.containers.DirectorySourceContainer;
 import org.eclipse.debug.core.sourcelookup.containers.FolderSourceContainer;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
-import org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.IncludeTab;
+import org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching.IncludeEntry;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.refactoring.Refactoring;
 
 /**
@@ -50,14 +50,14 @@ public class RhinoSourcePathComputer implements ISourcePathComputerDelegate {
 				int kind = Integer.parseInt(entry.substring(0, 1));
 				name = entry.substring(1);
 				switch(kind) {
-					case IncludeTab.LOCAL_SCRIPT: {
+					case IncludeEntry.LOCAL_SCRIPT: {
 						IFile file = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(name);
 						if(file != null) {
 							containers.add(new FolderSourceContainer(file.getParent(), false));
 						}
 						continue;
 					}
-					case IncludeTab.EXT_SCRIPT: {
+					case IncludeEntry.EXT_SCRIPT: {
 						File file = new File(name);
 						if(file.exists()) {
 							containers.add(new DirectorySourceContainer(file.getParentFile(), false));
@@ -68,7 +68,7 @@ public class RhinoSourcePathComputer implements ISourcePathComputerDelegate {
 			}
 		}
 		//make sure the folder containing the original script is included
-		IFile script = Refactoring.getScript(configuration, null);
+		IFile script = Refactoring.getScript(configuration);
 		if(script != null) {
 			containers.add(new FolderSourceContainer(script.getParent(), false));
 		}

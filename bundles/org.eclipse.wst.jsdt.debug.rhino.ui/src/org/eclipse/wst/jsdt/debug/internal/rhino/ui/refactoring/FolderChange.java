@@ -30,8 +30,8 @@ public class FolderChange extends RhinoChange {
 	 * Constructor
 	 * 
 	 * @param configuration
-	 * @param oldname
-	 * @param newname
+	 * @param oldname the old folder name
+	 * @param newname the new folder name
 	 */
 	public FolderChange(ILaunchConfiguration configuration, String oldname, String newname) {
 		super(configuration, oldname, newname);
@@ -47,16 +47,19 @@ public class FolderChange extends RhinoChange {
 	        IContainer cont = (IContainer) ResourcesPlugin.getWorkspace().getRoot().findMember(newname);
 	        copy.setContainer(cont);
 		}
-		//update the attributes
+		//update the script attribute
 		String script = computeNewScriptName(configuration);
 		if(script != null) {
 			copy.setAttribute(ILaunchConstants.ATTR_SCRIPT, script);
 		}
+		//update the include path
+		updateIncludeEntries(copy);
 		//update resource mappings
 		Refactoring.mapResources(copy);
 		if(copy.isDirty()) {
 			configuration = copy.doSave();
+			return new FolderChange(configuration, newname, oldname);
 		}
-		return new FolderChange(configuration, newname, oldname);
+		return null;
 	}
 }

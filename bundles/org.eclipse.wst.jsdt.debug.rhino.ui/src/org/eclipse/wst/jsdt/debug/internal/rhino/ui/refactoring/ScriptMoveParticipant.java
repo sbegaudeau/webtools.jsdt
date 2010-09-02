@@ -62,6 +62,6 @@ public class ScriptMoveParticipant extends MoveParticipant {
 	 */
 	public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
 		IContainer locale = (IContainer) getArguments().getDestination();
-		return Refactoring.createChangesForScriptRename(script, locale.getFullPath().makeAbsolute().toOSString());
+		return Refactoring.createChangesForScriptRename(script, locale.getFullPath().append(script.getName()).makeAbsolute().toOSString());
 	}
 }

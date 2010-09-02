@@ -18,12 +18,6 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.ui;
 public interface ILaunchConstants {
 
 	/**
-	 * The project attribute in a Rhino launch configuration
-	 * <br><br>
-	 * Value is: <code>project</code>
-	 */
-	public static final String ATTR_PROJECT = "project"; //$NON-NLS-1$
-	/**
 	 * The script attribute in a Rhino launch configuration
 	 * <br><br>
 	 * Value is: <code>script</code>

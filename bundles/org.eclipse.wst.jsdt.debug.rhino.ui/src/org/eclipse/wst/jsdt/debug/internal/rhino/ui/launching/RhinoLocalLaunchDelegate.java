@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -49,7 +48,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.SocketUtil;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -154,20 +152,11 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	public static final String[] REQUIRED_BUNDLES = {MOZILLA_JAVASCRIPT_BUNDLE, DEBUG_TRANSPORT_BUNDLE, RHINO_DEBUGGER_BUNDLE};
 	
 	private ArrayList scope = null;
-	private IJavaScriptProject project = null;
 	private ITypeRoot script = null;
-	
-	synchronized IJavaScriptProject getProject(ILaunchConfiguration configuration) throws CoreException {
-		if(project == null) {
-			IProject p = Refactoring.getProject(configuration);
-			this.project = JavaScriptCore.create(p);
-		}
-		return this.project;
-	}
 	
 	synchronized ITypeRoot getScript(ILaunchConfiguration configuration) throws CoreException {
 		if(this.script == null) {
-			IResource resource = Refactoring.getScript(configuration, null);
+			IResource resource = Refactoring.getScript(configuration);
 			if(resource != null) {
 				this.script = (ITypeRoot) JavaScriptCore.create((IFile)resource);
 			}
@@ -283,7 +272,6 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				scope.clear();
 				scope = null;
 			}
-			project = null;
 			script = null;
 		}
 		launch.terminate();
@@ -526,10 +514,10 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 					entry = (String) i.next();
 					int kind = Integer.parseInt(entry.substring(0, 1));
 					switch(kind) {
-						case IncludeTab.LOCAL_SCRIPT: {
+						case IncludeEntry.LOCAL_SCRIPT: {
 							String value = entry.substring(1);
 							IFile ifile = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(value);
-							if(ifile.exists()) {
+							if(ifile != null && ifile.exists()) {
 								File file = URIUtil.toFile(ifile.getLocationURI());
 								value = escapePath(file, true);
 								if(!scope.contains(value)) {
@@ -538,7 +526,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 							}
 							continue;
 						}
-						case IncludeTab.EXT_SCRIPT: {
+						case IncludeEntry.EXT_SCRIPT: {
 							String f = entry.substring(1);
 							File file = new File(f);
 							if(file.exists() && !scope.contains(file.getAbsolutePath())) {

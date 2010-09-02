@@ -13,13 +13,13 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.ui.launching;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.internal.ui.SWTFactory;
@@ -59,10 +59,6 @@ import org.eclipse.wst.jsdt.debug.internal.ui.dialogs.ScriptSelectionDialog;
  */
 public class IncludeTab extends AbstractLaunchConfigurationTab {
 
-	/**
-	 * 
-	 */
-	public static final String JS_EXTENSION = "*.js"; //$NON-NLS-1$
 	class Contents implements ITreeContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return ((Vector)inputElement).toArray();
@@ -78,10 +74,10 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		public Image getImage(Object element) {
 			IncludeEntry entry = (IncludeEntry) element;
 			switch(entry.kind) {
-				case LOCAL_SCRIPT: {
+				case IncludeEntry.LOCAL_SCRIPT: {
 					return RhinoImageRegistry.getSharedImage(ISharedImages.IMG_SCRIPT);
 				}
-				case EXT_SCRIPT: {
+				case IncludeEntry.EXT_SCRIPT: {
 					return PlatformUI.getWorkbench().getSharedImages().getImage(org.eclipse.ui.ISharedImages.IMG_OBJ_FILE);
 				}
 			}
@@ -93,46 +89,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		}
 	}
 	
-	/**
-	 * A single entry to be included when launching
-	 */
-	class IncludeEntry {
-		int kind = -1;
-		String path = null;
-		
-		/**
-		 * Constructor
-		 * @param kind
-		 * @param path
-		 */
-		public IncludeEntry(int kind, String path) {
-			this.kind = kind;
-			this.path = path;
-		}
-		/**
-		 * @return the combined entry for the configuration memento
-		 */
-		String string() {
-			return kind+path;
-		}
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		public boolean equals(Object obj) {
-			if(obj instanceof IncludeEntry) {
-				IncludeEntry entry = (IncludeEntry) obj;
-				return kind == entry.kind && path.equals(entry.path);
-			}
-			return false;
-		}
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		public int hashCode() {
-			return kind + path.hashCode();
-		}
-	}
-
 	/**
 	 * Default filter for the workspace folder selection dialog
 	 */
@@ -149,6 +105,12 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	 * Value is: <code>thino.include.tab</code>
 	 */
 	public static final String TAB_ID = "rhino.include.tab"; //$NON-NLS-1$
+	/**
+	 * Standard JavaScript extension
+	 * <br><br>
+	 * Value is: <code>*.js</code>
+	 */
+	public static final String JS_EXTENSION = "*.js"; //$NON-NLS-1$
 	
 	private TreeViewer viewer = null;
 	private Button remove = null,
@@ -159,9 +121,6 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	               down = null;
 	private Vector includes = new Vector();
 	private ILaunchConfiguration backingconfig = null;
-	
-	public static final int LOCAL_SCRIPT = 1;
-	public static final int EXT_SCRIPT = 2;
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
@@ -241,6 +200,14 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			up.setEnabled(idx > 0);
 			down.setEnabled(idx < includes.size() -1);
 		}
+		else {
+			if(up != null) {
+				up.setEnabled(false);
+			}
+			if(down != null) {
+				down.setEnabled(false);
+			}
+		}
 		remove.setEnabled(size > 0);
 	}
 	
@@ -253,7 +220,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 			Object[] scripts = dialog.getResult();
 			IncludeEntry newentry = null;
 			for (int i = 0; i < scripts.length; i++) {
-				newentry = new IncludeEntry(LOCAL_SCRIPT, ((IFile)scripts[i]).getFullPath().makeAbsolute().toOSString());
+				newentry = new IncludeEntry(IncludeEntry.LOCAL_SCRIPT, ((IFile)scripts[i]).getFullPath().makeAbsolute().toString());
 				if(!includes.contains(newentry)) {
 					includes.add(newentry);
 				}
@@ -310,8 +277,10 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	 * Restores the tab to the defaults computed against the currently specified script
 	 */
 	void defaults() {
-		try {
-			IFile script = Refactoring.getScript(backingconfig, null);
+		includes.clear();
+		viewer.refresh();
+		/*try {
+			IFile script = Refactoring.getScript(backingconfig);
 			if(script != null) {
 				includes.clear();
 				includes.add(new IncludeEntry(IncludeTab.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toOSString()));
@@ -320,7 +289,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		}
 		catch(CoreException ce) {
 			//ignore
-		}
+		}*/
 		updateLaunchConfigurationDialog();
 	}
 	
@@ -341,7 +310,7 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 					for (int i = 0; i < names.length; i++) {
 						File script = new File(path, names[i]);
 						if(script.exists()) {
-							includes.add(new IncludeEntry(EXT_SCRIPT, script.getAbsolutePath()));
+							includes.add(new IncludeEntry(IncludeEntry.EXT_SCRIPT, new Path(script.getAbsolutePath()).toString()));
 							added = true;
 						}
 					}
@@ -359,9 +328,9 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		try {
-			IFile script = Refactoring.getScript(configuration, null);
+			IFile script = Refactoring.getScript(configuration);
 			if(script != null) {
-				includes.add(new IncludeEntry(IncludeTab.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toOSString()));
+				includes.add(new IncludeEntry(IncludeEntry.LOCAL_SCRIPT, script.getFullPath().makeAbsolute().toString()));
 			}
 			ArrayList list = new ArrayList(includes.size());
 			for (Iterator i = includes.iterator(); i.hasNext();) {
@@ -380,29 +349,13 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		backingconfig = configuration;
 		includes.clear();
-		try {
-			List list = configuration.getAttribute(ILaunchConstants.ATTR_INCLUDE_PATH, (List)null);
-			if(list != null) {
-				String value = null;
-				for (Iterator iter = list.iterator(); iter.hasNext();) {
-					try {
-						value = (String) iter.next();
-						int kind = Integer.parseInt(value.substring(0, 1));
-						String path = value.substring(1);
-						includes.add(new IncludeEntry(kind, path));
-					}
-					catch(NumberFormatException nfe) {
-						//do nothing just toss it
-					}
-				}
-				viewer.refresh();
-			}
+		IncludeEntry[] entries = Refactoring.getIncludeEntries(backingconfig);
+		for (int i = 0; i < entries.length; i++) {
+			includes.add(entries[i]);
 		}
-		catch(CoreException ce) {
-			//ignore
-		}
+		viewer.refresh();
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#performApply(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
