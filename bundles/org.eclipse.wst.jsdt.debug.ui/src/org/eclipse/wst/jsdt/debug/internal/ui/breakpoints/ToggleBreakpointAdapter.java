@@ -407,7 +407,11 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 					return;
 				}
 				case BreakpointLocationFinder.LINE: {
-					toggleLineBreakpoint(part, (ITextSelection) selection, root.getElementAt(finder.getOffset()), finder.getLineNumber());
+					IJavaScriptElement element = root.getElementAt(finder.getOffset());
+					if(element == null) {
+						element = root;
+					}
+					toggleLineBreakpoint(part, (ITextSelection) selection, element, finder.getLineNumber());
 					return;
 				}
 				case BreakpointLocationFinder.FUNCTION: {

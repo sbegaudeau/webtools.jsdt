@@ -246,13 +246,6 @@ public class BreakpointLocationFinder extends ASTVisitor {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#preVisit(org.eclipse.wst.jsdt.core.dom.ASTNode)
-	 */
-	public void preVisit(ASTNode node) {
-		super.preVisit(node);
-	}
-	
-	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration)
 	 */
 	public boolean visit(AnonymousClassDeclaration node) {
@@ -315,8 +308,8 @@ public class BreakpointLocationFinder extends ASTVisitor {
 	public boolean visit(Block node) {
 		if(visit(node, false)) {
 			if(node.statements().isEmpty() && node.getParent().getNodeType() == ASTNode.FUNCTION_DECLARATION) {
-				int offset = node.getStartPosition();
-				this.linenumber = lineNumber(offset + node.getLength() - 1);
+				int offset = node.getStartPosition() + node.getLength() - 1;
+				this.linenumber = lineNumber(offset);
 				this.found = true;
 				this.location = LINE;
 				this.offset = offset;
@@ -894,7 +887,7 @@ public class BreakpointLocationFinder extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement)
 	 */
 	public boolean visit(VariableDeclarationStatement node) {
-		return visit(node, false);
+		return visit(node, node.getParent().getNodeType() == ASTNode.BLOCK);
 	}
 
 	/* (non-Javadoc)
