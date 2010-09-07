@@ -20,11 +20,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-
-import com.ibm.icu.text.MessageFormat;
 
 /** 
  * JRE Container - resolves a includepath container variable to a JRE
@@ -167,7 +165,7 @@ public class JREContainer implements IJsGlobalScopeContainer {
 //		} else {
 //			tag = environmentId;
 //		}
-		return MessageFormat.format(LaunchingMessages.JREContainer_JRE_System_Library_1, new String[]{});
+		return LaunchingMessages.JREContainer_JRE_System_Library_1;
 	}
 
 	/**
