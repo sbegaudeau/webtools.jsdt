@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.util.Map;
+
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
+import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 
 /**
  * Default implementation of a {@link Variable} for Crossfire
@@ -20,7 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
  */
 public class CFVariable extends CFProperty implements Variable {
 
-	private boolean isarg = false;
+	private Value value = null;
 	
 	/**
 	 * Constructor
@@ -28,18 +32,31 @@ public class CFVariable extends CFProperty implements Variable {
 	 * @param frame
 	 * @param name
 	 * @param ref
-	 * @param isarg
+	 * @param values
 	 */
-	public CFVariable(CFVirtualMachine vm, CFStackFrame frame, String name, Number ref, boolean isarg) {
+	public CFVariable(CFVirtualMachine vm, CFStackFrame frame, String name, Number ref, Map values) {
 		super(vm, frame, name, ref);
-		this.isarg = isarg;
+		if(values != null) {
+			String kind = (String) values.get(Attributes.TYPE);
+			if(kind != null) {
+				if(kind.equals(Attributes.FUNCTION) || kind.equals(Attributes.STRING)) {
+					value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
+				}
+				else if(kind.equals(Attributes.NUMBER)) {
+					value = new CFNumberValue(vm, (Number) values.get(Attributes.VALUE));
+				}
+				else if(kind.equals(Attributes.BOOLEAN)) {
+					value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Variable#isArgument()
 	 */
 	public boolean isArgument() {
-		return this.isarg;
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -52,4 +69,13 @@ public class CFVariable extends CFProperty implements Variable {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFProperty#value()
+	 */
+	public synchronized Value value() {
+		if(value != null) {
+			return value;
+		}
+		return super.value();
+	}
 }

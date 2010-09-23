@@ -107,7 +107,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							}
 							thread.markSuspended(true);
 						}
-						return null;
+						else {
+							return null;
+						}
 					}
 				}
 				else if(CFEventPacket.ON_RESUME.equals(name)) {

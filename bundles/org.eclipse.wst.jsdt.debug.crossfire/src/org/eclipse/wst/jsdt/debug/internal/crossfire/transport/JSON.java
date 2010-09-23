@@ -215,7 +215,7 @@ public final class JSON {
 	 */
 	public static void writeContentLength(StringBuffer buffer, int length) {
 		StringBuffer buff = new StringBuffer(18);
-		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED);
+		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED).append(LINE_FEED);
 		buffer.insert(0, buff);
 	}
 	
@@ -364,7 +364,9 @@ public final class JSON {
 		StringBuffer buffer = new StringBuffer();
 		while (c != '"') {
 			if (Character.isISOControl(c)) {
-				throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
+				//ignore it and continue
+				continue;
+				//throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
 			}
 			if (c == '\\') {
 				c = it.next();

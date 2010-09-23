@@ -19,13 +19,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
-import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 
 /**
  * Default implementation of {@link ThreadReference} for Crossfire
@@ -64,6 +63,9 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	public CFThreadReference(VirtualMachine vm, Map json) {
 		super(vm);
 		this.id = (String) json.get(Attributes.CROSSFIRE_ID);
+		if(this.id == null) {
+			this.id = (String) json.get(Attributes.CONTEXT_ID);
+		}
 		this.href = (String) json.get(Attributes.HREF);
 	}
 
@@ -99,7 +101,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 				frames = new ArrayList();
 				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
 				for (int i = 0; i < frms.size(); i++) {
-					frames.add(new CFStackFrame(virtualMachine(), (Map) frms.get(i)));
+					frames.add(new CFStackFrame(virtualMachine(), this, (Map) frms.get(i)));
 				}
 			}
 			else {
@@ -190,7 +192,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */
 	public String name() {
-		return NLS.bind(Messages.thread_name, new Object[] {id, TextUtils.shortenText(href, 100)});
+		return NLS.bind(Messages.thread_name, new Object[] {id, href});
 	}
 	
 	/* (non-Javadoc)

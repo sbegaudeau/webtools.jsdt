@@ -24,10 +24,10 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Commands;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 
 /**
  * Default implementation of {@link StackFrame} for Crossfire
@@ -37,22 +37,22 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
 public class CFStackFrame extends CFMirror implements StackFrame {
 
 	private int index = -1;
-	String context_id = null;
 	private String scriptid = null;
 	private String funcname = null;
 	private int linenumber = -1;
 	private List vars = null;
 	private Variable thisvar = null;
 	private CFLocation loc = null;
+	private CFThreadReference thread = null;
 	
 	/**
 	 * Constructor
 	 * @param vm
 	 * @param json
 	 */
-	public CFStackFrame(VirtualMachine vm, Map json) {
+	public CFStackFrame(VirtualMachine vm, CFThreadReference thread, Map json) {
 		super(vm);
-		context_id = (String) json.get(Attributes.CONTEXT_ID);
+		this.thread = thread;
 		Number value = (Number) json.get(Attributes.INDEX);
 		if(value != null) {
 			index = value.intValue();
@@ -75,37 +75,36 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(json != null) {
 			Map locals = (Map) json.get(Attributes.VALUE); 
 			if(locals != null) {
-				if(locals.containsKey(Attributes.VALUE)) {
-					//do CF 0.1 parsing
-					locals = (Map) locals.get(Attributes.VALUE); 
-					if(locals.size() < 1) {
-						vars = Collections.EMPTY_LIST;
-						return;
-					}
-				}
 				vars = new ArrayList(locals.size());
-				Entry entry = null;
-				for (Iterator iter = locals.entrySet().iterator(); iter.hasNext();) {
-					entry = (Entry) iter.next();
-					Map info  = (Map) entry.getValue();
-					String name = (String) entry.getKey();
-					Object handle = info.get(Attributes.HANDLE);
-					Number ref = null;
-					if(handle instanceof Number) {
-						ref = (Number) handle;
-					}
-					else if(handle instanceof String) {	
-						ref = new Integer((String)handle);
-					}
-					vars.add(new CFVariable(crossfire(), this, name, ref, false));
-				}
+				parseVariables(locals, vars);
 			}
 			Map thismap = (Map) json.get(Attributes.THIS); 
 			if(thismap != null) {
-				if(vars == null) {
-					vars = new ArrayList(2);
+				thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, json);
+				parseLocals(thismap);
+			}
+		}
+	}
+	
+	void parseVariables(Map map, List varcollector) {
+		Entry entry = null;
+		for (Iterator iter = map.entrySet().iterator(); iter.hasNext();) {
+			entry = (Entry) iter.next();
+			if(entry.getValue() instanceof Map) {
+				Map info  = (Map) entry.getValue();
+				String name = (String) entry.getKey();
+				Object handle = info.get(Attributes.HANDLE);
+				Number ref = null;
+				if(handle instanceof Number) {
+					ref = (Number) handle;
 				}
-				thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, false);  
+				else if(handle instanceof String) {	
+					ref = new Integer((String)handle);
+				}
+				varcollector.add(new CFVariable(crossfire(), this, name, ref, info));
+			}
+			else {
+				varcollector.add(new CFVariable(crossfire(), this, (String) entry.getKey(), null, null));
 			}
 		}
 	}
@@ -144,7 +143,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame#evaluate(java.lang.String)
 	 */
 	public Value evaluate(String expression) {
-		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, context_id);
+		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, thread.id());
 		request.setArgument(Attributes.FRAME, new Integer(index));
 		request.setArgument(Attributes.EXPRESSION, expression);
 		CFResponsePacket response = crossfire().sendRequest(request);
@@ -174,7 +173,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public Value lookup(Number ref) {
 		if(ref != null) {
-			CFRequestPacket request = new CFRequestPacket(Commands.LOOKUP, context_id);
+			CFRequestPacket request = new CFRequestPacket(Commands.LOOKUP, thread.id());
 			request.setArgument(Attributes.HANDLE, ref);
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {

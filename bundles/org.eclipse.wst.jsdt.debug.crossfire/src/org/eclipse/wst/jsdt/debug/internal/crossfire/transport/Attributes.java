@@ -17,6 +17,12 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.transport;
  */
 public interface Attributes {
 
+	public static final String FUNCTION = "function"; //$NON-NLS-1$
+	public static final String STRING = "string"; //$NON-NLS-1$
+	public static final String OBJECT = "object"; //$NON-NLS-1$
+	public static final String NUMBER = "number"; //$NON-NLS-1$
+	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
+	
 	/**
 	 * The "arguments" attribute
 	 */

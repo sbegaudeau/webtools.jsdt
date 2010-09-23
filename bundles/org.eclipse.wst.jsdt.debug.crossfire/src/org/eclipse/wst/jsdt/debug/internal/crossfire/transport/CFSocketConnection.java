@@ -102,10 +102,14 @@ public class CFSocketConnection extends SocketConnection {
 	 */
 	public Packet readPacket() throws IOException {
 		StringBuffer buffer = new StringBuffer();
+		StringBuffer raw = new StringBuffer();
 		int c = -1;
 		boolean len = false;
 		Reader reader = getReader();
 		while((c = reader.read()) > -1) {
+			if(CFPacket.TRACE) {
+				raw.append((char)c);
+			}
 			if(c == '\r') {
 				break;
 			}
@@ -122,12 +126,31 @@ public class CFSocketConnection extends SocketConnection {
 			throw new IOException("Failed to parse content length: " + buffer.toString()); //$NON-NLS-1$
 		}
 		c = reader.read();
+		if(CFPacket.TRACE) {
+			raw.append((char)c);
+		}
 		if(c != '\n') {
 			throw new IOException("Failed to parse content length: " + buffer.toString() + "next char was not '\n'" + (char)c); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		char[] message = new char[length];
 		int n = 0;
 		int off = 0;
+		//check for the new double \r\n introduced in CF 0.3
+		c = reader.read();
+		if(CFPacket.TRACE) {
+			raw.append((char)c);
+		}
+		if(c == '\r') {
+			//chew up the \n
+			c = reader.read();
+			if(CFPacket.TRACE) {
+				raw.append((char) c);
+			}
+		}
+		else {
+			message[0] = (char) c;
+			off = 1;
+		}
 		while (n < length) {
 			int count = reader.read(message, off + n, length - n);
 			if (count < 0) {
@@ -136,7 +159,8 @@ public class CFSocketConnection extends SocketConnection {
 			n += count;
 		}
 		if(CFPacket.TRACE) {
-			Tracing.writeString("READ PACKET: [length - "+length+"]"+new String(message)); //$NON-NLS-1$ //$NON-NLS-2$
+			raw.append(message);
+			Tracing.writeString("READ PACKET: " + raw.toString()); //$NON-NLS-1$
 		}
 		Map json = (Map) JSON.read(new String(message));
 		String type = CFPacket.getType(json);

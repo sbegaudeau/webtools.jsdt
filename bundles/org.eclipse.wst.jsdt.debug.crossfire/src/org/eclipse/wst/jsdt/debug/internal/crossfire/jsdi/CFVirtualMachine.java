@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -247,7 +248,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			for (Iterator iter = threads.iterator(); iter.hasNext();) {
 				CFThreadReference thread = (CFThreadReference) iter.next();
 				CFRequestPacket request = new CFRequestPacket(Commands.SCRIPTS, thread.id());
-				request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
+				request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.FALSE);
 				CFResponsePacket response = sendRequest(request);
 				if(response.isSuccess()) {
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
@@ -263,6 +264,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 				else if(TRACE) {
 					Tracing.writeString("VM [failed scripts request]: "+JSON.serialize(request)); //$NON-NLS-1$
 				}
+			}
+			if(scripts.size() < 1) {
+				scripts = null;
+				return Collections.EMPTY_LIST;
 			}
 		}
 		return new ArrayList(scripts.values());
@@ -280,8 +285,10 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 		}
 		CFScriptReference script = (CFScriptReference) scripts.get(id);
 		//if we find we have a script id that is not cached, we should try a lookup + add in the vm
-		if(TRACE && script == null) {
-			Tracing.writeString("VM [failed to find script]: "+id); //$NON-NLS-1$
+		if(script == null) {
+			if(TRACE) {
+				Tracing.writeString("VM [failed to find script]: "+id); //$NON-NLS-1$
+			}
 		}
 		return script;
 	}
