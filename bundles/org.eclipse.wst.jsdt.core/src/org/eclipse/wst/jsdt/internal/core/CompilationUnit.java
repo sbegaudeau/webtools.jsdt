@@ -664,6 +664,31 @@ public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer me
 			String fieldName = memento.nextToken();
 			JavaElement field = (JavaElement)getField(fieldName);
 			return field.getHandleFromMemento(memento, workingCopyOwner);
+		
+		case JEM_LOCALVARIABLE:
+			if (!memento.hasMoreTokens()) return this;
+			String varName = memento.nextToken();
+			if (!memento.hasMoreTokens()) return this;
+			memento.nextToken(); // JEM_COUNT
+			if (!memento.hasMoreTokens()) return this;
+			int declarationStart = Integer.parseInt(memento.nextToken());
+			if (!memento.hasMoreTokens()) return this;
+			memento.nextToken(); // JEM_COUNT
+			if (!memento.hasMoreTokens()) return this;
+			int declarationEnd = Integer.parseInt(memento.nextToken());
+			if (!memento.hasMoreTokens()) return this;
+			memento.nextToken(); // JEM_COUNT
+			if (!memento.hasMoreTokens()) return this;
+			int nameStart = Integer.parseInt(memento.nextToken());
+			if (!memento.hasMoreTokens()) return this;
+			memento.nextToken(); // JEM_COUNT
+			if (!memento.hasMoreTokens()) return this;
+			int nameEnd = Integer.parseInt(memento.nextToken());
+			if (!memento.hasMoreTokens()) return this;
+			memento.nextToken(); // JEM_COUNT
+			if (!memento.hasMoreTokens()) return this;
+			String typeSignature = memento.nextToken();
+			return new LocalVariable(this, varName, declarationStart, declarationEnd, nameStart, nameEnd, typeSignature);
 
 		case JEM_METHOD:
 			if (!memento.hasMoreTokens()) return this;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,17 +29,15 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.TextEditGroup;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.ILocalVariable;
-import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
-import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
 import org.eclipse.wst.jsdt.core.refactoring.IJavaScriptRefactorings;
 import org.eclipse.wst.jsdt.core.refactoring.descriptors.RenameLocalVariableDescriptor;
@@ -206,9 +204,9 @@ public class RenameLocalVariableProcessor extends JavaRenameProcessor implements
 		initAST();
 		if (fTempDeclarationNode == null || fTempDeclarationNode.resolveBinding() == null)
 			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameTempRefactoring_must_select_local); 
-		if (! Checks.isDeclaredIn(fTempDeclarationNode, FunctionDeclaration.class) 
-		 && ! Checks.isDeclaredIn(fTempDeclarationNode, Initializer.class))
-			return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameTempRefactoring_only_in_methods_and_initializers); 
+		//if (! Checks.isDeclaredIn(fTempDeclarationNode, FunctionDeclaration.class) 
+		 //&& ! Checks.isDeclaredIn(fTempDeclarationNode, Initializer.class))
+			//return RefactoringStatus.createFatalErrorStatus(RefactoringCoreMessages.RenameTempRefactoring_only_in_methods_and_initializers); 
 				
 		initNames();			
 		return new RefactoringStatus();
