@@ -1490,8 +1490,7 @@ public int getNextToken() throws InvalidInputException {
 									this.currentCharacter = this.source[this.currentPosition++];
 								}
 								// we need to compute the escape character in a separate buffer
-								scanEscapeCharacter();
-								if (this.withoutUnicodePtr != 0) {
+								if (scanEscapeCharacter() && this.withoutUnicodePtr != 0) {
 									unicodeStore();
 								}
 							}
@@ -2723,7 +2722,14 @@ public void resetTo(int begin, int end, int currentToken, int currentNonWSToken)
 	this.currentNonWhitespaceToken=currentNonWSToken;
 }
 
-public final void scanEscapeCharacter() throws InvalidInputException {
+	
+
+/**	
+ * Processes an escaped character sequence on the current source position.
+ * @return Whether a character was produced. Thus, false in case of a string line continuation.
+ * @throws InvalidInputException
+ */
+public final boolean scanEscapeCharacter() throws InvalidInputException {
 	// the string with "\\u" is a legal string of two chars \ and u
 	//thus we use a direct access to the source (for regular cases).
 	switch (this.currentCharacter) {
@@ -2751,6 +2757,13 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 		case '\\' :
 			this.currentCharacter = '\\';
 			break;
+		case '\r':
+			if (this.source[this.currentPosition] == '\n')
+				this.currentPosition++;
+		case '\n':
+		case '\u2029':
+		case '\u2028':
+			return false;
 		case 'x' :
 			int digit1 = ScannerHelper.digit(this.source[this.currentPosition], 16);
 			int digit2 = ScannerHelper.digit(this.source[this.currentPosition + 1], 16);
@@ -2801,6 +2814,7 @@ public final void scanEscapeCharacter() throws InvalidInputException {
 			// in JavaScript when a backslash followed by character, the
 			// backslash is ignored.
 	}
+	return true;
 }
 
 public int scanIdentifierOrKeywordWithBoundCheck() {
@@ -4375,8 +4389,7 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 					this.currentCharacter = this.source[this.currentPosition++];
 				}
 				// we need to compute the escape character in a separate buffer
-				scanEscapeCharacter();
-				if (this.withoutUnicodePtr != 0) {
+				if (scanEscapeCharacter() && this.withoutUnicodePtr != 0) {
 					unicodeStore();
 				}
 			}

@@ -41,6 +41,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	private static final int STAR= 5; // postfix for MULTI_LINE_COMMENT or JSDOC
 	private static final int CARRIAGE_RETURN=6; // postfix for STRING, CHARACTER and SINGLE_LINE_COMMENT
 	private static final int REGULAR_EXPRESSION_END=7;
+	private static final int BACKSLASH_CARRIAGE_RETURN = 8; // anti-postfix for STRING, CHARACTER
 
 	/** The scanner. */
 	private final BufferedDocumentScanner fScanner= new BufferedDocumentScanner(1000);	// faster implementation
@@ -102,6 +103,11 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		 		}
 
 	 		case '\r':
+	 			if ((fState == STRING || fState == CHARACTER) && fLast == BACKSLASH) {
+	 				fLast = BACKSLASH_CARRIAGE_RETURN;
+	 				fTokenLength++;
+	 				continue;
+	 			}
 	 			if (fLast != CARRIAGE_RETURN) {
 						fLast= CARRIAGE_RETURN;
 						fTokenLength++;
@@ -134,11 +140,17 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 	 			}
 
 	 		case '\n':
+	 		case '\u2028':
+	 		case '\u2029':
 				switch (fState) {
-				case SINGLE_LINE_COMMENT:
-				case CHARACTER:
-				case REGULAR_EXPRESSION:
 				case STRING:
+				case CHARACTER:
+					if(fLast == BACKSLASH || fLast == BACKSLASH_CARRIAGE_RETURN) {
+						consume();
+						continue;
+					}
+				case SINGLE_LINE_COMMENT:
+				case REGULAR_EXPRESSION:
 					return postFix(fState);
 
 				default:

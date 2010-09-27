@@ -490,8 +490,7 @@ public int getNextToken() throws InvalidInputException {
 									this.currentCharacter = this.source[this.currentPosition++];
 								}
 								// we need to compute the escape character in a separate buffer
-								scanEscapeCharacter();
-								if (this.withoutUnicodePtr != 0) {
+								if (scanEscapeCharacter() && this.withoutUnicodePtr != 0) {
 									unicodeStore();
 								}
 							}
