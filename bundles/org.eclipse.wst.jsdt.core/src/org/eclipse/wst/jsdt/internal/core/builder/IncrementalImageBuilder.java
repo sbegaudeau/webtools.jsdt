@@ -554,7 +554,8 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 					case IResourceDelta.ADDED :
 						if (JavaBuilder.DEBUG)
 							System.out.println("Compile this added source file " + typeLocator); //$NON-NLS-1$
-						sourceFiles.add(new SourceFile((IFile) resource, md, true));
+						if (!resource.isDerived())
+							sourceFiles.add(new SourceFile((IFile) resource, md, true));
 						String typeName = typePath.toString();
 						if (!newState.isDuplicateLocator(typeName, typeLocator)) { // adding dependents results in 2 duplicate errors
 							if (JavaBuilder.DEBUG)
@@ -592,7 +593,8 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 							return true; // skip it since it really isn't changed
 						if (JavaBuilder.DEBUG)
 							System.out.println("Compile this changed source file " + typeLocator); //$NON-NLS-1$
-						sourceFiles.add(new SourceFile((IFile) resource, md, true));
+						if (!resource.isDerived())
+							sourceFiles.add(new SourceFile((IFile) resource, md, true));
 				}
 				return true;
 			} else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(resourceName)) {

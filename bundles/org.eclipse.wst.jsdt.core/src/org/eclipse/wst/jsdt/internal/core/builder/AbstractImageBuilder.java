@@ -155,6 +155,8 @@ protected void addAllSourceFiles(final ArrayList sourceFiles) throws CoreExcepti
 		sourceLocation.sourceFolder.accept(
 			new IResourceProxyVisitor() {
 				public boolean visit(IResourceProxy proxy) throws CoreException {
+					if (proxy.isDerived())
+						return false;
 					switch(proxy.getType()) {
 						case IResource.FILE :
 							if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName())) {
@@ -317,6 +319,7 @@ protected void deleteGeneratedFiles(IFile[] deletedGeneratedFiles) {
 
 protected SourceFile findSourceFile(IFile file, boolean mustExist) {
 	if (mustExist && !file.exists()) return null;
+	if (file.isDerived()) return null;
 
 	// assumes the file exists in at least one of the source folders & is not excluded
 	ClasspathMultiDirectory md = sourceLocations[0];
