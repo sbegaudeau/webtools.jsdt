@@ -344,14 +344,11 @@ public class JavadocConfigurationBlock {
 			File folder = new File(location.getFile());
 			if (folder.isDirectory()) {
 				File indexFile= new File(folder, "index.html"); //$NON-NLS-1$
-				if (indexFile.isFile()) {				
-					File packageList= new File(folder, "package-list"); //$NON-NLS-1$
-					if (packageList.exists()) {
-						if (MessageDialog.openConfirm(fShell, fTitle, fValidMessage)) { 
-							spawnInBrowser(indexFile.toURL());
-						}
-						return;					
+				if (indexFile.isFile()) {
+					if (MessageDialog.openConfirm(fShell, fTitle, fValidMessage)) { 
+						spawnInBrowser(indexFile.toURL());
 					}
+					return;
 				}
 			}
 			MessageDialog.openWarning(fShell, fTitle, fInvalidMessage); 
