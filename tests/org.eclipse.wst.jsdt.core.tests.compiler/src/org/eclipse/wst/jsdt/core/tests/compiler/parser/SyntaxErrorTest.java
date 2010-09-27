@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -181,6 +181,141 @@ public void test04() {
 		"	var o = { s: \"Success\"; };								\n"+
 		"	                      ^\n"+
 		"Syntax error on token \";\", delete this token\n"+
+		"----------\n";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+// https://bugs.eclipse.org/bugs/show_bug.cgi?id=241647
+public void test05a() {
+	String s = 
+		"var foo = \"1\\\n"+
+		"2\";"+
+		"\n"; 
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05b() {
+	String s = 
+		"var foo = '111\\\n"+
+		"222';"+
+		"	\n"; 
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05c() {
+	String s = 
+		"var foo = \"  \\\r\n"+
+		"    \";"+
+		"	\r\n"; 
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05d() {
+	String s = 
+		"var foo = '  \\\r\n"+
+		"    ';"+
+		"	\r\n"; 
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05e() {
+	String s = 
+		"var foo = \"  \\\r"+
+		"    \";"+
+		"	\r"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05f() {
+	String s = 
+		"var foo = '  \\\r"+
+		"    ';"+
+		"	\r"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05g() {
+	String s = 
+		"var foo = '  \\\r"+
+		"\r"+
+		"    ';"+
+		"	\r"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+		"----------\n"+
+		"1. ERROR in <test> (at line 1)\n"+
+		"	var foo = '  \\\n"+
+		"\n"+
+		"	          ^^^^^\n"+
+		"String literal is not properly closed by a matching quote\n"+
+		"----------\n";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+public void test05h() {
+	String s = 
+		"var foo = \"  \\\r"+
+		"\r"+
+		"    \";"+
+		"	\r"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+		"----------\n"+
+		"1. ERROR in <test> (at line 1)\n"+
+		"	var foo = \"  \\\n"+
+		"\n"+
+		"	          ^^^^^\n"+
+		"String literal is not properly closed by a matching quote\n"+
 		"----------\n";
 
 	String testName = "<test>";
