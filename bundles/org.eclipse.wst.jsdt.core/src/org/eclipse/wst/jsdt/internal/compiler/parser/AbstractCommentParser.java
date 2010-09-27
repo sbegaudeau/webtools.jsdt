@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -229,7 +229,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 							} catch (InvalidInputException e) {
 								consumeToken();
 							}
-						} else if (verifText && this.tagValue == TAG_RETURN_VALUE && this.returnStatement != null) {
+						} else if (verifText && (this.tagValue == TAG_RETURN_VALUE || this.tagValue == TAG_RETURNS_VALUE) && this.returnStatement != null) {
 							refreshReturnStatement();
 						}
 						this.lineStarted = true;
@@ -244,7 +244,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						this.textStart = -1;
 						break;
 					case '}' :
-						if (verifText && this.tagValue == TAG_RETURN_VALUE && this.returnStatement != null) {
+						if (verifText && (this.tagValue == TAG_RETURN_VALUE || this.tagValue == TAG_RETURNS_VALUE) && this.returnStatement != null) {
 							refreshReturnStatement();
 						}
 						if (this.inlineTagStarted) {
@@ -264,7 +264,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						this.lineStarted = true;
 						break;
 					case '{' :
-						if (verifText && this.tagValue == TAG_RETURN_VALUE && this.returnStatement != null) {
+						if (verifText && (this.tagValue == TAG_RETURN_VALUE || this.tagValue == TAG_RETURNS_VALUE) && this.returnStatement != null) {
 							refreshReturnStatement();
 						}
 						if (this.inlineTagStarted) {
@@ -295,7 +295,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						// do nothing for space or '*' characters
 						break;
 					default :
-						if (verifText && this.tagValue == TAG_RETURN_VALUE && this.returnStatement != null) {
+						if (verifText && (this.tagValue == TAG_RETURN_VALUE || this.tagValue == TAG_RETURNS_VALUE) && this.returnStatement != null) {
 							refreshReturnStatement();
 						}
 						if (!this.lineStarted) {

@@ -385,6 +385,8 @@ public class JavadocParser extends AbstractCommentParser {
 			Object[] type = parseTypeReference();
 			this.returnType = (TypeReference) (type != null && type.length > 0 ? type[0] : null);
 			this.returnStatement = createReturnStatement();
+			if((this.kind & TEXT_VERIF) != 0 && type != null && type.length > 0 && type[0] != null)
+				refreshReturnStatement();
 			return true;
 		}
 		if (this.reportProblems) {
