@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -184,12 +185,12 @@ public boolean exists() {
 }
 /**
  * @see IPackageFragment#getClassFile(String)
- * @exception IllegalArgumentException if the name does not end with ".class"
+ * @exception IllegalArgumentException if the name does not end with ".js"
  */
 public IClassFile getClassFile(String classFileName) {
 	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)
 			&& !Util.isMetadataFileName(classFileName)) {
-		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
+		throw new IllegalArgumentException(NLS.bind(Messages.element_invalidClassFileName, classFileName));
 	}
 	// don't hold on the .class file extension to save memory
 	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
