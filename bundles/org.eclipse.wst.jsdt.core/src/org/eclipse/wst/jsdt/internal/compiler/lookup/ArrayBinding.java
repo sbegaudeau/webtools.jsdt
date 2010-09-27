@@ -193,6 +193,9 @@ public char[] sourceName() {
 	}
 	return CharOperation.concat(leafComponentType.sourceName(), brackets);
 }
+public ReferenceBinding superclass() {
+	return referenceBinding.superclass();
+}
 public void swapUnresolved(UnresolvedReferenceBinding unresolvedType, ReferenceBinding resolvedType, LookupEnvironment env) {
 	if (this.leafComponentType == unresolvedType) {
 		this.leafComponentType = resolvedType;
