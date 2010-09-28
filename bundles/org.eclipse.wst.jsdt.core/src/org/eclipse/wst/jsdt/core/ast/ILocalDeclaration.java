@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,4 +29,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 public interface ILocalDeclaration extends InvocationSite, IAbstractVariableDeclaration {
 	public void setBinding(LocalVariableBinding binding);
 	public LocalVariableBinding getBinding();
+	/**
+	 * Get the initialization expression of the var as an assignment
+	 * @return initialization assignment expression or null
+	 */
+	public IAssignment getAssignment();
 }

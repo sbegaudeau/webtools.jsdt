@@ -44,10 +44,14 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 // 	public TypeBinding genericCast;
 
 	public SingleNameReference(char[] source, long pos) {
+		this(source, (int) (pos >>> 32), (int) pos);
+	}
+	
+	public SingleNameReference(char[] source, int sourceStart, int sourceEnd) {
 		super();
 		token = source;
-		sourceStart = (int) (pos >>> 32);
-		sourceEnd = (int) pos;
+		this.sourceStart = sourceStart;
+		this.sourceEnd = sourceEnd;
 	}
 	
 	public char[] getToken() {
