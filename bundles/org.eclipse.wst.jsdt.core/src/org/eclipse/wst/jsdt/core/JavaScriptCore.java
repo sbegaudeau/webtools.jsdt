@@ -2921,8 +2921,7 @@ public final class JavaScriptCore extends Plugin {
 	 * {@link #newContainerEntry(IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newContainerEntry(containerPath, new IAccessRule[0], new IIncludePathAttribute[0], false)}.
 	 * <p>
-	 * @param containerPath the path identifying the container, it must be formed of two
-	 * 	segments
+	 * @param containerPath the path identifying the container
 	 * @return a new container includepath entry
 	 *
 	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
