@@ -441,16 +441,6 @@
       </filter>
    </extension>
    <extension
-         point="org.eclipse.jdt.ui.javaElementFilters">
-      <filter
-            class="org.eclipse.wst.jsdt.debug.internal.ui.filters.ExternalSourceProjectFilter"
-            description="%jdtProjectFilter.description"
-            enabled="true"
-            id="jdt.external.source.project.filter"
-            name="%jdtProjectFilter.name">
-      </filter>
-   </extension>
-   <extension
          point="org.eclipse.ui.activities">
       <category
             description="%capabilityCategory.description"
