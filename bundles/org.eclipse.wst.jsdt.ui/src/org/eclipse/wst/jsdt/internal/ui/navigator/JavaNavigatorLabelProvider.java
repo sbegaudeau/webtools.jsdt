@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.navigator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ILabelDecorator;
@@ -19,6 +20,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 import org.eclipse.ui.navigator.IExtensionStateModel;
@@ -179,6 +181,12 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 		}
 		else if (element instanceof ProjectLibraryRoot) {
 			return formatProjectLibraryRootMessage((ProjectLibraryRoot) element);
+		}
+		if (element instanceof IAdaptable) {
+			IWorkbenchAdapter adapter = (IWorkbenchAdapter) ((IAdaptable) element).getAdapter(IWorkbenchAdapter.class);
+			if (adapter != null) {
+				return adapter.getLabel(element);
+			}
 		}
 		return ""; //$NON-NLS-1$
 	}
