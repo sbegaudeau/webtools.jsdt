@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -90,9 +94,19 @@ public class JsGlobalScopeContainerWizard extends Wizard {
 	 */
 	public void addPages() {
 		if (fEntryToEdit == null) { // new entry: show selection page as first page
-			JsGlobalScopeContainerDescriptor[] containers= JsGlobalScopeContainerDescriptor.getDescriptors();
+			JsGlobalScopeContainerDescriptor[] allDescriptors= JsGlobalScopeContainerDescriptor.getDescriptors();
+			
+			// exclude existing containers
+			Collection descriptors = new ArrayList(Arrays.asList(allDescriptors));
+			for (int j = 0; j < fCurrClasspath.length; j++) {
+				for (int i = 0; i < allDescriptors.length; i++) {
+					if (allDescriptors[i].canEdit(fCurrClasspath[j])) {
+						descriptors.remove(allDescriptors[i]);
+					}
+				}
+			}
 
-			fSelectionWizardPage= new JsGlobalScopeContainerSelectionPage(containers);
+			fSelectionWizardPage= new JsGlobalScopeContainerSelectionPage((JsGlobalScopeContainerDescriptor[]) descriptors.toArray(new JsGlobalScopeContainerDescriptor[descriptors.size()]));
 			addPage(fSelectionWizardPage);
 
 			// add as dummy, will not be shown

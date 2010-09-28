@@ -26,7 +26,9 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerLabelProvider;
+import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.ui.ProjectLibraryRoot;
 
 /**
  * Provides the labels for the Project Explorer.
@@ -172,7 +174,21 @@ public class JavaNavigatorLabelProvider implements ICommonLabelProvider {
 		} else if (element instanceof IResource) {
 			return formatResourceMessage((IResource) element);
 		}
+		else if (element instanceof PackageFragmentRootContainer) {
+			return formatPackageFragmentRootContainerMessage((PackageFragmentRootContainer) element);
+		}
+		else if (element instanceof ProjectLibraryRoot) {
+			return formatProjectLibraryRootMessage((ProjectLibraryRoot) element);
+		}
 		return ""; //$NON-NLS-1$
+	}
+
+	private String formatProjectLibraryRootMessage(ProjectLibraryRoot element) {
+		return element.getText() + JavaScriptElementLabels.CONCAT_STRING + formatJavaElementMessage(element.getProject());
+	}
+
+	private String formatPackageFragmentRootContainerMessage(PackageFragmentRootContainer element) {
+		return element.getLabel() + JavaScriptElementLabels.CONCAT_STRING + formatJavaElementMessage(element.getJavaProject());
 	}
 
 	private String formatJavaElementMessage(IJavaScriptElement element) {

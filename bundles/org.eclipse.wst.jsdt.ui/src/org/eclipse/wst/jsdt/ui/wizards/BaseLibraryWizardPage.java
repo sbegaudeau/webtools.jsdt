@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.wizards;
 
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
@@ -19,6 +20,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 
@@ -31,24 +33,43 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
  * (repeatedly) as the API evolves. */
 public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 	
-	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
+	private static final String STANDARD_BROWSER = "/StandardBrowser/"; //$NON-NLS-1$
+	private static final String HTML4 = "html4"; //$NON-NLS-1$
+	private static final String HTML5 = "html5"; //$NON-NLS-1$
+	
+	
+	IPath fPath = Path.ROOT;
+	private ComboDialogField fVersionField;
 	
 	public BaseLibraryWizardPage() {
-		super("BaseicLibraryWizzardPage"); //$NON-NLS-1$
+		super("BasicLibraryWizardPage"); //$NON-NLS-1$
 		setTitle(NewWizardMessages.BaseLibraryWizardPage_title);
 		setImageDescriptor(JavaPluginImages.DESC_WIZBAN_ADD_LIBRARY);
 	}
 
 	public boolean finish() {
+		switch (fVersionField.getSelectionIndex()) {
+			case 0 : {
+				fPath = new Path(org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB + STANDARD_BROWSER + HTML4);
+			}
+				break;
+			case 1 : {
+				fPath = new Path(org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB + STANDARD_BROWSER + HTML5);
+			}
+				break;
+		}
 		return true;
 	}
 
 	public IIncludePathEntry getSelection() {
-		System.out.println("Unimplemented method:BaseLibraryWizardPage.getSelection"); //$NON-NLS-1$
-		return null;
+		return JavaScriptCore.newContainerEntry(fPath);
 	}
 
-	public void setSelection(IIncludePathEntry containerEntry) {}
+	public void setSelection(IIncludePathEntry containerEntry) {
+		if(containerEntry != null) {
+			fPath = containerEntry.getPath();
+		}
+	}
 
 	public void createControl(Composite parent) {
 		Composite composite= new Composite(parent, SWT.NONE);
@@ -56,18 +77,38 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGl
 		DialogField field = new DialogField();
 		
 		field.setLabelText(NewWizardMessages.BaseLibraryWizardPage_DefaultBrowserLibraryAdded);
-		LayoutUtil.doDefaultLayout(composite, new DialogField[] {field }, false, SWT.DEFAULT, SWT.DEFAULT);
+		LayoutUtil.doDefaultLayout(composite, new DialogField[]{field}, false, SWT.DEFAULT, SWT.DEFAULT);
+
+		fVersionField = new ComboDialogField(SWT.READ_ONLY);
+		fVersionField.setLabelText("DOM and window objects version:"); //$NON-NLS-1$
+		fVersionField.setItems(new String[]{"HTML 4.01", "HTML 5"}); //$NON-NLS-1$//$NON-NLS-2$
+		if (fPath.segmentCount() > 2 && fPath.lastSegment().equals(HTML5)) {
+			fVersionField.selectItem(1);
+		}
+		else {
+			fVersionField.selectItem(0);
+		}
+
+		LayoutUtil.doDefaultLayout(composite, new DialogField[]{field, fVersionField}, false, SWT.DEFAULT, SWT.DEFAULT);
+
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
 		setDescription(NewWizardMessages.BaseLibraryWizardPage_WebBrowserSupport);
 	}
 
 	public void initialize(IJavaScriptProject project, IIncludePathEntry[] currentEntries) {
-		// nothing to initialize
+		fPath = new Path(org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB);
+		
+		for (int i = 0; i < currentEntries.length; i++) {
+			IPath path = currentEntries[i].getPath();
+			if (!path.isEmpty() && org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB.equals(path.segment(0))) {
+				fPath = path;
+			}
+		}
 	}
 
 	public IIncludePathEntry[] getNewContainers() {
-		IIncludePathEntry library = JavaScriptCore.newContainerEntry( new Path(CONTAINER_ID));
-		return new IIncludePathEntry[] {library};
+		IIncludePathEntry library = JavaScriptCore.newContainerEntry(fPath);
+		return new IIncludePathEntry[]{library};
 	}
 }

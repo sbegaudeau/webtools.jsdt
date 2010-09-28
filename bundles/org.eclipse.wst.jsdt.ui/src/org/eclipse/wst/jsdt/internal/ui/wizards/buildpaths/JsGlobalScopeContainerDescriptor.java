@@ -36,6 +36,7 @@ public class JsGlobalScopeContainerDescriptor {
 	private static final String ATT_ID = "id"; //$NON-NLS-1$
 	private static final String ATT_NAME = "name"; //$NON-NLS-1$
 	private static final String ATT_PAGE_CLASS = "class"; //$NON-NLS-1$	
+	private static final String ATT_ALLOW_MULTI = "allowMulti"; //$NON-NLS-1$
 
 	public JsGlobalScopeContainerDescriptor(IConfigurationElement configElement) throws CoreException {
 		super();
@@ -92,9 +93,10 @@ public class JsGlobalScopeContainerDescriptor {
 
 	public boolean canEdit(IIncludePathEntry entry) {
 		String id = fConfigElement.getAttribute(ATT_ID);
-		if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER) {
+		if (entry.getEntryKind() == IIncludePathEntry.CPE_CONTAINER && !entry.getPath().isEmpty()) {
 			String type = entry.getPath().segment(0);
-			return id.equals(type);
+			String multi = fConfigElement.getAttribute(ATT_ALLOW_MULTI);
+			return type.equals(id) && (multi == null || !Boolean.valueOf(multi).booleanValue());
 		}
 		return false;
 	}

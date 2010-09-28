@@ -5062,7 +5062,8 @@
       <JsGlobalScopeContainerPage
             name="%userLibrary.name"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.UserLibraryWizardPage"
-            id="org.eclipse.wst.jsdt.USER_LIBRARY">
+            id="org.eclipse.wst.jsdt.USER_LIBRARY"
+            allowMulti="true">
       </JsGlobalScopeContainerPage>
    </extension>
    
@@ -5115,7 +5116,7 @@
             label="%action.label.projectConvert"
             menubarPath="org.eclipse.ui.projectConfigure/additions"
             enablesFor="+"
-            id="org.eclipse.wst.jsdt.internal.web.ui.convertProjects">
+            id="org.eclipse.wst.jsdt.ui.internal.convertProjects">
       	</action>
    		</objectContribution>
    </extension> 
@@ -5972,7 +5973,7 @@
   	  <JsGlobalScopeContainerPage
             name="%BaseWebBrowserLibrary"
             class="org.eclipse.wst.jsdt.ui.wizards.BaseLibraryWizardPage"
-            id="org.eclipse.wst.jsdt.BASE">
+            id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
       </JsGlobalScopeContainerPage>
    </extension>
 

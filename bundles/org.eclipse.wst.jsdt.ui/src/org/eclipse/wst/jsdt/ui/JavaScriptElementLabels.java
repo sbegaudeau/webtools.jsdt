@@ -494,16 +494,16 @@ public class JavaScriptElementLabels {
 				{
 					getTypeLabel(method.getDeclaringType(), T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
 					buf.append('.');
-				} else	{
-						buf.append('[');
-						getFileLabel(method, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
-						buf.append(']');
-				}
-
+				} 
+//				else	{
+//						buf.append('[');
+//						getFileLabel(method, T_FULLY_QUALIFIED | (flags & QUALIFIER_FLAGS), buf);
+//						buf.append(']');
+//				}
 			}
 		 
-			if(buf.length() != 0)
-				buf.append(' ');
+//			if(buf.length() != 0)
+//				buf.append(' ');
 			buf.append(method.getDisplayName());
 			
 			// parameters
@@ -809,7 +809,7 @@ public class JavaScriptElementLabels {
 			IPackageFragment pack= type.getPackageFragment();
 			if (!pack.isDefaultPackage()) {
 				getPackageFragmentLabel(pack, (flags & QUALIFIER_FLAGS), buf);
-				buf.append(' ');
+//				buf.append(' ');
 			}
 		}
 		if (getFlag(flags, T_FULLY_QUALIFIED | T_CONTAINER_QUALIFIED)) {
@@ -985,7 +985,7 @@ public class JavaScriptElementLabels {
 				}
 				buf.append(name.substring(start));
 		} else {
-			buf.append(pack.getDisplayName());
+//			buf.append(pack.getDisplayName());
 		}
 		if (getFlag(flags, P_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
@@ -1090,7 +1090,15 @@ public class JavaScriptElementLabels {
 		boolean rootQualified= getFlag(flags, ROOT_QUALIFIED);
 		boolean referencedQualified= getFlag(flags, REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
 		if (rootQualified) {
-			buf.append(root.getPath().makeRelative().toString());
+//			buf.append(root.getPath().makeRelative().toString());
+			// for libraries stored in our metadata area, just show the filename
+			IPath stateLocation = JavaScriptCore.getJavaScriptCore().getStateLocation();
+			if (stateLocation.isPrefixOf(root.getPath())) {
+				buf.append(root.getPath().lastSegment().toString());
+			}
+			else {
+				buf.append(root.getPath().toString());
+			}
 		} else {
 			if (resource != null) {
 				IPath projectRelativePath= resource.getProjectRelativePath();

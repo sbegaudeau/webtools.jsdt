@@ -13,10 +13,10 @@ package org.eclipse.wst.jsdt.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
@@ -31,8 +31,6 @@ import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
  */ 
 public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	
-	public static final String JsECMA_NAME = LaunchingMessages.JREContainerInitializer_JsECMA_NAME;
-
 	/**
 	 * @see JsGlobalScopeContainerInitializer#initialize(IPath, IJavaScriptProject)
 	 */
@@ -126,9 +124,6 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	 * @return ee id
 	 */
 	public static String getExecutionEnvironmentId(IPath path) {
-		
-		if(path!=null && path.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
-		
 		return null;
 //		String name = getVMName(path);
 //		if (name != null) {
@@ -260,7 +255,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.IJavaScriptProject.core.IJavaProject)
 	 */
 	public String getDescription(IPath containerPath, IJavaScriptProject project) {
-		if(containerPath!=null && containerPath.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
+		if (containerPath != null && containerPath.segment(0).equals(JavaRuntime.JRE_CONTAINER))
+			return LaunchingMessages.JREContainerInitializer_JsECMA_NAME;
+
 //		String tag = getExecutionEnvironmentId(containerPath);
 //		if (tag == null && containerPath.segmentCount() > 2) {
 //			tag = getVMName(containerPath);
@@ -268,7 +265,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 //		if (tag != null) {
 //			return MessageFormat.format(LaunchingMessages.JREContainer_JRE_System_Library_1, new String[]{tag});
 //		} 
-		return LaunchingMessages.JREContainerInitializer_Default_System_Library_1; 
+
+//		return LaunchingMessages.JREContainerInitializer_Default_System_Library_1; 
+		return containerPath.lastSegment();
 	}
 
 	/* (non-Javadoc)
