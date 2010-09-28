@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class JSDTDebugTestPlugin extends Plugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.wst.debug.tests"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.wst.jsdt.debug.core.tests"; //$NON-NLS-1$
 
 	// The shared instance
 	private static JSDTDebugTestPlugin plugin;
