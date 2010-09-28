@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
 import org.eclipse.wst.jsdt.debug.transport.Connection;
@@ -32,14 +32,15 @@ import org.eclipse.wst.jsdt.debug.transport.TransportService;
 public class CrossfireAttachingConnector implements AttachingConnector {
 
 	public static final String CROSSFIRE_REMOTE_ATTACH_CONNECTOR_ID = "crossfire.remote.attach.connector"; //$NON-NLS-1$
-	
+
 	/**
 	 * Constructor
 	 */
 	public CrossfireAttachingConnector() {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#defaultArguments()
 	 */
 	public Map defaultArguments() {
@@ -47,99 +48,104 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		args.put(HostArgument.HOST, new HostArgument(null));
 		args.put(PortArgument.PORT, new PortArgument(5000));
 		args.put(TimeoutArgument.TIMEOUT, new TimeoutArgument());
-		args.put(BrowserArgument.BROWSER, new BrowserArgument());
+		//XXX hack because there is no good way to find the Firefox executable on Win
+		if(!Platform.OS_WIN32.equals(Platform.getOS())) {
+			args.put(BrowserArgument.BROWSER, new BrowserArgument());
+		}
 		return args;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#description()
 	 */
 	public String description() {
 		return Messages.attach_connector_desc;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#name()
 	 */
 	public String name() {
 		return Messages.crossfire_remote_attach;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#id()
 	 */
 	public String id() {
 		return CROSSFIRE_REMOTE_ATTACH_CONNECTOR_ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector#attach(java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector#attach
+	 * (java.util.Map)
 	 */
 	public VirtualMachine attach(Map arguments) throws IOException {
-		String str = (String)arguments.get(BrowserArgument.BROWSER);
-		boolean browser = Boolean.valueOf(str).booleanValue();
-		if(browser && !HostArgument.isLocalhost((String) arguments.get(HostArgument.HOST))) {
-			//we cannot auto launch the browser on a different host
+		String str = (String) arguments.get(BrowserArgument.BROWSER);
+		//XXX hack because there is no good way to find the Firefox executable on Win
+		boolean browser = Boolean.valueOf(str).booleanValue() && !Platform.OS_WIN32.equals(Platform.getOS());
+		if (browser && !HostArgument.isLocalhost((String) arguments.get(HostArgument.HOST))) {
+			// we cannot auto launch the browser on a different host
 			throw new IOException(Messages.cannot_launch_browser_not_localhost);
 		}
 		Connection c = null;
-		if(browser) {
+		if (browser) {
 			c = launchForBrowser(arguments);
-		}
-		else {
+		} else {
 			c = launch(arguments);
 		}
 		DebugSession session = new DebugSession(c);
 		return new CFVirtualMachine(session);
 	}
-	
+
 	/**
-	 * Launches the browser and connects to it. This method will poll for the browser to be launched
-	 * but only for a fixed timeout. 
+	 * Launches the browser and connects to it. This method will poll for the
+	 * browser to be launched but only for a fixed timeout.
+	 * 
 	 * @param arguments
-	 * @return the created connection or <code>null</code> if the attempt to connect times out, the browser process
-	 * terminates before we can connect  
-	 * @throws IOException 
+	 * @return the created connection or <code>null</code> if the attempt to
+	 *         connect times out, the browser process terminates before we can
+	 *         connect
+	 * @throws IOException
 	 */
-	Connection launchForBrowser(Map arguments) throws IOException {
-		TransportService service = new CFTransportService();
+	Connection launchForBrowser(final Map arguments) throws IOException {
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
-		StringBuffer buffer = new StringBuffer("firefox -P -load-fb-modules"); //$NON-NLS-1$
-		buffer.append(host).append(" -crossfire-server-port ").append(port); //$NON-NLS-1$
-		Process proc = null;
-		try {
-			proc = Runtime.getRuntime().exec(buffer.toString());
-		} catch (IOException e) {
-			CrossFirePlugin.log(e);
-		}
+		StringBuffer buffer = new StringBuffer("firefox -ProfileManager -load-fb-modules -crossfire-server-port ").append(port); //$NON-NLS-1$
+		Process p = Runtime.getRuntime().exec(buffer.toString());
+		TransportService service = new CFTransportService();
 		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
 		int timeout = Integer.parseInt(timeoutstr);
 		buffer = new StringBuffer();
 		buffer.append(host).append(':').append(Integer.parseInt(port));
+		long timer = System.currentTimeMillis() + 20000;
 		Connection c = null;
-		long timer = System.currentTimeMillis() + 60000;
-		while(proc != null && System.currentTimeMillis() < timer && c == null) {
+		while (p != null && System.currentTimeMillis() < timer && c == null) {
 			try {
-				c = service.attach(buffer.toString(), timeout, timeout);
-			}
-			catch(IOException ioe) {
-				//ignore while pinging to connect
+				c = service.attach(buffer.toString(), timeout,timeout);
+			} catch (IOException ioe) {
+				// ignore while pinging to connect
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					//do nothing
 				}
 			}
 		}
-		if(c == null) {
-			throw new IOException(NLS.bind(Messages.failed_to_attach_to_auto_browser, new String[] {host, port}));
+		if (c == null) {
+			throw new IOException(NLS.bind(Messages.failed_to_attach_to_auto_browser, new String[] {host, port }));
 		}
 		return c;
 	}
-	
+
 	/**
-	 * Tries to connect to the given 
+	 * Tries to connect to the given
+	 * 
 	 * @param arguments
 	 * @return the {@link Connection} or throws an exception
 	 * @throws IOException
