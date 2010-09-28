@@ -12,7 +12,9 @@ package org.eclipse.wst.jsdt.internal.core.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -44,7 +46,17 @@ public class ConvertUtility {
 	public static final IPath BROWSER_LIBRARY_PATH = new Path(BROWSER_LIBRARY);
 	private static final String BROWSER_SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
 
+	/**
+	 * @deprecated - moved into
+	 *             org.eclipse.wst.jsdt.web.core.internal.project.
+	 *             ModuleSourcePathProvider
+	 */
 	public static final String VIRTUAL_CONTAINER = "org.eclipse.wst.jsdt.launching.WebProject"; //$NON-NLS-1$
+	/**
+	 * @deprecated - moved into
+	 *             org.eclipse.wst.jsdt.web.core.internal.project.
+	 *             ModuleSourcePathProvider
+	 */
 	public static final IIncludePathEntry VIRTUAL_SCOPE_ENTRY = JavaScriptCore.newContainerEntry(new Path(VIRTUAL_CONTAINER), new IAccessRule[0], new IIncludePathAttribute[]{IIncludePathAttribute.HIDE}, false);
 
 
@@ -138,7 +150,6 @@ public class ConvertUtility {
 		fJavaProject.setProject(fCurrProject);
 
 		IIncludePathEntry[] includePath = getRawClassPath();
-		includePath = addEntry(includePath, VIRTUAL_SCOPE_ENTRY, false);
 		includePath = addEntry(includePath, JavaScriptCore.newContainerEntry(BROWSER_LIBRARY_PATH), false);
 
 		try {
@@ -204,7 +215,7 @@ public class ConvertUtility {
 	// getJavaScriptProject().setRawIncludepath((IIncludePathEntry[])
 	// goodEntries.toArray(new IIncludePathEntry[] {}), outputLocation,
 	// monitor);
-	//		
+	//
 	// // getJavaProject().removeFromBuildSpec(BUILDER_ID);
 	// getJavaScriptProject().deconfigure();
 	//
@@ -280,11 +291,15 @@ public class ConvertUtility {
 		IIncludePathEntry[] defaults = new IIncludePathEntry[]{JavaScriptCore.newSourceEntry(p.getFullPath())};
 		try {
 			IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.wst.jsdt.core.sourcePathProvider");
+			Set paths = new HashSet();
 			for (int i = 0; i < configurationElements.length; i++) {
 				DefaultSourcePathProvider provider = (DefaultSourcePathProvider) configurationElements[i].createExecutableExtension("class");
 				if (provider != null) {
-					return provider.getDefaultSourcePaths(p);
+					paths.addAll(Arrays.asList(provider.getDefaultSourcePaths(p)));
 				}
+			}
+			if (!paths.isEmpty()) {
+				defaults = (IIncludePathEntry[]) paths.toArray(new IIncludePathEntry[paths.size()]);
 			}
 		}
 		catch (Exception e) {
