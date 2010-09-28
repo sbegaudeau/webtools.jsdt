@@ -22,6 +22,7 @@ import org.eclipse.debug.ui.sourcelookup.ISourceLookupResult;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -50,9 +51,13 @@ public class OpenSourceAction implements IObjectActionDelegate, IActionDelegate2
 	 */
 	public void run(IAction action) {
 		if(script != null) {
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			ISourceLookupResult result = DebugUITools.lookupSource(script, script.getDebugTarget().getLaunch().getSourceLocator());
-			DebugUITools.displaySource(result, page);
+			BusyIndicator.showWhile(null, new Runnable() {
+				public void run() {
+					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					ISourceLookupResult result = DebugUITools.lookupSource(script, script.getDebugTarget().getLaunch().getSourceLocator());
+					DebugUITools.displaySource(result, page);
+				}
+			});
 		}
 	}
 
