@@ -691,7 +691,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"  return \"\";" +
 				"}",
 				"X.js",
-				"class x extends Object{\n  static String foo;\n  static String bar()\n}\n",
+				"class x extends Object{\n  static String foo;\n  static String bar()\n  x()\n}\n",
 				getDefaultOptions()
 				
 			 );
@@ -1009,7 +1009,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"var MyFunc = function () {};\n" +
 				"MyFunc.myMeth = function () {};",
 				"X.js",
-				"class MyFunc extends Function{\n  static void myMeth()\n}\n",
+				"class MyFunc extends Function{\n  static void myMeth()\n  MyFunc()\n}\n",
 				getDefaultOptions()
 				
 			 );
