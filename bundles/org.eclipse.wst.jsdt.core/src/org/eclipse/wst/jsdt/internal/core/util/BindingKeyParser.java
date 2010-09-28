@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,6 @@ public class BindingKeyParser {
 		static final int ARRAY = 4;
 		static final int LOCAL_VAR = 5;
 		static final int FLAGS = 6;
-		static final int WILDCARD = 7;
-		static final int CAPTURE = 8;
 		static final int BASE_TYPE = 9;
 		static final int END = 10;
 
@@ -46,12 +44,6 @@ public class BindingKeyParser {
 			char[] result = new char[length];
 			System.arraycopy(this.source, this.start, result, 0, length);
 			return result;
-		}
-
-		boolean isAtCaptureStart() {
-			return
-				this.index < this.source.length
-				&& this.source[this.index] == '!';
 		}
 
 		boolean isAtFieldOrMethodStart() {
@@ -253,24 +245,10 @@ public class BindingKeyParser {
 								else
 									this.token = END;
 								break;
-							case WILDCARD:
-								this.token = TYPE;
-								break;
 							default:
 								this.token = END;
 								break;
 						}
-						return this.token;
-					case '*':
-					case '+':
-					case '-':
-						this.index++;
-						this.token = WILDCARD;
-						return this.token;
-					case '!':
-					case '&':
-						this.index++;
-						this.token = CAPTURE;
 						return this.token;
 				}
 				this.index++;
@@ -352,12 +330,6 @@ public class BindingKeyParser {
 					break;
 				case FLAGS:
 					buffer.append("MODIFIERS: "); //$NON-NLS-1$
-					break;
-				case WILDCARD:
-					buffer.append("WILDCARD: "); //$NON-NLS-1$
-					break;
-				case CAPTURE:
-					buffer.append("CAPTURE: "); //$NON-NLS-1$
 					break;
 				case BASE_TYPE:
 					buffer.append("BASE TYPE: "); //$NON-NLS-1$
@@ -589,8 +561,6 @@ public class BindingKeyParser {
 				}
 			} else if (this.scanner.isAtTypeVariableStart()) {
 				parseTypeVariable();
-			} else if (this.scanner.isAtTypeWithCaptureStart()) {
-				parseTypeWithCapture();
 			}
 
 			consumeKey();
@@ -600,11 +570,6 @@ public class BindingKeyParser {
 	}
 
 	private void parseFullyQualifiedName() {
-		if (this.scanner.isAtCaptureStart()) {
-			parseCapture();
-			this.hasTypeName = false;
-			return;
-		}
 		switch(this.scanner.nextToken()) {
 			case Scanner.PACKAGE:
 				this.keyStart = 0;
@@ -709,25 +674,6 @@ public class BindingKeyParser {
 			parseParameterizedMethod();
 	}
 
-	private void parseCapture() {
-		if (this.scanner.nextToken() != Scanner.CAPTURE) return;
-	 	parseCaptureWildcard();
-		if (this.scanner.nextToken() != Scanner.TYPE) {
-	 		malformedKey();
-			return;
-	 	}
-		char[] positionChars = this.scanner.getTokenSource();
-		int position = Integer.parseInt(new String(positionChars));
-		consumeCapture(position);
-		this.scanner.skipTypeEnd();
-	}
-
-	private void parseCaptureWildcard() {
-		BindingKeyParser parser = newParser();
-		parser.parse();
-		consumeParser(parser);
-	}
-
 	private void parseField() {
 		char[] fieldName = this.scanner.getTokenSource();
 		parseReturnType();
@@ -795,14 +741,6 @@ public class BindingKeyParser {
 		consumeParser(parser);
 	}
 
-	private void parseTypeWithCapture() {
-		if (this.scanner.nextToken() != Scanner.CAPTURE) return;
-		BindingKeyParser parser = newParser();
-		parser.parse();
-		consumeParser(parser);
-		consumeTypeWithCapture();
-	}
-
 	private void parseTypeVariable() {
 		if (this.scanner.nextToken() != Scanner.TYPE) {
 			malformedKey();
@@ -821,11 +759,4 @@ public class BindingKeyParser {
 		consumeTypeVariable(position, typeVariableName);
 		this.scanner.skipTypeEnd();
 	}
-
-	private void parseWildcardBound() {
-		BindingKeyParser parser = newParser();
-		parser.parse();
-		consumeParser(parser);
-	}
-
 }
