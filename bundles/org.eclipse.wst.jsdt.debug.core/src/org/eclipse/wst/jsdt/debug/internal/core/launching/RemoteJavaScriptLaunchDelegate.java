@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.launching;
 
-import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -39,6 +38,50 @@ import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
  */
 public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate {
 
+	/**
+	 * Polls for connecting to the Rhino interpreter
+	 */
+	class ConnectRunnable implements Runnable {
+
+		VirtualMachine vm = null;
+		Exception exception = null;
+		private Connector connector = null;
+		private Map args = null;
+		
+		ConnectRunnable(Connector connector, Map args) {
+			this.connector = connector;
+			this.args = args;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Runnable#run()
+		 */
+		public void run() {
+			try {
+				long start = System.currentTimeMillis();
+				Exception inner = null;
+				do {
+					try {
+						if(connector instanceof AttachingConnector) {
+							vm = ((AttachingConnector)connector).attach(args);
+						}
+						else if(connector instanceof ListeningConnector) {
+							vm = ((ListeningConnector)connector).accept(args);
+						}
+					} 
+					catch(Exception e) {
+						inner = e;
+					}
+				} while(vm == null && System.currentTimeMillis() < start + 5000);
+				if(vm == null) {
+					throw inner;
+				}
+			}
+			catch(Exception e) {
+				exception = e;
+			}
+		}
+	}
+	
 	final static String LAUNCH_URI = "launch_uri"; //$NON-NLS-1$
 
 	/*
@@ -64,37 +107,55 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 			localmonitor.worked(4);
 			localmonitor.subTask(Messages.acquiring_connector);
 			Connector connector = JavaScriptDebugPlugin.getConnectionsManager().getConnector(name);
+			
 			VirtualMachine vm = null;
-			try {
+			if(localmonitor.isCanceled()) {
+				return;
+			}
+			if(connector instanceof AttachingConnector) {
+				localmonitor.subTask(Messages.attaching_to_vm);
+			}
+			else if(connector instanceof ListeningConnector) {
+				localmonitor.subTask(Messages.waiting_for_vm_to_connect);
+			}
+			else {
+				Status status = new Status(
+						IStatus.ERROR, 
+						JavaScriptDebugPlugin.PLUGIN_ID, 
+						NLS.bind(Messages.could_not_locate_connector, new String[] {name}));
+				throw new CoreException(status);
+			}
+			localmonitor.worked(4);
+			ConnectRunnable runnable = new ConnectRunnable(connector, argmap);
+			Thread thread = new Thread(runnable, Messages.connect_thread);
+			thread.setDaemon(true);
+			thread.start();
+			while(thread.isAlive()) {
 				if(localmonitor.isCanceled()) {
+					if(vm != null) {
+						vm.terminate();
+					}
+					thread.interrupt();
 					return;
 				}
-				if(connector instanceof AttachingConnector) {
-					localmonitor.subTask(Messages.attaching_to_vm);
-					vm = ((AttachingConnector)connector).attach(argmap);
+				try {
+					Thread.sleep(100);
 				}
-				else if(connector instanceof ListeningConnector) {
-					localmonitor.subTask(Messages.waiting_for_vm_to_connect);
-					vm = ((ListeningConnector)connector).accept(argmap);
+				catch (Exception e) {
 				}
-				else {
-					Status status = new Status(
-							IStatus.ERROR, 
-							JavaScriptDebugPlugin.PLUGIN_ID, 
-							NLS.bind(Messages.could_not_locate_connector, new String[] {name}));
-					throw new CoreException(status);
-				}
-				localmonitor.worked(4);
-			} catch (IOException e) {
-				if(vm != null) {
-					vm.terminate();
-				}
-				Status status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, "Error occured while launching", e); //$NON-NLS-1$
+			}
+			if(runnable.exception != null) {
+				Status status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, "Error occured while launching", runnable.exception); //$NON-NLS-1$
 				throw new CoreException(status);
 			}
 			if(localmonitor.isCanceled()) {
 				return;
 			}
+			if(runnable.vm == null) {
+				Status status = new Status(IStatus.ERROR, JavaScriptDebugPlugin.PLUGIN_ID, "Failed to connect to Firefox", runnable.exception); //$NON-NLS-1$
+				throw new CoreException(status);
+			}
+			vm = runnable.vm;
 			localmonitor.worked(4);
 			localmonitor.subTask(Messages.creating_debug_target);
 			JavaScriptProcess process = new JavaScriptProcess(launch, computeProcessName(connector));
@@ -105,8 +166,7 @@ public class RemoteJavaScriptLaunchDelegate extends LaunchConfigurationDelegate 
 			}
 			localmonitor.worked(4);
 			launch.addDebugTarget(target);
-		}
-		finally {
+		} finally {
 			localmonitor.done();
 		}
 	}

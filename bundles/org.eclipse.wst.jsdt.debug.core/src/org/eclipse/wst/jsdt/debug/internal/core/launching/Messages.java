@@ -20,6 +20,7 @@ public class Messages extends NLS {
 	public static String acquiring_connector;
 	public static String argument_map_null;
 	public static String attaching_to_vm;
+	public static String connect_thread;
 	public static String could_not_locate_connector;
 	public static String creating_debug_target;
 	public static String javascript_process_name;
