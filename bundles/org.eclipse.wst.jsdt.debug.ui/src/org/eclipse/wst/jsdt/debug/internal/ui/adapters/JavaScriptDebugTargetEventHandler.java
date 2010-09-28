@@ -20,6 +20,7 @@ import org.eclipse.debug.internal.ui.viewers.update.DebugTargetEventHandler;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.internal.core.model.ScriptGroup;
+import org.eclipse.wst.jsdt.debug.internal.ui.PreferencesManager;
 
 /**
  * Custom handler for JavaScript debug target model proxy events
@@ -53,7 +54,9 @@ public class JavaScriptDebugTargetEventHandler extends DebugTargetEventHandler {
 			super.handleOther(event);
 		}
 		else if(source instanceof IScriptGroup){
-			fireScriptGroupDelta((IScriptGroup) source);
+			if(PreferencesManager.getManager().showLoadedScripts()) {
+				fireScriptGroupDelta((IScriptGroup) source);
+			}
 		}
 	}
 	

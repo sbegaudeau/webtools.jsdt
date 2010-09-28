@@ -35,7 +35,7 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 				System.arraycopy(threads, 0, children, 1, threads.length);
 				return getElements(children, index, length);
 			}
-			return threads;
+			return getElements(threads, index, length);
 		}
 		if(parent instanceof IScriptGroup) {
 			IScriptGroup group = (IScriptGroup) parent;
@@ -55,7 +55,7 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		if(element instanceof IJavaScriptDebugTarget) {
 			IJavaScriptDebugTarget target = (IJavaScriptDebugTarget) element;
 			int count = target.getThreads().length;
-			if(target.getScriptGroup() != null && PreferencesManager.getManager().showLoadedScripts()) {
+			if(PreferencesManager.getManager().showLoadedScripts()) {
 				count = count + 1;
 			}
 			return count;
@@ -68,7 +68,7 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		}
 		return 0;
 	}
-	
+		
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.internal.ui.model.elements.ElementContentProvider#supportsContext(org.eclipse.debug.internal.ui.viewers.model.provisional.IPresentationContext)
 	 */
