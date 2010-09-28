@@ -50,6 +50,8 @@ public class BasicBrowserLibraryContainer implements IJsGlobalScopeContainer {
 	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getDescription()
 	 */
 	public String getDescription() {
+		if (isHTML5())
+			return Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_HTML5Browser;
 		return Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
 	}
 

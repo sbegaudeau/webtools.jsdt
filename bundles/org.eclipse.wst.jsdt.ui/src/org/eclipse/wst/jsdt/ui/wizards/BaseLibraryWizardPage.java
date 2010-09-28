@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 	
 	private static final String STANDARD_BROWSER = "/StandardBrowser/"; //$NON-NLS-1$
-	private static final String HTML4 = "html4"; //$NON-NLS-1$
+//	private static final String HTML4 = "html4"; //$NON-NLS-1$
 	private static final String HTML5 = "html5"; //$NON-NLS-1$
 	
 	
@@ -50,7 +50,7 @@ public class BaseLibraryWizardPage extends NewElementWizardPage implements IJsGl
 	public boolean finish() {
 		switch (fVersionField.getSelectionIndex()) {
 			case 0 : {
-				fPath = new Path(org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB + STANDARD_BROWSER + HTML4);
+				fPath = new Path(org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB);
 			}
 				break;
 			case 1 : {

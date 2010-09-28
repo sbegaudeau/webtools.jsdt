@@ -18,10 +18,7 @@ public class Messages extends NLS {
 	public static String BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;
 
 	public static String BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
-
-	public static String BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
-
-	public static String BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;
+	public static String BasicBrowserLibraryJsGlobalScopeContainerInitializer_HTML5Browser;
 
 	static {
 		// initialize resource bundle
