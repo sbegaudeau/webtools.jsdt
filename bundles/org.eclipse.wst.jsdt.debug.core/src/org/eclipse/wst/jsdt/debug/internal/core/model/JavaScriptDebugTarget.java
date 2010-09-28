@@ -46,6 +46,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
@@ -90,6 +91,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	private ThreadEnterRequest threadEnterRequest;
 	private ThreadExitRequest threadExitRequest;
 	private ScriptLoadRequest scriptLoadrequest;
+	private VMDeathRequest deathRequest;
 
 	private DebuggerStatementRequest debuggerStatementRequest;
 	
@@ -128,6 +130,10 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		scriptLoadrequest = getEventRequestManager().createScriptLoadRequest();
 		scriptLoadrequest.setEnabled(true);
 		addJSDIEventListener(this, scriptLoadrequest);
+		
+		deathRequest = getEventRequestManager().createVMDeathRequest();
+		deathRequest.setEnabled(true);
+		addJSDIEventListener(this, deathRequest);
 		
 		getLaunch().addDebugTarget(this);
 
@@ -175,6 +181,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		removeAllThreads();
 		removeAllBreakpoints();
 		removeJSDIEventListener(this, scriptLoadrequest);
+		removeJSDIEventListener(this, deathRequest);
 		this.scriptgroup = null;
 	}
 
@@ -302,7 +309,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 */
 	public synchronized List allScripts() {
 		if(iScriptCache == null) {
-			ArrayList all = (ArrayList) getVM().allScripts();
+			List all = getVM().allScripts();
 			if(all.size() > 0) { 
 				iScriptCache = new ArrayList(all.size());
 				for (int i = 0; i < all.size(); i++) {
