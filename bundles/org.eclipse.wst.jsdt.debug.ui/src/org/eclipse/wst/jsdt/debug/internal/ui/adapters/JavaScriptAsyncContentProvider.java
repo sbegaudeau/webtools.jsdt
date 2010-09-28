@@ -55,7 +55,7 @@ public class JavaScriptAsyncContentProvider extends ElementContentProvider {
 		if(element instanceof IJavaScriptDebugTarget) {
 			IJavaScriptDebugTarget target = (IJavaScriptDebugTarget) element;
 			int count = target.getThreads().length;
-			if(PreferencesManager.getManager().showLoadedScripts()) {
+			if(target.getScriptGroup() != null && PreferencesManager.getManager().showLoadedScripts()) {
 				count = count + 1;
 			}
 			return count;
