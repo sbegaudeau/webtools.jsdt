@@ -26,10 +26,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.preferences.CodeTemplatePreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,6 +41,9 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.preferences.CodeTemplatePreferencePage;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 class NewJSFileWizardPage extends WizardNewFileCreationPage {
@@ -315,6 +314,7 @@ path.append("/"); //$NON-NLS-1$
 				cu.becomeWorkingCopy(new NullProgressMonitor());
 				cu.getBuffer().setContents(CodeGeneration.getFileComment(cu, StubUtility.getLineDelimiterUsed(cu)));
 				cu.commitWorkingCopy(true, new NullProgressMonitor());
+				cu.discardWorkingCopy();
 			} catch (CoreException e) {
 				JavaScriptPlugin.log(e);
 			}
