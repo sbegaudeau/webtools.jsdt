@@ -344,7 +344,6 @@
             name="%commandCategory.name">
       </category>
       <command
-            category="org.eclipse.wst.jsdt.debug.ui.category"
             categoryId="org.eclipse.wst.jsdt.debug.ui.category"
             description="%evaluateAction.description"
             helpContextId="evaluate_command_help_context"
