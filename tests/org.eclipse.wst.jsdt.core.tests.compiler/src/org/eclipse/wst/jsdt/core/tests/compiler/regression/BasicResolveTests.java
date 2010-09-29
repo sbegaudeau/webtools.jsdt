@@ -1760,4 +1760,31 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			);
 	}
 	
+	public void testbug324241() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"var com = {};\n" +
+							"com.MyType = function() {};\n" +
+							"com.MyType.prototype.reload = function() {};\n" +
+							"var c = new com.MyType();\n" +
+							"var y = c.reload();\n" +
+							"var x = c.reload;\n" +
+							"c.reload2();\n" +
+							"c.reload2;"
+					},
+					"----------\n" + 
+					"1. ERROR in Z.js (at line 7)\n" + 
+					"	c.reload2();\n" + 
+					"	  ^^^^^^^\n" + 
+					"The function reload2() is undefined for the type com.MyType\n" + 
+					"----------\n" + 
+					"2. WARNING in Z.js (at line 8)\n" + 
+					"	c.reload2;\n" + 
+					"	  ^^^^^^^\n" + 
+					"reload2 cannot be resolved or is not a field\n" + 
+					"----------\n"
+			);
+	}
+	
 }
