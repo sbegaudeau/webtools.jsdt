@@ -60,6 +60,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.TextUtils;
 import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptExceptionBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptValue;
+import org.eclipse.wst.jsdt.debug.internal.ui.eval.JavaScriptInspectExpression;
 
 /**
  * Default model presentation for JSDI model elements
@@ -162,6 +163,10 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 				else if(element instanceof IScript) {
 					buffer.append(getScriptText((IScript) element));
 				}
+			}
+			if(element instanceof JavaScriptInspectExpression) {
+				JavaScriptInspectExpression exp = (JavaScriptInspectExpression) element;
+				return exp.getValue().getReferenceTypeName();
 			}
 			if(element instanceof ITerminate) {
 				if(((ITerminate)element).isTerminated()) {

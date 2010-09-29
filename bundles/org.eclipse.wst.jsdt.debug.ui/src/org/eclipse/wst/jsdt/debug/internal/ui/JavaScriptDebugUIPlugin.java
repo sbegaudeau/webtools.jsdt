@@ -26,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.ui.eval.EvaluationManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -57,6 +58,7 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin implements IWorkbe
 		super.start(context);
 		plugin = this;
 		PlatformUI.getWorkbench().addWorkbenchListener(this);
+		EvaluationManager.getManager().start();
 	}
 
 	/*
@@ -67,6 +69,7 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin implements IWorkbe
 		try {
 			plugin = null;
 			PlatformUI.getWorkbench().removeWorkbenchListener(this);
+			EvaluationManager.getManager().stop();
 			super.stop(context);
 		}
 		finally {

@@ -220,6 +220,61 @@
                tooltip="%openSourceObjectAction.tooltip">
          </action>
       </objectContribution>
+      <viewerContribution
+            id="org.eclipse.wst.jsdt.debug.ui.classfile.editor.actions"
+            targetID="#ClassFileEditorContext">
+         <visibility>
+            <and>
+               <objectClass
+                     name="org.eclipse.jface.text.ITextSelection">
+               </objectClass>
+               <systemProperty
+                     name="org.eclipse.wst.jsdt.debug.ui.jsdebuggerActive"
+                     value="true">
+               </systemProperty>
+            </and>
+         </visibility>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.EvaluateEditorPopupAction"
+               definitionId="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
+               helpContextId="evaluate_jsunit_snippet_action_context"
+               icon="$nl$/icons/elcl16/jsbook_obj.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.jsunit.popup.evaluate"
+               label="%evaluateAction.label"
+               menubarPath="jsdebug"
+               tooltip="%evaluateAction.description">
+         </action>
+      </viewerContribution>
+      <viewerContribution
+            id="org.eclipse.wst.jsdt.debug.ui.jsunit.editor.actions"
+            targetID="#JavaScriptEditorContext">
+         <visibility>
+            <and>
+               <objectClass
+                     name="org.eclipse.jface.text.ITextSelection">
+               </objectClass>
+               <systemProperty
+                     name="org.eclipse.wst.jsdt.debug.ui.jsdebuggerActive"
+                     value="true">
+               </systemProperty>
+            </and>
+         </visibility>
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.actions.EvaluateEditorPopupAction"
+               definitionId="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
+               helpContextId="evaluate_jsunit_snippet_action_context"
+               icon="$nl$/icons/elcl16/jsbook_obj.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.jsunit.popup.evaluate"
+               label="%evaluateAction.label"
+               menubarPath="jsdebug"
+               tooltip="%evaluateAction.description">
+         </action>
+         <menu
+               id="org.eclipse.wst.jsdt.debug.ui.jsdebug.cu.menu"
+               label="%javascriptMenu.name"
+               path="additions">
+         </menu>
+      </viewerContribution>
    </extension>
    <extension
          point="org.eclipse.debug.ui.debugModelPresentations">
@@ -260,6 +315,12 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+3">
       </key>
+      <key
+            commandId="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
+            contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M3+M2+E">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -282,6 +343,14 @@
             id="org.eclipse.wst.jsdt.debug.ui.category"
             name="%commandCategory.name">
       </category>
+      <command
+            category="org.eclipse.wst.jsdt.debug.ui.category"
+            categoryId="org.eclipse.wst.jsdt.debug.ui.category"
+            description="%evaluateAction.description"
+            helpContextId="evaluate_command_help_context"
+            id="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
+            name="%evaluateCommand.label">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.viewActions">
@@ -469,6 +538,14 @@
       <initializer
             class="org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.wst.jsdt.debug.internal.ui.actions.EvaluateEditorPopupAction"
+            commandId="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
+            helpContextId="evaluate_command_help_context">
+      </handler>
    </extension>
 
 </plugin>
