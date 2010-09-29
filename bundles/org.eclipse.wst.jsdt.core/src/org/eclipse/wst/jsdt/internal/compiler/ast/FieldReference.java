@@ -463,7 +463,8 @@ if( this.isPrototype() ){
 		}
 		
 		this.resolvedType= scope.getJavaLangFunction();
-		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+		this.binding = new FieldBinding(((MethodBinding) memberBinding).selector, this.receiverType, ((MethodBinding) memberBinding).modifiers, methodBinding.declaringClass);
+		//this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
 		if( memberBinding.isValidBinding() )
 			return this.resolvedType;
 		return null;

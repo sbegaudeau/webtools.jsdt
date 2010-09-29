@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -260,6 +260,24 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 					System.out.print("SELECTION - accept field("); //$NON-NLS-1$
 					System.out.print(field.toString());
 					System.out.println(")"); //$NON-NLS-1$
+				}
+			} else {
+				IFunction method = type.getFunction(new String(name), null);
+				if(method.exists()) {
+					if (uniqueKey != null) {
+						ResolvedSourceField resolvedField = new ResolvedSourceField(
+								(JavaElement)method.getParent(),
+								method.getElementName(),
+								new String(uniqueKey));
+						resolvedField.occurrenceCount = method.getOccurrenceCount();
+						field = resolvedField;
+					}
+					addElement(field);
+					if(SelectionEngine.DEBUG){
+						System.out.print("SELECTION - accept field("); //$NON-NLS-1$
+						System.out.print(field.toString());
+						System.out.println(")"); //$NON-NLS-1$
+					}
 				}
 			}
 		}
