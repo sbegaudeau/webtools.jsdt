@@ -273,6 +273,12 @@
                id="org.eclipse.wst.jsdt.debug.ui.jsdebug.cu.menu"
                label="%javascriptMenu.name"
                path="additions">
+            <groupMarker
+                  name="jsdebug">
+            </groupMarker>
+            <separator
+                  name="jsdebug">
+            </separator>
          </menu>
       </viewerContribution>
    </extension>
