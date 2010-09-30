@@ -183,7 +183,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 				Tracing.writeString("STACKFRAME [request for value lookup failed]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
-		return null;
+		return crossfire().mirrorOfNull();
 	}
 	
 	/**
@@ -194,44 +194,53 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	Value createValue(Map json) {
 		//resolve the smallest type from the crossfire insanity
 		Map smallest = json;
-		Object o = json.get(Attributes.VALUE);
-		if(o instanceof Map) {
-			Map temp = smallest;
-			while(temp != null) {
-				temp = (Map) temp.get(Attributes.VALUE);
-				if(temp != null && temp.containsKey(Attributes.VALUE)) {
-					smallest = temp;
+		Object o = json.get(Attributes.RESULT);
+		if(o == null) {
+			o = json.get(Attributes.VALUE);
+			if(o instanceof Map) {
+				Map temp = smallest;
+				while(temp != null) {
+					temp = (Map) temp.get(Attributes.VALUE);
+					if(temp != null && temp.containsKey(Attributes.VALUE)) {
+						smallest = temp;
+					}
 				}
 			}
+			Object tobj = smallest.get(Attributes.TYPE);
+			String type = null;
+			if(tobj instanceof String) {
+				type = (String) tobj;
+			}
+			else if(tobj instanceof Map) {
+				type = (String) ((Map)tobj).get(Attributes.TYPE);
+			}
+			if(CFUndefinedValue.UNDEFINED.equals(type)) {
+				return crossfire().mirrorOfUndefined();
+			}
+			if(CFNullValue.NULL.equals(type) || type == null) {
+				return crossfire().mirrorOfNull();
+			}
+			if(CFStringValue.STRING.equals(type)) {
+				//TODO
+				return crossfire().mirrorOf(smallest.get(Attributes.VALUE).toString());
+			}
+			if(CFObjectReference.OBJECT.equals(type)) {
+				return new CFObjectReference(crossfire(), this, json);
+			}
+			if(CFArrayReference.ARRAY.equals(type)) {
+				return new CFArrayReference(crossfire(), this, json);
+			}
+			if(CFFunctionReference.FUNCTION.equals(type)) {
+				return new CFFunctionReference(crossfire(), this, json);
+			}
 		}
-		Object tobj = smallest.get(Attributes.TYPE);
-		String type = null;
-		if(tobj instanceof String) {
-			type = (String) tobj;
+		if(o instanceof String) {
+			return crossfire().mirrorOf(o.toString());
 		}
-		else if(tobj instanceof Map) {
-			type = (String) ((Map)tobj).get(Attributes.TYPE);
+		else if(o instanceof Number) {
+			return crossfire().mirrorOf((Number)o);
 		}
-		if(CFUndefinedValue.UNDEFINED.equals(type)) {
-			return crossfire().mirrorOfUndefined();
-		}
-		if(CFNullValue.NULL.equals(type) || type == null) {
-			return crossfire().mirrorOfNull();
-		}
-		if(CFStringValue.STRING.equals(type)) {
-			//TODO
-			return crossfire().mirrorOf(smallest.get(Attributes.VALUE).toString());
-		}
-		if(CFObjectReference.OBJECT.equals(type)) {
-			return new CFObjectReference(crossfire(), this, json);
-		}
-		if(CFArrayReference.ARRAY.equals(type)) {
-			return new CFArrayReference(crossfire(), this, json);
-		}
-		if(CFFunctionReference.FUNCTION.equals(type)) {
-			return new CFFunctionReference(crossfire(), this, json);
-		}
-		return null;
+		return crossfire().mirrorOfNull();
 	}
 	
 	/**

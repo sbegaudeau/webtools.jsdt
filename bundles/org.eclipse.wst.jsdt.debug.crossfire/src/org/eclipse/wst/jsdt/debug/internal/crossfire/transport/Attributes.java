@@ -22,6 +22,7 @@ public interface Attributes {
 	public static final String OBJECT = "object"; //$NON-NLS-1$
 	public static final String NUMBER = "number"; //$NON-NLS-1$
 	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
+	public static final String RESULT = "result"; //$NON-NLS-1$
 	
 	/**
 	 * The "arguments" attribute
