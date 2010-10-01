@@ -102,8 +102,8 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 					deleteRequest(this, request);
 					request = null;
 				}
-				resumeUnderlyingThread();
-				fireResumeEvent(DebugEvent.CLIENT_REQUEST);
+			/*	resumeUnderlyingThread();
+				fireResumeEvent(DebugEvent.CLIENT_REQUEST);*/
 			} finally {
 				pendingstep = null;
 			}
@@ -500,6 +500,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		}
 		if ((suspend & IJavaScriptBreakpointParticipant.SUSPEND) > 0 || suspend == IJavaScriptBreakpointParticipant.DONT_CARE) {
 			addBreakpoint(breakpoint);
+			if(pendingstep != null) {
+				pendingstep.abort();
+			}
 			return true;
 		}
 		return false;
