@@ -40,6 +40,22 @@ public class CFProperty extends CFMirror implements Property {
 		this.ref = ref;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param vm
+	 * @param frame
+	 * @param name
+	 * @param ref
+	 */
+	public CFProperty(CFVirtualMachine vm, CFStackFrame frame, String name, Value val) {
+		super(vm);
+		this.frame = frame;
+		this.name = name;
+		this.value = val;
+		this.ref = new Integer(-1);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Property#name()
 	 */

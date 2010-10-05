@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
@@ -46,13 +50,44 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 		super(vm);
 		this.frame = frame;
 		handle = (Number) body.get(Attributes.HANDLE);
+		if(handle == null) {
+			handle = new Integer(-1);
+	 		//init properties - we are dealing with evaluation results
+			Map props = (Map) body.get(Attributes.RESULT);
+			if(props == null) {
+				Object o = body.get(Attributes.VALUE);
+				if(o instanceof Map) {
+					props = (Map) body.get(Attributes.VALUE);
+				}
+				else {
+					props = body;
+				}
+			}
+			if(props != null) {
+				if(props.containsKey(Attributes.VALUE)) {
+					/*properties = new ArrayList(props.size());
+					properties.add(frame.createValue(props));*/
+				}
+				else {
+					if(properties == null) {
+						properties = new ArrayList(props.size());
+					}
+					Entry entry = null;
+					for(Iterator i = props.entrySet().iterator(); i.hasNext();) {
+						entry = (Entry) i.next();
+						properties.add(new CFProperty(crossfire(), frame, (String)entry.getKey(), frame.createValue(entry.getValue())));
+					}
+				}
+			}
+			
+		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */
 	public String valueString() {
-		return null;
+		return OBJECT;
 	}
 
 	/* (non-Javadoc)
@@ -68,7 +103,7 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public Value constructor() {
 		synchronized (frame) {
 			if(constructor == null) {
-				//TODO
+				return crossfire().mirrorOfUndefined();
 			}
 		}
 		return constructor;
@@ -80,7 +115,7 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public Value prototype() {
 		synchronized (frame) {
 			if(prototype == null) {
-				//TODO
+				return crossfire().mirrorOfUndefined();
 			}
 		}
 		return prototype;
@@ -92,7 +127,7 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public List properties() {
 		synchronized (frame) {
 			if(properties == null) {
-				//TODO
+				return Collections.EMPTY_LIST;
 			}
 		}
 		return properties;

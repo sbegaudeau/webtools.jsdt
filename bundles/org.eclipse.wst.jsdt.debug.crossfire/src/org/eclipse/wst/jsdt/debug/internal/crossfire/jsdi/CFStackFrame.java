@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
+import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Variable;
@@ -191,54 +192,68 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * @param json
 	 * @return the new {@link Value} or <code>null</code> if one could not be created
 	 */
-	Value createValue(Map json) {
+	Value createValue(Object val) {
 		//resolve the smallest type from the crossfire insanity
-		Map smallest = json;
-		Object o = json.get(Attributes.RESULT);
-		if(o == null) {
-			o = json.get(Attributes.VALUE);
-			if(o instanceof Map) {
-				Map temp = smallest;
-				while(temp != null) {
-					temp = (Map) temp.get(Attributes.VALUE);
-					if(temp != null && temp.containsKey(Attributes.VALUE)) {
-						smallest = temp;
-					}
+		if(val instanceof Map) {
+			Map values = (Map) val;
+			Object o = values.get(Attributes.RESULT);
+			if(o == null) {
+				String type = (String) values.get(Attributes.TYPE);
+				if(type != null) {
+					return createTypeValue(type, values);
 				}
 			}
-			Object tobj = smallest.get(Attributes.TYPE);
-			String type = null;
-			if(tobj instanceof String) {
-				type = (String) tobj;
+			if(o instanceof Map){
+				return new CFObjectReference(crossfire(), this, (Map) o);
 			}
-			else if(tobj instanceof Map) {
-				type = (String) ((Map)tobj).get(Attributes.TYPE);
+			if(o instanceof String) {
+				return crossfire().mirrorOf(o.toString());
 			}
-			if(CFUndefinedValue.UNDEFINED.equals(type)) {
+			else if(o instanceof Number) {
+				return crossfire().mirrorOf((Number)o);
+			}
+		}
+		else if(val instanceof Map) {
+			return new CFObjectReference(crossfire(), this, (Map) val);
+		}
+		else if(val instanceof String) {
+			String str = (String) val;
+			if(CFUndefinedValue.UNDEFINED.equals(str)) {
 				return crossfire().mirrorOfUndefined();
 			}
-			if(CFNullValue.NULL.equals(type) || type == null) {
-				return crossfire().mirrorOfNull();
-			}
-			if(CFStringValue.STRING.equals(type)) {
-				//TODO
-				return crossfire().mirrorOf(smallest.get(Attributes.VALUE).toString());
-			}
-			if(CFObjectReference.OBJECT.equals(type)) {
-				return new CFObjectReference(crossfire(), this, json);
-			}
-			if(CFArrayReference.ARRAY.equals(type)) {
-				return new CFArrayReference(crossfire(), this, json);
-			}
-			if(CFFunctionReference.FUNCTION.equals(type)) {
-				return new CFFunctionReference(crossfire(), this, json);
-			}
+			return crossfire().mirrorOf((String) val); 
 		}
-		if(o instanceof String) {
-			return crossfire().mirrorOf(o.toString());
+		else if(val instanceof Number) {
+			return crossfire().mirrorOf((Number) val);
 		}
-		else if(o instanceof Number) {
-			return crossfire().mirrorOf((Number)o);
+		return crossfire().mirrorOfNull();
+	}
+	
+	/**
+	 * Create a new {@link Value} based on the given type
+	 * 
+	 * @param type the type
+	 * @param map the map of value information
+	 * @return the new {@link Value} for the given type or {@link NullValue} if a value cannot be computed
+	 */
+	Value createTypeValue(String type, Map map) {
+		if(CFUndefinedValue.UNDEFINED.equals(type)) {
+			return crossfire().mirrorOfUndefined();
+		}
+		if(CFNullValue.NULL.equals(type) || type == null) {
+			return crossfire().mirrorOfNull();
+		}
+		if(CFStringValue.STRING.equals(type)) {
+			return crossfire().mirrorOf(map.get(Attributes.VALUE).toString());
+		}
+		if(CFObjectReference.OBJECT.equals(type)) {
+			return new CFObjectReference(crossfire(), this, map);
+		}
+		if(CFArrayReference.ARRAY.equals(type)) {
+			return new CFArrayReference(crossfire(), this, map);
+		}
+		if(CFFunctionReference.FUNCTION.equals(type)) {
+			return new CFFunctionReference(crossfire(), this, map);
 		}
 		return crossfire().mirrorOfNull();
 	}

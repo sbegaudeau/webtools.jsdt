@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 
 /**
  * Default implementation of {@link FunctionReference} for Crossfire
@@ -36,6 +37,7 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	 */
 	public CFFunctionReference(CFVirtualMachine vm, CFStackFrame frame, Map body) {
 		super(vm, frame, body);
+		funcname = (String) body.get(Attributes.VALUE);
 	}
 
 	/* (non-Javadoc)
@@ -50,5 +52,12 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	 */
 	public String functionBody() {
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFObjectReference#valueString()
+	 */
+	public String valueString() {
+		return FUNCTION;
 	}
 }
