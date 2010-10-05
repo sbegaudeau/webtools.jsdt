@@ -799,15 +799,37 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			return;
 		}
 		try {
-			((JavaScriptBreakpoint) breakpoint).addToTarget(this);
 			synchronized (this.breakpoints) {
-				this.breakpoints.add(breakpoint);
+				if(!this.breakpoints.contains(breakpoint)) {
+					if(!shouldSkipBreakpoint(breakpoint)) {
+						//only add to the VM if it should not be skipped
+						((JavaScriptBreakpoint) breakpoint).addToTarget(this);
+					}
+					this.breakpoints.add(breakpoint);
+				}
 			}
 		} catch (CoreException ce) {
 			JavaScriptDebugPlugin.log(ce);
 		}
 	}
 
+	/**
+	 * Returns if the given breakpoint should be skipped
+	 * 
+	 * @param breakpoint
+	 * @return <code>true</code> if the breakpoint should be skipped, <code>false</code> otherwise
+	 */
+	boolean shouldSkipBreakpoint(IBreakpoint breakpoint) {
+		try {
+			DebugPlugin plugin = DebugPlugin.getDefault();
+			return plugin != null && breakpoint.isRegistered() && !plugin.getBreakpointManager().isEnabled();
+		}
+		catch(CoreException ce) {
+			//there is something wrong, skip it
+			return true;
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -815,8 +837,6 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * org.eclipse.debug.core.IBreakpointListener#breakpointChanged(org.eclipse.debug.core.model.IBreakpoint, org.eclipse.core.resources.IMarkerDelta)
 	 */
 	public synchronized void breakpointChanged(IBreakpoint breakpoint,IMarkerDelta delta) {
-		breakpointRemoved(breakpoint, delta);
-		breakpointAdded(breakpoint);
 	}
 
 	/*
