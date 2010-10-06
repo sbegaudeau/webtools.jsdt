@@ -98,7 +98,10 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			JavaScriptPrimitiveValue nvalue = (JavaScriptPrimitiveValue)this.value;
 			return nvalue.stringValue();
 		}
-		return this.value.valueString();
+		if(this.value != null) {
+			return this.value.valueString();
+		}
+		return UNDEFINED;
 	}
 
 	/*
