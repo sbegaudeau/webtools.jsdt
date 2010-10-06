@@ -62,6 +62,10 @@ public interface Commands {
 	 */
 	public static final String LOOKUP = "lookup"; //$NON-NLS-1$
 	/**
+	 * The "scope" command
+	 */
+	public static final String SCOPE = "scope"; //$NON-NLS-1$
+	/**
 	 * The "scopes" command
 	 */
 	public static final String SCOPES = "scopes"; //$NON-NLS-1$

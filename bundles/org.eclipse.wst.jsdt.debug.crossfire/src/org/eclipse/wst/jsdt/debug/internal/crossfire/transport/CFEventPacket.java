@@ -79,6 +79,14 @@ public class CFEventPacket extends CFPacket implements Event {
 	 * The "onContextDestroyed" event kind
 	 */
 	public static final String ON_CONTEXT_DESTROYED = "onContextDestroyed"; //$NON-NLS-1$
+	/**
+	 * The "onContextChanged" event kind
+	 */
+	public static final String ON_CONTEXT_CHANGED = "onContextChanged"; //$NON-NLS-1$
+	/**
+	 * The "onContextLoaded" event kind
+	 */
+	public static final String ON_CONTEXT_LOADED = "onContextLoaded"; //$NON-NLS-1$
 	
 	private final String event;
 	private final Map body = Collections.synchronizedMap(new HashMap());
@@ -129,7 +137,9 @@ public class CFEventPacket extends CFPacket implements Event {
 	public Map toJSON() {
 		Map json = super.toJSON();
 		json.put(EVENT, event);
-		json.put(Attributes.BODY, body);
+		if(body.size() > 0) {
+			json.put(Attributes.BODY, body);
+		}
 		return json;
 	}
 	

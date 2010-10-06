@@ -144,6 +144,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame#evaluate(java.lang.String)
 	 */
 	public Value evaluate(String expression) {
+		scope();
 		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, thread.id());
 		request.setArgument(Attributes.FRAME, new Integer(index));
 		request.setArgument(Attributes.EXPRESSION, expression);
@@ -266,5 +267,39 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public synchronized boolean isVisible(CFVariable variable) {
 		return vars != null && (thisvar == variable || vars.contains(variable));
+	}
+	
+	/**
+	 * Gets all of the scopes from Firebug
+	 */
+	void allScopes() {
+		CFRequestPacket request = new CFRequestPacket(Commands.SCOPES, thread.id());
+		request.setArgument(Attributes.FRAME_NUMBER, new Integer(index));
+		CFResponsePacket response = crossfire().sendRequest(request);
+		if(!response.isSuccess() && TRACE) {
+			Tracing.writeString("VM [failed scopes request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		}
+	}
+	
+	/**
+	 * Gets the scope for this frame
+	 */
+	void scope() {
+		CFRequestPacket request = new CFRequestPacket(Commands.SCOPE, thread.id());
+		request.setArgument(Attributes.FRAME_NUMBER, new Integer(index));
+		request.setArgument(Attributes.NUMBER, new Integer(0));
+		CFResponsePacket response = crossfire().sendRequest(request);
+		if(response.isSuccess()) {
+			Map scope = (Map) response.getBody().get(Attributes.OBJECT);
+			if(scope != null) {
+				String ref = (String) scope.get(Attributes.HANDLE);
+				if(ref != null) {
+					//TODO what to do with this:
+				}
+			}
+		}
+		else if(TRACE) {
+			Tracing.writeString("VM [failed scopes request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		}
 	}
 }

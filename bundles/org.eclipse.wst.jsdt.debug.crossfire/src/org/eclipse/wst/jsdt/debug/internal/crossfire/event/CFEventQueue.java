@@ -80,7 +80,6 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						VMDeathRequest request = (VMDeathRequest) iter.next();
 						set.add(new CFVMDeathEvent(crossfire(), request));
 					}
-					crossfire().terminate();
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.CLOSED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -142,15 +141,21 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					}
 				}
 				else if(CFEventPacket.ON_CONTEXT_CREATED.equals(name)) {
-					List threads = eventmgr.threadEnterRequests();
-					CFThreadReference thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.HREF));
-					set.setThread(thread);
-					for (Iterator iter = threads.iterator(); iter.hasNext();) {
-						ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
-						set.add(new CFThreadEnterEvent(crossfire(), request, thread));
-					}
+					handleContext(set, event, false);
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(CFEventPacket.ON_CONTEXT_CHANGED.equals(name)) {
+					handleContext(set, event, true);
+					if(TRACE) {
+						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_CHANGED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
+				else if(CFEventPacket.ON_CONTEXT_LOADED.equals(name)) {
+					handleContext(set, event, true);
+					if(TRACE) {
+						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_LOADED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(CFEventPacket.ON_CONTEXT_DESTROYED.equals(name)) {
@@ -167,6 +172,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
+				
 				else if(CFEventPacket.ON_CONSOLE_DEBUG.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -201,6 +207,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_TOGGLE_BREAKPOINT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else {
 					if(TRACE) {
@@ -225,6 +232,29 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 			CrossFirePlugin.log(te);
 		}
 		return null;
+	}
+	
+	/**
+	 * Handles a context created, loaded, and changed event
+	 * @param set the {@link EventSet} to add to
+	 * @param event the {@link CFEventPacket} received
+	 * @param lookup if we should try to lookup the {@link ThreadReference} before creating a new one
+	 */
+	void handleContext(CFEventSet set, CFEventPacket event, boolean lookup) {
+		List threads = eventmgr.threadEnterRequests();
+		CFThreadReference thread = null;
+		if(lookup) {
+			thread = crossfire().findThread(event.getContextId());
+		}
+		if(thread == null) {
+			thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.HREF));
+		}
+		set.setThread(thread);
+		for (Iterator iter = threads.iterator(); iter.hasNext();) {
+			ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
+			set.add(new CFThreadEnterEvent(crossfire(), request, thread));
+		}
+		
 	}
 	
 	/**
