@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider;
 import org.eclipse.debug.internal.ui.viewers.model.provisional.IModelProxyFactory2;
+import org.eclipse.debug.ui.actions.IRunToLineTarget;
 import org.eclipse.debug.ui.actions.IToggleBreakpointsTarget;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -22,6 +23,7 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.core.model.IScriptGroup;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointAdapter;
+import org.eclipse.wst.jsdt.debug.internal.ui.eval.RunToLineAdapter;
 
 /**
  * Adapter factory
@@ -73,6 +75,7 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	static ToggleBreakpointAdapter tbadapter = null;
 	static JavaScriptAsyncContentProvider jscontent = null;
 	static JavaScriptModelProxyFactory jsproxyfactory = null;
+	static RunToLineAdapter runtoline = null;
 	
 	/*
 	 * (non-Javadoc)
@@ -85,6 +88,9 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 		}
 		if(adapterType.equals(IWorkbenchAdapter.class) && adaptableObject instanceof IJavaScriptBreakpoint) {
 			return getWorkbenchAdapter();
+		}
+		if(adapterType.equals(IRunToLineTarget.class)) {
+			return getRunToLine();
 		}
 		if (adapterType.equals(IElementContentProvider.class)) {
 			if (adaptableObject instanceof IJavaScriptDebugTarget ||
@@ -105,9 +111,20 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	 */
 	public Class[] getAdapterList() {
 		return new Class[] {IToggleBreakpointsTarget.class, 
-				IWorkbenchAdapter.class, 
+				IWorkbenchAdapter.class,
+				IRunToLineTarget.class,
 				IElementContentProvider.class,
 				IModelProxyFactory2.class};
+	}
+	
+	/**
+	 * @return the singleton {@link RunToLineAdapter}
+	 */
+	synchronized RunToLineAdapter getRunToLine() {
+		if(runtoline == null) {
+			runtoline = new RunToLineAdapter();
+		}
+		return runtoline;
 	}
 	
 	/**

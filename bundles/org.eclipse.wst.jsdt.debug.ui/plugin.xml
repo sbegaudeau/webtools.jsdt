@@ -37,6 +37,9 @@
          <adapter
                type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
          </adapter>
+         <adapter
+               type="org.eclipse.debug.ui.actions.IRunToLineTarget">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.eclipse.wst.jsdt.core.IFunction"
@@ -551,6 +554,18 @@
             commandId="org.eclipse.wst.jsdt.debug.ui.evaluate.command"
             helpContextId="evaluate_command_help_context">
       </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            activate="true"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.eval.JavaScriptHyperlinkDetector"
+            description="Allows for quickly stepping into functions in JavaScript source using hyper-links"
+            id="org.eclipse.wst.jsdt.debug.ui.hyperlink.detector"
+            modifierKeys="M1+M3"
+            name="Step Into Selection"
+            targetId="org.eclipse.wst.jsdt.ui.javaCode">
+      </hyperlinkDetector>
    </extension>
 
 </plugin>
