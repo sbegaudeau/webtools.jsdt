@@ -284,7 +284,7 @@ public void test05g() {
 	String s = 
 		"var foo = '  \\\r"+
 		"\r"+
-		"    ';"+
+		"    \";"+
 		"	\r"; 	
 
 	String expectedSyntaxErrorDiagnosis =
@@ -306,7 +306,7 @@ public void test05h() {
 	String s = 
 		"var foo = \"  \\\r"+
 		"\r"+
-		"    \";"+
+		"    ';"+
 		"	\r"; 	
 
 	String expectedSyntaxErrorDiagnosis =
