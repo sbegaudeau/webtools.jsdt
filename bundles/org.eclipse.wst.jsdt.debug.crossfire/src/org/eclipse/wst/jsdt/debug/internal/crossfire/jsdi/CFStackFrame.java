@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,22 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
  */
 public class CFStackFrame extends CFMirror implements StackFrame {
 
+	/**
+	 * Describes a scope
+	 */
+	class Scope {
+		Number idx = null;
+		Number fidx = null;
+		Number ref = null;
+		public Scope(Number idx, Number fidx, Number ref) {
+			this.idx = idx;
+			this.fidx = fidx;
+			this.ref = ref;
+		}
+	}
+	
+	HashMap scopes = new HashMap();
+	
 	private int index = -1;
 	private String scriptid = null;
 	private String funcname = null;
@@ -54,19 +72,59 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	public CFStackFrame(VirtualMachine vm, CFThreadReference thread, Map json) {
 		super(vm);
 		this.thread = thread;
-		Number value = (Number) json.get(Attributes.INDEX);
+		Number value = getNumber(json, Attributes.INDEX);
 		if(value != null) {
 			index = value.intValue();
 		}
-		value = (Number) json.get(Attributes.LINE);
+		value = getNumber(json, Attributes.LINE);
 		if(value != null) {
 			linenumber = value.intValue();
 		}
 		scriptid = (String) json.get(Attributes.SCRIPT);
 		funcname = (String) json.get(Attributes.FUNC);
+		
+		parseScopes((List) json.get(Attributes.SCOPES));
 		parseLocals((Map) json.get(Attributes.LOCALS));
 	}
 
+	/**
+	 * Parses the scopes object node, if there is one
+	 * 
+	 * @param list the list of scopes
+	 */
+	void parseScopes(List list) {
+		if(list != null) {
+			for (Iterator i = list.iterator(); i.hasNext();) {
+				Map map = (Map) i.next();
+				Scope s = new Scope(getNumber(map, Attributes.INDEX), getNumber(map, Attributes.FRAME_INDEX), getNumber((Map)map.get(Attributes.OBJECT),Attributes.HANDLE));
+				scopes.put(new Integer(index), s);
+			}
+		}
+	}
+	
+	/**
+	 * Tries to look up a {@link Number} value from the given map with the given name. This method
+	 * will try to convert a string value to a number if found mapped to the given attribute name.
+	 * <br><br>
+	 * If a {@link Number} cannot be computed <code>null</code> is returned
+	 * @param map
+	 * @param attrib
+	 * @return the {@link Number} mapped to the given attribute or <code>null</code>
+	 */
+	Number getNumber(Map map, String attrib) {
+		Object o = map.get(attrib);
+		if(o instanceof Number) {
+			return (Number) o;
+		}
+		else if(o instanceof String) {
+			try {
+				return new BigDecimal((String)o);
+			}
+			catch(NumberFormatException nfe) {}
+		}
+		return null;
+	}
+	
 	/**
 	 * Read the local variable information from the json mapping
 	 * 
@@ -81,8 +139,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			}
 			Map thismap = (Map) json.get(Attributes.THIS); 
 			if(thismap != null) {
-				thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, json);
-				parseLocals(thismap);
+				thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, thismap);
 			}
 		}
 	}
@@ -179,7 +236,14 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			request.setArgument(Attributes.HANDLE, ref);
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				return createValue(response.getBody());
+				Map value = (Map) response.getBody().get(Attributes.VALUE);
+				if(value != null) {
+					Number handle = (Number) value.get(Attributes.HANDLE);
+					if(handle == null) {
+						value.put(Attributes.HANDLE, ref);
+					}
+					return createValue(value);
+				}
 			}
 			else if(TRACE) {
 				Tracing.writeString("STACKFRAME [request for value lookup failed]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -247,7 +311,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(CFStringValue.STRING.equals(type)) {
 			return crossfire().mirrorOf(map.get(Attributes.VALUE).toString());
 		}
-		if(CFObjectReference.OBJECT.equals(type)) {
+		if(CFObjectReference.OBJECT.equals(type) || Attributes.REF.equals(type)) {
 			return new CFObjectReference(crossfire(), this, map);
 		}
 		if(CFArrayReference.ARRAY.equals(type)) {

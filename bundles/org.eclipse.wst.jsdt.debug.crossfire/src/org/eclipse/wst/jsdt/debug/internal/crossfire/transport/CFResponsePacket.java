@@ -170,7 +170,9 @@ public class CFResponsePacket extends CFPacket implements Response {
 		Map json = super.toJSON();
 		json.put(Attributes.REQUEST_SEQ, new Integer(requestSequence));
 		json.put(Attributes.COMMAND, command);
-		json.put(Attributes.BODY, body);
+		if(body != null && body.size() > 0) {
+			json.put(Attributes.BODY, body);
+		}
 		json.put(Attributes.SUCCESS, new Boolean(success));
 		json.put(Attributes.RUNNING, new Boolean(running));
 		if (message != null) {

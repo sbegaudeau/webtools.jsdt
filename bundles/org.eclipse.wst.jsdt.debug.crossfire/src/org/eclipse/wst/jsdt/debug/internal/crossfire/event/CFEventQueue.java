@@ -110,6 +110,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							return null;
 						}
 					}
+					else {
+						return null;
+					}
 				}
 				else if(CFEventPacket.ON_RESUME.equals(name)) {
 					if(TRACE) {
@@ -124,6 +127,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						}
 						return null;
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_SCRIPT.equals(name)) {
 					ThreadReference thread = crossfire().findThread(event.getContextId());
@@ -135,6 +139,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							ScriptLoadRequest request = (ScriptLoadRequest) iter.next();
 							set.add(new CFScriptLoadEvent(crossfire(), request, thread, script));
 						}
+					}
+					else {
+						return null;
 					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -168,6 +175,9 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							set.add(new CFThreadExitEvent(crossfire(), request, thread));
 						}
 					}
+					else {
+						return null;
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -177,31 +187,37 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_ERROR.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_INFO.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_INFO+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_LOG.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_LOG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_WARN.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_INSPECT_NODE.equals(name)) {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+					return null;
 				}
 				else if(CFEventPacket.ON_TOGGLE_BREAKPOINT.equals(name)) {
 					if(TRACE) {
@@ -254,7 +270,6 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 			ThreadEnterRequest request = (ThreadEnterRequest) iter.next();
 			set.add(new CFThreadEnterEvent(crossfire(), request, thread));
 		}
-		
 	}
 	
 	/**

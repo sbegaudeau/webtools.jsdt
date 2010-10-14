@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Property;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 
@@ -53,7 +54,9 @@ public class CFProperty extends CFMirror implements Property {
 		this.frame = frame;
 		this.name = name;
 		this.value = val;
-		this.ref = new Integer(-1);
+		if(val instanceof ObjectReference) {
+			this.ref = ((ObjectReference)val).id();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -81,6 +84,9 @@ public class CFProperty extends CFMirror implements Property {
 			if(this.value == null) {
 				this.value = crossfire().mirrorOfUndefined();
 			}
+		}
+		if(this.value == null) {
+			return crossfire().mirrorOfUndefined();
 		}
 		return this.value;
 	}

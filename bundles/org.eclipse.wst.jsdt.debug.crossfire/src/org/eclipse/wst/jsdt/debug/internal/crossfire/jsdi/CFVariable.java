@@ -39,7 +39,7 @@ public class CFVariable extends CFProperty implements Variable {
 		if(values != null) {
 			String kind = (String) values.get(Attributes.TYPE);
 			if(kind != null) {
-				if(kind.equals(Attributes.FUNCTION) || kind.equals(Attributes.STRING)) {
+				if(kind.equals(Attributes.STRING)) {
 					value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
 				}
 				else if(kind.equals(Attributes.NUMBER)) {
@@ -48,6 +48,15 @@ public class CFVariable extends CFProperty implements Variable {
 				else if(kind.equals(Attributes.BOOLEAN)) {
 					value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
 				}
+				else if(kind.equals(Attributes.FUNCTION)) {
+					value = new CFFunctionReference(vm, frame, values);
+				}
+				else if(kind.equals(Attributes.OBJECT)) {
+					value = new CFObjectReference(vm, frame, values);
+				}
+			}
+			else {
+				value = crossfire().mirrorOfUndefined();
 			}
 		}
 	}

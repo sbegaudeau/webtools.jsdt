@@ -17,16 +17,6 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.transport;
  */
 public interface Attributes {
 
-	public static final String FUNCTION = "function"; //$NON-NLS-1$
-	public static final String STRING = "string"; //$NON-NLS-1$
-	public static final String OBJECT = "object"; //$NON-NLS-1$
-	public static final String NUMBER = "number"; //$NON-NLS-1$
-	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
-	public static final String RESULT = "result"; //$NON-NLS-1$
-	public static final String TARGET = "target"; //$NON-NLS-1$
-	public static final String CONDITION = "condition"; //$NON-NLS-1$
-	public static final String FRAME_NUMBER = "frameNumber"; //$NON-NLS-1$
-	
 	/**
 	 * The "arguments" attribute
 	 */
@@ -36,6 +26,10 @@ public interface Attributes {
 	 */
 	public static final String BODY = "body"; //$NON-NLS-1$
 	/**
+	 * The type "boolean"
+	 */
+	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
+	/**
 	 * The "columnOffset" attribute
 	 */
 	public static final String COLUMN_OFFSET = "columnOffset"; //$NON-NLS-1$
@@ -43,6 +37,10 @@ public interface Attributes {
 	 * The "command" attribute
 	 */
 	public static final String COMMAND = "command"; //$NON-NLS-1$
+	/**
+	 * The "condition" argument
+	 */
+	public static final String CONDITION = "condition"; //$NON-NLS-1$
 	/**
 	 * the "context_href" attribute
 	 */
@@ -63,6 +61,7 @@ public interface Attributes {
 	 * The "data" attribute
 	 */
 	public static final String DATA = "data"; //$NON-NLS-1$
+	
 	/**
 	 * The "expression" attribute
 	 */
@@ -71,6 +70,14 @@ public interface Attributes {
 	 * The "frame" attribute
 	 */
 	public static final String FRAME = "frame"; //$NON-NLS-1$
+	/**
+	 * The "frameIndex" argument
+	 */
+	public static final String FRAME_INDEX = "frameIndex"; //$NON-NLS-1$
+	/**
+	 * The "frameNumber" argument
+	 */
+	public static final String FRAME_NUMBER = "frameNumber"; //$NON-NLS-1$
 	/**
 	 * The "frames" attribute
 	 */
@@ -83,6 +90,10 @@ public interface Attributes {
 	 * The "func" attribute
 	 */
 	public static final String FUNC = "func"; //$NON-NLS-1$
+	/**
+	 * The type "function"
+	 */
+	public static final String FUNCTION = "function"; //$NON-NLS-1$
 	/**
 	 * The "handle" attribute
 	 */
@@ -132,7 +143,15 @@ public interface Attributes {
 	 */
 	public static final String MESSAGE = "message"; //$NON-NLS-1$
 	/**
-	 * The "ref" attribute
+	 * The type "number"
+	 */
+	public static final String NUMBER = "number"; //$NON-NLS-1$
+	/**
+	 * The type "object"
+	 */
+	public static final String OBJECT = "object"; //$NON-NLS-1$
+	/**
+	 * The "ref" attribute / type
 	 */
 	public static final String REF = "ref"; //$NON-NLS-1$
 	/**
@@ -140,9 +159,17 @@ public interface Attributes {
 	 */
 	public static final String REQUEST_SEQ = "request_seq"; //$NON-NLS-1$
 	/**
+	 * The "result" attribute
+	 */
+	public static final String RESULT = "result"; //$NON-NLS-1$
+	/**
 	 * The running attribute for this packet
 	 */
 	public static final String RUNNING = "running"; //$NON-NLS-1$
+	/**
+	 * The "scopes" attribute
+	 */
+	public static final String SCOPES = "scopes"; //$NON-NLS-1$
 	/**
 	 * The "script" attribute
 	 */
@@ -159,10 +186,19 @@ public interface Attributes {
 	 * The "sourceLength" attribute
 	 */
 	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
+	public static final String STEPACTION = "stepaction"; //$NON-NLS-1$
+	/**
+	 * The type "string"
+	 */
+	public static final String STRING = "string"; //$NON-NLS-1$
 	/**
 	 * The success attribute for this packet
 	 */
 	public static final String SUCCESS = "success"; //$NON-NLS-1$
+	/**
+	 * The "target" argument
+	 */
+	public static final String TARGET = "target"; //$NON-NLS-1$
 	/**
 	 * The "this" attribute
 	 */

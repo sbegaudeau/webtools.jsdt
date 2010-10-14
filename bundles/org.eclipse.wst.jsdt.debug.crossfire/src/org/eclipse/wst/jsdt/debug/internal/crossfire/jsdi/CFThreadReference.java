@@ -130,14 +130,20 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#resume()
 	 */
 	public void resume() {
-		CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
-		CFResponsePacket response = crossfire().sendRequest(request);
-		if(response.isSuccess()) {
-			clearFrames();
-			state = RUNNING;
-		}
-		else if(TRACE) {
-			Tracing.writeString("THREAD [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		if(isSuspended()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
+			try {
+				CFResponsePacket response = crossfire().sendRequest(request);
+				if(response.isSuccess()) {
+					state = RUNNING;
+				}
+				else if(TRACE) {
+					Tracing.writeString("THREAD [failed continue request] "+JSON.serialize(request)); //$NON-NLS-1$
+				}
+			}
+			finally {
+				clearFrames();
+			}
 		}
 	}
 
@@ -145,15 +151,21 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#suspend()
 	 */
 	public void suspend() {
-		CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, id);
-		CFResponsePacket response = crossfire().sendRequest(request);
-		if(response.isSuccess()) {
-			//XXX catch in case the last resume failed
-			clearFrames();
-			state = SUSPENDED;
-		}
-		else if(TRACE) {
-			Tracing.writeString("THREAD [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		if(isRunning()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, id);
+			try {
+				CFResponsePacket response = crossfire().sendRequest(request);
+				if(response.isSuccess()) {
+					//XXX catch in case the last resume failed
+					state = SUSPENDED;
+				}
+				else if(TRACE) {
+					Tracing.writeString("THREAD [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				}
+			}
+			finally {
+				clearFrames();
+			}
 		}
 	}
 
@@ -188,6 +200,13 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		return state == SUSPENDED;
 	}
 
+	/**
+	 * @return if the thread is in a running state
+	 */
+	public boolean isRunning() {
+		return state == RUNNING;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */

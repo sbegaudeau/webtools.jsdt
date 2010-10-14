@@ -49,37 +49,39 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public CFObjectReference(CFVirtualMachine vm, CFStackFrame frame, Map body) {
 		super(vm);
 		this.frame = frame;
-		handle = (Number) body.get(Attributes.HANDLE);
+		Object h = body.get(Attributes.HANDLE);
+		if(h instanceof String) {
+			try {
+				handle = new Integer((String)h);
+			}
+			catch(NumberFormatException nfe) {}
+		}
+		else if(h instanceof Number) {
+			handle = (Number)h;
+		}
 		if(handle == null) {
-			handle = new Integer(-1);
-	 		//init properties - we are dealing with evaluation results
-			Map props = (Map) body.get(Attributes.RESULT);
-			if(props == null) {
-				Object o = body.get(Attributes.VALUE);
-				if(o instanceof Map) {
-					props = (Map) body.get(Attributes.VALUE);
-				}
-				else {
-					props = body;
-				}
+			handle = new Integer(0);
+		}
+		//init properties - we are dealing with evaluation results
+		Map props = (Map) body.get(Attributes.RESULT);
+		if(props == null) {
+			Object o = body.get(Attributes.VALUE);
+			if(o instanceof Map) {
+				props = (Map) body.get(Attributes.VALUE);
 			}
-			if(props != null) {
-				if(props.containsKey(Attributes.VALUE)) {
-					/*properties = new ArrayList(props.size());
-					properties.add(frame.createValue(props));*/
-				}
-				else {
-					if(properties == null) {
-						properties = new ArrayList(props.size());
-					}
-					Entry entry = null;
-					for(Iterator i = props.entrySet().iterator(); i.hasNext();) {
-						entry = (Entry) i.next();
-						properties.add(new CFProperty(crossfire(), frame, (String)entry.getKey(), frame.createValue(entry.getValue())));
-					}
-				}
+			else if(this.handle == null) {
+				props = body;
 			}
-			
+		}
+		if(props != null) {
+			if(properties == null) {
+				properties = new ArrayList(props.size());
+			}
+			Entry entry = null;
+			for(Iterator i = props.entrySet().iterator(); i.hasNext();) {
+				entry = (Entry) i.next();
+				properties.add(new CFProperty(crossfire(), frame, (String)entry.getKey(), frame.createValue(entry.getValue())));
+			}
 		}
 	}
 	

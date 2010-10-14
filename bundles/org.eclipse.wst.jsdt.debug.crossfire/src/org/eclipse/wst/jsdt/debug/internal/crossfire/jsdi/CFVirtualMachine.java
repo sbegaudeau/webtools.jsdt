@@ -88,7 +88,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINTS, thread.id());
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
-				//TODO init the breakpoints
+				//TODO init breakpoints?
 			}
 			else if(TRACE) {
 				Tracing.writeString("VM [failed getbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -108,22 +108,24 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void resume() {
 		if(ready()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, null);
-			CFResponsePacket response = sendRequest(request);
-			if(response.isSuccess()) {
-				if(threads != null) {
-					Entry entry = null;
-					for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
-						entry = (Entry) iter.next();
-						CFThreadReference thread = (CFThreadReference) entry.getValue();
-						if(thread.isSuspended()) {
-							thread.markSuspended(false);
+			if(threads != null) {
+				Entry entry = null;
+				for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
+					entry = (Entry) iter.next();
+					CFThreadReference thread = (CFThreadReference) entry.getValue();
+					if(thread.isSuspended()) {
+						CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, thread.id());
+						CFResponsePacket response = sendRequest(request);
+						if(response.isSuccess()) {
+							if(thread.isSuspended()) {
+								thread.markSuspended(false);
+							}
+						}
+						else if(TRACE) {
+							Tracing.writeString("VM [failed continue request][context: "+thread.id()+"]: "+JSON.serialize(request)); //$NON-NLS-1$ //$NON-NLS-2$
 						}
 					}
 				}
-			}
-			else if(TRACE) {
-				Tracing.writeString("VM [failed continue request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
@@ -133,22 +135,24 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void suspend() {
 		if(ready()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, null);
-			CFResponsePacket response = sendRequest(request);
-			if(response.isSuccess()) {
-				if(threads != null) {
-					Entry entry = null;
-					for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
-						entry = (Entry) iter.next();
-						CFThreadReference thread = (CFThreadReference) entry.getValue();
-						if(!thread.isSuspended()) {
-							thread.markSuspended(true);
+			if(threads != null) {
+				Entry entry = null;
+				for (Iterator iter = threads.entrySet().iterator(); iter.hasNext();) {
+					entry = (Entry) iter.next();
+					CFThreadReference thread = (CFThreadReference) entry.getValue();
+					if(thread.isRunning()) {
+						CFRequestPacket request = new CFRequestPacket(Commands.SUSPEND, thread.id());
+						CFResponsePacket response = sendRequest(request);
+						if(response.isSuccess()) {
+							if(!thread.isSuspended()) {
+								thread.markSuspended(true);
+							}
+						}
+						else if(TRACE) {
+							Tracing.writeString("VM [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 						}
 					}
 				}
-			}
-			else if(TRACE) {
-				Tracing.writeString("VM [failed suspend request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 	}
