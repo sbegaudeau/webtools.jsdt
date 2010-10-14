@@ -840,12 +840,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	public boolean handleEvent(Event event, JavaScriptDebugTarget target, boolean suspendVote, EventSet eventSet) {
 		if(event instanceof SuspendEvent) {
 			if(canSuspend()) {
-				markSuspended();
-				fireSuspendEvent(DebugEvent.SUSPEND);
-				return true;
+				if(this.thread.equals(((SuspendEvent)event).thread())) {
+					markSuspended();
+					fireSuspendEvent(DebugEvent.SUSPEND);
+					return false;
+				}
 			}
 		}
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
