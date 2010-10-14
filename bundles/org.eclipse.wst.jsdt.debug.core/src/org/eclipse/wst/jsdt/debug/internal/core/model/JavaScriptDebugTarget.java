@@ -104,8 +104,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 	 * @param supportsTerminate
 	 * @param supportsDisconnect
 	 */
-	public JavaScriptDebugTarget(VirtualMachine vm, IProcess process, ILaunch launch,
-			boolean supportsTerminate, boolean supportsDisconnect) {
+	public JavaScriptDebugTarget(VirtualMachine vm, IProcess process, ILaunch launch, boolean supportsTerminate, boolean supportsDisconnect) {
 		super(null);
 		this.vm = vm;
 		this.process = process;
@@ -164,7 +163,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			}
 		} catch (DebugException e) {
 			JavaScriptDebugPlugin.log(e);
-		} finally {
+			//in case we failed
 			cleanup();
 			fireTerminateEvent();
 		}
@@ -728,6 +727,7 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		}
 		JavaScriptThread jsdiThread = findThread(thread);
 		if (jsdiThread != null) {
+			jsdiThread.fireChangeEvent(DebugEvent.CONTENT);
 			return jsdiThread;
 		}
 		jsdiThread = new JavaScriptThread(this, thread);
@@ -983,14 +983,8 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 
 		// handle VM events i.e. death / disconnect
 		if (event instanceof VMDeathEvent) {
-			try {
-				if (!this.terminated) {
-					eventCleanup();
-				}
-			} finally {
-				shutdown();
-			}
-			return false;
+			shutdown();
+			return true;
 		}
 		if (event instanceof VMDisconnectEvent) {
 			try {
