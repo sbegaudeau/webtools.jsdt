@@ -282,10 +282,10 @@ public void test05f() {
 }
 public void test05g() {
 	String s = 
-		"var foo = '  \\\r"+
-		"\r"+
+		"var foo = '  \\\n"+
+		"\n"+
 		"    \";"+
-		"	\r"; 	
+		"	\n"; 	
 
 	String expectedSyntaxErrorDiagnosis =
 		"----------\n"+
@@ -304,10 +304,10 @@ public void test05g() {
 }
 public void test05h() {
 	String s = 
-		"var foo = \"  \\\r"+
-		"\r"+
+		"var foo = \"  \\\n"+
+		"\n"+
 		"    ';"+
-		"	\r"; 	
+		"	\n"; 	
 
 	String expectedSyntaxErrorDiagnosis =
 		"----------\n"+
