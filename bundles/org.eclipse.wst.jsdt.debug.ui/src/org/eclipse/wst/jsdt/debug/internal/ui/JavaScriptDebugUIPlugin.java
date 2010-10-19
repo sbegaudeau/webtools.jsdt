@@ -16,6 +16,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbench;
@@ -26,6 +28,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.eval.EvaluationManager;
 import org.osgi.framework.BundleContext;
@@ -50,6 +53,7 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin implements IWorkbe
 
 	// The shared instance
 	private static JavaScriptDebugUIPlugin plugin;
+	private static ScopedPreferenceStore corestore = new ScopedPreferenceStore(new InstanceScope(), JavaScriptDebugPlugin.PLUGIN_ID);
 	
 	/*
 	 * (non-Javadoc)
@@ -190,5 +194,14 @@ public class JavaScriptDebugUIPlugin extends AbstractUIPlugin implements IWorkbe
 			display = Display.getDefault();
 		}
 		return display;		
+	}
+	
+	/**
+	 * Returns an {@link IPreferenceStore} wrapper for the {@link JavaScriptDebugPlugin} core preferences
+	 * 
+	 * @return an {@link IPreferenceStore} for the core preferences
+	 */
+	public static IPreferenceStore getCorePreferenceStore() {
+		return corestore;
 	}
 }

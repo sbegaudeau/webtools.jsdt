@@ -176,5 +176,27 @@
             type="org.eclipse.core.runtime.IAdaptable">
       </propertyTester>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.wst.jsdt.debug.ui.debug.page"
+            class="org.eclipse.wst.jsdt.debug.internal.rhino.ui.preferences.RhinoDebugPreferencePage"
+            id="org.eclipse.wst.jsdt.debug.rhino.ui.debug.pref.page"
+            name="%rhinoDebugPrefPage.name">
+         <keywordReference
+               id="org.eclipse.wst.jsdt.debug.rhino.ui.pref.page.keyword">
+         </keywordReference>
+         <keywordReference
+               id="org.eclipse.wst.jsdt.debug.ui.debug.pref.page.keyword">
+         </keywordReference>
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.keywords">
+      <keyword
+            id="org.eclipse.wst.jsdt.debug.rhino.ui.pref.page.keyword"
+            label="%rhinoDebugKeyword.label">
+      </keyword>
+   </extension>
 
 </plugin>

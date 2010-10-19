@@ -2,10 +2,14 @@ package org.eclipse.wst.jsdt.debug.internal.rhino.ui;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.eclipse.wst.jsdt.debug.internal.rhino.RhinoDebugPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -23,6 +27,7 @@ public class RhinoUIPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static RhinoUIPlugin plugin;
+	private static IPreferenceStore corestore = new ScopedPreferenceStore(new InstanceScope(), RhinoDebugPlugin.PLUGIN_ID);
 	
 	/**
 	 * The constructor
@@ -121,5 +126,14 @@ public class RhinoUIPlugin extends AbstractUIPlugin {
 			return w.getActivePage();
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns the {@link IPreferenceStore} wrapper for the {@link RhinoDebugPlugin} preferences
+	 * 
+	 * @return the {@link IPreferenceStore} for the Rhino core preferences
+	 */
+	public static IPreferenceStore getCorePreferenceStore() {
+		return corestore;
 	}
 }

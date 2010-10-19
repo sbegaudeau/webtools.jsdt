@@ -29,4 +29,9 @@ public interface IHelpContextIds {
 	 * Help constant for the connect tab
 	 */
 	public static final String CONNECT_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".connect_tab"; //$NON-NLS-1$
+	/**
+	 * Help constant for the Debug root preference page
+	 * @since 1.1
+	 */
+	public static final String DEBUG_PREFERENCE_PAGE = JavaScriptDebugUIPlugin.PLUGIN_ID + ".debug_pref_page"; //$NON-NLS-1$
 }

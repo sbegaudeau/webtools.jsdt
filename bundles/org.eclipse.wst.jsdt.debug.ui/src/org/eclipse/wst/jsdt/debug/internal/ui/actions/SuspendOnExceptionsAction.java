@@ -14,9 +14,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
@@ -27,9 +26,7 @@ import org.osgi.service.prefs.BackingStoreException;
  * 
  * @since 1.1
  */
-public class SuspendOnExceptionsAction implements IViewActionDelegate {
-	
-	boolean initialized = false;
+public class SuspendOnExceptionsAction extends ViewFilterAction {
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
@@ -47,22 +44,34 @@ public class SuspendOnExceptionsAction implements IViewActionDelegate {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	 * @see org.eclipse.wst.jsdt.debug.internal.ui.actions.ViewFilterAction#getPreferenceStore()
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		if(!initialized) {
-			boolean checked = Platform.getPreferencesService().getBoolean(
-								JavaScriptDebugPlugin.PLUGIN_ID,
-								Constants.SUSPEND_ON_THROWN_EXCEPTION, 
-								false, 
-								null);
-			action.setChecked(checked);
-			initialized = true;
-		}
+	protected IPreferenceStore getPreferenceStore() {
+		return JavaScriptDebugUIPlugin.getCorePreferenceStore();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.ui.actions.ViewFilterAction#getPreferenceValue()
+	 */
+	protected boolean getPreferenceValue() {
+		return Platform.getPreferencesService().getBoolean(
+				JavaScriptDebugPlugin.PLUGIN_ID,
+				Constants.SUSPEND_ON_THROWN_EXCEPTION, 
+				false, 
+				null);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
+	 * @see org.eclipse.wst.jsdt.debug.internal.ui.actions.ViewFilterAction#getPreferenceKey()
 	 */
-	public void init(IViewPart view) {}
+	protected String getPreferenceKey() {
+		return Constants.SUSPEND_ON_THROWN_EXCEPTION;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	 */
+	public boolean select(Viewer viewer, Object parentElement, Object element) {
+		return false;
+	}
 }

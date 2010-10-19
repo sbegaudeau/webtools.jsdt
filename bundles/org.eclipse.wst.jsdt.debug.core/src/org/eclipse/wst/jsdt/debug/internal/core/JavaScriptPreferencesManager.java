@@ -63,7 +63,7 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 		if(node.getBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false)) {
 			allLoadsBreakpoint = createSuspendOnAllLoads();
 		}
-		if(node.getBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, false)) {
+		if(node.getBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true)) {
 			allExceptions = createSuspendOnException();
 		}
 	}
@@ -106,16 +106,19 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	 */
 	public void preferenceChange(PreferenceChangeEvent event) {
 		if(event.getKey().equals(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS)) {
-			if(event.getNewValue().equals(Boolean.TRUE.toString()) && allLoadsBreakpoint == null) {
+			Object newval = event.getNewValue();
+			if(newval != null && newval.equals(Boolean.TRUE.toString()) && allLoadsBreakpoint == null) {
 				//create it
 				allLoadsBreakpoint = createSuspendOnAllLoads();
 			}
 			else {
 				deleteSuspendOnAllLoads();
 			}
+			return;
 		}
 		if(event.getKey().equals(Constants.SUSPEND_ON_THROWN_EXCEPTION)) {
-			if(event.getNewValue().equals(Boolean.TRUE.toString())) {
+			Object newval = event.getNewValue();
+			if(newval != null && newval.equals(Boolean.TRUE.toString())) {
 				//create it
 				allExceptions = createSuspendOnException();
 			}

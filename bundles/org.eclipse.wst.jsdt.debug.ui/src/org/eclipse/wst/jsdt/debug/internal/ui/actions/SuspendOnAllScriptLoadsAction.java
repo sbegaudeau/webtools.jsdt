@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
@@ -27,7 +28,6 @@ import org.osgi.service.prefs.BackingStoreException;
  * @since 1.0
  */
 public class SuspendOnAllScriptLoadsAction extends ViewFilterAction {
-	
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.ui.actions.ViewFilterAction#getPreferenceKey()
@@ -56,6 +56,13 @@ public class SuspendOnAllScriptLoadsAction extends ViewFilterAction {
 				JavaScriptDebugUIPlugin.log(e);
 			}
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.ui.actions.ViewFilterAction#getPreferenceStore()
+	 */
+	protected IPreferenceStore getPreferenceStore() {
+		return JavaScriptDebugUIPlugin.getCorePreferenceStore();
 	}
 	
 	/* (non-Javadoc)

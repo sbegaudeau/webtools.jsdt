@@ -41,4 +41,10 @@ public interface IHelpConstants {
 	 * Value is: <code>org.eclipse.wst.jsdt.debug.rhino.ui.rhino_common_tab_context</code>
 	 */
 	public static final String COMMON_TAB_CONTEXT = RhinoUIPlugin.PLUGIN_ID + ".rhino_common_tab_context"; //$NON-NLS-1$
+	/**
+	 * The help context id for the Rhino preference page
+	 * <br><br>
+	 * The value is: <code>org.eclipse.wst.jsdt.debug.rhino.ui.rhino_preference_page</code>
+	 */
+	public static final String RHINO_PREFERENCE_PAGE = RhinoUIPlugin.PLUGIN_ID + ".rhino_preference_page"; //$NON-NLS-1$
 }

@@ -35,6 +35,7 @@ public class JavaScriptDebugPreferenceInitializer extends AbstractPreferenceInit
 		IEclipsePreferences prefs = new DefaultScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		if(prefs != null) {
 			prefs.putBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false);
+			prefs.putBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true);
 			try {
 				prefs.flush();
 			} catch (BackingStoreException e) {
