@@ -88,6 +88,24 @@
     <topic href="reference/api/org/eclipse/wst/jsdt/ui/wizards/package-summary.html" label="org.eclipse.wst.jsdt.ui.wizards">
     </topic>
 	</topic>
+ <topic label="Debugging">
+	 <topic label="Rhino">
+	    <topic label="Launching">
+	       <topic href="reference/rhino_debug/ref-common-tab.htm" label="Common Tab">
+	       </topic>
+	       <topic href="reference/rhino_debug/ref-include-tab.htm" label="Include Tab">
+	       </topic>
+	       <topic href="reference/rhino_debug/ref-main-tab.htm" label="Main Tab">
+	       </topic>
+	       <topic href="reference/rhino_debug/ref-rhino-launch-shortcut.htm" label="Rhino Launch Shortcut">
+	       </topic>
+	       <topic href="reference/rhino_debug/ref-rhino-tab-group.htm" label="Rhino Tab Group">
+	       </topic>
+	       <topic href="reference/rhino_debug/ref-source-tab.htm" label="Source Tab">
+	       </topic>
+	    </topic>
+	 </topic>
+ </topic>
  <topic href="reference/extension-points/index.html" label="Extension Points Reference">
     <topic href="reference/extension-points/org_eclipse_wst_jsdt_core_codeFormatter.html" label="org.eclipse.wst.jsdt.core.codeFormatter">
     </topic>
@@ -132,21 +150,21 @@
     <topic href="reference/extension-points/org_eclipse_wst_jsdt_ui_quickFixProcessors.html" label="org.eclipse.wst.jsdt.ui.quickFixProcessors">
     </topic>
  </topic>
- <topic label="Rhino Debug">
-    <topic label="Launching">
-       <topic href="reference/rhino_debug/ref-common-tab.htm" label="Common Tab">
-       </topic>
-       <topic href="reference/rhino_debug/ref-include-tab.htm" label="Include Tab">
-       </topic>
-       <topic href="reference/rhino_debug/ref-main-tab.htm" label="Main Tab">
-       </topic>
-       <topic href="reference/rhino_debug/ref-rhino-launch-shortcut.htm" label="Rhino Launch Shortcut">
-       </topic>
-       <topic href="reference/rhino_debug/ref-rhino-tab-group.htm" label="Rhino Tab Group">
-       </topic>
-       <topic href="reference/rhino_debug/ref-source-tab.htm" label="Source Tab">
-       </topic>
+ <topic label="Preferences">
+    <topic href="reference/debug/preferences/ref-debug-pref-page.htm" label="Debug">
     </topic>
+    <topic href="reference/rhino_debug/ref-rhino-pref-page.htm" label="Rhino">
+    </topic>
+ </topic>
+ <topic label="Editors">
+ </topic>
+ <topic label="Property Pages">
+ </topic>
+ <topic label="Menus and Actions">
+ </topic>
+ <topic label="Views">
+ </topic>
+ <topic label="Wizards and Dialogs">
  </topic>
 	<!--
 	<topic label="Extension Points Reference" href="html/extpts_reference/index.html">
