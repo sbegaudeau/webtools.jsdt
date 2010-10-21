@@ -857,7 +857,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		if(event instanceof ResumeEvent) {
 			if(canResume()) {
 				if(this.thread.equals(((ResumeEvent)event).thread())) {
-					resume(false);
+					if (pendingstep != null) {
+						pendingstep.abort();
+					}
+					markResumed();
 					fireResumeEvent(DebugEvent.UNSPECIFIED);
 					return false;
 				}

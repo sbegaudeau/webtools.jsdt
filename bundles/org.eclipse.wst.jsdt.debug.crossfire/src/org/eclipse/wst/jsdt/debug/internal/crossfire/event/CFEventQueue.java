@@ -123,6 +123,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					if(threadid != null) {
 						CFThreadReference thread = crossfire().findThread(threadid);
 						if(thread != null) {
+							thread.markSuspended(false);
 							set.setThread(thread);
 							List resumes = eventmgr.resumeRequests();
 							for (Iterator iter = resumes.iterator(); iter.hasNext();) {
