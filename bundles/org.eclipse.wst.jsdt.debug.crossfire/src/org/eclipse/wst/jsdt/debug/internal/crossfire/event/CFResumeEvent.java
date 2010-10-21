@@ -8,29 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event;
+package org.eclipse.wst.jsdt.debug.internal.crossfire.event;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
-import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
-import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
+import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.core.jsdi.event.ResumeEvent;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 
 /**
- * Rhino implementation of {@link SuspendEvent}
+ * Crossfire implementation of {@link ResumeEvent}
  * 
  * @since 1.0
  */
-public final class SuspendEventImpl extends LocatableEventImpl implements SuspendEvent {
+public class CFResumeEvent extends CFLocatableEvent implements ResumeEvent {
 
 	/**
 	 * Constructor
 	 * @param vm
+	 * @param request
 	 * @param thread
 	 * @param location
-	 * @param request
 	 */
-	public SuspendEventImpl(VirtualMachineImpl vm, ThreadReference thread, Location location, SuspendRequest request) {
-		super(vm, thread, location, request);
+	public CFResumeEvent(VirtualMachine vm, EventRequest request, ThreadReference thread, Location location) {
+		super(vm, request, thread, location);
 	}
 }

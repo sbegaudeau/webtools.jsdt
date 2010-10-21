@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
@@ -36,6 +37,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFDeathRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFDebuggerRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFDisconnectRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFExceptionRequest;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFResumeRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFStepRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFSuspendRequest;
@@ -57,6 +59,7 @@ public class CFEventRequestManager implements EventRequestManager {
 	private List loads = Collections.synchronizedList(new ArrayList(4));
 	private List steps = Collections.synchronizedList(new ArrayList(4));
 	private List suspends = Collections.synchronizedList(new ArrayList(4));
+	private List resumes = Collections.synchronizedList(new ArrayList(4));
 	private List disconnects = Collections.synchronizedList(new ArrayList(4));
 	private List deaths = Collections.synchronizedList(new ArrayList(4));
 	
@@ -77,6 +80,7 @@ public class CFEventRequestManager implements EventRequestManager {
 		kind.put(CFScriptLoadRequest.class, loads);
 		kind.put(CFStepRequest.class, steps);
 		kind.put(CFSuspendRequest.class, suspends);
+		kind.put(CFResumeRequest.class, resumes);
 		kind.put(CFThreadEnterRequest.class, threadenters);
 		kind.put(CFThreadExitRequest.class, threadexits);
 		kind.put(CFDisconnectRequest.class, disconnects);
@@ -186,6 +190,23 @@ public class CFEventRequestManager implements EventRequestManager {
 		return Collections.unmodifiableList(suspends);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createResumeRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
+	 */
+	public ResumeRequest createResumeRequest(ThreadReference thread) {
+		CFResumeRequest request = new CFResumeRequest(vm, thread);
+		request.setEnabled(true);
+		resumes.add(request);
+		return request;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#resumeRequests()
+	 */
+	public List resumeRequests() {
+		return Collections.unmodifiableList(resumes);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadEnterRequest()
 	 */

@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
@@ -121,13 +122,24 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					String threadid = event.getContextId();
 					if(threadid != null) {
 						CFThreadReference thread = crossfire().findThread(threadid);
-						set.setThread(thread);
-						if(thread != null && thread.isSuspended()) {
-							thread.markSuspended(false);
+						if(thread != null) {
+							set.setThread(thread);
+							List resumes = eventmgr.resumeRequests();
+							for (Iterator iter = resumes.iterator(); iter.hasNext();) {
+								ResumeRequest request = (ResumeRequest) iter.next();
+								if(request.thread().equals(thread)) {
+									CFLocation loc = new CFLocation(crossfire(), null, null, 0);
+									set.add(new CFResumeEvent(crossfire(), request, thread, loc));
+								}
+							}
 						}
+						else {
+							return null;
+						}
+					}
+					else {
 						return null;
 					}
-					return null;
 				}
 				else if(CFEventPacket.ON_SCRIPT.equals(name)) {
 					ThreadReference thread = crossfire().findThread(event.getContextId());

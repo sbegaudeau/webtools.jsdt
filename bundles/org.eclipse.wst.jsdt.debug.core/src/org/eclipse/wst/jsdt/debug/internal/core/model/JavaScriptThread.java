@@ -33,10 +33,12 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
+import org.eclipse.wst.jsdt.debug.core.jsdi.event.ResumeEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.StepEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
@@ -229,6 +231,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	private StepHandler pendingstep = null;
 	
 	private SuspendRequest suspendreq = null;
+	private ResumeRequest resumereq = null;
 
 	/**
 	 * Constructor
@@ -246,6 +249,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		suspendreq = target.getEventRequestManager().createSuspendRequest(this.thread);
 		suspendreq.setEnabled(true);
 		addJSDIEventListener(this, suspendreq);
+		resumereq = target.getEventRequestManager().createResumeRequest(this.thread);
+		suspendreq.setEnabled(true);
+		addJSDIEventListener(this, resumereq);
 	}
 
 	/*
@@ -751,6 +757,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		getJavaScriptDebugTarget().terminate();
 		getJavaScriptDebugTarget().getEventRequestManager().deleteEventRequest(suspendreq);
 		removeJSDIEventListener(this, suspendreq);
+		removeJSDIEventListener(this, resumereq);
 	}
 
 	/**
@@ -842,7 +849,16 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 			if(canSuspend()) {
 				if(this.thread.equals(((SuspendEvent)event).thread())) {
 					markSuspended();
-					fireSuspendEvent(DebugEvent.SUSPEND);
+					fireSuspendEvent(DebugEvent.UNSPECIFIED);
+					return false;
+				}
+			}
+		}
+		if(event instanceof ResumeEvent) {
+			if(canResume()) {
+				if(this.thread.equals(((ResumeEvent)event).thread())) {
+					resume(false);
+					fireResumeEvent(DebugEvent.UNSPECIFIED);
 					return false;
 				}
 			}

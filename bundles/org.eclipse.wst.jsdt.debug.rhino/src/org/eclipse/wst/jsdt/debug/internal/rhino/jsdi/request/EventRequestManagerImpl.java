@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
@@ -47,6 +48,7 @@ public final class EventRequestManagerImpl implements EventRequestManager {
 	private final List scriptLoadRequests = new ArrayList();
 	private final List stepRequests = new ArrayList();
 	private final List suspendRequests = new ArrayList();
+	private final List resumeRequests = new ArrayList();
 	private final List threadEnterRequests = new ArrayList();
 	private final List threadExitRequests = new ArrayList();
 	private final List vmDeathRequests = new ArrayList();
@@ -66,6 +68,7 @@ public final class EventRequestManagerImpl implements EventRequestManager {
 		eventsMap.put(ScriptLoadRequestImpl.class, scriptLoadRequests);
 		eventsMap.put(StepRequestImpl.class, stepRequests);
 		eventsMap.put(SuspendRequestImpl.class, suspendRequests);
+		eventsMap.put(ResumeRequestImpl.class, resumeRequests);
 		eventsMap.put(ThreadEnterRequestImpl.class, threadEnterRequests);
 		eventsMap.put(ThreadExitRequestImpl.class, threadExitRequests);
 		eventsMap.put(VMDeathRequestImpl.class, vmDeathRequests);
@@ -168,6 +171,22 @@ public final class EventRequestManagerImpl implements EventRequestManager {
 		return Collections.unmodifiableList(suspendRequests);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createResumeRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
+	 */
+	public ResumeRequest createResumeRequest(ThreadReference thread) {
+		ResumeRequestImpl request = new ResumeRequestImpl(vm, thread);
+		resumeRequests.add(request);
+		return request;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#resumeRequests()
+	 */
+	public List resumeRequests() {
+		return Collections.unmodifiableList(resumeRequests);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadEnterRequest()
 	 */

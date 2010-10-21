@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.DebuggerStatementRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ExceptionRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
@@ -48,6 +49,7 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 	private List loads = Collections.synchronizedList(new ArrayList(4));
 	private List steps = Collections.synchronizedList(new ArrayList(4));
 	private List suspends = Collections.synchronizedList(new ArrayList(4));
+	private List resumes = Collections.synchronizedList(new ArrayList(4));
 	private List disconnects = Collections.synchronizedList(new ArrayList(4));
 	private List deaths = Collections.synchronizedList(new ArrayList(4));
 	
@@ -66,6 +68,7 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 		kind.put(ScriptLoadReqImpl.class, loads);
 		kind.put(StepReqImpl.class, steps);
 		kind.put(SuspendReqImpl.class, suspends);
+		kind.put(ResumeReqImpl.class, resumes);
 		kind.put(ThreadEnterReqImpl.class, threadenters);
 		kind.put(ThreadExitReqImpl.class, threadexits);
 		kind.put(VMDisconnectReqImpl.class, disconnects);
@@ -168,6 +171,22 @@ public class EventReqManager extends MirrorImpl implements EventRequestManager {
 		return Collections.unmodifiableList(suspends);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createResumeRequest(org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference)
+	 */
+	public ResumeRequest createResumeRequest(ThreadReference thread) {
+		ResumeReqImpl req = new ResumeReqImpl(chromeVM(), thread, true);
+		resumes.add(req);
+		return req;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#resumeRequests()
+	 */
+	public List resumeRequests() {
+		return Collections.unmodifiableList(resumes);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager#createThreadEnterRequest()
 	 */

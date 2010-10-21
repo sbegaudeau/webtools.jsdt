@@ -8,29 +8,36 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.event;
+package org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.request;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
-import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
-import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest;
 import org.eclipse.wst.jsdt.debug.internal.rhino.jsdi.VirtualMachineImpl;
 
 /**
- * Rhino implementation of {@link SuspendEvent}
+ * Rhino implementation of {@link ResumeRequest}
  * 
- * @since 1.0
+ * @since 1.1
  */
-public final class SuspendEventImpl extends LocatableEventImpl implements SuspendEvent {
+public class ResumeRequestImpl extends EventRequestImpl implements ResumeRequest {
 
+	private final ThreadReference thread;
+	
 	/**
 	 * Constructor
 	 * @param vm
 	 * @param thread
-	 * @param location
-	 * @param request
 	 */
-	public SuspendEventImpl(VirtualMachineImpl vm, ThreadReference thread, Location location, SuspendRequest request) {
-		super(vm, thread, location, request);
+	public ResumeRequestImpl(VirtualMachineImpl vm, ThreadReference thread) {
+		super(vm);
+		this.thread = thread;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.request.ResumeRequest#thread()
+	 */
+	public ThreadReference thread() {
+		return thread;
+	}
+
 }

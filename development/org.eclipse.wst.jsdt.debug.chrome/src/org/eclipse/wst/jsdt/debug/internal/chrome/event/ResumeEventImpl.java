@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.chrome.event;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
+import org.eclipse.wst.jsdt.debug.core.jsdi.event.ResumeEvent;
 
 /**
  *
  */
-public class SuspendEventImpl extends LocatableEventImpl implements SuspendEvent {
+public class ResumeEventImpl extends LocatableEventImpl implements ResumeEvent {
 
 }

@@ -8,13 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.internal.chrome.event;
-
-import org.eclipse.wst.jsdt.debug.core.jsdi.event.SuspendEvent;
+package org.eclipse.wst.jsdt.debug.core.jsdi.event;
 
 /**
- *
+ * Description of a JSDI event that indicates a resume event has occurred
+ * 
+ * @see EventQueue
+ * @see EventSet
+ * @see LocatableEvent
+ * @since 2.0
+ * @noextend This interface is not intended to be extended by clients.
  */
-public class SuspendEventImpl extends LocatableEventImpl implements SuspendEvent {
+public interface ResumeEvent extends LocatableEvent {
 
 }

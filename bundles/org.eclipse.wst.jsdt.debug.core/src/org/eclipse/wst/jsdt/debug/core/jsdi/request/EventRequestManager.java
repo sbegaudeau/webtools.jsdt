@@ -141,6 +141,26 @@ public interface EventRequestManager {
 	public List /*<SuspendRequest>*/ suspendRequests();
 
 	/**
+	 * Creates a new {@link ResumeRequest} for the specified {@link ThreadReference}.<br>
+	 * <br>
+	 * This method cannot return <code>null</code>
+	 * 
+	 * @param thread the {@link ThreadReference} to perform the suspend on
+	 * 
+	 * @return a new {@link ResumeRequest} never <code>null</code>
+	 */
+	public ResumeRequest createResumeRequest(ThreadReference thread);
+
+	/**
+	 * Returns the live immutable list of {@link ResumeRequest}s currently queued in the manager.<br>
+	 * <br>
+	 * This method cannot return <code>null</code>
+	 * 
+	 * @return the list of {@link ResumeRequest}s or an empty list, never <code>null</code>
+	 */
+	public List /*<ResumeRequest>*/ resumeRequests();
+	
+	/**
 	 * Creates a new {@link ThreadEnterRequest}.<br>
 	 * <br>
 	 * This method cannot return <code>null</code>
