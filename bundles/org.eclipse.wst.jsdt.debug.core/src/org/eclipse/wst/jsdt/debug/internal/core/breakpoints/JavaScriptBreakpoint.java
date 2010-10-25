@@ -296,7 +296,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 */
 	protected void incrementInstallCount() throws CoreException {
 		int count = getInstallCount();
-		ensureMarker().setAttribute(INSTALL_COUNT, count + 1);
+		setAttribute(INSTALL_COUNT, count + 1);
 	}
 
 	/**
@@ -312,7 +312,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	protected void decrementInstallCount() throws CoreException {
 		int count = getInstallCount();
 		if (count > 0) {
-			ensureMarker().setAttribute(INSTALL_COUNT, count - 1);
+			setAttribute(INSTALL_COUNT, count - 1);
 		}
 	}
 
