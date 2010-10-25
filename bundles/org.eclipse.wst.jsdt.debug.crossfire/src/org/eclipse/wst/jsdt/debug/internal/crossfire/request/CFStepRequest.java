@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.request;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFThreadReference;
 
 /**
  * Default implementation of {@link StepRequest} for Crossfire
@@ -38,5 +39,12 @@ public class CFStepRequest extends CFThreadEventRequest implements StepRequest {
 	 */
 	public int step() {
 		return stepkind;
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.request.CFEventRequest#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		((CFThreadReference)thread()).setStep((enabled ? stepkind : -1));
 	}
 }

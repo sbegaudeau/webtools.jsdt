@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.StepRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
@@ -41,6 +42,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	private String href = null;
 	private int state = RUNNING;
 	private ArrayList frames = null;
+	private int stepkind = -1;
 	
 	/**
 	 * Constructor
@@ -100,8 +102,10 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 			if(response.isSuccess()) {
 				frames = new ArrayList();
 				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
-				for (int i = 0; i < frms.size(); i++) {
-					frames.add(new CFStackFrame(virtualMachine(), this, (Map) frms.get(i)));
+				if(frms != null) {
+					for (int i = 0; i < frms.size(); i++) {
+						frames.add(new CFStackFrame(virtualMachine(), this, (Map) frms.get(i)));
+					}
 				}
 			}
 			else {
@@ -132,6 +136,10 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	public void resume() {
 		if(isSuspended()) {
 			CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
+			String step = resolveStepKind();
+			if(step != null) {
+				request.setArgument(Attributes.STEPACTION, step);
+			}
 			try {
 				CFResponsePacket response = crossfire().sendRequest(request);
 				if(response.isSuccess()) {
@@ -251,5 +259,27 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		//XXX catch - this causes a state change
 		clearFrames();
 		state = suspended ? SUSPENDED : RUNNING;
+	}
+	
+	/**
+	 * Sets the current step kind kind to perform, or -1 to remove the kind
+	 * @param stepkind
+	 */
+	public void setStep(int step) {
+		this.stepkind = step;
+	}
+	
+	/**
+	 * @return the step kind to use in the continue request or <code>null</code>
+	 */
+	String resolveStepKind() {
+		if(stepkind != -1) {
+			switch(stepkind) {
+				case StepRequest.STEP_INTO: return Commands.STEP_IN;
+				case StepRequest.STEP_OUT: return Commands.STEP_OUT;
+				case StepRequest.STEP_OVER: return Commands.STEP_OVER;
+			}
+		}
+		return null;
 	}
 }

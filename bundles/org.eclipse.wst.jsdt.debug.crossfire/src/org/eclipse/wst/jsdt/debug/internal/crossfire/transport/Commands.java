@@ -81,6 +81,9 @@ public interface Commands {
 	 * The "setbreakpoint" command
 	 */
 	public static final String SET_BREAKPOINT = "setbreakpoint"; //$NON-NLS-1$
+	public static final String STEP_IN = "in"; //$NON-NLS-1$
+	public static final String STEP_OUT = "out"; //$NON-NLS-1$
+	public static final String STEP_OVER = "over"; //$NON-NLS-1$
 	/**
 	 * The "source" command
 	 */
