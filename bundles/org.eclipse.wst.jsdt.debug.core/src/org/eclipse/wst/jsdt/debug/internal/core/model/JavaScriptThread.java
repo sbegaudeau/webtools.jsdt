@@ -865,6 +865,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 					return false;
 				}
 			}
+			if(pendingstep != null) {
+				//we need to handle the case where a step has caused a resume and no StepEvent has been sent
+				pendingstep.abort();
+			}
 		}
 		return true;
 	}
