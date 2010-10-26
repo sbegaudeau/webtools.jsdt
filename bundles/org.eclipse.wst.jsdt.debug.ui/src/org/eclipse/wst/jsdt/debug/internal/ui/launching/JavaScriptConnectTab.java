@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.ui.launching;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -62,19 +65,72 @@ import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
  */
 public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab implements IPropertyChangeListener {
 	
+	class ArgComparator implements Comparator {
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
+		public int compare(Object o1, Object o2) {
+			if(o1 instanceof Entry && o2 instanceof Entry) {
+				//String > Integer > List > Boolean 
+				//sort by kind and by label
+				Object val1 = ((Entry)o1).getValue();
+				Object val2 = ((Entry)o2).getValue();
+				if(val1 instanceof StringArgument) {
+					if(val2 instanceof StringArgument) {
+						return stripAccel(((Argument)val1).label()).compareTo(stripAccel(((Argument)val2).label()));
+					}
+					return -1;
+				}
+				else if(val1 instanceof IntegerArgument) {
+					if(val2 instanceof IntegerArgument) {
+						return stripAccel(((Argument)val1).label()).compareTo(stripAccel(((Argument)val2).label()));
+					}
+					else if(val2 instanceof StringArgument) {
+						return 1;
+					}
+					return -1;
+				}
+				else if(val1 instanceof SelectedArgument) {
+					if(val2 instanceof SelectedArgument) {
+						return stripAccel(((Argument)val1).label()).compareTo(stripAccel(((Argument)val2).label()));
+					}
+					else if(val2 instanceof StringArgument || val2 instanceof IntegerArgument) {
+						return 1;
+					}
+					return -1;
+				}
+				else if(val1 instanceof BooleanArgument) {
+					if(val2 instanceof BooleanArgument) {
+						return stripAccel(((Argument)val1).label()).compareTo(stripAccel(((Argument)val2).label()));
+					}
+					else if(val2 instanceof StringArgument || val2 instanceof IntegerArgument || val2 instanceof SelectedArgument) {
+						return 1;
+					}
+					return -1;
+				}
+			}
+			return o1.equals(o2) ? 0 : -1;
+		}
+		
+		String stripAccel(String text) {
+			return text.replaceAll("\\&", ""); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+	}
+	
 	Text description = null;
 	Combo connectorcombo = null;
 	Connector selectedconnector = null;
 	Group argumentsgroup = null;
 	HashMap editormap = new HashMap();
+	Comparator comparator = new ArgComparator();
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		Composite comp = SWTFactory.createComposite(parent, 2, 1, GridData.FILL_HORIZONTAL);
+		Composite comp = SWTFactory.createComposite(parent, 1, 1, GridData.FILL_HORIZONTAL);
 		//connectors combo
-		Group group = SWTFactory.createGroup(comp, Messages.connector, 1, 2, GridData.FILL_HORIZONTAL);
+		Group group = SWTFactory.createGroup(comp, Messages.connector, 1, 1, GridData.FILL_HORIZONTAL);
 		this.connectorcombo = SWTFactory.createCombo(group, SWT.FLAT | SWT.BORDER | SWT.READ_ONLY, 1, null);
 		GridData gd = (GridData) this.connectorcombo.getLayoutData();
 		gd.grabExcessHorizontalSpace = true;
@@ -86,6 +142,8 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 		this.description = SWTFactory.createText(group, SWT.WRAP | SWT.READ_ONLY, 1);
 		gd = (GridData) this.description.getLayoutData();
 		gd.heightHint = 30;
+		//hack to make sure the disabled colour is propagated on *Nix's 
+		this.description.setBackground(group.getBackground());
 		List connectors = JavaScriptDebugPlugin.getConnectionsManager().getConnectors();
 		Connector connector = null;
 		for (int i = 0; i < connectors.size(); i++) {
@@ -94,7 +152,7 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 			this.connectorcombo.setData(connector.name(), connector);
 		}
 		
-		this.argumentsgroup = SWTFactory.createGroup(comp, Messages.connector_properties, 2, 2, GridData.FILL_HORIZONTAL);
+		this.argumentsgroup = SWTFactory.createGroup(comp, Messages.connector_properties, 2, 1, GridData.FILL_HORIZONTAL);
 		this.argumentsgroup.setVisible(false);
 		setControl(comp);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IHelpContextIds.CONNECT_TAB);
@@ -142,7 +200,9 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 		Argument argument = null;
 		FieldEditor editor = null;
 		String key = null;
-		for (Iterator iter = this.selectedconnector.defaultArguments().entrySet().iterator(); iter.hasNext();) {
+		ArrayList entries = new ArrayList(this.selectedconnector.defaultArguments().entrySet());
+		Collections.sort(entries, comparator);
+		for (Iterator iter = entries.iterator(); iter.hasNext();) {
 			entry = (Entry) iter.next();
 			key = (String) entry.getKey();
 			argument = (Argument) entry.getValue();
@@ -188,6 +248,7 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 		GridLayout gd = (GridLayout) this.argumentsgroup.getLayout();
 		gd.marginHeight = 5;
 		gd.marginWidth = 5;
+		gd.numColumns = 2;
 		this.argumentsgroup.getParent().layout(true);
 		this.argumentsgroup.setVisible(true);
 		this.argumentsgroup.layout(true);
