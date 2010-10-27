@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.core.launching;
 
 import java.net.URI;
+import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -33,6 +34,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 
 	static final Object[] NO_SOURCE = new Object[0];
 
+	private HashMap sourcemap = new HashMap();
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -56,13 +58,18 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	public Object[] findSourceElements(Object object) throws CoreException {
 		URI sourceURI = SourceLookup.getSourceURI(object);
 		if (sourceURI != null) {
-			if (!sourceURI.isAbsolute() || "file".equals(sourceURI.getScheme())) {//$NON-NLS-1$			
+			IFile file = (IFile) sourcemap.get(sourceURI);
+			if(file != null) {
+				return new IFile[] { file };
+			}
+			if (!sourceURI.isAbsolute() || "file".equals(sourceURI.getScheme())) {//$NON-NLS-1$
 				IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 				URI workspaceURI = workspaceRoot.getRawLocationURI();			
 				URI workspaceRelativeURI = workspaceURI.relativize(sourceURI);
 				if (! workspaceRelativeURI.isAbsolute()) {
-					IFile file = (IFile) workspaceRoot.findMember(new Path(workspaceRelativeURI.getPath()), false);
+					file = (IFile) workspaceRoot.findMember(new Path(workspaceRelativeURI.getPath()), false);
 					if (file != null) {
+						sourcemap.put(sourceURI, file);
 						return new IFile[] { file };
 					}
 				}
@@ -88,7 +95,8 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 				IPath path = file.getProjectRelativePath();
 				if (JavaScriptDebugPlugin.getExternalScriptPath(path) == null) {
 					JavaScriptDebugPlugin.addExternalScriptPath(path, sourceuri.toString());
-				}	
+				}
+				sourcemap.put(sourceuri, file);
 				return new Object[] {file};
 			}
 

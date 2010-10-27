@@ -27,7 +27,6 @@ import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
-import org.eclipse.wst.jsdt.debug.internal.core.model.Script;
 
 /**
  * Utility class to help with looking up source
@@ -89,10 +88,11 @@ public final class SourceLookup {
 		String source = getSource(sourceobj);
 		if(source != null) {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
-			String filename = Script.resolveName(sourceuri);
-			String uriHash =  Integer.toString(sourceuri.toString().hashCode());
-			String sourceHash = Integer.toString(source.hashCode());
-			IPath path = new Path(uriHash).append(sourceHash).append(filename);
+			String uripath = sourceuri.getPath();
+			if(uripath.trim().equals("/")) { //$NON-NLS-1$
+				uripath = "page.js"; //$NON-NLS-1$
+			}
+			IPath path = new Path(sourceuri.getHost()).append(uripath);
 			String ext = path.getFileExtension(); 
 			if(ext == null || !Constants.JS_EXTENSION.equals(ext)) {
 				path = path.addFileExtension(Constants.JS_EXTENSION);
