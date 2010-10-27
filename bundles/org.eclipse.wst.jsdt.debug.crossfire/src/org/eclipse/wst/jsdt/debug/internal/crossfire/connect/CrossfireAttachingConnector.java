@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.transport.Connection;
 import org.eclipse.wst.jsdt.debug.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.transport.TransportService;
@@ -44,10 +45,11 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#defaultArguments()
 	 */
 	public Map defaultArguments() {
-		Map args = new HashMap(4);
+		HashMap args = new HashMap(5);
 		args.put(HostArgument.HOST, new HostArgument(null));
 		args.put(PortArgument.PORT, new PortArgument(5000));
 		args.put(TimeoutArgument.TIMEOUT, new TimeoutArgument());
+		args.put(CompatArgument.PRE03, new CompatArgument());
 		//XXX hack because there is no good way to find the Firefox executable on Win
 		if(!Platform.OS_WIN32.equals(Platform.getOS())) {
 			args.put(BrowserArgument.BROWSER, new BrowserArgument());
@@ -100,6 +102,10 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 			c = launch(arguments);
 		}
 		DebugSession session = new DebugSession(c);
+		String pre03 = (String) arguments.get(CompatArgument.PRE03);
+		if(pre03 != null) {
+			JSON.setPre03Compat(Boolean.valueOf(pre03).booleanValue());
+		}
 		return new CFVirtualMachine(session);
 	}
 

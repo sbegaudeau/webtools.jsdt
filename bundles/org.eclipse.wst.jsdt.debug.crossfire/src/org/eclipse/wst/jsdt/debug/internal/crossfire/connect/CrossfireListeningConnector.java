@@ -18,6 +18,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.ListeningConnector;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.transport.Connection;
 import org.eclipse.wst.jsdt.debug.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.transport.TransportService;
@@ -44,10 +45,11 @@ public class CrossfireListeningConnector implements ListeningConnector {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#defaultArguments()
 	 */
 	public Map defaultArguments() {
-		Map args = new HashMap(2);
+		HashMap args = new HashMap(5);
 		args.put(HostArgument.HOST, new HostArgument(null));
 		args.put(PortArgument.PORT, new PortArgument(5000));
 		args.put(TimeoutArgument.TIMEOUT, new TimeoutArgument());
+		args.put(CompatArgument.PRE03, new CompatArgument());
 		return args;
 	}
 
@@ -85,6 +87,10 @@ public class CrossfireListeningConnector implements ListeningConnector {
 		buffer.append(host).append(':').append(Integer.parseInt(port));
 		Connection c = service.accept(service.startListening(buffer.toString()), timeout, timeout);
 		DebugSession session = new DebugSession(c);
+		String pre03 = (String) arguments.get(CompatArgument.PRE03);
+		if(pre03 != null) {
+			JSON.setPre03Compat(Boolean.valueOf(pre03).booleanValue());
+		}
 		return new CFVirtualMachine(session);
 	}
 }

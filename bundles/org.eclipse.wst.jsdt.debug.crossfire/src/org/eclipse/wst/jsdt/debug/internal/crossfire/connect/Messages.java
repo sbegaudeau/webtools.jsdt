@@ -29,6 +29,8 @@ public class Messages extends NLS {
 	public static String only_localhost_is_supported;
 	public static String port_arg_desc;
 	public static String port_arg_name;
+	public static String pre_3_support_desc;
+	public static String pre_3_support_name;
 	public static String timeout;
 	public static String timeout_desc;
 	static {

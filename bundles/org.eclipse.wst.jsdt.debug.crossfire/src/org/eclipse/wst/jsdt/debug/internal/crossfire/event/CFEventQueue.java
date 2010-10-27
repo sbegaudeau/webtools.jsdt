@@ -230,6 +230,8 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
+				/*	IStatus status = new Status(IStatus.INFO, CrossFirePlugin.PLUGIN_ID, "onInspectNode: "+event.getBody().get("node")); //$NON-NLS-1$ //$NON-NLS-2$
+					CrossFirePlugin.log(status);*/
 					return null;
 				}
 				else if(CFEventPacket.ON_TOGGLE_BREAKPOINT.equals(name)) {

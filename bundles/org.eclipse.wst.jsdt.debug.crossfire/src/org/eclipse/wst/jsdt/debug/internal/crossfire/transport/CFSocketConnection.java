@@ -125,6 +125,9 @@ public class CFSocketConnection extends SocketConnection {
 		} catch (NumberFormatException e) {
 			throw new IOException("Failed to parse content length: " + buffer.toString()); //$NON-NLS-1$
 		}
+		char[] message = new char[length];
+		int n = 0;
+		int off = 0;
 		c = reader.read();
 		if(CFPacket.TRACE) {
 			raw.append((char)c);
@@ -132,24 +135,23 @@ public class CFSocketConnection extends SocketConnection {
 		if(c != '\n') {
 			throw new IOException("Failed to parse content length: " + buffer.toString() + "next char was not '\n'" + (char)c); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		char[] message = new char[length];
-		int n = 0;
-		int off = 0;
-		//check for the new double \r\n introduced in CF 0.3
-		c = reader.read();
-		if(CFPacket.TRACE) {
-			raw.append((char)c);
-		}
-		if(c == '\r') {
-			//chew up the \n
+		if(!JSON.PRE03) {
+			//check for the new double \r\n introduced in CF 0.3
 			c = reader.read();
 			if(CFPacket.TRACE) {
-				raw.append((char) c);
+				raw.append((char)c);
 			}
-		}
-		else {
-			message[0] = (char) c;
-			off = 1;
+			if(c == '\r') {
+				//chew up the \n
+				c = reader.read();
+				if(CFPacket.TRACE) {
+					raw.append((char) c);
+				}
+			}
+			else {
+				message[0] = (char) c;
+				off = 1;
+			}
 		}
 		while (n < length) {
 			int count = reader.read(message, off + n, length - n);

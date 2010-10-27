@@ -43,6 +43,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFUndefinedValue;
 public final class JSON {
 
 	static boolean TRACE = false;
+	static boolean PRE03 = false;
 	
 	/**
 	 * Standard line feed / control feed terminus for Crossfire packets
@@ -60,6 +61,15 @@ public final class JSON {
 	 */
 	public static void setTracing(boolean trace) {
 		TRACE = trace;
+	}
+	
+	/**
+	 * Enables / disables support for pre-0.3 support for serializing JSON
+	 * 
+	 * @param compat
+	 */
+	public static void setPre03Compat(boolean compat) {
+		PRE03 = compat;
 	}
 	
 	/**
@@ -215,7 +225,10 @@ public final class JSON {
 	 */
 	public static void writeContentLength(StringBuffer buffer, int length) {
 		StringBuffer buff = new StringBuffer(18);
-		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED).append(LINE_FEED);
+		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED);
+		if(!PRE03) {
+			buffer.append(LINE_FEED);
+		}
 		buffer.insert(0, buff);
 	}
 	
