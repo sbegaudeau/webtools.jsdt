@@ -36,6 +36,7 @@ public class JavaScriptDebugPreferenceInitializer extends AbstractPreferenceInit
 		if(prefs != null) {
 			prefs.putBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false);
 			prefs.putBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true);
+			prefs.putBoolean(Constants.DELETE_EXT_PROJECT_ON_EXIT, false);
 			try {
 				prefs.flush();
 			} catch (BackingStoreException e) {

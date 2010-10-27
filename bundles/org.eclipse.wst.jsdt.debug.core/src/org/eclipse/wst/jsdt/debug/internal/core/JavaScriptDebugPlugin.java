@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.ConnectorsManager;
 import org.eclipse.wst.jsdt.debug.internal.core.model.BreakpointParticipantManager;
 import org.osgi.framework.BundleContext;
@@ -156,8 +157,10 @@ public class JavaScriptDebugPlugin extends Plugin {
 			if(prefmanager != null) {
 				prefmanager.stop();
 			}
-			if(extSrcProject != null && extSrcProject.exists()) {
-				extSrcProject.delete(true, null);
+			if(new InstanceScope().getNode(PLUGIN_ID).getBoolean(Constants.DELETE_EXT_PROJECT_ON_EXIT, false)) {
+				if(extSrcProject != null && extSrcProject.exists()) {
+					extSrcProject.delete(true, null);
+				}
 			}
 		}
 		finally {

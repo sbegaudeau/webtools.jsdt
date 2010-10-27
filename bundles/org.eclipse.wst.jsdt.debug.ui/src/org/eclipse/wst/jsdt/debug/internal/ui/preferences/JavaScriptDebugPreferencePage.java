@@ -62,20 +62,35 @@ public class JavaScriptDebugPreferencePage extends FieldEditorPreferencePage imp
 	 */
 	protected Control createContents(Composite parent) {
 		Composite comp = SWTFactory.createComposite(parent, parent.getFont(), 1, 1, GridData.FILL_HORIZONTAL, 0, 0);
-		Group group = SWTFactory.createGroup(comp, Messages.suspend_execution, 1, 1, GridData.FILL_HORIZONTAL);
-		GridData gd = (GridData) group.getLayoutData();
-		gd.grabExcessHorizontalSpace = true;
-		BooleanFieldEditor editor = new BooleanFieldEditor(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, Messages.suspend_for_all_script_loads, group);
+		//General
+		Group group = SWTFactory.createGroup(comp, Messages.general, 1, 1, GridData.FILL_HORIZONTAL);
+		BooleanFieldEditor editor = new BooleanFieldEditor(Constants.DELETE_EXT_PROJECT_ON_EXIT, Messages.delete_ext_project_on_exit, group);
+		initEditor(editor, JavaScriptDebugUIPlugin.getCorePreferenceStore());
+		initGroup(group);
+		//Suspend Execution
+		group = SWTFactory.createGroup(comp, Messages.suspend_execution, 1, 1, GridData.FILL_HORIZONTAL);
+		editor = new BooleanFieldEditor(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, Messages.suspend_for_all_script_loads, group);
 		initEditor(editor, JavaScriptDebugUIPlugin.getCorePreferenceStore());
 		editor = new BooleanFieldEditor(Constants.SUSPEND_ON_THROWN_EXCEPTION, Messages.suspend_on_exceptions, group);
 		initEditor(editor, JavaScriptDebugUIPlugin.getCorePreferenceStore());
-		//reset the group layout after we add the editors, since they toast the padding
-		GridLayout lo = (GridLayout) group.getLayout();
-		lo.marginWidth = 5;
-		lo.marginHeight = 5;
+		initGroup(group);
 		return comp;
 	}
 
+	/**
+	 * Refreshes the specified group to re-set the default spacings that have been 
+	 * trashed by the field editors
+	 * 
+	 * @param group
+	 */
+	void initGroup(Group group) {
+		GridData gd = (GridData) group.getLayoutData();
+		gd.grabExcessHorizontalSpace = true;
+		GridLayout lo = (GridLayout) group.getLayout();
+		lo.marginWidth = 5;
+		lo.marginHeight = 5;
+	}
+	
 	/**
 	 * Initializes and sets up the given editor
 	 * 

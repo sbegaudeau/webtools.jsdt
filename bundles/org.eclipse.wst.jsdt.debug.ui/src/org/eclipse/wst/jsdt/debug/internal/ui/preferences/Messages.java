@@ -17,6 +17,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.ui.preferences.messages"; //$NON-NLS-1$
+	public static String delete_ext_project_on_exit;
+	public static String general;
 	public static String js_debug_pref_page_desc;
 	public static String suspend_execution;
 	public static String suspend_for_all_script_loads;
