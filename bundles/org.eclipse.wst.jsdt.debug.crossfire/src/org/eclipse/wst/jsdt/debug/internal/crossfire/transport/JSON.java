@@ -227,7 +227,7 @@ public final class JSON {
 		StringBuffer buff = new StringBuffer(18);
 		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED);
 		if(!PRE03) {
-			buffer.append(LINE_FEED);
+			buff.append(LINE_FEED);
 		}
 		buffer.insert(0, buff);
 	}
