@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.core.launching;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -93,10 +94,7 @@ public final class SourceLookup {
 				uripath = "page.js"; //$NON-NLS-1$
 			}
 			IPath path = new Path(sourceuri.getHost()).append(uripath);
-			String ext = path.getFileExtension(); 
-			if(ext == null || !Constants.JS_EXTENSION.equals(ext)) {
-				path = path.addFileExtension(Constants.JS_EXTENSION);
-			}
+			path = adjustPath(path);
 			IFile file = project.getFile(path);
 			if(!file.isAccessible()) {
 				IContainer folder = project;
@@ -112,5 +110,45 @@ public final class SourceLookup {
 			return file;
 		}
 		return null;
+	}
+	
+	/**
+	 * Makes some sanity adjustments to the path prior to trying to create it.
+	 * <ul>
+	 * <li>make sure no one segment is super long, the current threshold is 15 characters per segment</li>
+	 * <li>make sure no segment following the host part has '.js' in it. This prevents name collisions like:
+	 * www.domain.org/scripts/myscript.js/eval/1.js and www.domain.org/scripts/myscript.js - where myscript.js will cause a 
+	 * collision trying to create a file resource, as it could already exist as a folder and vice versa 
+	 * </li>
+	 * <li>if the script has no extension add .js to make sure Eclipse opens the correct editor for the content type</li>
+	 * <ul>
+	 * @param path
+	 * @return the adjusted path
+	 * @since 1.1
+	 */
+	static IPath adjustPath(IPath path) {
+		String segment = null;
+		ArrayList segments = new ArrayList(path.segmentCount());
+		for (int i = 0; i < path.segments().length; i++) {
+			segment = path.segment(i);
+			if(i > 0) {
+				if(segment.length() > 15) {
+					segment = segment.substring(0, 1) + segment.charAt(segment.length()-1);
+				}
+				if(i < path.segments().length-1) {
+					segment = segment.replaceAll("\\.js", "\\_js"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			}
+			segments.add(segment);
+		}
+		IPath newpath = new Path((String) segments.get(0));
+		for (int i = 1; i < segments.size(); i++) {
+			newpath = newpath.append((String) segments.get(i));
+		}
+		String ext = newpath.getFileExtension(); 
+		if(ext == null || !Constants.JS_EXTENSION.equals(ext)) {
+			newpath = newpath.addFileExtension(Constants.JS_EXTENSION);
+		}
+		return newpath; 
 	}
 }

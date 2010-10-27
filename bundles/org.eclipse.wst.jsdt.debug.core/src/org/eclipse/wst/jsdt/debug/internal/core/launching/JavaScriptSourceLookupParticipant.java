@@ -59,7 +59,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		URI sourceURI = SourceLookup.getSourceURI(object);
 		if (sourceURI != null) {
 			IFile file = (IFile) sourcemap.get(sourceURI);
-			if(file != null) {
+			if(file != null && file.exists()) {
 				return new IFile[] { file };
 			}
 			if (!sourceURI.isAbsolute() || "file".equals(sourceURI.getScheme())) {//$NON-NLS-1$
