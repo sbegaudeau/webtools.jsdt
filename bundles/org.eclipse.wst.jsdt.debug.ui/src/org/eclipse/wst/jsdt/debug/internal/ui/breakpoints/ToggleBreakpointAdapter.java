@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -287,8 +288,9 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * Delegate for toggling a method breakpoint
 	 * @param part
 	 * @param element
+	 * @param line
 	 */
-	void toggleMethodBreakpoint(final IWorkbenchPart part, final IJavaScriptElement element) {
+	void toggleMethodBreakpoint(final IWorkbenchPart part, final IJavaScriptElement element, final int line) {
 		Job job = new Job("Toggle Function Breakpoints") { //$NON-NLS-1$
             protected IStatus run(IProgressMonitor monitor) {
             	try {
@@ -319,6 +321,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 						//nothing else we can do
 						attributes.put(IJavaScriptBreakpoint.TYPE_NAME, getTypeName(element));
 						attributes.put(IJavaScriptBreakpoint.SCRIPT_PATH, getScriptPath(element));
+						attributes.put(IMarker.LINE_NUMBER, new Integer(line));
 						IJavaScriptFunctionBreakpoint breakpoint = JavaScriptDebugModel.createFunctionBreakpoint(resource, method.getElementName(), method.getSignature(), start, end, attributes, true);
 						breakpoint.setJavaScriptElementHandle(element.getHandleIdentifier());
 						return Status.OK_STATUS;
@@ -415,7 +418,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 					return;
 				}
 				case BreakpointLocationFinder.FUNCTION: {
-					toggleMethodBreakpoint(part, root.getElementAt(finder.getOffset()));
+					toggleMethodBreakpoint(part, root.getElementAt(finder.getOffset()), finder.getLineNumber());
 					return;
 				}
 			}
@@ -426,7 +429,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
         	if(o instanceof IMember) {
         		IMember member = (IMember) o;
         		if(member.getElementType() == IJavaScriptElement.METHOD) {
-    				toggleMethodBreakpoint(part, member);
+    				toggleMethodBreakpoint(part, member, -1);
     			}
         	}
 		}
