@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.DebugPlugin;
@@ -563,7 +564,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
 		//TODO this will never work unless we map original URL to workspace source
-		if(JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
+		if(delta.getKind() == IResourceDelta.CHANGED && JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
 			IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
 			try {
 				String path = bp.getScriptPath();
