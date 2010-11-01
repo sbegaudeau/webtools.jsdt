@@ -147,7 +147,7 @@ public abstract class AbstractDebugTest extends TestCase {
 	 * @param id
 	 */
 	protected void switchToPerspective(final String id) {
-        DebugUIPlugin.getStandardDisplay().syncExec(new Runnable() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
             public void run() {
                 IWorkbench workbench = PlatformUI.getWorkbench();
                 IPerspectiveDescriptor descriptor = workbench.getPerspectiveRegistry().findPerspectiveWithId(id);
