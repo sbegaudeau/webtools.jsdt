@@ -100,6 +100,12 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 				scopes.put(new Integer(index), s);
 			}
 		}
+		CFRequestPacket request = new CFRequestPacket(Commands.INSPECT, this.thread.id());
+		request.setArgument("xpath", "/html[1]/body[1]/span[1]");  //$NON-NLS-1$//$NON-NLS-2$
+		CFResponsePacket response = crossfire().sendRequest(request);
+		if(response.isSuccess()) {
+			System.out.println("success"); //$NON-NLS-1$
+		}
 	}
 	
 	/**

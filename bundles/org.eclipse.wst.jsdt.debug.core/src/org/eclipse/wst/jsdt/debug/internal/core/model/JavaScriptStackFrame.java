@@ -46,6 +46,8 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	private StackFrame stackFrame = null;
 
 	private ArrayList variables;
+	
+	private IVariable thisvar = null;
 
 	/**
 	 * Constructs a Rhino stack frame in the given thread.
@@ -150,7 +152,8 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 			});
 			
 			// add the "this" object at the front
-			variables.add(0, new JavaScriptVariable(this, stackFrame.thisObject()));			
+			thisvar = new JavaScriptVariable(this, stackFrame.thisObject());
+			variables.add(0, thisvar);			
 		}
 		return (IVariable[]) this.variables.toArray(new IVariable[this.variables.size()]);
 	}
@@ -361,4 +364,20 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugElement#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		if(IJavaScriptStackFrame.class == adapter) {
+			return this;
+		}
+		return super.getAdapter(adapter);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame#getThisObject()
+	 */
+	public IVariable getThisObject() {
+		return thisvar;
+	}
 }
