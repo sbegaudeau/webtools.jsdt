@@ -90,6 +90,9 @@ public final class SourceLookup {
 		if(source != null) {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
 			String uripath = sourceuri.getPath();
+			if(uripath == null) {
+				return null;
+			}
 			if(uripath.trim().equals("/")) { //$NON-NLS-1$
 				uripath = "page.js"; //$NON-NLS-1$
 			}
