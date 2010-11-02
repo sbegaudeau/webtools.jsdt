@@ -19,7 +19,7 @@
         value="org.eclipse.wst.debug.core.tests.JavaScriptDebugTestSuite" />
     <property
         name="testType"
-        value="core-test" />
+        value="ui-test" />
 
     <!-- should be little need to change what's below -->
 
