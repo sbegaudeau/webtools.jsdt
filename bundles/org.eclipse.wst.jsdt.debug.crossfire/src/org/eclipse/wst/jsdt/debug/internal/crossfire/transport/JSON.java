@@ -378,6 +378,7 @@ public final class JSON {
 		while (c != '"') {
 			if (Character.isISOControl(c)) {
 				//ignore it and continue
+				c = it.next();
 				continue;
 				//throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
 			}
