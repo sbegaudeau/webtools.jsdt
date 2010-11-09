@@ -1428,4 +1428,16 @@ public class InferTypesTests extends AbstractRegressionTest {
 //				
 //			 );
 //		}
+		
+		public void testBug329803_1() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"var fun1 = function() {" +
+				"	this.abc = 1" +
+				"}",
+				"X.js",
+				"class fun1 extends Object{\n  Number abc;\n  fun1()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
 }
