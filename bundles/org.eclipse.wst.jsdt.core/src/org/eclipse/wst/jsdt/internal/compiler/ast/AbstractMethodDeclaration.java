@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 	//it is not relevent for constructor but it helps to have the name of the constructor here
 	//which is always the name of the class.....parsing do extra work to fill it up while it do not have to....
 	public char[] selector;
+	public char[] potentialName;
 	public int declarationSourceStart;
 	public int declarationSourceEnd;
 	public int modifiers;
@@ -383,7 +384,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 	}
 
 	public char[] getName() {
-		return this.selector;
+		return this.selector != null ? this.selector : this.potentialName;
 	}
 
 	public void setInferredType(InferredType type) {

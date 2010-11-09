@@ -691,6 +691,9 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			}
 			else if (assignment.getLeftHandSide() instanceof SingleNameReference)
 			{
+				if(methodDeclaration.selector == null) {
+					methodDeclaration.potentialName = ((SingleNameReference)assignment.getLeftHandSide()).token;
+				}
 			}
 		}
 		return true;
