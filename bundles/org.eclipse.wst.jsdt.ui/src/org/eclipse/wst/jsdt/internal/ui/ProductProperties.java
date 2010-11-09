@@ -18,7 +18,7 @@ public class ProductProperties {
 	/**
 	 * Default values for WTP level product
 	 */
-	static final String ID_PERSPECTIVE_EXPLORER_VIEW = IPageLayout.ID_PROJECT_EXPLORER;
+	public static final String ID_PERSPECTIVE_EXPLORER_VIEW = IPageLayout.ID_PROJECT_EXPLORER;
 
 	/**
 	 * Return the value for the associated key from the Platform Product registry or return the

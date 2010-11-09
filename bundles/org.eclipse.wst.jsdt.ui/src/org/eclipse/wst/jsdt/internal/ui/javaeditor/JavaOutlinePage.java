@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionContext;
 import org.eclipse.ui.actions.ActionGroup;
@@ -94,8 +95,10 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.wst.jsdt.internal.ui.IProductConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.ProductProperties;
 import org.eclipse.wst.jsdt.internal.ui.actions.AbstractToggleLinkingAction;
 import org.eclipse.wst.jsdt.internal.ui.actions.CategoryFilterActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
@@ -1242,7 +1245,12 @@ public class JavaOutlinePage extends Page implements IContentOutlinePage, IAdapt
 		if (key == IShowInTargetList.class) {
 			return new IShowInTargetList() {
 				public String[] getShowInTargetIds() {
-					return new String[] { JavaScriptUI.ID_PACKAGES };
+					String explorerViewID = ProductProperties.getProperty(IProductConstants.PERSPECTIVE_EXPLORER_VIEW);
+					// make sure the specified view ID is known
+					if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) == null)
+						explorerViewID = IPageLayout.ID_PROJECT_EXPLORER;
+					return new String[] {explorerViewID, JavaScriptUI.ID_PACKAGES };
+
 				}
 
 			};

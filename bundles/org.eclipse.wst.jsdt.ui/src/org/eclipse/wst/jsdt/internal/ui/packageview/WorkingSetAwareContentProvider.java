@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 
-public class WorkingSetAwareContentProvider extends PackageExplorerContentProvider implements IMultiElementTreeContentProvider {
+public class WorkingSetAwareContentProvider extends ScriptExplorerContentProvider implements IMultiElementTreeContentProvider {
 
 	private WorkingSetModel fWorkingSetModel;
 	private IPropertyChangeListener fListener;
@@ -91,13 +91,16 @@ public class WorkingSetAwareContentProvider extends PackageExplorerContentProvid
 			IAdaptable element= elements[i];
 			if (element instanceof IProject) {
 				processResource((IProject) element, result); // also add closed projects
+				result.add(element);
 			} else if (element instanceof IResource) {
 				IProject project= ((IResource) element).getProject();
 				if (project.isOpen()) {
-					processResource((IResource) element, result);
+//					processResource((IResource) element, result);
+					result.add(element);
 				}
 			} else if (element instanceof IJavaScriptProject) {
-				result.add(element); // also add closed projects
+//				result.add(((IJavaScriptProject) element)); // also add closed projects
+				result.add(((IJavaScriptProject) element).getProject()); // also add closed projects
 			} else if (element instanceof IJavaScriptElement) {
 				IJavaScriptElement elem= (IJavaScriptElement) element;
 				IProject project= getProject(elem);

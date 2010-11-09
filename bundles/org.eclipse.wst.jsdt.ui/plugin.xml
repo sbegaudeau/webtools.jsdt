@@ -458,6 +458,13 @@
             id="org.eclipse.wst.jsdt.ui.java">
       </category>
       <view
+            name="%packagesViewName"
+            icon="$nl$/icons/full/eview16/package.gif"
+            category="org.eclipse.wst.jsdt.ui.java"
+            class="org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerPart"
+            id="org.eclipse.wst.jsdt.ui.PackageExplorer">
+      </view>
+      <view
             name="%hierarchyViewName"
             icon="$nl$/icons/full/eview16/class_hi.gif"
             category="org.eclipse.wst.jsdt.ui.java"
@@ -4467,6 +4474,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackageExplorer.HideInnerClassFilesFilter">
       </filter>
+      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideEmptyPackages.label"
@@ -4475,6 +4483,7 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.EmptyPackageFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackageExplorer.EmptyPackageFilter">
       </filter>
+      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideEmptyInnerPackages.label"
@@ -4644,7 +4653,7 @@
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackagesView"
             name="%HideEmptyPackages.label"
-            enabled="false"
+            enabled="true"
             description="%HideEmptyPackages.description"
             class="org.eclipse.wst.jsdt.internal.ui.filters.EmptyPackageFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackagesView.EmptyPackageFilter">

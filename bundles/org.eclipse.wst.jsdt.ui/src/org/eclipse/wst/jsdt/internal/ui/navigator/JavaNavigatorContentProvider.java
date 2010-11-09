@@ -93,8 +93,10 @@ public class JavaNavigatorContentProvider extends
 	}
 	
 	public void dispose() { 
+		if (fStateModel != null) {
+			fStateModel.removePropertyChangeListener(fLayoutPropertyListener);
+		}
 		super.dispose();
-		fStateModel.removePropertyChangeListener(fLayoutPropertyListener);
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { 

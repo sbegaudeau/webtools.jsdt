@@ -34,21 +34,24 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
 		
+		folder.addView(JavaScriptUI.ID_PACKAGES);
+		
 		String explorerViewID = ProductProperties.getProperty(IProductConstants.PERSPECTIVE_EXPLORER_VIEW);
 		// make sure the specified view ID is known
-		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null)
-			folder.addView(explorerViewID);
-		else
-			folder.addView(ProductProperties.ID_PERSPECTIVE_EXPLORER_VIEW);
+		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null) {
+			folder.addPlaceholder(explorerViewID);
+			if (!IPageLayout.ID_PROJECT_EXPLORER.equals(explorerViewID)) {
+				folder.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
+			}
+		}
 		
 		folder.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
-		
 		outputfolder.addView(JavaScriptUI.ID_JAVADOC_VIEW);
-		outputfolder.addView(JavaScriptUI.ID_SOURCE_VIEW);
+		outputfolder.addPlaceholder(JavaScriptUI.ID_SOURCE_VIEW);
 		outputfolder.addPlaceholder(TemplatesView.ID);
 		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
@@ -82,8 +85,9 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
-				
-		// new actions - Java project creation wizard
+		layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
+
+		// new actions - JavaScript project creation wizard
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.JavaProjectWizard"); //$NON-NLS-1$
 //		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard"); //$NON-NLS-1$
