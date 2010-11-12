@@ -888,6 +888,15 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 					}
 					break;
 				}
+				case DebugEvent.CHANGE: {
+					if(event.getSource().equals(scriptgroup)) {
+						if(iScriptCache != null) {
+							iScriptCache.clear();
+							iScriptCache = null;
+						}
+					}
+					break;
+				}
 			}
 		}
 	}
@@ -960,6 +969,10 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 		if (event instanceof ThreadExitEvent) {
 			ThreadExitEvent threadExitEvent = (ThreadExitEvent) event;
 			terminateThread(threadExitEvent.thread());
+			//need to update the script node in the event any scripts have been unloaded when the thread exits
+			if(scriptgroup != null) {
+				fireEvent(new DebugEvent(scriptgroup, DebugEvent.CHANGE, DebugEvent.CONTENT));
+			}
 			return false;
 		}
 		if (event instanceof ScriptLoadEvent) {

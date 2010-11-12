@@ -12,7 +12,9 @@ package org.eclipse.wst.jsdt.debug.internal.core;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -234,5 +236,26 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 */
 	public static synchronized String getExternalScriptPath(IPath path) {
 		return (String) externalScriptPaths.get(path.makeAbsolute());
+	}
+	
+	/**
+	 * Tries to find a local script path given the specified URI.
+	 * Returns <code>null</code> if no mapping is found
+	 * 
+	 * @param uri the URI to find a source mapping for
+	 * @return the absolute local path to the script mapped to the given URI, or <code>null</code>
+	 */
+	public static synchronized String findExternalScriptPathFromURI(String uri) {
+		if(uri != null) {
+			Entry e = null;
+			for (Iterator i = externalScriptPaths.entrySet().iterator(); i.hasNext();) {
+				e = (Entry) i.next();
+				if(uri.equals(e.getValue())) {
+					IPath p = (IPath) e.getKey();
+					return p.toString();
+				}
+			}
+		}
+		return null;
 	}
 }

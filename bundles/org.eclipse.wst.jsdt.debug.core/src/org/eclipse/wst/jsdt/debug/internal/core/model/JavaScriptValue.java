@@ -46,6 +46,10 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 */
 	public static final String PROTO = "[proto]"; //$NON-NLS-1$
 	/**
+	 * the 'constructor' value
+	 */
+	public static final String CONSTRUCTOR = "constructor"; //$NON-NLS-1$
+	/**
 	 * The 'this' value
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
@@ -213,16 +217,27 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				public VirtualMachine virtualMachine() {
 					return reference.virtualMachine();
 				}
-
 				public String name() {
 					return PROTO;
 				}
-
 				public Value value() {
 					return reference.prototype();
 				}
 			};
-			properties.add(0, new JavaScriptProperty(this, prototype));			
+			properties.add(0, new JavaScriptProperty(this, prototype));
+			
+			Property constructor = new Property() {
+				public VirtualMachine virtualMachine() {
+					return reference.virtualMachine();
+				}
+				public String name() {
+					return CONSTRUCTOR; 
+				}
+				public Value value() {
+					return reference.constructor();
+				}
+			};
+			properties.add(0, new JavaScriptProperty(this, constructor));
 		}
 		return (IVariable[]) this.properties.toArray(new IVariable[this.properties.size()]);
 	}

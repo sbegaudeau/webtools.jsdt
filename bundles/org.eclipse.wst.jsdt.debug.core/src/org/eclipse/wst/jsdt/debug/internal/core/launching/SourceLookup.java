@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -108,11 +109,43 @@ public final class SourceLookup {
 					}
 					folder = f;
 				}
-				file.create(new ByteArrayInputStream(source.getBytes()), true, null);
+				file = doFormat(file, source);
+			}
+			else {
+				file = doFormat(file, source);
 			}
 			return file;
 		}
 		return null;
+	}
+	
+	/**
+	 * Formats the given source into the given file handle
+	 * @param handle
+	 * @param source
+	 * @return the file handle
+	 * @throws CoreException
+	 */
+	static IFile doFormat(IFile handle, String source) throws CoreException {
+		/*CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
+		TextEdit edit = formatter.format(CodeFormatter.K_JAVASCRIPT_UNIT, source, 0, source.length(), 0, null);
+		String localsrc = source;
+		if(edit != null) {
+			Document doc = new Document(source);
+			try {
+				edit.apply(doc);
+				localsrc = doc.get();
+			} catch (Exception e) {
+				JavaScriptDebugPlugin.log(e);
+			} 
+		}*/
+		if(handle.isAccessible()) {
+			handle.setContents(new ByteArrayInputStream(source.getBytes()), IResource.FORCE, null);
+		}
+		else {
+			handle.create(new ByteArrayInputStream(source.getBytes()), true, null);
+		}
+		return handle;
 	}
 	
 	/**
