@@ -342,6 +342,23 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 	
 	/**
+	 * Removes all {@link CFScriptReference}s from the cache when the associated context is destroyed
+	 * 
+	 * @param contextid
+	 */
+	public void removeScriptsForContext(String contextid) {
+		if(scripts != null) {
+			Entry e = null;
+			for(Iterator i = scripts.entrySet().iterator(); i.hasNext();) {
+				e = (Entry) i.next();
+				if(contextid.equals(((CFScriptReference)e.getValue()).context())) {
+					i.remove();
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Removes the script with the given id form the listing
 	 * 
 	 * @param id the script to remove

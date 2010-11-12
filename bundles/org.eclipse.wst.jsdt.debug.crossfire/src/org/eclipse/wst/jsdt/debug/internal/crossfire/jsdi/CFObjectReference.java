@@ -39,6 +39,8 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	private Value constructor = null;
 	private Value prototype = null;
 	private List properties = null;
+	private Number construct = null;
+	private Number proto = null;
 	
 	/**
 	 * Constructor
@@ -49,6 +51,14 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public CFObjectReference(CFVirtualMachine vm, CFStackFrame frame, Map body) {
 		super(vm);
 		this.frame = frame;
+		Map map = (Map) body.get(Attributes.CONSTRUCTOR);
+		if(map != null) {
+			construct = (Number) map.get(Attributes.HANDLE);
+		}
+		map = (Map) body.get(Attributes.PROTO);
+		if(map != null) {
+			proto = (Number) map.get(Attributes.HANDLE);
+		}
 		Object h = body.get(Attributes.HANDLE);
 		if(h instanceof String) {
 			try {
@@ -104,8 +114,14 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 */
 	public Value constructor() {
 		synchronized (frame) {
-			if(constructor == null) {
+			if(construct == null) {
 				return crossfire().mirrorOfUndefined();
+			}
+			if(constructor == null) {
+				constructor = frame.lookup(construct);
+				if(constructor == null) {
+					return crossfire().mirrorOfUndefined();
+				}
 			}
 		}
 		return constructor;
@@ -116,8 +132,14 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 */
 	public Value prototype() {
 		synchronized (frame) {
-			if(prototype == null) {
+			if(proto == null) {
 				return crossfire().mirrorOfUndefined();
+			}
+			if(prototype == null) {
+				prototype = frame.lookup(proto);
+				if(prototype == null) {
+					return crossfire().mirrorOfUndefined();
+				}
 			}
 		}
 		return prototype;

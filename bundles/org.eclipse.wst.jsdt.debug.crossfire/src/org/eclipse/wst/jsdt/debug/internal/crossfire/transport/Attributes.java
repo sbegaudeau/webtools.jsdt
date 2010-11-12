@@ -42,6 +42,10 @@ public interface Attributes {
 	 */
 	public static final String CONDITION = "condition"; //$NON-NLS-1$
 	/**
+	 * the "constructor" attribute
+	 */
+	public static final String CONSTRUCTOR = "constructor"; //$NON-NLS-1$
+	/**
 	 * the "context_href" attribute
 	 */
 	public static final String CONTEXT_HREF = "context_href"; //$NON-NLS-1$
@@ -151,6 +155,10 @@ public interface Attributes {
 	 */
 	public static final String OBJECT = "object"; //$NON-NLS-1$
 	/**
+	 * The type "proto"
+	 */
+	public static final String PROTO = "proto"; //$NON-NLS-1$
+	/**
 	 * The "ref" attribute / type
 	 */
 	public static final String REF = "ref"; //$NON-NLS-1$
@@ -178,6 +186,10 @@ public interface Attributes {
 	 * The "seq" attribute
 	 */
 	public static final String SEQ = "seq"; //$NON-NLS-1$
+	/**
+	 * The "set" attribute
+	 */
+	public static final String SET = "set"; //$NON-NLS-1$
 	/**
 	 * The "source" attribute
 	 */
