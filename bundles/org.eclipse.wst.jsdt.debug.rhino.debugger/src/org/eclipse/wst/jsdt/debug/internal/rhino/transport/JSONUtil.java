@@ -306,9 +306,12 @@ public final class JSONUtil {
 		}
 		StringBuffer buffer = new StringBuffer();
 		while (c != '"') {
-			if (Character.isISOControl(c))
-				throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
-
+			if (Character.isISOControl(c)) {
+				//XXX we should ignore the ISO control chars and make a best effort to continue
+				c = it.next();
+				continue;
+				//throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
+			}
 			if (c == '\\') {
 				c = it.next();
 				switch (c) {
