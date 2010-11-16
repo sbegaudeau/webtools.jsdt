@@ -13,6 +13,9 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.event;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
@@ -196,32 +199,51 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_DESTROYED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
-				
 				else if(CFEventPacket.ON_CONSOLE_DEBUG.equals(name)) {
+					List info = (List) event.getBody().get(Attributes.DATA);
+					if(info != null) {
+						log(IStatus.INFO, info);
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_DEBUG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_ERROR.equals(name)) {
+					List info = (List) event.getBody().get(Attributes.DATA);
+					if(info != null) {
+						log(IStatus.ERROR, info);
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_INFO.equals(name)) {
+					List info = (List) event.getBody().get(Attributes.DATA);
+					if(info != null) {
+						log(IStatus.INFO, info);
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_INFO+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_LOG.equals(name)) {
+					List info = (List) event.getBody().get(Attributes.DATA);
+					if(info != null) {
+						log(IStatus.INFO, info);
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_LOG+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_WARN.equals(name)) {
+					List info = (List) event.getBody().get(Attributes.DATA);
+					if(info != null) {
+						log(IStatus.WARNING, info);
+					}
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -231,8 +253,6 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_INSPECT_NODE+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
-				/*	IStatus status = new Status(IStatus.INFO, CrossFirePlugin.PLUGIN_ID, "onInspectNode: "+event.getBody().get("node")); //$NON-NLS-1$ //$NON-NLS-2$
-					CrossFirePlugin.log(status);*/
 					return null;
 				}
 				else if(CFEventPacket.ON_TOGGLE_BREAKPOINT.equals(name)) {
@@ -293,6 +313,29 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 			CrossFirePlugin.log(te);
 		}
 		return null;
+	}
+	
+	/**
+	 * Logs the entry from the queue
+	 * 
+	 * @param kind
+	 * @param objects
+	 */
+	void log(int kind, List objects) {
+		IStatus status = null;
+		if(objects.size() > 1) {
+			MultiStatus mstatus = new MultiStatus(CrossFirePlugin.PLUGIN_ID, kind, "Messages logged from Crossfire", null); //$NON-NLS-1$
+			for (Iterator i = objects.iterator(); i.hasNext();) {
+				mstatus.add(new Status(kind, CrossFirePlugin.PLUGIN_ID, i.next().toString()));
+			}
+			status = mstatus;
+		}
+		else if(objects.size() == 1) {
+			status = new Status(kind, CrossFirePlugin.PLUGIN_ID, objects.iterator().next().toString());
+		}
+		if(status != null) {
+			CrossFirePlugin.log(status);
+		}
 	}
 	
 	/**
