@@ -46,7 +46,7 @@ public class ChromeAttachingConnector implements AttachingConnector {
 	public Map defaultArguments() {
 		Map args = new HashMap();
 		args.put(HostArgument.HOST, new HostArgument(null));
-		args.put(PortArgument.PORT, new PortArgument(5000));
+		args.put(PortArgument.PORT, new PortArgument(9222));
 		args.put(TimeoutArgument.TIMEOUT, new TimeoutArgument());
 		args.put(BrowserArgument.BROWSER, new BrowserArgument());
 		return args;

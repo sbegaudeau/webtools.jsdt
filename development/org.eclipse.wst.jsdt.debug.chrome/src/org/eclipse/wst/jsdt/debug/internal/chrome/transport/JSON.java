@@ -232,7 +232,7 @@ public final class JSON {
 	 */
 	public static void writeToolHeader(StringBuffer buffer, String tool) {
 		StringBuffer buff = new StringBuffer(18);
-		buff.append(TOOL_HEADER).append(tool).append(LINE_FEED);
+		buff.append(TOOL_HEADER).append(tool).append(LINE_FEED).append(LINE_FEED);
 		buffer.insert(0, buff);
 	}
 	
@@ -247,9 +247,9 @@ public final class JSON {
 		Object json = packet.toJSON();
 		StringBuffer buffer = new StringBuffer();
 		writeValue(json, buffer);
-		int length = buffer.length();
-		writeContentLength(buffer, length);
+		int length = buffer.toString().getBytes().length;
 		writeToolHeader(buffer, packet.tool());
+		writeContentLength(buffer, length);
 		if(TRACE) {
 			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		}
