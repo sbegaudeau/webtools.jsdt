@@ -10,6 +10,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.transport;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.transport.packet.Event;
@@ -112,7 +113,8 @@ public class CFEventPacket extends CFPacket implements Event {
 		if(data instanceof Map) {
 			body.putAll((Map) data);
 		}
-		if(data instanceof String) {
+		else if(data instanceof String ||
+				data instanceof List) {
 			body.put(Attributes.DATA, data);
 		}
 	}
