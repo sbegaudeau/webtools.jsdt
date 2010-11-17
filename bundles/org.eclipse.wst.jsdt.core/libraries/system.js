@@ -958,6 +958,13 @@ Global.prototype.eval=function(s){return new Object();};
 Global.prototype.debugger=null;
 
 /**
+ * Property undefined
+ * @memberOf Global
+ * @description undefined
+*/
+Global.prototype.undefined=null;
+
+/**
   * function parseInt(s,radix)
   * @memberOf Global
   * @param {String} s

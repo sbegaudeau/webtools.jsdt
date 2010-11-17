@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3651,20 +3651,20 @@ private int internalScanIdentifierOrKeyword(int index, int length, char[] data) 
 					return TokenNameIdentifier;
 			}
 
-		case 'u' : //goto
-			if (length == 9) {
-				if ((data[++index] == 'n')
-					&& (data[++index] == 'd')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'f')
-					&& (data[++index] == 'i')
-					&& (data[++index] == 'n')
-					&& (data[++index] == 'e')
-					&& (data[++index] == 'd')) {
-					return TokenNameundefined;
-				}
-			} //no goto in java are allowed, so why java removes this keyword ???
-			return TokenNameIdentifier;
+//		case 'u' : //goto
+//			if (length == 9) {
+//				if ((data[++index] == 'n')
+//					&& (data[++index] == 'd')
+//					&& (data[++index] == 'e')
+//					&& (data[++index] == 'f')
+//					&& (data[++index] == 'i')
+//					&& (data[++index] == 'n')
+//					&& (data[++index] == 'e')
+//					&& (data[++index] == 'd')) {
+//					return TokenNameIdentifier;
+//				}
+//			} //no goto in java are allowed, so why java removes this keyword ???
+//			return TokenNameIdentifier;
 
 		case 'v' : //void volatile
 			switch (length) {
