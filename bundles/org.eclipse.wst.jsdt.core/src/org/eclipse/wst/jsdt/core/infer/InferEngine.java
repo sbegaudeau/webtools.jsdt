@@ -161,6 +161,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		}
 
 		public void addMember( char [] key, Object member ){
+			if(key == null)
+				return;
 
 			if( definedMembers == null ){
 				definedMembers = new HashtableOfObject();
@@ -290,7 +292,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	public boolean visit(IAssignment assignment) {
-		pushContext();
+		//pushContext();
 		IExpression assignmentExpression=assignment.getExpression();
 		if (handlePotentialType(assignment))
 		{
@@ -345,9 +347,13 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		 *	foo = {};
 		 */
 		else if ( assignmentExpression instanceof IObjectLiteral && assignment.getLeftHandSide() instanceof ISingleNameReference ){
-
 			IAbstractVariableDeclaration varDecl = getVariable( assignment.getLeftHandSide() );
-
+			if(varDecl == null) {
+				IAssignment existing = getAssignment(assignment.getLeftHandSide());
+				if(existing == null)
+					//add as a member of the current context
+					currentContext.addMember( getName(assignment.getLeftHandSide()), assignment );
+			}
 			if( varDecl != null ){
 				InferredType type = varDecl.getInferredType();
 
@@ -361,6 +367,22 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				}
 				else
 					return false; //
+			} else {
+				IAssignment assignmentDecl = getAssignment(assignment.getLeftHandSide());
+				if( assignmentDecl != null ){
+					InferredType type = assignmentDecl.getInferredType();
+
+					if( type == null ){
+						//create an anonymous type based on the ObjectLiteral
+						type = getTypeOf( assignmentExpression );
+
+						assignmentDecl.setInferredType(type);
+
+						return true;
+					}
+					else
+						return false; //
+				}
 			}
 		}
 		/*
@@ -548,6 +570,18 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			var.setInferredType(type);
 		}
 		return var.getInferredType();
+	}
+	
+	private InferredType createAnonymousType(IAssignment assignment) {
+
+		InferredType currentType = assignment.getInferredType();
+
+		if (currentType==null || !currentType.isAnonymous)
+		{
+			InferredType type=createAnonymousType(getName(assignment.getLeftHandSide()), currentType);
+			assignment.setInferredType(type);
+		}
+		return assignment.getInferredType();
 	}
 
 	protected InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
@@ -1159,7 +1193,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	public void endVisit(IAssignment assignment) {
-		popContext();
+		//popContext();
 	}
 	
 	protected boolean handleAttributeDeclaration(InferredAttribute attribute, IExpression initializer) {
@@ -1618,6 +1652,30 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		return null;
 
 	}
+	
+	/**
+	 * Finds a assignment on the context from the name represented with the expression
+	 *
+	 * Currently, only SNR are supported
+	 */
+	protected IAssignment getAssignment(IExpression expression)
+	{
+		char [] name=null;
+
+		if (expression instanceof ISingleNameReference)
+			name = ((ISingleNameReference) expression).getToken();
+		else if (expression instanceof IFieldReference)
+			name = ((IFieldReference) expression).getToken();
+		if (name!=null)
+		{
+			Object assignment = this.currentContext.getMember( name );
+			if (assignment instanceof IAssignment)
+				return (IAssignment)assignment;
+
+		}
+		return null;
+
+	}
 
 	/**
 	 * Finds a Function Declaration on the context from the name represented with the expression
@@ -1752,6 +1810,21 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 							type.updatePositions(varDecl.sourceStart(), varDecl.sourceEnd());
 						}
 							
+					} else {
+						IAssignment assignment = getAssignment(expression);
+						if(assignment != null) {
+							type = assignment.getInferredType(); //could be null
+							if (type!=null && !type.isAnonymous) {
+								if(assignment.getExpression() instanceof IAllocationExpression && !type.isFunction()) {
+									type = createAnonymousType(assignment);
+								} else {
+									InferredType superType = type;
+									type = addType(getName(assignment.getLeftHandSide()), true);
+									type.superClass = superType;
+								}
+								type.updatePositions(assignment.sourceStart(), assignment.sourceEnd());
+							}
+						}
 					}
 
 				}
@@ -1869,6 +1942,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		if(CharOperation.equals(name, TypeConstants.BOOLEAN, false)) //$NON-NLS-1$
 			return BooleanType.getName();
 		return name;
+	}
+	
+	private char[] getName(IExpression expression) {
+		if (expression instanceof ISingleNameReference)
+			return ((ISingleNameReference) expression).getToken();
+		else if (expression instanceof IFieldReference)
+			return ((IFieldReference) expression).getToken();
+		return null;
 	}
 
 }

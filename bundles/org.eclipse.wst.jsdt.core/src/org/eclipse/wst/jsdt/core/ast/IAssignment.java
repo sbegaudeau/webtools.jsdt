@@ -11,6 +11,8 @@
 
 package org.eclipse.wst.jsdt.core.ast;
 
+import org.eclipse.wst.jsdt.core.infer.InferredType;
+
 /**
  *  Representation of an assignment expression
   * <p>
@@ -37,5 +39,16 @@ public interface IAssignment extends IExpression {
 	IExpression getLeftHandSide();
 	
 	IJsDoc getJsDoc();
+	
+	/**
+	 * Set the inferred type of the assignment
+	 * @param inferred type
+	 */
+	public void setInferredType(InferredType type);
+	/**
+	 * Get the inferred type of the assignment
+	 * @return inferred type
+	 */
+	public InferredType getInferredType();
 
 }

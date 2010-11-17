@@ -15,6 +15,7 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IJsDoc;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -32,6 +33,7 @@ public class Assignment extends Expression implements IAssignment {
 	public Expression lhs;
 	public Expression expression;
 	public Javadoc javadoc;
+	public InferredType inferredType;
 
 public Assignment(Expression lhs, Expression expression, int sourceEnd) {
 	//lhs is always a reference by construction ,
@@ -243,5 +245,14 @@ public IExpression getLeftHandSide() {
 
 public IJsDoc getJsDoc() {
 	return javadoc;
+}
+
+public void setInferredType(InferredType type) {
+	this.inferredType = type;
+	
+}
+
+public InferredType getInferredType() {
+	return this.inferredType;
 }
 }
