@@ -243,6 +243,27 @@ public TypeBinding resolveType(BlockScope scope) {
 
 	constant = Constant.NotAConstant;
 
+	
+	if (receiver instanceof FunctionExpression) {
+		FunctionExpression expr = (FunctionExpression) receiver;
+		if (expr.methodDeclaration != null) {
+			if (arguments != null && expr.methodDeclaration.arguments != null) {
+				for (int i = 0; i < Math.min(arguments.length, expr.methodDeclaration.arguments.length); i++) {
+					Expression msgSndArgument = arguments[i];
+					Argument funcExprArgument = expr.methodDeclaration.arguments[i];
+					
+					if (msgSndArgument != null) {
+						msgSndArgument.resolve(scope);
+						if (msgSndArgument.resolvedType != null) {
+							funcExprArgument.type = new SingleTypeReference(msgSndArgument.resolvedType.readableName(), 0);
+							funcExprArgument.type.resolvedType = arguments[i].resolvedType;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	this.actualReceiverType = (receiver!=null) ?receiver.resolveType(scope):null;
 	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference  || receiver instanceof ThisReference)
 		&& ( receiver.bits & Binding.TYPE) != 0;
