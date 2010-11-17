@@ -67,7 +67,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 			//search all the possible types until a match is found
 			IType[] types = fJavaProject.findTypes(typeName);
 			if(types != null && types.length >0) {
-				for(int i = 0; i < types.length && func != null; ++i) {
+				for(int i = 0; i < types.length && func == null; ++i) {
 					IType type = types[i];
 					if (type != null) {
 						boolean isConstructor = fProposal.isConstructor();

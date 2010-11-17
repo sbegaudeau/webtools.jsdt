@@ -1334,11 +1334,11 @@ public class JavaProject
 			IType type = findType(fullyQualifiedName.substring(0, lastDot), lookup, considerSecondaryTypes, progressMonitor);
 			if (type != null) {
 				type = type.getType(fullyQualifiedName.substring(lastDot+1));
-				if (!type.exists()) {
-					return null;
+				if (type != null && type.exists()) {
+					return new IType[]{type};
 				}
 			}
-			return new IType[]{type};
+			return null;
 		}
 		if (answer.type==null && answer.element instanceof ITypeRoot)
 		{
