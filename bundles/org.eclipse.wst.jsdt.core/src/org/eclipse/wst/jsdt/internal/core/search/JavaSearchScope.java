@@ -21,12 +21,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -361,7 +361,10 @@ public boolean encloses(String resourcePathString) {
 }
 
 /**
- * Returns paths list index of given path or -1 if not found.
+ * <p>Returns paths list index of given path or -1 if not found.
+ * If there are multiple paths in the index that enclose the given path,
+ * the index for the most specific enclosing path will be given.</p>
+ * 
  * NOTE: Use indexOf(String, String) for path inside jars
  *
  * @param fullPath the full path of the resource, e.g.
@@ -369,17 +372,31 @@ public boolean encloses(String resourcePathString) {
  *   2. /P/src/pkg
  */
 private int indexOf(String fullPath) {
-	// cannot guess the index of the container path
-	// fallback to sequentially looking at all known paths
+	/*
+	 * cannot guess the index of the container path, fallback to
+	 * sequentially looking at all known paths
+	 */
+	int answer = -1;
+	String answerFullPath = null;
 	for (int i = 0, length = this.relativePaths.length; i < length; i++) {
 		String currentRelativePath = this.relativePaths[i];
 		if (currentRelativePath == null) continue;
 		String currentContainerPath = this.containerPaths[i];
 		String currentFullPath = currentRelativePath.length() == 0 ? currentContainerPath : (currentContainerPath + '/' + currentRelativePath);
-		if (encloses(currentFullPath, fullPath, i))
-			return i;
+		if (encloses(currentFullPath, fullPath, i)) {
+			/*
+			 * BUG330274 : If have not found answer yet or the new answer
+			 * is not enclosed by the previous answer, it is either more
+			 * specific or different altogether (which is fine)
+			 */
+			if (answerFullPath == null || !encloses(currentFullPath, answerFullPath, i)) {
+				answerFullPath = currentFullPath;
+				answer = i;
+			}
+		}
 	}
-	return -1;
+	
+	return answer;
 }
 
 /**
@@ -414,8 +431,11 @@ private int indexOf(String containerPath, String relativePath) {
 	return -1;
 }
 
-/*
- * Returns whether the enclosing path encloses the given path (or is equal to it)
+/**
+ * @param enclosingPath
+ * @param path
+ * @param index
+ * @return whether the enclosing path encloses the given path (or is equal to it)
  */
 private boolean encloses(String enclosingPath, String path, int index) {
 	// normalize given path as it can come from outside
