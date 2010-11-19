@@ -53,7 +53,7 @@ public final class DebugShell {
     	
     	String port = DEFAULT_PORT;
     	boolean suspend = false;
-    	boolean trace = false;
+    	boolean trace = true;
     	
     	ArrayList argList = new ArrayList();
     	for (int i = 0; i < args.length; i++) {
@@ -77,8 +77,10 @@ public final class DebugShell {
 		TransportService service = new RhinoTransportService();
 		RhinoDebuggerImpl debugger = new RhinoDebuggerImpl(service, port, suspend, trace);
 		try {
+			if(trace) {
+				prettyPrintHeader(suspend, port);
+			}
 			debugger.start();
-			prettyPrintHeader(suspend, port);
 			Main.shellContextFactory.addListener(debugger);
 			Main.exec(newArgs);
 		} catch (Exception e) {
