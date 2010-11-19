@@ -39,6 +39,7 @@ public class Messages extends NLS {
 	public static String external_javascript_source;
 	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
+	public static String opening_source__0;
 	public static String running_state;
 	public static String scripts;
 	public static String select_javascript_file;

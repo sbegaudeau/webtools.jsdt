@@ -17,20 +17,26 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler2;
 import org.eclipse.core.commands.IHandlerListener;
 import org.eclipse.core.expressions.EvaluationContext;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.sourcelookup.ISourceLookupResult;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.internal.core.model.Script;
+import org.eclipse.wst.jsdt.debug.internal.ui.Messages;
 
 /**
  * Context menu action to show the source for a selected {@link IScript}
@@ -51,13 +57,17 @@ public class OpenSourceAction implements IObjectActionDelegate, IActionDelegate2
 	 */
 	public void run(IAction action) {
 		if(script != null) {
-			BusyIndicator.showWhile(null, new Runnable() {
-				public void run() {
+			UIJob job = new UIJob(PlatformUI.getWorkbench().getDisplay(), NLS.bind(Messages.opening_source__0, script.sourceURI())) {
+				public IStatus runInUIThread(IProgressMonitor monitor) {
 					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					ISourceLookupResult result = DebugUITools.lookupSource(script, script.getDebugTarget().getLaunch().getSourceLocator());
 					DebugUITools.displaySource(result, page);
+					return Status.OK_STATUS;
 				}
-			});
+			};
+			job.setPriority(Job.INTERACTIVE);
+			job.setUser(true);
+			job.schedule();
 		}
 	}
 
