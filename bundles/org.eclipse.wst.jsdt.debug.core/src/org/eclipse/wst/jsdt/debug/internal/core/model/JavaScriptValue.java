@@ -150,7 +150,13 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		if (jsValue instanceof ObjectReference) {
 			ObjectReference ref = (ObjectReference) jsValue;
 			StringBuffer buffer = new StringBuffer();
-			buffer.append(NLS.bind(ModelMessages.JavaScriptValue_object_value_label, new String[] {jsValue.valueString(), ref.id().toString()}));
+			Number id = ref.id();
+			if(id == null) {
+				buffer.append(jsValue.valueString());
+			}
+			else {
+				buffer.append(NLS.bind(ModelMessages.JavaScriptValue_object_value_label, new String[] {jsValue.valueString(), id.toString()}));
+			}
 			return buffer.toString();
 		}
 		if (jsValue instanceof NumberValue) {
