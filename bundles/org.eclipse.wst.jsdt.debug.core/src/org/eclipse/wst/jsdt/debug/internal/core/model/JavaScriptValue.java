@@ -19,7 +19,11 @@ import java.util.List;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.debug.core.model.IValue;
 import org.eclipse.debug.core.model.IVariable;
+import org.eclipse.jface.text.Document;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.text.edits.TextEdit;
+import org.eclipse.wst.jsdt.core.ToolFactory;
+import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ArrayReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference;
@@ -33,6 +37,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
  * Default implementation of {@link IValue}
@@ -101,6 +106,24 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		if (this.value instanceof JavaScriptPrimitiveValue) {
 			JavaScriptPrimitiveValue nvalue = (JavaScriptPrimitiveValue)this.value;
 			return nvalue.stringValue();
+		}
+		if(this.value instanceof FunctionReference) {
+			FunctionReference f = (FunctionReference) this.value;
+			String src = f.functionBody();
+			if(f != null) {
+				CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
+				TextEdit edit = formatter.format(CodeFormatter.K_JAVASCRIPT_UNIT, src, 0, src.length(), 0, null);
+				if(edit != null) {
+					Document doc = new Document(src);
+					try {
+						edit.apply(doc);
+						return doc.get();
+					} catch (Exception e) {
+						JavaScriptDebugPlugin.log(e);
+					} 
+				}
+			}
+			return f.valueString();
 		}
 		if(this.value != null) {
 			return this.value.valueString();
