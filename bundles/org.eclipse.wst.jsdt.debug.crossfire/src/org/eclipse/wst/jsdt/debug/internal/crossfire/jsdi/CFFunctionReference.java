@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
+import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 
 /**
  * Default implementation of {@link FunctionReference} for Crossfire
@@ -29,6 +29,7 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	
 	private String funcname = null;
 	
+	
 	/**
 	 * Constructor
 	 * @param vm
@@ -37,13 +38,18 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	 */
 	public CFFunctionReference(CFVirtualMachine vm, CFStackFrame frame, Map body) {
 		super(vm, frame, body);
-		funcname = (String) body.get(Attributes.VALUE);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference#functionName()
 	 */
 	public String functionName() {
+		synchronized (frame()) {
+			if(funcname == null) {
+				Value val = frame().lookup(id());
+				System.out.println(val);
+			}
+		}
 		return funcname;
 	}
 
@@ -51,13 +57,16 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.FunctionReference#functionBody()
 	 */
 	public String functionBody() {
-		return null;
+		return source();
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFObjectReference#valueString()
 	 */
 	public String valueString() {
+		if(source() != null) {
+			return source();
+		}
 		return FUNCTION;
 	}
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,11 +71,11 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	public CFStackFrame(VirtualMachine vm, CFThreadReference thread, Map json) {
 		super(vm);
 		this.thread = thread;
-		Number value = getNumber(json, Attributes.INDEX);
+		Number value = (Number) json.get(Attributes.INDEX);
 		if(value != null) {
 			index = value.intValue();
 		}
-		value = getNumber(json, Attributes.LINE);
+		value = (Number) json.get(Attributes.LINE);
 		if(value != null) {
 			linenumber = value.intValue();
 		}
@@ -96,33 +95,13 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(list != null) {
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				Map map = (Map) i.next();
-				Scope s = new Scope(getNumber(map, Attributes.INDEX), getNumber(map, Attributes.FRAME_INDEX), getNumber((Map)map.get(Attributes.OBJECT),Attributes.HANDLE));
+				Scope s = new Scope(
+						(Number)map.get(Attributes.INDEX), 
+						(Number)map.get(Attributes.FRAME_INDEX), 
+						(Number) ((Map)map.get(Attributes.OBJECT)).get(Attributes.HANDLE));
 				scopes.put(new Integer(index), s);
 			}
 		}
-	}
-	
-	/**
-	 * Tries to look up a {@link Number} value from the given map with the given name. This method
-	 * will try to convert a string value to a number if found mapped to the given attribute name.
-	 * <br><br>
-	 * If a {@link Number} cannot be computed <code>null</code> is returned
-	 * @param map
-	 * @param attrib
-	 * @return the {@link Number} mapped to the given attribute or <code>null</code>
-	 */
-	Number getNumber(Map map, String attrib) {
-		Object o = map.get(attrib);
-		if(o instanceof Number) {
-			return (Number) o;
-		}
-		else if(o instanceof String) {
-			try {
-				return new BigDecimal((String)o);
-			}
-			catch(NumberFormatException nfe) {}
-		}
-		return null;
 	}
 	
 	/**
@@ -156,19 +135,22 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			entry = (Entry) iter.next();
 			if(entry.getValue() instanceof Map) {
 				Map info  = (Map) entry.getValue();
-				String name = (String) entry.getKey();
-				Object handle = info.get(Attributes.HANDLE);
-				Number ref = null;
-				if(handle instanceof Number) {
-					ref = (Number) handle;
-				}
-				else if(handle instanceof String) {	
-					ref = new Integer((String)handle);
-				}
-				varcollector.add(new CFVariable(crossfire(), this, name, ref, info));
+				varcollector.add(
+						new CFVariable(
+								crossfire(), 
+								this, 
+								(String) entry.getKey(), 
+								(Number) info.get(Attributes.HANDLE), 
+								info));
 			}
 			else {
-				varcollector.add(new CFVariable(crossfire(), this, (String) entry.getKey(), null, null));
+				varcollector.add(
+						new CFVariable(
+								crossfire(), 
+								this, 
+								(String) entry.getKey(), 
+								null, 
+								null));
 			}
 		}
 	}
@@ -240,9 +222,14 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(ref != null) {
 			CFRequestPacket request = new CFRequestPacket(Commands.LOOKUP, thread.id());
 			request.setArgument(Attributes.HANDLE, ref);
+			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				Map value = (Map) response.getBody().get(Attributes.VALUE);
+				String src = (String) response.getBody().get(Attributes.SOURCE);
+				if(src != null) {
+					value.put(Attributes.SOURCE, src);
+				}
 				if(value != null) {
 					Number handle = (Number) value.get(Attributes.HANDLE);
 					if(handle == null) {

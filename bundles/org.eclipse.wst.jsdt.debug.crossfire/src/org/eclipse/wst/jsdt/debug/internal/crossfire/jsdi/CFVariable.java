@@ -24,10 +24,9 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
  */
 public class CFVariable extends CFProperty implements Variable {
 
-	private Value value = null;
-	
 	/**
 	 * Constructor
+	 * 
 	 * @param vm
 	 * @param frame
 	 * @param name
@@ -36,8 +35,10 @@ public class CFVariable extends CFProperty implements Variable {
 	 */
 	public CFVariable(CFVirtualMachine vm, CFStackFrame frame, String name, Number ref, Map values) {
 		super(vm, frame, name, ref);
+		Value value = null;
 		if(values != null) {
 			String kind = (String) values.get(Attributes.TYPE);
+			//if we have a primitive type create it value now
 			if(kind != null) {
 				if(kind.equals(Attributes.STRING)) {
 					value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
@@ -48,16 +49,17 @@ public class CFVariable extends CFProperty implements Variable {
 				else if(kind.equals(Attributes.BOOLEAN)) {
 					value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
 				}
-				else if(kind.equals(Attributes.FUNCTION)) {
-					value = new CFFunctionReference(vm, frame, values);
-				}
-				else if(kind.equals(Attributes.OBJECT)) {
-					value = new CFObjectReference(vm, frame, values);
+				if(Attributes.THIS.equals(name)) {
+					//special object that has no lookup so we have to pre-populate the properties
+					value = new CFObjectReference(crossfire(), frame, values);
 				}
 			}
-			else {
-				value = crossfire().mirrorOfUndefined();
-			}
+		}
+		else {
+			value = crossfire().mirrorOfNull();
+		}
+		if(value != null) {
+			setValue(value);
 		}
 	}
 
@@ -76,15 +78,5 @@ public class CFVariable extends CFProperty implements Variable {
 			return ((CFStackFrame)frame).isVisible(this);
 		}
 		return false;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFProperty#value()
-	 */
-	public synchronized Value value() {
-		if(value != null) {
-			return value;
-		}
-		return super.value();
 	}
 }

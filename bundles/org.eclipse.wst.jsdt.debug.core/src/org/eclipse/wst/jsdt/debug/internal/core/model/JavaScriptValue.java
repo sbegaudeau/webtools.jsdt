@@ -110,7 +110,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		if(this.value instanceof FunctionReference) {
 			FunctionReference f = (FunctionReference) this.value;
 			String src = f.functionBody();
-			if(f != null) {
+			if(src != null) {
 				CodeFormatter formatter = ToolFactory.createCodeFormatter(null);
 				TextEdit edit = formatter.format(CodeFormatter.K_JAVASCRIPT_UNIT, src, 0, src.length(), 0, null);
 				if(edit != null) {

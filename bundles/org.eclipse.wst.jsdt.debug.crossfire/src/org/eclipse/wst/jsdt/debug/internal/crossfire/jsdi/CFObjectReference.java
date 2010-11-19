@@ -11,13 +11,13 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference;
+import org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame;
 import org.eclipse.wst.jsdt.debug.core.jsdi.Value;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 
@@ -36,11 +36,12 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	private CFStackFrame frame = null;
 	private String classname = null;
 	private Number handle = null;
+	private Number constref = null;
+	private Number protoref = null;
 	private Value constructor = null;
 	private Value prototype = null;
 	private List properties = null;
-	private Number construct = null;
-	private Number proto = null;
+	private String source = null;
 	
 	/**
 	 * Constructor
@@ -51,27 +52,8 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	public CFObjectReference(CFVirtualMachine vm, CFStackFrame frame, Map body) {
 		super(vm);
 		this.frame = frame;
-		Map map = (Map) body.get(Attributes.CONSTRUCTOR);
-		if(map != null) {
-			construct = (Number) map.get(Attributes.HANDLE);
-		}
-		map = (Map) body.get(Attributes.PROTO);
-		if(map != null) {
-			proto = (Number) map.get(Attributes.HANDLE);
-		}
-		Object h = body.get(Attributes.HANDLE);
-		if(h instanceof String) {
-			try {
-				handle = new Integer((String)h);
-			}
-			catch(NumberFormatException nfe) {}
-		}
-		else if(h instanceof Number) {
-			handle = (Number)h;
-		}
-		if(handle == null) {
-			handle = new Integer(0);
-		}
+		handle = (Number) body.get(Attributes.HANDLE);
+		source = (String) body.get(Attributes.SOURCE);
 		//init properties - we are dealing with evaluation results
 		Map props = (Map) body.get(Attributes.RESULT);
 		if(props == null) {
@@ -88,9 +70,27 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 				properties = new ArrayList(props.size());
 			}
 			Entry entry = null;
+			String name = null;
+			Map json = null;
+			Number ref = null;
 			for(Iterator i = props.entrySet().iterator(); i.hasNext();) {
 				entry = (Entry) i.next();
-				properties.add(new CFProperty(crossfire(), frame, (String)entry.getKey(), frame.createValue(entry.getValue())));
+				name = (String)entry.getKey();
+				if(entry.getValue() instanceof Map) {
+					json = (Map) entry.getValue();
+					ref = (Number) json.get(Attributes.HANDLE);
+					//don't add constructor and proto to the properties heap
+					//they are requested specially
+					if(Attributes.CONSTRUCTOR.equals(name)) {
+						constref = ref;
+						continue;
+					}
+					else if(Attributes.PROTO.equals(name)) {
+						protoref = ref;
+						continue;
+					}
+				}
+				properties.add(new CFVariable(crossfire(), frame, name, ref, json));
 			}
 		}
 	}
@@ -99,6 +99,9 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */
 	public String valueString() {
+		if(source != null) {
+			return source;
+		}
 		return OBJECT;
 	}
 
@@ -114,14 +117,11 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 */
 	public Value constructor() {
 		synchronized (frame) {
-			if(construct == null) {
-				return crossfire().mirrorOfUndefined();
-			}
 			if(constructor == null) {
-				constructor = frame.lookup(construct);
-				if(constructor == null) {
-					return crossfire().mirrorOfUndefined();
+				if(constref == null) {
+					constructor = crossfire().mirrorOfUndefined();
 				}
+				constructor = frame.lookup(constref);
 			}
 		}
 		return constructor;
@@ -132,14 +132,11 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 */
 	public Value prototype() {
 		synchronized (frame) {
-			if(proto == null) {
-				return crossfire().mirrorOfUndefined();
-			}
 			if(prototype == null) {
-				prototype = frame.lookup(proto);
-				if(prototype == null) {
-					return crossfire().mirrorOfUndefined();
+				if(protoref == null) {
+					prototype = crossfire().mirrorOfUndefined();
 				}
+				prototype = frame.lookup(protoref);
 			}
 		}
 		return prototype;
@@ -149,11 +146,6 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference#properties()
 	 */
 	public List properties() {
-		synchronized (frame) {
-			if(properties == null) {
-				return Collections.EMPTY_LIST;
-			}
-		}
 		return properties;
 	}
 
@@ -162,5 +154,19 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	 */
 	public Number id() {
 		return handle;
+	}
+	
+	/**
+	 * @return the backing {@link StackFrame}
+	 */
+	protected CFStackFrame frame() {
+		return this.frame;
+	}
+	
+	/**
+	 * @return the source for the body of the object, or <code>null</code>
+	 */
+	protected String source() {
+		return this.source;
 	}
 }
