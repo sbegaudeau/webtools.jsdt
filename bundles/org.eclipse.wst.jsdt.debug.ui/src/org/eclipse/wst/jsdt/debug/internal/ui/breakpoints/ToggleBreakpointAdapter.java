@@ -48,8 +48,6 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
-import org.eclipse.wst.jsdt.core.dom.AST;
-import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
@@ -57,9 +55,11 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.DebugWCManager;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 /**
- * Javascript adapter for toggling breakpoints in the JSDT editor
+ * JavaScript adapter for toggling breakpoints in the JSDT editor
  * 
  * @since 1.0
  */
@@ -399,9 +399,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             	reportToStatusLine(part, Messages.no_valid_location);
             	return;
             }
-			ASTParser parser = ASTParser.newParser(AST.JLS3);
-			parser.setSource(root);
-			JavaScriptUnit jsunit = (JavaScriptUnit) parser.createAST(null);
+			JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(root, ASTProvider.WAIT_YES, null);
 			BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, ((TextSelection)selection).getStartLine()+1, false);
 			jsunit.accept(finder);
 			switch(finder.getLocation()) {

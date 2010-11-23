@@ -27,6 +27,9 @@
          name="%linebreakpoint.name"
          point="org.eclipse.core.resources.markers">
       <super
+            type="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+      </super>
+      <super
             type="org.eclipse.debug.core.lineBreakpointMarker">
       </super>
       <persistent

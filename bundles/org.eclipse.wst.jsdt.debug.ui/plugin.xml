@@ -595,5 +595,13 @@
             label="%hover.label">
       </hover>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors.markerUpdaters">
+      <updater
+            class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptBreakpointUpdater"
+            id="org.eclipse.wst.jsdt.debug.ui.breakpoint.updater"
+            markerType="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
+      </updater>
+   </extension>
 
 </plugin>
