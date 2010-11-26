@@ -188,7 +188,6 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				return JavaScriptDebugModel.numberToString(nvalue.value());
 			}
 		}
-		
 		if (jsValue instanceof StringValue) {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append('"');
@@ -255,6 +254,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			};
 			properties.add(0, new JavaScriptProperty(this, prototype));
 			
+			//add the constructor
 			Property constructor = new Property() {
 				public VirtualMachine virtualMachine() {
 					return reference.virtualMachine();
@@ -266,7 +266,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 					return reference.constructor();
 				}
 			};
-			properties.add(0, new JavaScriptProperty(this, constructor));
+			properties.add(1, new JavaScriptProperty(this, constructor));
 		}
 		return (IVariable[]) this.properties.toArray(new IVariable[this.properties.size()]);
 	}
