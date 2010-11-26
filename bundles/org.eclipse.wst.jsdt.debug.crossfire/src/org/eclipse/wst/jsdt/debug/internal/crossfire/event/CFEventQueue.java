@@ -210,7 +210,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_ERROR.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.DATA);
+					List info = (List) event.getBody().get(Attributes.VALUE);
 					if(info != null) {
 						log(IStatus.ERROR, info);
 					}

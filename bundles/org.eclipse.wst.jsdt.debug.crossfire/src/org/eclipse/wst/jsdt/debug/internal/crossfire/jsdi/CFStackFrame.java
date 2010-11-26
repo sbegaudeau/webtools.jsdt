@@ -189,7 +189,6 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StackFrame#evaluate(java.lang.String)
 	 */
 	public Value evaluate(String expression) {
-		scope();
 		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, thread.id());
 		request.setArgument(Attributes.FRAME, new Integer(index));
 		request.setArgument(Attributes.EXPRESSION, expression);
@@ -225,18 +224,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				Map value = (Map) response.getBody().get(Attributes.VALUE);
-				String src = (String) response.getBody().get(Attributes.SOURCE);
-				if(src != null) {
-					value.put(Attributes.SOURCE, src);
-				}
-				if(value != null) {
-					Number handle = (Number) value.get(Attributes.HANDLE);
-					if(handle == null) {
-						value.put(Attributes.HANDLE, ref);
-					}
-					return createValue(value);
-				}
+				return createValue(response.getBody());
 			}
 			else if(TRACE) {
 				Tracing.writeString("STACKFRAME [request for value lookup failed]: "+JSON.serialize(request)); //$NON-NLS-1$
