@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +50,26 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			this.fidx = fidx;
 			this.ref = ref;
 		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#hashCode()
+		 */
+		public int hashCode() {
+			return idx.hashCode() + fidx.hashCode() + ref.hashCode();
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
+		public boolean equals(Object obj) {
+			if(obj instanceof Scope) {
+				Scope s = (Scope) obj;
+				return idx.equals(s.idx) && fidx.equals(s.fidx) && ref.equals(s.ref);
+			}
+			return false;
+		}
 	}
 	
-	HashMap scopes = new HashMap();
+	HashSet scopes = new HashSet();
 	
 	private int index = -1;
 	private String scriptid = null;
@@ -84,6 +101,8 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		
 		parseScopes((List) json.get(Attributes.SCOPES));
 		parseLocals((Map) json.get(Attributes.LOCALS));
+		scope();
+		allScopes();
 	}
 
 	/**
@@ -99,7 +118,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 						(Number)map.get(Attributes.INDEX), 
 						(Number)map.get(Attributes.FRAME_INDEX), 
 						(Number) ((Map)map.get(Attributes.OBJECT)).get(Attributes.HANDLE));
-				scopes.put(new Integer(index), s);
+				scopes.add(s);
 			}
 		}
 	}
@@ -286,9 +305,6 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(CFUndefinedValue.UNDEFINED.equals(type)) {
 			return crossfire().mirrorOfUndefined();
 		}
-		if(CFNullValue.NULL.equals(type) || type == null) {
-			return crossfire().mirrorOfNull();
-		}
 		if(CFStringValue.STRING.equals(type)) {
 			return crossfire().mirrorOf(map.get(Attributes.VALUE).toString());
 		}
@@ -321,7 +337,13 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		CFRequestPacket request = new CFRequestPacket(Commands.SCOPES, thread.id());
 		request.setArgument(Attributes.FRAME_NUMBER, new Integer(index));
 		CFResponsePacket response = crossfire().sendRequest(request);
-		if(!response.isSuccess() && TRACE) {
+		if(response.isSuccess()) {
+			List list = (List) response.getBody().get(Attributes.SCOPES);
+			if(list != null) {
+				parseScopes(list);
+			}
+		}
+		else if(TRACE) {
 			Tracing.writeString("VM [failed scopes request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
 	}
@@ -335,13 +357,11 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		request.setArgument(Attributes.NUMBER, new Integer(0));
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
-			Map scope = (Map) response.getBody().get(Attributes.OBJECT);
-			if(scope != null) {
-				String ref = (String) scope.get(Attributes.HANDLE);
-				if(ref != null) {
-					//TODO what to do with this:
-				}
-			}
+			Scope s = new Scope(
+					(Number)response.getBody().get(Attributes.INDEX), 
+					(Number)response.getBody().get(Attributes.FRAME_INDEX),
+					(Number) ((Map)response.getBody().get(Attributes.OBJECT)).get(Attributes.HANDLE));
+			scopes.add(s);
 		}
 		else if(TRACE) {
 			Tracing.writeString("VM [failed scopes request]: "+JSON.serialize(request)); //$NON-NLS-1$
