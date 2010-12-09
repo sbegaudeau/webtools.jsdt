@@ -87,10 +87,19 @@ public class CFSocketConnection extends SocketConnection {
 			}
 			r = c == '\r';
 		}
+		//chew up the tool heading if there is one
+		while(reader.ready() && (c = reader.read()) > -1) {
+			if(r) {
+				if(c == '\n') {
+					break;
+				}
+			}
+			r = c == '\r';
+		}
 		if(buffer.toString().equals(HandShakePacket.getHandshake())) {
 			HandShakePacket ack = new HandShakePacket();
 			if(CFPacket.TRACE) {
-				Tracing.writeString("ACK HANDSHAKE: "+ack); //$NON-NLS-1$
+				Tracing.writeString("ACK HANDSHAKE: "+buffer.toString()); //$NON-NLS-1$
 			}
 			return ack;
 		}		
