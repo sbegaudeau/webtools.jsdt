@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.chrome.event;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
+import org.eclipse.wst.jsdt.debug.internal.chrome.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.chrome.jsdi.MirrorImpl;
 import org.eclipse.wst.jsdt.debug.internal.chrome.transport.Commands;
 import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
@@ -59,8 +63,19 @@ public class EventQueueImpl extends MirrorImpl implements EventQueue {
 				Event event = chromeVM().receiveEvent();
 				if(event != null) {
 					//TODO
-					if(event.getEvent().equals(Commands.INSPECT)) {
-						ermanager.breakpointRequests();
+					if(event.getEvent().equals(Commands.NAVIGATED)) {
+						if(TRACE) {
+							Tracing.writeString("got navigated event"); //$NON-NLS-1$
+						}
+					}
+					else if(event.getEvent().equals(Commands.CLOSED)) {
+						List requests = ermanager.threadExitRequests();
+						for(Iterator i = requests.iterator(); i.hasNext();) {
+							//TODO
+						}
+						if(TRACE) {
+							Tracing.writeString("got closed event"); //$NON-NLS-1$
+						}
 					}
 				}
 			}

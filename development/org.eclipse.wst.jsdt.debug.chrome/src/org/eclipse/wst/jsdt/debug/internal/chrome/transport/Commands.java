@@ -18,73 +18,37 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.transport;
 public interface Commands {
 
 	/**
-	 * The "backtrace" command
+	 * The "attach" command
 	 */
-	public static final String BACKTRACE = "backtrace"; //$NON-NLS-1$
+	public static final String ATTACH = "attach"; //$NON-NLS-1$
 	/**
-	 * The "changebreakpoint" command
+	 * The "closed" command
 	 */
-	public static final String CHANGE_BREAKPOINT = "changebreakpoint"; //$NON-NLS-1$
+	public static final String CLOSED = "closed"; //$NON-NLS-1$
 	/**
-	 * The "clearbreakpoint" command
+	 * The "debugger_command" command
 	 */
-	public static final String CLEAR_BREAKPOINT = "clearbreakpoint"; //$NON-NLS-1$
+	public static final String DEBUGGER_COMMAND = "debugger_command"; //$NON-NLS-1$
 	/**
-	 * The "continue" command
+	 * The "detach" command
 	 */
-	public static final String CONTINUE = "continue"; //$NON-NLS-1$
+	public static final String DETACH = "detach"; //$NON-NLS-1$
 	/**
-	 * The "evaluate" command
+	 * The "evaluate_javascript" command
 	 */
-	public static final String EVALUATE = "evaluate"; //$NON-NLS-1$
+	public static final String EVALUATE_JAVASCRIPT = "evaluate_javascript"; //$NON-NLS-1$
 	/**
-	 * The "frame" command
+	 * The "list_tabs" command
 	 */
-	public static final String FRAME = "frame"; //$NON-NLS-1$
+	public static final String LIST_TABS = "list_tabs"; //$NON-NLS-1$
 	/**
-	 * The "getbreakpoint" command
+	 * The "navigated" command
 	 */
-	public static final String GET_BREAKPOINT = "getbreakpoint"; //$NON-NLS-1$
+	public static final String NAVIGATED = "navigated"; //$NON-NLS-1$
 	/**
-	 * The "getbreakpoints" command
+	 * The "ping" command
 	 */
-	public static final String GET_BREAKPOINTS = "getbreakpoints"; //$NON-NLS-1$
-	/**
-	 * The "inspect" command
-	 */
-	public static final String INSPECT = "inspect"; //$NON-NLS-1$
-	/**
-	 * The "listcontexts" command
-	 */
-	public static final String LISTCONTEXTS = "listcontexts"; //$NON-NLS-1$
-	/**
-	 * The "lookup" command
-	 */
-	public static final String LOOKUP = "lookup"; //$NON-NLS-1$
-	/**
-	 * The "scopes" command
-	 */
-	public static final String SCOPES = "scopes"; //$NON-NLS-1$
-	/**
-	 * The "script" command
-	 */
-	public static final String SCRIPT = "script"; //$NON-NLS-1$
-	/**
-	 * The "scripts" command
-	 */
-	public static final String SCRIPTS = "scripts"; //$NON-NLS-1$
-	/**
-	 * The "setbreakpoint" command
-	 */
-	public static final String SET_BREAKPOINT = "setbreakpoint"; //$NON-NLS-1$
-	/**
-	 * The "source" command
-	 */
-	public static final String SOURCE = "source"; //$NON-NLS-1$
-	/**
-	 * The "suspend" command
-	 */
-	public static final String SUSPEND = "suspend"; //$NON-NLS-1$
+	public static final String PING = "ping"; //$NON-NLS-1$
 	/**
 	 * The "version" command
 	 */

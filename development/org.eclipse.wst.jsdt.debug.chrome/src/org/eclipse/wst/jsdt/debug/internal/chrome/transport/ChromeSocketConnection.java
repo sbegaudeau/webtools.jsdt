@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.internal.chrome.ChromePlugin;
@@ -30,6 +31,14 @@ public class ChromeSocketConnection extends SocketConnection {
 
 	public static final String HANDSHAKE = "ChromeDevToolsHandshake\r\n"; //$NON-NLS-1$
 	
+	private static final HashSet EVENTS;
+	
+	static {
+		EVENTS = new HashSet();
+		EVENTS.add(Commands.CLOSED);
+		EVENTS.add(Commands.NAVIGATED);
+	}
+	
 	/**
 	 * Constructor
 	 * 
@@ -39,6 +48,7 @@ public class ChromeSocketConnection extends SocketConnection {
 	 */
 	public ChromeSocketConnection(Socket socket) throws IOException {
 		super(socket);
+		
 	}
 	
 	/* (non-Javadoc)
@@ -67,7 +77,6 @@ public class ChromeSocketConnection extends SocketConnection {
 		Writer writer = getWriter();
 		writer.write(HANDSHAKE);
 		writer.flush();
-		//waitForReadyRead();
 	}
 	
 	/**
@@ -116,6 +125,15 @@ public class ChromeSocketConnection extends SocketConnection {
 			}
 			r = c == '\r';
 		}
+		r = false;
+		while(reader.ready() && (c = reader.read()) > -1) {
+			if(r) {
+				if(c == '\n') {
+					break;
+				}
+			}
+			r = c == '\r';
+		}
 		if(PacketImpl.TRACE) {
 			Tracing.writeString("READ HANDSHAKE: "+buffer.toString()); //$NON-NLS-1$
 		}
@@ -128,27 +146,40 @@ public class ChromeSocketConnection extends SocketConnection {
 	public Packet readPacket() throws IOException {
 		StringBuffer buffer = new StringBuffer();
 		int c = -1;
-		boolean len = false;
 		Reader reader = getReader();
+		String dest = null;
+		String tool = null;
+		String len = null;
+		boolean r = false;
 		while((c = reader.read()) > -1) {
-			if(c == '\r') {
-				break;
-			}
-			if(len) {
-				buffer.append((char)c);
+			if(r) {
+				if(c == '\n') {
+					String str = buffer.toString();
+					if(str.startsWith(JSON.DESTINATION_HEADER)) {
+						dest = grabAttrib(str);
+					}
+					else if(str.startsWith(JSON.TOOL_HEADER)) {
+						tool = grabAttrib(str);
+					}
+					else if(str.startsWith(JSON.CONTENT_LENGTH)) {
+						len = grabAttrib(str);
+					}
+					else if(str.equals("\r")) { //$NON-NLS-1$
+						break;
+					}
+					buffer = new StringBuffer();
+					r = false;
+				}
 				continue;
 			}
-			len = c == ':';
+			buffer.append((char)c);
+			r = c == '\r';
 		}
 		int length = 0;
 		try {
-			length = Integer.parseInt(buffer.toString());
+			length = Integer.parseInt(len);
 		} catch (NumberFormatException e) {
-			throw new IOException("Failed to parse content length: " + buffer.toString()); //$NON-NLS-1$
-		}
-		c = reader.read();
-		if(c != '\n') {
-			throw new IOException("Failed to parse content length: " + buffer.toString() + "next char was not '\n'" + (char)c); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IOException("Failed to parse content length: " + len); //$NON-NLS-1$
 		}
 		char[] message = new char[length];
 		int n = 0;
@@ -161,19 +192,37 @@ public class ChromeSocketConnection extends SocketConnection {
 			n += count;
 		}
 		if(PacketImpl.TRACE) {
-			Tracing.writeString("READ PACKET: [length - "+length+"]"+new String(message)); //$NON-NLS-1$ //$NON-NLS-2$
+			Tracing.writeString("READ PACKET: [destination - "+dest+"] [tool - "+tool+"] [length - "+length+"]"+new String(message)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		}
 		Map json = (Map) JSON.read(new String(message));
-		String type = (String) json.get(Attributes.TYPE);
-		if (EventPacketImpl.EVENT.equals(type)) {
-			return new EventPacketImpl(json);
-		}
-		if (RequestPacketImpl.REQUEST.equals(type)) {
-			return new RequestPacketImpl(json);
-		}
-		if (ResponsePacketImpl.RESPONSE.equals(type)) {
+		json.put(Attributes.TOOL, tool);
+		json.put(Attributes.DESTINATION, dest);
+		if(json.containsKey(Attributes.RESULT)) {
+			if(EVENTS.contains(json.get(Attributes.COMMAND))) {
+				json.put(Attributes.TYPE, EventPacketImpl.EVENT);
+				return new EventPacketImpl(json);
+			}
+			json.put(Attributes.TYPE, ResponsePacketImpl.RESPONSE);
 			return new ResponsePacketImpl(json);
 		}
-		throw new IOException("Unknown packet type: " + type); //$NON-NLS-1$
+		json.put(Attributes.TYPE, RequestPacketImpl.REQUEST);
+		return new RequestPacketImpl(json);
+	}
+	
+	/**
+	 * Grabs the attribute from the RHS of the header. Where all headers
+	 * have the form <code>[name]:[value]</code>.
+	 * 
+	 * @param str the string to parse
+	 * @return the <code>[value]</code> from the header
+	 */
+	String grabAttrib(String str) {
+		if(str != null) {
+			int idx = str.indexOf(':');
+			if(idx > -1) {
+				return str.substring(idx+1, str.length()-1);
+			}
+		}
+		return null;
 	}
 }

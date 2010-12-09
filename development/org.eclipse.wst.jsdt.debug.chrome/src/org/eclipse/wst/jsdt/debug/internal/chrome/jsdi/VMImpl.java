@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.chrome.jsdi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,8 +72,9 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	private EventQueue queue = new EventQueueImpl(this, ermanager);
 	private final DebugSession session;
 	
-	private Map threads = Collections.synchronizedMap(new HashMap(4));
-	private Map scripts = Collections.synchronizedMap(new HashMap(4));
+	private Map threads = null;
+	private Map scripts = null;
+	private String version = null;
 	
 	/**
 	 * Constructor
@@ -131,27 +133,72 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
-	public String version() {
-		RequestPacketImpl request = new RequestPacketImpl(Commands.VERSION, Attributes.TOOL_DEVTOOLSRVC);
-		Response response = sendRequest(request);
-		if(response != null && response.isSuccess()) {
-			return (String) response.getBody().get(Commands.VERSION);
+	public synchronized String version() {
+		if(version == null) {
+			RequestPacketImpl request = new RequestPacketImpl(Commands.VERSION, Attributes.TOOL_DEVTOOLSRVC, null);
+			Response response = sendRequest(request);
+			if(response.isSuccess()) {
+				version = (String) response.getBody().get(Attributes.DATA);
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed version request]" + JSON.serialize(request)); //$NON-NLS-1$
+			}
 		}
-		Tracing.writeString("VM [failed version request]" + JSON.serialize(request)); //$NON-NLS-1$
-		return null;
+		return version;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allThreads()
 	 */
-	public List allThreads() {
+	public synchronized List allThreads() {
+		if(threads == null) {
+			threads = Collections.synchronizedMap(new HashMap(4));
+			RequestPacketImpl request = new RequestPacketImpl(Commands.LIST_TABS, Attributes.TOOL_DEVTOOLSRVC, null);
+			Response response = sendRequest(request);
+			if(response.isSuccess()) {
+				List tabs = (List) response.getBody().get(Attributes.DATA);
+				if(tabs != null) {
+					ArrayList values = null;
+					for(Iterator i = tabs.iterator(); i.hasNext();) {
+						values = (ArrayList) i.next();
+						String url = (String)values.get(1);
+						Number id = (Number)values.get(0);
+						ThreadImpl thread = new ThreadImpl(this, id, url);
+						threads.put(id, thread);
+						attach(thread);
+					}
+				}
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed all_tabs request]" + JSON.serialize(request)); //$NON-NLS-1$
+			}
+		}
 		return new ArrayList(threads.values());
 	}
 
+	/**
+	 * Try to attach the debugger to the v8 debugger service for the given thread (tab)
+	 * 
+	 * @param thread
+	 */
+	void attach(ThreadImpl thread) {
+		RequestPacketImpl request = new RequestPacketImpl(Commands.ATTACH, Attributes.TOOL_DEVTOOLSRVC, thread.id());
+		Response response = sendRequest(request);
+		if(response.isSuccess()) {
+			
+		}
+		else if(TRACE) {
+			Tracing.writeString("VM [failed attach request] " + JSON.serialize(request)); //$NON-NLS-1$
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allScripts()
 	 */
-	public List allScripts() {
+	public synchronized List allScripts() {
+		if(this.scripts == null) {
+			this.scripts = Collections.synchronizedMap(new HashMap(4));
+		}
 		return new ArrayList(scripts.values());
 	}
 
@@ -161,7 +208,19 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 	public synchronized void dispose() {
 		if(state != DISPOSED) {
 			//TODO
-			state = DISPOSED;
+			try {
+				if(threads != null) {
+					threads.clear();
+					threads = null;
+				}
+				if(scripts != null) {
+					scripts.clear();
+					scripts = null;
+				}
+			}
+			finally {
+				state = DISPOSED;
+			}
 		}
 	}
 
@@ -238,7 +297,7 @@ public class VMImpl extends MirrorImpl implements VirtualMachine {
 		}
 		catch(DisconnectedException de) {
 			disconnectVM();
-			handleException(de.getMessage(), de);
+			handleException(de.getMessage(), de.getCause());
 		}
 		catch(TimeoutException te) {
 			ChromePlugin.log(te);

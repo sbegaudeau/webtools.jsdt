@@ -27,9 +27,8 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 * The type of this packet
 	 */
 	public static final String REQUEST = "request"; //$NON-NLS-1$
-	private static int next_seq = 0;
 	private final String command;
-	private final int seq;
+	private final Number destination;
 	private Map args = Collections.synchronizedMap(new HashMap(4));
 	
 	/**
@@ -37,14 +36,15 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 * 
 	 * @param command
 	 * @param tool the name of the tools service expected to handle the request
+	 * @param dest the tab id destination
 	 */
-	public RequestPacketImpl(String command, String tool) {
+	public RequestPacketImpl(String command, String tool, Number dest) {
 		super(REQUEST, tool);
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.cannot_create_request_null_command);
 		}
 		this.command = command;
-		this.seq = ++next_seq;
+		this.destination = dest;
 	}
 	
 	/**
@@ -57,11 +57,7 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.no_command_in_request_json);
 		}
-		this.seq = ((Number)json.get(Attributes.SEQ)).intValue();
-		Map pargs = (Map) json.get(Attributes.ARGUMENTS);
-		if(pargs != null) {
-			args.putAll(pargs);
-		}
+		this.destination = (Number) json.get(Attributes.DESTINATION);
 	}
 
 	/**
@@ -91,9 +87,16 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getSequence()
 	 */
 	public int getSequence() {
-		return seq;
+		return -1;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.chrome.transport.PacketImpl#destination()
+	 */
+	public Number destination() {
+		return this.destination;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Request#getArguments()
 	 */
@@ -106,11 +109,7 @@ public class RequestPacketImpl extends PacketImpl implements Request {
 	 */
 	public Map toJSON() {
 		Map json = super.toJSON();
-		//json.put(Attributes.SEQ, new Integer(seq));
 		json.put(Attributes.COMMAND, command);
-		if(!args.isEmpty()) {
-			json.put(Attributes.ARGUMENTS, args);
-		}
 		return json;
 	}
 	

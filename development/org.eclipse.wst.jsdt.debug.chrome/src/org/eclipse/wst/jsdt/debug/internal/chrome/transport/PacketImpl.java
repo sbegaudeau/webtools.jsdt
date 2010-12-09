@@ -90,12 +90,20 @@ public class PacketImpl implements Packet {
 		return type;
 	}
 
+	/**
+	 * Returns the intended tab destination for the packet, default returns <code>null</code>
+	 * 
+	 * @return the tab id or <code>null</code>
+	 */
+	public Number destination() {
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Packet#toJSON()
 	 */
 	public Map toJSON() {
 		Map json = new HashMap();
-		//json.put(Attributes.TYPE, type);
 		return json;
 	}
 	

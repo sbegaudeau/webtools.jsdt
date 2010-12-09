@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.chrome.transport;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.transport.packet.Response;
@@ -27,24 +28,20 @@ public class ResponsePacketImpl extends PacketImpl implements Response {
 	 */
 	public static final String RESPONSE = "response"; //$NON-NLS-1$
 	
-	private int rseq = 0;
 	private String command = null;
-	private Map body = null;
-	private boolean success = false;
-	private boolean running = false;
+	protected Number result = null;
+	protected Map body = null;
 	
 	/**
 	 * Constructor
-	 * @param requestSequence
 	 * @param command
 	 * @param tool the name of the tools service that issued this response
 	 */
-	public ResponsePacketImpl(int requestSequence, String command, String tool) {
+	public ResponsePacketImpl(String command, String tool) {
 		super(RESPONSE, tool);
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.cannot_create_response_null_command);
 		}
-		this.rseq = requestSequence;
 		this.command = command;
 	}
 	
@@ -54,14 +51,16 @@ public class ResponsePacketImpl extends PacketImpl implements Response {
 	 */
 	public ResponsePacketImpl(Map json) {
 		super(json);
-		this.rseq = ((Integer)json.get(Attributes.REQUEST_SEQ)).intValue();
 		this.command = (String) json.get(Attributes.COMMAND);
 		if(command == null) {
 			throw new IllegalArgumentException(Messages.no_command_in_json_response);
 		}
-		this.body = (Map) json.get(Attributes.BODY);
-		this.success = ((Boolean)json.get(Attributes.SUCCESS)).booleanValue();
-		this.running = ((Boolean)json.get(Attributes.RUNNING)).booleanValue();
+		this.result = (Number) json.get(Attributes.RESULT);
+		Object data = json.get(Attributes.DATA);
+		if(data != null) {
+			this.body = new HashMap();
+			this.body.put(Attributes.DATA, data);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -75,31 +74,44 @@ public class ResponsePacketImpl extends PacketImpl implements Response {
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#getRequestSequence()
 	 */
 	public int getRequestSequence() {
-		return rseq;
+		return -1;
 	}
 
+	/**
+	 * Returns the result of the request that caused this response
+	 * @see Attributes#OK
+	 * @see Attributes#ILLEGAL_TAB_STATE
+	 * @see Attributes#UNKNOWN_TAB
+	 * @see Attributes#DEBUGGER_ERROR
+	 * @see Attributes#UNKNOWN_COMMAND
+	 * @return the value of the result
+	 */
+	public int getResult() {
+		return this.result.intValue();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#getBody()
 	 */
 	public Map getBody() {
-		if(body == null) {
+		if(this.body == null) {
 			return Collections.EMPTY_MAP;
 		}
-		return body;
+		return this.body;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#isSuccess()
 	 */
 	public boolean isSuccess() {
-		return success;
+		return this.result.intValue() == Attributes.OK;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#isRunning()
 	 */
 	public boolean isRunning() {
-		return running;
+		return true;
 	}
 	
 	/* (non-Javadoc)
@@ -108,12 +120,10 @@ public class ResponsePacketImpl extends PacketImpl implements Response {
 	public Map toJSON() {
 		Map json = super.toJSON();
 		json.put(Attributes.COMMAND, command);
-		json.put(Attributes.REQUEST_SEQ, new Integer(rseq));
-		if(body != null) {
-			json.put(Attributes.BODY, body);
+		json.put(Attributes.RESULT, this.result);
+		if(this.body != null) {
+			json.put(Attributes.DATA, this.body.get(Attributes.DATA));
 		}
-		json.put(Attributes.SUCCESS, Boolean.valueOf(success));
-		json.put(Attributes.RUNNING, Boolean.valueOf(running));
 		return json;
 	}
 	

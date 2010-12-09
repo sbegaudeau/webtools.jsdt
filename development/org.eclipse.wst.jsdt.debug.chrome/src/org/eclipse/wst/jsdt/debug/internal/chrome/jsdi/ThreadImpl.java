@@ -20,6 +20,21 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
  */
 public class ThreadImpl extends MirrorImpl implements ThreadReference {
 
+	Number id = null;
+	String url = null;
+	
+	/**
+	 * Constructor
+	 * @param vm
+	 * @param id
+	 * @param url
+	 */
+	public ThreadImpl(VMImpl vm, Number id, String url) {
+		super(vm);
+		this.id = id;
+		this.url = url;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frameCount()
 	 */
@@ -84,7 +99,10 @@ public class ThreadImpl extends MirrorImpl implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */
 	public String name() {
-		return null;
+		return url;
 	}
-
+	
+	public Number id() {
+		return id;
+	}
 }

@@ -54,9 +54,14 @@ public final class JSON {
 	public static final String CONTENT_LENGTH = "Content-Length:"; //$NON-NLS-1$
 	
 	/**
-	 * The default <code>Tools:</code> pre-amble
+	 * The default <code>Tool:</code> pre-amble
 	 */
 	public static final String TOOL_HEADER = "Tool:"; //$NON-NLS-1$
+	
+	/**
+	 * The default <code>Destination:</code> pre-amble
+	 */
+	public static final String DESTINATION_HEADER = "Destination:"; //$NON-NLS-1$
 	
 	/**
 	 * Enables / Disables tracing in the all of the JSDI implementations
@@ -236,6 +241,12 @@ public final class JSON {
 		buffer.insert(0, buff);
 	}
 	
+	public static void writeDestinationHeader(StringBuffer buffer, Number destination) {
+		StringBuffer buff = new StringBuffer();
+		buff.append(DESTINATION_HEADER).append(destination).append(LINE_FEED);
+		buffer.insert(0, buff);
+	}
+	
 	/**
 	 * Serializes the given {@link PacketImpl} to a {@link String}
 	 * 
@@ -250,6 +261,9 @@ public final class JSON {
 		int length = buffer.toString().getBytes().length;
 		writeToolHeader(buffer, packet.tool());
 		writeContentLength(buffer, length);
+		if(packet.destination() != null) {
+			writeDestinationHeader(buffer, packet.destination());
+		}
 		if(TRACE) {
 			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$
 		}

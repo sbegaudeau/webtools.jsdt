@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.chrome.transport;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.transport.packet.Event;
@@ -28,7 +29,8 @@ public class EventPacketImpl extends PacketImpl implements Event {
 	public static final String EVENT = "event"; //$NON-NLS-1$
 	
 	private String event = null;
-	private Map body = null;
+	protected Number result = null;
+	protected Map body = null;
 	
 	/**
 	 * Constructor
@@ -55,6 +57,12 @@ public class EventPacketImpl extends PacketImpl implements Event {
 		if(event == null) {
 			throw new IllegalArgumentException(Messages.no_event_found_in_json);
 		}
+		this.result = (Number) json.get(Attributes.RESULT);
+		Object data = json.get(Attributes.DATA);
+		if(data != null) {
+			this.body = new HashMap();
+			this.body.put(Attributes.DATA, data);
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -68,10 +76,10 @@ public class EventPacketImpl extends PacketImpl implements Event {
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Event#getBody()
 	 */
 	public Map getBody() {
-		if(body == null) {
+		if(this.body == null) {
 			return Collections.EMPTY_MAP;
 		}
-		return body;
+		return this.body;
 	}
 
 	/* (non-Javadoc)
@@ -80,8 +88,9 @@ public class EventPacketImpl extends PacketImpl implements Event {
 	public Map toJSON() {
 		Map json = super.toJSON();
 		json.put(Attributes.COMMAND, event);
-		if(body != null) {
-			json.put(Attributes.BODY, body);
+		json.put(Attributes.RESULT, this.result);
+		if(this.body != null) {
+			json.put(Attributes.DATA, this.body.get(Attributes.DATA));
 		}
 		return json;
 	}
