@@ -88,6 +88,7 @@ public class CFSocketConnection extends SocketConnection {
 			r = c == '\r';
 		}
 		//chew up the tool heading if there is one
+		r = false;
 		while(reader.ready() && (c = reader.read()) > -1) {
 			if(r) {
 				if(c == '\n') {
