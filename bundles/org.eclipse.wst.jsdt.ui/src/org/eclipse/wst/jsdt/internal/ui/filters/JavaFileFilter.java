@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.filters;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 
@@ -35,12 +37,13 @@ public class JavaFileFilter  extends ViewerFilter {
 		if (element instanceof IClassFile)
 			return false;
 			
-		if (element instanceof IPackageFragment)
+		if (element instanceof IPackageFragment) {
 			try {
 				return ((IPackageFragment)element).getNonJavaScriptResources().length > 0;
 			} catch (JavaScriptModelException ex) {
 				return true;
 			}
-		return true;			
+		}
+		return !(element instanceof IFile && JavaScriptCore.isJavaScriptLikeFileName(((IFile) element).getName()));
 	}
 }
