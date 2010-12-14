@@ -35,14 +35,13 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
 		
 		folder.addView(JavaScriptUI.ID_PACKAGES);
+		folder.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
 		
 		String explorerViewID = ProductProperties.getProperty(IProductConstants.PERSPECTIVE_EXPLORER_VIEW);
 		// make sure the specified view ID is known
 		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null) {
 			folder.addPlaceholder(explorerViewID);
-			if (!IPageLayout.ID_PROJECT_EXPLORER.equals(explorerViewID)) {
-				folder.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
-			}
+			layout.addShowViewShortcut(explorerViewID);
 		}
 		
 		folder.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
