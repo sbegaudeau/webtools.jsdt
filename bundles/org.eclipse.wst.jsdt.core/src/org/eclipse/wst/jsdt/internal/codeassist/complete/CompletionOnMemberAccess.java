@@ -96,7 +96,7 @@ public class CompletionOnMemberAccess extends FieldReference {
 		}
 
 		if (this.receiverType == null || this.receiverType.isBaseType())
-			throw new CompletionNodeFound();
+			throw new CompletionNodeFound(this, scope);
 		else
 			throw new CompletionNodeFound(this, this.receiverType, scope);
 		// array types are passed along to find the length field

@@ -1706,6 +1706,13 @@ public final class CompletionEngine
 							null,
 							null,
 							false);
+						// reset completion token to find types
+						this.completionToken = computeToken(access);
+						setSourceRange((int) (completionPosition >>> 32) - (this.completionToken.length - access.token.length), (int) completionPosition);
+						findTypesAndPackages(this.completionToken, scope, new ObjectVector());
+						// after looking for types set the completion token back to original value
+						this.completionToken = access.token;
+						setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 						if (qualifiedBinding instanceof FunctionTypeBinding) {
 							FunctionTypeBinding functionTypeBinding = (FunctionTypeBinding) qualifiedBinding;
 							if (functionTypeBinding.functionBinding!=null && functionTypeBinding.functionBinding.isConstructor())
