@@ -50,10 +50,18 @@ import org.eclipse.wst.jsdt.internal.compiler.SourceJavadocParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.batch.FileSystem;
+import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
@@ -61,6 +69,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchParticipant;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		implements StopableTestCase {
@@ -672,7 +681,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				// Compute class name by removing ".java" and replacing slashes
 				// with dots
 				String className = sourceFile.substring(0,
-						sourceFile.length() - 5).replace('/', '.').replace(
+						sourceFile.length() - 3).replace('/', '.').replace(
 						'\\', '.');
 				if (className.endsWith(PACKAGE_INFO_NAME))
 					return;
@@ -1673,12 +1682,32 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 			String testName, String expected, InferOptions inferOptions) {
 
 		return runInferTest(s, testName, expected, inferOptions,
-				new DefaultInferrenceProvider());
+				new InferrenceProvider[] {new DefaultInferrenceProvider()});
 	}
-
+	
 	protected CompilationUnitDeclaration runInferTest(String s,
 			String testName, String expected, InferOptions inferOptions,
 			InferrenceProvider inferrenceProvider) {
+		
+		return runInferTest(s, testName, expected, inferOptions, inferrenceProvider, false);
+	}
+	
+	protected CompilationUnitDeclaration runInferTest(String s,
+			String testName, String expected, InferOptions inferOptions,
+			InferrenceProvider inferrenceProvider, boolean useDefaultToo) {
+		
+		InferrenceProvider[] providers;
+		if(useDefaultToo) {
+			providers = new InferrenceProvider[] {new DefaultInferrenceProvider(), inferrenceProvider};
+		} else {
+			providers = new InferrenceProvider[] {inferrenceProvider};
+		}
+		return runInferTest(s, testName, expected, inferOptions, providers);
+	}
+
+	private CompilationUnitDeclaration runInferTest(String s,
+			String testName, String expected, InferOptions inferOptions,
+			InferrenceProvider[] inferrenceProviders) {
 		// Non-javac part
 		try {
 
@@ -1687,10 +1716,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 					getCompilerOptions());
 			compilerOptions.inferOptions = inferOptions;
 			TestParser parser = new TestParser(new DefaultProblemFactory(Locale
-					.getDefault()), compilerOptions, true/*
-														 * optimize string
-														 * literals
-														 */, false);
+					.getDefault()), compilerOptions, true/* optimize string literals */, false);
 
 			parser.javadocParser.checkDocComment = true;
 
@@ -1700,11 +1726,14 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 			CompilationUnitDeclaration compUnit = parser.parseCompilationUnit(
 					sourceUnit, true);
 
-			InferEngine inferEngine = (InferEngine)inferrenceProvider.getInferEngine();
+			for(int i = 0; i < inferrenceProviders.length; ++i) {
+				InferEngine inferEngine = (InferEngine)inferrenceProviders[i].getInferEngine();
 
-			inferEngine.initialize();
-			inferEngine.setCompilationUnit(compUnit);
-			inferEngine.doInfer();
+				inferEngine.initialize();
+				inferEngine.setCompilationUnit(compUnit);
+				inferEngine.doInfer();
+			}
+			
 			if (expected != null) {
 				StringBuffer sb = new StringBuffer();
 				compUnit.printInferredTypes(sb);
@@ -1718,5 +1747,148 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		} finally {
 		}
 	}
+	
+	/**
+	 * <p>Runs a JUnit test which includes inferring and building the type bindings for the given source.</p>
+	 * 
+	 * @param source JS source to infer and build
+	 * @param expectedInfference expected inferred type after inferring and building
+	 * @param inferOptions {@link InferOptions} to use when inferring and building
+	 * @param inferrenceProvider {@link InferrenceProvider} to use when inferring
+	 */
+	protected void runInferAndBuildBindingsTest(String source, String expectedInfference, InferOptions inferOptions,
+			InferrenceProvider inferrenceProvider) {
+		
+		this.runInferAndBuildBindingsTest(
+				new String[] {source},
+				new String[] {expectedInfference},
+				inferOptions,
+				new InferrenceProvider[] {inferrenceProvider});
+	}
+	
+	/**
+	 * <p>Runs a JUnit test which includes inferring and building the type bindings for the given source.</p>
+	 * 
+	 * <p>Can be used to test multiple JS sources together.</p>
+	 * 
+	 * @param sources JS sources to infer and build
+	 * @param expectedInfferences expected inferred types after inferring and building
+	 * @param inferOptions {@link InferOptions} to use when inferring and building
+	 * @param inferrenceProviders {@link InferrenceProvider}s to use when inferring
+	 */
+	protected void runInferAndBuildBindingsTest(String[] sources, String[] expectedInfferences, InferOptions inferOptions,
+			InferrenceProvider[] inferrenceProviders) {
 
+		IProblemFactory problemFactory = new DefaultProblemFactory(Locale.getDefault());
+		CompilerOptions compilerOptions = new CompilerOptions(getCompilerOptions());
+		compilerOptions.inferOptions = inferOptions;
+		TestParser parser = new TestParser(problemFactory, compilerOptions, true, false);
+
+		parser.javadocParser.checkDocComment = true;
+		
+		ProblemReporter reporter = new DoNothingProblemReporter(compilerOptions, problemFactory);
+		INameEnvironment nameEnv = getNameEnvironment(sources, null);
+		ITypeRequestor requestor = new TypeRequestor(inferrenceProviders, compilerOptions, reporter);
+		
+		CompilationUnitDeclaration[] compUnits = new CompilationUnitDeclaration[sources.length];
+		LookupEnvironment env = new LookupEnvironment(requestor, compilerOptions, reporter, nameEnv);
+		for(int i = 0; i < sources.length; ++i) {
+			String fileName = "/Test/" + i + ".js";
+			ICompilationUnit sourceUnit = new CompilationUnit(sources[i].toCharArray(), fileName, null);
+			compUnits[i] = parser.parseCompilationUnit(sourceUnit, true);
+			
+			for(int j = 0; j < inferrenceProviders.length; ++j) {
+				InferEngine inferEngine = (InferEngine)inferrenceProviders[j].getInferEngine();
+
+				inferEngine.initialize();
+				inferEngine.setCompilationUnit(compUnits[i]);
+				inferEngine.doInfer();
+			}
+			
+			compUnits[i].scope = new CompilationUnitScope(compUnits[i], env);
+			env.buildTypeBindings(compUnits[i], null);
+		}
+		
+		env.completeTypeBindings();
+		
+		//assert inferred types equal expected inferred types
+		for(int i = 0; i < compUnits.length; ++i) {
+			if (expectedInfferences[i] != null) {
+				StringBuffer sb = new StringBuffer();
+				compUnits[i].printInferredTypes(sb);
+				String result = sb.toString();
+				assertEquals(expectedInfferences[i], result);
+			}
+		}
+	}
+	
+	private class DoNothingProblemReporter extends ProblemReporter {
+
+		public DoNothingProblemReporter(CompilerOptions options, IProblemFactory problemFactory) {
+			super(DefaultErrorHandlingPolicies.exitAfterAllProblems(), options, problemFactory);
+		}
+
+		public void record(CategorizedProblem problem,
+				CompilationResult unitResult, ReferenceContext context) {
+			
+		}
+	}
+	
+	private class TypeRequestor implements ITypeRequestor {
+
+		private InferrenceProvider[] fInferrenceProviders;
+		private CompilerOptions fOptions;
+		private ProblemReporter fReporter;
+		
+		public TypeRequestor(InferrenceProvider[] inferrenceProviders, CompilerOptions options, ProblemReporter reporter) {
+			
+			this.fInferrenceProviders = inferrenceProviders;
+			this.fOptions = options;
+			this.fReporter = reporter;
+		}
+		
+		public void accept(IBinaryType binaryType,
+				PackageBinding packageBinding,
+				AccessRestriction accessRestriction) {
+		}
+
+		public void accept(ICompilationUnit unit,
+				AccessRestriction accessRestriction) {
+		}
+
+		public void accept(ISourceType[] sourceType,
+				PackageBinding packageBinding,
+				AccessRestriction accessRestriction) {
+		}
+
+		public void accept(LibraryAPIs libraryMetaData) {
+		}
+
+		public CompilationUnitDeclaration doParse(ICompilationUnit unit,
+				AccessRestriction accessRestriction) {
+
+			Parser p = new InferParser();
+			CompilationResult compilationUnitResult = new CompilationResult(unit, 0, 0, 0);
+			
+			return p.parse(unit,compilationUnitResult);
+		}
+		
+		private class InferParser extends Parser {
+			public InferParser() {
+				super(TypeRequestor.this.fReporter, true);
+			}
+
+			public void initializeInferenceEngine(CompilationUnitDeclaration compilationUnitDeclaration) {
+				this.inferenceEngines = new IInferEngine[TypeRequestor.this.fInferrenceProviders.length];
+				for(int i = 0; i < this.inferenceEngines.length; ++i) {
+					this.inferenceEngines[i] = TypeRequestor.this.fInferrenceProviders[i].getInferEngine();
+				}
+				
+				for (int i = 0; i <  this.inferenceEngines.length; i++) {
+					this.inferenceEngines[i].initializeOptions(this.options.inferOptions);
+				}
+			}
+		}
+	
+	}
 }

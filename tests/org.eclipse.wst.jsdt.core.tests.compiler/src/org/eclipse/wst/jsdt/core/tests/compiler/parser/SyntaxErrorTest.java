@@ -324,4 +324,58 @@ public void test05h() {
 		expectedSyntaxErrorDiagnosis,
 		testName);
 }
+
+//public void test06() {
+//	String s = 
+//		"(x=7,y=5)"; 	
+//
+//	String expectedSyntaxErrorDiagnosis =
+//		"";
+//
+//	String testName = "<test06>";
+//	checkParse(
+//		s.toCharArray(),
+//		expectedSyntaxErrorDiagnosis,
+//		testName);
+//}
+//public void test06a() {
+//	String s = 
+//		"x=7,y=5;"; 	
+//
+//	String expectedSyntaxErrorDiagnosis =
+//		"";
+//
+//	String testName = "<test06>";
+//	checkParse(
+//		s.toCharArray(),
+//		expectedSyntaxErrorDiagnosis,
+//		testName);
+//}
+//public void test07() {
+//	String s = 
+//		"{x:7,y:5}"; 	
+//
+//	String expectedSyntaxErrorDiagnosis =
+//		"";
+//
+//	String testName = "<test06>";
+//	checkParse(
+//		s.toCharArray(),
+//		expectedSyntaxErrorDiagnosis,
+//		testName);
+//}
+//public void test08() {
+//	String s = 
+//		"return \"pageXOffset\" in n ? {x:n.pageXOffset,y:n.pageYOffset} : (n=d.doc.documentElement, n.clientHeight ? {x:d._fixIeBiDiScrollLeft(n.scrollLeft),y:n.scrollTop}:(n=d.body(),{x:n.scrollLeft||0,y:n.scrollTop||0}));};"; 	
+//
+//	String expectedSyntaxErrorDiagnosis =
+//		"";
+//
+//	String testName = "<test>";
+//	checkParse(
+//		s.toCharArray(),
+//		expectedSyntaxErrorDiagnosis,
+//		testName);
+//}
+
 }

@@ -10,6 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.wst.jsdt.core.tests.util.Util;
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+
 
 
 
@@ -1786,5 +1793,22 @@ public class BasicResolveTests extends AbstractRegressionTest {
 					"----------\n"
 			);
 	}
-	
+	public void test326901() {
+		Map options = new HashMap();
+		options.put(CompilerOptions.OPTION_SemanticValidation, CompilerOptions.ENABLED);
+		Util.compile(
+					new String[] {
+								"Z.js",
+								"function Windget(){\n"+
+									"  this.a=5;\n"+
+									"};\n"+
+									"windget = new Windget();\n"+
+									"(function(a2){\n"+
+										"  // operations on a2\n"+
+										" a2.a();\n"+
+										"})(windget);"
+					},
+					options,
+					File.separator);
+	}
 }
