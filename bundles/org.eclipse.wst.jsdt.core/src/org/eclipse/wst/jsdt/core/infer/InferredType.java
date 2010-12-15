@@ -170,7 +170,7 @@ public class InferredType extends ASTNode {
 						this.attributes [this.numberAttributes  ++] = newAttribute;
 
 
-			attributesHash.put(name, newAttribute);
+			attributesHash.put(newAttribute.name, newAttribute);
 
 			if (!isAnonymous) {
 				if (definer != null) {
@@ -451,14 +451,16 @@ public class InferredType extends ASTNode {
 
 
 	/**
-	 *  Add a reference to a mixin
-	 * @param mixinName the name of the mixin
+	 * <p>Adds the name of a type to mix into this type once all of the types have
+	 * been inferred</p>
+	 * 
+	 * @param mixinTypeName the name of the type to mix into this type
 	 */
-	public void addMixin(char[] mixinName)
+	public void addMixin(char[] mixinTypeName)
 	{
 		if (mixins==null)
 			mixins=new ArrayList();
-		mixins.add(mixinName);
+		mixins.add(mixinTypeName);
 	}
 
 }
