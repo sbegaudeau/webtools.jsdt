@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
+import java.util.ArrayList;
+
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
@@ -556,7 +560,15 @@ public class ClassScope extends Scope {
 		return false; // reported some error against the source type
 	}
 
-	private boolean connectMixins() {
+	/**
+	 * <p>Iterate through all of the inferred types mixed in types and "mixin" the fields
+	 * and methods from the mixed in types into this scopes inferred type.</p>
+	 * 
+	 * <p>NOTE: this can only successfully be done when all inference is done.</p>
+	 * 
+	 * @return <code>true</code> if no problems occurred, <code>false</code> otherwise
+	 */
+	protected boolean connectMixins() {
 		SourceTypeBinding sourceType = this.inferredType.binding;
 		if (sourceType.id == T_JavaLangObject) // already handled the case of redefining java.lang.Object
 			return true;
@@ -565,24 +577,75 @@ public class ClassScope extends Scope {
 		
 		boolean noProblems = true;
 		int length = this.inferredType.mixins.size();
-		ReferenceBinding[] mixinBindings = new ReferenceBinding[length];
 		int count = 0;
-		nextMixin : for (int i = 0; i < length; i++) {
-			char []mixinName=(char [])this.inferredType.mixins.get(i);
-			ReferenceBinding mixin = (ReferenceBinding)this.getType(mixinName);
-			if (mixin == null) { // detected cycle
+		nextExtends : for (int i = 0; i < length; i++) {
+			char []mixinsName=(char [])this.inferredType.mixins.get(i);
+			ReferenceBinding mixinBinding = (ReferenceBinding)this.getType(mixinsName);
+			if (mixinBinding == null) { // detected cycle
 				sourceType.tagBits |= TagBits.HierarchyHasProblems;
 				noProblems = false;
-				continue nextMixin;
+				continue nextExtends;
 			}
-			// only want to reach here when no errors are reported
-			mixinBindings[count++] = mixin;
-		}
-		// hold onto all correctly resolved superinterfaces
-		if (count > 0) {
-			if (count != length)
-				System.arraycopy(mixinBindings, 0, mixinBindings = new ReferenceBinding[count], 0, count);
-			sourceType.mixins = mixinBindings;
+			
+			//loop through the nextTypes of the mixinBinding because each contains a partial inferred type
+			while(mixinBinding != null) {
+				// get the partial inferred type
+				InferredType mixinInferredType = mixinBinding.getInferredType();
+				if(mixinInferredType !=null) {
+					InferredAttribute[] attributes = mixinInferredType.attributes;
+					ArrayList methods = mixinInferredType.methods;
+					if(methods == null)
+						methods = new ArrayList(1);
+					
+					// get the full list of methods and attributes from the mix class and its super class
+					InferredType mixSuperType = mixinInferredType.superClass;
+					while(mixSuperType != null && !CharOperation.equals(mixSuperType.getName(), "Object".toCharArray())) { //$NON-NLS-1$
+						// attributes
+						InferredAttribute[] tempAttributes = new InferredAttribute[attributes.length + mixSuperType.attributes.length];
+						System.arraycopy(attributes, 0, tempAttributes, 0, attributes.length);
+						System.arraycopy(mixSuperType.attributes, 0, tempAttributes, attributes.length - 1, mixSuperType.attributes.length);
+						attributes = tempAttributes;
+						
+						// methods
+						if (mixSuperType.methods != null)
+							methods.addAll(mixSuperType.methods);
+						mixSuperType = mixSuperType.superClass;
+					}
+					
+					// add attributes to the type
+					for(int a = 0; a < attributes.length; a++) {
+						if(attributes[a] != null) {
+							InferredAttribute attr = this.inferredType.findAttribute( attributes[a].name );
+							if(attr == null || attr.type == null) {
+								attr = this.inferredType.addAttribute( attributes[a].name, attributes[a].node , attributes[a].nameStart);
+								attr.type=attributes[a].type;
+								attr.isStatic = false;
+								attr.nameStart = attributes[a].nameStart;
+							}
+						}
+					}
+					
+					// add methods to the type
+					for(int m = 0; m < methods.size(); m++) {
+						if(!((InferredMethod)methods.get(m)).isConstructor) {
+							InferredMethod method = this.inferredType.findMethod(((InferredMethod)methods.get(m)).name, null);
+		
+							//ignore if the attribute exists and has a type
+							if(method == null) {
+								method = this.inferredType.addMethod(((InferredMethod)methods.get(m)).name, ((InferredMethod)methods.get(m)).getFunctionDeclaration(),((InferredMethod)methods.get(m)).nameStart);
+								method.isStatic=false;
+							}
+						}
+					}
+				}
+				
+				//get the next partial source type for this 'mixin'
+				if(mixinBinding instanceof SourceTypeBinding) {
+					mixinBinding = ((SourceTypeBinding)mixinBinding).nextType;
+				} else {
+					mixinBinding = null;
+				}
+			}
 		}
 		return noProblems;
 	}

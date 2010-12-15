@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
@@ -118,6 +119,12 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	{
 		InferredType currentType;
 		IFunctionDeclaration currentMethod;
+		
+		/** The current assignment.*/
+		IAssignment currentAssignment;
+		
+		/** the current declaration */
+		ILocalDeclaration currentLocalDeclaration;
 		boolean isJsDocClass;
 		
 		private HashtableOfObject definedMembers;
@@ -142,6 +149,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 			currentType = parent.currentType;
 			currentMethod = parent.currentMethod;
+			this.currentAssignment = parent.currentAssignment;
+			this.currentLocalDeclaration = parent.currentLocalDeclaration;
 			this.isJsDocClass=parent.isJsDocClass;
 		}
 
@@ -226,10 +235,13 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	public boolean visit(ILocalDeclaration localDeclaration) {
-
 		//add as a member of the current context
 		currentContext.addMember( localDeclaration.getName(), localDeclaration );
-
+		
+		//create a new context for the local declaration
+		pushContext();
+		this.currentContext.currentLocalDeclaration = localDeclaration;
+		
 		if (localDeclaration.getJsDoc()!=null)
 		{
 			Javadoc javadoc = (Javadoc)localDeclaration.getJsDoc();
@@ -254,6 +266,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				   attribute.type=type;
 			}
 		}
+		
+		// visit the function in case it defines a type 
+		if(localDeclaration.getInitialization() instanceof IFunctionExpression) {
+			boolean keepVisiting = handleFunctionExpressionLocalDeclaration(localDeclaration);
+			if(!keepVisiting) {
+				return false;
+			}
+		}
 
 		if (localDeclaration.getInferredType()==null && localDeclaration.getInitialization()!=null)
 		{
@@ -264,6 +284,13 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.core.ast.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.ast.ILocalDeclaration)
+	 */
+	public void endVisit(ILocalDeclaration localDeclaration) {
+		popContext();
 	}
 
 	private void createTypeIfNecessary(Javadoc javadoc) {
@@ -292,7 +319,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	public boolean visit(IAssignment assignment) {
-		//pushContext();
+		pushContext();
+		this.currentContext.currentAssignment = assignment;
 		IExpression assignmentExpression=assignment.getExpression();
 		if (handlePotentialType(assignment))
 		{
@@ -350,9 +378,10 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			IAbstractVariableDeclaration varDecl = getVariable( assignment.getLeftHandSide() );
 			if(varDecl == null) {
 				IAssignment existing = getAssignment(assignment.getLeftHandSide());
-				if(existing == null)
-					//add as a member of the current context
-					currentContext.addMember( getName(assignment.getLeftHandSide()), assignment );
+				if(existing == null) {
+					//add as a member of the parent context (the current context is for the assignment)
+					currentContext.parent.addMember( getName(assignment.getLeftHandSide()), assignment );
+				}
 			}
 			if( varDecl != null ){
 				InferredType type = varDecl.getInferredType();
@@ -609,9 +638,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 		if (objLit.getInferredType()!=null)
 			return objLit.getInferredType();
-		//char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
-		char [] loc = (String.valueOf( objLit.sourceStart() ) + '_' + String.valueOf( objLit.sourceEnd() )).toCharArray();
-		char []name = CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
+		char []name = createAnonymousTypeName(objLit);
 
 		InferredType anonType = addType(name,true);
 		anonType.isAnonymous=true;
@@ -626,6 +653,17 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		return anonType;
 	}
 
+	
+	/**
+	 * <p>Creates an anonymous type name for the given {@link IASTNode}</p>
+	 * 
+	 * @param node create the anonymous type name off the location of this node
+	 * @return an anonymous type name based off the given nodes location
+	 */
+	protected static char[] createAnonymousTypeName(IASTNode node) {
+		char [] loc = (String.valueOf( node.sourceStart() ) + '_' + String.valueOf( node.sourceEnd() )).toCharArray();
+		return CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
+	}
 	
 	/**
 	 * handle the inferrencing for an assigment whose right hand side is a function expression
@@ -733,6 +771,55 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		return true;
 	}
 	
+	/**
+	 * <p>Handle a local declaration who's right hand side is a function.</p>
+	 * <p>Use case:</p><pre>foo.bar.Test = function() { this.num = 42; }</pre>
+	 * 
+	 * @param localDeclaration {@link ILocalDeclaration} to attempt to infer a type from
+	 * @return <code>true</code> if keep visiting, <code>false</code> otherwise.
+	 */
+	private boolean handleFunctionExpressionLocalDeclaration(ILocalDeclaration localDeclaration) {
+		boolean keepVisiting = true;
+		IFunctionExpression functionExpression=null;
+		IExpression expression = localDeclaration.getInitialization();
+		if (expression instanceof IFunctionExpression) {
+			functionExpression=(IFunctionExpression)expression;
+		} else if (expression instanceof IAllocationExpression) {
+			functionExpression=(IFunctionExpression)((IAllocationExpression)expression).getMember();
+		} else if (expression instanceof IAssignment) {
+			functionExpression=(FunctionExpression)((IAssignment)expression).getExpression();
+		}
+		
+		MethodDeclaration methodDeclaration = functionExpression.getMethodDeclaration();
+		char [] possibleTypeName = localDeclaration.getName();
+
+		InferredType type = null;
+		if( possibleTypeName != null ) {
+			type = compUnit.findInferredType( possibleTypeName );
+			if (type == null && isPossibleClassName(possibleTypeName)) {
+				type = addType(possibleTypeName,true);
+			}
+			if (type == null && methodDeclaration.getJsDoc()!= null &&
+					((Javadoc)methodDeclaration.getJsDoc()).isConstructor) {
+				
+				type = addType(possibleTypeName,true);
+				handleJSDocConstructor(type, methodDeclaration, localDeclaration.sourceStart());
+			}
+		}
+
+		if (type!=null)	{ // isConstructor
+			if (this.inferOptions.useInitMethod) {
+				this.currentContext.currentType=type;
+				type.isDefinition=true;
+				int nameStart = localDeclaration.sourceStart();
+				type.addConstructorMethod(type.name, methodDeclaration, nameStart);
+				type.updatePositions(localDeclaration.sourceStart(), localDeclaration.getInitialization().sourceEnd());
+			}
+			
+			keepVisiting = false;
+		}
+		return keepVisiting;
+	}
 	
 	/**
 	 * @param assignment
@@ -877,15 +964,43 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				InferredType newType = null;
 				
 				IFunctionDeclaration parentMethod = this.currentContext.currentMethod;
-				if( parentMethod != null && parentMethod.getName() != null )
-					newType = compUnit.findInferredType( parentMethod.getName() );
-				else
-					return false; //no type created
-
-				//create the new type if not found
-				if( newType == null ){
-					newType = addType( parentMethod.getName() );
+				IAssignment parentAssignment;
+				ILocalDeclaration parentLocalDeclaration;
+				char[] newTypeName = null;
+				/* if there is a current assignment and LHS is a function and that function
+				 * 		is the current method then use the RHS as the type name
+				 * else if there is a current local declaration and the LHS is a function and
+				 * 		that function is the current method then use the RHS as the type name
+				 * else if the parent method has a name use that as the type name 
+				 */
+				if(this.currentContext.parent != null &&
+						(parentAssignment = this.currentContext.parent.currentAssignment) != null &&
+						parentAssignment.getExpression() instanceof IFunctionExpression &&
+						((IFunctionExpression)parentAssignment.getExpression()).getMethodDeclaration() == parentMethod) {
+					
+					newTypeName = Util.getTypeName(parentAssignment.getLeftHandSide());
+				} else if(this.currentContext.parent != null &&
+						(parentLocalDeclaration = this.currentContext.parent.currentLocalDeclaration) != null &&
+						parentLocalDeclaration.getInitialization() instanceof IFunctionExpression &&
+						((IFunctionExpression)parentLocalDeclaration.getInitialization()).getMethodDeclaration() == parentMethod) {
+					
+					newTypeName = parentLocalDeclaration.getName();
+				
+				}else if( parentMethod != null && parentMethod.getName() != null ) {
+					newTypeName = parentMethod.getName();
 				}
+				
+				//if calculated new type name, use it to create a new type
+				if(newTypeName != null) {
+					newType = compUnit.findInferredType(newTypeName);
+					//create the new type if not found
+					if(newType == null) {
+						newType = addType(newTypeName);
+					}
+				} else {
+					return false; //no type to create
+				}
+
 				newType.isDefinition = true;
 
 				newType.updatePositions(assignment.sourceStart(), assignment.sourceEnd());
@@ -1193,7 +1308,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	}
 
 	public void endVisit(IAssignment assignment) {
-		//popContext();
+		popContext();
 	}
 	
 	protected boolean handleAttributeDeclaration(InferredAttribute attribute, IExpression initializer) {

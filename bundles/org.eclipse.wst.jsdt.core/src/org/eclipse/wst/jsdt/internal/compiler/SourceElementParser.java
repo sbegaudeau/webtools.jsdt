@@ -1103,8 +1103,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 					requestor.enterField(fieldInfo);
 					//If this field is of an anonymous type, need to notify so that it shows as a child
 					if (fieldDeclaration.inferredType != null
-							&& fieldDeclaration.inferredType.isAnonymous &&
-							fieldDeclaration.initialization instanceof ObjectLiteral) {
+							&& fieldDeclaration.inferredType.isAnonymous) {
 						notifySourceElementRequestor(fieldDeclaration.inferredType);
 					}
 				}

@@ -15,7 +15,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.zip.CRC32;
 
-import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -30,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class SourceTypeBinding extends ReferenceBinding {
 	public ReferenceBinding superclass;
-	public ReferenceBinding[] mixins = Binding.NO_MIXINS;
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
 	public ReferenceBinding[] memberTypes = Binding.NO_MEMBER_TYPES;
@@ -80,9 +78,14 @@ public class SourceTypeBinding extends ReferenceBinding {
 
 	}
 
+	/**
+	 * <p><b>IMPORTANT:</b> Gets the {@link InferredType} for this binding only. 
+	 * This means that if this binding has a {@link #nextType} then the {@link InferredType}
+	 * returned here is only a partially {@link InferredType}.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getInferredType()
+	 */
 	public InferredType getInferredType() {
-		if (this.nextType != null)
-			throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 		ClassScope classScope = scope.classScope();
 		return classScope.inferredType;
 	}
@@ -619,13 +622,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 						selector, argumentTypes, refScope);
 				if (exactMethod != null && exactMethod.isValidBinding())
 					return exactMethod;
-				for (int i = 0; i < this.mixins.length; i++) {
-					exactMethod = this.mixins[i].getExactMethod(selector,
-							argumentTypes, refScope);
-					if (exactMethod != null && exactMethod.isValidBinding())
-						return exactMethod;
-
-				}
 			}
 
 		}
