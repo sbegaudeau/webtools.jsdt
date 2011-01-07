@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.BinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -55,7 +56,9 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.OperatorIds;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.UnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -495,31 +498,45 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			 */
 			if (this.inferOptions.useAssignments)
 			{
-				if( assignment.getLeftHandSide() instanceof FieldReference ){
-					FieldReference fRef = (FieldReference)assignment.getLeftHandSide();
-					int nameStart=(int)(fRef.nameSourcePosition>>>32);
+				if( assignment.getLeftHandSide() instanceof FieldReference || assignment.getLeftHandSide() instanceof ArrayReference){
+					
+					Reference ref = (Reference) assignment.getLeftHandSide();
+					Expression receiver = null;
+					char[] attName = null;
+					int nameStart = 0;
+					if(ref instanceof FieldReference) {
+						receiver = ((FieldReference)ref).receiver;
+						attName = ((FieldReference)ref).token;
+						nameStart=(int)(((FieldReference)ref).nameSourcePosition>>>32);
+					} else if(ref instanceof ArrayReference) {
+						if(((ArrayReference)ref).position instanceof StringLiteral) {
+							receiver = ((ArrayReference)ref).receiver;
+							attName = ((StringLiteral)((ArrayReference)ref).position).source();
+							nameStart = ((StringLiteral)((ArrayReference)ref).position).sourceStart + 1;
+						}
+					}
 
-					InferredType receiverType = getInferredType( fRef.receiver );
+					InferredType receiverType = getInferredType( receiver );
 					if (receiverType==null)
 					{
-					  IFunctionDeclaration function = getDefinedFunction(fRef.receiver);
+					  IFunctionDeclaration function = getDefinedFunction(receiver);
 					  if (function!=null)
 					  {
-						  char [] typeName = constructTypeName(fRef.receiver);
+						  char [] typeName = constructTypeName(receiver);
 						  if (typeName!=null)
 							  receiverType=addType(typeName);
 					  }
 					}
 					if (receiverType==null && this.passNumber==2)
-						  receiverType=getInferredType2(fRef.receiver );
+						  receiverType=getInferredType2(receiver );
 
-					if( receiverType != null ){
+					if( receiverType != null && attName != null){
 						//check if there is an attribute already created
 
 						InferredMethod method=null;
-						InferredAttribute attr = receiverType.findAttribute( fRef.token );
+						InferredAttribute attr = receiverType.findAttribute( attName );
 						if (attr==null)
-							 method = receiverType.findMethod(fRef.token, null);
+							 method = receiverType.findMethod(attName, null);
 
 						//ignore if the attribute exists and has a type
 						if(  (method==null && attr==null) ||  (method==null && attr != null && attr.type == null) ){
@@ -533,14 +550,14 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 							if (definedFunction!=null)
 							{
-								method = receiverType.addMethod(fRef.token, definedFunction, nameStart);
+								method = receiverType.addMethod(attName, definedFunction, nameStart);
 								method.isStatic=receiverType.allStatic;
 							}
 							else
 							{
-							  int nameStart_ = (int)(fRef.nameSourcePosition>>>32);
+							  int nameStart_ = nameStart;
 							  
-							  attr = receiverType.addAttribute(fRef.token, assignment, nameStart_);
+							  attr = receiverType.addAttribute(attName, assignment, nameStart_);
 							  handleAttributeDeclaration(attr, assignmentExpression);
 							  attr.type=exprType;
 							/*
@@ -548,7 +565,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 							 *
 							 * check if the receiver is a type
 							 */
-							  char [] possibleTypeName = constructTypeName( fRef.receiver );
+							  char [] possibleTypeName = constructTypeName( receiver );
 
 							  if( receiverType.allStatic||
 									  (possibleTypeName != null && compUnit.findInferredType( possibleTypeName ) != null ))
@@ -712,22 +729,35 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 		}
 		else	// could be method
 		{
-			if (assignment.getLeftHandSide() instanceof FieldReference)
+			if (assignment.getLeftHandSide() instanceof FieldReference || assignment.getLeftHandSide() instanceof ArrayReference)
 			{
-				FieldReference fieldReference=(FieldReference)assignment.getLeftHandSide();
-				int nameStart=(int)(fieldReference.nameSourcePosition>>>32);
+				Reference ref = (Reference) assignment.getLeftHandSide();
+				Expression receiver = null;
+				char[] methodName = null;
+				int nameStart = 0;
+				if(ref instanceof FieldReference) {
+					receiver = ((FieldReference)ref).receiver;
+					methodName = ((FieldReference)ref).token;
+					nameStart=(int)(((FieldReference)ref).nameSourcePosition>>>32);
+				} else if(ref instanceof ArrayReference) {
+					if(((ArrayReference)ref).position instanceof StringLiteral) {
+						receiver = ((ArrayReference)ref).receiver;
+						methodName = ((StringLiteral)((ArrayReference)ref).position).source();
+						nameStart = ((StringLiteral)((ArrayReference)ref).position).sourceStart + 1;
+					}
+				}
 
-				InferredType receiverType = getInferredType( fieldReference.receiver );
+				InferredType receiverType = getInferredType( receiver );
 
-				if( receiverType != null ){
+				if( receiverType != null && methodName != null){
 
 					//check if there is a member method already created
-					InferredMethod method = receiverType.findMethod( fieldReference.token, methodDeclaration );
+					InferredMethod method = receiverType.findMethod( methodName, methodDeclaration );
 
 					if( method == null ){
 						//create member method if it does not exist
 
-						method = receiverType.addMethod(fieldReference.token, methodDeclaration, nameStart);
+						method = receiverType.addMethod(methodName, methodDeclaration, nameStart);
 						receiverType.updatePositions(assignment.sourceStart(), assignment.sourceEnd()); // @GINO: not sure if necessary
 						receiverType.isDefinition=true;
 
@@ -736,7 +766,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 						 *
 						 * check if the receiver is a type
 						 */
-						char [] possibleInTypeName = constructTypeName( fieldReference.receiver );
+						char [] possibleInTypeName = constructTypeName( receiver );
 
 						if( receiverType.allStatic ||  
 								(possibleInTypeName != null && compUnit.findInferredType( possibleInTypeName ) != null) )
@@ -750,12 +780,12 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 						return false; //no need to visit again
 
 				}
-				else if (this.passNumber==2)	// create anonymous class
+				else if (this.passNumber==2 && methodName != null)	// create anonymous class
 				{
-					receiverType = getInferredType2(fieldReference.receiver);
+					receiverType = getInferredType2(receiver);
 					if (receiverType!=null)
 					{
-						InferredMethod method = receiverType.addMethod(fieldReference.token, methodDeclaration, nameStart);
+						InferredMethod method = receiverType.addMethod(methodName, methodDeclaration, nameStart);
 						method.isStatic=receiverType.isAnonymous;
 						receiverType.updatePositions(assignment.sourceStart(), assignment.sourceEnd());
 					}
