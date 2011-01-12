@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,9 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -713,11 +715,11 @@ public class BuildPathsBlock {
 			entries[i]= currElement.getClasspathEntry();
 		}
 		
-		//IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJProject, entries);
-//		if (!status.isOK()) {
-//			fBuildPathStatus.setError(status.getMessage());
-//			return;
-//		}
+		IJavaScriptModelStatus status= JavaScriptConventions.validateClasspath(fCurrJSProject, entries);
+		if (!status.isOK()) {
+			fBuildPathStatus.setError(status.getMessage());
+			return;
+		}
 		fBuildPathStatus.setOK();
 	}
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -838,9 +838,9 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 			cpelements.addAll(insertPos, srcelements);
 		}
 		
-		if (lastRemovePos != nEntries || !srcelements.isEmpty()) {
+		//if (lastRemovePos != nEntries || !srcelements.isEmpty()) {
 			fClassPathList.setElements(cpelements);
-		}
+		//}
 	}
 	
 	/*
@@ -886,8 +886,9 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 			CPListElement element= (CPListElement)iter.next();
 			fFoldersList.refresh(element);
 			fFoldersList.expandElement(element, 3);
+			fFoldersList.dialogFieldChanged();
 		}
-
+		
 		fFoldersList.refresh(); //does enforce the order of the entries.
 		if (!insertedElements.isEmpty()) {
 			fFoldersList.postSetSelection(new StructuredSelection(insertedElements));
