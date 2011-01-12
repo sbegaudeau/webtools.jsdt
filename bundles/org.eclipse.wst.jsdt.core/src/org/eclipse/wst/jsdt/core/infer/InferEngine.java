@@ -1392,11 +1392,35 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					else 
 						type=getTypeOf(expression);
 
-					if (currentContext.currentMethod.getInferredType()==VoidType)
+					if (currentContext.currentMethod.getInferredType()==VoidType) {
 						currentContext.currentMethod.setInferredType(type);
-					else if ((type==null || !type.equals(currentContext.currentMethod.getInferredType())) && 
-							!((MethodDeclaration)currentContext.currentMethod).isInferredJsDocType())
-						currentContext.currentMethod.setInferredType(null);
+					} else {
+						/* If the return statement inferred type is null or
+						 * the existing inferred return type and the statement return type are not equal and
+						 *   the return type is either not well known or is well known and the return type names are the same
+						 *  
+						 * This logic is to cover the scenario where the return type is a known type but is from a
+						 * different instance of the InferEngine
+						 */
+						boolean shouldSetToAny = !((MethodDeclaration)currentContext.currentMethod).isInferredJsDocType();
+						if(type != null && shouldSetToAny) {
+							//get the name of the current methods inferred return type
+							String currentMethodInferredType = null;
+							if( this.currentContext.currentMethod.getInferredType() != null && this.currentContext.currentMethod.getInferredType().name != null) {
+								currentMethodInferredType = new String(this.currentContext.currentMethod.getInferredType().name);
+							}
+							
+							boolean returnTypesEqual = type.equals(currentContext.currentMethod.getInferredType());
+							boolean returnTypeNamesEqual = (new String(type.name)).equals(currentMethodInferredType);
+							boolean returnTypeIsWellKnown = WellKnownTypes.containsKey(type.name);
+							
+							shouldSetToAny = !returnTypesEqual && (!returnTypeIsWellKnown || !(returnTypeIsWellKnown && returnTypeNamesEqual));
+						}
+							
+						if(shouldSetToAny) {
+							currentContext.currentMethod.setInferredType(null);
+						}
+					}
 				}
 			}
 			return false;
