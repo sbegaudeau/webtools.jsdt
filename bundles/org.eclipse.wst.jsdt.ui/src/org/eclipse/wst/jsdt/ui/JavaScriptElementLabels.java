@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.BindingKey;
@@ -37,6 +38,7 @@ import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -360,6 +362,8 @@ public class JavaScriptElementLabels {
 	private static String fgPkgNamePostfix;
 	private static int fgPkgNameChars;
 	private static int fgPkgNameLength= -1;
+
+	private static final IPath LIBCACHE_LOCATION = new Path(JavaScriptCore.getJavaScriptCore().getStateLocation().append(new String(SystemLibraryLocation.LIBRARY_RUNTIME_DIRECTORY)).toOSString());
 
 	private JavaScriptElementLabels() {
 	}
@@ -1090,10 +1094,7 @@ public class JavaScriptElementLabels {
 		boolean rootQualified= getFlag(flags, ROOT_QUALIFIED);
 		boolean referencedQualified= getFlag(flags, REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
 		if (rootQualified) {
-//			buf.append(root.getPath().makeRelative().toString());
-			// for libraries stored in our metadata area, just show the filename
-			IPath stateLocation = JavaScriptCore.getJavaScriptCore().getStateLocation();
-			if (stateLocation.isPrefixOf(root.getPath())) {
+			if (LIBCACHE_LOCATION.isPrefixOf(root.getPath())) {
 				buf.append(root.getPath().lastSegment().toString());
 			}
 			else {
