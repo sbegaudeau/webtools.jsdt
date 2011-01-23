@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -816,8 +817,6 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		
 	}
 	private Object[] getContainerPackageFragmentRootsDeprc(PackageFragmentRootContainer container, boolean createFolder) {
-		
-		
 		if(container!=null) {	
 			
 			Object[] children = container.getChildren();
@@ -870,20 +869,9 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			
 			
 			return allChildren.toArray();
-		}else {
-		
-			
-			Object[] children = container.getChildren();
-			if(children==null) return null;
-			ArrayList allChildren = new ArrayList();
-			for(int i=0;i<children.length;i++) {
-				try {
-					allChildren.addAll(Arrays.asList(((IPackageFragmentRoot)children[i]).getChildren()));
-				} catch (JavaScriptModelException ex) {
-					
-				}
-			}
-			return allChildren.toArray();
+		}
+		else {
+			return new IAdaptable[0];
 		}
 	}
 
