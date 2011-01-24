@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,6 @@ public final class JSON {
 	 * The default <code>Content-Length:</code> pre-amble
 	 */
 	public static final String CONTENT_LENGTH = "Content-Length:"; //$NON-NLS-1$
-	
 	/**
 	 * Enables / Disables tracing in the all of the JSDI implementations
 	 * 
@@ -375,7 +374,7 @@ public final class JSON {
 			return ""; //$NON-NLS-1$
 		}
 		StringBuffer buffer = new StringBuffer();
-		while (c != '"') {
+		while (c != CharacterIterator.DONE && c != '"') {
 			if (Character.isISOControl(c)) {
 				//ignore it and continue
 				c = it.next();
@@ -452,7 +451,7 @@ public final class JSON {
 		}
 
 		Map map = new HashMap();
-		while (true) {
+		while (it.current() != CharacterIterator.DONE) {
 			if (it.current() != '"') {
 				throw error("expected a string start '\"' but was '" + it.current() + "'", it); //$NON-NLS-1$ //$NON-NLS-2$
 			}
@@ -499,7 +498,7 @@ public final class JSON {
 		}
 
 		List list = new ArrayList();
-		while (true) {
+		while (it.current() != CharacterIterator.DONE) {
 			Object value = parseValue(it);
 			list.add(value);
 			parseWhitespace(it);

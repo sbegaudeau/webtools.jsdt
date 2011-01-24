@@ -476,7 +476,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		}
 		catch(DisconnectedException de) {
 			disconnectVM();
-			handleException(de.getMessage(), de);
+			handleException(de.getMessage(), (de.getCause() == null ? de : de.getCause()));
 		}
 		catch(TimeoutException te) {
 			CrossFirePlugin.log(te);
@@ -552,26 +552,28 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta) {
 		//TODO this will never work unless we map original URL to workspace source
 		if(JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
-			IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-			try {
-				String path = bp.getScriptPath();
-				String url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
-				if(url == null) {
-					url = path;
-				}
-				if(url != null) {
-					CFScriptReference script = findScript(url);
-					CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
-					request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-					request.setArgument(Attributes.TARGET, script.id());
-					CFResponsePacket response = sendRequest(request);
-					if(!response.isSuccess() && TRACE) {
-						Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+			if(breakpoint instanceof IJavaScriptLineBreakpoint) {
+				IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+				try {
+					String path = bp.getScriptPath();
+					String url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
+					if(url == null) {
+						url = path;
+					}
+					if(url != null) {
+						CFScriptReference script = findScript(url);
+						CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
+						request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
+						request.setArgument(Attributes.TARGET, script.id());
+						CFResponsePacket response = sendRequest(request);
+						if(!response.isSuccess() && TRACE) {
+							Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+						}
 					}
 				}
-			}
-			catch(CoreException ce) {
-				CrossFirePlugin.log(ce);
+				catch(CoreException ce) {
+					CrossFirePlugin.log(ce);
+				}
 			}
 		}
 	}
@@ -591,14 +593,16 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 				}
 				if(url != null) {
 					CFScriptReference script = findScript(url);
-					CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, script.context());
-					request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-					request.setArgument(Attributes.TARGET, script.id());
-					String cn = bp.getCondition();
-					request.setArgument(Attributes.CONDITION, (cn == null ? "" : cn)); //$NON-NLS-1$
-					CFResponsePacket response = sendRequest(request);
-					if(!response.isSuccess() && TRACE) {
-						Tracing.writeString("[failed changebreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+					if(script != null) {
+						CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, script.context());
+						request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
+						request.setArgument(Attributes.TARGET, script.id());
+						String cn = bp.getCondition();
+						request.setArgument(Attributes.CONDITION, (cn == null ? "" : cn)); //$NON-NLS-1$
+						CFResponsePacket response = sendRequest(request);
+						if(!response.isSuccess() && TRACE) {
+							Tracing.writeString("[failed changebreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+						}
 					}
 				}
 			}

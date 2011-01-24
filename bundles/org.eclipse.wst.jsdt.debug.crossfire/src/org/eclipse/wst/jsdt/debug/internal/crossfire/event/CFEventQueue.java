@@ -307,7 +307,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 				Tracing.writeString("QUEUE [disconnect exception]: "+de.getMessage()); //$NON-NLS-1$
 			}
 			crossfire().disconnectVM();
-			handleException(de.getMessage(), de);
+			handleException(de.getMessage(), (de.getCause() == null ? de : de.getCause()));
 		}
 		catch(TimeoutException te) {
 			CrossFirePlugin.log(te);

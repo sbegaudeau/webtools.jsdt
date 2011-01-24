@@ -114,55 +114,42 @@ public class CFSocketConnection extends SocketConnection {
 		StringBuffer buffer = new StringBuffer();
 		StringBuffer raw = new StringBuffer();
 		int c = -1;
-		boolean len = false;
+		boolean r = false;
+		String len = null;
 		Reader reader = getReader();
 		while((c = reader.read()) > -1) {
 			if(CFPacket.TRACE) {
 				raw.append((char)c);
 			}
-			if(c == '\r') {
-				break;
-			}
-			if(len) {
-				buffer.append((char)c);
+			if(r) {
+				if(c == '\n') {
+					String str = buffer.toString();
+					if(str.startsWith(JSON.CONTENT_LENGTH)) {
+						len = grabAttrib(str);
+					}
+					else if(str.equals("\r")) { //$NON-NLS-1$
+						break;
+					}
+					buffer = new StringBuffer();
+					r = false;
+				}
 				continue;
 			}
-			len = c == ':';
+			buffer.append((char)c);
+			r = c == '\r';
 		}
 		int length = 0;
 		try {
-			length = Integer.parseInt(buffer.toString());
+			length = Integer.parseInt(len);
 		} catch (NumberFormatException e) {
-			throw new IOException("Failed to parse content length: " + buffer.toString()); //$NON-NLS-1$
+			if(CFPacket.TRACE) {
+				Tracing.writeString("[SOCKET] failed to read content length: "+raw.toString()); //$NON-NLS-1$
+			}
+			throw new IOException("Failed to parse content length: " + raw.toString()); //$NON-NLS-1$
 		}
 		char[] message = new char[length];
 		int n = 0;
 		int off = 0;
-		c = reader.read();
-		if(CFPacket.TRACE) {
-			raw.append((char)c);
-		}
-		if(c != '\n') {
-			throw new IOException("Failed to parse content length: " + buffer.toString() + "next char was not '\n'" + (char)c); //$NON-NLS-1$ //$NON-NLS-2$
-		}
-		if(!JSON.PRE03) {
-			//check for the new double \r\n introduced in CF 0.3
-			c = reader.read();
-			if(CFPacket.TRACE) {
-				raw.append((char)c);
-			}
-			if(c == '\r') {
-				//chew up the \n
-				c = reader.read();
-				if(CFPacket.TRACE) {
-					raw.append((char) c);
-				}
-			}
-			else {
-				message[0] = (char) c;
-				off = 1;
-			}
-		}
 		while (n < length) {
 			int count = reader.read(message, off + n, length - n);
 			if (count < 0) {
@@ -186,5 +173,22 @@ public class CFSocketConnection extends SocketConnection {
 			return new CFResponsePacket(json);
 		}
 		throw new IOException("Unknown packet type: " + type); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Grabs the attribute from the RHS of the header. Where all headers
+	 * have the form <code>[name]:[value]</code>.
+	 * 
+	 * @param str the string to parse
+	 * @return the <code>[value]</code> from the header
+	 */
+	String grabAttrib(String str) {
+		if(str != null) {
+			int idx = str.indexOf(':');
+			if(idx > -1) {
+				return str.substring(idx+1, str.length()-1);
+			}
+		}
+		return null;
 	}
 }
