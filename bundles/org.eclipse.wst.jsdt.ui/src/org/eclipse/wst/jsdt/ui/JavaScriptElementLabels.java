@@ -1098,7 +1098,7 @@ public class JavaScriptElementLabels {
 				buf.append(root.getPath().lastSegment().toString());
 			}
 			else {
-				buf.append(root.getPath().toString());
+				buf.append(root.getPath().makeRelative().toString());
 			}
 		} else {
 			if (resource != null) {
