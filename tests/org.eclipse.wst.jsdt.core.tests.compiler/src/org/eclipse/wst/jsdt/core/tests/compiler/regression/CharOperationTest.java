@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -102,6 +102,18 @@ public void test007() {
 	array = new char[] { 'a' , 'b', 'c' };
 	array2 = new char[] { 'a' , 'b', 'd'};
 	assertTrue(CharOperation.compareTo(array, array2) < 0);
+}
+public void test008a() {
+	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=334922
+	char[] array = "A*".toCharArray();
+	char[] array2 = "AA".toCharArray();
+	assertTrue("case sensitive prefix match failed", CharOperation.match(array, array2, true));
+}
+public void test008b() {
+	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=334922
+	char[] array = "A*".toCharArray();
+	char[] array2 = "aa".toCharArray();
+	assertTrue("case insensitive prefix match failed", CharOperation.match(array, array2, false));
 }
 public static Class testClass() {
 	return CharOperationTest.class;
