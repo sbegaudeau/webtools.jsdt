@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package org.eclipse.wst.jsdt.internal.compiler;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -37,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class Compiler implements ITypeRequestor, ProblemSeverities {
@@ -224,7 +224,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			parser.inferTypes(parsedUnit,this.options);
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
-			if (!(sourceUnit instanceof IClassFile))
+			if (sourceUnit instanceof SourceFile)
 				this.addCompilationUnit(sourceUnit, parsedUnit);
 
 			// binding resolution
