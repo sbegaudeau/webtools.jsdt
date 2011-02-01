@@ -4228,11 +4228,11 @@
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.show.outline"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-<!--      <key
+      <key
             sequence="M1+T"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.edit.text.java.open.hierarchy"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> -->
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+F3"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
@@ -4240,11 +4240,11 @@
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
        <!-- Changing context to JavaScript Editor -->     
-<!--      <key
+      <key
             sequence="M1+M2+T"
             contextId="org.eclipse.wst.jsdt.ui.javaEditorScope"
             commandId="org.eclipse.wst.jsdt.ui.navigate.open.type"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>-->
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
       <key
             sequence="M1+M2+H"
             contextId="org.eclipse.wst.jsdt.ui.javascriptViewScope"
@@ -4474,7 +4474,6 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.InnerClassFilesFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackageExplorer.HideInnerClassFilesFilter">
       </filter>
-      -->
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideEmptyPackages.label"
@@ -4483,7 +4482,6 @@
             class="org.eclipse.wst.jsdt.internal.ui.filters.EmptyPackageFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackageExplorer.EmptyPackageFilter">
       </filter>
-      <!--
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackageExplorer"
             name="%HideEmptyInnerPackages.label"
@@ -4653,7 +4651,7 @@
       <filter
             targetId="org.eclipse.wst.jsdt.ui.PackagesView"
             name="%HideEmptyPackages.label"
-            enabled="true"
+            enabled="false"
             description="%HideEmptyPackages.description"
             class="org.eclipse.wst.jsdt.internal.ui.filters.EmptyPackageFilter"
             id="org.eclipse.wst.jsdt.internal.ui.PackagesView.EmptyPackageFilter">
@@ -5338,10 +5336,8 @@
           					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
 						</and>
 						<and>
-							<instanceof value="org.eclipse.core.resources.IResource" />
-							<not>
-								<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
-							</not>
+							<instanceof value="org.eclipse.core.resources.IFile" />
+          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
 						</and>
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
@@ -5350,7 +5346,7 @@
 				</enablement>
 			</actionProvider> 
 			
-			<actionProvider
+			<!-- <actionProvider
 					class="org.eclipse.wst.jsdt.internal.ui.navigator.JavaNavigatorRefactorActionProvider"
 					id="org.eclipse.wst.jsdt.ui.navigator.actions.RefactorActions"
 					overrides="org.eclipse.ui.navigator.resources.actions.RefactorActions"> 
@@ -5371,7 +5367,8 @@
 						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 
 					</or>
 				</enablement>
-			</actionProvider>
+			</actionProvider> -->
+
 		   <actionProvider
 		         class="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerOpenActionProvider"
 		         id="org.eclipse.wst.jsdt.ui.navigator.actions.OpenActions"
