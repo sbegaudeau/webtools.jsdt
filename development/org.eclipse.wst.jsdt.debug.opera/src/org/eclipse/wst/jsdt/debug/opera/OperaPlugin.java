@@ -3,7 +3,7 @@ package org.eclipse.wst.jsdt.debug.opera;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class OperaPlugin implements BundleActivator {
 
 	private static BundleContext context;
 
@@ -16,7 +16,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+		OperaPlugin.context = bundleContext;
 	}
 
 	/*
@@ -24,7 +24,7 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+		OperaPlugin.context = null;
 	}
 
 }

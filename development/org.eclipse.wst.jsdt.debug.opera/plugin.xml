@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
+      <connector
+            class="org.eclipse.wst.jsdt.debug.opera.internal.launching.OperaListeningConnector"
+            id="org.eclipse.wst.jsdt.debug.opera.listening.connector">
+      </connector>
+   </extension>
+
+</plugin>
