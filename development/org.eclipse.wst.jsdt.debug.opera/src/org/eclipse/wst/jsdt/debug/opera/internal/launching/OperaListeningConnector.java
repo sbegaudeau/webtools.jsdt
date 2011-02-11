@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.ListeningConnector;
-import org.eclipse.wst.jsdt.debug.opera.internal.jsdi.OVirtualMachine;
+import org.eclipse.wst.jsdt.debug.opera.internal.jsdi.VirtualMachineImpl;
 
 import com.opera.core.DefaultListener;
 import com.opera.core.ScopeSDK;
@@ -76,7 +76,6 @@ public class OperaListeningConnector implements ListeningConnector {
 				e.printStackTrace();
 			}
 		};
-		ScopeSDK.Builder builder = new ScopeSDK.Builder(listener, el);
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
 		if(host == null || port == null) {
@@ -89,20 +88,18 @@ public class OperaListeningConnector implements ListeningConnector {
 		catch(NumberFormatException nfe) {
 			throw new IOException("The given port was not an integer"); //$NON-NLS-1$
 		}
-		builder.setHost(host);
-		builder.setPort(portnum);
-		ScopeSDK sdk = new ScopeSDK(builder);
+		ScopeSDK scope = new ScopeSDK(listener, el, host, portnum, -1, null);
 		try {
-			sdk.start();
+			scope.start();
 			ScopeClient client = listener.waitForClient(50000, TimeUnit.MILLISECONDS);
 			if(client != null) {
-				OVirtualMachine vm = new OVirtualMachine(client);
+				VirtualMachineImpl vm = new VirtualMachineImpl(client);
 				return vm;
 			}
 			throw new IOException("Could not start the ScopeSDK builder"); //$NON-NLS-1$
 		}
 		catch(IOException ioe) {
-			sdk.stop();
+			scope.stop();
 			throw ioe;
 		}
 	}

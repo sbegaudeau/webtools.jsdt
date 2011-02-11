@@ -18,9 +18,9 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
  * 
  * @since 0.1
  */
-public class OMirror implements Mirror {
+public class MirrorImpl implements Mirror {
 
-	private OVirtualMachine vm = null;
+	private VirtualMachineImpl vm = null;
 	
 	/**
 	 * Constructor
@@ -29,14 +29,14 @@ public class OMirror implements Mirror {
 	 * 
 	 * @noreference This constructor is not intended to be referenced by clients.
 	 */
-	public OMirror() {
-		vm = (OVirtualMachine) this;
+	public MirrorImpl() {
+		vm = (VirtualMachineImpl) this;
 	}
 	
 	/**
 	 * Constructor
 	 */
-	public OMirror(OVirtualMachine vm) {
+	public MirrorImpl(VirtualMachineImpl vm) {
 		this.vm = vm;
 	}
 	

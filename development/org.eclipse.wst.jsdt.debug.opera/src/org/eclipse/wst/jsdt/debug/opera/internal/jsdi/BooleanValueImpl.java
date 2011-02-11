@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.debug.opera.internal.jsdi;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 
 /**
- * Default {@link BooleanValue} Opera implemenation
+ * Default {@link BooleanValue} Opera implementation
  * 
  * @since 0.1
  */
-public class OBooleanValue extends OPrimitiveValue implements BooleanValue {
+public class BooleanValueImpl extends PrimitiveValueImpl implements BooleanValue {
 
 	private boolean value = false;
 	
@@ -26,7 +26,7 @@ public class OBooleanValue extends OPrimitiveValue implements BooleanValue {
 	 * @param vm
 	 * @param value
 	 */
-	public OBooleanValue(OVirtualMachine vm, boolean value) {
+	public BooleanValueImpl(VirtualMachineImpl vm, boolean value) {
 		super(vm);
 		this.value = value;
 	}

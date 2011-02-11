@@ -8,27 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.opera.internal.jsdi;
+package org.eclipse.wst.jsdt.debug.opera.internal.jsdi.request;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
+import org.eclipse.wst.jsdt.debug.opera.internal.jsdi.VirtualMachineImpl;
 
 /**
- * Default {@link UndefinedValue} Opera implementation
+ * Default {@link ScriptLoadRequest} implementation for Opera
  * 
  * @since 0.1
  */
-public class OUndefined extends OMirror implements UndefinedValue {
+public class ScriptLoadRequestImpl extends EventRequestImpl implements ScriptLoadRequest {
 
-	public static String VALUE = "undefined"; //$NON-NLS-1$
-	
-	public OUndefined(OVirtualMachine vm) {
-		super(vm);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
+	/**
+	 * Constructor
+	 * @param vm
 	 */
-	public String valueString() {
-		return VALUE;
+	public ScriptLoadRequestImpl(VirtualMachineImpl vm) {
+		super(vm);
 	}
 }

@@ -26,5 +26,4 @@ public class OperaPlugin implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		OperaPlugin.context = null;
 	}
-
 }

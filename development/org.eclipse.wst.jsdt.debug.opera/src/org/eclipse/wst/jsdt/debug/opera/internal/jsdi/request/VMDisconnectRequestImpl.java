@@ -8,18 +8,23 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.debug.opera.internal.jsdi;
+package org.eclipse.wst.jsdt.debug.opera.internal.jsdi.request;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDisconnectRequest;
+import org.eclipse.wst.jsdt.debug.opera.internal.jsdi.VirtualMachineImpl;
 
 /**
- * Default {@link PrimitiveValue} Opera implementation
+ * Default {@link VMDisconnectRequest} implementation for Opera
  * 
  * @since 0.1
  */
-public abstract class OPrimitiveValue extends OMirror implements PrimitiveValue {
+public class VMDisconnectRequestImpl extends EventRequestImpl implements VMDisconnectRequest {
 
-	public OPrimitiveValue(OVirtualMachine vm) {
+	/**
+	 * Constructor
+	 * @param vm
+	 */
+	public VMDisconnectRequestImpl(VirtualMachineImpl vm) {
 		super(vm);
 	}
 }

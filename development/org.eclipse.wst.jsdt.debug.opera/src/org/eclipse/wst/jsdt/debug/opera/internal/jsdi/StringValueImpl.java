@@ -10,25 +10,36 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.opera.internal.jsdi;
 
-import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
+import org.eclipse.wst.jsdt.debug.core.jsdi.StringValue;
 
 /**
- * Default {@link NullValue} Opera implementation
+ * Default {@link StringValue} implementation for Opera
  * 
- * @since 0.1
+ *  @since 0.1
  */
-public class ONullValue extends OMirror implements NullValue {
+public class StringValueImpl extends MirrorImpl implements StringValue {
 
-	public static String VALUE = "null"; //$NON-NLS-1$
+	String value = null;
 	
-	public ONullValue(OVirtualMachine vm) {
+	/**
+	 * Constructor
+	 */
+	public StringValueImpl(VirtualMachineImpl vm, String value) {
 		super(vm);
+		this.value = value;
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.Value#valueString()
 	 */
 	public String valueString() {
-		return VALUE;
+		return value;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.StringValue#value()
+	 */
+	public String value() {
+		return value;
 	}
 }
