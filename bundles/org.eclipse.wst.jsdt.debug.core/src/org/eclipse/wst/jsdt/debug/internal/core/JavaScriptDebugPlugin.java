@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -129,7 +130,16 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @return <code>true</code> if the path is in the external source project, <code>false</code> otherwise
 	 */
 	public static boolean isExternalSource(IPath path) {
-		return path.segment(0).equals(Messages.external_javascript_source);
+		if(path.segment(0).equals(Messages.external_javascript_source)) {
+			return true;
+		}
+		//try to look it up. The name might not have the project name in it
+		IProject project = getExternalSourceProject(false);
+		if(project != null) {
+			IResource res = project.findMember(path);
+			return res != null && res.exists();
+		}
+		return false;
 	}
 	
 	/*

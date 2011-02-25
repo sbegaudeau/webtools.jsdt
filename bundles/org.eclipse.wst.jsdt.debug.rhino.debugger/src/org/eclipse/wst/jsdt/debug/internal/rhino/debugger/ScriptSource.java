@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2009, 2011 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.Constants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.transport.JSONConstants;
 import org.mozilla.javascript.debug.DebuggableScript;
+import org.mozilla.javascript.debug.Debugger;
 
 /**
  * Rhino script implementation
@@ -173,6 +174,20 @@ public class ScriptSource {
 	 */
 	public boolean isStdIn() {
 		return this.uri.toString().endsWith("stdin"); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Clears the breakpoints from this script out of the given {@link Debugger}
+	 */
+	void clearBreakpoints(RhinoDebuggerImpl debugger) {
+		if(this.lines != null) {
+			for (int i = 0; i < this.lines.length; i++) {
+				Breakpoint bp = lines[i].breakpoint;
+				if(bp != null) {
+					debugger.clearBreakpoint(bp.breakpointId);
+				}
+			}
+		}
 	}
 	
 	/**
@@ -333,15 +348,6 @@ public class ScriptSource {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Copies items from the given object to this one
-	 * @param script
-	 */
-	public void clone(ScriptSource script) {
-		this.scriptId = script.scriptId;
-		this.lines = script.lines;
 	}
 	
 	/**

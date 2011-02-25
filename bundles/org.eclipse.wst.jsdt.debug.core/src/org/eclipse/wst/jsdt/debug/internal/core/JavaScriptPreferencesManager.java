@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,10 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.IPreferenceChangeListener;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences.PreferenceChangeEvent;
@@ -54,18 +58,43 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	 */
 	private static JavaScriptExceptionBreakpoint allExceptions = null;
 	
+	class StartJob extends Job {
+		private boolean loads = false;
+		private boolean exceptions = false;
+		/**
+		 * Constructor
+		 */
+		public StartJob(boolean loads, boolean exceptions) {
+			super(Constants.EMPTY_STRING);
+			this.loads = loads;
+			this.exceptions = exceptions;
+		}
+		/* (non-Javadoc)
+		 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+		 */
+		protected IStatus run(IProgressMonitor monitor) {
+			if(loads) {
+				allLoadsBreakpoint = createSuspendOnAllLoads();
+			}
+			if(exceptions) {
+				allExceptions = createSuspendOnException();
+			}
+			return Status.OK_STATUS;
+		}
+		
+	}
+	
 	/**
 	 * Starts the manager
 	 */
 	public void start() {
 		IEclipsePreferences node = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		node.addPreferenceChangeListener(this);
-		if(node.getBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false)) {
-			allLoadsBreakpoint = createSuspendOnAllLoads();
-		}
-		if(node.getBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true)) {
-			allExceptions = createSuspendOnException();
-		}
+		StartJob job = new StartJob(node.getBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false), 
+				node.getBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true));
+		job.setSystem(true);
+		job.setPriority(Job.INTERACTIVE);
+		job.schedule();
 	}
 	
 	/**

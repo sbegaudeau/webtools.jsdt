@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,10 @@ import java.net.URI;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
-import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
-import org.eclipse.wst.jsdt.debug.core.model.IScript;
+import org.eclipse.debug.core.sourcelookup.ISourceContainer;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
@@ -41,13 +36,7 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant#getSourceName(java.lang.Object)
 	 */
 	public String getSourceName(Object object) throws CoreException {
-		if (object instanceof IJavaScriptStackFrame) {
-			return ((IJavaScriptStackFrame) object).getSourceName();
-		}
-		if(object instanceof IScript) {
-			return URIUtil.lastSegment(((IScript)object).sourceURI());
-		}
-		return null;
+		return SourceLookup.getSourceName(object);
 	}
 
 	/*
@@ -56,26 +45,29 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 	 * @see org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant#findSourceElements(java.lang.Object)
 	 */
 	public Object[] findSourceElements(Object object) throws CoreException {
-		URI sourceURI = SourceLookup.getSourceURI(object);
-		if (sourceURI != null) {
-			IFile file = (IFile) sourcemap.get(sourceURI);
-			if(file != null && file.exists()) {
-				return new IFile[] { file };
+		ISourceContainer[] containers = getSourceContainers();
+		if(containers != null && containers.length > 0) {
+			String name = getSourceName(object);
+			if(name == null) {
+				return NO_SOURCE;
 			}
-			if (!sourceURI.isAbsolute() || "file".equals(sourceURI.getScheme())) {//$NON-NLS-1$
-				IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-				URI workspaceURI = workspaceRoot.getRawLocationURI();			
-				URI workspaceRelativeURI = workspaceURI.relativize(sourceURI);
-				if (! workspaceRelativeURI.isAbsolute()) {
-					file = (IFile) workspaceRoot.findMember(new Path(workspaceRelativeURI.getPath()), false);
-					if (file != null) {
-						sourcemap.put(sourceURI, file);
-						return new IFile[] { file };
-					}
+			Object[] sources = null;
+			for (int i = 0; i < containers.length; i++) {
+				sources = containers[i].findSourceElements(name);
+				if(sources != null && sources.length > 0) {
+					return sources;
 				}
 			}
-			//else show the temp source
-			return showExternalSource(sourceURI, object);
+			//did not find anything in the source look up path, create the source
+			//in the external source project and show it
+			URI sourceURI = SourceLookup.getSourceURI(object);
+			if (sourceURI != null) {
+				IFile file = (IFile) sourcemap.get(sourceURI);
+				if(file != null && file.exists()) {
+					return new IFile[] { file };
+				}
+				return showExternalSource(sourceURI, object);
+			}
 		}
 		return NO_SOURCE;
 	}

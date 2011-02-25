@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,6 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
-import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 import org.eclipse.wst.jsdt.debug.internal.ui.DebugWCManager;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
@@ -141,44 +140,8 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @return the path to the script 
 	 */
 	String getScriptPath(IJavaScriptElement element) {
-		IPath path  = getElementScriptPath(element).makeRelative();
-		if(JavaScriptDebugPlugin.isExternalSource(path)) {
-			String extpath = (JavaScriptDebugPlugin.getExternalScriptPath(path.removeFirstSegments(1)));
-			if(extpath != null) {
-				return extpath;
-			}
-		}
-		return path.toString();
-	}
-
-	private IPath getElementScriptPath(IJavaScriptElement element) {
-		switch (element.getElementType()) {
-		case IJavaScriptElement.TYPE: {
-			return ((IType) element).getPath();
-		}
-		case IJavaScriptElement.METHOD:
-		case IJavaScriptElement.FIELD: {
-			IMember member = (IMember) element;
-			IType type = member.getDeclaringType();
-			if (type == null) {
-				IJavaScriptElement parent = element.getParent();
-				switch (parent.getElementType()) {
-				case IJavaScriptElement.TYPE: {
-					return ((IType) parent).getPath();
-				}
-				case IJavaScriptElement.JAVASCRIPT_UNIT:
-				case IJavaScriptElement.CLASS_FILE: {
-					return ((ITypeRoot) parent).getPath();
-				}
-				}
-				return element.getParent().getPath();
-			}
-			return type.getPath();
-		}
-		default: {
-			return element.getPath();
-		}
-		}
+		IPath path = element.getPath();
+		return path.makeAbsolute().toString();
 	}
 	
 	/**
@@ -400,6 +363,10 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             	return;
             }
 			JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(root, ASTProvider.WAIT_YES, null);
+			if(jsunit.getProblems().length > 0) {
+				reportToStatusLine(part, Messages.script_error_toggling_bp);
+				return;
+			}
 			BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, ((TextSelection)selection).getStartLine()+1, false);
 			jsunit.accept(finder);
 			switch(finder.getLocation()) {

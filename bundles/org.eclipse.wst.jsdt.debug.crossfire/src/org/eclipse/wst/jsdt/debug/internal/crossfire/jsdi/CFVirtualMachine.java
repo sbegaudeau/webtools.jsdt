@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -530,12 +530,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 					}
 					if(url != null) {
 						CFScriptReference script = findScript(url);
-						CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, script.context());
-						request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-						request.setArgument(Attributes.TARGET, script.id());
-						CFResponsePacket response = sendRequest(request);
-						if(!response.isSuccess() && TRACE) {
-							Tracing.writeString("[failed setbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+						if(script != null) {
+							CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, script.context());
+							request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
+							request.setArgument(Attributes.TARGET, script.id());
+							CFResponsePacket response = sendRequest(request);
+							if(!response.isSuccess() && TRACE) {
+								Tracing.writeString("[failed setbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+							}
 						}
 					}
 				}
@@ -562,12 +564,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 					}
 					if(url != null) {
 						CFScriptReference script = findScript(url);
-						CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
-						request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-						request.setArgument(Attributes.TARGET, script.id());
-						CFResponsePacket response = sendRequest(request);
-						if(!response.isSuccess() && TRACE) {
-							Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+						if(script != null) {
+							CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
+							request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
+							request.setArgument(Attributes.TARGET, script.id());
+							CFResponsePacket response = sendRequest(request);
+							if(!response.isSuccess() && TRACE) {
+								Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+							}
 						}
 					}
 				}

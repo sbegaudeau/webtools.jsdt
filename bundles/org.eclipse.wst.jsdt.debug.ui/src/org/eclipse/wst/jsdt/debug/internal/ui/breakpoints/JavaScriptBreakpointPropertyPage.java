@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,14 +190,15 @@ public class JavaScriptBreakpointPropertyPage extends PropertyPage {
 	protected void createLabels(Composite parent) {
 		Composite labelComposite = SWTFactory.createComposite(parent, 2, 1, GridData.FILL_HORIZONTAL);
 		try {
-			String name = getBreakpoint().getTypeName();
+			IJavaScriptBreakpoint bp = getBreakpoint();
+			String name = bp.getTypeName();
 			if (name != null) {
 				SWTFactory.createLabel(labelComposite, Messages.type_name, 1); 
 				Text text = SWTFactory.createText(labelComposite, SWT.READ_ONLY | SWT.SINGLE, 1, GridData.FILL_HORIZONTAL);
 				text.setText(name);
 				text.setBackground(parent.getBackground());
 			}
-			name = getBreakpoint().getScriptPath();
+			name = bp.getScriptPath();
 			if(name != null) {
 				SWTFactory.createLabel(labelComposite, Messages.script_path, 1);
 				Text text = SWTFactory.createText(labelComposite, SWT.READ_ONLY, 1, GridData.FILL_HORIZONTAL);

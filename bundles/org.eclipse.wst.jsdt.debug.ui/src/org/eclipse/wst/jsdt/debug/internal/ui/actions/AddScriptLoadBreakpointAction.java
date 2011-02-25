@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,7 @@ public class AddScriptLoadBreakpointAction implements IViewActionDelegate {
 			if(dialog.open() == IDialogConstants.OK_ID) {
 				final IFile file = (IFile) dialog.getFirstResult();
 				final String scriptname = file.getName();
-				final String scriptpath = file.getFullPath().makeRelative().toString();
+				final String scriptpath = file.getProjectRelativePath().makeAbsolute().toString();
 				
 				IJavaScriptLoadBreakpoint breakpoint = findBreakpoint(scriptpath, scriptname);
 				if(breakpoint != null) {

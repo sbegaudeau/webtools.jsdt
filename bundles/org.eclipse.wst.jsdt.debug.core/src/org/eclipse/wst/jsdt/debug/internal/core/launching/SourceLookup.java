@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,24 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 public final class SourceLookup {
 
 	/**
+	 * Returns the name of the source object to lookup or <code>null</code>
+	 * if the object is not a {@link IJavaScriptStackFrame} or an {@link IScript}
+	 * 
+	 * @param object the object to look up source for
+	 * @return the name of the source element to look up or <code>null</code>
+	 * @since 1.1
+	 */
+	public static String getSourceName(Object object) {
+		if (object instanceof IJavaScriptStackFrame) {
+			return ((IJavaScriptStackFrame) object).getSourceName();
+		}
+		if(object instanceof IScript) {
+			return URIUtil.lastSegment(((IScript)object).sourceURI());
+		}
+		return null;
+	}
+	
+	/**
 	 * Returns the raw element source to use to display an external editor. This method 
 	 * will make a request from the backing {@link VirtualMachine}.
 	 * 
@@ -66,7 +84,12 @@ public final class SourceLookup {
 		if(sourceobj instanceof IJavaScriptStackFrame) {
 			IJavaScriptStackFrame jframe = (IJavaScriptStackFrame) sourceobj;
 			try {
-				return URIUtil.fromString(jframe.getSourcePath());
+				try {
+					return new URI(jframe.getSourcePath());
+				}
+				catch (URISyntaxException use) {
+					return URIUtil.fromString(jframe.getSourcePath());
+				}
 			} catch (URISyntaxException e) {
 				JavaScriptDebugPlugin.log(e);
 			}
@@ -90,15 +113,7 @@ public final class SourceLookup {
 		String source = getSource(sourceobj);
 		if(source != null) {
 			IProject project = JavaScriptDebugPlugin.getExternalSourceProject(true);
-			String uripath = sourceuri.getPath();
-			if(uripath == null) {
-				return null;
-			}
-			if(uripath.trim().equals("/")) { //$NON-NLS-1$
-				uripath = "page.js"; //$NON-NLS-1$
-			}
-			IPath path = new Path(sourceuri.getHost()).append(uripath);
-			path = adjustPath(path);
+			IPath path = getSourcePath(sourceuri);
 			IFile file = project.getFile(path);
 			if(!file.isAccessible()) {
 				IContainer folder = project;
@@ -117,6 +132,28 @@ public final class SourceLookup {
 			return file;
 		}
 		return null;
+	}
+	
+	public static IPath getSourcePath(URI sourceuri) {
+		String uripath = sourceuri.getPath();
+		if(uripath == null) {
+			return null;
+		}
+		if(uripath.trim().equals("/")) { //$NON-NLS-1$
+			uripath = "page.js"; //$NON-NLS-1$
+		}
+		String host = sourceuri.getHost();
+		IPath path = null;
+		if(host != null) {
+			path = new Path(host);	
+		}
+		if(path == null) {
+			path = new Path(uripath);
+		}
+		else {
+			path = path.append(uripath);
+		}
+		return adjustPath(path);
 	}
 	
 	/**

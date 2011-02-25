@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.model.Breakpoint;
@@ -42,6 +43,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.Messages;
+import org.eclipse.wst.jsdt.debug.internal.core.launching.SourceLookup;
 import org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptThread;
@@ -129,7 +132,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		DebugPlugin plugin = DebugPlugin.getDefault();
 		return plugin != null && isRegistered() && !plugin.getBreakpointManager().isEnabled();
 	}
-
+	
 	/**
 	 * Adds the given debug target to the listing of targets that this breakpoint cares about
 	 * 
@@ -444,7 +447,14 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			URI workspaceURI = workspaceRoot.getRawLocationURI();			
 			sourceURI = workspaceURI.relativize(sourceURI);
 		}
-		return getScriptPath().equals(sourceURI.toString());
+		String path = getScriptPath();
+		IPath spath = new Path(path);
+		if(spath.segment(0).equals(Messages.external_javascript_source)) {
+			spath = spath.removeFirstSegments(1).makeAbsolute();
+		}
+		//XXX use the same algorithm we use to save the source to 'encode' the source URI for comparison
+		IPath uripath = SourceLookup.getSourcePath(sourceURI).makeAbsolute();
+		return uripath != null && spath.equals(uripath);
 	}
 
 	/**

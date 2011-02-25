@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2009, 2011 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -150,8 +150,10 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 				//recycle the id for a re-loaded script
 				//https://bugs.eclipse.org/bugs/show_bug.cgi?id=306832
 				id = old.getId();
-				idToScript.remove(old.getId());
-				newscript.clone(old);
+				idToScript.remove(id);
+				newscript.setId(id);
+				//clean up the cache of breakpoints
+				old.clearBreakpoints(this);
 			}
 			else {
 				//a totally new script is loaded
@@ -488,7 +490,7 @@ public class RhinoDebuggerImpl implements Debugger, ContextFactory.Listener {
 	}
 
 	/**
-	 * Gets the thread for the thread with the given id, returns <code>null</code> if no such thread exists with the goven id
+	 * Gets the thread for the thread with the given id, returns <code>null</code> if no such thread exists with the given id
 	 * 
 	 * @param threadId
 	 * @return the thread data for the thread with the given id or <code>null</code>

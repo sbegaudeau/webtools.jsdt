@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugException;
@@ -331,8 +332,8 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 */
 	String getLineBreakpointText(IJavaScriptLineBreakpoint breakpoint) throws CoreException {
 		String path = getElementPath(breakpoint.getScriptPath());
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(path).append(NLS.bind(Messages.bp_line_number, new String[] {Integer.toString(breakpoint.getLineNumber())}));
+		StringBuffer buffer = new StringBuffer(path);
+		buffer.append(NLS.bind(Messages.bp_line_number, new String[] {Integer.toString(breakpoint.getLineNumber())}));
 		int hitcount = breakpoint.getHitCount();
 		if(hitcount > 0) {
 			buffer.append(NLS.bind(Messages.bp_hit_count, new String[] {Integer.toString(hitcount)}));
@@ -354,8 +355,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 */
 	String getFunctionBreakpointText(IJavaScriptFunctionBreakpoint breakpoint) throws CoreException {
 		String path = getElementPath(breakpoint.getScriptPath());
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(path);
+		StringBuffer buffer = new StringBuffer(path);
 		if(breakpoint.isEntry()) {
 			if(breakpoint.isExit()) {
 				buffer.append(Messages.bp_entry_and_exit);
@@ -390,8 +390,7 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 */
 	String getScriptLoadBreakpointText(IJavaScriptLoadBreakpoint breakpoint) throws CoreException {
 		String path = getElementPath(breakpoint.getScriptPath());
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(path);
+		StringBuffer buffer = new StringBuffer(path);
 		int hitcount = breakpoint.getHitCount();
 		if(hitcount > 0) {
 			buffer.append(NLS.bind(Messages.bp_hit_count, new String[] {Integer.toString(hitcount)}));
@@ -531,8 +530,9 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 		if(element instanceof IJavaScriptLoadBreakpoint) {
 			try {
 				IJavaScriptLoadBreakpoint bp = (IJavaScriptLoadBreakpoint) element;
-				IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(new Path(bp.getScriptPath()));
-				if(resource.getType() == IResource.FILE) {
+				IPath path = new Path(bp.getScriptPath());
+				IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+				if(resource != null && resource.getType() == IResource.FILE) {
 					return new FileEditorInput((IFile) resource);
 				}
 			}

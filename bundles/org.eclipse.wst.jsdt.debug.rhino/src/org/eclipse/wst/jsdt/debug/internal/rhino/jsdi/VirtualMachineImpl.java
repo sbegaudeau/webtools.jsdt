@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -125,11 +125,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @param script
 	 */
 	public synchronized ScriptReferenceImpl addScript(Long scriptId) {
-		ScriptReferenceImpl script = (ScriptReferenceImpl) scripts.get(scriptId);
-		if (script != null) {
-			return script;
-		}
-		script = createScriptReference(scriptId);
+		ScriptReferenceImpl script = createScriptReference(scriptId);
 		if (script != null) {
 			scripts.put(scriptId, script);
 		}
