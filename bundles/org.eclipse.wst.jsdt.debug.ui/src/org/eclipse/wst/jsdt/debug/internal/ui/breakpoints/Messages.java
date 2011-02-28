@@ -44,7 +44,6 @@ public class Messages extends NLS {
 	public static String member;
 	public static String no_editor_could_be_found;
 	public static String no_valid_location;
-	public static String script_error_toggling_bp;
 	public static String script_load_bp;
 	public static String script_load_breakpoint;
 	public static String script_path;

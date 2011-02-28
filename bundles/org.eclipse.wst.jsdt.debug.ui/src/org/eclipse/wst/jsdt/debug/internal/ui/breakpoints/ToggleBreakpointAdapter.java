@@ -363,10 +363,6 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             	return;
             }
 			JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(root, ASTProvider.WAIT_YES, null);
-			if(jsunit.getProblems().length > 0) {
-				reportToStatusLine(part, Messages.script_error_toggling_bp);
-				return;
-			}
 			BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, ((TextSelection)selection).getStartLine()+1, false);
 			jsunit.accept(finder);
 			switch(finder.getLocation()) {
