@@ -348,7 +348,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		if(selection instanceof ITextSelection) {
 			ITextEditor textEditor = getTextEditor(part);
 			if(textEditor == null) {
-				reportToStatusLine(part, Messages.no_valid_location);
+				reportToStatusLine(part, Messages.no_editor_could_be_found);
 				return;
 			}
 			ITypeRoot root = getTypeRoot(textEditor.getEditorInput());
@@ -359,7 +359,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
                 }
             }
             if(root == null) {
-            	reportToStatusLine(part, Messages.no_valid_location);
+            	reportToStatusLine(part, Messages.type_root_could_not_be_computed);
             	return;
             }
 			JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(root, ASTProvider.WAIT_YES, null);

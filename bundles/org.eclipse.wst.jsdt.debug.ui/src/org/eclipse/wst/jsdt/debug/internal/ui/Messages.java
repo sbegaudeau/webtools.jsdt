@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,7 +36,6 @@ public class Messages extends NLS {
 	public static String enter_new_hit_count;
 	public static String evald_script;
 	public static String exception_occurred_setting_bp_properties;
-	public static String external_javascript_source;
 	public static String hit_count_must_be_positive;
 	public static String no_description_provided;
 	public static String opening_source__0;
