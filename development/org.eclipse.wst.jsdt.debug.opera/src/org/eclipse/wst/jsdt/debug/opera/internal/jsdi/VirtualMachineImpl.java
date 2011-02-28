@@ -28,6 +28,7 @@ import com.opera.core.scope.MessageCallback;
 import com.opera.core.scope.ProtocolFormat;
 import com.opera.core.scope.ScopeClient;
 import com.opera.core.scope.ScopeErrorException;
+import com.opera.core.systems.scope.protos.ScopeProtos;
 import com.opera.core.systems.scope.protos.UmsProtos.Command;
 
 /**
@@ -97,8 +98,14 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#version()
 	 */
 	public String version() {
-		//TODO send version request
-		return null;
+		StringBuffer buff = new StringBuffer("stp: "); //$NON-NLS-1$
+		ScopeProtos.HostInfo.Builder b = ScopeProtos.HostInfo.newBuilder(); 
+		buff.append(Integer.toString(b.getStpVersion())).append(" "); //$NON-NLS-1$
+		buff.append("core: ").append(b.getCoreVersion()); //$NON-NLS-1$
+		buff.append("agent: ").append(b.getUserAgent()); //$NON-NLS-1$
+		buff.append("plat: ").append(b.getPlatform()); //$NON-NLS-1$
+		buff.append("os: ").append(b.getOperatingSystem()); //$NON-NLS-1$
+		return buff.toString();
 	}
 
 	/* (non-Javadoc)
@@ -125,6 +132,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 		Command.Builder command = Command.newBuilder();
 		command.setCommandID(ESDebuggerCommand.LIST_RUNTIMES.getId());
 		command.setFormat(ProtocolFormat.JSON.getValue().intValue());
+		
 		command.setPayload(ByteString.EMPTY);
 		command.setService(ESDebuggerCommand.LIST_RUNTIMES.getName());
         command.setTag(client.getNextTag());

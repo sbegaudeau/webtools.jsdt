@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ public class Messages extends NLS {
 	public static String failed_to_attach_to_auto_browser;
 	public static String host_arg_desc;
 	public static String host_arg_name;
-	public static String only_localhost_is_supported;
 	public static String port_arg_desc;
 	public static String port_arg_name;
 	public static String pre_3_support_desc;

@@ -18,7 +18,6 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.opera.internal.jsdi.messages"; //$NON-NLS-1$
 	public static String vm_desc;
-	public static String vm_name;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
