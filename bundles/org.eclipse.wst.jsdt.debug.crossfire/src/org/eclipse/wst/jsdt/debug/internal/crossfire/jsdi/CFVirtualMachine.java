@@ -314,7 +314,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		if(scripts == null) {
 			allScripts();
 		}
-		CFScriptReference script = (CFScriptReference) scripts.get(id);
+		CFScriptReference script = null;
+		if(scripts != null) {
+			//the scripts collection can be null after a call to allScripts()
+			//when the remote target had no scripts loaded. In this case
+			//we do not keep the initialized collection so that any successive 
+			//calls the this method or allScripts will cause the remote target 
+			//to be asked for all of its scripts
+			script = (CFScriptReference) scripts.get(id);
+		}
 		//if we find we have a script id that is not cached, we should try a lookup + add in the vm
 		if(script == null) {
 			if(TRACE) {
