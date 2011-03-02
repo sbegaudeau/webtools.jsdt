@@ -134,6 +134,19 @@ public final class SourceLookup {
 		return null;
 	}
 	
+	/**
+	 * Returns the source path from the given source {@link URI}. 
+	 * <br>
+	 * This path may be altered as follows:
+	 * <ul>
+	 * <li>if the URI path is only a root ('/') than the returned path is changed to 'page.js'</li>
+	 * <li>if the source URI has a host specification, it is added to the beginning of the source path</li>
+	 * <li>if the total character count of any one segment of the path exceeds 15 chars, the path is pruned to avoid 
+	 * going over the windows 255 char path limit</li>
+	 * </ul>
+	 * @param sourceuri
+	 * @return the {@link IPath} to use to represent the given source {@link URI}
+	 */
 	public static IPath getSourcePath(URI sourceuri) {
 		String uripath = sourceuri.getPath();
 		if(uripath == null) {
