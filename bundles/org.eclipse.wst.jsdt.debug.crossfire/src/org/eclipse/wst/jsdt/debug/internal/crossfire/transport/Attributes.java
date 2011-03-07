@@ -29,6 +29,10 @@ public interface Attributes {
 	 * The type "boolean"
 	 */
 	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
+ 	/**
+	 * The "breakpoint" attribute
+	 */
+	public static final String BREAKPOINT = "breakpoint"; //$NON-NLS-1$
 	/**
 	 * The "columnOffset" attribute
 	 */
@@ -65,7 +69,10 @@ public interface Attributes {
 	 * The "data" attribute
 	 */
 	public static final String DATA = "data"; //$NON-NLS-1$
-	
+	/**
+	 * The "enabled" argument
+	 */
+	public static final String ENABLED = "enabled"; //$NON-NLS-1$
 	/**
 	 * The "expression" attribute
 	 */
@@ -143,6 +150,10 @@ public interface Attributes {
 	 */
 	public static final String LOCALS = "locals"; //$NON-NLS-1$
 	/**
+	* The "location" attribute
+	*/
+	public static final String LOCATION = "location"; //$NON-NLS-1$
+	/**
 	 * The message attribute for this packet
 	 */
 	public static final String MESSAGE = "message"; //$NON-NLS-1$
@@ -207,10 +218,6 @@ public interface Attributes {
 	 * The success attribute for this packet
 	 */
 	public static final String SUCCESS = "success"; //$NON-NLS-1$
-	/**
-	 * The "target" argument
-	 */
-	public static final String TARGET = "target"; //$NON-NLS-1$
 	/**
 	 * The "this" attribute
 	 */

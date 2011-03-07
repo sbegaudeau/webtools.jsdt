@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,12 +20,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointListener;
+import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
@@ -67,6 +72,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	
 	private Map threads = null;
 	private Map scripts = null;
+	private Map breakpointHandles = new HashMap();
 	
 	/**
 	 * Constructor
@@ -76,7 +82,19 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	public CFVirtualMachine(DebugSession session) {
 		super();
 		this.session = session;
-		DebugPlugin.getDefault().getBreakpointManager().addBreakpointListener(this);
+		IBreakpointManager bpManager = DebugPlugin.getDefault().getBreakpointManager();
+		bpManager.addBreakpointListener(this);
+
+		/* add all JS breakpoints to the server's global breakpoints table */
+		IBreakpoint[] breakpoints = bpManager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
+		for (int i = 0; i < breakpoints.length; i++) {
+			IBreakpoint breakpoint = breakpoints[i];
+			if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
+				if (breakpoint instanceof IJavaScriptLineBreakpoint) {
+					setLineBreakpoint((IJavaScriptLineBreakpoint) breakpoint, true);
+				}
+			}
+		}
 	}
 
 	/**
@@ -526,33 +544,63 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointAdded(org.eclipse.debug.core.model.IBreakpoint)
 	 */
 	public void breakpointAdded(IBreakpoint breakpoint) {
-		//TODO this will never work unless we map original URL to workspace source
-		if(JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
-			if(breakpoint instanceof IJavaScriptLineBreakpoint) {
+		if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
+			if (breakpoint instanceof IJavaScriptLineBreakpoint) {
 				IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-				try {
-					String path = bp.getScriptPath();
-					String url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
-					if(url == null) {
-						url = path;
-					}
-					if(url != null) {
-						CFScriptReference script = findScript(url);
-						if(script != null) {
-							CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, script.context());
-							request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-							request.setArgument(Attributes.TARGET, script.id());
-							CFResponsePacket response = sendRequest(request);
-							if(!response.isSuccess() && TRACE) {
-								Tracing.writeString("[failed setbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
-							}
-						}
-					}
-				}
-				catch(CoreException ce) {
-					CrossFirePlugin.log(ce);
+				/*
+				 * Currently breakpoints are always set on the global context,
+				 * which is applied to subsequent loads of the breakpoint's url.
+				 */
+				setLineBreakpoint(bp, true);
+	
+				/* If a live script is found for this breakpoint then set it there too */
+				setLineBreakpoint(bp, false);
+			}
+	 	}
+	}
+
+	void setLineBreakpoint(IJavaScriptLineBreakpoint bp, boolean global) {
+		IResource resource = bp.getMarker().getResource();
+		QualifiedName qName = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+		try {
+			String url = resource.getPersistentProperty(qName);
+			if (url == null) {
+				String path = bp.getScriptPath();
+				url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
+				if (url == null) {
+					return;
 				}
 			}
+
+			String contextId = null;
+			if (!global) {
+				CFScriptReference script = findScript(url);
+				if (script == null) {
+					return;
+				}
+				contextId = script.context();
+			}
+
+			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, contextId);
+			request.setArgument(Attributes.TYPE, Attributes.LINE);
+			Map location = new HashMap();
+			location.put(Attributes.LINE, new Integer(bp.getLineNumber()));
+			location.put(Attributes.URL, url);
+			request.setArgument(Attributes.LOCATION, location);
+			if (bp.isConditionEnabled() && bp.getCondition() != null) {
+				request.setArgument(Attributes.CONDITION, bp.getCondition());	
+			}
+			request.setArgument(Attributes.ENABLED, bp.isEnabled() ? Boolean.TRUE : Boolean.FALSE);
+			CFResponsePacket response = sendRequest(request);
+			if (response.isSuccess()) {
+				Map bpMap = (Map)response.getBody().get(Attributes.BREAKPOINT);
+				int handle = ((BigDecimal)bpMap.get(Attributes.HANDLE)).intValue();
+				breakpointHandles.put(bp, new Integer(handle));
+			} else if(TRACE) {
+				Tracing.writeString("[failed setbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		} catch(CoreException ce) {
+			CrossFirePlugin.log(ce);
 		}
 	}
 
@@ -560,67 +608,116 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointRemoved(org.eclipse.debug.core.model.IBreakpoint, org.eclipse.core.resources.IMarkerDelta)
 	 */
 	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta) {
-		//TODO this will never work unless we map original URL to workspace source
-		if(JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
-			if(breakpoint instanceof IJavaScriptLineBreakpoint) {
+		if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
+			if (breakpoint instanceof IJavaScriptLineBreakpoint) {
 				IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-				try {
-					String path = bp.getScriptPath();
-					String url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
-					if(url == null) {
-						url = path;
-					}
-					if(url != null) {
-						CFScriptReference script = findScript(url);
-						if(script != null) {
-							CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
-							request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-							request.setArgument(Attributes.TARGET, script.id());
-							CFResponsePacket response = sendRequest(request);
-							if(!response.isSuccess() && TRACE) {
-								Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
-							}
-						}
-					}
-				}
-				catch(CoreException ce) {
-					CrossFirePlugin.log(ce);
-				}
+
+				/*
+				 * Currently breakpoints are always cleared from the global context,
+				 * which is applied to subsequent loads of the breakpoint's url.
+				 */
+				clearBreakpoint(bp, true);
+
+				/* If a live script is found for this breakpoint then clear it there too */
+				clearBreakpoint(bp, false);
 			}
 		}
 	}
+
+	void clearBreakpoint(IJavaScriptLineBreakpoint bp, boolean global) {
+		Integer handle = (Integer)breakpointHandles.get(bp);
+		if (handle == null) {
+			return;
+		}
+
+		try {
+			String contextId = null;
+			if (!global) {
+				IResource resource = bp.getMarker().getResource();
+				QualifiedName qName = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+				String url = resource.getPersistentProperty(qName);
+				if (url == null) {
+					String path = bp.getScriptPath();
+					url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
+					if (url == null) {
+						return;
+					}
+				}
+
+				CFScriptReference script = findScript(url);
+				if (script == null) {
+					return;
+				}
+				contextId = script.context();
+			}
+
+			CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, contextId);
+			request.setArgument(Attributes.HANDLE, handle);
+			CFResponsePacket response = sendRequest(request);
+			if (!response.isSuccess()) {
+				breakpointHandles.remove(bp);
+			} else if (TRACE) {
+				Tracing.writeString("[failed clearbreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		} catch(CoreException ce) {
+			CrossFirePlugin.log(ce);
+		}
+	}			
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.core.IBreakpointListener#breakpointChanged(org.eclipse.debug.core.model.IBreakpoint, org.eclipse.core.resources.IMarkerDelta)
 	 */
 	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
-		//TODO this will never work unless we map original URL to workspace source
-		if(delta.getKind() == IResourceDelta.CHANGED && JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
+		if (delta.getKind() == IResourceDelta.CHANGED && JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
 			IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
-			try {
-				String path = bp.getScriptPath();
-				String url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
-				if(url == null) {
-					url = path;
-				}
-				if(url != null) {
-					CFScriptReference script = findScript(url);
-					if(script != null) {
-						CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, script.context());
-						request.setArgument(Attributes.LINE, new Integer(bp.getLineNumber()));
-						request.setArgument(Attributes.TARGET, script.id());
-						String cn = bp.getCondition();
-						request.setArgument(Attributes.CONDITION, (cn == null ? "" : cn)); //$NON-NLS-1$
-						CFResponsePacket response = sendRequest(request);
-						if(!response.isSuccess() && TRACE) {
-							Tracing.writeString("[failed changebreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
-						}
+			/*
+			 * Currently breakpoints are always changed in the global context,
+			 * which is applied to subsequent loads of the breakpoint's url.
+			 */
+			changeBreakpoint(bp, true);
+
+			/* If a live script is found for this breakpoint then change it there too */
+			changeBreakpoint(bp, false);
+		}
+	}
+
+	void changeBreakpoint(IJavaScriptLineBreakpoint bp, boolean global) {
+		Integer handle = (Integer)breakpointHandles.get(bp);
+		if (handle == null) {
+			return;
+		}
+
+		try {
+			String contextId = null;
+			if (!global) {
+				IResource resource = bp.getMarker().getResource();
+				QualifiedName qName = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+				String url = resource.getPersistentProperty(qName);
+				if (url == null) {
+					String path = bp.getScriptPath();
+					url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
+					if (url == null) {
+						return;
 					}
 				}
+
+				CFScriptReference script = findScript(url);
+				if (script == null) {
+					return;
+				}
+				contextId = script.context();
 			}
-			catch(CoreException ce) {
-				CrossFirePlugin.log(ce);
+
+			CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, contextId);
+			request.setArgument(Attributes.HANDLE, handle);
+			request.setArgument(Attributes.ENABLED, bp.isEnabled() ? Boolean.TRUE : Boolean.FALSE);
+			request.setArgument(Attributes.CONDITION, bp.isConditionEnabled() ? bp.getCondition() : null);
+			CFResponsePacket response = sendRequest(request);
+			if (!response.isSuccess() && TRACE) {
+				Tracing.writeString("[failed changebreakpoint request] "+JSON.serialize(request)); //$NON-NLS-1$
 			}
+		} catch(CoreException ce) {
+			CrossFirePlugin.log(ce);
 		}
 	}
 }

@@ -111,14 +111,11 @@ public class CFRequestPacket extends CFPacket implements Request {
 	 * Sets the given argument in the JSON map.
 	 * 
 	 * @param key the key for the attribute, <code>null</code> is not accepted
-	 * @param argument the value for the argument, <code>null</code> is not accepted
+	 * @param argument the value for the argument
 	 */
 	public void setArgument(String key, Object argument) {
 		if(key == null) {
 			throw new IllegalArgumentException("The argument key cannot be null"); //$NON-NLS-1$
-		}
-		if(argument == null) {
-			throw new IllegalArgumentException("A null argument is not allowed"); //$NON-NLS-1$
 		}
 		arguments.put(key, argument);
 	}

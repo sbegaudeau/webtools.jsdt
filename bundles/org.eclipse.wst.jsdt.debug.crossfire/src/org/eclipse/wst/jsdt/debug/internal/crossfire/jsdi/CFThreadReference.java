@@ -277,7 +277,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 			switch(stepkind) {
 				case StepRequest.STEP_INTO: return Commands.STEP_IN;
 				case StepRequest.STEP_OUT: return Commands.STEP_OUT;
-				case StepRequest.STEP_OVER: return Commands.STEP_OVER;
+				case StepRequest.STEP_OVER: return Commands.STEP_NEXT;
 			}
 		}
 		return null;
