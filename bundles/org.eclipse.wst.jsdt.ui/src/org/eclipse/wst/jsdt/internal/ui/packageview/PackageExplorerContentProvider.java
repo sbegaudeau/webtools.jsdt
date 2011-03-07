@@ -1127,12 +1127,10 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				}
 				return false;				
 			}
-			// if added it could be that the corresponding IProject is already shown. Remove it first.
-			// bug 184296
-			if (kind == IJavaScriptElementDelta.ADDED) { 
-				postRemove(element.getResource(), runnables);
-				postAdd(element.getParent(), element, runnables);
-				return false;
+			// refresh just like on removal
+			if (kind == IJavaScriptElementDelta.ADDED) {
+				postRefresh(element, PARENT, element, runnables);
+				return true;
 			}
 		}
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.packageview;
 
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.ui.navigator.JavaNavigatorContentProvider;
 
 public class ScriptExplorerContentProvider extends JavaNavigatorContentProvider {
@@ -22,10 +27,27 @@ public class ScriptExplorerContentProvider extends JavaNavigatorContentProvider 
 	public ScriptExplorerContentProvider(boolean provideMembers) {
 		super(provideMembers);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider#augmentElementToRefresh(java.util.List, int, java.lang.Object)
+	 */
+	protected void augmentElementToRefresh(List toRefresh, int relation, Object affectedElement) {
+		if (affectedElement instanceof IJavaScriptProject && relation == PARENT) {
+			toRefresh.add(((IJavaScriptProject) affectedElement).getParent());
+		}
+		super.augmentElementToRefresh(toRefresh, relation, affectedElement);
+	}
 
 	public void dispose() {
 		fResourceProvider.dispose();
 		super.dispose();
+	}
+	
+	public Object[] getElements(Object inputElement) {
+		if (inputElement instanceof IProject || inputElement instanceof IFile) {
+			return concatenate(super.getChildren(inputElement), fResourceProvider.getChildren(inputElement));
+		}
+		return super.getElements(inputElement);
 	}
 
 	public Object[] getChildren(Object parentElement) {
