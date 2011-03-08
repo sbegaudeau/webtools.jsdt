@@ -101,7 +101,7 @@ public final class EventDispatcher implements Runnable {
 					} catch (DebugException e) {
 						JavaScriptDebugPlugin.log(e);
 					}
-					JavaScriptDebugPlugin.log(rte);
+					//JavaScriptDebugPlugin.log(rte);
 				}
 			}
 		}
