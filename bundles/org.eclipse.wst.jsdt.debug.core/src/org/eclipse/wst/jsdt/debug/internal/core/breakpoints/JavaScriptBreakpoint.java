@@ -453,8 +453,11 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			spath = spath.removeFirstSegments(1).makeAbsolute();
 		}
 		//XXX use the same algorithm we use to save the source to 'encode' the source URI for comparison
-		IPath uripath = SourceLookup.getSourcePath(sourceURI).makeAbsolute();
-		return uripath != null && spath.equals(uripath);
+		IPath uripath = SourceLookup.getSourcePath(sourceURI);
+		if(uripath != null) {
+			uripath = uripath.makeAbsolute();
+		}
+		return spath.equals(uripath);
 	}
 
 	/**
