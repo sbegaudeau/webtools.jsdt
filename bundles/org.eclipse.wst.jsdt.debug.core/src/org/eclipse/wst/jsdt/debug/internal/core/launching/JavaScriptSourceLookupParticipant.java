@@ -50,14 +50,13 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 		ISourceContainer[] containers = getSourceContainers();
 		if(containers != null && containers.length > 0) {
 			String name = getSourceName(object);
-			if(name == null) {
-				return NO_SOURCE;
-			}
-			Object[] sources = null;
-			for (int i = 0; i < containers.length; i++) {
-				sources = containers[i].findSourceElements(name);
-				if(sources != null && sources.length > 0) {
-					return sources;
+			if(name != null) {
+				Object[] sources = null;
+				for (int i = 0; i < containers.length; i++) {
+					sources = containers[i].findSourceElements(name);
+					if(sources != null && sources.length > 0) {
+						return sources;
+					}
 				}
 			}
 			//did not find anything in the source look up path, create the source
