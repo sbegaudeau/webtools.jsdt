@@ -92,7 +92,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public BreakpointRequest createBreakpointRequest(Location location) {
 		CFBreakpointRequest request = new CFBreakpointRequest(vm, location);
-		request.setEnabled(true);
 		breakpoints.add(request);
 		return request;
 	}
@@ -109,7 +108,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public DebuggerStatementRequest createDebuggerStatementRequest() {
 		CFDebuggerRequest request = new CFDebuggerRequest(vm);
-		request.setEnabled(true);
 		debuggers.add(request);
 		return request;
 	}
@@ -126,7 +124,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public ExceptionRequest createExceptionRequest() {
 		CFExceptionRequest request = new CFExceptionRequest(vm);
-		request.setEnabled(true);
 		exceptions.add(request);
 		return request;
 	}
@@ -143,7 +140,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public ScriptLoadRequest createScriptLoadRequest() {
 		CFScriptLoadRequest request = new CFScriptLoadRequest(vm);
-		request.setEnabled(true);
 		loads.add(request);
 		return request;
 	}
@@ -160,7 +156,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public StepRequest createStepRequest(ThreadReference thread, int step) {
 		CFStepRequest request = new CFStepRequest(vm, thread, step);
-		request.setEnabled(true);
 		steps.add(request);
 		return request; 
 	}
@@ -178,7 +173,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public SuspendRequest createSuspendRequest(ThreadReference thread) {
 		CFSuspendRequest request = new CFSuspendRequest(vm, thread);
-		request.setEnabled(true);
 		suspends.add(request);
 		return request;
 	}
@@ -195,7 +189,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public ResumeRequest createResumeRequest(ThreadReference thread) {
 		CFResumeRequest request = new CFResumeRequest(vm, thread);
-		request.setEnabled(true);
 		resumes.add(request);
 		return request;
 	}
@@ -212,7 +205,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public ThreadEnterRequest createThreadEnterRequest() {
 		CFThreadEnterRequest request = new CFThreadEnterRequest(vm);
-		request.setEnabled(true);
 		threadenters.add(request);
 		return request;
 	}
@@ -229,7 +221,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public ThreadExitRequest createThreadExitRequest() {
 		CFThreadExitRequest request = new CFThreadExitRequest(vm);
-		request.setEnabled(true);
 		threadexits.add(request);
 		return request;
 	}
@@ -266,7 +257,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public VMDeathRequest createVMDeathRequest() {
 		CFDeathRequest request = new CFDeathRequest(vm);
-		request.setEnabled(true);
 		deaths.add(request);
 		return request;
 	}
@@ -283,7 +273,6 @@ public class CFEventRequestManager implements EventRequestManager {
 	 */
 	public VMDisconnectRequest createVMDisconnectRequest() {
 		CFDisconnectRequest request = new CFDisconnectRequest(vm);
-		request.setEnabled(true);
 		disconnects.add(request);
 		return request;
 	}

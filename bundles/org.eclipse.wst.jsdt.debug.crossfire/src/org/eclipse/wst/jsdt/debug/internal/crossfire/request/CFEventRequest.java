@@ -50,5 +50,4 @@ public class CFEventRequest implements EventRequest {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-
 }

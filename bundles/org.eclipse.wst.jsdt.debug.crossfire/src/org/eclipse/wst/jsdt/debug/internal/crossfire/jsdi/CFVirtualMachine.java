@@ -86,7 +86,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		bpManager.addBreakpointListener(this);
 
 		/* add all JS breakpoints to the server's global breakpoints table */
-		IBreakpoint[] breakpoints = bpManager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
+		/*IBreakpoint[] breakpoints = bpManager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
 		for (int i = 0; i < breakpoints.length; i++) {
 			IBreakpoint breakpoint = breakpoints[i];
 			if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
@@ -94,7 +94,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 					setLineBreakpoint((IJavaScriptLineBreakpoint) breakpoint, true);
 				}
 			}
-		}
+		}*/
+		initializeBreakpoints();
 	}
 
 	/**
@@ -108,6 +109,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				//TODO init breakpoints?
+				System.out.println();
 			}
 			else if(TRACE) {
 				Tracing.writeString("VM [failed getbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -546,15 +548,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	public void breakpointAdded(IBreakpoint breakpoint) {
 		if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
 			if (breakpoint instanceof IJavaScriptLineBreakpoint) {
-				IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+				//IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
 				/*
 				 * Currently breakpoints are always set on the global context,
 				 * which is applied to subsequent loads of the breakpoint's url.
 				 */
-				setLineBreakpoint(bp, true);
+			//	setLineBreakpoint(bp, true);
 	
 				/* If a live script is found for this breakpoint then set it there too */
-				setLineBreakpoint(bp, false);
+			//	setLineBreakpoint(bp, false);
 			}
 	 	}
 	}
@@ -610,16 +612,16 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	public void breakpointRemoved(IBreakpoint breakpoint, IMarkerDelta delta) {
 		if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
 			if (breakpoint instanceof IJavaScriptLineBreakpoint) {
-				IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+			//	IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
 
 				/*
 				 * Currently breakpoints are always cleared from the global context,
 				 * which is applied to subsequent loads of the breakpoint's url.
 				 */
-				clearBreakpoint(bp, true);
+			//	clearBreakpoint(bp, true);
 
 				/* If a live script is found for this breakpoint then clear it there too */
-				clearBreakpoint(bp, false);
+			//	clearBreakpoint(bp, false);
 			}
 		}
 	}
@@ -669,15 +671,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void breakpointChanged(IBreakpoint breakpoint, IMarkerDelta delta) {
 		if (delta.getKind() == IResourceDelta.CHANGED && JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
-			IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
+		//	IJavaScriptLineBreakpoint bp = (IJavaScriptLineBreakpoint) breakpoint;
 			/*
 			 * Currently breakpoints are always changed in the global context,
 			 * which is applied to subsequent loads of the breakpoint's url.
 			 */
-			changeBreakpoint(bp, true);
+		//	changeBreakpoint(bp, true);
 
 			/* If a live script is found for this breakpoint then change it there too */
-			changeBreakpoint(bp, false);
+		//	changeBreakpoint(bp, false);
 		}
 	}
 

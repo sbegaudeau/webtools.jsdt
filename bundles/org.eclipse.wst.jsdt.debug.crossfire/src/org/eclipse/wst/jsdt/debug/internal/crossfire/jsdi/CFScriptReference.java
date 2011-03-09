@@ -95,6 +95,19 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 			this.coloffset = value.intValue();
 		}
 		source = (String) json.get(Attributes.SOURCE);
+		prepareLocations(linecount);
+	}
+	
+	/**
+	 * Creates the line locations
+	 * 
+	 * @param lines
+	 */
+	void prepareLocations(int lines) {
+		linelocs.clear();  //remove old line infos
+		for (int i = 0; i < lines; i++) {
+			linelocs.add(new CFLocation(virtualMachine(), this, null, i));
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -108,6 +121,9 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#lineLocation(int)
 	 */
 	public Location lineLocation(int lineNumber) {
+		if(lineNumber < linelocs.size()) {
+			return (Location) linelocs.get(lineNumber);
+		}
 		return null;
 	}
 
