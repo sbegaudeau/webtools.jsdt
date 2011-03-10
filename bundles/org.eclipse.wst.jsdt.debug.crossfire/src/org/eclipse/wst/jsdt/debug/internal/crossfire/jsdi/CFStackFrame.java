@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -101,8 +102,8 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		
 		parseScopes((List) json.get(Attributes.SCOPES));
 		parseLocals((Map) json.get(Attributes.LOCALS));
-		scope();
-		allScopes();
+		//scope();
+		//allScopes();
 	}
 
 	/**
@@ -142,9 +143,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 				vars = new ArrayList();
 			}
 			Map thismap = (Map) json.get(Attributes.THIS); 
-			if(thismap != null) {
-				thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, thismap);
-			}
+			thisvar = new CFVariable(crossfire(), this, Attributes.THIS, null, (thismap == null ? new HashMap(0) : thismap));
 		}
 	}
 	

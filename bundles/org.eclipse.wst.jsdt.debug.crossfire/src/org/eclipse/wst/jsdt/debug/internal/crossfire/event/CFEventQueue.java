@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.event;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -149,11 +150,17 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					ThreadReference thread = crossfire().findThread(event.getContextId());
 					if(thread != null) {
 						set.setThread(thread);
-						CFScriptReference script = crossfire().addScript(event.getContextId(), event.getBody());
-						List scripts = eventmgr.scriptLoadRequests();
-						for (Iterator iter = scripts.iterator(); iter.hasNext();) {
-							ScriptLoadRequest request = (ScriptLoadRequest) iter.next();
-							set.add(new CFScriptLoadEvent(crossfire(), request, thread, script));
+						Map json = (Map) event.getBody().get(Attributes.SCRIPT);
+						if(json != null) {
+							CFScriptReference script = crossfire().addScript(event.getContextId(), json);
+							List scripts = eventmgr.scriptLoadRequests();
+							for (Iterator iter = scripts.iterator(); iter.hasNext();) {
+								ScriptLoadRequest request = (ScriptLoadRequest) iter.next();
+								set.add(new CFScriptLoadEvent(crossfire(), request, thread, script));
+							}
+						}
+						else {
+							return null;
 						}
 					}
 					else {
