@@ -103,8 +103,16 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 				frames = new ArrayList();
 				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
 				if(frms != null) {
+					Map fmap = null;
 					for (int i = 0; i < frms.size(); i++) {
-						frames.add(new CFStackFrame(virtualMachine(), this, (Map) frms.get(i)));
+						fmap = (Map) frms.get(i);
+						//XXX hack to prevent http://code.google.com/p/fbug/issues/detail?id=4203
+						if(fmap.containsKey(Attributes.SCRIPT)) {
+							frames.add(new CFStackFrame(virtualMachine(), this, fmap));
+						}
+						else if(TRACE) {
+							Tracing.writeString("STACKFRAME [got bogus stackframe infos]: "+fmap.values().toString()); //$NON-NLS-1$
+						}
 					}
 				}
 			}

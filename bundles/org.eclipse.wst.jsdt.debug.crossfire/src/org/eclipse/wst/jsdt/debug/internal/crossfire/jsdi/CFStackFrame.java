@@ -217,7 +217,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		else if(TRACE) {
 			Tracing.writeString("STACKFRAME [failed evaluate request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
-		return null;
+		return virtualMachine().mirrorOfNull();
 	}
 	
 	/**
