@@ -16,10 +16,8 @@ import java.util.HashMap;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
 import org.eclipse.debug.core.sourcelookup.ISourceContainer;
-import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
@@ -89,8 +87,6 @@ public class JavaScriptSourceLookupParticipant extends AbstractSourceLookupParti
 				if (JavaScriptDebugPlugin.getExternalScriptPath(path) == null) {
 					JavaScriptDebugPlugin.addExternalScriptPath(path, sourceuri.toString());
 				}
-				QualifiedName qName = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
-				file.setPersistentProperty(qName, sourceuri.toString());
 				sourcemap.put(sourceuri, file);
 				return new Object[] {file};
 			}

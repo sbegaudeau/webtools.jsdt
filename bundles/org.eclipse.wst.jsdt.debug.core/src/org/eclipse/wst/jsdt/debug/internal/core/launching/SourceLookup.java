@@ -23,7 +23,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.URIUtil;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
 import org.eclipse.wst.jsdt.debug.core.model.IScript;
@@ -103,7 +105,7 @@ public final class SourceLookup {
 
 	/**
 	 * Returns the external source from the given {@link URI}. This method queries the <code>External JavaScript Source</code>
-	 * project and create it and the source {@link IFile} is necessary.
+	 * project and create it and the source {@link IFile} if necessary.
 	 * 
 	 * @param sourceuri the {@link URI} to get the source for
 	 * @param sourceobj the backing object we want to get the source for
@@ -129,6 +131,8 @@ public final class SourceLookup {
 			else {
 				file = doFormat(file, source);
 			}
+			QualifiedName qname = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+			file.setPersistentProperty(qname, sourceuri.getPath());
 			return file;
 		}
 		return null;
