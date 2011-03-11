@@ -1,0 +1,90 @@
+/*******************************************************************************
+ * Copyright (c) 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(201244D7-94C6-4fb0-9948-2634523A475B),
+	dual,
+	nonextensible,
+	helpstring("IIECrossfireBHO Interface"),
+	pointer_default(unique)
+]
+interface IIECrossfireBHO : IUnknown {
+};
+[
+	object,
+	uuid(031DB015-B1BE-4D39-84D2-D7F96D2ACBFE),
+	oleautomation,
+	dual,
+	nonextensible,
+	helpstring("ICrossfireServer Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServer : IDispatch {
+	HRESULT contextCreated([in] DWORD threadId, [in, string] OLECHAR* href);
+	HRESULT contextDestroyed([in] DWORD threadId);
+	HRESULT contextLoaded([in] DWORD threadId);
+	HRESULT isActive([out] boolean* value);
+	HRESULT registerContext([in] DWORD threadId, [in, string] OLECHAR* href);
+	HRESULT setCurrentContext([in] DWORD threadId);
+	HRESULT start([in] unsigned int port);
+	HRESULT stop();
+};
+[
+	object,
+	uuid(F48260BB-C061-4410-9CE1-4C5C7602690E),
+	oleautomation,
+	dual,
+	nonextensible,
+	helpstring("ICrossfireServerClass Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServerClass : IDispatch {
+	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
+	HRESULT RemoveServer([in] unsigned long windowHandle);
+};
+[
+	uuid(A8FFC284-CE2C-40B5-98D1-D3112811E9D9),
+	version(1.0),
+	helpstring("IECrossfireExtension 1.0 Type Library")
+]
+library IECrossfireExtensionLib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(E8779887-5AF1-4071-B4D4-6135157F142C),
+		helpstring("IECrossfireBHO Class")
+	]
+	coclass IECrossfireBHO
+	{
+		[default] interface IIECrossfireBHO;
+	};
+	[
+		uuid(47836AF4-3E0C-4995-8029-FF931C5A43FC),
+		helpstring("CrossfireServer Class")
+	]
+	coclass CrossfireServer
+	{
+		[default] interface ICrossfireServer;
+	};
+	[
+		uuid(7C3C5D7A-AF4D-4F32-A3C9-462BFBAFDC25),
+		helpstring("CrossfireServerClass Class")
+	]
+	coclass CrossfireServerClass
+	{
+		[default] interface ICrossfireServerClass;
+	};
+};
