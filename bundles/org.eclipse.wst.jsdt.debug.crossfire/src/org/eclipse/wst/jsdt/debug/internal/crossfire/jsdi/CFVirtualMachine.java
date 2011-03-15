@@ -84,17 +84,6 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		this.session = session;
 		IBreakpointManager bpManager = DebugPlugin.getDefault().getBreakpointManager();
 		bpManager.addBreakpointListener(this);
-
-		/* add all JS breakpoints to the server's global breakpoints table */
-		/*IBreakpoint[] breakpoints = bpManager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
-		for (int i = 0; i < breakpoints.length; i++) {
-			IBreakpoint breakpoint = breakpoints[i];
-			if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
-				if (breakpoint instanceof IJavaScriptLineBreakpoint) {
-					setLineBreakpoint((IJavaScriptLineBreakpoint) breakpoint, true);
-				}
-			}
-		}*/
 		initializeBreakpoints();
 	}
 
@@ -108,8 +97,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINTS, thread.id());
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
-				//TODO init breakpoints?
-				System.out.println();
+				//TODO sync breakpoints
 			}
 			else if(TRACE) {
 				Tracing.writeString("VM [failed getbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$

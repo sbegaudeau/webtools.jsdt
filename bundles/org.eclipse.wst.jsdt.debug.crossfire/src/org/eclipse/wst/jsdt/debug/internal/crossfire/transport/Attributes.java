@@ -34,6 +34,10 @@ public interface Attributes {
 	 */
 	public static final String BREAKPOINT = "breakpoint"; //$NON-NLS-1$
 	/**
+	 * The "breakpoints" attribute
+	 */
+	public static final String BREAKPOINTS = "breakpoints"; //$NON-NLS-1$
+	/**
 	 * The "columnOffset" attribute
 	 */
 	public static final String COLUMN_OFFSET = "columnOffset"; //$NON-NLS-1$

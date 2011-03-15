@@ -96,8 +96,8 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	void prepareLocations(int lines) {
 		linelocs.clear();  //remove old line infos
-		for (int i = 0; i < lines; i++) {
-			linelocs.add(new CFLocation(virtualMachine(), this, null, i + 1));
+		for (int i = 1; i <= lines; i++) {
+			linelocs.add(new CFLocation(virtualMachine(), this, null, i));
 		}
 	}
 	
@@ -112,8 +112,8 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference#lineLocation(int)
 	 */
 	public Location lineLocation(int lineNumber) {
-		if(lineNumber - 1 < linelocs.size()) {
-			return (Location) linelocs.get(lineNumber - 1);
+		if(lineNumber <= linelocs.size()) {
+			return (Location) linelocs.get(lineNumber-1);
 		}
 		return null;
 	}
