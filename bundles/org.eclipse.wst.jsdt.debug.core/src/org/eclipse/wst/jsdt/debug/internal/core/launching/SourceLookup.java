@@ -39,6 +39,8 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
  */
 public final class SourceLookup {
 
+	public static final QualifiedName SCRIPT_URL = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+	
 	/**
 	 * Returns the name of the source object to lookup or <code>null</code>
 	 * if the object is not a {@link IJavaScriptStackFrame} or an {@link IScript}
@@ -131,8 +133,7 @@ public final class SourceLookup {
 			else {
 				file = doFormat(file, source);
 			}
-			QualifiedName qname = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
-			file.setPersistentProperty(qname, sourceuri.getPath());
+			file.setPersistentProperty(SCRIPT_URL, sourceuri.getPath());
 			return file;
 		}
 		return null;
