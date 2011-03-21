@@ -213,6 +213,9 @@ public interface Attributes {
 	 * The "sourceLength" attribute
 	 */
 	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
+	/**
+	 * The "stepaction" attribute
+	 */
 	public static final String STEPACTION = "stepaction"; //$NON-NLS-1$
 	/**
 	 * The type "string"
