@@ -158,6 +158,9 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			if(JavaScriptDebugPlugin.isExternalSource(new Path(scriptPath))) {
 				scriptPath = getMarker().getResource().getPersistentProperty(SourceLookup.SCRIPT_URL);
 			}
+			if(scriptPath == null) {
+				return;
+			}
 			List/* ScriptReference */scripts = target.underlyingScripts(Script.resolveName(URIUtil.fromString(scriptPath)));
 			boolean success = true;
 			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
