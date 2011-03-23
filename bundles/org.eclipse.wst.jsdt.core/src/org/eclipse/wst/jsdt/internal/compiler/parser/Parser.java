@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -4099,17 +4099,6 @@ protected void consumeToken(int type) {
 	switch (type) {
 		case TokenNameIdentifier :
 			pushIdentifier();
-			if (this.scanner.useAssertAsAnIndentifier  &&
-					this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-				long positions = this.identifierPositionStack[this.identifierPtr];
-				if(!this.statementRecoveryActivated)
-					problemReporter().useAssertAsAnIdentifier(this.identifierStack[this.identifierPtr],(int) (positions >>> 32), (int) positions);
-			}
-			if (this.scanner.useEnumAsAnIndentifier  &&
-					this.lastErrorEndPositionBeforeRecovery < this.scanner.currentPosition) {
-				long positions = this.identifierPositionStack[this.identifierPtr];
-				if(!this.statementRecoveryActivated) problemReporter().useEnumAsAnIdentifier((int) (positions >>> 32), (int) positions);
-			}
 			break;
 		case TokenNameinterface :
 			//'class' is pushing two int (positions) on the stack ==> 'interface' needs to do it too....
@@ -4221,12 +4210,22 @@ protected void consumeToken(int type) {
 					this.scanner.currentPosition - 1));
 			break;
 		case TokenNameCharacterLiteral :
-			pushOnExpressionStack(
-				this.createStringLiteral(
-						this.scanner.getCurrentTokenSourceString(),
-						this.scanner.startPosition,
-						this.scanner.currentPosition - 1,
-						0));
+			StringLiteral stringLiteral;
+			if (this.recordStringLiterals && this.checkExternalizeStrings && !this.statementRecoveryActivated) {
+				stringLiteral = this.createStringLiteral(
+					this.scanner.getCurrentTokenSourceString(),
+					this.scanner.startPosition,
+					this.scanner.currentPosition - 1,
+					Util.getLineNumber(this.scanner.startPosition, this.scanner.lineEnds, 0, this.scanner.linePtr));
+				this.compilationUnit.recordStringLiteral(stringLiteral);
+			} else {
+				stringLiteral = this.createStringLiteral(
+					this.scanner.getCurrentTokenSourceString(),
+					this.scanner.startPosition,
+					this.scanner.currentPosition - 1,
+					0);
+			}
+			pushOnExpressionStack(stringLiteral);
 			break;
 		case TokenNameRegExLiteral :
 			pushOnExpressionStack(
@@ -4237,7 +4236,6 @@ protected void consumeToken(int type) {
 			break;
 
 		case TokenNameStringLiteral :
-			StringLiteral stringLiteral;
 			if (this.recordStringLiterals && this.checkExternalizeStrings && !this.statementRecoveryActivated) {
 				stringLiteral = this.createStringLiteral(
 					this.scanner.getCurrentTokenSourceString(),
@@ -5193,8 +5191,6 @@ protected void ignoreExpressionAssignment() {
 	this.intPtr--;
 	ArrayInitializer arrayInitializer = (ArrayInitializer) this.expressionStack[this.expressionPtr--];
 	this.expressionLengthPtr -- ;
-	// report a syntax error and abort parsing
-	if(!this.statementRecoveryActivated) problemReporter().arrayConstantsOnlyInArrayInitializers(arrayInitializer.sourceStart, arrayInitializer.sourceEnd);
 }
 public void initialize() {
 	this.initialize(false);
