@@ -37,13 +37,14 @@ public class BasicAnalyseTests extends AbstractRegressionTest {
 						"b.toString();\n" +
 						"}\n" +
 						"boo();" 
-				},
-				"----------\n" + 
-				"1. ERROR in X.js (at line 3)\n" + 
-				"	b.toString();\n" + 
-				"	^\n" + 
-				"Null pointer access: The variable b can only be null at this location\n" + 
-				"----------\n", null, false, custom
+				},""
+//				"----------\n" + 
+//				"1. ERROR in X.js (at line 3)\n" + 
+//				"	b.toString();\n" + 
+//				"	^\n" + 
+//				"Null pointer access: The variable b can only be null at this location\n" + 
+//				"----------\n" 
+				, null, false, custom
 		);
 	}
 	
@@ -61,13 +62,14 @@ public class BasicAnalyseTests extends AbstractRegressionTest {
 						"}\n" +
 						"b = 2;\n" +
 						"boo();" 
-				},
-				"----------\n" + 
-				"1. ERROR in X.js (at line 4)\n" + 
-				"	b.toString();\n" + 
-				"	^\n" + 
-				"Null pointer access: The variable b can only be null at this location\n" + 
-				"----------\n", null, false, custom
+				},""
+//				"----------\n" + 
+//				"1. ERROR in X.js (at line 4)\n" + 
+//				"	b.toString();\n" + 
+//				"	^\n" + 
+//				"Null pointer access: The variable b can only be null at this location\n" + 
+//				"----------\n"
+				, null, false, custom
 		);
 	}
 	
@@ -86,13 +88,14 @@ public class BasicAnalyseTests extends AbstractRegressionTest {
 						"b = 2;\n" +
 						"boo();\n" +
 						"b.toString();" 
-				},
-				"----------\n" + 
-				"1. ERROR in X.js (at line 4)\n" + 
-				"	b.toString();\n" + 
-				"	^\n" + 
-				"Null pointer access: The variable b can only be null at this location\n" + 
-				"----------\n", null, false, custom
+				},""
+//				"----------\n" + 
+//				"1. ERROR in X.js (at line 4)\n" + 
+//				"	b.toString();\n" + 
+//				"	^\n" + 
+//				"Null pointer access: The variable b can only be null at this location\n" + 
+//				"----------\n"
+				, null, false, custom
 		);
 	}
 	
