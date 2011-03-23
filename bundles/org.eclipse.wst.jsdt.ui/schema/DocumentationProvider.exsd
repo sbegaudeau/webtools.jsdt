@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.wst.jsdt.ui">
+<schema targetNamespace="org.eclipse.wst.jsdt.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.wst.jsdt.ui" id="documentationProvider" name="DocumentationProvider"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="documentationProvider" minOccurs="1" maxOccurs="unbounded"/>
@@ -49,6 +54,9 @@
                <documentation>
                   
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.wst.jsdt.ui.IDocumentationReader"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
@@ -90,13 +98,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>
