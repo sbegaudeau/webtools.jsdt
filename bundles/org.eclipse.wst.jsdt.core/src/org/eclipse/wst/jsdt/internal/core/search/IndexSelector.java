@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 			return true;
 
 		if (focusEntriesForPolymorphicSearch != null) {
-			// look for refering project
+			// look for referring project
 			IPath projectPath = javaProject.getProject().getFullPath();
 			for (int i = 0, length = focusEntriesForPolymorphicSearch.length; i < length; i++) {
 				IIncludePathEntry entry = focusEntriesForPolymorphicSearch[i];
@@ -91,15 +91,15 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 			}
 		}
 		if (focus instanceof LibraryFragmentRoot || focus instanceof PackageFragmentRoot) {
-			// focus is part of a jar
+			// focus is part of a library or a non-project folder in the workspace
 			IPath focusPath = focus.getPath();
 			IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
 			for (int i = 0, length = entries.length; i < length; i++) {
 				IIncludePathEntry entry = entries[i];
-				if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY && entry.getPath().equals(focusPath))
+				if ((entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY || entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) && entry.getPath().equals(focusPath))
 					return true;
 			}
-			if(focus instanceof LibraryFragmentRoot)
+			if (focus instanceof LibraryFragmentRoot)
 				return false;
 		}
 		// look for dependent projects
