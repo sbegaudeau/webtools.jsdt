@@ -86,7 +86,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		bpManager.addBreakpointListener(this);
 		initializeBreakpoints();
 	}
-
+	
 	/**
 	 * Collects all of the breakpoints 
 	 */
@@ -110,6 +110,94 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	boolean ready() {
 		return !disconnected;
+	}
+	
+	/**
+	 * Sends an <code>updatecontext</code> request for the given URL and returns the status of the request.
+	 * 
+	 * @param url the URL to open / update in the remote target, <code>null</code> is not accepted
+	 * @return <code>true</code> if the request was successful, <code>false</code> otherwise
+	 */
+	boolean updateContext(String url) {
+		if(url != null && ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.UPDATE_CONTEXT, null);
+			request.getArguments().put(Attributes.HREF, url);
+			CFResponsePacket response = sendRequest(request);
+			if(response.isSuccess()) {
+				return true;
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed updatecontext request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Sends a request to enable the tool with the given name in the remote Crossfire server
+	 * 
+	 * @param tool the name of the tool to enable, <code>null</code> is not allowed
+	 * @return <code>true</code> if the server reports the tool became enabled, <code>false</code> otherwise
+	 */
+	boolean enableTool(String tool) {
+		if(tool != null && ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.ENABLE_TOOL, null);
+			request.getArguments().put(Attributes.TOOL_NAME, tool);
+			CFResponsePacket response = sendRequest(request);
+			if(response.isSuccess()) {
+				//TODO handle the tool being enabled
+				return true;
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed enabletool request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Sends a request to disable the tool with the given name in the remote Crossfire server
+	 * 
+	 * @param tool the name of the tool to disable, <code>null</code> is not allowed
+	 * @return <code>true</code> if the server reports the tool became disabled, <code>false</code> otherwise
+	 */
+	boolean disableTool(String tool) {
+		if(tool != null && ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.DISABLE_TOOL, null);
+			request.getArguments().put(Attributes.TOOL_NAME, tool);
+			CFResponsePacket response = sendRequest(request);
+			if(response.isSuccess()) {
+				//TODO handle the tool being enabled
+				return true;
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed disabletool request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Returns the complete listing of tools from Crossfire regardless of their enabled state.
+	 * 
+	 * @return the listing of tools or an empty list, never <code>null</code>
+	 */
+	List allTools() {
+		if(ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.GET_TOOLS, null);
+			CFResponsePacket response = sendRequest(request);
+			if(response.isSuccess()) {
+				//TODO do we want to make these first-class objects in our model so we can track state, etc for tools?
+				List tools = (List) response.getBody().get(Attributes.TOOLS);
+				if(tools != null) {
+					return tools;
+				}
+			}
+			else if(TRACE) {
+				Tracing.writeString("VM [failed alltools request]: "+JSON.serialize(request)); //$NON-NLS-1$
+			}
+		}
+		return Collections.EMPTY_LIST;
 	}
 	
 	/* (non-Javadoc)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,16 @@ public interface Commands {
 	 */
 	public static final String CONTINUE = "continue"; //$NON-NLS-1$
 	/**
+	 * The "disableTool" command
+	 * TODO this will update to be all lower-case
+	 */
+	public static final String DISABLE_TOOL = "disableTool"; //$NON-NLS-1$
+	/**
+	 * The "enableTool" command
+	 * TODO this will update to be all lower-case
+	 */
+	public static final String ENABLE_TOOL = "enableTool"; //$NON-NLS-1$
+	/**
 	 * The "evaluate" command
 	 */
 	public static final String EVALUATE = "evaluate"; //$NON-NLS-1$
@@ -49,6 +59,10 @@ public interface Commands {
 	 * The "getbreakpoints" command
 	 */
 	public static final String GET_BREAKPOINTS = "getbreakpoints"; //$NON-NLS-1$
+	/**
+	 * The "gettools" command
+	 */
+	public static final String GET_TOOLS = "gettools"; //$NON-NLS-1$
 	/**
 	 * The "inspect" command
 	 */
@@ -81,8 +95,17 @@ public interface Commands {
 	 * The "setbreakpoint" command
 	 */
 	public static final String SET_BREAKPOINT = "setbreakpoint"; //$NON-NLS-1$
+	/**
+	 * The "in" step action
+	 */
 	public static final String STEP_IN = "in"; //$NON-NLS-1$
+	/**
+	 * The "next" step action 
+	 */
 	public static final String STEP_NEXT = "next"; //$NON-NLS-1$
+	/**
+	 * The "out" step action
+	 */
 	public static final String STEP_OUT = "out"; //$NON-NLS-1$
 	/**
 	 * The "source" command
@@ -92,6 +115,10 @@ public interface Commands {
 	 * The "suspend" command
 	 */
 	public static final String SUSPEND = "suspend"; //$NON-NLS-1$
+	/** 
+	 * The "updatecontext" command
+	 */
+	public static final String UPDATE_CONTEXT = "updatecontext"; //$NON-NLS-1$
 	/**
 	 * The "version" command
 	 */
