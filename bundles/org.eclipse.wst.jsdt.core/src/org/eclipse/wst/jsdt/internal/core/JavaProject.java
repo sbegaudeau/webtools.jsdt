@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -1316,7 +1317,7 @@ public class JavaProject
 	}
 	
 	/*
-	 * Internal findType with instanciated name lookup - can return multiple IType's
+	 * Internal findType with instantiated name lookup - can return multiple IType's
 	 */
 	IType[] findTypes(String fullyQualifiedName, NameLookup lookup, boolean considerSecondaryTypes, IProgressMonitor progressMonitor) throws JavaScriptModelException {
 		NameLookup.Answer answer = lookup.findType(
@@ -1338,7 +1339,7 @@ public class JavaProject
 					return new IType[]{type};
 				}
 			}
-			return null;
+			return new IType[0];
 		}
 		if (answer.type==null && answer.element instanceof ITypeRoot)
 		{
@@ -1346,15 +1347,23 @@ public class JavaProject
 		}
 		else if (answer.type==null && answer.element!=null && answer.element.getClass().isArray())
 		{
-			Object [] elements=(Object [])answer.element;
-			IType[] iTypes = new IType[elements.length];
-			for(int i = 0; i < elements.length; i++) {
-				if(elements[i] instanceof ITypeRoot)
-					iTypes[i] =((ITypeRoot)elements[i]).getType(fullyQualifiedName);
+			Object[] elements = (Object[]) answer.element;
+			List iTypes = new ArrayList(elements.length);
+			for (int i = 0; i < elements.length; i++) {
+				// could be a binding instead
+				if (elements[i] instanceof ITypeRoot) {
+					IType rootType = ((ITypeRoot) elements[i]).getType(fullyQualifiedName);
+					if (rootType != null && rootType.exists()) {
+						iTypes.add(rootType);
+					}
+				}
 			}
-			return iTypes;
+			return (IType[]) iTypes.toArray(new IType[iTypes.size()]);
 		}
-		return new IType[] {answer.type};
+		if (answer.type != null && answer.type.exists()) {
+			return new IType[]{answer.type};
+		}
+		return new IType[0];
 	}
 	/**
 	 * @see IJavaScriptProject#findType(String, String)
