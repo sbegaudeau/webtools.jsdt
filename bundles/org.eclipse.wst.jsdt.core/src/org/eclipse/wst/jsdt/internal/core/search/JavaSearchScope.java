@@ -596,6 +596,7 @@ public void processDelta(IJavaScriptElementDelta delta) {
 				switch (element.getElementType()) {
 					case IJavaScriptElement.JAVASCRIPT_PROJECT:
 						path = ((IJavaScriptProject)element).getProject().getFullPath();
+						break;
 					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
 						if (path == null) {
 							path = ((IPackageFragmentRoot)element).getPath();
