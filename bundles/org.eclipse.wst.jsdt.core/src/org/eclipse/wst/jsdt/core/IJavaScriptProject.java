@@ -204,22 +204,17 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	IType findType(String fullyQualifiedName) throws JavaScriptModelException;
 	
 	/**
-	 * Returns all the types found following this project's includepath
-	 * with the given fully qualified name or <code>null</code> if none is found.
-	 * The fully qualified name is a dot-separated name. For example,
-	 * a class B defined as a member type of a class A in package x.y should have a
-	 * the fully qualified name "x.y.A.B".
-	 *
-	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding javaScript unit name. As a
-	 * consequence, secondary types cannot be found using this functionality.
-	 * To find secondary types use {@link #findType(String, IProgressMonitor)} instead.
-	 *
-	 * @param fullyQualifiedName the given fully qualified name
-	 * @exception JavaScriptModelException if this project does not exist or if an
-	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's includepath
-	 * with the given fully qualified name or <code>null</code> if none is found
+	 * Returns all the types found following this project's include path with
+	 * the given fully qualified name. The fully qualified name is a
+	 * dot-separated name.
+	 * 
+	 * @param fullyQualifiedName
+	 *            the given fully qualified name
+	 * @exception JavaScriptModelException
+	 *                if this project does not exist or if an exception occurs
+	 *                while accessing its corresponding resource
+	 * @return the types found following this project's include path with the
+	 *         given fully qualified name
 	 * @see IType#getFullyQualifiedName(char)
 	 */
 	IType[] findTypes(String fullyQualifiedName) throws JavaScriptModelException;
@@ -262,27 +257,21 @@ public interface IJavaScriptProject extends IParent, IJavaScriptElement, IOpenab
 	 * @see IType#getFullyQualifiedName(char)
 	 */
 	IType findType(String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException;
+
 	/**
-	 * Returns all the types found following this project's includepath
-	 * with the given fully qualified name or <code>null</code> if none is found.
-	 * The fully qualified name is a dot-separated name. For example,
-	 * a class B defined as a member type of a class A in package x.y should have a
-	 * the fully qualified name "x.y.A.B".
-	 * If the returned type is part of a javaScript unit, its owner is the given
-	 * owner.
-	 *
-	 * Note that in order to be found, a type name (or its toplevel enclosing
-	 * type name) must match its corresponding javaScript unit name. As a
-	 * consequence, secondary types cannot be found using this functionality.
-	 * To find secondary types use {@link #findType(String, WorkingCopyOwner, IProgressMonitor)}
-	 * instead.
-	 *
-	 * @param fullyQualifiedName the given fully qualified name
-	 * @param owner the owner of the returned type's javaScript unit
-	 * @exception JavaScriptModelException if this project does not exist or if an
-	 *		exception occurs while accessing its corresponding resource
-	 * @return the first type found following this project's includepath
-	 * with the given fully qualified name or <code>null</code> if none is found
+	 * Returns all the types found following this project's include path with
+	 * the given fully qualified name. The fully qualified name is a
+	 * dot-separated name.
+	 * 
+	 * @param fullyQualifiedName
+	 *            the given fully qualified name
+	 * @param owner
+	 *            the owner of the returned type's javaScript unit
+	 * @exception JavaScriptModelException
+	 *                if this project does not exist or if an exception occurs
+	 *                while accessing its corresponding resource
+	 * @return the types found following this project's include path with the
+	 *         given fully qualified name
 	 * @see IType#getFullyQualifiedName(char)
 	 */
 	IType[] findTypes(String fullyQualifiedName, WorkingCopyOwner owner) throws JavaScriptModelException;
