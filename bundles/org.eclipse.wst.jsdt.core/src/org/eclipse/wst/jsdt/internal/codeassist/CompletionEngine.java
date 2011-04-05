@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1193,14 +1193,14 @@ public final class CompletionEngine
 //			completion = packageName;
 //		}
 
-		int relevance = computeBaseRelevance();
-		relevance += computeRelevanceForResolution();
-		relevance += computeRelevanceForInterestingProposal();
-		relevance += computeRelevanceForCaseMatching(this.qualifiedCompletionToken == null ? this.completionToken : this.qualifiedCompletionToken, packageName);
-		if(!this.resolvingImports) {
-			relevance += computeRelevanceForQualification(true);
-		}
-		relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
+//		int relevance = computeBaseRelevance();
+//		relevance += computeRelevanceForResolution();
+//		relevance += computeRelevanceForInterestingProposal();
+//		relevance += computeRelevanceForCaseMatching(this.qualifiedCompletionToken == null ? this.completionToken : this.qualifiedCompletionToken, packageName);
+//		if(!this.resolvingImports) {
+//			relevance += computeRelevanceForQualification(true);
+//		}
+//		relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
 
 		this.noProposal = false;
 //		if(!this.requestor.isIgnored(CompletionProposal.PACKAGE_REF)) {
@@ -2459,17 +2459,17 @@ public final class CompletionEngine
 		return argTypes;
 	}
 
-	private TypeBinding[] computeTypesIfCorrect(Expression[] arguments) {
-		if (arguments == null) return null;
-		int argsLength = arguments.length;
-		TypeBinding[] argTypes = new TypeBinding[argsLength];
-		for (int a = argsLength; --a >= 0;) {
-			TypeBinding typeBinding = arguments[a].resolvedType;
-			if(typeBinding == null || !typeBinding.isValidBinding()) return null;
-			argTypes[a] = typeBinding;
-		}
-		return argTypes;
-	}
+//	private TypeBinding[] computeTypesIfCorrect(Expression[] arguments) {
+//		if (arguments == null) return null;
+//		int argsLength = arguments.length;
+//		TypeBinding[] argTypes = new TypeBinding[argsLength];
+//		for (int a = argsLength; --a >= 0;) {
+//			TypeBinding typeBinding = arguments[a].resolvedType;
+//			if(typeBinding == null || !typeBinding.isValidBinding()) return null;
+//			argTypes[a] = typeBinding;
+//		}
+//		return argTypes;
+//	}
 	
 	private void findAnonymousType(
 		ReferenceBinding currentType,
@@ -3005,36 +3005,36 @@ public final class CompletionEngine
 		}
 	}
 
-	private char[][] findEnclosingTypeNames(Scope scope){
-		char[][] excludedNames = new char[10][];
-		int excludedNameCount = 0;
-
-		Scope currentScope = scope;
-		while(currentScope != null) {
-			switch (currentScope.kind) {
-				case Scope.CLASS_SCOPE :
-					ClassScope classScope = (ClassScope) currentScope;
-
-					TypeDeclaration typeDeclaration = classScope.referenceContext;
-
-					if(excludedNameCount == excludedNames.length) {
-						System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount * 2][], 0, excludedNameCount);
-					}
-					excludedNames[excludedNameCount++] = typeDeclaration.name;
-					break;
-				case Scope.METHOD_SCOPE :
-					break;
-			}
-
-			currentScope = currentScope.parent;
-		}
-
-		if(excludedNameCount == 0) {
-			return CharOperation.NO_CHAR_CHAR;
-		}
-		System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount][], 0, excludedNameCount);
-		return excludedNames;
-	}
+//	private char[][] findEnclosingTypeNames(Scope scope){
+//		char[][] excludedNames = new char[10][];
+//		int excludedNameCount = 0;
+//
+//		Scope currentScope = scope;
+//		while(currentScope != null) {
+//			switch (currentScope.kind) {
+//				case Scope.CLASS_SCOPE :
+//					ClassScope classScope = (ClassScope) currentScope;
+//
+//					TypeDeclaration typeDeclaration = classScope.referenceContext;
+//
+//					if(excludedNameCount == excludedNames.length) {
+//						System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount * 2][], 0, excludedNameCount);
+//					}
+//					excludedNames[excludedNameCount++] = typeDeclaration.name;
+//					break;
+//				case Scope.METHOD_SCOPE :
+//					break;
+//			}
+//
+//			currentScope = currentScope.parent;
+//		}
+//
+//		if(excludedNameCount == 0) {
+//			return CharOperation.NO_CHAR_CHAR;
+//		}
+//		System.arraycopy(excludedNames, 0, excludedNames = new char[excludedNameCount][], 0, excludedNameCount);
+//		return excludedNames;
+//	}
 
 	// Helper method for findFields(char[], ReferenceBinding, Scope, ObjectVector, boolean)
 	private void findFields(
@@ -3532,7 +3532,7 @@ public final class CompletionEngine
 		InvocationSite invocationSite,
 		boolean insideTypeAnnotation) {
 
-		boolean staticsOnly = false;
+//		boolean staticsOnly = false;
 		Scope currentScope = scope;
 
 		done : while (true) { // done when a COMPILATION_UNIT_SCOPE is found
@@ -3540,10 +3540,10 @@ public final class CompletionEngine
 			switch (currentScope.kind) {
 
 				case Scope.METHOD_SCOPE :
-					// handle the error case inside an explicit constructor call (see MethodScope>>findField)
-					MethodScope methodScope = (MethodScope) currentScope;
-					staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
-
+//					// handle the error case inside an explicit constructor call (see MethodScope>>findField)
+//					MethodScope methodScope = (MethodScope) currentScope;
+//					staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
+//
 				case Scope.BLOCK_SCOPE :
 					break;
 
@@ -3570,7 +3570,7 @@ public final class CompletionEngine
 							}
 						}
 					}
-					staticsOnly |= enclosingType.isStatic();
+//					staticsOnly |= enclosingType.isStatic();
 					insideTypeAnnotation = false;
 					break;
 				case Scope.COMPILATION_UNIT_SCOPE :
@@ -3587,7 +3587,7 @@ public final class CompletionEngine
 		InvocationSite invocationSite,
 		boolean insideTypeAnnotation) {
 
-		boolean staticsOnly = false;
+//		boolean staticsOnly = false;
 		Scope currentScope = scope;
 
 		done : while (true) { // done when a COMPILATION_UNIT_SCOPE is found
@@ -3595,10 +3595,10 @@ public final class CompletionEngine
 			switch (currentScope.kind) {
 
 				case Scope.METHOD_SCOPE :
-					// handle the error case inside an explicit constructor call (see MethodScope>>findField)
-					MethodScope methodScope = (MethodScope) currentScope;
-					staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
-
+//					// handle the error case inside an explicit constructor call (see MethodScope>>findField)
+//					MethodScope methodScope = (MethodScope) currentScope;
+//					staticsOnly |= methodScope.isStatic | methodScope.isConstructorCall;
+//
 				case Scope.BLOCK_SCOPE :
 					break;
 
@@ -3650,7 +3650,7 @@ public final class CompletionEngine
 							}
 						}
 					}
-					staticsOnly |= enclosingType.isStatic();
+//					staticsOnly |= enclosingType.isStatic();
 					insideTypeAnnotation = false;
 					break;
 				case Scope.COMPILATION_UNIT_SCOPE :
@@ -3908,135 +3908,135 @@ public final class CompletionEngine
 		}
 	}
 
-	private void findImportsOfStaticFields(char[] fieldName, ReferenceBinding ref) {
-		FieldBinding[] fields = ref.fields();
-
-		int fieldLength = fieldName.length;
-		next : for (int m = fields.length; --m >= 0;) {
-			FieldBinding field = fields[m];
-
-			if (fieldLength > field.name.length)
-				continue next;
-
-			if (!field.isStatic())
-				continue next;
-
-			if (!CharOperation.prefixEquals(fieldName, field.name, false/* ignore case */)
-				&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(fieldName, field.name)))
-				continue next;
-
-			if (this.options.checkDeprecation && field.isViewedAsDeprecated()) continue next;
-
-			if (this.options.checkVisibility
-				&& !field.canBeSeenBy(this.unitScope.getDefaultPackage()))
-				continue next;
-
-			char[] completionName = CharOperation.concat(field.name, SEMICOLON);
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(fieldName, field.name);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-			this.noProposal = false;
-			if(!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
-				CompletionProposal proposal = this.createProposal(CompletionProposal.FIELD_REF, this.actualCompletionPosition);
-				proposal.setDeclarationSignature(getSignature(field.declaringClass));
-				proposal.setSignature(getSignature(field.type));
-				proposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
-				proposal.setDeclarationTypeName(field.declaringClass.qualifiedSourceName());
-				proposal.setPackageName(field.type.qualifiedPackageName());
-				proposal.setTypeName(field.type.qualifiedSourceName());
-				proposal.setName(field.name);
-				proposal.setCompletion(completionName);
-				proposal.setFlags(field.modifiers);
-				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-				proposal.setRelevance(relevance);
-				this.requestor.accept(proposal);
-				if(DEBUG) {
-					this.printDebug(proposal);
-				}
-			}
-		}
-	}
-
-	private void findImportsOfStaticMethods(char[] methodName, ReferenceBinding ref) {
-		MethodBinding[] methods = ref.methods();
-
-		int methodLength = methodName.length;
-		next : for (int m = methods.length; --m >= 0;) {
-			MethodBinding method = methods[m];
-
-			if (method.isDefaultAbstract())	continue next;
-
-			if (method.isConstructor()) continue next;
-
-			if (!method.isStatic()) continue next;
-
-			if (this.options.checkDeprecation && method.isViewedAsDeprecated()) continue next;
-
-			if (this.options.checkVisibility
-				&& !method.canBeSeenBy(this.unitScope.getDefaultPackage())) continue next;
-
-			if (methodLength > method.selector.length)
-				continue next;
-
-			if (!CharOperation.prefixEquals(methodName, method.selector, false/* ignore case */)
-					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(methodName, method.selector)))
-				continue next;
-
-			int length = method.parameters.length;
-			char[][] parameterPackageNames = new char[length][];
-			char[][] parameterTypeNames = new char[length][];
-
-			for (int i = 0; i < length; i++) {
-				TypeBinding type = method.original().parameters[i];
-				parameterPackageNames[i] = type.qualifiedPackageName();
-				parameterTypeNames[i] = type.qualifiedSourceName();
-			}
-			char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
-
-
-			char[] completionName = CharOperation.concat(
-					method.declaringClass.qualifiedPackageName(),
-					'.',
-					method.declaringClass.qualifiedSourceName(),
-					'.',
-					method.selector);
-
-			completionName = CharOperation.concat(completionName, SEMICOLON);
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(methodName, method.selector);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-
-			this.noProposal = false;
-			if(!this.requestor.isIgnored(CompletionProposal.METHOD_NAME_REFERENCE)) {
-				CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_NAME_REFERENCE, this.actualCompletionPosition);
-				proposal.setDeclarationSignature(getSignature(method.declaringClass));
-				proposal.setSignature(getSignature(method));
-				proposal.setDeclarationPackageName(method.declaringClass.qualifiedPackageName());
-				proposal.setDeclarationTypeName(method.declaringClass.qualifiedSourceName());
-				proposal.setParameterPackageNames(parameterPackageNames);
-				proposal.setParameterTypeNames(parameterTypeNames);
-				proposal.setPackageName(method.returnType.qualifiedPackageName());
-				proposal.setTypeName(method.returnType.qualifiedSourceName());
-				proposal.setName(method.selector);
-				proposal.setCompletion(completionName);
-				proposal.setFlags(method.modifiers);
-				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
-				proposal.setRelevance(relevance);
-				if(parameterNames != null) proposal.setParameterNames(parameterNames);
-				this.requestor.accept(proposal);
-				if(DEBUG) {
-					this.printDebug(proposal);
-				}
-			}
-		}
-	}
+//	private void findImportsOfStaticFields(char[] fieldName, ReferenceBinding ref) {
+//		FieldBinding[] fields = ref.fields();
+//
+//		int fieldLength = fieldName.length;
+//		next : for (int m = fields.length; --m >= 0;) {
+//			FieldBinding field = fields[m];
+//
+//			if (fieldLength > field.name.length)
+//				continue next;
+//
+//			if (!field.isStatic())
+//				continue next;
+//
+//			if (!CharOperation.prefixEquals(fieldName, field.name, false/* ignore case */)
+//				&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(fieldName, field.name)))
+//				continue next;
+//
+//			if (this.options.checkDeprecation && field.isViewedAsDeprecated()) continue next;
+//
+//			if (this.options.checkVisibility
+//				&& !field.canBeSeenBy(this.unitScope.getDefaultPackage()))
+//				continue next;
+//
+//			char[] completionName = CharOperation.concat(field.name, SEMICOLON);
+//
+//			int relevance = computeBaseRelevance();
+//			relevance += computeRelevanceForResolution();
+//			relevance += computeRelevanceForInterestingProposal();
+//			relevance += computeRelevanceForCaseMatching(fieldName, field.name);
+//			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
+//
+//			this.noProposal = false;
+//			if(!this.requestor.isIgnored(CompletionProposal.FIELD_REF)) {
+//				CompletionProposal proposal = this.createProposal(CompletionProposal.FIELD_REF, this.actualCompletionPosition);
+//				proposal.setDeclarationSignature(getSignature(field.declaringClass));
+//				proposal.setSignature(getSignature(field.type));
+//				proposal.setDeclarationPackageName(field.declaringClass.qualifiedPackageName());
+//				proposal.setDeclarationTypeName(field.declaringClass.qualifiedSourceName());
+//				proposal.setPackageName(field.type.qualifiedPackageName());
+//				proposal.setTypeName(field.type.qualifiedSourceName());
+//				proposal.setName(field.name);
+//				proposal.setCompletion(completionName);
+//				proposal.setFlags(field.modifiers);
+//				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
+//				proposal.setRelevance(relevance);
+//				this.requestor.accept(proposal);
+//				if(DEBUG) {
+//					this.printDebug(proposal);
+//				}
+//			}
+//		}
+//	}
+//
+//	private void findImportsOfStaticMethods(char[] methodName, ReferenceBinding ref) {
+//		MethodBinding[] methods = ref.methods();
+//
+//		int methodLength = methodName.length;
+//		next : for (int m = methods.length; --m >= 0;) {
+//			MethodBinding method = methods[m];
+//
+//			if (method.isDefaultAbstract())	continue next;
+//
+//			if (method.isConstructor()) continue next;
+//
+//			if (!method.isStatic()) continue next;
+//
+//			if (this.options.checkDeprecation && method.isViewedAsDeprecated()) continue next;
+//
+//			if (this.options.checkVisibility
+//				&& !method.canBeSeenBy(this.unitScope.getDefaultPackage())) continue next;
+//
+//			if (methodLength > method.selector.length)
+//				continue next;
+//
+//			if (!CharOperation.prefixEquals(methodName, method.selector, false/* ignore case */)
+//					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(methodName, method.selector)))
+//				continue next;
+//
+//			int length = method.parameters.length;
+//			char[][] parameterPackageNames = new char[length][];
+//			char[][] parameterTypeNames = new char[length][];
+//
+//			for (int i = 0; i < length; i++) {
+//				TypeBinding type = method.original().parameters[i];
+//				parameterPackageNames[i] = type.qualifiedPackageName();
+//				parameterTypeNames[i] = type.qualifiedSourceName();
+//			}
+//			char[][] parameterNames = findMethodParameterNames(method,parameterTypeNames);
+//
+//
+//			char[] completionName = CharOperation.concat(
+//					method.declaringClass.qualifiedPackageName(),
+//					'.',
+//					method.declaringClass.qualifiedSourceName(),
+//					'.',
+//					method.selector);
+//
+//			completionName = CharOperation.concat(completionName, SEMICOLON);
+//
+//			int relevance = computeBaseRelevance();
+//			relevance += computeRelevanceForResolution();
+//			relevance += computeRelevanceForInterestingProposal();
+//			relevance += computeRelevanceForCaseMatching(methodName, method.selector);
+//			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
+//
+//			this.noProposal = false;
+//			if(!this.requestor.isIgnored(CompletionProposal.METHOD_NAME_REFERENCE)) {
+//				CompletionProposal proposal = this.createProposal(CompletionProposal.METHOD_NAME_REFERENCE, this.actualCompletionPosition);
+//				proposal.setDeclarationSignature(getSignature(method.declaringClass));
+//				proposal.setSignature(getSignature(method));
+//				proposal.setDeclarationPackageName(method.declaringClass.qualifiedPackageName());
+//				proposal.setDeclarationTypeName(method.declaringClass.qualifiedSourceName());
+//				proposal.setParameterPackageNames(parameterPackageNames);
+//				proposal.setParameterTypeNames(parameterTypeNames);
+//				proposal.setPackageName(method.returnType.qualifiedPackageName());
+//				proposal.setTypeName(method.returnType.qualifiedSourceName());
+//				proposal.setName(method.selector);
+//				proposal.setCompletion(completionName);
+//				proposal.setFlags(method.modifiers);
+//				proposal.setReplaceRange(this.startPosition - this.offset, this.endPosition - this.offset);
+//				proposal.setRelevance(relevance);
+//				if(parameterNames != null) proposal.setParameterNames(parameterNames);
+//				this.requestor.accept(proposal);
+//				if(DEBUG) {
+//					this.printDebug(proposal);
+//				}
+//			}
+//		}
+//	}
 
 	/*
 	 * Find javadoc block tags for a given completion javadoc tag node
@@ -4258,114 +4258,114 @@ public final class CompletionEngine
 	}
 
 	// Helper method for findMemberTypes(char[], ReferenceBinding, Scope)
-	private void findMemberTypes(
-		char[] typeName,
-		ReferenceBinding[] memberTypes,
-		ObjectVector typesFound,
-		ReferenceBinding receiverType,
-		SourceTypeBinding invocationType,
-		boolean staticOnly,
-		boolean staticFieldsAndMethodOnly,
-		boolean fromStaticImport,
-		boolean checkQualification,
-		Scope scope) {
-
-		// Inherited member types which are hidden by subclasses are filtered out
-		// No visibility checks can be performed without the scope & invocationSite
-		int typeLength = typeName.length;
-		next : for (int m = memberTypes.length; --m >= 0;) {
-			ReferenceBinding memberType = memberTypes[m];
-			//		if (!wantClasses && memberType.isClass()) continue next;
-			//		if (!wantInterfaces && memberType.isInterface()) continue next;
-
-			if (staticOnly && !memberType.isStatic()) continue next;
-
-			if (isForbidden(memberType)) continue next;
-
-			if (typeLength > memberType.sourceName.length)
-				continue next;
-
-			if (!CharOperation.prefixEquals(typeName, memberType.sourceName, false/* ignore case */)
-					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(typeName, memberType.sourceName)))
-				continue next;
-
-			if (this.options.checkDeprecation &&
-					memberType.isViewedAsDeprecated() &&
-					!scope.isDefinedInSameUnit(memberType))
-				continue next;
-
-			if (this.options.checkVisibility) {
-				if (invocationType != null && !memberType.canBeSeenBy(receiverType, invocationType)) {
-					continue next;
-				} else if(invocationType == null && !memberType.canBeSeenBy(this.unitScope.getDefaultPackage())) {
-					continue next;
-				}
-			}
-
-			for (int i = typesFound.size; --i >= 0;) {
-				ReferenceBinding otherType = (ReferenceBinding) typesFound.elementAt(i);
-
-				if (memberType == otherType)
-					continue next;
-
-				if (CharOperation.equals(memberType.sourceName, otherType.sourceName, true)) {
-
-					if (memberType.enclosingType().isSuperclassOf(otherType.enclosingType()))
-						continue next;
-				}
-			}
-
-			typesFound.add(memberType);
-
-			if(!this.insideQualifiedReference) {
-				if(this.assistNodeIsClass) {
-					if(!memberType.isClass()) continue next;
-				}
-			}
-
-			char[] completionName = memberType.sourceName();
-
-			boolean isQualified = false;
-			if(checkQualification && !fromStaticImport) {
-				char[] memberPackageName = memberType.qualifiedPackageName();
-				char[] memberTypeName = memberType.sourceName();
-				char[] memberEnclosingTypeNames = memberType.enclosingType().qualifiedSourceName();
-				if (mustQualifyType(memberPackageName, memberTypeName, memberEnclosingTypeNames, memberType.modifiers)) {
-					if (memberPackageName == null || memberPackageName.length == 0)
-						if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
-							break next; // ignore types from the default package from outside it
-					isQualified = true;
-					completionName =
-						CharOperation.concat(
-								memberPackageName,
-								CharOperation.concat(
-										memberEnclosingTypeNames,
-										memberTypeName,
-										'.'),
-								'.');
-				}
-			}
-
-			int relevance = computeBaseRelevance();
-			relevance += computeRelevanceForResolution();
-			relevance += computeRelevanceForInterestingProposal();
-			relevance += computeRelevanceForCaseMatching(typeName, memberType.sourceName);
-			relevance += computeRelevanceForExpectingType(memberType);
-			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
-			if(!insideQualifiedReference) {
-				relevance += computeRelevanceForQualification(isQualified);
-			}
-			if (staticFieldsAndMethodOnly && this.insideQualifiedReference) relevance += R_NON_INHERITED; // This criterion doesn't concern types and is added to be balanced with field and method relevance.
-
-			if (memberType.isClass()) {
-				relevance += computeRelevanceForClass();
-				relevance += computeRelevanceForException(memberType.sourceName);
-			}
-
-			this.noProposal = false;
-			createTypeProposal(memberType, memberType.qualifiedSourceName(), IAccessRule.K_ACCESSIBLE, completionName, relevance);
-		}
-	}
+//	private void findMemberTypes(
+//		char[] typeName,
+//		ReferenceBinding[] memberTypes,
+//		ObjectVector typesFound,
+//		ReferenceBinding receiverType,
+//		SourceTypeBinding invocationType,
+//		boolean staticOnly,
+//		boolean staticFieldsAndMethodOnly,
+//		boolean fromStaticImport,
+//		boolean checkQualification,
+//		Scope scope) {
+//
+//		// Inherited member types which are hidden by subclasses are filtered out
+//		// No visibility checks can be performed without the scope & invocationSite
+//		int typeLength = typeName.length;
+//		next : for (int m = memberTypes.length; --m >= 0;) {
+//			ReferenceBinding memberType = memberTypes[m];
+//			//		if (!wantClasses && memberType.isClass()) continue next;
+//			//		if (!wantInterfaces && memberType.isInterface()) continue next;
+//
+//			if (staticOnly && !memberType.isStatic()) continue next;
+//
+//			if (isForbidden(memberType)) continue next;
+//
+//			if (typeLength > memberType.sourceName.length)
+//				continue next;
+//
+//			if (!CharOperation.prefixEquals(typeName, memberType.sourceName, false/* ignore case */)
+//					&& !(this.options.camelCaseMatch && CharOperation.camelCaseMatch(typeName, memberType.sourceName)))
+//				continue next;
+//
+//			if (this.options.checkDeprecation &&
+//					memberType.isViewedAsDeprecated() &&
+//					!scope.isDefinedInSameUnit(memberType))
+//				continue next;
+//
+//			if (this.options.checkVisibility) {
+//				if (invocationType != null && !memberType.canBeSeenBy(receiverType, invocationType)) {
+//					continue next;
+//				} else if(invocationType == null && !memberType.canBeSeenBy(this.unitScope.getDefaultPackage())) {
+//					continue next;
+//				}
+//			}
+//
+//			for (int i = typesFound.size; --i >= 0;) {
+//				ReferenceBinding otherType = (ReferenceBinding) typesFound.elementAt(i);
+//
+//				if (memberType == otherType)
+//					continue next;
+//
+//				if (CharOperation.equals(memberType.sourceName, otherType.sourceName, true)) {
+//
+//					if (memberType.enclosingType().isSuperclassOf(otherType.enclosingType()))
+//						continue next;
+//				}
+//			}
+//
+//			typesFound.add(memberType);
+//
+//			if(!this.insideQualifiedReference) {
+//				if(this.assistNodeIsClass) {
+//					if(!memberType.isClass()) continue next;
+//				}
+//			}
+//
+//			char[] completionName = memberType.sourceName();
+//
+//			boolean isQualified = false;
+//			if(checkQualification && !fromStaticImport) {
+//				char[] memberPackageName = memberType.qualifiedPackageName();
+//				char[] memberTypeName = memberType.sourceName();
+//				char[] memberEnclosingTypeNames = memberType.enclosingType().qualifiedSourceName();
+//				if (mustQualifyType(memberPackageName, memberTypeName, memberEnclosingTypeNames, memberType.modifiers)) {
+//					if (memberPackageName == null || memberPackageName.length == 0)
+//						if (this.unitScope != null && this.unitScope.getDefaultPackage().compoundName != CharOperation.NO_CHAR_CHAR)
+//							break next; // ignore types from the default package from outside it
+//					isQualified = true;
+//					completionName =
+//						CharOperation.concat(
+//								memberPackageName,
+//								CharOperation.concat(
+//										memberEnclosingTypeNames,
+//										memberTypeName,
+//										'.'),
+//								'.');
+//				}
+//			}
+//
+//			int relevance = computeBaseRelevance();
+//			relevance += computeRelevanceForResolution();
+//			relevance += computeRelevanceForInterestingProposal();
+//			relevance += computeRelevanceForCaseMatching(typeName, memberType.sourceName);
+//			relevance += computeRelevanceForExpectingType(memberType);
+//			relevance += computeRelevanceForRestrictions(IAccessRule.K_ACCESSIBLE);
+//			if(!insideQualifiedReference) {
+//				relevance += computeRelevanceForQualification(isQualified);
+//			}
+//			if (staticFieldsAndMethodOnly && this.insideQualifiedReference) relevance += R_NON_INHERITED; // This criterion doesn't concern types and is added to be balanced with field and method relevance.
+//
+//			if (memberType.isClass()) {
+//				relevance += computeRelevanceForClass();
+//				relevance += computeRelevanceForException(memberType.sourceName);
+//			}
+//
+//			this.noProposal = false;
+//			createTypeProposal(memberType, memberType.qualifiedSourceName(), IAccessRule.K_ACCESSIBLE, completionName, relevance);
+//		}
+//	}
 
 	private void findMemberTypes(
 		char[] typeName,

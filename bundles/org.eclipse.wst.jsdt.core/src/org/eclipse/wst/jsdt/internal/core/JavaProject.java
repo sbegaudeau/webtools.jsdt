@@ -3159,7 +3159,7 @@ public class JavaProject
 
 
 			try {
-				IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+//				IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
 //				if(!rscPath.exists()) rscPath.create(true, true, new NullProgressMonitor());
 
 				IPath fullPath = new Path(JavaProject.SHARED_PROPERTIES_DIRECTORY);//.append(LibrarySuperType.SUPER_TYPE_NAME);
@@ -3167,8 +3167,7 @@ public class JavaProject
 				superTypeName = getSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_NAME).toString());
 				superTypeContainer = getSharedProperty(fullPath.append(LibrarySuperType.SUPER_TYPE_CONTAINER).toString());
 			} catch (CoreException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				// unable to read, probably doesn't exist
 			}
 			if (superTypeContainer==null || superTypeName==null)
 				return null;

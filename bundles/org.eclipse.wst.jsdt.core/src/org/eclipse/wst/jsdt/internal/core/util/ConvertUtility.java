@@ -316,24 +316,24 @@ public class ConvertUtility {
 		return proj.readRawIncludepath();
 	}
 
-	private boolean hasAValidSourcePath() {
-		if (hasProjectClassPathFile()) {
-			try {
-				IIncludePathEntry[] entries = getRawClassPath();
-				for (int i = 0; i < entries.length; i++) {
-					if (entries[i].getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
-						return true;
-					}
-				}
-			}
-			catch (Exception e) {
-				if (DEBUG) {
-					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
-				}
-			}
-		}
-		return false;
-	}
+//	private boolean hasAValidSourcePath() {
+//		if (hasProjectClassPathFile()) {
+//			try {
+//				IIncludePathEntry[] entries = getRawClassPath();
+//				for (int i = 0; i < entries.length; i++) {
+//					if (entries[i].getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
+//						return true;
+//					}
+//				}
+//			}
+//			catch (Exception e) {
+//				if (DEBUG) {
+//					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	private boolean hasProjectClassPathFile() {
 		if (fCurrProject == null) {

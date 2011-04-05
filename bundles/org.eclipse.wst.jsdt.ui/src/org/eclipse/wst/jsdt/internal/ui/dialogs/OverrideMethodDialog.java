@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -310,19 +310,19 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		}
 
 		IFunction[] typesArrays= (IFunction[]) types.toArray(new IFunction[types.size()]);
-		OverrideMethodComparator comparator= null;//new OverrideMethodComparator(binding);
-		if (expanded.isEmpty() && typesArrays.length > 0) {
-			comparator.sort(null, typesArrays);
-			expanded.add(typesArrays[0]);
-		}
-		setExpandedElements(expanded.toArray());
+//		OverrideMethodComparator comparator= null;//new OverrideMethodComparator(binding);
+//		if (expanded.isEmpty() && typesArrays.length > 0) {
+//			comparator.sort(null, typesArrays);
+//			expanded.add(typesArrays[0]);
+//		}
+		setExpandedElements(typesArrays);
 
 		((OverrideMethodContentProvider) getContentProvider()).init(parentMethods);
 
 		setTitle(JavaUIMessages.OverrideMethodDialog_dialog_title);
 		setMessage(null);
 		setValidator(new OverrideMethodValidator(parentMethods.length));
-		setComparator(comparator);
+//		setComparator(comparator);
 		setContainerMode(true);
 		setSize(60, 18);
 		setInput(new Object());
