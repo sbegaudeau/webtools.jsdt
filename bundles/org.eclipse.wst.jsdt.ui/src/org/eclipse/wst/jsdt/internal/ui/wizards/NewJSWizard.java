@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -28,30 +28,36 @@ public class NewJSWizard extends Wizard implements INewWizard {
 	
 	private NewJSFileWizardPage		fNewFilePage;
 	private IStructuredSelection	fSelection;
+	private IWorkbench fWorkbench;
 
 	public void addPages() {
 		fNewFilePage = new NewJSFileWizardPage("JSWizardNewFileCreationPage", new StructuredSelection(IDE.computeSelectedResources(fSelection))); //$NON-NLS-1$
-		fNewFilePage.setTitle(NewWizardMessages.Javascript_UI_Wizard_New_Heading); //$NON-NLS-1$
-		fNewFilePage.setDescription(NewWizardMessages.Javascript_UI_Wizard_New_Description); //$NON-NLS-1$
+		fNewFilePage.setTitle(NewWizardMessages.Javascript_UI_Wizard_New_Heading);
+		fNewFilePage.setDescription(NewWizardMessages.Javascript_UI_Wizard_New_Description);
 		addPage(fNewFilePage);
 	}
 
-	public void init(IWorkbench aWorkbench, IStructuredSelection aSelection) {
+	public void init(IWorkbench workbench, IStructuredSelection aSelection) {
+		fWorkbench = workbench;
 		fSelection = aSelection;
-		setWindowTitle(NewWizardMessages.Javascript_UI_Wizard_New_Title); //$NON-NLS-1$
+		setWindowTitle(NewWizardMessages.Javascript_UI_Wizard_New_Title);
 		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_NEWJSFILE);
 	}
 
 	private void openEditor(final IFile file) {
 		if (file != null) {
-			getShell().getDisplay().asyncExec(new Runnable() {
+			fWorkbench.getDisplay().asyncExec(new Runnable() {
 				public void run() {
 					try {
-						IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-						IDE.openEditor(page, file, true, false);
+						IWorkbenchWindow activeWorkbenchWindow = fWorkbench.getActiveWorkbenchWindow();
+						if (activeWorkbenchWindow != null) {
+							IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+							if (page != null) {
+								IDE.openEditor(page, file, true, false);
+							}
+						}
 					}
 					catch (PartInitException e) {
-						// STP Logger.log(Logger.WARNING_DEBUG, e.getMessage(), e);
 						JavaScriptPlugin.log(e);
 					}
 				}
