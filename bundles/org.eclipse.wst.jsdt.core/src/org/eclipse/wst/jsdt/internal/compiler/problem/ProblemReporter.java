@@ -3133,6 +3133,7 @@ public void unreachableCode(Statement statement) {
 		IProblem.CodeCannotBeReached,
 		NoArgument,
 		NoArgument,
+		ProblemSeverities.Ignore,
 		sourceStart,
 		sourceEnd);
 }

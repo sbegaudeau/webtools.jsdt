@@ -545,7 +545,11 @@ public final class CompletionEngine
 		if(acceptedTypes == null) {
 			acceptedTypes = new ObjectVector();
 		}
-		acceptedTypes.add(new AcceptedBinding(packageName, simpleTypeName, enclosingTypeNames, modifiers, accessibility));
+		char[] fullyQualifiedName = simpleTypeName;
+		if(CharOperation.indexOf('.', simpleTypeName) < 0) {
+			fullyQualifiedName = CharOperation.concat(packageName, simpleTypeName, '.');
+		}
+		acceptedTypes.add(new AcceptedBinding(packageName, fullyQualifiedName, enclosingTypeNames, modifiers, accessibility));
 	}
 
 	public void acceptBinding(
