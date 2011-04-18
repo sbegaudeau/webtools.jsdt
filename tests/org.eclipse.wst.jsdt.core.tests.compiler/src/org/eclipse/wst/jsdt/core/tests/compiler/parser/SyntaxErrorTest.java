@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -158,7 +158,7 @@ public void test03() {
 		"1. ERROR in <test> (at line 2)\n"+
 		"	o = { s: \"Success\"; };								\n"+
 		"	                  ^\n"+
-		"Syntax error on token \";\", delete this token\n"+
+		"Syntax error on token \";\", , expected\n"+
 		"----------\n";
 
 	String testName = "<test>";
@@ -180,7 +180,7 @@ public void test04() {
 		"1. ERROR in <test> (at line 2)\n"+
 		"	var o = { s: \"Success\"; };								\n"+
 		"	                      ^\n"+
-		"Syntax error on token \";\", delete this token\n"+
+		"Syntax error on token \";\", , expected\n"+
 		"----------\n";
 
 	String testName = "<test>";
@@ -324,58 +324,4 @@ public void test05h() {
 		expectedSyntaxErrorDiagnosis,
 		testName);
 }
-
-//public void test06() {
-//	String s = 
-//		"(x=7,y=5)"; 	
-//
-//	String expectedSyntaxErrorDiagnosis =
-//		"";
-//
-//	String testName = "<test06>";
-//	checkParse(
-//		s.toCharArray(),
-//		expectedSyntaxErrorDiagnosis,
-//		testName);
-//}
-//public void test06a() {
-//	String s = 
-//		"x=7,y=5;"; 	
-//
-//	String expectedSyntaxErrorDiagnosis =
-//		"";
-//
-//	String testName = "<test06>";
-//	checkParse(
-//		s.toCharArray(),
-//		expectedSyntaxErrorDiagnosis,
-//		testName);
-//}
-//public void test07() {
-//	String s = 
-//		"{x:7,y:5}"; 	
-//
-//	String expectedSyntaxErrorDiagnosis =
-//		"";
-//
-//	String testName = "<test06>";
-//	checkParse(
-//		s.toCharArray(),
-//		expectedSyntaxErrorDiagnosis,
-//		testName);
-//}
-//public void test08() {
-//	String s = 
-//		"return \"pageXOffset\" in n ? {x:n.pageXOffset,y:n.pageYOffset} : (n=d.doc.documentElement, n.clientHeight ? {x:d._fixIeBiDiScrollLeft(n.scrollLeft),y:n.scrollTop}:(n=d.body(),{x:n.scrollLeft||0,y:n.scrollTop||0}));};"; 	
-//
-//	String expectedSyntaxErrorDiagnosis =
-//		"";
-//
-//	String testName = "<test>";
-//	checkParse(
-//		s.toCharArray(),
-//		expectedSyntaxErrorDiagnosis,
-//		testName);
-//}
-
 }

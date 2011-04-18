@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -681,7 +681,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				// Compute class name by removing ".java" and replacing slashes
 				// with dots
 				String className = sourceFile.substring(0,
-						sourceFile.length() - 3).replace('/', '.').replace(
+						sourceFile.length() - 5).replace('/', '.').replace(
 						'\\', '.');
 				if (className.endsWith(PACKAGE_INFO_NAME))
 					return;

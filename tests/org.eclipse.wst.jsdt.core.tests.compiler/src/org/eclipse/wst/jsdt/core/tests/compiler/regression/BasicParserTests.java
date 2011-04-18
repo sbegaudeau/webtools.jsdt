@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -886,7 +886,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"a=1,b=2",
 			"X.js",
-				"(a = 1), (b = 2);\n"			
+				"((a = 1), (b = 2));\n"			
 		);
 	}
 
@@ -895,7 +895,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		this.runParseTest(
 				"a=1,funcall(0),5",
 			"X.js",
-				"(a = 1), funcall(0), 5;\n"			
+				"((a = 1), funcall(0), 5);\n"			
 		);
 	}
 
