@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -713,4 +713,7 @@ void setSourceStart(int sourceStart);
 	// indicates an externally defined problem that has a quick-assist processor
 	// associated with it
 	int ExternalProblemFixable = 901;
+	
+	int InvalidValueForSetter = 902;
+	int InvalidValueForGetter = 903;
 }

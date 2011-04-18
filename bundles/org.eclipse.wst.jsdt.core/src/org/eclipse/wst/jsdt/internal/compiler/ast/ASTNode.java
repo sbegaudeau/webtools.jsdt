@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -461,6 +461,9 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	}
 	public int sourceEnd() {
 		return this.sourceEnd;
+	}
+	public void setSourceEnd(int pos) {
+		this.sourceEnd = pos;
 	}
 	public String toString() {
 		return print(0, new StringBuffer(30)).toString();

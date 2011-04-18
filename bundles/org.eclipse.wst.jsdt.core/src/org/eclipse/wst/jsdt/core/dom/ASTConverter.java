@@ -3821,9 +3821,6 @@ class ASTConverter {
 					case TerminalTokens.TokenNamevolatile:
 						modifier = createModifier(Modifier.ModifierKeyword.VOLATILE_KEYWORD);
 						break;
-					case TerminalTokens.TokenNamestrictfp:
-						modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
-						break;
 					case TerminalTokens.TokenNameCOMMENT_BLOCK :
 					case TerminalTokens.TokenNameCOMMENT_LINE :
 					case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -3934,9 +3931,6 @@ class ASTConverter {
 							case TerminalTokens.TokenNamevolatile:
 								modifier = createModifier(Modifier.ModifierKeyword.VOLATILE_KEYWORD);
 								break;
-							case TerminalTokens.TokenNamestrictfp:
-								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
-								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :
 							case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -3995,9 +3989,6 @@ class ASTConverter {
 							break;
 						case TerminalTokens.TokenNamevolatile:
 							modifier = createModifier(Modifier.ModifierKeyword.VOLATILE_KEYWORD);
-							break;
-						case TerminalTokens.TokenNamestrictfp:
-							modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
 							break;
 						case TerminalTokens.TokenNameCOMMENT_BLOCK :
 						case TerminalTokens.TokenNameCOMMENT_LINE :
@@ -4081,9 +4072,6 @@ class ASTConverter {
 							case TerminalTokens.TokenNamevolatile:
 								modifier = createModifier(Modifier.ModifierKeyword.VOLATILE_KEYWORD);
 								break;
-							case TerminalTokens.TokenNamestrictfp:
-								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
-								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :
 							case TerminalTokens.TokenNameCOMMENT_JAVADOC :
@@ -4148,9 +4136,6 @@ class ASTConverter {
 								break;
 							case TerminalTokens.TokenNamevolatile:
 								modifier = createModifier(Modifier.ModifierKeyword.VOLATILE_KEYWORD);
-								break;
-							case TerminalTokens.TokenNamestrictfp:
-								modifier = createModifier(Modifier.ModifierKeyword.STRICTFP_KEYWORD);
 								break;
 							case TerminalTokens.TokenNameCOMMENT_BLOCK :
 							case TerminalTokens.TokenNameCOMMENT_LINE :

@@ -1639,6 +1639,20 @@ public void invalidUnaryExpression(Expression expression) {
 		expression.sourceStart,
 		expression.sourceEnd);
 }
+public void invalidValueForGetterSetter(Expression expression, boolean isSetter) {
+	int problemID;
+ 	if (isSetter) {
+		problemID = IProblem.InvalidValueForSetter;
+	} else {
+		problemID = IProblem.InvalidValueForGetter;
+	}
+	this.handle(
+		problemID,
+		NoArgument,
+		NoArgument,
+		expression.sourceStart,
+		expression.sourceEnd);
+}
 private boolean isIdentifier(int token) {
 	return token == TerminalTokens.TokenNameIdentifier;
 }
@@ -1682,7 +1696,6 @@ private boolean isKeyword(int token) {
 		case TerminalTokens.TokenNamesuper:
 		case TerminalTokens.TokenNamestatic:
 		case TerminalTokens.TokenNameswitch:
-		case TerminalTokens.TokenNamestrictfp:
 		case TerminalTokens.TokenNamesynchronized:
 		case TerminalTokens.TokenNametry:
 		case TerminalTokens.TokenNamethis:
@@ -1698,7 +1711,7 @@ private boolean isKeyword(int token) {
 		case TerminalTokens.TokenNameexport :
 		case TerminalTokens.TokenNamefunction :
 		case TerminalTokens.TokenNamein :
-		case TerminalTokens.TokenNameinfinity :
+//		case TerminalTokens.TokenNameinfinity :
 		case TerminalTokens.TokenNameundefined :
 		case TerminalTokens.TokenNamewith :
 			return true;

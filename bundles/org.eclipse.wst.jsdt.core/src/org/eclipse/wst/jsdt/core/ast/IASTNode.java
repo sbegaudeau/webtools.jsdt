@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -135,6 +135,7 @@ public interface IASTNode {
 	public static final int WITH_STATEMENT=114;
 	public static final int CLASS_LITERAL_ACCESS=115;
 	public static final int CL_INIT=116;
+	public static final int OBJECT_GETTER_SETTER_FIELD=117;
 	public int sourceStart() ;
 	public int sourceEnd();
 	public int getASTType();

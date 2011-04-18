@@ -1602,7 +1602,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 // 			}
 //			if (javaDoc.memberOf!=null)
 //			{
-//				char[] typeName = javaDoc.memberOf.getSimpleTypeName();
+//				char[] typeName = javaDoc.memberOf.getFullTypeName();
 //				convertAnonymousTypeToNamed(inClass,typeName);
 //				inClass.isDefinition=true;
 //			}
@@ -1621,7 +1621,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 //			}
 //			if (javaDoc.returnType!=null)
 //			{
-//				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
+//				returnType=this.addType(javaDoc.returnType.getFullTypeName());
 //			}
 //
 //			if (inClass!=null && name!=null)

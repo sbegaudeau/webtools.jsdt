@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -681,68 +681,6 @@ public class CompletionJavadocParser extends JavadocParser {
 								typeRef = null;
 								this.completionNode = null;
 							}
-							break;
-						case TerminalTokens.TokenNameAT:
-							consumeToken();
-							try {
-								this.scanner.tokenizeWhiteSpace = false;
-								int startPosition = this.scanner.getCurrentTokenStartPosition();
-								parseTag(startPosition);
-								if (this.completionNode != null) {
-									if (this.inlineTagStarted) {
-										/* May be to replace invalid @value tag inside text?
-										if (this.completionNode instanceof CompletionOnJavadocSingleTypeReference) {
-											CompletionOnJavadocSingleTypeReference singleTypeReference = (CompletionOnJavadocSingleTypeReference) this.completionNode;
-											singleTypeReference.tagSourceStart = startPosition;
-											switch (this.tagValue) {
-												case TAG_VALUE_VALUE:
-//													singleTypeReference.completionFlags |= ONLY_INLINE_TAG;
-													if (this.sourceLevel < ClassFileConstants.JDK1_5) singleTypeReference.completionFlags |= REPLACE_TAG;
-													break;
-											}
-										} else if (this.completionNode instanceof CompletionOnJavadocQualifiedTypeReference) {
-											CompletionOnJavadocQualifiedTypeReference qualifiedTypeRef = (CompletionOnJavadocQualifiedTypeReference) this.completionNode;
-											qualifiedTypeRef.tagSourceStart = startPosition;
-											switch (this.tagValue) {
-												case TAG_VALUE_VALUE:
-													singleTypeReference.completionFlags |= ONLY_INLINE_TAG;
-													if (this.sourceLevel < ClassFileConstants.JDK1_5) qualifiedTypeRef.completionFlags |= REPLACE_TAG;
-													break;
-											}
-										}
-//										*/
-									} else {
-										/* May be to replace non-inline tag inside text?
-										if (this.completionNode instanceof CompletionOnJavadocSingleTypeReference) {
-											CompletionOnJavadocSingleTypeReference singleTypeReference = (CompletionOnJavadocSingleTypeReference) this.completionNode;
-											singleTypeReference.tagSourceStart = startPosition;
-											switch (this.tagValue) {
-												case TAG_LINK_VALUE:
-												case TAG_LINKPLAIN_VALUE:
-													singleTypeReference.completionFlags |= ONLY_INLINE_TAG;
-												case TAG_SEE_VALUE:
-													singleTypeReference.completionFlags |= REPLACE_TAG;
-													break;
-											}
-										} else if (this.completionNode instanceof CompletionOnJavadocQualifiedTypeReference) {
-											CompletionOnJavadocQualifiedTypeReference qualifiedTypeRef = (CompletionOnJavadocQualifiedTypeReference) this.completionNode;
-											qualifiedTypeRef.tagSourceStart = startPosition;
-											switch (this.tagValue) {
-												case TAG_LINK_VALUE:
-												case TAG_LINKPLAIN_VALUE:
-													qualifiedTypeRef.completionFlags |= ONLY_INLINE_TAG;
-												case TAG_SEE_VALUE:
-													qualifiedTypeRef.completionFlags |= REPLACE_TAG;
-													break;
-											}
-										}
-//										*/
-									}
-								}
-							} catch (InvalidInputException e) {
-								consumeToken();
-							}
-							this.scanner.tokenizeWhiteSpace = true;
 							break;
 						default :
 							consumeToken();
