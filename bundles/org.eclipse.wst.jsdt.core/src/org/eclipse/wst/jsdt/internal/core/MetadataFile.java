@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -137,11 +137,11 @@ public class MetadataFile extends Openable implements
 			IFile file = (IFile) getResource();
 				try {
 					apis = MetadataReader.readAPIsFromStream(new InputSource(file.getContents()),file.getLocation().toOSString());
-					apis.fileName=file.getFullPath().toPortableString();
+					apis.fileName=file.getFullPath().toOSString().toCharArray();
 				} catch (Exception e) {
 					Util.log(e, "error reading metadata");
 					apis=new LibraryAPIs();
-					apis.fileName=file.getFullPath().toPortableString();
+					apis.fileName=file.getFullPath().toOSString().toCharArray();
 				}
 		}
 		return apis;

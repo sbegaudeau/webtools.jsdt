@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public LibraryAPIsScope(LibraryAPIs apis, LookupEnvironment environment) {
 	translations.put("string".toCharArray(), "String".toCharArray());
 	translations.put("array".toCharArray(), "Array".toCharArray());
 	
-	CompilationResult result = new CompilationResult(apis.fileName.toCharArray(),new char[][]{},0,0,0);
+	CompilationResult result = new CompilationResult(apis.fileName,new char[][]{},0,0,0);
 	CompilationUnitDeclaration unit = new CompilationUnitDeclaration(environment.problemReporter,result,0);
 	unit.scope=this;
 	this.referenceContext=unit;
@@ -133,7 +133,7 @@ public void cleanup()
 
 
 public char[] getFileName() {
-	return this.apis.fileName.toCharArray();
+	return this.apis.fileName;
 }
 
 }
