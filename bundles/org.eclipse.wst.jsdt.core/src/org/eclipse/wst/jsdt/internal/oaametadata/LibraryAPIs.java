@@ -22,7 +22,7 @@ public class LibraryAPIs {
 	
 	public String description;
 	public Author[] authors;
-	public String fileName;
+	public char[] fileName;
 	public Enum[] enums;
 	public Mixin [] mixins;
 	public Namespace [] namespaces;

@@ -233,7 +233,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 		try {
 			FileInputStream file = new FileInputStream(fileName);
 			LibraryAPIs apis= readAPIsFromStream(new InputSource(file),fileName);
-			apis.fileName=fileName;
+			apis.fileName=fileName.toCharArray();
 			return apis;
 		} catch (FileNotFoundException e) {
 			Util.log(e,  "error reading oaametadata");

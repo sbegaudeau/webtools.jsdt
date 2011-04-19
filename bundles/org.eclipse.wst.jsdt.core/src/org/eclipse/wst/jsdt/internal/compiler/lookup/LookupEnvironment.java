@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -25,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
+import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
 import org.eclipse.wst.jsdt.internal.oaametadata.ClassData;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
@@ -65,7 +65,7 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 
 	private CompilationUnitDeclaration[] units = new CompilationUnitDeclaration[4];
 	private MethodVerifier verifier;
-	HashSet acceptedCompilationUnits=new HashSet();
+	SimpleSetOfCharArray acceptedCompilationUnits=new SimpleSetOfCharArray();
 
 
 public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOptions, ProblemReporter problemReporter, INameEnvironment nameEnvironment) {
@@ -96,11 +96,10 @@ public ReferenceBinding askForType(char[][] compoundName) {
 		typeRequestor.accept(answer.getBinaryType(), computePackageFrom(compoundName), answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		String fileName=new String(compilationUnit.getFileName());
-		if (!acceptedCompilationUnits.contains(fileName))
+		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
 		{
 		// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(fileName);
+			acceptedCompilationUnits.add(compilationUnit.getFileName());
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isSourceType())
@@ -109,7 +108,7 @@ public ReferenceBinding askForType(char[][] compoundName) {
 	else if (answer.isMetaData())
 		{
 			LibraryAPIs metadata= answer.getLibraryMetadata();
-			if (!acceptedCompilationUnits.contains(metadata.fileName))
+			if (!acceptedCompilationUnits.includes(metadata.fileName))
 			{
 				// the type was found as a .js file, try to build it then search the cache
 				acceptedCompilationUnits.add(metadata.fileName);
@@ -148,20 +147,18 @@ void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int m
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		String fileName=new String(compilationUnit.getFileName());
-		if (!acceptedCompilationUnits.contains(fileName))
+		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
 		{
 			// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(fileName);
+			acceptedCompilationUnits.add(compilationUnit.getFileName());
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	}else if (answer.isCompilationUnits()) {
 			ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
 			for (int i = 0; i < compilationUnits.length; i++) {
-				String fileName=new String(compilationUnits[i].getFileName());
-				if (!acceptedCompilationUnits.contains(fileName)) {
+				if (!acceptedCompilationUnits.includes(compilationUnits[i].getFileName())) {
 					// the type was found as a .js file, try to build it then search the cache
-					acceptedCompilationUnits.add(fileName);
+					acceptedCompilationUnits.add(compilationUnits[i].getFileName());
 //					if (compilationUnits[i] instanceof MetadataFile)
 //					{
 //						typeRequestor.accept(((MetadataFile)compilationUnits[i]).getAPIs());
@@ -197,20 +194,18 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		String fileName=new String(compilationUnit.getFileName());
-		if (!acceptedCompilationUnits.contains(fileName))
+		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
 		{
 			// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(fileName);
+			acceptedCompilationUnits.add(compilationUnit.getFileName());
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isCompilationUnits()) {
 		ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
 		for (int i = 0; i < compilationUnits.length; i++) {
-			String fileName=new String(compilationUnits[i].getFileName());
-			if (!acceptedCompilationUnits.contains(fileName)) {
+			if (!acceptedCompilationUnits.includes(compilationUnits[i].getFileName())) {
 				// the type was found as a .js file, try to build it then search the cache
-				acceptedCompilationUnits.add(fileName);
+				acceptedCompilationUnits.add(compilationUnits[i].getFileName());
 				typeRequestor.accept(compilationUnits[i], answer
 						.getAccessRestriction());
 			}
@@ -221,7 +216,7 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	else if (answer.isMetaData())
 	{
 		LibraryAPIs metadata= answer.getLibraryMetadata();
-		if (!acceptedCompilationUnits.contains(metadata.fileName))
+		if (!acceptedCompilationUnits.includes(metadata.fileName))
 		{
 			// the type was found as a .js file, try to build it then search the cache
 			acceptedCompilationUnits.add(metadata.fileName);
@@ -888,7 +883,7 @@ public void buildTypeBindings(LibraryAPIs libraryMetaData) {
 		if (count != topLevelTypes.length)
 			System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
 		
-		char [] fullFileName=libraryMetaData.fileName.toCharArray();
+		char [] fullFileName=libraryMetaData.fileName;
 
 		LibraryAPIsBinding libraryAPIsBinding=new LibraryAPIsBinding(null,defaultPackage,fullFileName);
 
