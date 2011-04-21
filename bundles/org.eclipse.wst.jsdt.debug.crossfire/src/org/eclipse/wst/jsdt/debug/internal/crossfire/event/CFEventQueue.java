@@ -136,6 +136,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 									set.add(new CFResumeEvent(crossfire(), request, thread, loc));
 								}
 							}
+							thread.eventResume();
 						}
 						else {
 							return null;
@@ -262,35 +263,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_TOGGLE_BREAKPOINT.equals(name)) {
-					/*Map body = event.getBody();
-					String url = (String) body.get(Attributes.URL);
-					if(url != null) {
-						String path = JavaScriptDebugPlugin.findExternalScriptPathFromURI(url);
-						if(path != null) {
-							IFile file = (IFile) JavaScriptDebugPlugin.getExternalSourceProject(false).findMember(new Path(path));
-							if(file != null && file.isAccessible()) {
-								boolean isset = ((Boolean)body.get(Attributes.SET)).booleanValue();
-								if(!isset) {
-									
-								}
-								else {
-									int line = -1;
-									Number lineno = (Number) body.get(Attributes.LINE);
-									if(lineno != null) {
-										line = lineno.intValue();
-									}
-									if(line > -1) { 
-										Map attribs = new HashMap();
-										attribs.put(IJavaScriptBreakpoint.SCRIPT_PATH, body.get(Attributes.URL));
-										try {
-											JavaScriptDebugModel.createLineBreakpoint(file, line, -1, -1, attribs, true);
-										}
-										catch(DebugException de) {}
-									}
-								}
-							}
-						}
-					}*/
+					crossfire().toggleBreakpoint(event.getBody());
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_TOGGLE_BREAKPOINT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}

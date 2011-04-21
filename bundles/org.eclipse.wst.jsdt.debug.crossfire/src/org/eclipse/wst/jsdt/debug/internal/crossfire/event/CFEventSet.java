@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.event;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
  *  
  *  @since 1.0
  */
-public class CFEventSet extends HashSet implements EventSet {
+public class CFEventSet extends ArrayList implements EventSet {
 
 	private VirtualMachine vm = null;
 	private ThreadReference thread = null;

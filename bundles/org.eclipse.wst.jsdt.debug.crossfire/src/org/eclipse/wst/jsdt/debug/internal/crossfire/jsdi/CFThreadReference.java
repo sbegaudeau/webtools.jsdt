@@ -37,6 +37,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	static final int RUNNING = 0;
 	static final int SUSPENDED = 1;
 	static final int TERMINATED = 2;
+	static final int EVENT_RESUME = 3;
 	
 	private String id = null;
 	private String href = null;
@@ -138,27 +139,39 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 		}
 	}
 
+	/**
+	 * The thread has been resumed by an event
+	 */
+	public void eventResume() {
+		state = EVENT_RESUME;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#resume()
 	 */
 	public void resume() {
 		if(isSuspended()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
-			String step = resolveStepKind();
-			if(step != null) {
-				request.setArgument(Attributes.STEPACTION, step);
-			}
 			try {
-				CFResponsePacket response = crossfire().sendRequest(request);
-				if(response.isSuccess()) {
-					state = RUNNING;
-				}
-				else if(TRACE) {
-					Tracing.writeString("THREAD [failed continue request] "+JSON.serialize(request)); //$NON-NLS-1$
+				if(state != EVENT_RESUME) {
+					//XXX only send an request if we were not resumed by an event
+					CFRequestPacket request = new CFRequestPacket(Commands.CONTINUE, id);
+					String step = resolveStepKind();
+					if(step != null) {
+						request.setArgument(Attributes.STEPACTION, step);
+					}
+				
+					CFResponsePacket response = crossfire().sendRequest(request);
+					if(response.isSuccess()) {
+						state = RUNNING;
+					}
+					else if(TRACE) {
+						Tracing.writeString("THREAD [failed continue request] "+JSON.serialize(request)); //$NON-NLS-1$
+					}
 				}
 			}
 			finally {
 				clearFrames();
+				state = RUNNING;
 			}
 		}
 	}
