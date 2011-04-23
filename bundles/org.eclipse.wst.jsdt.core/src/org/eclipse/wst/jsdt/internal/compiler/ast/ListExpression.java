@@ -72,8 +72,12 @@ public boolean isCompactableOperation() {
 public TypeBinding resolveType(BlockScope scope) {
 	// keep implementation in sync with CombinedBinaryExpression#resolveType
 	// and nonRecursiveResolveTypeUpwards
+	
+	this.constant = Constant.NotAConstant;
+	
 	for (int i = 0; i < this.expressions.length; i++) {
 		this.resolvedType=this.expressions[i].resolveType(scope);
+		this.constant = this.expressions[i].constant;
 	}
 
 	return this.resolvedType;

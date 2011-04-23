@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -101,7 +101,7 @@ public class ArrayInitializer extends Expression implements IArrayInitializer {
 						? expression.resolveTypeExpecting(scope, elementType)
 						: expression.resolveType(scope);
 				if (exprType == null)
-					return null;
+					continue;
 
 				// Compile-time conversion required?
 				if (elementType != exprType) // must call before computeConversion() and typeMismatchError()
@@ -117,7 +117,7 @@ public class ArrayInitializer extends Expression implements IArrayInitializer {
 											&& expression.isConstantValueOfTypeAssignableToType(exprType, scope.environment().computeBoxingType(elementType)))) {
 				} else {
 					scope.problemReporter().typeMismatchError(exprType, elementType, expression);
-					return null;
+//					return null;
 				}
 			}
 			return this.binding;
