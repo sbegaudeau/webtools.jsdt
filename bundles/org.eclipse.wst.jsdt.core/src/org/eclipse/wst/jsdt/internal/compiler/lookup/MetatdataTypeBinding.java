@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -917,7 +917,7 @@ public String toString() {
 	return buffer.toString();
 }
 void verifyMethods(MethodVerifier verifier) {
-	verifier.verify(this);
+	//verifier.verify(this);
 
 //	for (int i = this.memberTypes.length; --i >= 0;)
 //		 ((SourceTypeBinding) this.memberTypes[i]).verifyMethods(verifier);

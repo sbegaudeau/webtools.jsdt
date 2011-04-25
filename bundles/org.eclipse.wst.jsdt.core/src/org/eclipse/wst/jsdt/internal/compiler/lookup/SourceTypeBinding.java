@@ -1321,7 +1321,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 
 	void verifyMethods(MethodVerifier verifier) {
-		verifier.verify(this);
+		//verifier.verify(this);
 	}
 
 	public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
