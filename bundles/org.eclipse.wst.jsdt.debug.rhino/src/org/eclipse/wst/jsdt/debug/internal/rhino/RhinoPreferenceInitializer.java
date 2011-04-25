@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public class RhinoPreferenceInitializer extends AbstractPreferenceInitializer {
 	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
 	 */
 	public void initializeDefaultPreferences() {
-		IEclipsePreferences defaultscope = new DefaultScope().getNode(RhinoDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences defaultscope = DefaultScope.INSTANCE.getNode(RhinoDebugPlugin.PLUGIN_ID);
 		defaultscope.putBoolean(Constants.SUSPEND_ON_STDIN_LOAD, false);
 		try {
 			defaultscope.flush();

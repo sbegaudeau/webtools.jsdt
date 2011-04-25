@@ -88,7 +88,7 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	 * Starts the manager
 	 */
 	public void start() {
-		IEclipsePreferences node = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		node.addPreferenceChangeListener(this);
 		StartJob job = new StartJob(node.getBoolean(Constants.SUSPEND_ON_ALL_SCRIPT_LOADS, false), 
 				node.getBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, true));
@@ -101,7 +101,7 @@ public class JavaScriptPreferencesManager implements IPreferenceChangeListener {
 	 * Stops the manager and clean up
 	 */
 	public void stop() {
-		IEclipsePreferences node = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		if(node != null) {
 			node.removePreferenceChangeListener(this);
 		}

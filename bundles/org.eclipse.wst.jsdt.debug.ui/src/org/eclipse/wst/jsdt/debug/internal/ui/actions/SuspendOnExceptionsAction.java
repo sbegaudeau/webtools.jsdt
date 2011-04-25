@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,7 @@ public class SuspendOnExceptionsAction extends ViewFilterAction {
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
-		IEclipsePreferences prefs = new InstanceScope().getNode(JavaScriptDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(JavaScriptDebugPlugin.PLUGIN_ID);
 		if(prefs != null) {
 			prefs.putBoolean(Constants.SUSPEND_ON_THROWN_EXCEPTION, action.isChecked());
 			try {

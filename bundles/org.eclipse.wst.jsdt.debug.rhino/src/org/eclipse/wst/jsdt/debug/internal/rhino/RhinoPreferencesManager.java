@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ public class RhinoPreferencesManager implements IPreferenceChangeListener {
 	 * Starts the manager
 	 */
 	public void start() {
-		IEclipsePreferences node = new InstanceScope().getNode(RhinoDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(RhinoDebugPlugin.PLUGIN_ID);
 		if(node != null) {
 			node.addPreferenceChangeListener(this);
 		}
@@ -42,7 +42,7 @@ public class RhinoPreferencesManager implements IPreferenceChangeListener {
 	 * Stops the manager and frees any resources held
 	 */
 	public void stop() {
-		IEclipsePreferences node = new InstanceScope().getNode(RhinoDebugPlugin.PLUGIN_ID);
+		IEclipsePreferences node = InstanceScope.INSTANCE.getNode(RhinoDebugPlugin.PLUGIN_ID);
 		if(node != null) {
 			node.removePreferenceChangeListener(this);
 		}

@@ -169,7 +169,7 @@ public class JavaScriptDebugPlugin extends Plugin {
 			if(prefmanager != null) {
 				prefmanager.stop();
 			}
-			if(new InstanceScope().getNode(PLUGIN_ID).getBoolean(Constants.DELETE_EXT_PROJECT_ON_EXIT, false)) {
+			if(InstanceScope.INSTANCE.getNode(PLUGIN_ID).getBoolean(Constants.DELETE_EXT_PROJECT_ON_EXIT, false)) {
 				if(extSrcProject != null && extSrcProject.exists()) {
 					extSrcProject.delete(true, null);
 				}

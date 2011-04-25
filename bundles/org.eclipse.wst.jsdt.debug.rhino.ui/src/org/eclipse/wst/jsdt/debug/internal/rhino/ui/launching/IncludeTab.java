@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.internal.ui.SWTFactory;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -48,6 +47,7 @@ import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ILaunchConstants;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.ISharedImages;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.RhinoImageRegistry;
 import org.eclipse.wst.jsdt.debug.internal.rhino.ui.refactoring.Refactoring;
+import org.eclipse.wst.jsdt.debug.internal.ui.SWTFactory;
 import org.eclipse.wst.jsdt.debug.internal.ui.dialogs.ScriptSelectionDialog;
 
 /**

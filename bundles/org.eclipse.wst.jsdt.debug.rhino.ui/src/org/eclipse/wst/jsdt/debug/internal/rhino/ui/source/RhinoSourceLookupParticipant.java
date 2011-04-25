@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,10 +14,7 @@ import java.net.URI;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.sourcelookup.AbstractSourceLookupParticipant;
-import org.eclipse.wst.jsdt.debug.core.model.IJavaScriptStackFrame;
-import org.eclipse.wst.jsdt.debug.core.model.IScript;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.SourceLookup;
 
 /**
@@ -31,15 +28,7 @@ public class RhinoSourceLookupParticipant extends AbstractSourceLookupParticipan
 	 * @see org.eclipse.debug.core.sourcelookup.ISourceLookupParticipant#getSourceName(java.lang.Object)
 	 */
 	public String getSourceName(Object object) throws CoreException {
-		if(object instanceof IJavaScriptStackFrame) {
-			IJavaScriptStackFrame frame = (IJavaScriptStackFrame) object;
-			return frame.getSourceName();
-		}
-		if(object instanceof IScript) {
-			IScript script = (IScript) object;
-			return URIUtil.lastSegment(script.sourceURI());
-		}
-		return null;
+		return SourceLookup.getSourceName(object);
 	}
 	
 	/* (non-Javadoc)
