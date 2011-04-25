@@ -152,6 +152,14 @@
                         <test
                               property="rhino.ui.isScript">
                         </test>
+                        <with
+                              variable="org.eclipse.core.runtime.Platform">
+                           <test
+                                 args="org.eclipse.wst.jsdt.debug.rhino"
+                                 property="org.eclipse.core.runtime.bundleState"
+                                 value="ACTIVE">
+                           </test>
+                        </with>
                      </and>
                   </iterate>
                </with>
