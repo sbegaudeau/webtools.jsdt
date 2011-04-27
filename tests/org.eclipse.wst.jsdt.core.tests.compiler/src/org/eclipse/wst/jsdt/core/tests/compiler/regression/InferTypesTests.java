@@ -1452,4 +1452,27 @@ public class InferTypesTests extends AbstractRegressionTest {
 				getDefaultOptions()
 			);
 		}
+		
+		public void testBUG317281() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"function A$b(){\n"+
+				"}\n" +
+				"A$b.prototype.fun1 = function() {};\n",
+				"X.js",
+				"class A$b extends Object{\n  void fun1()\n  A$b()\n}\n",
+				getDefaultOptions()
+			);
+		}
+		
+		public void testBUG343691() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"function $(){\n"+
+				"}\n" +
+				"$.hasData = function(element) {};\n" +
+				"$.prototype.jquery = \"\";\n",
+				"X.js",
+				"class $ extends Object{\n  String jquery;\n  $()\n  static void hasData(element)\n}\n",
+				getDefaultOptions()
+			);
+		}
 }
