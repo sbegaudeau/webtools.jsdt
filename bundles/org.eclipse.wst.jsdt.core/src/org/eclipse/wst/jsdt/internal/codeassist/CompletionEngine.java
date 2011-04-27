@@ -7344,7 +7344,7 @@ public final class CompletionEngine
 	}
 
 	public static char[] createNonGenericTypeSignature(char[] qualifiedPackageName, char[] qualifiedTypeName) {
-		return Signature.createCharArrayTypeSignature(CharOperation.replaceOnCopy(qualifiedTypeName, '.', '$'), true);
+		return Signature.createCharArrayTypeSignature(qualifiedTypeName, true);
 	}
 	public static char[] createTypeSignature(char[] qualifiedPackageName, char[] qualifiedTypeName) {
 		char[] name = new char[qualifiedTypeName.length];
