@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,79 +10,80 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.connect;
 
+import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.BooleanArgument;
 
 /**
- * Launch option to support pre-0.3 packet forms
+ * An {@link Argument} to allow server error tracing to be reported back to the client
  * 
  * @since 1.0
  */
-public class CompatArgument implements BooleanArgument {
+public class TraceArgument implements BooleanArgument {
 
-	public static final String PRE03 = "pre03"; //$NON-NLS-1$
+	public static final String TRACE = "trace"; //$NON-NLS-1$
 	
-	private boolean doit =  false;
+	private boolean fValue = false;
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#description()
 	 */
 	public String description() {
-		return Messages.pre_3_support_desc;
+		return Messages.trace_arg_description;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#label()
 	 */
 	public String label() {
-		return Messages.pre_3_support_name;
+		return Messages.trace_arg_label;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#mustSpecify()
 	 */
 	public boolean mustSpecify() {
-		return false;
+		return true;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#name()
 	 */
 	public String name() {
-		return PRE03;
+		return TRACE;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#setValue(java.lang.String)
 	 */
 	public void setValue(String value) {
-		doit = Boolean.valueOf(value).booleanValue();
+		fValue = Boolean.valueOf(value).booleanValue();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.Argument#value()
 	 */
 	public String value() {
-		return Boolean.toString(doit);
+		return Boolean.toString(fValue);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.BooleanArgument#booleanValue()
 	 */
 	public boolean booleanValue() {
-		return doit;
+		return fValue;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.BooleanArgument#isValid(java.lang.String)
 	 */
 	public boolean isValid(String value) {
-		return true;
+		return value != null;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector.BooleanArgument#setValue(boolean)
 	 */
 	public void setValue(boolean booleanValue) {
-		doit = booleanValue;
+		fValue = booleanValue;
 	}
 }

@@ -54,15 +54,15 @@ public class CFSocketConnection extends SocketConnection {
 	/**
 	 * Writes the standard handshake packet to connect
 	 * 
-	 * @param packet
+	 * @param tools the {@link String} array of tools to enable by default
 	 * @throws IOException
 	 */
-	public void writeHandShake() throws IOException {
+	public void writeHandShake(String[] tools) throws IOException {
 		if(CFPacket.TRACE) {
-			Tracing.writeString("WRITE HANDSHAKE: "+HandShakePacket.getHandshake()); //$NON-NLS-1$
+			Tracing.writeString("WRITE HANDSHAKE: "+HandShakePacket.getHandshake(tools)); //$NON-NLS-1$
 		}
 		Writer writer = getWriter();
-		writer.write(HandShakePacket.getHandshake());
+		writer.write(HandShakePacket.getHandshake(tools));
 		writer.flush();
 	}
 	
@@ -92,19 +92,27 @@ public class CFSocketConnection extends SocketConnection {
 		while(reader.ready() && (c = reader.read()) > -1) {
 			if(r) {
 				if(c == '\n') {
+					buffer.append((char)c);
 					break;
 				}
 			}
 			r = c == '\r';
+			if(r) {
+				buffer.append((char)c);
+			}
 		}
-		if(buffer.toString().equals(HandShakePacket.getHandshake())) {
+		//XXX hack, we should be properly parsing and accounting for the tool header
+		if(buffer.toString().equals(HandShakePacket.getHandshake(null))) {
 			HandShakePacket ack = new HandShakePacket();
 			if(CFPacket.TRACE) {
 				Tracing.writeString("ACK HANDSHAKE: "+buffer.toString()); //$NON-NLS-1$
 			}
 			return ack;
-		}		
-		throw new IOException("Did not get correct CrossFire handshake"); //$NON-NLS-1$
+		}	
+		if(CFPacket.TRACE) {
+			Tracing.writeString("Did not get correct CrossFire handshake: "+buffer.toString()); //$NON-NLS-1$
+		}
+		throw new IOException("Did not get correct CrossFire handshake: "+buffer.toString()); //$NON-NLS-1$
 	}
 	
 	/* (non-Javadoc)

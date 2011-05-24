@@ -22,16 +22,24 @@ public class Messages extends NLS {
 	public static String auto_attach_desc;
 	public static String auto_attach_label;
 	public static String cannot_launch_browser_not_localhost;
+	public static String console_arg_description;
+	public static String console_arg_label;
 	public static String crossfire_remote_attach;
+	public static String dom_arg_description;
+	public static String dom_arg_label;
 	public static String failed_to_attach_to_auto_browser;
 	public static String host_arg_desc;
 	public static String host_arg_name;
+	public static String inspector_arg_description;
+	public static String inspector_arg_label;
+	public static String net_arg_description;
+	public static String net_arg_label;
 	public static String port_arg_desc;
 	public static String port_arg_name;
-	public static String pre_3_support_desc;
-	public static String pre_3_support_name;
 	public static String timeout;
 	public static String timeout_desc;
+	public static String trace_arg_description;
+	public static String trace_arg_label;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

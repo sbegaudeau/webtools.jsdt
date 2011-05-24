@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.connect;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,7 +21,6 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.connect.AttachingConnector;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFTransportService;
-import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 import org.eclipse.wst.jsdt.debug.transport.Connection;
 import org.eclipse.wst.jsdt.debug.transport.DebugSession;
 import org.eclipse.wst.jsdt.debug.transport.TransportService;
@@ -49,7 +49,11 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		args.put(HostArgument.HOST, new HostArgument(null));
 		args.put(PortArgument.PORT, new PortArgument(5000));
 		args.put(TimeoutArgument.TIMEOUT, new TimeoutArgument());
-		args.put(CompatArgument.PRE03, new CompatArgument());
+		args.put(ConsoleArgument.CONSOLE, new ConsoleArgument());
+		args.put(DOMArgument.DOM, new DOMArgument());
+		args.put(InspectorArgument.INSPECTOR, new InspectorArgument());
+		args.put(NetArgument.NET, new NetArgument());
+		args.put(TraceArgument.TRACE, new TraceArgument());
 		//XXX hack because there is no good way to find the Firefox executable on Win
 		if(!Platform.OS_WIN32.equals(Platform.getOS())) {
 			args.put(BrowserArgument.BROWSER, new BrowserArgument());
@@ -102,10 +106,6 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 			c = launch(arguments);
 		}
 		DebugSession session = new DebugSession(c);
-		String pre03 = (String) arguments.get(CompatArgument.PRE03);
-		if(pre03 != null) {
-			JSON.setPre03Compat(Boolean.valueOf(pre03).booleanValue());
-		}
 		return new CFVirtualMachine(session);
 	}
 
@@ -124,7 +124,7 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		String port = (String) arguments.get(PortArgument.PORT);
 		StringBuffer buffer = new StringBuffer("firefox -ProfileManager -load-fb-modules -crossfire-server-port ").append(port); //$NON-NLS-1$
 		Process p = Runtime.getRuntime().exec(buffer.toString());
-		TransportService service = new CFTransportService();
+		TransportService service = new CFTransportService(getToolArgs(arguments));
 		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
 		int timeout = Integer.parseInt(timeoutstr);
 		buffer = new StringBuffer();
@@ -157,7 +157,7 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 	 * @throws IOException
 	 */
 	Connection launch(Map arguments) throws IOException {
-		TransportService service = new CFTransportService();
+		TransportService service = new CFTransportService(getToolArgs(arguments));
 		String host = (String) arguments.get(HostArgument.HOST);
 		String port = (String) arguments.get(PortArgument.PORT);
 		String timeoutstr = (String) arguments.get(TimeoutArgument.TIMEOUT);
@@ -165,5 +165,30 @@ public class CrossfireAttachingConnector implements AttachingConnector {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(host).append(':').append(Integer.parseInt(port));
 		return service.attach(buffer.toString(), timeout, timeout);
+	}
+	
+	String[] getToolArgs(Map arguments) {
+		ArrayList tools = new ArrayList();
+		String value = (String) arguments.get(ConsoleArgument.CONSOLE);
+		if(Boolean.valueOf(value).booleanValue()) {
+			tools.add(ConsoleArgument.CONSOLE);
+		}
+		value = (String) arguments.get(DOMArgument.DOM);
+		if(Boolean.valueOf(value).booleanValue()) {
+			tools.add(DOMArgument.DOM);
+		}
+		value = (String) arguments.get(InspectorArgument.INSPECTOR);
+		if(Boolean.valueOf(value).booleanValue()) {
+			tools.add(InspectorArgument.INSPECTOR);
+		}
+		value = (String) arguments.get(NetArgument.NET);
+		if(Boolean.valueOf(value).booleanValue()) {
+			tools.add(NetArgument.NET);
+		}
+		value = (String) arguments.get(TraceArgument.TRACE);
+		if(Boolean.valueOf(value).booleanValue()) {
+			tools.add(TraceArgument.TRACE);
+		}
+		return (String[]) tools.toArray(new String[tools.size()]);
 	}
 }

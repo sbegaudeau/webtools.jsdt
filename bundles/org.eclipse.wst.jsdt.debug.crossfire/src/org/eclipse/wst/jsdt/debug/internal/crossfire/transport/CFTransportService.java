@@ -35,6 +35,15 @@ public class CFTransportService extends SocketTransportService {
 	 */
 	Map listeners = new HashMap();
 	
+	String[] tools = null;
+	
+	/**
+	 * Constructor
+	 */
+	public CFTransportService(String[] tools) {
+		this.tools = tools;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.socket.SocketTransportService#getConnection(java.net.Socket)
 	 */
@@ -52,7 +61,7 @@ public class CFTransportService extends SocketTransportService {
 			if (!(packet instanceof HandShakePacket)) {
 				throw new IOException("failure establishing connection"); //$NON-NLS-1$
 			}
-			cfconn.writeHandShake();
+			cfconn.writeHandShake(this.tools);
 			return;
 		}
 		throw new IOException("failure establishing connection"); //$NON-NLS-1$
@@ -64,7 +73,7 @@ public class CFTransportService extends SocketTransportService {
 	public void handleAttach(Connection connection) throws IOException {
 		if(connection instanceof CFSocketConnection) {
 			CFSocketConnection cfconn = (CFSocketConnection) connection;
-			cfconn.writeHandShake();
+			cfconn.writeHandShake(this.tools);
 			Packet packet = cfconn.readHandShake();
 			if (!(packet instanceof HandShakePacket)) {
 				throw new IOException("failure establishing connection"); //$NON-NLS-1$

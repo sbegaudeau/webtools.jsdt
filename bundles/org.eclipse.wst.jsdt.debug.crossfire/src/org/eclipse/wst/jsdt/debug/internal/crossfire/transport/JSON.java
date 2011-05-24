@@ -43,14 +43,13 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFUndefinedValue;
 public final class JSON {
 
 	static boolean TRACE = false;
-	static boolean PRE03 = false;
 	
 	/**
 	 * Standard line feed / control feed terminus for Crossfire packets
 	 */
 	public static final String LINE_FEED = "\r\n"; //$NON-NLS-1$
 	/**
-	 * The default <code>Content-Length:</code> pre-amble
+	 * The default <code>Content-Length:</code> preamble
 	 */
 	public static final String CONTENT_LENGTH = "Content-Length:"; //$NON-NLS-1$
 	/**
@@ -60,15 +59,6 @@ public final class JSON {
 	 */
 	public static void setTracing(boolean trace) {
 		TRACE = trace;
-	}
-	
-	/**
-	 * Enables / disables support for pre-0.3 support for serializing JSON
-	 * 
-	 * @param compat
-	 */
-	public static void setPre03Compat(boolean compat) {
-		PRE03 = compat;
 	}
 	
 	/**
@@ -217,17 +207,14 @@ public final class JSON {
 	}
 	
 	/**
-	 * Writes the <code>Content-Length:N</code> pre-amble to the head of the given buffer
+	 * Writes the <code>Content-Length:N</code> preamble to the head of the given buffer
 	 * 
 	 * @param buffer
 	 * @param length
 	 */
 	public static void writeContentLength(StringBuffer buffer, int length) {
 		StringBuffer buff = new StringBuffer(18);
-		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED);
-		if(!PRE03) {
-			buff.append(LINE_FEED);
-		}
+		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED).append(LINE_FEED);
 		buffer.insert(0, buff);
 	}
 	
@@ -252,7 +239,7 @@ public final class JSON {
 	}
 	
 	/**
-	 * Reads and returns a new object from the given json {@link String}. This method
+	 * Reads and returns a new object from the given JSON {@link String}. This method
 	 * will throw an {@link IllegalStateException} if parsing fails.
 	 * 
 	 * @param jsonString
@@ -264,7 +251,7 @@ public final class JSON {
 	
 	/**
 	 * Reads and returns a new object form the given {@link CharacterIterator} that corresponds to
-	 * a properly formatted json string. This method will throw an {@link IllegalStateException} if
+	 * a properly formatted JSON string. This method will throw an {@link IllegalStateException} if
 	 * parsing fails.
 	 * 
 	 * @param it the {@link CharacterIterator} to parse
@@ -379,7 +366,7 @@ public final class JSON {
 				//ignore it and continue
 				c = it.next();
 				continue;
-				//throw error("illegal iso control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
+				//throw error("illegal ISO control character: '" + Integer.toHexString(c) + "'", it); //$NON-NLS-1$ //$NON-NLS-2$);
 			}
 			if (c == '\\') {
 				c = it.next();
