@@ -82,10 +82,6 @@ public interface Attributes {
 	 */
 	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
 	/**
-	 * The "frame" attribute
-	 */
-	public static final String FRAME = "frame"; //$NON-NLS-1$
-	/**
 	 * The "frameIndex" argument
 	 */
 	public static final String FRAME_INDEX = "frameIndex"; //$NON-NLS-1$
@@ -216,7 +212,7 @@ public interface Attributes {
 	/**
 	 * The "stepaction" attribute
 	 */
-	public static final String STEPACTION = "stepaction"; //$NON-NLS-1$
+	public static final String STEPACTION = "stepAction"; //$NON-NLS-1$
 	/**
 	 * The type "string"
 	 */

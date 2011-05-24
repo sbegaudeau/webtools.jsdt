@@ -165,7 +165,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	boolean updateContext(String url) {
 		if(url != null && ready()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.UPDATE_CONTEXT, null);
+			CFRequestPacket request = new CFRequestPacket(Commands.CREATE_CONTEXT, null);
 			request.getArguments().put(Attributes.HREF, url);
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {

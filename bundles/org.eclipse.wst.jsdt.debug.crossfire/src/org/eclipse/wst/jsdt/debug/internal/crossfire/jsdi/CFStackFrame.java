@@ -208,7 +208,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public Value evaluate(String expression) {
 		CFRequestPacket request = new CFRequestPacket(Commands.EVALUATE, thread.id());
-		request.setArgument(Attributes.FRAME, new Integer(index));
+		request.setArgument(Attributes.FRAME_INDEX, new Integer(index));
 		request.setArgument(Attributes.EXPRESSION, expression);
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {

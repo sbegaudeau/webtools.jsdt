@@ -118,7 +118,7 @@ public interface Commands {
 	/** 
 	 * The "updatecontext" command
 	 */
-	public static final String UPDATE_CONTEXT = "updatecontext"; //$NON-NLS-1$
+	public static final String CREATE_CONTEXT = "createcontext"; //$NON-NLS-1$
 	/**
 	 * The "version" command
 	 */
