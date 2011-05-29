@@ -44,7 +44,13 @@ public class CFVariable extends CFProperty implements Variable {
 					value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
 				}
 				else if(kind.equals(Attributes.NUMBER)) {
-					value = new CFNumberValue(vm, (Number) values.get(Attributes.VALUE));
+					Object o = values.get(Attributes.VALUE);
+					if(o instanceof Number) {
+						value = new CFNumberValue(vm, (Number)o);
+					}
+					else if(o instanceof String) {
+						value = new CFNumberValue(vm, (String)o);
+					}
 				}
 				else if(kind.equals(Attributes.BOOLEAN)) {
 					value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
@@ -52,6 +58,9 @@ public class CFVariable extends CFProperty implements Variable {
 				if(Attributes.THIS.equals(name)) {
 					//special object that has no lookup so we have to pre-populate the properties
 					value = new CFObjectReference(crossfire(), frame, values);
+				}
+				if(CFUndefinedValue.UNDEFINED.equals(kind)) {
+					value = crossfire().mirrorOfUndefined();
 				}
 			}
 		}

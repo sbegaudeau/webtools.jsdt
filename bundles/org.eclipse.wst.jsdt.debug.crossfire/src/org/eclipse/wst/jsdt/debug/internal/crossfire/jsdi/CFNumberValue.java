@@ -19,7 +19,20 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
  * @since 1.0
  */
 public class CFNumberValue extends CFMirror implements NumberValue {
-
+	
+	/**
+	 * Object representing 'Not a Number'
+	 */
+	public static final Double NAN_OBJ = new Double(Double.NaN);
+	/**
+	 * Object representing '-Infinity'
+	 */
+	public static final Double NEG_INFINITY_OBJ = new Double(Double.NEGATIVE_INFINITY);
+	/**
+	 * Object representing 'Infinity'
+	 */
+	public static final Double INFINITY_OBJ = new Double(Double.POSITIVE_INFINITY);
+	
 	private Number number = null;
 	
 	/**
@@ -29,9 +42,34 @@ public class CFNumberValue extends CFMirror implements NumberValue {
 	 */
 	public CFNumberValue(VirtualMachine vm, Number number) {
 		super(vm);
-		this.number = number;
+		if(number != null) {
+			this.number = number;
+		}
+		else {
+			this.number = NAN_OBJ;
+		}
 	}
 
+	/**
+	 * Constructor
+	 * @param vm the backing {@link VirtualMachine}
+	 * @param number the name of the number
+	 * @see #INFINITY
+	 * @see #NEG_INFINTY
+	 */
+	public CFNumberValue(VirtualMachine vm, String number) {
+		super(vm);
+		if(INFINITY.equals(number)) {
+			this.number = INFINITY_OBJ;
+		}
+		else if(NEG_INFINITY.equals(number)) {
+			this.number = NEG_INFINITY_OBJ;
+		}
+		if(this.number == null) {
+			this.number = NAN_OBJ;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.PrimitiveValue#intValue()
 	 */
@@ -78,6 +116,6 @@ public class CFNumberValue extends CFMirror implements NumberValue {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue#isNaN()
 	 */
 	public boolean isNaN() {
-		return number == null;
+		return Double.isNaN(this.number.doubleValue());
 	}
 }

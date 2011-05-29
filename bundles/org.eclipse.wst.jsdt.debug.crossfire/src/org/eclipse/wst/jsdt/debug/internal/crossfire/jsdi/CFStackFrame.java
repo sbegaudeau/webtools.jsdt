@@ -212,7 +212,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		request.setArgument(Attributes.EXPRESSION, expression);
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
-			return createValue(response.getBody());
+			return createValue(response.getBody().get(Attributes.RESULT));
 		}
 		else if(TRACE) {
 			Tracing.writeString("STACKFRAME [failed evaluate request]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -260,25 +260,10 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		//resolve the smallest type from the crossfire insanity
 		if(val instanceof Map) {
 			Map values = (Map) val;
-			Object o = values.get(Attributes.RESULT);
-			if(o == null) {
-				String type = (String) values.get(Attributes.TYPE);
-				if(type != null) {
-					return createTypeValue(type, values);
-				}
+			String type = (String) values.get(Attributes.TYPE);
+			if(type != null) {
+				return createTypeValue(type, values);
 			}
-			if(o instanceof Map){
-				return new CFObjectReference(crossfire(), this, (Map) o);
-			}
-			if(o instanceof String) {
-				return crossfire().mirrorOf(o.toString());
-			}
-			else if(o instanceof Number) {
-				return crossfire().mirrorOf((Number)o);
-			}
-		}
-		else if(val instanceof Map) {
-			return new CFObjectReference(crossfire(), this, (Map) val);
 		}
 		else if(val instanceof String) {
 			String str = (String) val;
@@ -303,6 +288,16 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	Value createTypeValue(String type, Map map) {
 		if(CFUndefinedValue.UNDEFINED.equals(type)) {
 			return crossfire().mirrorOfUndefined();
+		}
+		if(Attributes.NUMBER.equals(type)) {
+			//could be NaN, Infinity or -Infinity, check for strings
+			Object o = map.get(Attributes.VALUE);
+			if(o instanceof Number) {
+				return crossfire().mirrorOf((Number)o);
+			}
+			if(o instanceof String) {
+				return crossfire().mirrorOf((String)o);
+			}
 		}
 		if(CFStringValue.STRING.equals(type)) {
 			return crossfire().mirrorOf(map.get(Attributes.VALUE).toString());
