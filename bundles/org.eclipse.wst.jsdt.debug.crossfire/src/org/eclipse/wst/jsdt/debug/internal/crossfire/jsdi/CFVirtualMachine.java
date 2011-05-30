@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -158,21 +159,21 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 	
 	/**
-	 * Sends an <code>updatecontext</code> request for the given URL and returns the status of the request.
+	 * Sends an <code>createcontext</code> request for the given URL and returns the status of the request.
 	 * 
 	 * @param url the URL to open / update in the remote target, <code>null</code> is not accepted
 	 * @return <code>true</code> if the request was successful, <code>false</code> otherwise
 	 */
-	boolean updateContext(String url) {
+	boolean createContext(String url) {
 		if(url != null && ready()) {
 			CFRequestPacket request = new CFRequestPacket(Commands.CREATE_CONTEXT, null);
-			request.getArguments().put(Attributes.HREF, url);
+			request.getArguments().put(Attributes.URL, url);
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				return true;
 			}
 			else if(TRACE) {
-				Tracing.writeString("VM [failed updatecontext request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				Tracing.writeString("VM [failed createcontext request]: "+JSON.serialize(request)); //$NON-NLS-1$
 			}
 		}
 		return false;
@@ -181,13 +182,13 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	/**
 	 * Sends a request to enable the tool with the given name in the remote Crossfire server
 	 * 
-	 * @param tool the name of the tool to enable, <code>null</code> is not allowed
+	 * @param tools the array of tool names to enable, <code>null</code> is not allowed
 	 * @return <code>true</code> if the server reports the tool became enabled, <code>false</code> otherwise
 	 */
-	boolean enableTool(String tool) {
-		if(tool != null && ready()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.ENABLE_TOOL, null);
-			request.getArguments().put(Attributes.TOOL_NAME, tool);
+	boolean enableTools(String[] tools) {
+		if(tools != null && tools.length > 0 && ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.ENABLE_TOOLS, null);
+			request.getArguments().put(Attributes.TOOLS, Arrays.asList(tools));
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				//TODO handle the tool being enabled
@@ -203,13 +204,13 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	/**
 	 * Sends a request to disable the tool with the given name in the remote Crossfire server
 	 * 
-	 * @param tool the name of the tool to disable, <code>null</code> is not allowed
+	 * @param tools the array of tool names to disable, <code>null</code> is not allowed
 	 * @return <code>true</code> if the server reports the tool became disabled, <code>false</code> otherwise
 	 */
-	boolean disableTool(String tool) {
-		if(tool != null && ready()) {
-			CFRequestPacket request = new CFRequestPacket(Commands.DISABLE_TOOL, null);
-			request.getArguments().put(Attributes.TOOL_NAME, tool);
+	boolean disableTools(String[] tools) {
+		if(tools != null && tools.length > 0 && ready()) {
+			CFRequestPacket request = new CFRequestPacket(Commands.DISABLE_TOOLS, null);
+			request.getArguments().put(Attributes.TOOLS, Arrays.asList(tools));
 			CFResponsePacket response = sendRequest(request);
 			if(response.isSuccess()) {
 				//TODO handle the tool being enabled

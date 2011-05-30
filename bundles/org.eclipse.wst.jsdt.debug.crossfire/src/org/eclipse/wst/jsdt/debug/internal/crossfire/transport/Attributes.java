@@ -226,10 +226,6 @@ public interface Attributes {
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
 	/**
-	 * The "toolName" attribute
-	 */
-	public static final String TOOL_NAME = "toolName"; //$NON-NLS-1$
-	/**
 	 * The "tools" attribute
 	 */
 	public static final String TOOLS = "tools"; //$NON-NLS-1$

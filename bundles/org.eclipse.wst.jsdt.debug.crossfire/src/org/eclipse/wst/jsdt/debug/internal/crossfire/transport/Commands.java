@@ -34,15 +34,13 @@ public interface Commands {
 	 */
 	public static final String CONTINUE = "continue"; //$NON-NLS-1$
 	/**
-	 * The "disableTool" command
-	 * TODO this will update to be all lower-case
+	 * The "disabletools" command
 	 */
-	public static final String DISABLE_TOOL = "disableTool"; //$NON-NLS-1$
+	public static final String DISABLE_TOOLS = "disabletools"; //$NON-NLS-1$
 	/**
-	 * The "enableTool" command
-	 * TODO this will update to be all lower-case
+	 * The "enabletools" command
 	 */
-	public static final String ENABLE_TOOL = "enableTool"; //$NON-NLS-1$
+	public static final String ENABLE_TOOLS = "enabletools"; //$NON-NLS-1$
 	/**
 	 * The "evaluate" command
 	 */
