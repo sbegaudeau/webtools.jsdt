@@ -62,6 +62,10 @@ public interface Attributes {
 	 */
 	public static final String CONTEXT_ID = "context_id"; //$NON-NLS-1$
 	/**
+	 * The "contextId" attribute
+	 */
+	public static final String CONTEXT_ID_BODY = "contextId"; //$NON-NLS-1$
+	/**
 	 * The "contexts" attribute
 	 */
 	public static final String CONTEXTS = "contexts"; //$NON-NLS-1$
@@ -157,6 +161,10 @@ public interface Attributes {
 	 * The message attribute for this packet
 	 */
 	public static final String MESSAGE = "message"; //$NON-NLS-1$
+	/**
+	 * The "newContextId" attribute
+	 */
+	public static final String NEW_CONTEXT_ID = "newContextId"; //$NON-NLS-1$
 	/**
 	 * The type "number"
 	 */

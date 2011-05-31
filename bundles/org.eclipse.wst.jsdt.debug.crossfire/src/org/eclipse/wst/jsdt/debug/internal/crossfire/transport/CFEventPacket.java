@@ -73,9 +73,9 @@ public class CFEventPacket extends CFPacket implements Event {
 	 */
 	public static final String ON_TOGGLE_BREAKPOINT = "onToggleBreakpoint"; //$NON-NLS-1$
 	/**
-	 * The "onContextCreated" event kind
+	 * The "onContextSelected" event kind
 	 */
-	public static final String ON_CONTEXT_CREATED = "onContextCreated"; //$NON-NLS-1$
+	public static final String ON_CONTEXT_SELECTED = "onContextSelected"; //$NON-NLS-1$
 	/**
 	 * The "onContextDestroyed" event kind
 	 */
@@ -117,8 +117,20 @@ public class CFEventPacket extends CFPacket implements Event {
 				data instanceof List) {
 			body.put(Attributes.DATA, data);
 		}
+		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#getContextId()
+	 */
+	public String getContextId() {
+		String id = super.getContextId();
+		if(id == null) {
+			id = (String) body.get(Attributes.CONTEXT_ID_BODY);
+		}
+		return id;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Event#getEvent()
 	 */

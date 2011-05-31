@@ -170,10 +170,10 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
-				else if(CFEventPacket.ON_CONTEXT_CREATED.equals(name)) {
+				else if(CFEventPacket.ON_CONTEXT_SELECTED.equals(name)) {
 					handleContext(set, event, false);
 					if(TRACE) {
-						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_SELECTED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
 				else if(CFEventPacket.ON_CONTEXT_CHANGED.equals(name)) {
@@ -330,7 +330,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 			thread = crossfire().findThread(event.getContextId());
 		}
 		if(thread == null) {
-			thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.HREF));
+			thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.URL));
 		}
 		set.setThread(thread);
 		for (Iterator iter = threads.iterator(); iter.hasNext();) {
