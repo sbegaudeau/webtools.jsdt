@@ -98,9 +98,9 @@ public interface Attributes {
 	 */
 	public static final String FROM_FRAME = "fromFrame"; //$NON-NLS-1$
 	/**
-	 * The "func" attribute
+	 * The "functionName" attribute
 	 */
-	public static final String FUNC = "func"; //$NON-NLS-1$
+	public static final String FUNCTION_NAME = "functionName"; //$NON-NLS-1$
 	/**
 	 * The type "function"
 	 */

@@ -97,8 +97,8 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(value != null) {
 			linenumber = value.intValue();
 		}
-		scriptid = (String) json.get(Attributes.SCRIPT);
-		funcname = (String) json.get(Attributes.FUNC);
+		scriptid = (String) json.get(Attributes.URL);
+		funcname = (String) json.get(Attributes.FUNCTION_NAME);
 		
 		parseScopes((List) json.get(Attributes.SCOPES));
 		parseLocals((Map) json.get(Attributes.LOCALS));

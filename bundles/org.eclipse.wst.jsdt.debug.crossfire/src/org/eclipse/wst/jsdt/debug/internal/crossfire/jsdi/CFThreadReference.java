@@ -93,8 +93,6 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#frames()
 	 */
 	public synchronized List frames() {
-		//TODO we require some way to batch retrieve the frames from a given context
-		//unless there is only ever one frame?
 		if(frames == null) {
 			CFRequestPacket request = new CFRequestPacket(Commands.BACKTRACE, id);
 			request.setArgument(Attributes.FROM_FRAME, new Integer(0));
@@ -108,7 +106,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 					for (int i = 0; i < frms.size(); i++) {
 						fmap = (Map) frms.get(i);
 						//XXX hack to prevent http://code.google.com/p/fbug/issues/detail?id=4203
-						if(fmap.containsKey(Attributes.SCRIPT)) {
+						if(fmap.containsKey(Attributes.URL)) {
 							frames.add(new CFStackFrame(virtualMachine(), this, fmap));
 						}
 						else if(TRACE) {
