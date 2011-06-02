@@ -39,6 +39,8 @@ public:
 	virtual void addArrayValue(Value* value);
 	virtual bool addObjectValue(const wchar_t* key, Value* value);
 	virtual bool addObjectValue(std::wstring* key, Value* value);
+//	virtual bool clearObjectValue(const wchar_t* key);
+//	virtual bool clearObjectValue(std::wstring* key);
 	virtual void clone(Value** _value);
 	virtual void getArrayValues(Value*** __values);
 	virtual bool getBooleanValue();

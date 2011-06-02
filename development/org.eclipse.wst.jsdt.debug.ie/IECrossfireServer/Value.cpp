@@ -152,6 +152,25 @@ bool Value::addObjectValue(std::wstring* key, Value* value) {
 	return setObjectValue(key, value, false);
 }
 
+//bool Value::clearObjectValue(const wchar_t* key) {
+//	return clearObjectValue(&std::wstring(key));
+//}
+
+//bool Value::clearObjectValue(std::wstring* key) {
+//	if (m_type != TYPE_OBJECT) {
+//		return false;
+//	}
+//
+//	std::map<std::wstring, Value*>::iterator iterator = m_objectValue->find(*key);
+//	if (iterator == m_objectValue->end()) {
+//		/* not found */
+//		return false;
+//	}
+//	delete (*iterator).second;
+//	m_objectValue->erase(iterator);
+//	return true;
+//}
+
 void Value::getArrayValues(Value*** __values) {
 	if (m_type != TYPE_ARRAY) {
 		*__values = NULL;
@@ -238,6 +257,7 @@ bool Value::setObjectValue(std::wstring* key, Value* value, bool overwrite) {
 		if (!overwrite) {
 			return false;
 		}
+		delete (*it).second;
 		m_objectValue->erase(it);
 	}
 	Value* result = NULL;
