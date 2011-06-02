@@ -22,6 +22,12 @@
 #include "CrossfireResponse.h"
 #include "WindowsSocketConnection.h"
 
+enum {
+	STATE_DISCONNECTED,
+	STATE_LISTENING,
+	STATE_CONNECTED,
+};
+
 class ATL_NO_VTABLE CrossfireServer :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<CrossfireServer, &CLSID_CrossfireServer>,
@@ -48,15 +54,19 @@ public:
 	~CrossfireServer();
 
 	/* ICrossfireServer */
+	virtual HRESULT STDMETHODCALLTYPE addListener(ICrossfireServerListener* listener);
 	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD threadId, OLECHAR* href);
 	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD threadId);
 	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD threadId);
-	virtual HRESULT STDMETHODCALLTYPE isActive(boolean* value);
+	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
+	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
 	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD threadId, OLECHAR* href);
+	virtual HRESULT STDMETHODCALLTYPE removeListener(ICrossfireServerListener* listener);
 	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD threadId);
-	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port);
+	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
 	virtual HRESULT STDMETHODCALLTYPE stop();
 
+	virtual void connected();
 	virtual void disconnected();
 	virtual CrossfireBPManager* getBreakpointManager();
 	virtual void received(wchar_t* msg);
@@ -65,6 +75,7 @@ public:
 	virtual void setWindowHandle(unsigned long value);
 
 private:
+	virtual void getContextsArray(CrossfireContext*** _value);
 	virtual CrossfireContext* getRequestContext(CrossfireRequest* request);
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual void reset();
@@ -76,6 +87,7 @@ private:
 	bool m_handshakeReceived;
 	std::wstring* m_inProgressPacket;
 	unsigned int m_lastRequestSeq;
+	std::vector<ICrossfireServerListener*>* m_listeners;
 	std::vector<CrossfireEvent*>* m_pendingEvents;
 	unsigned int m_port;
 	bool m_processingRequest;

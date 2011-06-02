@@ -64,6 +64,7 @@ CrossfireServer::CrossfireServer() {
 	m_handshakeReceived = false;
 	m_inProgressPacket = new std::wstring;
 	m_lastRequestSeq = -1;
+	m_listeners = new std::vector<ICrossfireServerListener*>;
 	m_pendingEvents = new std::vector<CrossfireEvent*>;
 	m_port = -1;
 	m_processingRequest = false;
@@ -81,13 +82,20 @@ CrossfireServer::~CrossfireServer() {
 	}
 	delete m_contexts;
 
-	std::vector<CrossfireEvent*>::iterator iterator2 = m_pendingEvents->begin();
-	while (iterator2 != m_pendingEvents->end()) {
-		if (m_connection) {
-			sendEvent(*iterator2);
-		}
-		delete *iterator2;
+	std::vector<ICrossfireServerListener*>::iterator iterator2 = m_listeners->begin();
+	while (iterator2 != m_listeners->end()) {
+		(*iterator2)->Release();
 		iterator2++;
+	}
+	delete m_listeners;
+
+	std::vector<CrossfireEvent*>::iterator iterator3 = m_pendingEvents->begin();
+	while (iterator3 != m_pendingEvents->end()) {
+		if (m_connection) {
+			sendEvent(*iterator3);
+		}
+		delete *iterator3;
+		iterator3++;
 	}
 	delete m_pendingEvents;
 
@@ -109,6 +117,20 @@ CrossfireServer::~CrossfireServer() {
 			Logger::error("~CrossfireServer: RemoveServer() failed", hr);
 			return;
 		}
+	}
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::addListener(ICrossfireServerListener* listener) {
+	listener->AddRef();
+	m_listeners->push_back(listener);
+	return S_OK;
+}
+
+void CrossfireServer::connected() {
+	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	while (iterator != m_listeners->end()) {
+		(*iterator)->ServerStateChanged(STATE_CONNECTED, m_port);
+		iterator++;
 	}
 }
 
@@ -159,11 +181,33 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD threadId) {
 }
 
 void CrossfireServer::disconnected() {
+	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	while (iterator != m_listeners->end()) {
+		(*iterator)->ServerStateChanged(STATE_DISCONNECTED, -1);
+		iterator++;
+	}
 	reset();
 }
 
 CrossfireBPManager* CrossfireServer::getBreakpointManager() {
 	return m_bpManager;
+}
+
+void CrossfireServer::getContextsArray(CrossfireContext*** _value) {
+	CrossfireContext** result = new CrossfireContext*[m_contexts->size() + 1];
+	int index = 0;
+	std::map<DWORD,CrossfireContext*>::iterator iterator = m_contexts->begin();
+	while (iterator != m_contexts->end()) {
+		result[index++] = iterator->second;
+		iterator++;
+	}
+	result[index] = NULL;
+	*_value = result;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::getPort(unsigned int* value) {
+	*value = m_port;
+	return S_OK;
 }
 
 CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) {
@@ -183,8 +227,12 @@ CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) 
 	return NULL;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::isActive(boolean* value) {
-	*value = m_port != -1;
+HRESULT STDMETHODCALLTYPE CrossfireServer::getState(int* value) {
+	if (m_connection == NULL) {
+		*value = STATE_DISCONNECTED;
+	} else {
+		*value = m_connection->isConnected() ? STATE_CONNECTED : STATE_LISTENING;
+	}
 	return S_OK;
 }
 
@@ -196,13 +244,23 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	if (wcscmp(command, COMMAND_VERSION) == 0) {
 		success = commandVersion(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINT) == 0) {
-		CrossfireContext* context = getRequestContext(request);
-		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		success = m_bpManager->commandChangeBreakpoint(arguments, target, &responseBody);
+		if (request->getContextId()) {
+			Logger::error("'changeBreakpoint' command should not specify a context_id");
+			return false;
+		}
+		CrossfireContext** contexts = NULL;
+		getContextsArray(&contexts);
+		success = m_bpManager->commandChangeBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		delete contexts;
 	} else if (wcscmp(command, COMMAND_CLEARBREAKPOINT) == 0) {
-		CrossfireContext* context = getRequestContext(request);
-		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		success = m_bpManager->commandClearBreakpoint(arguments, target, &responseBody);
+		if (request->getContextId()) {
+			Logger::error("'clearBreakpoint' command should not specify a context_id");
+			return false;
+		}
+		CrossfireContext** contexts = NULL;
+		getContextsArray(&contexts);
+		success = m_bpManager->commandClearBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		delete contexts;
 	} else if (wcscmp(command, COMMAND_LISTCONTEXTS) == 0) {
 		success = commandListContexts(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINT) == 0) {
@@ -215,8 +273,14 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 		success = m_bpManager->commandGetBreakpoints(arguments, target, &responseBody);
 	} else if (wcscmp(command, COMMAND_SETBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
-		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		success = m_bpManager->commandSetBreakpoint(arguments, target, &responseBody);
+		CrossfireContext** contexts = NULL;
+		if (context) {
+			getContextsArray(&contexts);
+		}
+		success = m_bpManager->commandSetBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		if (contexts) {
+			delete contexts;
+		}
 	} else {
 		return false;	/* command not handled */
 	}
@@ -342,10 +406,9 @@ void CrossfireServer::received(wchar_t* msg) {
 				 * is complete.
 				 */
 				if (m_pendingEvents->size() > 0) {
-// GWG HACK! helps JSDT with stepping
-Logger::error("start sleep");
-Sleep(500);
-Logger::error("end sleep");
+
+					// TODO HACK! helps JSDT with stepping
+					Sleep(500);
 
 					std::vector<CrossfireEvent*>::iterator iterator = m_pendingEvents->begin();
 					while (iterator != m_pendingEvents->end()) {
@@ -384,6 +447,11 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD threadId, OLECH
 	stream << s_contextCounter++;
 	context->setName((wchar_t*)stream.str().c_str());
 	context->setHref(href);
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::removeListener(ICrossfireServerListener* listener) {
+	// TODO
 	return S_OK;
 }
 
@@ -459,8 +527,8 @@ void CrossfireServer::setWindowHandle(unsigned long value) {
 	m_windowHandle = value;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port) {
-	if (m_port != -1) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port, unsigned int debugPort) {
+	if (m_connection) {
 		return S_FALSE;
 	}
 
@@ -470,17 +538,31 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port) {
 		return S_FALSE;
 	}
 	m_port = port;
-	m_connection->acceptConnection();
+	if (m_connection->acceptConnection()) {
+		std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+		while (iterator != m_listeners->end()) {
+			(*iterator)->ServerStateChanged(STATE_LISTENING, m_port);
+			iterator++;
+		}
+	}
 	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
-	if (m_port == -1) {
+	if (!m_connection) {
 		return S_FALSE;
 	}
-
-	eventClosed();
+	if (m_connection->isConnected()) {
+		eventClosed();
+	}
 	reset();
+
+	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	while (iterator != m_listeners->end()) {
+		(*iterator)->ServerStateChanged(STATE_DISCONNECTED, m_port);
+		iterator++;
+	}
+
 	return S_OK;
 }
 
