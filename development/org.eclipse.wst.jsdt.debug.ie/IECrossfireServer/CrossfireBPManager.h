@@ -24,11 +24,11 @@ public:
 	CrossfireBPManager();
 	~CrossfireBPManager();
 
-	virtual bool commandChangeBreakpoint(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
-	virtual bool commandClearBreakpoint(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
+	virtual bool commandChangeBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
+	virtual bool commandClearBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
 	virtual bool commandGetBreakpoint(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
 	virtual bool commandGetBreakpoints(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
-	virtual bool commandSetBreakpoint(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
+	virtual bool commandSetBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
 	virtual void setBreakpointsForScript(std::wstring* url, IBreakpointTarget* target);
 
 	/* IBreakpointTarget methods */
@@ -41,7 +41,7 @@ public:
 
 private:
 	virtual bool createBreakpoint(Value* arguments, CrossfireBreakpoint** _result);
-	virtual bool setBreakpointOnTarget(CrossfireBreakpoint* breakpoint, IBreakpointTarget* target, CrossfireBreakpoint** _resultBreakpoint);
+	virtual bool setBreakpointOnTarget(CrossfireBreakpoint* breakpoint, IBreakpointTarget* target);
 
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
 
