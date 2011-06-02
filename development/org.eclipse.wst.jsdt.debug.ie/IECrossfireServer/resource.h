@@ -20,8 +20,8 @@
 #define IDR_CROSSFIRESERVER             103
 #define IDR_IEDEBUGGER                  104
 #define IDR_CROSSFIRESERVERCLASS        111
-#define IDR_TESTCLASS                   112
-#define IDR_PENDINGBREAKPOINT           113
+#define IDR_PENDINGSCRIPTLOAD           113
+#define IDR_CROSSFIRESERVERLISTENER     114
 
 // Next default values for new objects
 // 
@@ -30,6 +30,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        201
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         201
-#define _APS_NEXT_SYMED_VALUE           114
+#define _APS_NEXT_SYMED_VALUE           115
 #endif
 #endif
