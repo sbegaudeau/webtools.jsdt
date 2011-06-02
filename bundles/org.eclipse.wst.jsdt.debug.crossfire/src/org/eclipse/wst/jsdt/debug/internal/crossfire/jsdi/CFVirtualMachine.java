@@ -125,9 +125,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			if(id != null) {
 				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(id);
 				if(bp != null) {
-					//TODO in the future we might handle more attribute changes
-					bp.setEnabled(((Boolean)json.get(Attributes.ENABLED)).booleanValue());
-					bp.setCondition((String) json.get(Attributes.CONDITION));
+					bp.setEnabled(RemoteBreakpoint.getEnabled(json));
+					bp.setCondition(RemoteBreakpoint.getCondition(json));
 				}
 			}
 		}
@@ -140,8 +139,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void toggleBreakpoint(Map json) {
 		if(json != null) {
-			boolean set = ((Boolean)json.get(Attributes.SET)).booleanValue();
-			if(set) {
+			Boolean isset = (Boolean)json.get(Attributes.SET);
+			if(isset != null && isset.booleanValue()) {
 				updateBreakpoint(json);
 			}
 			else {

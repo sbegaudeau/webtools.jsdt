@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.util.Map;
+
+import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
+
 
 /**
  * This class holds the description of a breakpoint from the crossfire server
@@ -18,6 +22,13 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
  */
 public class RemoteBreakpoint implements Comparable {
 
+	public static final String TYPE_LINE = "line"; //$NON-NLS-1$
+	public static final String TYPE_HTML_ATTRIBUTE_CHANGE = "html_attribute_change"; //$NON-NLS-1$
+	public static final String TYPE_HTML_CHILD_CHANGE = "html_child_change"; //$NON-NLS-1$
+	public static final String TYPE_HTML_REMOVE = "html_remove"; //$NON-NLS-1$
+	public static final String TYPE_HTML_TEXT = "html_text"; //$NON-NLS-1$
+	public static final String TYPE_HTML_UNKNOWN = "html_unknown_type"; //$NON-NLS-1$
+	
 	CFVirtualMachine vm = null;
 	Number id = null;
 	String url = null;
@@ -142,5 +153,52 @@ public class RemoteBreakpoint implements Comparable {
 		buff.append("\t[enabled: ").append(enabled).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		buff.append("\t[condition: ").append(condition).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		return super.toString();
+	}
+	
+	/**
+	 * Helper method to get the {@link Attributes#ENABLED} value from the breakpoint JSON
+	 * 
+	 * @param json the JSON for the breakpoint
+	 * @return <code>true</code> if the attribute is found and <code>true</code>, <code>false</code> otherwise
+	 */
+	public static boolean getEnabled(Map json) {
+		Object val = json.get(Attributes.ATTRIBUTES);
+		if(val instanceof Map) {
+			Map map = (Map) val;
+			val = map.get(Attributes.ENABLED);
+			if(val instanceof Boolean) {
+				return ((Boolean)val).booleanValue();
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Helper method to get the condition from the breakpoint JSON
+	 * 
+	 * @param json the JSON for the breakpoint
+	 * @return the condition or <code>null</code>
+	 */
+	public static final String getCondition(Map json) {
+		Object val = json.get(Attributes.ATTRIBUTES);
+		if(val instanceof Map) {
+			Map map = (Map) val;
+			return (String)map.get(Attributes.CONDITION);
+		}
+		return null;
+	}
+	
+	/**
+	 * Helper method to get the 'set' value from the breakpoint JSON
+	 * 
+	 * @param json the JSON for the breakpoint
+	 * @return <code>true</code> if the attribute is present and <code>true</code>, <code>false</code> otherwise
+	 */
+	public static final boolean isSet(Map json) {
+		Object val = json.get(Attributes.SET);
+		if(val instanceof Boolean) {
+			return ((Boolean)val).booleanValue();
+		}
+		return false;
 	}
 }

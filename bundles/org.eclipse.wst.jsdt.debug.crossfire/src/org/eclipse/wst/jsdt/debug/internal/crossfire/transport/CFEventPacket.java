@@ -126,7 +126,7 @@ public class CFEventPacket extends CFPacket implements Event {
 	public String getContextId() {
 		String id = super.getContextId();
 		if(id == null) {
-			id = (String) body.get(Attributes.CONTEXT_ID_BODY);
+			id = (String) body.get(Attributes.CONTEXT_ID);
 		}
 		return id;
 	}

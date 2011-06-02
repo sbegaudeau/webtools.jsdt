@@ -171,7 +171,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					}
 				}
 				else if(CFEventPacket.ON_CONTEXT_SELECTED.equals(name)) {
-					handleContext(set, event, false);
+					handleContext(set, event, true);
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_SELECTED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
@@ -326,11 +326,12 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 	void handleContext(CFEventSet set, CFEventPacket event, boolean lookup) {
 		List threads = eventmgr.threadEnterRequests();
 		CFThreadReference thread = null;
+		String context = event.getContextId();
 		if(lookup) {
-			thread = crossfire().findThread(event.getContextId());
+			thread = crossfire().findThread(context);
 		}
 		if(thread == null) {
-			thread = crossfire().addThread(event.getContextId(), (String) event.getBody().get(Attributes.URL));
+			thread = crossfire().addThread(context, (String) event.getBody().get(Attributes.URL));
 		}
 		set.setThread(thread);
 		for (Iterator iter = threads.iterator(); iter.hasNext();) {

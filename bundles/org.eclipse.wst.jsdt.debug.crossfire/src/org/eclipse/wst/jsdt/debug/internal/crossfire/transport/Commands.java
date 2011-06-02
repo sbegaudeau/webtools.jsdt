@@ -114,7 +114,7 @@ public interface Commands {
 	 */
 	public static final String SUSPEND = "suspend"; //$NON-NLS-1$
 	/** 
-	 * The "updatecontext" command
+	 * The "createcontext" command
 	 */
 	public static final String CREATE_CONTEXT = "createcontext"; //$NON-NLS-1$
 	/**

@@ -22,6 +22,10 @@ public interface Attributes {
 	 */
 	public static final String ARGUMENTS = "arguments"; //$NON-NLS-1$
 	/**
+	 * The "attributes" attribute
+	 */
+	public static final String ATTRIBUTES = "attributes"; //$NON-NLS-1$
+	/**
 	 * The "body" attribute
 	 */
 	public static final String BODY = "body"; //$NON-NLS-1$
@@ -58,13 +62,9 @@ public interface Attributes {
 	 */
 	public static final String CONTEXT_HREF = "context_href"; //$NON-NLS-1$
 	/**
-	 * The "context_id" attribute
-	 */
-	public static final String CONTEXT_ID = "context_id"; //$NON-NLS-1$
-	/**
 	 * The "contextId" attribute
 	 */
-	public static final String CONTEXT_ID_BODY = "contextId"; //$NON-NLS-1$
+	public static final String CONTEXT_ID = "contextId"; //$NON-NLS-1$
 	/**
 	 * The "contexts" attribute
 	 */
