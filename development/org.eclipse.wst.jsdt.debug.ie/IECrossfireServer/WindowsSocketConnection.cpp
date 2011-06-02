@@ -60,6 +60,8 @@ void WindowsSocketConnection::handleSocketAccept() {
 
 	/* remove the listenSocket listener */
 	WSAAsyncSelect(m_listenSocket, m_hWnd, EW_SOCKET_MSG, 0);
+
+	m_server->connected();
 }
 
 void WindowsSocketConnection::handleSocketClose() {
@@ -170,6 +172,10 @@ bool WindowsSocketConnection::init(unsigned int port) {
 	}
 	WindowsSocketConnection::registerConnection(m_hWnd, this);
 	return true;
+}
+
+bool WindowsSocketConnection::isConnected() {
+	return m_clientSocket != INVALID_SOCKET;
 }
 
 bool WindowsSocketConnection::send(const wchar_t* msg) {

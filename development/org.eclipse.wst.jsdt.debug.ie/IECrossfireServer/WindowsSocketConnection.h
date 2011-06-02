@@ -29,6 +29,7 @@ public:
 	virtual bool acceptConnection();
 	virtual bool close();
 	virtual bool init(unsigned int port);
+	virtual bool isConnected();
 	virtual bool send(const wchar_t* msg);
 
 private:
