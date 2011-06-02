@@ -57,7 +57,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				AdditionalDependencies="kernel32.lib rpcndr.lib rpcns4.lib rpcrt4.lib oleaut32.lib uuid.lib"
-				ModuleDefinitionFile="EWExtensionPS.def"
+				ModuleDefinitionFile="IECrossfireExtensionPS.def"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -127,7 +127,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				AdditionalDependencies="kernel32.lib rpcndr.lib rpcns4.lib rpcrt4.lib oleaut32.lib uuid.lib"
-				ModuleDefinitionFile="EWExtensionPS.def"
+				ModuleDefinitionFile="IECrossfireExtensionPS.def"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 			/>
@@ -173,16 +173,16 @@
 				>
 			</File>
 			<File
-				RelativePath=".\EWExtension_i.c"
+				RelativePath=".\IECrossfireExtension_i.c"
 				>
 			</File>
 			<File
-				RelativePath=".\EWExtension_p.c"
+				RelativePath=".\IECrossfireExtension_p.c"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\EWExtensionps.def"
+			RelativePath=".\IECrossfireExtensionps.def"
 			>
 		</File>
 	</Files>

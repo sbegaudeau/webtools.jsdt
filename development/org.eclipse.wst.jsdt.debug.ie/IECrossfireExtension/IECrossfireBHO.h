@@ -16,15 +16,23 @@
 #include "activdbg.h"
 #include <exdispid.h>
 #include <shlguid.h>
+#include <string>
 
 #include "IECrossfireExtension.h"
 #include "Logger.h"
+
+enum {
+	STATE_DISCONNECTED,
+	STATE_LISTENING,
+	STATE_CONNECTED,
+};
 
 class ATL_NO_VTABLE IECrossfireBHO :
 	public CComObjectRootEx<CComSingleThreadModel>,
 	public CComCoClass<IECrossfireBHO, &CLSID_IECrossfireBHO>,
 	public IObjectWithSiteImpl<IECrossfireBHO>,
 	public IIECrossfireBHO,
+	public ICrossfireServerListener,
 	public IDispEventImpl<1, IECrossfireBHO, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1> {
 
 public:
@@ -32,6 +40,7 @@ public:
 	DECLARE_NOT_AGGREGATABLE(IECrossfireBHO)
 	BEGIN_COM_MAP(IECrossfireBHO)
 		COM_INTERFACE_ENTRY(IIECrossfireBHO)
+		COM_INTERFACE_ENTRY(ICrossfireServerListener)
 		COM_INTERFACE_ENTRY(IObjectWithSite)
 	END_COM_MAP()
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -47,10 +56,6 @@ public:
 	IECrossfireBHO();
 	~IECrossfireBHO();
 
-	/* IObjectWithSite */
-	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
-	virtual HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
-
 	/* DWebBrowserEvents2 */
 	BEGIN_SINK_MAP(IECrossfireBHO)
 		SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, OnBeforeNavigate2)
@@ -61,19 +66,29 @@ public:
 	void STDMETHODCALLTYPE OnDocumentComplete(IDispatch* pDisp, VARIANT* URL);
 	void STDMETHODCALLTYPE OnNavigateComplete2(IDispatch* pDisp, VARIANT* URL);
 
-private:
-	virtual bool serverIsActive();
-	virtual HRESULT initServer();
-	bool startDebugging();
-	bool stopDebugging();
+	/* ICrossfireServerListener */
+	virtual HRESULT STDMETHODCALLTYPE ServerStateChanged(int state, unsigned int port);
 
-	ICrossfireServer* m_server;
+	/* IObjectWithSite */
+	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
+	virtual HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
+
+private:
+	virtual bool displayHTML(wchar_t* htmlText);
+	virtual int getServerState();
+	virtual bool initServer(bool startIfNeeded);
+	bool startDebugging(unsigned int port);
+
 	bool m_eventsHooked;
+	bool m_firstNavigate;
+	wchar_t* m_htmlToDisplay;
+	ICrossfireServer* m_server;
+	int m_serverState;
 	IWebBrowser2* m_webBrowser;
 
 	/* constants */
+	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* DEBUG_START;
-	static const wchar_t* DEBUG_STOP;
 	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 };
 

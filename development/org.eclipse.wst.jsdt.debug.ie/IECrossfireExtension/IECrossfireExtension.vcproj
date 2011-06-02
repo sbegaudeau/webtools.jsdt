@@ -135,6 +135,7 @@
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
+				AdditionalIncludeDirectories="../IECrossfireServer"
 				MkTypLibCompatible="false"
 				TargetEnvironment="1"
 				GenerateStublessProxies="true"
@@ -148,6 +149,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
+				AdditionalIncludeDirectories=""
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="2"
@@ -173,6 +175,7 @@
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="WS2_32.lib"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories=""
 				ModuleDefinitionFile=".\IECrossfireExtension.def"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -214,6 +217,10 @@
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
+			<File
+				RelativePath=".\ExplorerBar.cpp"
+				>
+			</File>
 			<File
 				RelativePath=".\IECrossfireBHO.cpp"
 				>
@@ -265,6 +272,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\ExplorerBar.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IECrossfireBHO.h"
 				>
 			</File>
@@ -286,6 +297,10 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+			<File
+				RelativePath=".\ExplorerBar.rgs"
+				>
+			</File>
 			<File
 				RelativePath=".\IECrossfireBHO.rgs"
 				>

@@ -25,6 +25,15 @@ interface IIECrossfireBHO : IUnknown {
 };
 [
 	object,
+	uuid(19DAE1A1-1FAA-4D1C-8788-F03260303AEB),
+	helpstring("ICrossfireServerListener Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServerListener : IUnknown {
+	HRESULT ServerStateChanged([in] int state, [in] unsigned int port);
+};
+[
+	object,
 	uuid(031DB015-B1BE-4D39-84D2-D7F96D2ACBFE),
 	oleautomation,
 	dual,
@@ -33,13 +42,16 @@ interface IIECrossfireBHO : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServer : IDispatch {
+	HRESULT addListener([in] ICrossfireServerListener* listener);
 	HRESULT contextCreated([in] DWORD threadId, [in, string] OLECHAR* href);
 	HRESULT contextDestroyed([in] DWORD threadId);
 	HRESULT contextLoaded([in] DWORD threadId);
-	HRESULT isActive([out] boolean* value);
+	HRESULT getPort([out] unsigned int* value);
+	HRESULT getState([out] int* value);
 	HRESULT registerContext([in] DWORD threadId, [in, string] OLECHAR* href);
+	HRESULT removeListener([in] ICrossfireServerListener* listener);
 	HRESULT setCurrentContext([in] DWORD threadId);
-	HRESULT start([in] unsigned int port);
+	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
 	HRESULT stop();
 };
 [
@@ -54,6 +66,16 @@ interface ICrossfireServer : IDispatch {
 interface ICrossfireServerClass : IDispatch {
 	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
 	HRESULT RemoveServer([in] unsigned long windowHandle);
+};
+[
+	object,
+	uuid(72BA7A37-6D18-439D-8A42-5F6A4F2CD3C3),
+	dual,
+	nonextensible,
+	helpstring("IExplorerBar Interface"),
+	pointer_default(unique)
+]
+interface IExplorerBar : IDispatch {
 };
 [
 	uuid(A8FFC284-CE2C-40B5-98D1-D3112811E9D9),
@@ -72,6 +94,15 @@ library IECrossfireExtensionLib
 		[default] interface IIECrossfireBHO;
 	};
 	[
+		uuid(34EF57F8-9295-483E-B656-4EE154B0B3A5),
+		helpstring("ExplorerBar Class")
+	]
+	coclass ExplorerBar
+	{
+		[default] interface IExplorerBar;
+		interface ICrossfireServerListener;
+	};
+	[
 		uuid(47836AF4-3E0C-4995-8029-FF931C5A43FC),
 		helpstring("CrossfireServer Class")
 	]
@@ -86,5 +117,13 @@ library IECrossfireExtensionLib
 	coclass CrossfireServerClass
 	{
 		[default] interface ICrossfireServerClass;
+	};
+	[
+		uuid(260387C9-60BB-4E1E-A1D8-4428488E9421),
+		helpstring("CrossfireServerListener Class")
+	]
+	coclass CrossfireServerListener
+	{
+		[default] interface ICrossfireServerListener;
 	};
 };

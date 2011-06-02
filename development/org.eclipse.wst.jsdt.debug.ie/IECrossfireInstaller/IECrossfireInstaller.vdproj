@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_084B599895D34B5C91B48103EDD41042"
+        "MsmKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -27,38 +27,86 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_599BE6DB6407468CBC0B327C6D9DA90F"
-        "OwnerKey" = "8:_084B599895D34B5C91B48103EDD41042"
+        "MsmKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_599BE6DB6407468CBC0B327C6D9DA90F"
+        "MsmKey" = "8:_789EDFDD3D684807BA806711810DE2E6"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_84E08E0239A547B69279455F81CBB050"
+        "OwnerKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
         "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6D1F615A31044CDB867EF6943A8BF696"
-        "OwnerKey" = "8:_B4CBFC7075C546E3A6BB1715EDCC0295"
+        "MsmKey" = "8:_B2FDF7A3EDD7481CA6B36A2A88BEEB20"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_87FA8BE17F3F4CA8A409734D17E49460"
-        "OwnerKey" = "8:_599BE6DB6407468CBC0B327C6D9DA90F"
+        "MsmKey" = "8:_C13FFD631EE8438A846F661828EC200F"
+        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B4CBFC7075C546E3A6BB1715EDCC0295"
-        "OwnerKey" = "8:_084B599895D34B5C91B48103EDD41042"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_B4CBFC7075C546E3A6BB1715EDCC0295"
+        "MsmKey" = "8:_C13FFD631EE8438A846F661828EC200F"
         "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C55A728E77B342859CD899BAA283C518"
+        "OwnerKey" = "8:_C13FFD631EE8438A846F661828EC200F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+        "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+        "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -148,6 +196,66 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_789EDFDD3D684807BA806711810DE2E6"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\IBM\\IE Crossfire Server\\smileyGray.ico"
+            "TargetName" = "8:smileyGray.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2FDF7A3EDD7481CA6B36A2A88BEEB20"
+            {
+            "SourcePath" = "8:C:\\Program Files (x86)\\IBM\\IE Crossfire Server\\smiley.ico"
+            "TargetName" = "8:smiley.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+            {
+            "SourcePath" = "8:RPCRT4.dll"
+            "TargetName" = "8:RPCRT4.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -204,7 +312,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{E9C7B016-4491-4D26-8CBA-6A2A04003404}"
+        "PackageCode" = "8:{D2AF084E-7B4D-4622-A780-671F7B1DE108}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -295,7 +403,7 @@
                                                                     "Condition" = "8:"
                                                                     "AlwaysCreate" = "11:TRUE"
                                                                     "DeleteAtUninstall" = "11:TRUE"
-                                                                    "Transitive" = "11:TRUE"
+                                                                    "Transitive" = "11:FALSE"
                                                                         "Keys"
                                                                         {
                                                                         }
@@ -343,39 +451,79 @@
                                     {
                                     "Name" = "8:Internet Explorer"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
+                                    "AlwaysCreate" = "11:FALSE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
-                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A81A16FBEBBE40BF824350F34DE99FED"
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EFBD8933842748E8B8571446AFE1750E"
                                             {
-                                            "Name" = "8:Toolbar2"
+                                            "Name" = "8:Extensions"
                                             "Condition" = "8:"
-                                            "AlwaysCreate" = "11:TRUE"
+                                            "AlwaysCreate" = "11:FALSE"
                                             "DeleteAtUninstall" = "11:FALSE"
-                                            "Transitive" = "11:TRUE"
+                                            "Transitive" = "11:FALSE"
                                                 "Keys"
                                                 {
-                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2F612EBFE1AC4F9B8E0C0461756A9E3D"
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_029DE52FFF634B2D8AA598218D378247"
                                                     {
-                                                    "Name" = "8:{201CD8EF-F249-42DC-AC2E-BDF0CD176F1A}"
+                                                    "Name" = "8:{E29302FD-539F-44a8-B457-D2DE7C65C7AE}"
                                                     "Condition" = "8:"
                                                     "AlwaysCreate" = "11:TRUE"
                                                     "DeleteAtUninstall" = "11:TRUE"
-                                                    "Transitive" = "11:TRUE"
+                                                    "Transitive" = "11:FALSE"
                                                         "Keys"
                                                         {
                                                         }
                                                         "Values"
                                                         {
-                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7EA03F0B771C4A65B9508C4BF077E2E4"
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3150B8E0C8C342A9B7E270418F1FD2E4"
                                                             {
-                                                            "Name" = "8:"
+                                                            "Name" = "8:BandCLSID"
                                                             "Condition" = "8:"
                                                             "Transitive" = "11:FALSE"
                                                             "ValueTypes" = "3:1"
-                                                            "Value" = "8:IECrossfireToolBand"
+                                                            "Value" = "8:{34EF57F8-9295-483E-B656-4EE154B0B3A5}"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_32B490DE03604FAD8E73FD83DE696F3F"
+                                                            {
+                                                            "Name" = "8:HotIcon"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[TARGETDIR]smiley.ico\""
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_3E4A829B157C4BF28F7E1C16C92E48EA"
+                                                            {
+                                                            "Name" = "8:Icon"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:\"[TARGETDIR]smileyGray.ico\""
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8CE8ADBA6DB64E569C66886024E48551"
+                                                            {
+                                                            "Name" = "8:ButtonText"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:Show Crossfire Server Panel"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C6512E4667BD4EC7BB9B9E266B1F1361"
+                                                            {
+                                                            "Name" = "8:CLSID"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:{E0DD6CAB-2D10-11D2-8F1A-0000F87ABD16}"
+                                                            }
+                                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F6B91120C40D44D799EE40A98968F240"
+                                                            {
+                                                            "Name" = "8:Default Visible"
+                                                            "Condition" = "8:"
+                                                            "Transitive" = "11:FALSE"
+                                                            "ValueTypes" = "3:1"
+                                                            "Value" = "8:Yes"
                                                             }
                                                         }
                                                     }
@@ -405,6 +553,154 @@
             {
                 "Keys"
                 {
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E858098B1B9147569EDBB0F4EC74444D"
+                    {
+                    "Name" = "8:Software"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:FALSE"
+                    "DeleteAtUninstall" = "11:FALSE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2F3AEF3F794C4C67A61D12DF97E1759A"
+                            {
+                            "Name" = "8:Microsoft"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AE9DEA889E9F4AE195EB5294AE73D097"
+                                    {
+                                    "Name" = "8:Windows"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_50B7C19E6D834C378F963ED202DA1131"
+                                            {
+                                            "Name" = "8:CurrentVersion"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_97190513B53C4B7AAB9E49FB208835BE"
+                                                    {
+                                                    "Name" = "8:Explorer"
+                                                    "Condition" = "8:"
+                                                    "AlwaysCreate" = "11:FALSE"
+                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                    "Transitive" = "11:FALSE"
+                                                        "Keys"
+                                                        {
+                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0D55B0F7937A49488B230E65E9FD5E07"
+                                                            {
+                                                            "Name" = "8:Discardable"
+                                                            "Condition" = "8:"
+                                                            "AlwaysCreate" = "11:FALSE"
+                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                            "Transitive" = "11:FALSE"
+                                                                "Keys"
+                                                                {
+                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E6E1AAF4D20544D6847892A15C4E00CC"
+                                                                    {
+                                                                    "Name" = "8:PostSetup"
+                                                                    "Condition" = "8:"
+                                                                    "AlwaysCreate" = "11:FALSE"
+                                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                                    "Transitive" = "11:FALSE"
+                                                                        "Keys"
+                                                                        {
+                                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_1DB1B6C8A6364AD48CC5AC68F8D7E25F"
+                                                                            {
+                                                                            "Name" = "8:Component Categories"
+                                                                            "Condition" = "8:"
+                                                                            "AlwaysCreate" = "11:FALSE"
+                                                                            "DeleteAtUninstall" = "11:FALSE"
+                                                                            "Transitive" = "11:FALSE"
+                                                                                "Keys"
+                                                                                {
+                                                                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C4F0A50511CD4E92AC51E713136DBB2E"
+                                                                                    {
+                                                                                    "Name" = "8:{00021494-0000-0000-C000-000000000046}"
+                                                                                    "Condition" = "8:"
+                                                                                    "AlwaysCreate" = "11:TRUE"
+                                                                                    "DeleteAtUninstall" = "11:FALSE"
+                                                                                    "Transitive" = "11:FALSE"
+                                                                                        "Keys"
+                                                                                        {
+                                                                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EFFC1C1D1D3C4B4ABB1121E2223C91F4"
+                                                                                            {
+                                                                                            "Name" = "8:Enum"
+                                                                                            "Condition" = "8:"
+                                                                                            "AlwaysCreate" = "11:TRUE"
+                                                                                            "DeleteAtUninstall" = "11:TRUE"
+                                                                                            "Transitive" = "11:FALSE"
+                                                                                                "Keys"
+                                                                                                {
+                                                                                                }
+                                                                                                "Values"
+                                                                                                {
+                                                                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2ADC357EAEF840E688E8CBD2E558E426"
+                                                                                                    {
+                                                                                                    "Name" = "8:Implementing"
+                                                                                                    "Condition" = "8:"
+                                                                                                    "Transitive" = "11:FALSE"
+                                                                                                    "ValueTypes" = "3:1"
+                                                                                                    "Value" = "8:"
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                        "Values"
+                                                                                        {
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                "Values"
+                                                                                {
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        "Values"
+                                                                        {
+                                                                        }
+                                                                    }
+                                                                }
+                                                                "Values"
+                                                                {
+                                                                }
+                                                            }
+                                                        }
+                                                        "Values"
+                                                        {
+                                                        }
+                                                    }
+                                                }
+                                                "Values"
+                                                {
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                        }
+                    }
                 }
             }
             "HKCR"
@@ -417,7 +713,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F6923631966F48B9AC2A9AFA67469371"
@@ -426,7 +722,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -461,7 +757,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_18F7A680CA16491A8064827E25FB02C9"
@@ -470,7 +766,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -512,8 +808,8 @@
                             {
                             "Name" = "8:{201244D7-94C6-4FB0-9948-2634523A475B}"
                             "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:TRUE"
                             "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
@@ -521,7 +817,7 @@
                                     {
                                     "Name" = "8:ProxyStubClsid"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -543,7 +839,7 @@
                                     {
                                     "Name" = "8:ProxyStubClsid32"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -565,7 +861,7 @@
                                     {
                                     "Name" = "8:TypeLib"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -610,7 +906,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_14A187CB0EF34A30AAABEC3814BC45E7"
@@ -619,7 +915,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -649,7 +945,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -669,7 +965,7 @@
                                     {
                                     "Name" = "8:ProxyStubClsid"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -700,13 +996,109 @@
                                     }
                                 }
                             }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_89543F6C86D5492D9131A7300AB39A4C"
+                            {
+                            "Name" = "8:{19DAE1A1-1FAA-4D1C-8788-F03260303AEB}"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_910A4618535145FFA865DC6F399E7914"
+                                    {
+                                    "Name" = "8:TypeLib"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7434CB194D544D45BA1B9239D2245670"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7E8A48C0CE254FFF920922FB38B78966"
+                                            {
+                                            "Name" = "8:Version"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:1.0"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B7170CC5D76143F69030E4D91BD7BAF2"
+                                    {
+                                    "Name" = "8:ProxyStubClsid"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_826C8BEEE3864EC9A9A5BE4F92C82C27"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{00020424-0000-0000-C000-000000000046}"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FF825DF4C75A465F9C545783FF320D6D"
+                                    {
+                                    "Name" = "8:ProxyStubClsid32"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D1ECEA64B21649698E8E25890FB24842"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{00020424-0000-0000-C000-000000000046}"
+                                            }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7FE5E781251E419AA5B9BFB7F4401263"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:ICrossfireServerListener"
+                                    }
+                                }
+                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_CB5D4686903A45D599D3B00F95A695BC"
                             {
                             "Name" = "8:{F48260BB-C061-4410-9CE1-4C5C7602690E}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_21BBEDAE31E943E698C8C45DA043ACF7"
@@ -715,7 +1107,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -745,7 +1137,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -765,7 +1157,7 @@
                                     {
                                     "Name" = "8:ProxyStubClsid"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -801,79 +1193,13 @@
                         {
                         }
                     }
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_22D6C86E6E334B81A2835BF46D42A80F"
-                    {
-                    "Name" = "8:IECrossfireToolBand.CrossfireToolBand"
-                    "Condition" = "8:"
-                    "AlwaysCreate" = "11:TRUE"
-                    "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
-                        "Keys"
-                        {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_1D44E3C7E0AA40218716897036945B9B"
-                            {
-                            "Name" = "8:CurVer"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2287C9C4A49647CBA79162EDDC0106C4"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:IECrossfireToolBand.CrossfireToolBand.1"
-                                    }
-                                }
-                            }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_1FE2E61B1A2344E29F26A74E6C2D7824"
-                            {
-                            "Name" = "8:CLSID"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2BFC6A508D7E48E4A7F140BF7E27666B"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{201CD8EF-F249-42DC-AC2E-BDF0CD176F1A}"
-                                    }
-                                }
-                            }
-                        }
-                        "Values"
-                        {
-                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_D7AAB611DFB74567AF8D415227268FE7"
-                            {
-                            "Name" = "8:"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "ValueTypes" = "3:1"
-                            "Value" = "8:CrossfireToolBand Class"
-                            }
-                        }
-                    }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_38003254C8CB4ED4AE5E87F366DE40CC"
                     {
                     "Name" = "8:IECrossfireServer.JSEvalCallback.1"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_45BB10C8BC1B4D50A875CE0651226460"
@@ -882,7 +1208,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -926,7 +1252,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -942,35 +1268,13 @@
                                     }
                                 }
                             }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8D3C61D7569943D28DD9926D61D915AB"
-                            {
-                            "Name" = "8:{1D72A5EE-2740-48CA-B8E9-777483A92464}"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_E8E1F1EA311C41BA8CA3282FFC34204E"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:IECrossfireToolBand"
-                                    }
-                                }
-                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9D815AE40851488D933CAB2C97552870"
                             {
                             "Name" = "8:IECrossfireExtension.DLL"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -986,35 +1290,13 @@
                                     }
                                 }
                             }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A111D37CF0D84CDEB0D87F94763266E6"
-                            {
-                            "Name" = "8:IECrossfireToolBar.DLL"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F021508882E54863934E76813376E934"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{1D72A5EE-2740-48CA-B8E9-777483A92464}"
-                                    }
-                                }
-                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_B738DD8B0C3C463B81F1406E380A4F59"
                             {
                             "Name" = "8:{1B6AA6D6-25AC-4994-9431-AC0DFC85654D}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1036,7 +1318,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1063,7 +1345,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_ACA905BC774247AB9B28A80AB2BB829A"
@@ -1072,7 +1354,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1094,7 +1376,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1120,6 +1402,50 @@
                             "Transitive" = "11:FALSE"
                             "ValueTypes" = "3:1"
                             "Value" = "8:CrossfireServerClass Class"
+                            }
+                        }
+                    }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_485BD53348F143DC9F92B2D8AE30D454"
+                    {
+                    "Name" = "8:IECrossfireServer.CrossfireServerList.1"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_55399287443849DAA30D05349E770C63"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C548E9A8FADE4D889E252F210F565A2B"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B21ECEBACAD14556A43FCD9275C17FFF"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:CrossfireServerListener Class"
                             }
                         }
                     }
@@ -1259,38 +1585,16 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_46931859219649E5964BE48ABB3D196F"
-                            {
-                            "Name" = "8:CLSIDBOGUS"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C68A4DE7C2B542439DA6014B8ADCEBEA"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{7C3C5D7A-AF4D-4F32-A3C9-462BFBAFDC25}"
-                                    }
-                                }
-                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_4D6C36184DB440DCA6DEE15F79103F06"
                             {
                             "Name" = "8:CurVer"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1312,7 +1616,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1347,7 +1651,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_74B4BD3F62174A3C8A13E1A839EF4CC7"
@@ -1356,7 +1660,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1378,7 +1682,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1413,7 +1717,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9DC841FA63A74F71BF1BF15EC5BFDB4D"
@@ -1422,7 +1726,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1444,7 +1748,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1473,13 +1777,57 @@
                             }
                         }
                     }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8960DC4205BE4176AFDF0FC8C925A61F"
+                    {
+                    "Name" = "8:IECrossfireExtension.ExplorerBar.1"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_78AC67DBD4E74F26AB8C0AD3BBE438F6"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_561C7A44927E4210ABF83AFBBDDA66C2"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{34EF57F8-9295-483E-B656-4EE154B0B3A5}"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8E01A0423B694523BB58138B59E6A8AD"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:ExplorerBar Class"
+                            }
+                        }
+                    }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A05AF1F3CE414E8EB045203FD6083127"
                     {
                     "Name" = "8:IECrossfireExtension.IECrossfireBHO"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9FA71E4D5DE34DAD9F570EAF455ED0DB"
@@ -1488,7 +1836,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1510,7 +1858,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1545,7 +1893,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2E3DED797B0540E9AA2C0C0992FFE8B5"
@@ -1554,7 +1902,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -1567,28 +1915,6 @@
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
                                     "Value" = "8:{47836AF4-3E0C-4995-8029-FF931C5A43FC}"
-                                    }
-                                }
-                            }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_975DAD0177AD4AFDBB0217399449799A"
-                            {
-                            "Name" = "8:CLSIDBOGUS"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5C2D9E3A88084B5E985E27995A406FCC"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{7C3C5D7A-AF4D-4F32-A3C9-462BFBAFDC25}"
                                     }
                                 }
                             }
@@ -1614,13 +1940,183 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_148973BAFDA646AD978B7F48BC23F076"
+                            {
+                            "Name" = "8:{34EF57F8-9295-483E-B656-4EE154B0B3A5}"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_674E61BFA8224C96AF11A77291ECD44F"
+                                    {
+                                    "Name" = "8:VersionIndependentProgID"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2C1CEA400BA9465896B06541C124C6F0"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:IECrossfireExtension.ExplorerBar"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_CDA3869C920848A99A73F553EE97043B"
+                                    {
+                                    "Name" = "8:InProcServer32"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5DBF7243F6B340FB80BA132FF92BBDD7"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:\"[TARGETDIR]IECrossfireExtension.dll\""
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8D0049393DD84C69B3AED852B6A6888C"
+                                            {
+                                            "Name" = "8:ThreadingModel"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:Apartment"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D0BE4C6074704E7AAAEBB3BD424F6B35"
+                                    {
+                                    "Name" = "8:ProgID"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_47A95C86274B4480B4292893B1FAE346"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:IECrossfireExtension.ExplorerBar.1"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E65FEDA5DFEA48E1A69FB87F2D6F1D31"
+                                    {
+                                    "Name" = "8:TypeLib"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_CA571F541C8A48D9ABEF8552D19AF384"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EA4C8E2970E246A4816B023EFE4A8CE9"
+                                    {
+                                    "Name" = "8:Implemented Categories"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_34578DA9CB174A679F04813CFFB3BB4F"
+                                            {
+                                            "Name" = "8:{00021494-0000-0000-C000-000000000046}"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:TRUE"
+                                            "DeleteAtUninstall" = "11:FALSE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                }
+                                                "Values"
+                                                {
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_1BCB524A0FC046FB8B12AD4AB4849B40"
+                                                    {
+                                                    "Name" = "8:"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_A5953A6E3B914DF38BDF3080C5E7EB70"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:"
+                                            }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6213E46F1B914A1E95F1CFA63FA1B495"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:Crossfire Server Panel"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_A0FFC2D61F2D46ED9BEB77E61BC510A3"
+                                    {
+                                    "Name" = "8:AppID"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{95F1ADFB-5440-462c-BAA3-9C068F1B1450}"
+                                    }
+                                }
+                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2189685375BB4906B9EDD07522F45C93"
                             {
                             "Name" = "8:{E8779887-5AF1-4071-B4D4-6135157F142C}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_29D2515DF67F4AAEB9B625A996D1BBF5"
@@ -1629,7 +2125,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1651,7 +2147,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1673,7 +2169,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1695,7 +2191,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1725,7 +2221,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1750,7 +2246,7 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
-                                    "Value" = "8:{95F1ADFB-5440-462c-BAA3-9C068F1B1450}"
+                                    "Value" = "8:"
                                     }
                                     "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_F063353B630D41D799D694138C168263"
                                     {
@@ -1762,13 +2258,145 @@
                                     }
                                 }
                             }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_31FE7680CCAD496880BA404E46BC9342"
+                            {
+                            "Name" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_197AD18B2A564CD6A8ECB3E268B0E963"
+                                    {
+                                    "Name" = "8:LocalServer32"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5ABF12C6BE6C4EB2AEAA812956621F09"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:\"[TARGETDIR]IECrossfireServer.exe\""
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_45BC9F0647A64FB8A3F2E14880C1541E"
+                                    {
+                                    "Name" = "8:TypeLib"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_60FF0374CD404B9280D596038401FE03"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_78D0DCE7F1C042A5A0E9AB4E61D9C69A"
+                                    {
+                                    "Name" = "8:VersionIndependentProgID"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_FC3EAF39D5B44ACAA9502C5774C52B20"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:IECrossfireServer.CrossfireServerListen"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D6F8F18B650241BDB24C1F70C6C10C54"
+                                    {
+                                    "Name" = "8:ProgID"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_199676408CE241C1AA90E264D359BE87"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:IECrossfireServer.CrossfireServerList.1"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E5259319E3E74B829935D115549B31CD"
+                                    {
+                                    "Name" = "8:Programmable"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:TRUE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_1210728149C24013ABF07FD109B51E00"
+                                    {
+                                    "Name" = "8:AppID"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{1B6AA6D6-25AC-4994-9431-AC0DFC85654D}"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5ACB84076E6241F08A14BEFE091D1D63"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:CrossfireServerListener Class"
+                                    }
+                                }
+                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5447D14FBC01477CBF32404CB6285437"
                             {
                             "Name" = "8:{88E7C480-7B7A-47C5-8329-CE1FDF415527}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_117E8AFCE9E34F9A95174EA7AE803064"
@@ -1777,7 +2405,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1799,7 +2427,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1821,7 +2449,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1843,7 +2471,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1857,7 +2485,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -1894,153 +2522,13 @@
                                     }
                                 }
                             }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_6B7D94AE9CAF4E8589765C256EC81689"
-                            {
-                            "Name" = "8:{201CD8EF-F249-42DC-AC2E-BDF0CD176F1A}"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
-                                "Keys"
-                                {
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_16EBBDDE44C54EB49282CDD9DDE6671C"
-                                    {
-                                    "Name" = "8:Programmable"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
-                                        "Keys"
-                                        {
-                                        }
-                                        "Values"
-                                        {
-                                        }
-                                    }
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_21833C8CC02B4FEB828ED6D8990C3595"
-                                    {
-                                    "Name" = "8:TypeLib"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
-                                        "Keys"
-                                        {
-                                        }
-                                        "Values"
-                                        {
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_DCC49B6F8E1E4C30AD875EFBE9D53EE3"
-                                            {
-                                            "Name" = "8:"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:{0F916C8A-FCE2-4335-BF1F-71F7A73BBF9F}"
-                                            }
-                                        }
-                                    }
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_6142A477FF7043D393E46F7E457972BE"
-                                    {
-                                    "Name" = "8:InProcServer32"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
-                                        "Keys"
-                                        {
-                                        }
-                                        "Values"
-                                        {
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_28F7FCD272954DC687AAEA7602A085DC"
-                                            {
-                                            "Name" = "8:ThreadingModel"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:Apartment"
-                                            }
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B8D84DE9CED343F099D49816BA6A73FA"
-                                            {
-                                            "Name" = "8:"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:[TARGETDIR]IECrossfireToolBand.dll"
-                                            }
-                                        }
-                                    }
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_C4DF201A45264DF5A6A73DCE14614C25"
-                                    {
-                                    "Name" = "8:VersionIndependentProgID"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
-                                        "Keys"
-                                        {
-                                        }
-                                        "Values"
-                                        {
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7BC46880AF774BDA8B824578FA39DFC1"
-                                            {
-                                            "Name" = "8:"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:IECrossfireToolBand.CrossfireToolBand"
-                                            }
-                                        }
-                                    }
-                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E8003FB5897E49B1B2ECE7552C144FF5"
-                                    {
-                                    "Name" = "8:ProgID"
-                                    "Condition" = "8:"
-                                    "AlwaysCreate" = "11:TRUE"
-                                    "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
-                                        "Keys"
-                                        {
-                                        }
-                                        "Values"
-                                        {
-                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2C081AF178824FEBA465EAA07C7C5078"
-                                            {
-                                            "Name" = "8:"
-                                            "Condition" = "8:"
-                                            "Transitive" = "11:FALSE"
-                                            "ValueTypes" = "3:1"
-                                            "Value" = "8:IECrossfireToolBand.CrossfireToolBand.1"
-                                            }
-                                        }
-                                    }
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6AE1AF4F966C42ADA21FF03FC29807C4"
-                                    {
-                                    "Name" = "8:AppID"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{1D72A5EE-2740-48CA-B8E9-777483A92464}"
-                                    }
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_FEB7C45B17C54AB19127E462ADF1D4E6"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:CrossfireToolBand Class"
-                                    }
-                                }
-                            }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_8493B1EC5C4A436CBFD65942FB5102E7"
                             {
                             "Name" = "8:{7C3C5D7A-AF4D-4F32-A3C9-462BFBAFDC25}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_0CCC8CFA6FB44629A2C37F772CCABB47"
@@ -2049,7 +2537,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2071,7 +2559,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2093,7 +2581,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2115,7 +2603,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2137,7 +2625,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2172,7 +2660,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_00D241A240234703890E7A841E572210"
@@ -2181,7 +2669,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2203,7 +2691,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2225,7 +2713,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2247,7 +2735,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2290,7 +2778,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AF4E813CA86E436CB889952393707738"
@@ -2299,7 +2787,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2319,7 +2807,7 @@
                                     {
                                     "Name" = "8:Programmable"
                                     "Condition" = "8:"
-                                    "AlwaysCreate" = "11:FALSE"
+                                    "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
                                     "Transitive" = "11:FALSE"
                                         "Keys"
@@ -2335,7 +2823,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2357,7 +2845,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2379,7 +2867,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2422,7 +2910,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_294F1D32FB6147B4A66051FAD175694B"
@@ -2431,7 +2919,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2453,7 +2941,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2475,7 +2963,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2497,7 +2985,7 @@
                                     "Condition" = "8:"
                                     "AlwaysCreate" = "11:TRUE"
                                     "DeleteAtUninstall" = "11:FALSE"
-                                    "Transitive" = "11:TRUE"
+                                    "Transitive" = "11:FALSE"
                                         "Keys"
                                         {
                                         }
@@ -2545,7 +3033,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_6B7C8F9FBF484209A8F72D3827C6EB3A"
@@ -2554,7 +3042,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -2583,13 +3071,79 @@
                             }
                         }
                     }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_CFB1227E060E4123B7A056491E8A13AC"
+                    {
+                    "Name" = "8:IECrossfireExtension.ExplorerBar"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D7C3E2CC05624B2B854D0399CEF5FF9D"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_84ED5A18D4EB4E1BA8F1AA552DBA429A"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{34EF57F8-9295-483E-B656-4EE154B0B3A5}"
+                                    }
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_FFFB345DD32A43C59DC80B495EAF70F2"
+                            {
+                            "Name" = "8:CurVer"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_47631623514341C2A3B829890F4B45CB"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:IECrossfireExtension.ExplorerBar.1"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7A179D2A9ED84F678B4CDDCE674DC813"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:ExplorerBar Class"
+                            }
+                        }
+                    }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D5D43D7527814005AF04D5123AE1DADC"
                     {
                     "Name" = "8:IECrossfireServer.CrossfireServerClass.1"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_AB8139DF46764224A4B27B4FB3772902"
@@ -2598,7 +3152,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -2633,7 +3187,7 @@
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_49C42D3E92F04AF5840CC4EDEF35F12D"
@@ -2642,7 +3196,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -2664,7 +3218,7 @@
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
@@ -2693,47 +3247,69 @@
                             }
                         }
                     }
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E7F34417E1294BCDAA574BE5A2E57E9B"
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DEA558B1F5A74B76B651B2B7BDF0212E"
                     {
-                    "Name" = "8:IECrossfireToolBand.CrossfireToolBand.1"
+                    "Name" = "8:IECrossfireServer.CrossfireServerListen"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:TRUE"
                     "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_EB958070EDF14C308A5B7A0C7C124242"
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_20C6DF4C14934F2D91B72E6EEB670A03"
                             {
-                            "Name" = "8:CLSID"
+                            "Name" = "8:CurVer"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:TRUE"
+                            "Transitive" = "11:FALSE"
                                 "Keys"
                                 {
                                 }
                                 "Values"
                                 {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_A748338DD4954E7D9F733789B89F626F"
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C78B22C2A0324E72AFFF3E4411D5EE1D"
                                     {
                                     "Name" = "8:"
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
-                                    "Value" = "8:{201CD8EF-F249-42DC-AC2E-BDF0CD176F1A}"
+                                    "Value" = "8:IECrossfireServer.CrossfireServerList.1"
+                                    }
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_79BC07F9AE9444649B2E79558A5B3B9B"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C7464EB3ABCE460AAB21EA773C374829"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
                                     }
                                 }
                             }
                         }
                         "Values"
                         {
-                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_E09E4511404949058A49B0C134931421"
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2FB94913F167494EBE001E530BA48FCA"
                             {
                             "Name" = "8:"
                             "Condition" = "8:"
                             "Transitive" = "11:FALSE"
                             "ValueTypes" = "3:1"
-                            "Value" = "8:CrossfireToolBand Class"
+                            "Value" = "8:CrossfireServerListener Class"
                             }
                         }
                     }
@@ -3153,21 +3729,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_599BE6DB6407468CBC0B327C6D9DA90F"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC80_ATL_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_6D1F615A31044CDB867EF6943A8BF696"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_84E08E0239A547B69279455F81CBB050"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3181,21 +3743,7 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_87FA8BE17F3F4CA8A409734D17E49460"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_8_0_microsoft_vc80_atl_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_B4CBFC7075C546E3A6BB1715EDCC0295"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_93678B3CE4DD4E4DB4A11CD53222B44D"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3209,10 +3757,38 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C13FFD631EE8438A846F661828EC200F"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:Microsoft_VC80_ATL_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C55A728E77B342859CD899BAA283C518"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:policy_8_0_microsoft_vc80_atl_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_084B599895D34B5C91B48103EDD41042"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_135FEE75997E472EBE5334E37A5A865B"
             {
             "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
             "TargetName" = "8:"
@@ -3263,6 +3839,62 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{2B73B89A-A1B4-479B-8751-A25B9036A9AF}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5F42F5CFFE6349B99D0F777B803AB909"
+            {
+            "SourcePath" = "8:..\\IECrossfireServer\\ReleasePS\\IECrossfireServerPS.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:2"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C99F2874BC864A309B70733CEE4BB66B"
+            {
+            "SourcePath" = "8:..\\IECrossfireExtension\\ReleasePS\\IECrossfireExtensionPS.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:2"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

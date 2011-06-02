@@ -48,14 +48,14 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Eclipse Foundation\0"
-            VALUE "FileDescription", "IE Crossfire BHO\0"
-            VALUE "FileVersion", "1.0.0.0\0"
-            VALUE "LegalCopyright", "Copyright (c) 2011 IBM Corp.  All Rights Reserved.\0"
-            VALUE "InternalName", "IECrossfireExtension\0"
-            VALUE "OriginalFilename", "IECrossfireExtension.dll\0"
-            VALUE "ProductName", "IE Crossfire Server\0"
-            VALUE "ProductVersion", "0,0,0,0\0"
+            VALUE "CompanyName", "Eclipse Foundation"
+            VALUE "FileDescription", "IE Crossfire BHO"
+            VALUE "FileVersion", "1.0.0.0"
+            VALUE "LegalCopyright", "Copyright (c) 2011 IBM Corp.  All Rights Reserved."
+            VALUE "InternalName", "IECrossfireExtension"
+            VALUE "OriginalFilename", "IECrossfireExtension.dll"
+            VALUE "ProductName", "IE Crossfire Server"
+            VALUE "ProductVersion", "0,0,0,0"
         END
     END
     BLOCK "VarFileInfo"
@@ -64,8 +64,9 @@ BEGIN
     END
 END
 
-IDR_IECrossfireExtension         REGISTRY                "IECrossfireExtension.rgs"
-IDR_IECrossfireBHO               REGISTRY                "IECrossfireBHO.rgs"
+IDR_IECrossfireExtension REGISTRY                "IECrossfireExtension.rgs"
+IDR_IECrossfireBHO      REGISTRY                "IECrossfireBHO.rgs"
+IDR_EXPLORERBAR         REGISTRY                "ExplorerBar.rgs"
 
 STRINGTABLE 
 BEGIN
