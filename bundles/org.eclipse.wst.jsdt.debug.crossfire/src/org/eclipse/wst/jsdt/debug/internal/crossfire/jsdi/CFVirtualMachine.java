@@ -426,9 +426,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
 					for (Iterator iter2 = scriptz.iterator(); iter2.hasNext();) {
 						Map smap = (Map) iter2.next();
-						Map scriptjson = (Map) smap.get(Attributes.SCRIPT);
-						if(scriptjson != null) {
-							CFScriptReference script = new CFScriptReference(this, thread.id(), scriptjson); 
+						if(smap != null) {
+							CFScriptReference script = new CFScriptReference(this, thread.id(), smap); 
 							scripts.put(script.id(), script);
 						}
 					}
