@@ -1,0 +1,31 @@
+/*******************************************************************************
+ * Copyright (c) 2011 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+HKCR {
+	IECrossfireServer.CrossfireServerList.1 = s 'CrossfireServerListener Class' {
+		CLSID = s '{260387C9-60BB-4E1E-A1D8-4428488E9421}'
+	}
+	IECrossfireServer.CrossfireServerListen = s 'CrossfireServerListener Class' {
+		CLSID = s '{260387C9-60BB-4E1E-A1D8-4428488E9421}'
+		CurVer = s 'IECrossfireServer.CrossfireServerList.1'
+	}
+	NoRemove CLSID {
+		ForceRemove {260387C9-60BB-4E1E-A1D8-4428488E9421} = s 'CrossfireServerListener Class' {
+			ProgID = s 'IECrossfireServer.CrossfireServerList.1'
+			VersionIndependentProgID = s 'IECrossfireServer.CrossfireServerListen'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}'
+		}
+	}
+}

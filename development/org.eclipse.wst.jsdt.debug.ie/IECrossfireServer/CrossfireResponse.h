@@ -22,20 +22,17 @@ public:
 	~CrossfireResponse();
 	virtual void clone(CrossfirePacket** _value);
 	virtual Value* getBody();
-	virtual wchar_t* getName();
 	virtual unsigned int getRequestSeq();
 	virtual bool getRunning();
 	virtual bool getSuccess();
 	virtual int getType();
 	virtual bool setBody(Value* value);
-	virtual void setName(const wchar_t* value);
 	virtual void setRequestSeq(unsigned int value);
 	virtual void setRunning(bool value);
 	virtual void setSuccess(bool value);
 
 private:
 	Value* m_body;
-	wchar_t* m_name;
 	unsigned int m_requestSeq;
 	bool m_running;
 	bool m_success;

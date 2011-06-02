@@ -96,7 +96,8 @@ IDR_JSEVALCALLBACK      REGISTRY                "JSEvalCallback.rgs"
 IDR_IEDEBUGGER          REGISTRY                "IEDebugger.rgs"
 IDR_CROSSFIRESERVER     REGISTRY                "CrossfireServer1.rgs"
 IDR_CROSSFIRESERVERCLASS REGISTRY                "CrossfireServerClass.rgs"
-IDR_PENDINGBREAKPOINT   REGISTRY                "PendingBreakpoint.rgs"
+IDR_PENDINGSCRIPTLOAD   REGISTRY                "PendingScriptLoad.rgs"
+IDR_CROSSFIRESERVERLISTENER REGISTRY                "CrossfireServerListener.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //

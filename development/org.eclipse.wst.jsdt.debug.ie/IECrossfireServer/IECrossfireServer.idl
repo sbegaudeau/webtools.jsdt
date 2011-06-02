@@ -31,6 +31,17 @@ interface IIEDebugger : IUnknown {
 };
 [
 	object,
+	uuid(19DAE1A1-1FAA-4D1C-8788-F03260303AEB),
+	oleautomation,
+	nonextensible,
+	helpstring("ICrossfireServerListener Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServerListener : IUnknown {
+	HRESULT ServerStateChanged([in] int state, [in] unsigned int port);
+};
+[
+	object,
 	uuid(031DB015-B1BE-4D39-84D2-D7F96D2ACBFE),
 	oleautomation,
 	dual,
@@ -39,13 +50,16 @@ interface IIEDebugger : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServer : IDispatch {
+	HRESULT addListener([in] ICrossfireServerListener* listener);
 	HRESULT contextCreated([in] DWORD threadId, [in, string] OLECHAR* href);
 	HRESULT contextDestroyed([in] DWORD threadId);
 	HRESULT contextLoaded([in] DWORD threadId);
-	HRESULT isActive([out] boolean* value);
+	HRESULT getPort([out] unsigned int* value);
+	HRESULT getState([out] int* value);
 	HRESULT registerContext([in] DWORD threadId, [in, string] OLECHAR* href);
+	HRESULT removeListener([in] ICrossfireServerListener* listener);
 	HRESULT setCurrentContext([in] DWORD threadId);
-	HRESULT start([in] unsigned int port);
+	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
 	HRESULT stop();
 };
 [
@@ -66,10 +80,10 @@ interface ICrossfireServerClass : IDispatch {
 	uuid(56C1AD62-3E69-46BA-BE6D-E1D2A0D88AB5),
 	dual,
 	nonextensible,
-	helpstring("IPendingBreakpoint Interface"),
+	helpstring("IPendingScriptLoad Interface"),
 	pointer_default(unique)
 ]
-interface IPendingBreakpoint : IDispatch {
+interface IPendingScriptLoad : IDispatch {
 };
 [
 	uuid(A8FFC284-CE2C-40B5-98D1-D3112811E9D9),
@@ -112,10 +126,18 @@ library IECrossfireServerLib {
 	};
 	[
 		uuid(88E7C480-7B7A-47C5-8329-CE1FDF415527),
-		helpstring("PendingBreakpoint Class")
+		helpstring("PendingScriptLoad Class")
 	]
-	coclass PendingBreakpoint
+	coclass PendingScriptLoad
 	{
-		[default] interface IPendingBreakpoint;
+		[default] interface IPendingScriptLoad;
+	};
+	[
+		uuid(260387C9-60BB-4E1E-A1D8-4428488E9421),
+		helpstring("CrossfireServerListener Class")
+	]
+	coclass CrossfireServerListener
+	{
+		[default] interface ICrossfireServerListener;
 	};
 };

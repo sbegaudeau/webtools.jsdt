@@ -9,22 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
+ 
+#include "StdAfx.h"
+#include "JSObject.h"
 
-#pragma once
+JSObject::JSObject(std::wstring* name, unsigned int parentHandle) {
+	m_name = new std::wstring;
+	m_name->assign(*name);
+	m_objects = new std::map<std::wstring*, unsigned int>;
+	m_parentHandle = parentHandle;
+}
 
-#include "CrossfirePacket.h"
-#include "Value.h"
+JSObject::~JSObject() {
+	delete m_name;
+	delete m_objects;
+}
 
-class CrossfireRequest : public CrossfirePacket {
-
-public:
-	CrossfireRequest();
-	~CrossfireRequest();
-	virtual void clone(CrossfirePacket** _value);
-	virtual Value* getArguments();
-	virtual int getType();
-	virtual bool setArguments(Value* value);
-
-private:
-	Value* m_arguments;
-};
+std::wstring JSObject::getAccessor() {
+	return NULL;
+}

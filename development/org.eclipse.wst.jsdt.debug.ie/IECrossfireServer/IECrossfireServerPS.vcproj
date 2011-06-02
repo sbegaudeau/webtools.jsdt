@@ -57,7 +57,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				AdditionalDependencies="kernel32.lib rpcndr.lib rpcns4.lib rpcrt4.lib oleaut32.lib uuid.lib"
-				ModuleDefinitionFile="OutOfProcessControllerPS.def"
+				ModuleDefinitionFile="IECrossfireServerPS.def"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -127,7 +127,7 @@
 				Name="VCLinkerTool"
 				RegisterOutput="true"
 				AdditionalDependencies="kernel32.lib rpcndr.lib rpcns4.lib rpcrt4.lib oleaut32.lib uuid.lib"
-				ModuleDefinitionFile="OutOfProcessControllerPS.def"
+				ModuleDefinitionFile="IECrossfireServerPS.def"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 			/>
@@ -173,16 +173,16 @@
 				>
 			</File>
 			<File
-				RelativePath=".\OutOfProcessController_i.c"
+				RelativePath=".\IECrossfireServer_i.c"
 				>
 			</File>
 			<File
-				RelativePath=".\OutOfProcessController_p.c"
+				RelativePath=".\IECrossfireServer_p.c"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\OutOfProcessControllerps.def"
+			RelativePath=".\IECrossfireServerps.def"
 			>
 		</File>
 	</Files>

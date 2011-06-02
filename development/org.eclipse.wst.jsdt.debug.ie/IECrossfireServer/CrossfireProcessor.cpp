@@ -105,6 +105,11 @@ bool CrossfireProcessor::createResponsePacket(CrossfireResponse *response, std::
 	}
 	value_packet.addObjectValue(NAME_COMMAND, &Value(response->getName()));
 
+	/* contextId */
+	if (response->getContextId()) {
+		value_packet.addObjectValue(NAME_CONTEXTID, &Value(response->getContextId()));
+	}
+
 	/* request seq */
 	if (response->getRequestSeq() < 0) {
 		Logger::error("CrossfireProcessor.createResponsePacket(): response does not have a request seq value");

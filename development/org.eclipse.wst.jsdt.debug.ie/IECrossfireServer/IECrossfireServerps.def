@@ -10,7 +10,7 @@
 ; *******************************************************************************
 
 
-LIBRARY      "OutOfProcessControllerPS"
+LIBRARY      "IECrossfireServerPS"
 
 EXPORTS
 	DllGetClassObject       PRIVATE

@@ -263,6 +263,15 @@
 			<File
 				RelativePath=".\IECrossfireServer.idl"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCMIDLTool"
+						DLLDataFileName=""
+						InterfaceIdentifierFileName="IECrossfireServer_i.c"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\IEDebugger.cpp"
@@ -281,7 +290,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PendingBreakpoint.cpp"
+				RelativePath=".\PendingScriptLoad.cpp"
 				>
 			</File>
 			<File
@@ -391,7 +400,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PendingBreakpoint.h"
+				RelativePath=".\PendingScriptLoad.h"
 				>
 			</File>
 			<File
@@ -425,6 +434,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CrossfireServerListener.rgs"
+				>
+			</File>
+			<File
 				RelativePath=".\IECrossfireServer.rc"
 				>
 			</File>
@@ -441,7 +454,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PendingBreakpoint.rgs"
+				RelativePath=".\PendingScriptLoad.rgs"
 				>
 			</File>
 		</Filter>

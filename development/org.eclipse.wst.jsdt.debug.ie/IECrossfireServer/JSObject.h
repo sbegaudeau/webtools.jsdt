@@ -13,29 +13,17 @@
 #pragma once
 
 #include <string>
+#include <map>
 
-class CrossfirePacket {
+class JSObject {
 
 public:
-	CrossfirePacket();
-	~CrossfirePacket();
-	virtual void clone(CrossfirePacket** _value) = 0;
-	virtual std::wstring* getContextId();
-	virtual wchar_t* getName();
-	virtual unsigned int getSeq();
-	virtual int getType() = 0;
-	virtual void setContextId(std::wstring* value);
-	virtual void setName(const wchar_t* value);
-	virtual void setSeq(unsigned int);
-
-	enum {
-		TYPE_REQUEST,
-		TYPE_RESPONSE,
-		TYPE_EVENT
-	};
+	JSObject(std::wstring* name, unsigned int parentHandle);
+	~JSObject();
+	std::wstring getAccessor();
 
 private:
-	std::wstring* m_contextId;
-	wchar_t* m_name;
-	unsigned int m_seq;
+	std::wstring* m_name;
+	std::map<std::wstring*, unsigned int>* m_objects;
+	unsigned int m_parentHandle;
 };

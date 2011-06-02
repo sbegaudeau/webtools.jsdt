@@ -15,7 +15,6 @@
 
 CrossfireResponse::CrossfireResponse() : CrossfirePacket() {
 	m_body = NULL;
-	m_name = NULL;
 	m_requestSeq = -1;
 	m_running = false;
 	m_success = false;
@@ -25,15 +24,12 @@ CrossfireResponse::~CrossfireResponse() {
 	if (m_body) {
 		delete m_body;
 	}
-	if (m_name) {
-		free(m_name);
-	}
 }
 
 void CrossfireResponse::clone(CrossfirePacket** _value) {
 	CrossfireResponse* result = new CrossfireResponse();
 	result->setBody(m_body);
-	result->setName(m_name);
+	result->setName(getName());
 	result->setRequestSeq(m_requestSeq);
 	result->setRunning(m_running);
 	result->setSuccess(m_success);
@@ -42,10 +38,6 @@ void CrossfireResponse::clone(CrossfirePacket** _value) {
 
 Value* CrossfireResponse::getBody() {
 	return m_body;
-}
-
-wchar_t* CrossfireResponse::getName() {
-	return m_name;
 }
 
 unsigned int CrossfireResponse::getRequestSeq() {
@@ -72,16 +64,6 @@ bool CrossfireResponse::setBody(Value* value) {
 		value->clone(&m_body);
 	}
 	return true;
-}
-
-void CrossfireResponse::setName(const wchar_t* value) {
-	if (m_name) {
-		free(m_name);
-		m_name = NULL;
-	}
-	if (value) {
-		m_name = _wcsdup(value);
-	}
 }
 
 void CrossfireResponse::setRequestSeq(unsigned int value) {
