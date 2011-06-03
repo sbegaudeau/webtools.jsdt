@@ -194,7 +194,7 @@ STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
 
 	/* If a connection was just established then create a context on the server for the current page */
 	if (m_serverState != STATE_CONNECTED) {
-		return;
+		return S_OK;
 	}
 	
 	CComBSTR url = NULL;
