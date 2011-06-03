@@ -19,10 +19,8 @@
 const wchar_t* CrossfireContext::COMMAND_BACKTRACE = L"backtrace";
 const wchar_t* CrossfireContext::KEY_FRAMES = L"frames";
 const wchar_t* CrossfireContext::KEY_FROMFRAME = L"fromFrame";
-const wchar_t* CrossfireContext::KEY_FUNC = L"func";
-const wchar_t* CrossfireContext::KEY_INDEX = L"index";
 const wchar_t* CrossfireContext::KEY_TOFRAME = L"toFrame";
-const wchar_t* CrossfireContext::KEY_TOTALFRAMES = L"totalFrames";
+const wchar_t* CrossfireContext::KEY_TOTALFRAMECOUNT = L"totalFrameCount";
 
 /* command: continue */
 const wchar_t* CrossfireContext::COMMAND_CONTINUE = L"continue";
@@ -30,28 +28,11 @@ const wchar_t* CrossfireContext::COMMAND_CONTINUE = L"continue";
 /* command: evaluate */
 const wchar_t* CrossfireContext::COMMAND_EVALUATE = L"evaluate";
 const wchar_t* CrossfireContext::KEY_EXPRESSION = L"expression";
-const wchar_t* CrossfireContext::KEY_FRAME = L"frame";
 
 /* command: frame */
 const wchar_t* CrossfireContext::COMMAND_FRAME = L"frame";
-const wchar_t* CrossfireContext::JSVALUE_BOOLEAN = L"Boolean";
-const wchar_t* CrossfireContext::JSVALUE_FUNCTION = L"\"function\"";
-const wchar_t* CrossfireContext::JSVALUE_NUMBER = L"Number";
-const wchar_t* CrossfireContext::JSVALUE_NULL = L"Null";
-const wchar_t* CrossfireContext::JSVALUE_STRING = L"String";
-const wchar_t* CrossfireContext::JSVALUE_TRUE = L"true";
-const wchar_t* CrossfireContext::JSVALUE_UNDEFINED = L"Undefined";
-const wchar_t* CrossfireContext::KEY_INCLUDESCOPES = L"includeScopes";
-const wchar_t* CrossfireContext::KEY_LOCALS = L"locals";
-const wchar_t* CrossfireContext::KEY_NUMBER = L"number";
-const wchar_t* CrossfireContext::KEY_THIS = L"this";
-const wchar_t* CrossfireContext::KEY_VALUE = L"value";
-const wchar_t* CrossfireContext::VALUE_BOOLEAN = L"boolean";
-const wchar_t* CrossfireContext::VALUE_FUNCTION = L"function";
-const wchar_t* CrossfireContext::VALUE_NUMBER = L"number";
-const wchar_t* CrossfireContext::VALUE_OBJECT = L"object";
-const wchar_t* CrossfireContext::VALUE_STRING = L"string";
-const wchar_t* CrossfireContext::VALUE_UNDEFINED = L"undefined";
+const wchar_t* CrossfireContext::KEY_FRAME = L"frame";
+const wchar_t* CrossfireContext::KEY_INDEX = L"index";
 
 /* command: inspect */
 const wchar_t* CrossfireContext::COMMAND_INSPECT = L"inspect";
@@ -61,33 +42,27 @@ const wchar_t* CrossfireContext::COMMAND_LOOKUP = L"lookup";
 
 /* command: scope */
 const wchar_t* CrossfireContext::COMMAND_SCOPE = L"scope";
+const wchar_t* CrossfireContext::KEY_SCOPE = L"scope";
+const wchar_t* CrossfireContext::KEY_SCOPEINDEX = L"scopeIndex";
 
 /* command: scopes */
 const wchar_t* CrossfireContext::COMMAND_SCOPES = L"scopes";
+const wchar_t* CrossfireContext::KEY_FROMSCOPE = L"fromScope";
+const wchar_t* CrossfireContext::KEY_SCOPES = L"scopes";
+const wchar_t* CrossfireContext::KEY_TOSCOPE = L"toScope";
+const wchar_t* CrossfireContext::KEY_TOTALSCOPECOUNT = L"totalScopeCount";
 
 /* command: script */
 const wchar_t* CrossfireContext::COMMAND_SCRIPT = L"script";
-const wchar_t* CrossfireContext::KEY_SOURCE = L"source";
+const wchar_t* CrossfireContext::KEY_SCRIPT = L"script";
 
 /* command: scripts */
 const wchar_t* CrossfireContext::COMMAND_SCRIPTS = L"scripts";
-const wchar_t* CrossfireContext::KEY_COMPILATIONTYPE = L"compilationType";
-const wchar_t* CrossfireContext::KEY_COLUMNOFFSET = L"columnOffset";
-const wchar_t* CrossfireContext::KEY_ID = L"id";
-const wchar_t* CrossfireContext::KEY_LINECOUNT = L"lineCount";
-const wchar_t* CrossfireContext::KEY_LINEOFFSET = L"lineOffset";
-const wchar_t* CrossfireContext::KEY_SCRIPT = L"script";
 const wchar_t* CrossfireContext::KEY_SCRIPTS = L"scripts";
-const wchar_t* CrossfireContext::KEY_SOURCESTART = L"sourceStart";
-const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
-const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
-
-/* command: source */
-const wchar_t* CrossfireContext::COMMAND_SOURCE = L"source";
 
 /* command: suspend */
 const wchar_t* CrossfireContext::COMMAND_SUSPEND = L"suspend";
-const wchar_t* CrossfireContext::KEY_STEPACTION = L"stepaction";
+const wchar_t* CrossfireContext::KEY_STEPACTION = L"stepAction";
 const wchar_t* CrossfireContext::VALUE_IN = L"in";
 const wchar_t* CrossfireContext::VALUE_NEXT = L"next";
 const wchar_t* CrossfireContext::VALUE_OUT = L"out";
@@ -95,18 +70,57 @@ const wchar_t* CrossfireContext::VALUE_OUT = L"out";
 /* event: onScript */
 const wchar_t* CrossfireContext::EVENT_ONSCRIPT = L"onScript";
 
-/* breakpoint objects */
-const wchar_t* CrossfireContext::BPTYPE_LINE = L"line";
-const wchar_t* CrossfireContext::KEY_LOCATION = L"location";
+/* event: onToggleBreakpoint */
+const wchar_t* CrossfireContext::EVENT_ONTOGGLEBREAKPOINT = L"onToggleBreakpoint";
+const wchar_t* CrossfireContext::KEY_SET = L"set";
 
 /* shared */
 const wchar_t* CrossfireContext::KEY_BREAKPOINT = L"breakpoint";
 const wchar_t* CrossfireContext::KEY_CONTEXTID = L"contextId";
+const wchar_t* CrossfireContext::KEY_FRAMEINDEX = L"frameIndex";
 const wchar_t* CrossfireContext::KEY_HANDLE = L"handle";
+const wchar_t* CrossfireContext::KEY_INCLUDESCOPES = L"includeScopes";
 const wchar_t* CrossfireContext::KEY_INCLUDESOURCE = L"includeSource";
 const wchar_t* CrossfireContext::KEY_LINE = L"line";
 const wchar_t* CrossfireContext::KEY_TYPE = L"type";
-const wchar_t* CrossfireContext::KEY_URL = L"url";
+
+/* breakpoint objects */
+const wchar_t* CrossfireContext::BPTYPE_LINE = L"line";
+const wchar_t* CrossfireContext::KEY_LOCATION = L"location";
+
+/* frame objects */
+const wchar_t* CrossfireContext::KEY_FUNCTIONNAME = L"functionName";
+const wchar_t* CrossfireContext::KEY_SCRIPTID = L"scriptId";
+
+/* object objects */
+const wchar_t* CrossfireContext::JSVALUE_BOOLEAN = L"Boolean";
+const wchar_t* CrossfireContext::JSVALUE_FUNCTION = L"\"function\"";
+const wchar_t* CrossfireContext::JSVALUE_NUMBER = L"Number";
+const wchar_t* CrossfireContext::JSVALUE_NULL = L"Null";
+const wchar_t* CrossfireContext::JSVALUE_STRING = L"String";
+const wchar_t* CrossfireContext::JSVALUE_TRUE = L"true";
+const wchar_t* CrossfireContext::JSVALUE_UNDEFINED = L"Undefined";
+const wchar_t* CrossfireContext::KEY_LOCALS = L"locals";
+const wchar_t* CrossfireContext::KEY_THIS = L"this";
+const wchar_t* CrossfireContext::KEY_VALUE = L"value";
+const wchar_t* CrossfireContext::VALUE_BOOLEAN = L"boolean";
+const wchar_t* CrossfireContext::VALUE_FUNCTION = L"function";
+const wchar_t* CrossfireContext::VALUE_NUMBER = L"number";
+const wchar_t* CrossfireContext::VALUE_OBJECT = L"object";
+const wchar_t* CrossfireContext::VALUE_STRING = L"string";
+const wchar_t* CrossfireContext::VALUE_UNDEFINED = L"undefined";
+
+/* script objects */
+const wchar_t* CrossfireContext::KEY_COLUMNOFFSET = L"columnOffset";
+const wchar_t* CrossfireContext::KEY_COMPILATIONTYPE = L"compilationType";
+const wchar_t* CrossfireContext::KEY_ID = L"id";
+const wchar_t* CrossfireContext::KEY_LINECOUNT = L"lineCount";
+const wchar_t* CrossfireContext::KEY_LINEOFFSET = L"lineOffset";
+const wchar_t* CrossfireContext::KEY_SOURCE = L"source";
+const wchar_t* CrossfireContext::KEY_SOURCESTART = L"sourceStart";
+const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
+const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
+
 
 CrossfireContext::CrossfireContext(DWORD threadId, CrossfireServer* server) {
 	CComObject<IEDebugger>* result = NULL;
@@ -116,7 +130,6 @@ CrossfireContext::CrossfireContext(DWORD threadId, CrossfireServer* server) {
 		return;
 	}
 	m_debugger = result;
-
 	m_breakpoints = new std::map<unsigned int, CrossfireBreakpoint*>;
 	m_cpcApplicationNodeEvents = 0;
 	m_server = server;
@@ -125,8 +138,9 @@ CrossfireContext::CrossfireContext(DWORD threadId, CrossfireServer* server) {
 	m_href = NULL;
 	m_name = NULL;
 	m_nextObjectHandle = 1;
+	m_nextUnnamedUrlIndex = 1;
 	m_objects = new std::map<unsigned int, JSObject*>;
-	m_pendingBreakpoints = new std::vector<PendingBreakpoint*>;
+	m_pendingScriptLoads = new std::vector<PendingScriptLoad*>;
 	m_running = true;
 	m_threadId = threadId;
 
@@ -145,13 +159,13 @@ CrossfireContext::~CrossfireContext() {
 		delete m_breakpoints;
 	}
 
-	if (m_pendingBreakpoints) {
-		std::vector<PendingBreakpoint*>::iterator iterator = m_pendingBreakpoints->begin();
-		while (iterator != m_pendingBreakpoints->end()) {
+	if (m_pendingScriptLoads) {
+		std::vector<PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
+		while (iterator != m_pendingScriptLoads->end()) {
 			(*iterator)->Release();
 			iterator++;
 		}
-		delete m_pendingBreakpoints;
+		delete m_pendingScriptLoads;
 	}
 
 
@@ -192,18 +206,7 @@ CrossfireContext::~CrossfireContext() {
 		free(m_name);
 	}
 	if (m_objects) {
-		std::map<unsigned int, JSObject*>::iterator iterator = m_objects->begin();
-		while (iterator != m_objects->end()) {
-			JSObject* jsObject = iterator->second;
-			jsObject->debugProperty->Release();
-			delete jsObject->name;
-			if (jsObject->objects) {
-				delete jsObject->objects;
-			}
-			jsObject->stackFrame->Release();
-			delete jsObject;
-			iterator++;
-		}
+		clearObjects();
 		delete m_objects;
 	}
 	if (m_debuggerHooked && unhookDebugger()) {
@@ -287,6 +290,411 @@ bool CrossfireContext::clearBreakpoint(unsigned int handle) {
 
 	delete iterator->second;
 	m_breakpoints->erase(iterator);
+	return true;
+}
+
+void CrossfireContext::clearObjects() {
+	std::map<unsigned int, JSObject*>::iterator iterator = m_objects->begin();
+	while (iterator != m_objects->end()) {
+		JSObject* jsObject = iterator->second;
+		jsObject->debugProperty->Release();
+		delete jsObject->name;
+		if (jsObject->objects) {
+			delete jsObject->objects;
+		}
+		jsObject->stackFrame->Release();
+		delete jsObject;
+		iterator++;
+	}
+	m_objects->clear();
+}
+
+bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value) {
+	*_value = NULL;
+
+	CComBSTR description = NULL;
+	HRESULT hr = stackFrame->GetDescriptionString(true, &description);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetDescriptionString() failed", hr);
+		return false;
+	}
+
+	ULONG lineNumber = 0, column;
+	CComBSTR scriptId = NULL;
+	Value* locals = NULL;
+
+	CComPtr<IDebugCodeContext> codeContext = NULL;
+	hr = stackFrame->GetCodeContext(&codeContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetCodeContext() failed", hr);
+		return false;
+//		wchar_t indexString[9];
+//		_itow_s(m_nextUnnamedUrlIndex++, indexString, 9, 10);
+//		size_t length = wcslen(URL_ANONYMOUS) + wcslen(indexString) + 1;
+//		wchar_t* urlString = new wchar_t[length];
+//		wcscpy_s(urlString, length, URL_ANONYMOUS);
+//		wcscat_s(urlString, length, indexString);
+//		scriptId = CComBSTR(urlString);
+//		delete[] urlString;
+	} else {
+		CComPtr<IDebugDocumentContext> documentContext = NULL;
+		hr = codeContext->GetDocumentContext(&documentContext);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.createValueForFrame(): GetDocumentContext() failed", hr);
+			return false;
+//			wchar_t indexString[9];
+//			_itow_s(m_nextUnnamedUrlIndex++, indexString, 9, 10);
+//			size_t length = wcslen(URL_ANONYMOUS) + wcslen(indexString) + 1;
+//			wchar_t* urlString = new wchar_t[length];
+//			wcscpy_s(urlString, length, URL_ANONYMOUS);
+//			wcscat_s(urlString, length, indexString);
+//			scriptId = CComBSTR(urlString);
+//			delete[] urlString;
+		} else {
+			CComPtr<IDebugDocument> document = NULL;
+			hr = documentContext->GetDocument(&document);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): GetDocument() failed", hr);
+				return false;
+			}
+
+			CComPtr<IDebugDocumentText> documentText = NULL;
+			hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): QI(IDebugDocumentText) failed", hr);
+				return false;
+			}
+
+			ULONG position, numChars;
+			hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): GetPositionOfContext() failed", hr);
+				return false;
+			}
+
+			hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): GetLineOfPosition() failed", hr);
+				return false;
+			}
+
+			/* get the locals */
+
+			CComPtr<IDebugProperty> debugProperty = NULL;
+			hr = stackFrame->GetDebugProperty(&debugProperty);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): GetDebugProperty() failed", hr);
+				return false;
+			}
+
+			// TODO this frameObject is currently created temporarily, but to
+			// get the full benefit of handle reuse it should be stored and
+			// reused for cases where the frame command is invoked on the same
+			// frame multiple times
+			JSObject frameObject;
+			frameObject.debugProperty = debugProperty;
+			frameObject.isFunction = false;
+			frameObject.name = NULL;
+			frameObject.objects = NULL;
+			frameObject.parentHandle = 0;
+			frameObject.stackFrame = stackFrame;
+			if (!createValueForObject(&frameObject, &locals)) {
+				return false;
+			}
+
+			/* get "this" */
+
+			CComPtr<IDebugExpressionContext> expressionContext = NULL;
+			hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): QI(IDebugExpressionContext) failed", hr);
+				return false;
+			}
+
+			CComPtr<IDebugExpression> expression = NULL;
+			hr = expressionContext->ParseLanguageText(
+				OLESTR("this"),
+				10,
+				L"",
+				DEBUG_TEXT_RETURNVALUE,
+				&expression);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText failed [2]", hr);
+				return false;
+			}
+
+			hr = expression->Start(NULL);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): Start failed", hr);
+				return false;
+			}
+
+			int ms = 0;
+			while (ms < 2000) {
+				if (expression->QueryIsComplete() == S_OK) {
+					break;
+				}
+				ms += 10;
+				::Sleep(10);
+			}
+
+			Value* value_this = NULL;
+			if (2000 <= ms) {
+				Logger::error("CrossfireContext.createValueForFrame(): Evaluating 'this' took too long (continuing)");
+			} else {
+				HRESULT evalResult;
+				CComPtr<IDebugProperty> debugProperty2 = NULL;
+				hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
+				if (FAILED(hr)) {
+					Logger::error("CrossfireContext.createValueForFrame(): GetResultAsDebugProperty failed", hr);
+					return false;
+				}
+				if (FAILED(evalResult)) {
+					Logger::error("CrossfireContext.createValueForFrame(): evaluation of GetResultAsDebugProperty failed", evalResult);
+					return false;
+				}
+
+				// TODO this thisObject is currently created temporarily, but to
+				// get the full benefit of handle reuse it should be stored and
+				// reused for cases where the frame command is invoked on the same
+				// frame multiple times
+				JSObject thisObject;
+				thisObject.debugProperty = debugProperty2;
+				thisObject.isFunction = false;
+				thisObject.name = NULL;
+				thisObject.objects = NULL;
+				thisObject.parentHandle = 0;
+				thisObject.stackFrame = stackFrame;
+				createValueForObject(&thisObject, &value_this);
+			}
+
+			if (value_this) {
+				locals->addObjectValue(KEY_THIS, value_this);
+				delete value_this;
+			} else {
+				/* create an empty "this" value */
+				Value value_thisChildren;
+				value_thisChildren.setType(TYPE_OBJECT);
+				Value value_this2;
+				value_this2.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
+				value_this2.addObjectValue(KEY_VALUE, &value_thisChildren);
+				locals->addObjectValue(KEY_THIS, &value_this2);
+			}
+
+			hr = document->GetName(DOCUMENTNAMETYPE_URL, &scriptId);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
+				return false;
+			}
+		}
+	}
+	if (!locals) {
+		locals = new Value();
+		locals->setType(TYPE_OBJECT);
+	}
+
+	Value* result = new Value();
+	result->addObjectValue(KEY_FUNCTIONNAME, &Value(description));
+	result->addObjectValue(KEY_INDEX, &Value((double)frameIndex));
+	result->addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
+	result->addObjectValue(KEY_LOCALS, locals);
+	result->addObjectValue(KEY_SCRIPTID, &Value(scriptId));
+	// TODO includeScopes
+	delete locals;
+
+	*_value = result;
+	return true;
+}
+
+bool CrossfireContext::createValueForObject(JSObject* object, Value** _value) {
+	*_value = NULL;
+	IDebugProperty* debugProperty = object->debugProperty;
+
+	CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
+	HRESULT hr = debugProperty->EnumMembers(
+		/*DBGPROP_INFO_NAME | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE | DBGPROP_INFO_DEBUGPROP*/ 0x3F,
+		10,
+		IID_IDebugPropertyEnumType_LocalsPlusArgs,
+		&enumPropertyInfo);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
+		return false;
+	}
+
+	/* The IDebugExpressionContext will be needed for each encountered object/function */
+	CComPtr<IDebugExpressionContext> expressionContext = NULL;
+	hr = object->stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForObject(): QI(IDebugExpressionContext) failed", hr);
+		return false;
+	}
+
+	Value membersCollection;
+	membersCollection.setType(TYPE_OBJECT);
+
+	std::map<wchar_t*, unsigned int>* newObjectsTable = NULL;
+	ULONG fetched;
+	do {
+		DebugPropertyInfo propertyInfo;
+		HRESULT hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
+		if (SUCCEEDED(hr) && fetched) {
+			BSTR type = propertyInfo.m_bstrType;
+			Value local;
+			if (wcscmp(type, JSVALUE_NULL) == 0) {
+				local.setType(TYPE_NULL);
+			} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
+				local.setValue(VALUE_UNDEFINED);
+			} else {
+				BSTR stringValue = propertyInfo.m_bstrValue;
+				if (wcscmp(type, JSVALUE_NUMBER) == 0) {
+					wchar_t* endPtr = 0;
+					double value = wcstod(stringValue, &endPtr);
+					local.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
+					local.addObjectValue(KEY_VALUE, &Value(value));
+				} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
+					local.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
+					if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
+						local.addObjectValue(KEY_VALUE, &Value(true));
+					} else {
+						local.addObjectValue(KEY_VALUE, &Value(false));
+					}
+				} else if (wcscmp(type, JSVALUE_STRING) == 0) {
+					std::wstring string(stringValue);
+					string = string.substr(1, string.length() - 2);
+					local.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
+					local.addObjectValue(KEY_VALUE, &Value(&string));
+				} else {
+					bool isFunction = (propertyInfo.m_dwAttrib & /*DBGPROP_ATTRIB_VALUE_IS_EXPANDABLE*/ 0x10) == 0;
+					if (!newObjectsTable) {
+						newObjectsTable = new std::map<wchar_t*, unsigned int>;
+					}
+
+					wchar_t* name = propertyInfo.m_bstrName;
+					unsigned int handle = 0;
+					if (object->objects) {
+						std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
+						if (iterator != object->objects->end()) {
+							std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
+							if (iterator2 != m_objects->end()) {
+								JSObject* existingObject = iterator2->second;
+								if (existingObject->isFunction == isFunction) {
+									handle = iterator2->first;
+								}
+							}
+						}
+					}
+					if (!handle) {
+						JSObject* newObject = new JSObject();
+						IDebugProperty* objectProperty = propertyInfo.m_pDebugProp;
+						objectProperty->AddRef();
+						newObject->debugProperty = objectProperty;
+						newObject->isFunction = isFunction;
+						newObject->name = _wcsdup(name);
+						newObject->objects = NULL;
+						newObject->parentHandle = 0;
+						newObject->stackFrame = object->stackFrame;
+						newObject->stackFrame->AddRef();
+						handle = m_nextObjectHandle++;
+						m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
+					}
+					newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
+					local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
+					local.addObjectValue(KEY_HANDLE, &Value((double)handle));
+				}
+			}
+			membersCollection.addObjectValue(propertyInfo.m_bstrName, &local);
+		}
+	} while (fetched);
+
+	if (object->objects) {
+		std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->begin();
+		while (iterator != object->objects->end()) {
+			delete iterator->first;
+			iterator++;
+		}
+		delete object->objects;
+	}
+	object->objects = newObjectsTable;
+
+	Value* result = new Value();
+	result->setObjectValue(KEY_TYPE, object->isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
+	result->setObjectValue(KEY_VALUE, &membersCollection);
+	*_value = result;
+	return true;
+}
+
+bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value) {
+	*_value = NULL;
+
+	CComBSTR url = L"NULL";
+	HRESULT hr = node->GetName(DOCUMENTNAMETYPE_URL, &url);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetName() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	hr = node->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetDocument() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): QI(IDebugDocumentText) failed", hr);
+		return false;
+	}
+
+	ULONG numLines = 0;
+	ULONG numChars = 0;
+	hr = documentText->GetSize(&numLines, &numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetSize() failed", hr);
+		return false;
+	}
+
+	ULONG line1start = 0;
+	hr = documentText->GetPositionOfLine(1, &line1start);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetPositionOfLine() failed [2]", hr);
+		return false;
+	}
+
+	wchar_t* line0chars = new wchar_t[line1start + 1];
+	ULONG charsRead = 0;
+	hr = documentText->GetText(0, line0chars, NULL, &charsRead, line1start);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetText() failed", hr);
+		return false;
+	}
+	line0chars[line1start] = NULL;
+
+	Value* result = new Value();
+	result->addObjectValue(KEY_ID, &Value(url));
+	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
+	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0));
+	result->addObjectValue(KEY_SOURCESTART, &Value(line0chars));
+	result->addObjectValue(KEY_LINECOUNT, &Value((double)numLines));
+	result->addObjectValue(KEY_COMPILATIONTYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
+	delete[] line0chars;
+
+	wchar_t* sourceChars = new wchar_t[numChars + 1];
+	charsRead = 0;
+	hr = documentText->GetText(0, sourceChars, NULL, &charsRead, numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForScript(): GetText()[2] failed", hr);
+		return false;
+	}
+	sourceChars[numChars] = NULL;
+	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numLines));
+	if (includeSource) {
+		result->addObjectValue(KEY_SOURCE, &Value(sourceChars));
+	}
+	delete[] sourceChars;
+
+	*_value = result;
 	return true;
 }
 
@@ -411,7 +819,7 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return false;
 	}
 
-	int counter = 0;
+	int failCounter = 0;
 //Logger::error("CrossfireContext.getDebugApplicationThread(): starting loop, looking for", (int)m_threadId);
 	ULONG fetchedApps = 0;
 	do {
@@ -419,12 +827,13 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		hr = applications->Next(1, &currentApplication, &fetchedApps);
 		if (FAILED(hr)) {
 			fetchedApps = 1; /* continue to try to enum more applications */
+			failCounter++;
 //Logger::error("CrossfireContext.getDebugApplicationThread(): Next()[1] failed, keep trying", hr);
 		} else if (fetchedApps) {
 			CComPtr<IEnumRemoteDebugApplicationThreads> threads;
 			hr = currentApplication->EnumThreads(&threads);
 //if (FAILED(hr)) {
-//Logger::error("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed, keep trying");
+//	Logger::error("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed, keep trying");
 //}
 			if (SUCCEEDED(hr)) {
 				ULONG fetchedThreads = 0;
@@ -475,7 +884,7 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 				} while (fetchedThreads);
 			}
 		}
-	} while (!m_debugApplicationThread && fetchedApps);
+	} while (!m_debugApplicationThread && fetchedApps && failCounter < 20);
 
 	if (!m_debugApplicationThread) {
 		Logger::log("CrossfireContext.getDebugApplicationThread() did not find the thread or did not advise its root node");
@@ -567,8 +976,6 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 		success = commandScope(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_SCOPES) == 0) {
 		success = commandScopes(arguments, &responseBody);
-	} else if (wcscmp(command, COMMAND_SOURCE) == 0) {
-		success = commandSource(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_SUSPEND) == 0) {
 		success = commandSuspend(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_INSPECT) == 0) {
@@ -578,6 +985,7 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	}
 
 	CrossfireResponse response;
+	response.setContextId(&std::wstring(m_name));
 	response.setName(command);
 	response.setRequestSeq(request->getSeq());
 	response.setRunning(m_running);
@@ -597,6 +1005,12 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 }
 
 bool CrossfireContext::scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry) {
+	if (!applicationNode) {
+		if (!findNode((wchar_t*)url->c_str(), NULL, &applicationNode)) {
+			return false;
+		}
+	}
+
 	CrossfireBPManager* bpManager = m_server->getBreakpointManager();
 	/*
 	 * Incoming IBreakpointTarget method invocations should always be for this
@@ -634,18 +1048,16 @@ bool CrossfireContext::scriptLoaded(std::wstring* url, IDebugApplicationNode *ap
 		return false;
 	}
 
-	CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-	hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
+	CComObject<PendingScriptLoad>* pendingScriptLoad = NULL;
+	hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.scriptLoaded(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
+		Logger::error("CrossfireContext.scriptLoaded(): CreateInstance(CLSID_PendingScriptLoad) failed [1]", hr);
 		return false;
 	}
 
-	pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-	if (pendingBreakpoint->init(applicationNode, document, this)) {
-		m_pendingBreakpoints->push_back(pendingBreakpoint);
-	} else {
-		pendingBreakpoint->Release();
+	if (pendingScriptLoad->init(document, this)) {
+		pendingScriptLoad->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+		m_pendingScriptLoads->push_back(pendingScriptLoad);
 	}
 
 	return false;
@@ -804,29 +1216,27 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 	ULONG characterPosition = 0;
 	hr = documentText->GetPositionOfLine(breakpoint->getLine() - 1, &characterPosition);
 	if (FAILED(hr)) {
-		/*
-		 * In this context E_INVALIDARG failures are often caused by the target document
-		 * not being adequately loaded yet.  If this is the first attempt to set this
-		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-		 * later if it is detected that the document load may have completed.
-		 */
-		if (!isRetry && hr == E_INVALIDARG) {
-			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
-				return false;
-			}
-
-			pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-			if (pendingBreakpoint->init(breakpoint, document, this)) {
-				m_pendingBreakpoints->push_back(pendingBreakpoint);
-			} else {
-				pendingBreakpoint->Release();
-			}
-		} else {
+//		/*
+//		 * In this context E_INVALIDARG failures are often caused by the target document
+//		 * not being adequately loaded yet.  If this is the first attempt to set this
+//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
+//		 * later if it is detected that the document load may have completed.
+//		 */
+//		if (!isRetry && hr == E_INVALIDARG) {
+//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
+//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
+//			if (FAILED(hr)) {
+//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
+//				return false;
+//			}
+//
+//			if (pendingBreakpoint->init(breakpoint, document, this)) {
+//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+//				m_pendingBreakpoints->push_back(pendingBreakpoint);
+//			}
+//		} else {
 			Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfLine() failed [1]", hr);
-		}
+//		}
 		return false;
 	}
 
@@ -840,29 +1250,27 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
 	hr = documentContext->EnumCodeContexts(&codeContexts);
 	if (FAILED(hr)) {
-		/*
-		 * In this context E_INVALIDARG failures are often caused by the target document
-		 * not being adequately loaded yet.  If this is the first attempt to set this
-		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-		 * later if it is detected that the document load may have completed.
-		 */
-		if (!isRetry && hr == E_INVALIDARG) {
-			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [2]", hr);
-				return false;
-			}
-
-			pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-			if (pendingBreakpoint->init(breakpoint, document, this)) {
-				m_pendingBreakpoints->push_back(pendingBreakpoint);
-			} else {
-				pendingBreakpoint->Release();
-			}
-		} else {
+//		/*
+//		 * In this context E_INVALIDARG failures are often caused by the target document
+//		 * not being adequately loaded yet.  If this is the first attempt to set this
+//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
+//		 * later if it is detected that the document load may have completed.
+//		 */
+//		if (!isRetry && hr == E_INVALIDARG) {
+//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
+//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
+//			if (FAILED(hr)) {
+//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [2]", hr);
+//				return false;
+//			}
+//
+//			if (pendingBreakpoint->init(breakpoint, document, this)) {
+//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+//				m_pendingBreakpoints->push_back(pendingBreakpoint);
+//			}
+//		} else {
 			Logger::error("CrossfireContext.setLineBreakpoint(): EnumCodeContexts() failed", hr);
-		}
+//		}
 		return false;
 	}
 
@@ -905,11 +1313,22 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 		return false;
 	}
 
-	breakpoint->setLine(bpLineNumber + 1);
-	breakpoint->setContextId(&std::wstring(getName()));
 	CrossfireLineBreakpoint* copy = NULL;
 	breakpoint->clone((CrossfireBreakpoint**)&copy);
+	copy->setLine(bpLineNumber + 1);
+	copy->setContextId(&std::wstring(getName()));
 	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
+
+	CrossfireEvent toggleEvent;
+	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
+	Value data;
+	data.addObjectValue(KEY_SET, &Value(true));
+	Value* value_breakpoint = NULL;
+	copy->toValueObject(&value_breakpoint);
+	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	delete value_breakpoint;
+	toggleEvent.setData(&data);
+	sendEvent(&toggleEvent);
 	return true;
 }
 
@@ -953,33 +1372,102 @@ bool CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody)
 		fromFrame = (unsigned int)value_fromFrame->getNumberValue();
 	}
 
+	unsigned int toFrame = 99;
+	Value* value_toFrame = arguments->getObjectValue(KEY_TOFRAME);
+	if (value_toFrame) {
+		if (value_toFrame->getType() != TYPE_NUMBER || (unsigned int)value_toFrame->getNumberValue() < 0) {
+			Logger::error("'backtrace' command has an invalid 'toFrame' value");
+			return false;
+		}
+		toFrame = (unsigned int)value_toFrame->getNumberValue();
+		if (toFrame < fromFrame) {
+			Logger::error("'backtrace' command has 'toFrame' value < 'fromFrame' value");
+			return false;
+		}
+	}
+
+	bool includeScopes = true;
+	Value* value_includeScopes = arguments->getObjectValue(KEY_INCLUDESCOPES);
+	if (value_includeScopes) {
+		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
+			Logger::error("'backtrace' command has an invalid 'includeScopes' value");
+			return false;
+		}
+		includeScopes = value_includeScopes->getBooleanValue();
+	}
+
+	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
+	if (!getDebugApplicationThread(&applicationThread)) {
+		return false;
+	}
+
+	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
+	HRESULT hr = applicationThread->EnumStackFrames(&stackFrames);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.commandBacktrace(): EnumStackFrames() failed", hr);
+		return false;
+	}
+
+	if (fromFrame > 0) {
+		HRESULT hr = stackFrames->Skip(fromFrame);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.commandBacktrace(): Skip() failed", hr);
+			return false;
+		}
+	}
+
+	/* count the available frames, and adjust toFrame accordingly if needed */
+
 	Value framesArray;
 	framesArray.setType(TYPE_ARRAY);
-	int index = 0;
-	for (index = fromFrame; ; index++) {
-		arguments->setObjectValue(KEY_NUMBER, &Value((double)index));
-		Value* frame = NULL;
-		if (!commandFrame(arguments, &frame)) {
-			index--; /* decrement since this attempt was not successful */
+	unsigned int index = 0;
+	for (index = fromFrame; index <= toFrame; index++) {
+		ULONG fetched = 0;
+		DebugStackFrameDescriptor stackFrameDescriptor;
+		hr = stackFrames->Next(1, &stackFrameDescriptor, &fetched);
+		if (FAILED(hr) || fetched == 0) {
+			/*
+			 * Have enumerated past the last stack frame, which is expected
+			 * to happen if the toFrame value is not specified or is too large.
+			 */
 			break;
 		}
+
+		Value* frame = NULL;
+		if (!createValueForFrame(stackFrameDescriptor.pdsf, index, includeScopes, &frame)) {
+			/* Attempting to access a frame without available information, break */
+			break;
+		}
+
 		framesArray.addArrayValue(frame);
 		delete frame;
 	}
 
-	int totalFrames = index - fromFrame + 1;
-	if (totalFrames == 0) {
-		*_responseBody = new Value();
-		(*_responseBody)->setType(TYPE_OBJECT);
-		return false;
+	/* index now points to one frame beyond the last frame to be returned */
+
+	int totalFrameCount = index;
+
+	/*
+	 * If the frame with index toFrame was reached successfully then continue on to
+	 * count any remaining frames in order to determine totalFrameCount.
+	 */
+	if (toFrame < index) {
+		while (true) {
+			ULONG fetched = 0;
+			DebugStackFrameDescriptor stackFrameDescriptor;
+			hr = stackFrames->Next(1, &stackFrameDescriptor, &fetched);
+			if (FAILED(hr) || fetched == 0) {
+				break;
+			}
+			totalFrameCount++;
+		}
 	}
 
 	Value* result = new Value();
-	result->addObjectValue(KEY_CONTEXTID, &Value(m_name));
 	result->addObjectValue(KEY_FRAMES, &framesArray);
 	result->addObjectValue(KEY_FROMFRAME, &Value((double)fromFrame));
-	result->addObjectValue(KEY_TOFRAME, &Value((double)index));
-	result->addObjectValue(KEY_TOTALFRAMES, &Value((double)totalFrames));
+	result->addObjectValue(KEY_TOFRAME, &Value((double)index - 1));
+	result->addObjectValue(KEY_TOTALFRAMECOUNT, &Value((double)totalFrameCount));
 	*_responseBody = result;
 	return true;
 }
@@ -1023,6 +1511,7 @@ bool CrossfireContext::commandContinue(Value* arguments, Value** _responseBody) 
 
 	hr = application->ResumeFromBreakPoint(applicationThread, action, ERRORRESUMEACTION_SkipErrorStatement);
 	if (SUCCEEDED(hr)) {
+		clearObjects();
 		*_responseBody = new Value();
 		(*_responseBody)->setType(TYPE_OBJECT);
 		m_running = true;
@@ -1124,21 +1613,24 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 }
 
 bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
+	bool includeScopes = true;
 	Value* value_includeScopes = arguments->getObjectValue(KEY_INCLUDESCOPES);
-	if (!value_includeScopes || value_includeScopes->getType() != TYPE_BOOLEAN) {
-		Logger::error("'frame' command does not have a valid 'includeScopes' value");
-		return false;
-	}
-	bool includeScopes = value_includeScopes->getBooleanValue();
-
-	unsigned int index = 0;
-	Value* value_number = arguments->getObjectValue(KEY_NUMBER);
-	if (value_number) {
-		if (value_number->getType() != TYPE_NUMBER || (unsigned int)value_number->getNumberValue() < 0) {
-			Logger::error("'frame' command has an invalid 'number' value");
+	if (value_includeScopes) {
+		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
+			Logger::error("'frame' command has an invalid 'includeScopes' value");
 			return false;
 		}
-		index = (unsigned int)value_number->getNumberValue();
+		includeScopes = value_includeScopes->getBooleanValue();
+	}
+
+	unsigned int index = 0;
+	Value* value_index = arguments->getObjectValue(KEY_INDEX);
+	if (value_index) {
+		if (value_index->getType() != TYPE_NUMBER || (unsigned int)value_index->getNumberValue() < 0) {
+			Logger::error("'frame' command has an invalid 'index' value");
+			return false;
+		}
+		index = (unsigned int)value_index->getNumberValue();
 	}
 
 	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
@@ -1169,169 +1661,15 @@ bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
 		return false;
 	}
 
-	IDebugStackFrame* stackFrame = stackFrameDescriptor.pdsf;
-	CComBSTR description = NULL;
-	hr = stackFrame->GetDescriptionString(true, &description);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetDescriptionString() failed", hr);
+	Value* frame = NULL;
+	if (!createValueForFrame(stackFrameDescriptor.pdsf, index, includeScopes, &frame)) {
 		return false;
-	}
-
-	/* determine the current line number */
-
-	CComPtr<IDebugCodeContext> codeContext = NULL;
-	hr = stackFrame->GetCodeContext(&codeContext);
-	if (FAILED(hr)) {
-		/* fails if the current position is not within a user document, which is valid */
-		return false;
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = codeContext->GetDocumentContext(&documentContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetDocumentContext() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	hr = documentContext->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetDocument() failed", hr);
-		return false;
-	}
-
-	CComBSTR url = NULL;
-	hr = document->GetName(DOCUMENTNAMETYPE_URL, &url);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetName() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): QI(IDebugDocumentText) failed", hr);
-		return false;
-	}
-
-	ULONG position, numChars;
-	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetPositionOfContext() failed", hr);
-		return false;
-	}
-
-	ULONG lineNumber, column;
-	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetLineOfPosition() failed", hr);
-		return false;
-	}
-
-	/* get the locals */
-
-	CComPtr<IDebugProperty> debugProperty = NULL;
-	hr = stackFrame->GetDebugProperty(&debugProperty);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetDebugProperty() failed", hr);
-		return false;
-	}
-
-	// TODO this frameObject is currently created temporarily, but to
-	// get the full benefit of handle reuse it should be stored and
-	// reused for cases where the frame command is invoked on the same
-	// frame multiple times
-	JSObject frameObject;
-	frameObject.debugProperty = debugProperty;
-	frameObject.isFunction = false;
-	frameObject.name = NULL;
-	frameObject.objects = NULL;
-	frameObject.parentHandle = 0;
-	frameObject.stackFrame = stackFrame;
-	Value* locals = NULL;
-	if (!createValueForObject(&frameObject, &locals)) {
-		return false;
-	}
-
-	/* get "this" */
-
-	CComPtr<IDebugExpressionContext> expressionContext = NULL;
-	hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): QI(IDebugExpressionContext) failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugExpression> expression = NULL;
-	hr = expressionContext->ParseLanguageText(
-		OLESTR("this"),
-		10,
-		L"",
-		DEBUG_TEXT_RETURNVALUE,
-		&expression);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): ParseLanguageText failed [2]", hr);
-		return false;
-	}
-
-	hr = expression->Start(NULL);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): Start failed", hr);
-		return false;
-	}
-Logger::error("Evaluating this");
-	while (expression->QueryIsComplete() == S_FALSE) {
-Logger::error("zzz");
-		::Sleep(10);
-	}
-Logger::error("Get result for this");
-	HRESULT evalResult;
-	CComPtr<IDebugProperty> debugProperty2 = NULL;
-	hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandFrame(): GetResultAsDebugProperty failed", hr);
-		return false;
-	}
-	if (FAILED(evalResult)) {
-		Logger::error("CrossfireContext.commandFrame(): evaluation of GetResultAsDebugProperty failed", evalResult);
-		return false;
-	}
-
-	// TODO this thisObject is currently created temporarily, but to
-	// get the full benefit of handle reuse it should be stored and
-	// reused for cases where the frame command is invoked on the same
-	// frame multiple times
-	JSObject thisObject;
-	thisObject.debugProperty = debugProperty2;
-	thisObject.isFunction = false;
-	thisObject.name = NULL;
-	thisObject.objects = NULL;
-	thisObject.parentHandle = 0;
-	thisObject.stackFrame = stackFrame;
-
-	Value* value_this = NULL;
-	if (createValueForObject(&thisObject, &value_this)) {
-		locals->addObjectValue(KEY_THIS, value_this);
-		delete value_this;
-	} else {
-		/* create an empty "this" value */
-		Value value_thisChildren;
-		value_thisChildren.setType(TYPE_OBJECT);
-		Value value_this2;
-		value_this2.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
-		value_this2.addObjectValue(KEY_VALUE, &value_thisChildren);
-		locals->addObjectValue(KEY_THIS, &value_this2);
 	}
 
 	Value* result = new Value();
-	result->addObjectValue(KEY_CONTEXTID, &Value(m_name));
-	result->addObjectValue(KEY_FUNC, &Value(description));
-	result->addObjectValue(KEY_INDEX, &Value((double)index));
-	result->addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
-	result->addObjectValue(KEY_LOCALS, locals);
-	result->addObjectValue(KEY_SCRIPT, &Value(url));
-	delete locals;
+	result->addObjectValue(KEY_FRAME, frame);
 	*_responseBody = result;
+	delete frame;
 	return true;
 }
 
@@ -1365,154 +1703,44 @@ bool CrossfireContext::commandLookup(Value* arguments, Value** _responseBody) {
 	if (!createValueForObject(object, &result)) {
 		return false;
 	}
+	
+	// TODO includeSource
 
 	*_responseBody = result;
 	return true;
 }
 
-bool CrossfireContext::createValueForObject(JSObject* object, Value** _value) {
-	*_value = NULL;
-	IDebugProperty* debugProperty = object->debugProperty;
-
-	CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
-	HRESULT hr = debugProperty->EnumMembers(
-		/*DBGPROP_INFO_NAME | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE | DBGPROP_INFO_DEBUGPROP*/ 0x3F,
-		10,
-		IID_IDebugPropertyEnumType_LocalsPlusArgs,
-		&enumPropertyInfo);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
-		return false;
-	}
-
-	/* The IDebugExpressionContext will be needed for each encountered object/function */
-	CComPtr<IDebugExpressionContext> expressionContext = NULL;
-	hr = object->stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForObject(): QI(IDebugExpressionContext) failed", hr);
-		return false;
-	}
-
-	Value membersCollection;
-	membersCollection.setType(TYPE_OBJECT);
-
-	std::map<wchar_t*, unsigned int>* newObjectsTable = NULL;
-	ULONG fetched;
-	do {
-		DebugPropertyInfo propertyInfo;
-		HRESULT hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
-		if (SUCCEEDED(hr) && fetched) {
-			BSTR type = propertyInfo.m_bstrType;
-			Value local;
-			if (wcscmp(type, JSVALUE_NULL) == 0) {
-				local.setType(TYPE_NULL);
-			} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
-				local.setValue(VALUE_UNDEFINED);
-			} else {
-				BSTR stringValue = propertyInfo.m_bstrValue;
-				if (wcscmp(type, JSVALUE_NUMBER) == 0) {
-					wchar_t* endPtr = 0;
-					double value = wcstod(stringValue, &endPtr);
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
-					local.addObjectValue(KEY_VALUE, &Value(value));
-				} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
-					if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
-						local.addObjectValue(KEY_VALUE, &Value(true));
-					} else {
-						local.addObjectValue(KEY_VALUE, &Value(false));
-					}
-				} else if (wcscmp(type, JSVALUE_STRING) == 0) {
-					std::wstring string(stringValue);
-					string = string.substr(1, string.length() - 2);
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
-					local.addObjectValue(KEY_VALUE, &Value(&string));
-				} else {
-					bool isFunction = (propertyInfo.m_dwAttrib & /*DBGPROP_ATTRIB_VALUE_IS_EXPANDABLE*/ 0x10) == 0;
-					if (!newObjectsTable) {
-						newObjectsTable = new std::map<wchar_t*, unsigned int>;
-					}
-
-					wchar_t* name = propertyInfo.m_bstrName;
-					unsigned int handle = 0;
-					if (object->objects) {
-						std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
-						if (iterator != object->objects->end()) {
-							std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
-							if (iterator2 != m_objects->end()) {
-								JSObject* existingObject = iterator2->second;
-								if (existingObject->isFunction == isFunction) {
-									handle = iterator2->first;
-								}
-							}
-						}
-					}
-					if (!handle) {
-						JSObject* newObject = new JSObject();
-						IDebugProperty* objectProperty = propertyInfo.m_pDebugProp;
-						objectProperty->AddRef();
-						newObject->debugProperty = objectProperty;
-						newObject->isFunction = isFunction;
-						newObject->name = _wcsdup(name);
-						newObject->objects = NULL;
-						newObject->parentHandle = 0;
-						newObject->stackFrame = object->stackFrame;
-						newObject->stackFrame->AddRef();
-						handle = m_nextObjectHandle++;
-						m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
-					}
-					newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
-					local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-					local.addObjectValue(KEY_HANDLE, &Value((double)handle));
-				}
-			}
-			membersCollection.addObjectValue(propertyInfo.m_bstrName, &local);
-		}
-	} while (fetched);
-
-	if (object->objects) {
-		std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->begin();
-		while (iterator != object->objects->end()) {
-			delete iterator->first;
-			iterator++;
-		}
-		delete object->objects;
-	}
-	object->objects = newObjectsTable;
-
-	Value* result = new Value();
-	result->setObjectValue(KEY_TYPE, object->isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-	result->setObjectValue(KEY_VALUE, &membersCollection);
-	*_value = result;
-	return true;
-}
-
 bool CrossfireContext::commandScope(Value* arguments, Value** _responseBody) {
+	// TODO
 	return false;
 }
 
 bool CrossfireContext::commandScopes(Value* arguments, Value** _responseBody) {
+	// TODO
 	return false;
 }
 
 bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
-	Value* value_url = arguments->getObjectValue(KEY_URL);
-	if (!value_url || value_url->getType() != TYPE_STRING) {
-		Logger::error("'script' command does not have a valid 'url' value");
+	Value* value_id = arguments->getObjectValue(KEY_ID);
+	if (!value_id || value_id->getType() != TYPE_STRING) {
+		Logger::error("'script' command does not have a valid 'id' value");
 		return false;
 	}
-	std::wstring* url = value_url->getStringValue();
+	std::wstring* id = value_id->getStringValue();
 
+	bool includeSource = false;
 	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
-	if (!value_includeSource || value_includeSource->getType() != TYPE_BOOLEAN) {
-		Logger::error("'script' command does not have a valid 'includeSource' value");
-		return false;
+	if (value_includeSource) {
+		if (value_includeSource->getType() != TYPE_BOOLEAN) {
+			Logger::error("'script' command has an invalid 'includeSource' value");
+			return false;
+		}
+		includeSource = value_includeSource->getBooleanValue();
 	}
-	bool includeSource = value_includeSource->getBooleanValue();
 
 	CComPtr<IDebugApplicationNode> node = NULL;
-	if (!findNode((wchar_t*)url->c_str(), NULL, &node)) {
-		Logger::error("'script' command specified an unknown script url");
+	if (!findNode((wchar_t*)id->c_str(), NULL, &node)) {
+		Logger::error("'script' command specifies an unknown script id");
 		return false;
 	}
 
@@ -1522,95 +1750,22 @@ bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
 	}
 
 	Value* result = new Value();
-	result->addObjectValue(KEY_CONTEXTID, &Value(m_name));
 	result->addObjectValue(KEY_SCRIPT, script);
 	*_responseBody = result;
 	delete script;
 	return true;
 }
 
-bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value) {
-	*_value = NULL;
-
-	CComBSTR url = L"NULL";
-	HRESULT hr = node->GetName(DOCUMENTNAMETYPE_URL, &url);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetName() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	hr = node->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetDocument() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): QI(IDebugDocumentText) failed", hr);
-		return false;
-	}
-
-	ULONG numLines = 0;
-	ULONG numChars = 0;
-	hr = documentText->GetSize(&numLines, &numChars);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetSize() failed", hr);
-		return false;
-	}
-
-	ULONG line1start = 0;
-	hr = documentText->GetPositionOfLine(1, &line1start);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetPositionOfLine() failed [2]", hr);
-		return false;
-	}
-
-	wchar_t* line0chars = new wchar_t[line1start + 1];
-	ULONG charsRead = 0;
-	hr = documentText->GetText(0, line0chars, NULL, &charsRead, line1start);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetText() failed", hr);
-		return false;
-	}
-	line0chars[line1start] = NULL;
-
-	Value* result = new Value();
-	result->addObjectValue(KEY_ID, &Value(url));
-	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
-	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0)); // TODO right?
-	result->addObjectValue(KEY_SOURCESTART, &Value(line0chars));
-	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numLines)); // TODO wrong
-	result->addObjectValue(KEY_LINECOUNT, &Value((double)numLines));
-	result->addObjectValue(KEY_COMPILATIONTYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
-	delete[] line0chars;
-
-	if (includeSource) {
-		wchar_t* sourceChars = new wchar_t[numChars + 1];
-		charsRead = 0;
-		hr = documentText->GetText(0, sourceChars, NULL, &charsRead, numChars);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.createValueForScript(): GetText()[2] failed", hr);
+bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
+	bool includeSource = false;
+	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
+	if (value_includeSource) {
+		if (value_includeSource->getType() != TYPE_BOOLEAN) {
+			Logger::error("'scripts' command has an invalid 'includeSource' value");
 			return false;
 		}
-		sourceChars[numChars] = NULL;
-		result->addObjectValue(KEY_SOURCE, &Value(sourceChars));
-		delete[] sourceChars;
+		includeSource = value_includeSource->getBooleanValue();
 	}
-
-	*_value = result;
-	return true;
-}
-
-bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
-	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
-	if (!value_includeSource || value_includeSource->getType() != TYPE_BOOLEAN) {
-		Logger::error("'scripts' command does not have a valid 'includeSource' value");
-		return false;
-	}
-	bool includeSource = value_includeSource->getBooleanValue();
 
 	CComPtr<IRemoteDebugApplication> application = NULL;
 	if (!getDebugApplication(&application)) {
@@ -1624,13 +1779,12 @@ bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
 		return false;
 	}
 
-	Value scripts;
-	scripts.setType(TYPE_ARRAY);
-	addScriptsToArray(rootNode, includeSource, &scripts);
+	Value scriptsArray;
+	scriptsArray.setType(TYPE_ARRAY);
+	addScriptsToArray(rootNode, includeSource, &scriptsArray);
 
 	Value* result = new Value();
-	result->addObjectValue(KEY_CONTEXTID, &Value(m_name));
-	result->addObjectValue(KEY_SCRIPTS, &scripts);
+	result->addObjectValue(KEY_SCRIPTS, &scriptsArray);
 	*_responseBody = result;
 	return true;
 }
@@ -1663,11 +1817,6 @@ void CrossfireContext::addScriptsToArray(IDebugApplicationNode* node, bool inclu
 			}
 		}
 	} while (fetched);
-}
-
-bool CrossfireContext::commandSource(Value* arguments, Value** _responseBody) {
-	arguments->setObjectValue(KEY_INCLUDESOURCE, &Value(true));
-	return commandScripts(arguments, _responseBody);
 }
 
 bool CrossfireContext::commandSuspend(Value* arguments, Value** _responseBody) {

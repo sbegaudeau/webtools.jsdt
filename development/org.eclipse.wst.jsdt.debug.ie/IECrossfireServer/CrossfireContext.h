@@ -25,7 +25,7 @@
 #include "Logger.h"
 
 class CrossfireContext; // forward declaration
-#include "PendingBreakpoint.h"
+#include "PendingScriptLoad.h"
 #include "CrossfireServer.h"
 #include "IEDebugger.h"
 
@@ -34,9 +34,6 @@ class CrossfireContext : IBreakpointTarget {
 public:
 	CrossfireContext(DWORD threadId, CrossfireServer* server);
 	~CrossfireContext();
-
-	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value);
-	virtual bool findNode(wchar_t* name, IDebugApplicationNode* startNode, IDebugApplicationNode** _value);
 	virtual wchar_t* getHref();
 	virtual wchar_t* getName();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
@@ -65,8 +62,11 @@ private:
 		unsigned int parentHandle;
 	};
 
+	virtual void clearObjects();
+	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
 	virtual bool createValueForObject(JSObject* object, Value** _value);
-
+	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value);
+	virtual bool findNode(wchar_t* name, IDebugApplicationNode* startNode, IDebugApplicationNode** _value);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
 	virtual bool hookDebugger();
@@ -75,16 +75,17 @@ private:
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
 	DWORD m_cpcApplicationNodeEvents;
 	IDebugApplicationNode* m_currentScriptNode;
-	unsigned int m_nextObjectHandle;
-	CrossfireServer* m_server;
 	IRemoteDebugApplicationThread* m_debugApplicationThread;
 	IIEDebugger* m_debugger;
 	bool m_debuggerHooked;
 	wchar_t* m_href;
 	wchar_t* m_name;
+	unsigned int m_nextObjectHandle;
+	unsigned int m_nextUnnamedUrlIndex;
 	std::map<unsigned int, JSObject*>* m_objects;
-	std::vector<PendingBreakpoint*>* m_pendingBreakpoints;
+	std::vector<PendingScriptLoad*>* m_pendingScriptLoads;
 	bool m_running;
+	CrossfireServer* m_server;
 	DWORD m_threadId;
 
 	/* command: backtrace */
@@ -92,7 +93,7 @@ private:
 	static const wchar_t* KEY_FRAMES;
 	static const wchar_t* KEY_FROMFRAME;
 	static const wchar_t* KEY_TOFRAME;
-	static const wchar_t* KEY_TOTALFRAMES;
+	static const wchar_t* KEY_TOTALFRAMECOUNT;
 	virtual bool commandBacktrace(Value* arguments, Value** _responseBody);
 
 	/* command: continue */
@@ -102,31 +103,12 @@ private:
 	/* command: evaluate */
 	static const wchar_t* COMMAND_EVALUATE;
 	static const wchar_t* KEY_EXPRESSION;
-	static const wchar_t* KEY_FRAME;
 	virtual bool commandEvaluate(Value* arguments, unsigned int requestSeq, Value** _responseBody);
 
 	/* command: frame */
 	static const wchar_t* COMMAND_FRAME;
-	static const wchar_t* JSVALUE_BOOLEAN;
-	static const wchar_t* JSVALUE_FUNCTION;
-	static const wchar_t* JSVALUE_NUMBER;
-	static const wchar_t* JSVALUE_NULL;
-	static const wchar_t* JSVALUE_STRING;
-	static const wchar_t* JSVALUE_TRUE;
-	static const wchar_t* JSVALUE_UNDEFINED;
-	static const wchar_t* KEY_FUNC;
-	static const wchar_t* KEY_INCLUDESCOPES;
+	static const wchar_t* KEY_FRAME;
 	static const wchar_t* KEY_INDEX;
-	static const wchar_t* KEY_LOCALS;
-	static const wchar_t* KEY_NUMBER;
-	static const wchar_t* KEY_THIS;
-	static const wchar_t* KEY_VALUE;
-	static const wchar_t* VALUE_BOOLEAN;
-	static const wchar_t* VALUE_FUNCTION;
-	static const wchar_t* VALUE_NUMBER;
-	static const wchar_t* VALUE_OBJECT;
-	static const wchar_t* VALUE_STRING;
-	static const wchar_t* VALUE_UNDEFINED;
 	virtual bool commandFrame(Value* arguments, Value** _responseBody);
 
 	/* command: inspect */
@@ -138,36 +120,28 @@ private:
 
 	/* command: scope */
 	static const wchar_t* COMMAND_SCOPE;
+	static const wchar_t* KEY_SCOPE;
+	static const wchar_t* KEY_SCOPEINDEX;
 	virtual bool commandScope(Value* arguments, Value** _responseBody);
 
 	/* command: scopes */
 	static const wchar_t* COMMAND_SCOPES;
+	static const wchar_t* KEY_FROMSCOPE;
+	static const wchar_t* KEY_SCOPES;
+	static const wchar_t* KEY_TOSCOPE;
+	static const wchar_t* KEY_TOTALSCOPECOUNT;
 	virtual bool commandScopes(Value* arguments, Value** _responseBody);
 
 	/* command: script */
 	static const wchar_t* COMMAND_SCRIPT;
+	static const wchar_t* KEY_SCRIPT;
 	virtual bool commandScript(Value* arguments, Value** _responseBody);
-//	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value);
 
 	/* command: scripts */
 	static const wchar_t* COMMAND_SCRIPTS;
-	static const wchar_t* KEY_COMPILATIONTYPE;
-	static const wchar_t* KEY_COLUMNOFFSET;
-	static const wchar_t* KEY_ID;
-	static const wchar_t* KEY_LINECOUNT;
-	static const wchar_t* KEY_LINEOFFSET;
-	static const wchar_t* KEY_SCRIPT;
 	static const wchar_t* KEY_SCRIPTS;
-	static const wchar_t* KEY_SOURCE;
-	static const wchar_t* KEY_SOURCESTART;
-	static const wchar_t* KEY_SOURCELENGTH;
-	static const wchar_t* VALUE_TOPLEVEL;
 	virtual bool commandScripts(Value* arguments, Value** _responseBody);
 	virtual void addScriptsToArray(IDebugApplicationNode* node, bool includeSource, Value* arrayValue);
-
-	/* command: source */
-	static const wchar_t* COMMAND_SOURCE;
-	virtual bool commandSource(Value* arguments, Value** _responseBody);
 
 	/* command: suspend */
 	static const wchar_t* COMMAND_SUSPEND;
@@ -180,16 +154,54 @@ private:
 	/* event: onScript */
 	static const wchar_t* EVENT_ONSCRIPT;
 
+	/* event: onToggleBreakpoint */
+	static const wchar_t* EVENT_ONTOGGLEBREAKPOINT;
+	static const wchar_t* KEY_SET;
+
 	/* shared */
 	static const wchar_t* KEY_BREAKPOINT;
 	static const wchar_t* KEY_CONTEXTID;
+	static const wchar_t* KEY_FRAMEINDEX;
 	static const wchar_t* KEY_HANDLE;
+	static const wchar_t* KEY_INCLUDESCOPES;
 	static const wchar_t* KEY_INCLUDESOURCE;
 	static const wchar_t* KEY_LINE;
 	static const wchar_t* KEY_TYPE;
-	static const wchar_t* KEY_URL;
 
 	/* breakpoint objects */
 	static const wchar_t* BPTYPE_LINE;
 	static const wchar_t* KEY_LOCATION;
+
+	/* frame objects */
+	static const wchar_t* KEY_FUNCTIONNAME;
+	static const wchar_t* KEY_SCRIPTID;
+
+	/* object objects */
+	static const wchar_t* JSVALUE_BOOLEAN;
+	static const wchar_t* JSVALUE_FUNCTION;
+	static const wchar_t* JSVALUE_NUMBER;
+	static const wchar_t* JSVALUE_NULL;
+	static const wchar_t* JSVALUE_STRING;
+	static const wchar_t* JSVALUE_TRUE;
+	static const wchar_t* JSVALUE_UNDEFINED;
+	static const wchar_t* KEY_LOCALS;
+	static const wchar_t* KEY_THIS;
+	static const wchar_t* KEY_VALUE;
+	static const wchar_t* VALUE_BOOLEAN;
+	static const wchar_t* VALUE_FUNCTION;
+	static const wchar_t* VALUE_NUMBER;
+	static const wchar_t* VALUE_OBJECT;
+	static const wchar_t* VALUE_STRING;
+	static const wchar_t* VALUE_UNDEFINED;
+
+	/* script objects */
+	static const wchar_t* KEY_COLUMNOFFSET;
+	static const wchar_t* KEY_COMPILATIONTYPE;
+	static const wchar_t* KEY_ID;
+	static const wchar_t* KEY_LINECOUNT;
+	static const wchar_t* KEY_LINEOFFSET;
+	static const wchar_t* KEY_SOURCE;
+	static const wchar_t* KEY_SOURCESTART;
+	static const wchar_t* KEY_SOURCELENGTH;
+	static const wchar_t* VALUE_TOPLEVEL;
 };
