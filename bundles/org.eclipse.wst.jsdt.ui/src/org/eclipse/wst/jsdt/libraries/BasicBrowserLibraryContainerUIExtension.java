@@ -32,6 +32,6 @@ public class BasicBrowserLibraryContainerUIExtension implements IJsGlobalScopeCo
 		/* Dont use the rino image for the individual files */
 		String requestedContainerPath = new Path(element).getFileExtension();
 		if(requestedContainerPath!=null && requestedContainerPath.equalsIgnoreCase("js")) return null; //$NON-NLS-1$
-		return ImageDescriptor.createFromFile(this.getClass(),"rino.gif"); //$NON-NLS-1$
+		return ImageDescriptor.createFromFile(this.getClass(),"internal_browser.gif"); //$NON-NLS-1$
 	}
 }
