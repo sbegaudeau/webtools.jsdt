@@ -367,14 +367,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 * Adds a thread to the listing
 	 * 
 	 * @param id
-	 * @param href
+	 * @param url
 	 * @return the new thread
 	 */
-	public CFThreadReference addThread(String id, String href) {
+	public CFThreadReference addThread(String id, String url) {
 		if(threads == null) {
 			allThreads();
 		}
-		CFThreadReference thread  = new CFThreadReference(this, id, href);
+		CFThreadReference thread  = new CFThreadReference(this, id, url);
 		threads.put(thread.id(), thread);
 		return thread;
 	}

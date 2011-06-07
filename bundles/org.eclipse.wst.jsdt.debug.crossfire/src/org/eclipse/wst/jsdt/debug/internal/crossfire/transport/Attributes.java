@@ -70,9 +70,9 @@ public interface Attributes {
 	 */
 	public static final String CONTEXTS = "contexts"; //$NON-NLS-1$
 	/**
-	 * The "crossfire_id" attribute
+	 * the "current" attribute
 	 */
-	public static final String CROSSFIRE_ID = "crossfire_id"; //$NON-NLS-1$
+	public static final String CURRENT = "current"; //$NON-NLS-1$
 	/**
 	 * The "data" attribute
 	 */

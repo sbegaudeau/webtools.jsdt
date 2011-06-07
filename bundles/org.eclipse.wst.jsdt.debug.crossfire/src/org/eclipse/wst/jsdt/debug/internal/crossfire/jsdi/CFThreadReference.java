@@ -40,7 +40,8 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	static final int EVENT_RESUME = 3;
 	
 	private String id = null;
-	private String href = null;
+	private String url = null;
+	private boolean current = false;
 	private int state = RUNNING;
 	private ArrayList frames = null;
 	private int stepkind = -1;
@@ -50,12 +51,12 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * 
 	 * @param vm
 	 * @param id
-	 * @param href
+	 * @param url
 	 */
-	public CFThreadReference(VirtualMachine vm, String id, String href) {
+	public CFThreadReference(VirtualMachine vm, String id, String url) {
 		super(vm);
 		this.id = id;
-		this.href = href;
+		this.url = url;
 	}
 	
 	/**
@@ -65,11 +66,12 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 */
 	public CFThreadReference(VirtualMachine vm, Map json) {
 		super(vm);
-		this.id = (String) json.get(Attributes.CROSSFIRE_ID);
-		if(this.id == null) {
-			this.id = (String) json.get(Attributes.CONTEXT_ID);
+		this.id = (String) json.get(Attributes.CONTEXT_ID);
+		this.url = (String) json.get(Attributes.URL);
+		Boolean bool = (Boolean) json.get(Attributes.CURRENT);
+		if(bool != null) {
+			this.current = bool.booleanValue();
 		}
-		this.href = (String) json.get(Attributes.HREF);
 	}
 
 	/* (non-Javadoc)
@@ -238,7 +240,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference#name()
 	 */
 	public String name() {
-		return NLS.bind(Messages.thread_name, new Object[] {id, href});
+		return NLS.bind(Messages.thread_name, new Object[] {id, url});
 	}
 	
 	/* (non-Javadoc)
@@ -246,7 +248,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("ThreadReference: [crossfire_id - ").append(id).append("] [href - ").append(href).append("]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		buffer.append("ThreadReference: [contextId - ").append(id).append("] [url - ").append(url).append("]"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		return buffer.toString();
 	}
 	
@@ -260,12 +262,12 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 	}
 	
 	/**
-	 * Returns the href context for this thread
+	 * Returns the URL for this thread
 	 * 
-	 * return the href context
+	 * @return the URL
 	 */
-	public String href() {
-		return href;
+	public String url() {
+		return url;
 	}
 	
 	/**
@@ -300,5 +302,22 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Returns if the this thread is the current (focus) context in the browser 
+	 * 
+	 * @return <code>true</code> if this thread is the current (focus) context
+	 */
+	public boolean isCurrent() {
+		return this.current;
+	}
+	
+	/**
+	 * Allows the current (focus) status of the thread to be set
+	 * @param current the new current state
+	 */
+	public void setCurrent(boolean current) {
+		this.current = current;
 	}
 }
