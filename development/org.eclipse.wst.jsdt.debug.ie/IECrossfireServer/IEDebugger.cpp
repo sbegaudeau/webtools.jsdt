@@ -117,7 +117,7 @@ STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebu
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("'onHandleBreakPoint' QueryInterface() failed", hr);
 		return S_OK;
@@ -294,7 +294,7 @@ STDMETHODIMP IEDebugger::onRemoveChild(IDebugApplicationNode *prddpChild) {
 		return S_FALSE;
 	}
 	CComPtr <IConnectionPoint> nodeConnectionPoint = NULL;
-	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents,&nodeConnectionPoint);
+	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
 	if (FAILED(hr)) {
 		Logger::error("IEDebugger.onRemoveChild() FindConnectionPoint failed", hr);
 		return S_FALSE;

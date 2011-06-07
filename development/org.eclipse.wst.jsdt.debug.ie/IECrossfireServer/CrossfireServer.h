@@ -55,14 +55,14 @@ public:
 
 	/* ICrossfireServer */
 	virtual HRESULT STDMETHODCALLTYPE addListener(ICrossfireServerListener* listener);
-	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD threadId, OLECHAR* href);
-	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD threadId);
-	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD threadId);
+	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, OLECHAR* href);
+	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
+	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
 	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
-	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD threadId, OLECHAR* href);
+	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* href);
 	virtual HRESULT STDMETHODCALLTYPE removeListener(ICrossfireServerListener* listener);
-	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD threadId);
+	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
 	virtual HRESULT STDMETHODCALLTYPE stop();
 
@@ -78,6 +78,7 @@ private:
 	virtual void getContextsArray(CrossfireContext*** _value);
 	virtual CrossfireContext* getRequestContext(CrossfireRequest* request);
 	virtual bool performRequest(CrossfireRequest* request);
+	virtual bool processHandshake(wchar_t* msg);
 	virtual void reset();
 
 	CrossfireBPManager* m_bpManager;

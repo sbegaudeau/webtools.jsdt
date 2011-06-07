@@ -122,7 +122,7 @@ const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
 
-CrossfireContext::CrossfireContext(DWORD threadId, CrossfireServer* server) {
+CrossfireContext::CrossfireContext(DWORD processId, CrossfireServer* server) {
 	CComObject<IEDebugger>* result = NULL;
 	HRESULT hr = CComObject<IEDebugger>::CreateInstance(&result);
 	if (FAILED(hr)) {
@@ -135,14 +135,14 @@ CrossfireContext::CrossfireContext(DWORD threadId, CrossfireServer* server) {
 	m_server = server;
 	m_debugApplicationThread = NULL;
 	m_debuggerHooked = false;
-	m_href = NULL;
 	m_name = NULL;
 	m_nextObjectHandle = 1;
 	m_nextUnnamedUrlIndex = 1;
 	m_objects = new std::map<unsigned int, JSObject*>;
 	m_pendingScriptLoads = new std::vector<PendingScriptLoad*>;
+	m_processId = processId;
 	m_running = true;
-	m_threadId = threadId;
+	m_url = NULL;
 
 	IEDebugger* ieDebugger = static_cast<IEDebugger*>(m_debugger);
 	ieDebugger->setContext(this);
@@ -199,11 +199,11 @@ CrossfireContext::~CrossfireContext() {
 		}
 	}
 
-	if (m_href) {
-		free(m_href);
-	}
 	if (m_name) {
 		free(m_name);
+	}
+	if (m_url) {
+		free(m_url);
 	}
 	if (m_objects) {
 		clearObjects();
@@ -641,7 +641,7 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): QI(IDebugDocumentText) failed", hr);
 		return false;
@@ -754,7 +754,7 @@ bool CrossfireContext::findNode(wchar_t* name, IDebugApplicationNode* startNode,
 bool CrossfireContext::getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value) {
 	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
 	if (iterator == m_breakpoints->end()) {
-		Logger::error("getBreakpoint: unknown breakpoint handle", handle);
+		Logger::error("CrossfireContext.getBreakpoint(): unknown breakpoint handle", handle);
 		return false;
 	}
 	CrossfireBreakpoint* breakpoint = iterator->second;
@@ -805,89 +805,56 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return true;
 	}
 
-	CComPtr<IMachineDebugManager> mdm;
-	HRESULT hr = mdm.CoCreateInstance(CLSID_MachineDebugManager, NULL, CLSCTX_ALL);
+    CComPtr<IDebugProgramProvider2> pPDM;
+    HRESULT hr = pPDM.CoCreateInstance(__uuidof(MsProgramProvider), NULL, CLSCTX_INPROC_SERVER);
+    if (FAILED(hr)) {
+        Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance failed", hr);
+        return false;
+    }
+
+    AD_PROCESS_ID processId;
+	processId.ProcessIdType = AD_PROCESS_ID_SYSTEM;
+	processId.ProcessId.dwProcessId = m_processId;
+	CONST_GUID_ARRAY filter;
+	filter.dwCount = 0;
+	filter.Members = NULL;
+	PROVIDER_PROCESS_DATA processData;
+    hr = pPDM->GetProviderProcessData(PFLAG_GET_PROGRAM_NODES | PFLAG_DEBUGGEE | PFLAG_ATTACHED_TO_DEBUGGEE, NULL, processId, filter, &processData);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance(CLSID_MachineDebugManager) failed", hr);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData failed", hr);
+        return false;
+	}
+	if (processData.ProgramNodes.dwCount != 1) {
+        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData returned program nodes count != 1", processData.ProgramNodes.dwCount);
+        return false;
+	}
+
+	IDebugProgramNode2* node = processData.ProgramNodes.Members[0];
+	CComPtr<IDebugProviderProgramNode2> providerProgramNode;
+	hr = node->QueryInterface(__uuidof(IDebugProviderProgramNode2), (void**)&providerProgramNode);
+	if (FAILED(hr)) {
+        Logger::error("CrossfireContext.getDebugApplicationThread(): QueryInterface failed", hr);
+        return false;
+	}
+
+	CComPtr<IRemoteDebugApplication> debugApplication;
+	hr = providerProgramNode->UnmarshalDebuggeeInterface(IID_IRemoteDebugApplication, (void**)&debugApplication);
+	if (FAILED(hr)) {
+        Logger::error("CrossfireContext.getDebugApplicationThread(): UnmarshalDebuggeeInterface failed", hr);
+        return false;
+	}
+
+	CComPtr<IEnumRemoteDebugApplicationThreads> debugApplicationThreads;
+	hr = debugApplication->EnumThreads(&debugApplicationThreads);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed", hr);
 		return false;
 	}
 
-	CComPtr<IEnumRemoteDebugApplications> applications;
-	hr = mdm->EnumApplications(&applications);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): EnumApplications() failed", hr);
-		return false;
-	}
-
-	int failCounter = 0;
-//Logger::error("CrossfireContext.getDebugApplicationThread(): starting loop, looking for", (int)m_threadId);
-	ULONG fetchedApps = 0;
-	do {
-		CComPtr<IRemoteDebugApplication> currentApplication;
-		hr = applications->Next(1, &currentApplication, &fetchedApps);
-		if (FAILED(hr)) {
-			fetchedApps = 1; /* continue to try to enum more applications */
-			failCounter++;
-//Logger::error("CrossfireContext.getDebugApplicationThread(): Next()[1] failed, keep trying", hr);
-		} else if (fetchedApps) {
-			CComPtr<IEnumRemoteDebugApplicationThreads> threads;
-			hr = currentApplication->EnumThreads(&threads);
-//if (FAILED(hr)) {
-//	Logger::error("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed, keep trying");
-//}
-			if (SUCCEEDED(hr)) {
-				ULONG fetchedThreads = 0;
-				do {
-					CComPtr<IRemoteDebugApplicationThread> currentThread;
-					hr = threads->Next(1, &currentThread, &fetchedThreads);
-					if (FAILED(hr)) {
-						fetchedThreads = 1; /* continue to try to enum more threads */
-//Logger::error("CrossfireContext.getDebugApplicationThread(): Next()[2] failed, keep trying");
-					} else if (fetchedThreads) {
-						DWORD currentThreadId;
-						hr = currentThread->GetSystemThreadId(&currentThreadId);
-						if (FAILED(hr)) {
-							Logger::error("CrossfireContext.getDebugApplicationThread(): GetSystemThreadId() failed", hr);
-						} else if (m_threadId == currentThreadId) {
-							CComPtr<IDebugApplicationNode> rootNode = NULL;
-							hr = currentApplication->GetRootNode(&rootNode);
-							if (FAILED(hr)) {
-								Logger::error("CrossfireContext.getDebugApplicationThread(): GetRootNode() failed", hr);
-							} else {
-								CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
-								hr = rootNode->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
-								if (FAILED(hr)) {
-									Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IConnectionPointContainer) failed", hr);
-								} else {
-									CComPtr<IConnectionPoint> connectionPoint = NULL;
-									hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &connectionPoint);
-									if (FAILED(hr)) {
-										Logger::error("CrossfireContext.getDebugApplicationThread(): FindConnectionPoint() failed", hr);
-									} else {
-										hr = connectionPoint->Advise(m_debugger, &m_cpcApplicationNodeEvents);
-										if (FAILED(hr)) {
-											Logger::error("CrossfireContext.getDebugApplicationThread(): Advise() failed", hr);
-										} else {
-											Logger::log("CrossfireContext.getDebugApplicationThread() found the thread and advised its root node successfully");
-											m_debugApplicationThread = currentThread;
-											m_debugApplicationThread->AddRef();
-											break;
-										}
-									}
-								}
-							}
-						}
-//else {
-//	Logger::error("CrossfireContext.getDebugApplicationThread(): they didn't match, got", (int)currentThreadId);
-//}
-					}
-				} while (fetchedThreads);
-			}
-		}
-	} while (!m_debugApplicationThread && fetchedApps && failCounter < 20);
-
-	if (!m_debugApplicationThread) {
-		Logger::log("CrossfireContext.getDebugApplicationThread() did not find the thread or did not advise its root node");
+	ULONG fetchedThreads = 0;
+	hr = debugApplicationThreads->Next(1, &m_debugApplicationThread, &fetchedThreads);
+	if (FAILED(hr) || fetchedThreads == 0) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): Next() failed", hr);
 		return false;
 	}
 
@@ -896,12 +863,12 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 	return true;
 }
 
-wchar_t* CrossfireContext::getHref() {
-	return m_href;
-}
-
 wchar_t* CrossfireContext::getName() {
 	return m_name;
+}
+
+wchar_t* CrossfireContext::getUrl() {
+	return m_url;
 }
 
 bool CrossfireContext::hookDebugger() {
@@ -1123,7 +1090,7 @@ bool CrossfireContext::setBreakpointEnabled(unsigned int handle, bool enabled) {
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.setBreakpointEnabled(): QI(IDebugDocumentText) failed", hr);
 		return false;
@@ -1168,15 +1135,11 @@ bool CrossfireContext::setBreakpointEnabled(unsigned int handle, bool enabled) {
 	return true;
 }
 
-void CrossfireContext::setHref(wchar_t* value) {
-	if (m_href) {
-		free(m_href);
+void CrossfireContext::setUrl(wchar_t* value) {
+	if (m_url) {
+		free(m_url);
 	}
-	m_href = _wcsdup(value);
-
-	if (!m_debuggerHooked) {
-		hookDebugger();
-	}
+	m_url = _wcsdup(value);
 }
 
 bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bool isRetry) {
@@ -1207,7 +1170,7 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.setLineBreakpoint(): QI(IDebugDocumentText) failed", hr);
 		return false;

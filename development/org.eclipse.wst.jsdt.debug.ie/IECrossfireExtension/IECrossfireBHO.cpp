@@ -28,9 +28,9 @@ IECrossfireBHO::IECrossfireBHO() {
 }
 
 IECrossfireBHO::~IECrossfireBHO() {
-	DWORD threadId = GetCurrentThreadId();
+	DWORD processId = GetCurrentProcessId();
 	if (m_server) {
-		m_server->contextDestroyed(threadId);
+		m_server->contextDestroyed(processId);
 		m_server->Release();
 	}
 	if (m_htmlToDisplay) {
@@ -150,7 +150,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 		} else {
 			if (webBrowserIUnknown == pDispIUnknown) {
 				/* this is the top-level page frame */
-				HRESULT hr = m_server->contextLoaded(GetCurrentThreadId());
+				HRESULT hr = m_server->contextLoaded(GetCurrentProcessId());
 				if (FAILED(hr)) {
 					Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextLoaded() failed", hr);
 				}
@@ -176,9 +176,9 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 		} else {
 			if (webBrowserIUnknown == pDispIUnknown) {
 				/* this is the top-level page frame */
-				DWORD threadId = GetCurrentThreadId();
-				m_server->contextDestroyed(threadId);
-				HRESULT hr = m_server->contextCreated(threadId, pvarURL->bstrVal);
+				DWORD processId = GetCurrentProcessId();
+				m_server->contextDestroyed(processId);
+				HRESULT hr = m_server->contextCreated(processId, pvarURL->bstrVal);
 				if (FAILED(hr)) {
 					Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
 				}
@@ -204,8 +204,8 @@ STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
 		return S_OK;
 	}
 
-	DWORD threadId = GetCurrentThreadId();
-	hr = m_server->contextCreated(threadId, url);
+	DWORD processId = GetCurrentProcessId();
+	hr = m_server->contextCreated(processId, url);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.ServerStateChanged(): contextCreated() failed", hr);
 		return S_OK;
@@ -219,7 +219,7 @@ STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
 	VARIANT_BOOL busy;
 	hr = m_webBrowser->get_Busy(&busy);
 	if (SUCCEEDED(hr) && !busy) {
-		hr = m_server->contextLoaded(threadId);
+		hr = m_server->contextLoaded(processId);
 		if (FAILED(hr)) {
 			Logger::error("IECrossfireBHO.ServerStateChanged(): contextLoaded() failed", hr);
 			return S_OK;
@@ -389,15 +389,8 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 }
 
 bool IECrossfireBHO::startDebugging(unsigned int port) {
-	CComPtr<IMachineDebugManager> mdm;
-	HRESULT hr = mdm.CoCreateInstance(CLSID_MachineDebugManager, NULL, CLSCTX_ALL);
-	if (FAILED(hr)) {
-		MessageBox(NULL, L"IE Crossfire Server requires the extra Active Script Debugging framework download from Microsoft", L"Crossfire Server Startup Error", 0);
-		return false;
-	}
-
 	HKEY key;
-	hr = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Internet Explorer\\Main", 0, KEY_READ, &key);
+	HRESULT hr = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Internet Explorer\\Main", 0, KEY_READ, &key);
 	if (SUCCEEDED(hr)) {
 		wchar_t value[9];
 		DWORD size = sizeof(value);
@@ -428,14 +421,14 @@ bool IECrossfireBHO::startDebugging(unsigned int port) {
 		return true;
 	}
 
-	DWORD threadId = GetCurrentThreadId();
-	hr = m_server->registerContext(threadId, url);
+	DWORD processId = GetCurrentProcessId();
+	hr = m_server->registerContext(processId, url);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.startDebugging(): registerContext() failed");
 		return true;
 	}
 
-	hr = m_server->setCurrentContext(threadId);
+	hr = m_server->setCurrentContext(processId);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.startDebugging(): setCurrentContext() failed");
 		return true;

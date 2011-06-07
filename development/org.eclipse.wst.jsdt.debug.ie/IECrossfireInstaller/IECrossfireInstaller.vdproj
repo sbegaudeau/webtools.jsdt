@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_08B68589E44940F8B6D40CA08C892114"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -33,62 +39,44 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_789EDFDD3D684807BA806711810DE2E6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_84E08E0239A547B69279455F81CBB050"
-        "OwnerKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
         "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
         "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
         "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_93678B3CE4DD4E4DB4A11CD53222B44D"
+        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
         "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_B2FDF7A3EDD7481CA6B36A2A88BEEB20"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C13FFD631EE8438A846F661828EC200F"
+        "MsmKey" = "8:_BD7F564C89834C73B61D45A429B089B7"
         "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C13FFD631EE8438A846F661828EC200F"
+        "MsmKey" = "8:_BD7F564C89834C73B61D45A429B089B7"
         "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C55A728E77B342859CD899BAA283C518"
-        "OwnerKey" = "8:_C13FFD631EE8438A846F661828EC200F"
+        "MsmKey" = "8:_C3E67FD0862F4535B94CCB13D4B57844"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -99,13 +87,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
         "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
         "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -196,10 +184,10 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_789EDFDD3D684807BA806711810DE2E6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_08B68589E44940F8B6D40CA08C892114"
             {
-            "SourcePath" = "8:C:\\Program Files (x86)\\IBM\\IE Crossfire Server\\smileyGray.ico"
-            "TargetName" = "8:smileyGray.ico"
+            "SourcePath" = "8:IECrossfireServerGray.ico"
+            "TargetName" = "8:IECrossfireServerGray.ico"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
             "Condition" = "8:"
@@ -216,10 +204,10 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B2FDF7A3EDD7481CA6B36A2A88BEEB20"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C3E67FD0862F4535B94CCB13D4B57844"
             {
-            "SourcePath" = "8:C:\\Program Files (x86)\\IBM\\IE Crossfire Server\\smiley.ico"
-            "TargetName" = "8:smiley.ico"
+            "SourcePath" = "8:IECrossfireServer.ico"
+            "TargetName" = "8:IECrossfireServer.ico"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
             "Condition" = "8:"
@@ -236,7 +224,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F5C6CFDEE41DDC1EE6A11D2BBD137FFB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DA5949DF914B536D3A767BD24027BD81"
             {
             "SourcePath" = "8:RPCRT4.dll"
             "TargetName" = "8:RPCRT4.dll"
@@ -306,14 +294,16 @@
         "MsiBootstrapper"
         {
         "LangId" = "3:1033"
+        "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{D2AF084E-7B4D-4622-A780-671F7B1DE108}"
+        "PackageCode" = "8:{71A8EFB0-530C-494B-8E31-9C20EF18A218}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
+        "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
@@ -3729,11 +3719,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_84E08E0239A547B69279455F81CBB050"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_8_0_microsoft_vc80_crt_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -3743,39 +3733,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_93678B3CE4DD4E4DB4A11CD53222B44D"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_BD7F564C89834C73B61D45A429B089B7"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC80_CRT_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C13FFD631EE8438A846F661828EC200F"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC80_ATL_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_C55A728E77B342859CD899BAA283C518"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_8_0_microsoft_vc80_atl_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
                 "Properties"
                 {
                 }
@@ -3790,7 +3752,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_135FEE75997E472EBE5334E37A5A865B"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\Debug\\IECrossfireExtension.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3818,7 +3780,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\Release\\IECrossfireServer.exe"
+            "SourcePath" = "8:..\\IECrossfireServer\\Debug\\IECrossfireServer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3846,7 +3808,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5F42F5CFFE6349B99D0F777B803AB909"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\ReleasePS\\IECrossfireServerPS.dll"
+            "SourcePath" = "8:..\\IECrossfireServer\\DebugPS\\IECrossfireServerPS.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3874,7 +3836,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C99F2874BC864A309B70733CEE4BB66B"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\ReleasePS\\IECrossfireExtensionPS.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\DebugPS\\IECrossfireExtensionPS.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3900,9 +3862,6 @@
                 {
                 }
             }
-        }
-        "VJSharpPlugin"
-        {
         }
     }
 }

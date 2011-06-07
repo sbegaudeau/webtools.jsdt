@@ -43,14 +43,14 @@ interface ICrossfireServerListener : IUnknown {
 ]
 interface ICrossfireServer : IDispatch {
 	HRESULT addListener([in] ICrossfireServerListener* listener);
-	HRESULT contextCreated([in] DWORD threadId, [in, string] OLECHAR* href);
-	HRESULT contextDestroyed([in] DWORD threadId);
-	HRESULT contextLoaded([in] DWORD threadId);
+	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* href);
+	HRESULT contextDestroyed([in] DWORD processId);
+	HRESULT contextLoaded([in] DWORD processId);
 	HRESULT getPort([out] unsigned int* value);
 	HRESULT getState([out] int* value);
-	HRESULT registerContext([in] DWORD threadId, [in, string] OLECHAR* href);
+	HRESULT registerContext([in] DWORD processId, [in, string] OLECHAR* href);
 	HRESULT removeListener([in] ICrossfireServerListener* listener);
-	HRESULT setCurrentContext([in] DWORD threadId);
+	HRESULT setCurrentContext([in] DWORD processId);
 	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
 	HRESULT stop();
 };

@@ -134,28 +134,28 @@ void CrossfireServer::connected() {
 	}
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD threadId, OLECHAR* href) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* href) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	HRESULT hr = registerContext(threadId, href);
+	HRESULT hr = registerContext(processId, href);
 	if (SUCCEEDED(hr)) {
-		std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(threadId);
+		std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 		CrossfireContext* context = iterator->second;
 		eventContextCreated(context);
 	}
 	return hr;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD threadId) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD processId) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(threadId);
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.contextDestroyed(): unknown context", threadId);
+		Logger::error("CrossfireServer.contextDestroyed(): unknown context", processId);
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;
@@ -165,14 +165,14 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD threadId) {
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD threadId) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(threadId);
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.contextLoaded(): unknown context", threadId);
+		Logger::error("CrossfireServer.contextLoaded(): unknown context", processId);
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;
@@ -304,11 +304,36 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	return true;
 }
 
+bool CrossfireServer::processHandshake(wchar_t* msg) {
+	std::wstring string(msg);
+	size_t start = wcslen(HANDSHAKE);
+	size_t index = string.find_first_of(std::wstring(L"\r\n"), start);
+	if (index == std::wstring::npos) {
+		Logger::error("Invalid handshake packet, does not contain terminating '\\r\\n'");
+		return false;
+	}
+	if (index != string.length() - 2) {
+		Logger::error("Invalid handshake packet, length extends beyond terminating '\\r\\n'");
+		return false;
+	}
+
+	m_handshakeReceived = true;
+
+	std::wstring tools = string.substr(start, index - start);
+	Logger::log("Handshake tools requested");
+	Logger::log((wchar_t*)tools.c_str());
+
+	std::wstring handshake(HANDSHAKE);
+	/* for now don't claim support for any tools */
+	handshake.append(std::wstring(L"\r\n"));
+	m_connection->send(handshake.c_str());
+	return true;
+}
+
 void CrossfireServer::received(wchar_t* msg) {
 	if (!m_handshakeReceived) {
-		if (wcscmp(msg, HANDSHAKE) == 0) {
-			m_handshakeReceived = true;
-			m_connection->send(HANDSHAKE);
+		if (wcsncmp(msg, HANDSHAKE, wcslen(HANDSHAKE)) == 0) {
+			processHandshake(msg);
 		} else {
 			Logger::error("Crossfire content received before handshake, not processing it");
 		}
@@ -423,7 +448,7 @@ void CrossfireServer::received(wchar_t* msg) {
 	} while (packet.length() > 0 && m_inProgressPacket->length() > 0);
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD threadId, OLECHAR* href) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* href) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
@@ -431,22 +456,22 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD threadId, OLECH
 	static int s_contextCounter = 0;
 
 	CrossfireContext* context = NULL;
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(threadId);
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		context = new CrossfireContext(threadId, this);
-		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(threadId, context));
+		context = new CrossfireContext(processId, this);
+		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(processId, context));
 	} else {
-		Logger::error("CrossfireServer.registerContext(): a context already exists for thread", threadId);
+		Logger::error("CrossfireServer.registerContext(): a context already exists for process", processId);
 		return S_FALSE;
 	}
 
 	std::wstringstream stream;
 	stream << CONTEXTID_PREAMBLE;
-	stream << threadId;
+	stream << processId;
 	stream << "-";
 	stream << s_contextCounter++;
 	context->setName((wchar_t*)stream.str().c_str());
-	context->setHref(href);
+	context->setUrl(href);
 	return S_OK;
 }
 
@@ -506,14 +531,14 @@ void CrossfireServer::sendResponse(CrossfireResponse* response) {
 	delete string;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD threadId) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD processId) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(threadId);
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.setCurrentContext(): unknown context", threadId);
+		Logger::error("CrossfireServer.setCurrentContext(): unknown context", processId);
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;
@@ -576,7 +601,7 @@ bool CrossfireServer::commandListContexts(Value* arguments, Value** _responseBod
 		CrossfireContext* context = iterator->second;
 		Value value_context;
 		value_context.addObjectValue(/*KEY_CONTEXTID*/L"context_id", &Value(context->getName()));
-		value_context.addObjectValue(KEY_HREF, &Value(context->getHref()));
+		value_context.addObjectValue(KEY_HREF, &Value(context->getUrl()));
 		value_context.addObjectValue(KEY_CURRENT, &Value((bool)(context == m_currentContext)));
 		contexts.addArrayValue(&value_context);
 		iterator++;
@@ -608,9 +633,9 @@ void CrossfireServer::eventContextChanged(CrossfireContext* newContext, Crossfir
 	eventObj.setName(EVENT_CONTEXTCHANGED);
 	eventObj.setContextId(&std::wstring(newContext->getName()));
 	Value data;
-	data.addObjectValue(KEY_NEWHREF, &Value(&std::wstring(newContext->getHref())));
+	data.addObjectValue(KEY_NEWHREF, &Value(&std::wstring(newContext->getUrl())));
 	if (oldContext) {
-		data.addObjectValue(KEY_HREF, &Value(&std::wstring(oldContext->getHref())));
+		data.addObjectValue(KEY_HREF, &Value(&std::wstring(oldContext->getUrl())));
 	}
 	eventObj.setData(&data);
 	sendEvent(&eventObj);
@@ -621,7 +646,7 @@ void CrossfireServer::eventContextCreated(CrossfireContext* context) {
 	eventObj.setName(EVENT_CONTEXTCREATED);
 	eventObj.setContextId(&std::wstring(context->getName()));
 	Value data;
-	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getHref())));
+	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getUrl())));
 	eventObj.setData(&data);
 	sendEvent(&eventObj);
 }
@@ -638,7 +663,7 @@ void CrossfireServer::eventContextLoaded(CrossfireContext* context) {
 	eventObj.setName(EVENT_CONTEXTLOADED);
 	eventObj.setContextId(&std::wstring(context->getName()));
 	Value data;
-	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getHref())));
+	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getUrl())));
 	eventObj.setData(&data);
 	sendEvent(&eventObj);
 }

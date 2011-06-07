@@ -13,6 +13,8 @@
 #pragma once
 
 #include "activdbg.h"
+#include <msdbg.h>
+#include <psapi.h>
 #include <vector>
 
 #include "CrossfireEvent.h"
@@ -32,17 +34,17 @@ class CrossfireContext; // forward declaration
 class CrossfireContext : IBreakpointTarget {
 
 public:
-	CrossfireContext(DWORD threadId, CrossfireServer* server);
+	CrossfireContext(DWORD processId, CrossfireServer* server);
 	~CrossfireContext();
-	virtual wchar_t* getHref();
 	virtual wchar_t* getName();
+	virtual wchar_t* getUrl();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual bool scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry);
 	virtual void sendEvent(CrossfireEvent* eventObj);
-	virtual void setHref(wchar_t* value);
 	virtual void setName(wchar_t* value);
 	virtual void setRunning(bool value);
+	virtual void setUrl(wchar_t* value);
 
 	/* IBreakpointTarget methods */
 	virtual bool clearBreakpoint(unsigned int handle);
@@ -78,15 +80,15 @@ private:
 	IRemoteDebugApplicationThread* m_debugApplicationThread;
 	IIEDebugger* m_debugger;
 	bool m_debuggerHooked;
-	wchar_t* m_href;
 	wchar_t* m_name;
 	unsigned int m_nextObjectHandle;
 	unsigned int m_nextUnnamedUrlIndex;
 	std::map<unsigned int, JSObject*>* m_objects;
 	std::vector<PendingScriptLoad*>* m_pendingScriptLoads;
+	DWORD m_processId;
 	bool m_running;
 	CrossfireServer* m_server;
-	DWORD m_threadId;
+	wchar_t* m_url;
 
 	/* command: backtrace */
 	static const wchar_t* COMMAND_BACKTRACE;
