@@ -101,8 +101,12 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 							List suspends = eventmgr.suspendRequests();
 							for (Iterator iter = suspends.iterator(); iter.hasNext();) {
 								SuspendRequest request = (SuspendRequest) iter.next();
-								String url = (String) event.getBody().get(Attributes.URL);
-								Number line = (Number) event.getBody().get(Attributes.LINE);
+								Map locaction = (Map) event.getBody().get(Attributes.LOCATION);
+								if(locaction == null) {
+									continue;
+								}
+								String url = (String) locaction.get(Attributes.URL);
+								Number line = (Number) locaction.get(Attributes.LINE);
 								CFScriptReference script = crossfire().findScript(url);
 								if(script != null) {
 									CFLocation loc = new CFLocation(crossfire(), script, null, line.intValue());

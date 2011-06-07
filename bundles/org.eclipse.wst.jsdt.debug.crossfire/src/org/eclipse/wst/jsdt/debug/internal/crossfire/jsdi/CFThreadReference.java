@@ -121,6 +121,9 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 				if(TRACE) {
 					Tracing.writeString("STACKFRAME [backtrace request failed]: "+JSON.serialize(request)); //$NON-NLS-1$
 				}
+				if(frames != null) {
+					frames.clear();
+				}
 				return Collections.EMPTY_LIST;
 			}
 		}

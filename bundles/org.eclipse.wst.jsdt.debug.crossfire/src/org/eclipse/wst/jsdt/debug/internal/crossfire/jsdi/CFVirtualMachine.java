@@ -179,6 +179,33 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 	
 	/**
+	 * Sends the frame request
+	 * @param contextid
+	 * @param index
+	 * @param includescopes
+	 * @return
+	 */
+	CFStackFrame getFrame(String contextid, int index, boolean includescopes) {
+		if(index > -1) {
+			CFThreadReference thread = findThread(contextid);
+			if(thread != null) {
+				CFRequestPacket request = new CFRequestPacket(Commands.FRAME, thread.id());
+				request.setArgument(Attributes.INDEX, new Integer(index));
+				request.setArgument(Attributes.INCLUDE_SCOPES, new Boolean(includescopes));
+				CFResponsePacket response = sendRequest(request);
+				if(response.isSuccess()) {
+					return new CFStackFrame(this, thread, response.getBody());
+				}
+				else if(TRACE) {
+					Tracing.writeString("VM [failed frame request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				}
+			}
+		}
+		return null;
+		
+	}
+	
+	/**
 	 * Sends a request to enable the tool with the given name in the remote Crossfire server
 	 * 
 	 * @param tools the array of tool names to enable, <code>null</code> is not allowed
