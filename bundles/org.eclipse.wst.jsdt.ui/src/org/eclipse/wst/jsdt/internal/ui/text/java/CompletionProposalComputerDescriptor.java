@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ final class CompletionProposalComputerDescriptor {
 	 * first invocation, as it may take longer due to plug-in initialization etc. See also
 	 * {@link #fIsReportingDelay}.
 	 */
-	private static final long MAX_DELAY= 5000;
+	private static final long MAX_DELAY= 7500;
 	
 	/* log constants */
 	private static final String COMPUTE_COMPLETION_PROPOSALS= "computeCompletionProposals()"; //$NON-NLS-1$
