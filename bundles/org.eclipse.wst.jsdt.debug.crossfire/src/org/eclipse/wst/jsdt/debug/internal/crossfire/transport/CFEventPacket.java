@@ -73,6 +73,10 @@ public class CFEventPacket extends CFPacket implements Event {
 	 */
 	public static final String ON_TOGGLE_BREAKPOINT = "onToggleBreakpoint"; //$NON-NLS-1$
 	/**
+	 * The "onContextCreated" event kind
+	 */
+	public static final String ON_CONTEXT_CREATED = "onContextCreated"; //$NON-NLS-1$
+	/**
 	 * The "onContextSelected" event kind
 	 */
 	public static final String ON_CONTEXT_SELECTED = "onContextSelected"; //$NON-NLS-1$

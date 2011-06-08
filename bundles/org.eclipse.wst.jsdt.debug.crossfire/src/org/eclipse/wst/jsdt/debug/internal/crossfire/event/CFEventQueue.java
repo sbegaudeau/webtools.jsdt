@@ -174,6 +174,12 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_SCRIPT+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 				}
+				else if(CFEventPacket.ON_CONTEXT_CREATED.equals(name)) {
+					handleContext(set, event, false);
+					if(TRACE) {
+						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONTEXT_CREATED+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				}
 				else if(CFEventPacket.ON_CONTEXT_SELECTED.equals(name)) {
 					handleContext(set, event, true);
 					if(TRACE) {
