@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor2;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
@@ -41,7 +42,7 @@ import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
-public abstract class Engine implements ITypeRequestor {
+public abstract class Engine implements ITypeRequestor, ITypeRequestor2 {
 
 	public LookupEnvironment lookupEnvironment;
 
@@ -85,6 +86,12 @@ public abstract class Engine implements ITypeRequestor {
 
 		lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 		lookupEnvironment.completeTypeBindings(parsedUnit, true);
+	}
+	public void accept(ICompilationUnit unit, char[][] typeNames, AccessRestriction accessRestriction) {
+		CompilationUnitDeclaration parsedUnit =  doParse(unit,accessRestriction);
+
+		lookupEnvironment.buildTypeBindings(parsedUnit, typeNames, accessRestriction);
+		lookupEnvironment.completeTypeBindings(parsedUnit, typeNames, true);		
 	}
 
 	/**
