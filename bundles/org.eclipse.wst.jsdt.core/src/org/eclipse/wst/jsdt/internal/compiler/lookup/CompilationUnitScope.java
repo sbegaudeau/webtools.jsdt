@@ -170,7 +170,12 @@ void buildFieldsAndMethods() {
 	for (int i = 0, length = topLevelTypes.length; i < length; i++)
 		topLevelTypes[i].buildFieldsAndMethods();
 }
+	
 void buildTypeBindings(AccessRestriction accessRestriction) {
+	buildTypeBindings(new char[0][0], accessRestriction);
+}
+
+void buildTypeBindings(char[][] restrictToNames, AccessRestriction accessRestriction) {
 	topLevelTypes = new SourceTypeBinding[0]; // want it initialized if the package cannot be resolved
 	if (referenceContext.compilationResult.compilationUnit != null) {
 		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
@@ -290,9 +295,22 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	SimpleSetOfCharArray addTypes=new SimpleSetOfCharArray(10);
 //	nextType:
 	String fileName=new String(this.referenceContext.getFileName());
-	for (int i = 0; i < typeLength; i++) {
+	nextType: for (int i = 0; i < typeLength; i++) {
 		InferredType typeDecl =  referenceContext.inferredTypes[i];
+		
 		if (typeDecl.isDefinition && !typeDecl.isEmptyGlobal()) {
+			if(restrictToNames.length > 0) {
+					boolean continueBuilding = false;
+					for (int j = 0; !continueBuilding
+							&& j < restrictToNames.length; j++) {
+						if (CharOperation.equals(typeDecl.getName(),
+								restrictToNames[j]))
+							continueBuilding = true;
+					}
+					if (!continueBuilding)
+						continue nextType;
+				
+			}
 			ReferenceBinding typeBinding = environment.defaultPackage
 					.getType0(typeDecl.getName());
 			recordSimpleReference(typeDecl.getName()); // needed to detect collision cases
@@ -338,9 +356,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	
 	char [][] typeNames= new  char [addTypes.elementSize] [];
 	addTypes.asArray(typeNames);
-	for (int i = 0; i < typeNames.length; i++) {
-		  environment.addUnitsContainingBinding(null, typeNames[i], Binding.TYPE,fileName);
-	}
+	environment.addUnitsContainingBindings(typeNames, Binding.TYPE, fileName);
 
 	
 	// shrink topLevelTypes... only happens if an error was reported
@@ -348,7 +364,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
 
 
-	 buildSuperType();
+	buildSuperType();
 
 
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
@@ -598,34 +614,49 @@ public char[] computeConstantPoolName(LocalTypeBinding localType) {
 	return candidateName;
 }
 
-void connectTypeHierarchy() {
+void connectTypeHierarchy(char[][] typeNames) {
+		// if(superType!=null) {
+		// if(superType instanceof SourceTypeBinding) {
+		// ((SourceTypeBinding)superType).classScope.buildFieldsAndMethods();
+		// ((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
+		//
+		// }
+		// ReferenceBinding[] memberTypes = superType.memberTypes();
+		// ReferenceBinding[] memberFields = superType.typeVariables();
+		// FunctionBinding[] memberMethods = superType.availableMethods();
+		// for(int i=0;i<memberTypes.length;i++) {
+		// recordReference(memberTypes[i], memberTypes[i].sourceName);
+		// }
+		// }
 
-
-	//	if(superType!=null) {
-//			if(superType instanceof SourceTypeBinding) {
-//				((SourceTypeBinding)superType).classScope.buildFieldsAndMethods();
-//				((SourceTypeBinding)superType).classScope.connectTypeHierarchy();
-//
-//			}
-//			ReferenceBinding[] memberTypes = superType.memberTypes();
-//			ReferenceBinding[] memberFields = superType.typeVariables();
-//			FunctionBinding[] memberMethods = superType.availableMethods();
-//			for(int i=0;i<memberTypes.length;i++) {
-//				recordReference(memberTypes[i], memberTypes[i].sourceName);
-//			}
-//		}
-
-//	if(superTypeName!=null) {
-//		ReferenceBinding binding = environment.askForType(new char[][] {superTypeName});
-//		this.recordSuperTypeReference(binding);
-//	}
-	if(classScope!=null) classScope.connectTypeHierarchy();
-		for (int i=0;i<referenceContext.numberInferredTypes;i++) {
+		// if(superTypeName!=null) {
+		// ReferenceBinding binding = environment.askForType(new char[][]
+		// {superTypeName});
+		// this.recordSuperTypeReference(binding);
+		// }
+		if (classScope != null)
+			classScope.connectTypeHierarchy();
+		nextType: for (int i = 0; i < referenceContext.numberInferredTypes; i++) {
 			InferredType inferredType = referenceContext.inferredTypes[i];
-			if (inferredType.binding!=null)
- 			  inferredType.binding.classScope.connectTypeHierarchy();
+			if(typeNames.length > 0) {
+				boolean continueBuilding = false;
+				for (int j = 0; !continueBuilding
+						&& j < typeNames.length; j++) {
+					if (CharOperation.equals(inferredType.getName(),
+							typeNames[j]))
+						continueBuilding = true;
+				}
+				if (!continueBuilding)
+					continue nextType;
+			
+		}
+			if (inferredType.binding != null)
+				inferredType.binding.classScope.connectTypeHierarchy();
 
 		}
+}
+void connectTypeHierarchy() {
+	connectTypeHierarchy(new char[0][0]);
 }
 void faultInImports() {
 	if (this.typeOrPackageCache != null)

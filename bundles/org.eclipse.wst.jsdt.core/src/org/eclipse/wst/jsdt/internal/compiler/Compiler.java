@@ -35,7 +35,9 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
 import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
@@ -58,6 +60,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public int parseThreshold = -1;
 
 	public ReferenceBinding[] referenceBindings;
+	protected HashtableOfObject parsedUnits;
 
 
 	// number of initial units parsed at once (-1: none)
@@ -213,15 +216,21 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 							new String(sourceUnit.getFileName())
 						}));
 			}
-			// diet parsing for large collection of unit
-			CompilationUnitDeclaration parsedUnit;
-			if (totalUnits < parseThreshold) {
-				parsedUnit = parser.parse(sourceUnit, unitResult);
-			} else {
-				parsedUnit = parser.dietParse(sourceUnit, unitResult);
+			if (parsedUnits == null)
+				parsedUnits = new HashtableOfObject();
+			CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
+			if (parsedUnit == null) {
+				// diet parsing for large collection of unit
+				if (totalUnits < parseThreshold) {
+					parsedUnit = parser.parse(sourceUnit, unitResult);
+				}
+				else {
+					parsedUnit = parser.dietParse(sourceUnit, unitResult);
+				}
+				parsedUnit.bits |= ASTNode.IsImplicitUnit;
+				parser.inferTypes(parsedUnit, this.options);
+				parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
 			}
-			parsedUnit.bits |= ASTNode.IsImplicitUnit;
-			parser.inferTypes(parsedUnit,this.options);
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
 			if (sourceUnit instanceof SourceFile)
@@ -527,6 +536,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 *  ->  build compilation unit declarations, their bindings and record their results.
 	 */
 	protected void internalBeginToCompile(ICompilationUnit[] sourceUnits, int maxUnits) {
+		SimpleSetOfCharArray allDefinedTypes = new SimpleSetOfCharArray();
 		// Switch the current policy and compilation result for this unit to the requested one.
 		for (int i = 0; i < maxUnits; i++) {
 			CompilationUnitDeclaration parsedUnit;
@@ -548,11 +558,18 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				} else {
 					parsedUnit = parser.dietParse(sourceUnits[i], unitResult);
 				}
-
 				parser.inferTypes(parsedUnit,this.options);
+
+				SimpleSetOfCharArray defined = new SimpleSetOfCharArray();
+				for (int j = 0; j < parsedUnit.numberInferredTypes; j++) {
+					if (parsedUnit.inferredTypes[j].isDefinition && !parsedUnit.inferredTypes[j].isEmptyGlobal()) {
+						defined.add(parsedUnit.inferredTypes[j].getName());
+						allDefinedTypes.add(parsedUnit.inferredTypes[j].getName());
+					}
+				}
 				// initial type binding creation
 				this.addCompilationUnit(sourceUnits[i], parsedUnit);
-				lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
+				lookupEnvironment.buildTypeBindings(parsedUnit, defined.values, null /*no access restriction*/);
 				ImportReference currentPackage = parsedUnit.currentPackage;
 				if (currentPackage != null) {
 					unitResult.recordPackageName(currentPackage.tokens);
@@ -564,7 +581,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			}
 		}
 		// binding resolution
-		lookupEnvironment.completeTypeBindings();
+		lookupEnvironment.completeTypeBindings(allDefinedTypes.values);
 	}
 
 	/**
@@ -603,6 +620,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		lookupEnvironment.reset();
 		parser.scanner.source = null;
 		unitsToProcess = null;
+		if(parsedUnits != null)
+			parsedUnits.clear();
 		if (DebugRequestor != null) DebugRequestor.reset();
 		this.problemReporter.reset();
 	}

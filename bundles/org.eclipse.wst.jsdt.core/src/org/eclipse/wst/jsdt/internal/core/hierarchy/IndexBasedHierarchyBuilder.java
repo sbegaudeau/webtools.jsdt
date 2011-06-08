@@ -348,20 +348,20 @@ private void buildFromPotentialSubtypes(String[] allPotentialSubTypes, HashSet l
 		}
 
 		// Compute hierarchy of focus type if not already done (case of a type with potential subtypes that are not real subtypes)
-		if (!this.hierarchy.contains(focusType)) {
-			try {
-				currentProject = focusType.getJavaScriptProject();
-				potentialSubtypes = new ArrayList();
-				if (focusType.isBinary()) {
-					potentialSubtypes.add(focusType.getClassFile());
-				} else {
-					potentialSubtypes.add(focusType.getJavaScriptUnit());
-				}
-				this.buildForProject((JavaProject)currentProject, potentialSubtypes, workingCopies, localTypes, monitor);
-			} catch (JavaScriptModelException e) {
-				// ignore
-			}
-		}
+//		if (!this.hierarchy.contains(focusType)) {
+//			try {
+//				currentProject = focusType.getJavaScriptProject();
+//				potentialSubtypes = new ArrayList();
+//				if (focusType.isBinary()) {
+//					potentialSubtypes.add(focusType.getClassFile());
+//				} else {
+//					potentialSubtypes.add(focusType.getJavaScriptUnit());
+//				}
+//				this.buildForProject((JavaProject)currentProject, potentialSubtypes, workingCopies, localTypes, monitor);
+//			} catch (JavaScriptModelException e) {
+//				// ignore
+//			}
+//		}
 
 		// Add focus if not already in (case of a type with no explicit super type)
 		if (!this.hierarchy.contains(focusType)) {

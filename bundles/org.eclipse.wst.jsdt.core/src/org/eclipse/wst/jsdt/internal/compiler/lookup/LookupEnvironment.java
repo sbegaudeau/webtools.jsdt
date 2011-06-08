@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -22,6 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor2;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
@@ -66,6 +68,8 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 	private CompilationUnitDeclaration[] units = new CompilationUnitDeclaration[4];
 	private MethodVerifier verifier;
 	SimpleSetOfCharArray acceptedCompilationUnits=new SimpleSetOfCharArray();
+	private boolean fAddingUnits;
+	Stack fAskingForTypeBinding = new Stack();
 
 
 public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOptions, ProblemReporter problemReporter, INameEnvironment nameEnvironment) {
@@ -96,7 +100,7 @@ public ReferenceBinding askForType(char[][] compoundName) {
 		typeRequestor.accept(answer.getBinaryType(), computePackageFrom(compoundName), answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
+//		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
 		{
 		// the type was found as a .js file, try to build it then search the cache
 			acceptedCompilationUnits.add(compilationUnit.getFileName());
@@ -108,12 +112,12 @@ public ReferenceBinding askForType(char[][] compoundName) {
 	else if (answer.isMetaData())
 		{
 			LibraryAPIs metadata= answer.getLibraryMetadata();
-			if (!acceptedCompilationUnits.includes(metadata.fileName))
-			{
+			//if (!acceptedCompilationUnits.includes(metadata.fileName))
+			//{
 				// the type was found as a .js file, try to build it then search the cache
 				acceptedCompilationUnits.add(metadata.fileName);
 				typeRequestor.accept(metadata);
-			}
+			//}
 			
 		}
 
@@ -130,13 +134,66 @@ ReferenceBinding askForType(PackageBinding packageBinding, char[] name) {
 
 
 
-void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int mask, String excludePath) {
+void addUnitsContainingBindings(char[][] types, int kind, String excludePath) {
+	if(fAddingUnits)return;
+	if (types.length == 1 && (kind & Binding.TYPE) > 1 && !fAskingForTypeBinding.isEmpty() && CharOperation.equals(types[0], (char[])fAskingForTypeBinding.peek()))
+		return;
+
+	fAddingUnits=true;
+	try{
+	for (int i = 0; i < types.length; i++) {
+		NameEnvironmentAnswer answer = nameEnvironment.findBinding(types[i], defaultPackage.compoundName, kind, this.typeRequestor, true, excludePath);
+		if (answer == null)
+			continue;
+
+		if (answer.isBinaryType())
+			// the type was found as a .class file
+			typeRequestor.accept(answer.getBinaryType(), defaultPackage, answer.getAccessRestriction());
+		else if (answer.isSourceType())
+			// the type was found as a source model
+			typeRequestor.accept(answer.getSourceTypes(), defaultPackage, answer.getAccessRestriction());
+		else if (answer.isCompilationUnit()) {
+			ICompilationUnit compilationUnit = answer.getCompilationUnit();
+//			if (!acceptedCompilationUnits.includes(compilationUnit.getFileName())) {
+				/* the type was found as a .js file, try to build it then search the cache */
+				acceptedCompilationUnits.add(compilationUnit.getFileName());
+				if (typeRequestor instanceof ITypeRequestor2)
+					((ITypeRequestor2) typeRequestor).accept(compilationUnit, types, answer.getAccessRestriction());
+				else
+					typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
+//			}
+		}
+		else if (answer.isCompilationUnits()) {
+			ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
+			for (int j = 0; j < compilationUnits.length; j++) {
+//				if (!acceptedCompilationUnits.includes(compilationUnits[j].getFileName())) {
+					// the type was found as a .js file, try to build it
+					// then search the cache
+					acceptedCompilationUnits.add(compilationUnits[j].getFileName());
+					// if (compilationUnits[i] instanceof MetadataFile)
+					//   typeRequestor.accept(((MetadataFile)compilationUnits[i]).getAPIs());
+					// else
+					if (typeRequestor instanceof ITypeRequestor2)
+						((ITypeRequestor2) typeRequestor).accept(compilationUnits[j], types, answer.getAccessRestriction());
+					else
+						typeRequestor.accept(compilationUnits[j], answer.getAccessRestriction());
+//				}
+			}
+		}
+	}
+	}
+	finally {
+		fAddingUnits = false;
+	}
+}
+
+void addUnitsContainingBinding(PackageBinding packageBinding, char[] type, int mask, String excludePath) {
 	if (packageBinding == null) {
 		if (defaultPackage == null)
 			return;
 		packageBinding = defaultPackage;
 	}
-	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,
+	NameEnvironmentAnswer answer = nameEnvironment.findBinding(type, packageBinding.compoundName,mask,
 			this.typeRequestor, true, excludePath);
 	if (answer == null)
 		return;
@@ -185,30 +242,46 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	}
 	if (mask==Binding.PACKAGE && (name==null || name.length==0)&& this.defaultPackage.compoundName.length==0)
 		return this.defaultPackage;
-	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor, false, null);
+	NameEnvironmentAnswer answer = nameEnvironment.findBinding(name, packageBinding.compoundName,mask,this.typeRequestor, true, null);
 	if (answer == null)
 		return null;
 
+	if((mask & Binding.TYPE) > 1) {
+		if (!fAskingForTypeBinding.isEmpty() && CharOperation.equals(name, (char[]) fAskingForTypeBinding.peek()))
+			return null;
+		fAskingForTypeBinding.push(name);
+	}
+	try {
 	if (answer.isBinaryType())
 		// the type was found as a .class file
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
-		{
+		//if (!acceptedCompilationUnits.includes(compilationUnit.getFileName()))
+	//	{
 			// the type was found as a .js file, try to build it then search the cache
 			acceptedCompilationUnits.add(compilationUnit.getFileName());
+			if(!compilationUnit.equals(unitBeingCompleted))
+				if (typeRequestor instanceof ITypeRequestor2) {
+					((ITypeRequestor2)typeRequestor).accept(compilationUnit, new char[][]{name}, answer
+							.getAccessRestriction());
+				} else
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
-		}
+		//}
 	} else if (answer.isCompilationUnits()) {
 		ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
 		for (int i = 0; i < compilationUnits.length; i++) {
-			if (!acceptedCompilationUnits.includes(compilationUnits[i].getFileName())) {
+			//if (!acceptedCompilationUnits.includes(compilationUnits[i].getFileName())) {
 				// the type was found as a .js file, try to build it then search the cache
 				acceptedCompilationUnits.add(compilationUnits[i].getFileName());
-				typeRequestor.accept(compilationUnits[i], answer
-						.getAccessRestriction());
-			}
+				if(!compilationUnits[i].equals(unitBeingCompleted))
+					if (typeRequestor instanceof ITypeRequestor2) {
+						((ITypeRequestor2)typeRequestor).accept(compilationUnits[i], new char[][]{name}, answer
+								.getAccessRestriction());
+					} else
+						typeRequestor.accept(compilationUnits[i], answer
+								.getAccessRestriction());
+			//}
 		}
 	} else if (answer.isSourceType())
 		// the type was found as a source model
@@ -216,7 +289,7 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	else if (answer.isMetaData())
 	{
 		LibraryAPIs metadata= answer.getLibraryMetadata();
-		if (!acceptedCompilationUnits.includes(metadata.fileName))
+//		if (!acceptedCompilationUnits.includes(metadata.fileName))
 		{
 			// the type was found as a .js file, try to build it then search the cache
 			acceptedCompilationUnits.add(metadata.fileName);
@@ -224,7 +297,12 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 		}
 		
 	}
-
+	}
+	finally {
+	if(mask == Binding.TYPE) {
+		fAskingForTypeBinding.pop();
+	}
+	}
 	return packageBinding.getBinding0(name,mask);
 }
 /* Create the initial type bindings for the compilation unit.
@@ -235,8 +313,11 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 */
 
 public void buildTypeBindings(CompilationUnitDeclaration unit, AccessRestriction accessRestriction) {
+	buildTypeBindings(unit, new char[0][0], accessRestriction);
+}
+public void buildTypeBindings(CompilationUnitDeclaration unit, char[][] typeNames, AccessRestriction accessRestriction) {
 	CompilationUnitScope scope = new CompilationUnitScope(unit, this);
-	scope.buildTypeBindings(accessRestriction);
+	scope.buildTypeBindings(typeNames, accessRestriction);
 
 	int unitsLength = units.length;
 	if (++lastUnitIndex >= unitsLength)
@@ -316,6 +397,28 @@ public void completeTypeBindings() {
 	this.lastCompletedUnitIndex = this.lastUnitIndex;
 	this.unitBeingCompleted = null;
 }
+public void completeTypeBindings(char[][] types) {
+	stepCompleted = BUILD_TYPE_HIERARCHY;
+
+	for (int i = this.lastCompletedUnitIndex + 1; i <= this.lastUnitIndex; i++) {
+	    (this.unitBeingCompleted = this.units[i]).scope.checkAndSetImports();
+	}
+	stepCompleted = CHECK_AND_SET_IMPORTS;
+
+	for (int i = this.lastCompletedUnitIndex + 1; i <= this.lastUnitIndex; i++) {
+	    (this.unitBeingCompleted = this.units[i]).scope.connectTypeHierarchy(types);
+	}
+	stepCompleted = CONNECT_TYPE_HIERARCHY;
+
+	for (int i = this.lastCompletedUnitIndex + 1; i <= this.lastUnitIndex; i++) {
+		CompilationUnitScope unitScope = (this.unitBeingCompleted = this.units[i]).scope;
+		unitScope.buildFieldsAndMethods();
+		this.units[i] = null; // release unnecessary reference to the parsed unit
+	}
+	stepCompleted = BUILD_FIELDS_AND_METHODS;
+	this.lastCompletedUnitIndex = this.lastUnitIndex;
+	this.unitBeingCompleted = null;
+}
 /*
 * 1. Connect the type hierarchy for the type bindings created for parsedUnits.
 * 2. Create the field bindings
@@ -329,6 +432,10 @@ public void completeTypeBindings() {
 */
 
 public void completeTypeBindings(CompilationUnitDeclaration parsedUnit) {
+	completeTypeBindings(parsedUnit, new char[0][0]);
+}
+
+public void completeTypeBindings(CompilationUnitDeclaration parsedUnit, char[][] typeNames) {
 	if (stepCompleted == BUILD_FIELDS_AND_METHODS) {
 		// This can only happen because the original set of units are completely built and
 		// are now being processed, so we want to treat all the additional units as a group
@@ -341,7 +448,7 @@ public void completeTypeBindings(CompilationUnitDeclaration parsedUnit) {
 			(this.unitBeingCompleted = parsedUnit).scope.checkAndSetImports();
 
 		if (stepCompleted >= CONNECT_TYPE_HIERARCHY)
-			(this.unitBeingCompleted = parsedUnit).scope.connectTypeHierarchy();
+			(this.unitBeingCompleted = parsedUnit).scope.connectTypeHierarchy(typeNames);
 
 		this.unitBeingCompleted = null;
 	}
@@ -354,14 +461,18 @@ public void completeTypeBindings(CompilationUnitDeclaration parsedUnit) {
 * 3. Create the method bindings
 */
 
-public void completeTypeBindings(CompilationUnitDeclaration parsedUnit, boolean buildFieldsAndMethods) {
+public void completeTypeBindings(CompilationUnitDeclaration parsedUnit, char[][] typeNames, boolean buildFieldsAndMethods) {
 	if (parsedUnit.scope == null) return; // parsing errors were too severe
 
 	(this.unitBeingCompleted = parsedUnit).scope.checkAndSetImports();
-	parsedUnit.scope.connectTypeHierarchy();
+	parsedUnit.scope.connectTypeHierarchy(typeNames);
 	if (buildFieldsAndMethods)
 		parsedUnit.scope.buildFieldsAndMethods();
 	this.unitBeingCompleted = null;
+}
+
+public void completeTypeBindings(CompilationUnitDeclaration parsedUnit, boolean buildFieldsAndMethods) {
+	completeTypeBindings(parsedUnit, new char[0][0], buildFieldsAndMethods);
 }
 public TypeBinding computeBoxingType(TypeBinding type) {
 	TypeBinding boxedType;
@@ -849,6 +960,7 @@ public void reset() {
 	// name environment has a longer life cycle, and must be reset in
 	// the code which created it.
 	this.acceptedCompilationUnits.clear();
+	this.fAskingForTypeBinding.clear();
 }
 /**
  * Associate a given type with some access restriction

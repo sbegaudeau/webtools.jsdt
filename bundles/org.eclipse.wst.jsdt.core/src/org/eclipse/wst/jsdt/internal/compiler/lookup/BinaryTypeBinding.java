@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -711,7 +711,7 @@ public ReferenceBinding superclass() {
 	// finish resolving the type
 	this.superclass = resolveType(this.superclass, this.environment, true);
 	this.tagBits &= ~TagBits.HasUnresolvedSuperclass;
-	if (this.superclass.problemId() == ProblemReasons.NotFound)
+	if (this.superclass == null || this.superclass.problemId() == ProblemReasons.NotFound)
 		this.tagBits |= TagBits.HierarchyHasProblems; // propagate type inconsistency
 	return this.superclass;
 }

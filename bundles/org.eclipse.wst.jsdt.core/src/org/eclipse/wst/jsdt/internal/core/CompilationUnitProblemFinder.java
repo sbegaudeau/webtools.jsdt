@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,10 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -30,13 +30,16 @@ import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor2;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
@@ -46,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  * Responsible for resolving types inside a compilation unit being reconciled,
  * reporting the discovered problems to a given IProblemRequestor.
  */
-public class CompilationUnitProblemFinder extends Compiler {
+public class CompilationUnitProblemFinder extends Compiler implements ITypeRequestor2 {
 
 	/**
 	 * Answer a new CompilationUnitVisitor using the given name environment and compiler options.
@@ -131,6 +134,11 @@ public class CompilationUnitProblemFinder extends Compiler {
 	 *  ->  build compilation unit declarations, their bindings and record their results.
 	 */
 	public void accept(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+		accept(sourceUnit, new char[0][0], accessRestriction);
+	}
+	
+	public void accept(ICompilationUnit sourceUnit, char[][] typeNames,
+			AccessRestriction accessRestriction) {
 		// Switch the current policy and compilation result for this unit to the requested one.
 		CompilationResult unitResult =
 			new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
@@ -145,20 +153,25 @@ public class CompilationUnitProblemFinder extends Compiler {
 							new String(sourceUnit.getFileName())
 						}));
 			}
-			// diet parsing for large collection of unit
-			CompilationUnitDeclaration parsedUnit;
-			if (totalUnits < parseThreshold) {
-				parsedUnit = parser.parse(sourceUnit, unitResult);
-			} else {
-				parsedUnit = parser.dietParse(sourceUnit, unitResult);
+			if (parsedUnits == null)
+				parsedUnits = new HashtableOfObject();
+			CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
+			if (parsedUnit == null) {
+				// diet parsing for large collection of unit
+				if (totalUnits < parseThreshold) {
+					parsedUnit = parser.parse(sourceUnit, unitResult);
+				}
+				else {
+					parsedUnit = parser.dietParse(sourceUnit, unitResult);
+				}
+				parser.inferTypes(parsedUnit, this.options);
+				parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
 			}
-			parser.inferTypes(parsedUnit,this.options);
-
 			// initial type binding creation
-			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
+			lookupEnvironment.buildTypeBindings(parsedUnit, typeNames, accessRestriction);
 
 			// binding resolution
-			lookupEnvironment.completeTypeBindings(parsedUnit);
+			lookupEnvironment.completeTypeBindings(parsedUnit, typeNames);
 		} catch (AbortCompilationUnit e) {
 			// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
 			// one requested further along to resolve sourceUnit.
@@ -168,6 +181,7 @@ public class CompilationUnitProblemFinder extends Compiler {
 				throw e; // want to abort enclosing request to compile
 			}
 		}
+		
 	}
 
 

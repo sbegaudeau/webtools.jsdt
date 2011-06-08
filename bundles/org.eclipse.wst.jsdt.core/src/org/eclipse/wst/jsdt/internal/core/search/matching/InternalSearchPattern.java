@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,9 +76,9 @@ public abstract class InternalSearchPattern {
 
 		String separator = Util.isArchiveFileName(containerPath) ? IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR : "/"; //$NON-NLS-1$
 		StringBuffer buffer = new StringBuffer(containerPath.length() + separator.length() + relativePath.length());
-		buffer.append(containerPath);
+		buffer.append(new Path(containerPath).toString());
 		buffer.append(separator);
-		buffer.append(relativePath);
+		buffer.append(new Path(relativePath).toString());
 		return buffer.toString();
 	}
 	/**

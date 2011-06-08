@@ -1506,7 +1506,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					int nameStart = methodDeclaration.sourceStart();
 					InferredMethod method = type.addConstructorMethod(methodName, methodDeclaration, nameStart);
 					method.isConstructor = true;
-					methodDeclaration.setInferredType(type);
+					//methodDeclaration.setInferredType(type);
 				}
 			}
 		}

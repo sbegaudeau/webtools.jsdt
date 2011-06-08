@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor2;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BinaryTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -107,6 +108,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfIntValues;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
@@ -138,7 +140,7 @@ import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
-public class MatchLocator implements ITypeRequestor {
+public class MatchLocator implements ITypeRequestor, ITypeRequestor2 {
 
 public static final int MAX_AT_ONCE;
 static {
@@ -205,6 +207,8 @@ SimpleLookupTable bindings;
 
 // Cache for method handles
 HashSet methodHandles;
+
+private HashtableOfObject parsedUnits;
 
 
 class ReportMatchingVisitor extends ASTVisitor
@@ -435,15 +439,21 @@ public void accept(IBinaryType binaryType, PackageBinding packageBinding, Access
  * Add an additional compilation unit into the loop
  *  ->  build compilation unit declarations, their bindings and record their results.
  */
-public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+public void accept(ICompilationUnit sourceUnit, char[][] typeNames, AccessRestriction accessRestriction) {
 	// Switch the current policy and compilation result for this unit to the requested one.
 	CompilationResult unitResult = new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
 	try {
-		Parser parser = basicParser();
-		CompilationUnitDeclaration parsedUnit = parser.dietParse(sourceUnit, unitResult);
-		parser.inferTypes(parsedUnit, this.options);
-		this.lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
-		this.lookupEnvironment.completeTypeBindings(parsedUnit, true);
+		if (parsedUnits == null)
+			parsedUnits = new HashtableOfObject();
+		CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
+		if(parsedUnit == null) {
+			Parser parser = basicParser();
+			parsedUnit = parser.dietParse(sourceUnit, unitResult);
+			parser.inferTypes(parsedUnit, this.options);
+			parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
+		}
+		this.lookupEnvironment.buildTypeBindings(parsedUnit, typeNames, accessRestriction);
+		this.lookupEnvironment.completeTypeBindings(parsedUnit, typeNames, true);
 	} catch (AbortCompilationUnit e) {
 		// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
 		// one requested further along to resolve sourceUnit.
@@ -459,6 +469,9 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 			System.out.println(unitResult);
 		}
 	}
+}
+public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+	accept(sourceUnit, new char[0][0], accessRestriction);
 }
 
 
@@ -1299,6 +1312,9 @@ public void locateMatches(SearchDocument[] searchDocuments) throws CoreException
 			this.progressMonitor.done();
 		if (this.nameEnvironment != null)
 			this.nameEnvironment.cleanup();
+		if(this.parsedUnits != null) {
+			parsedUnits.clear();
+		}
 		manager.flushZipFiles();
 		this.bindings = null;
 	}
