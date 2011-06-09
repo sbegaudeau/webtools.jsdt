@@ -15,6 +15,8 @@
 
 /* event: onBreak */
 const wchar_t* IEDebugger::EVENT_ONBREAK = L"onBreak";
+const wchar_t* IEDebugger::KEY_CAUSE = L"cause";
+const wchar_t* IEDebugger::KEY_LOCATION = L"location";
 const wchar_t* IEDebugger::KEY_LINE = L"line";
 const wchar_t* IEDebugger::KEY_URL = L"url";
 
@@ -151,9 +153,14 @@ STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebu
 
 	CrossfireEvent onBreakEvent;
 	onBreakEvent.setName(EVENT_ONBREAK);
+	Value location;
+	location.addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
+	location.addObjectValue(KEY_URL, &Value(bstrUrl));
+	Value cause;
+	cause.setType(TYPE_OBJECT);
 	Value data;
-	data.addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
-	data.addObjectValue(KEY_URL, &Value(bstrUrl));
+	data.addObjectValue(KEY_LOCATION, &location);
+	data.addObjectValue(KEY_CAUSE, &cause);
 	onBreakEvent.setData(&data);
 	m_context->sendEvent(&onBreakEvent);
 	return S_OK;

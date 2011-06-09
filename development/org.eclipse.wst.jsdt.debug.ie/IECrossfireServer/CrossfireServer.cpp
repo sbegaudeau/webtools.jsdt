@@ -14,7 +14,6 @@
 #include "CrossfireServer.h"
 
 /* initialize statics */
-const wchar_t* CrossfireServer::CONTEXTID_PREAMBLE = L"xfIE::";
 const wchar_t* CrossfireServer::HANDSHAKE = L"CrossfireHandshake\r\n";
 const wchar_t* CrossfireServer::HEADER_CONTENTLENGTH = L"Content-Length:";
 const wchar_t* CrossfireServer::LINEBREAK = L"\r\n";
@@ -25,6 +24,18 @@ const wchar_t* CrossfireServer::COMMAND_CLEARBREAKPOINT = L"clearbreakpoint";
 const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINT = L"getbreakpoint";
 const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINTS = L"getbreakpoints";
 const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINT = L"setbreakpoint";
+
+/* command: createContext */
+const wchar_t* CrossfireServer::COMMAND_CREATECONTEXT = L"createContext";
+
+/* command: disableTools */
+const wchar_t* CrossfireServer::COMMAND_DISABLETOOLS = L"disableTools";
+
+/* command: enableTools */
+const wchar_t* CrossfireServer::COMMAND_ENABLETOOLS = L"enableTools";
+
+/* command: getTools */
+const wchar_t* CrossfireServer::COMMAND_GETTOOLS = L"getTools";
 
 /* command: listContexts */
 const wchar_t* CrossfireServer::COMMAND_LISTCONTEXTS = L"listcontexts";
@@ -39,10 +50,6 @@ const wchar_t* CrossfireServer::VERSION_STRING = L"0.3";
 /* event: closed */
 const wchar_t* CrossfireServer::EVENT_CLOSED = L"closed";
 
-/* event: onContextChanged */
-const wchar_t* CrossfireServer::EVENT_CONTEXTCHANGED = L"onContextChanged";
-const wchar_t* CrossfireServer::KEY_NEWHREF = L"new-href";
-
 /* event: onContextCreated */
 const wchar_t* CrossfireServer::EVENT_CONTEXTCREATED = L"onContextCreated";
 
@@ -52,19 +59,26 @@ const wchar_t* CrossfireServer::EVENT_CONTEXTDESTROYED = L"onContextDestroyed";
 /* event: onContextLoaded */
 const wchar_t* CrossfireServer::EVENT_CONTEXTLOADED = L"onContextLoaded";
 
+/* event: onContextSelected */
+const wchar_t* CrossfireServer::EVENT_CONTEXTSELECTED = L"onContextSelected";
+const wchar_t* CrossfireServer::KEY_OLDCONTEXTID = L"oldContextId";
+const wchar_t* CrossfireServer::KEY_OLDURL = L"oldUrl";
+
 /* shared */
-const wchar_t* CrossfireServer::KEY_HREF = L"href";
+const wchar_t* CrossfireServer::KEY_CONTEXTID = L"contextId";
+const wchar_t* CrossfireServer::KEY_TOOLS = L"tools";
+const wchar_t* CrossfireServer::KEY_URL = L"url";
 
 
 CrossfireServer::CrossfireServer() {
 	m_bpManager = new CrossfireBPManager();
 	m_connection = NULL;
 	m_contexts = new std::map<DWORD, CrossfireContext*>;
-	m_currentContext = NULL;
+	m_currentContextPID = 0;
 	m_handshakeReceived = false;
 	m_inProgressPacket = new std::wstring;
 	m_lastRequestSeq = -1;
-	m_listeners = new std::vector<ICrossfireServerListener*>;
+	m_listeners = new std::map<DWORD, ICrossfireServerListener*>;
 	m_pendingEvents = new std::vector<CrossfireEvent*>;
 	m_port = -1;
 	m_processingRequest = false;
@@ -82,9 +96,9 @@ CrossfireServer::~CrossfireServer() {
 	}
 	delete m_contexts;
 
-	std::vector<ICrossfireServerListener*>::iterator iterator2 = m_listeners->begin();
+	std::map<DWORD, ICrossfireServerListener*>::iterator iterator2 = m_listeners->begin();
 	while (iterator2 != m_listeners->end()) {
-		(*iterator2)->Release();
+		iterator2->second->Release();
 		iterator2++;
 	}
 	delete m_listeners;
@@ -120,26 +134,26 @@ CrossfireServer::~CrossfireServer() {
 	}
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::addListener(ICrossfireServerListener* listener) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::addListener(DWORD processId, ICrossfireServerListener* listener) {
 	listener->AddRef();
-	m_listeners->push_back(listener);
+	m_listeners->insert(std::pair<DWORD,ICrossfireServerListener*>(processId, listener));
 	return S_OK;
 }
 
 void CrossfireServer::connected() {
-	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
 	while (iterator != m_listeners->end()) {
-		(*iterator)->ServerStateChanged(STATE_CONNECTED, m_port);
+		iterator->second->serverStateChanged(STATE_CONNECTED, m_port);
 		iterator++;
 	}
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* href) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* url) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	HRESULT hr = registerContext(processId, href);
+	HRESULT hr = registerContext(processId, url);
 	if (SUCCEEDED(hr)) {
 		std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 		CrossfireContext* context = iterator->second;
@@ -181,9 +195,9 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
 }
 
 void CrossfireServer::disconnected() {
-	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
 	while (iterator != m_listeners->end()) {
-		(*iterator)->ServerStateChanged(STATE_DISCONNECTED, -1);
+		iterator->second->serverStateChanged(STATE_DISCONNECTED, -1);
 		iterator++;
 	}
 	reset();
@@ -191,6 +205,17 @@ void CrossfireServer::disconnected() {
 
 CrossfireBPManager* CrossfireServer::getBreakpointManager() {
 	return m_bpManager;
+}
+
+CrossfireContext* CrossfireServer::getContext(wchar_t* contextId) {
+	std::map<DWORD,CrossfireContext*>::iterator iterator = m_contexts->begin();
+	while (iterator != m_contexts->end()) {
+		if (wcscmp(iterator->second->getName(), contextId) == 0) {
+			return iterator->second;
+		}
+		iterator++;
+	}
+	return NULL;
 }
 
 void CrossfireServer::getContextsArray(CrossfireContext*** _value) {
@@ -217,14 +242,7 @@ CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) 
 	}
 
 	wchar_t* searchString = (wchar_t*)contextId->c_str();
-	std::map<DWORD,CrossfireContext*>::iterator iterator = m_contexts->begin();
-	while (iterator != m_contexts->end()) {
-		if (wcscmp(iterator->second->getName(), searchString) == 0) {
-			return iterator->second;
-		}
-		iterator++;
-	}
-	return NULL;
+	return getContext(searchString);
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::getState(int* value) {
@@ -241,7 +259,17 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	Value* arguments = request->getArguments();
 	Value* responseBody = NULL;
 	bool success = false;
-	if (wcscmp(command, COMMAND_VERSION) == 0) {
+	if (wcscmp(command, COMMAND_CREATECONTEXT) == 0) {
+		success = commandCreateContext(arguments, &responseBody);
+	} else if (wcscmp(command, COMMAND_DISABLETOOLS) == 0) {
+		success = commandDisableTools(arguments, &responseBody);
+	} else if (wcscmp(command, COMMAND_ENABLETOOLS) == 0) {
+		success = commandEnableTools(arguments, &responseBody);
+	} else if (wcscmp(command, COMMAND_GETTOOLS) == 0) {
+		success = commandGetTools(arguments, &responseBody);
+	} else if (wcscmp(command, COMMAND_LISTCONTEXTS) == 0) {
+		success = commandListContexts(arguments, &responseBody);
+	} else if (wcscmp(command, COMMAND_VERSION) == 0) {
 		success = commandVersion(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINT) == 0) {
 		if (request->getContextId()) {
@@ -261,8 +289,6 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 		getContextsArray(&contexts);
 		success = m_bpManager->commandClearBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
 		delete contexts;
-	} else if (wcscmp(command, COMMAND_LISTCONTEXTS) == 0) {
-		success = commandListContexts(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
@@ -317,17 +343,34 @@ bool CrossfireServer::processHandshake(wchar_t* msg) {
 		return false;
 	}
 
-	m_handshakeReceived = true;
-
 	std::wstring tools = string.substr(start, index - start);
-	Logger::log("Handshake tools requested");
-	Logger::log((wchar_t*)tools.c_str());
+	m_handshakeReceived = true;
 
 	std::wstring handshake(HANDSHAKE);
 	/* for now don't claim support for any tools */
 	handshake.append(std::wstring(L"\r\n"));
 	m_connection->send(handshake.c_str());
+
+	/*
+	* Some events may have been queued in the interval between the initial connection
+	* and the handshake.  These events can be sent now that the handshake is complete.
+	*/
+	sendPendingEvents();
+
 	return true;
+}
+
+void CrossfireServer::sendPendingEvents() {
+	if (m_pendingEvents->size() > 0) {
+		Sleep(500); // TODO HACK!
+		std::vector<CrossfireEvent*>::iterator iterator = m_pendingEvents->begin();
+		while (iterator != m_pendingEvents->end()) {
+			sendEvent(*iterator);
+			delete *iterator;
+			iterator++;
+		}
+		m_pendingEvents->clear();
+	}
 }
 
 void CrossfireServer::received(wchar_t* msg) {
@@ -430,48 +473,27 @@ void CrossfireServer::received(wchar_t* msg) {
 				 * just processed.  These events can be sent now that processing of the request
 				 * is complete.
 				 */
-				if (m_pendingEvents->size() > 0) {
-
-					// TODO HACK! helps JSDT with stepping
-					Sleep(500);
-
-					std::vector<CrossfireEvent*>::iterator iterator = m_pendingEvents->begin();
-					while (iterator != m_pendingEvents->end()) {
-						sendEvent(*iterator);
-						delete *iterator;
-						iterator++;
-					}
-					m_pendingEvents->clear();
-				}
+				sendPendingEvents();
 			}
 		}
 	} while (packet.length() > 0 && m_inProgressPacket->length() > 0);
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* href) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* url) {
 	if (m_port == -1) {
 		return S_FALSE;
 	}
 
-	static int s_contextCounter = 0;
-
 	CrossfireContext* context = NULL;
 	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		context = new CrossfireContext(processId, this);
+		context = new CrossfireContext(processId, url, this);
 		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(processId, context));
 	} else {
 		Logger::error("CrossfireServer.registerContext(): a context already exists for process", processId);
 		return S_FALSE;
 	}
 
-	std::wstringstream stream;
-	stream << CONTEXTID_PREAMBLE;
-	stream << processId;
-	stream << "-";
-	stream << s_contextCounter++;
-	context->setName((wchar_t*)stream.str().c_str());
-	context->setUrl(href);
 	return S_OK;
 }
 
@@ -491,7 +513,7 @@ void CrossfireServer::reset() {
 		iterator++;
 	}
 	m_contexts->clear();
-	m_currentContext = NULL;
+	m_currentContextPID = 0;
 	m_handshakeReceived = false;
 	m_inProgressPacket->clear();
 	m_lastRequestSeq = -1;
@@ -500,11 +522,11 @@ void CrossfireServer::reset() {
 
 void CrossfireServer::sendEvent(CrossfireEvent* eventObj) {
 	/*
-	 * If a request is being processed then events to be sent to
-	 * the client should be queued and sent after the response to
-	 * the request has been sent first.
+	 * If a request is being processed, or if the client handshake has not
+	 * been received yet, then events to be sent to the client should be
+	 * queued and sent after these conditions have passed.
 	 */
-	if (m_processingRequest) {
+	if (m_processingRequest || !m_handshakeReceived) {
 		CrossfireEvent* copy = NULL;
 		eventObj->clone((CrossfirePacket**)&copy);
 		m_pendingEvents->push_back(copy);
@@ -536,15 +558,28 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD processId) {
 		return S_FALSE;
 	}
 
+	if (processId == m_currentContextPID) {
+		return S_OK; /* nothing to do */
+	}
+
 	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
 		Logger::error("CrossfireServer.setCurrentContext(): unknown context", processId);
 		return S_FALSE;
 	}
-	CrossfireContext* context = iterator->second;
-	CrossfireContext* oldContext = m_currentContext;
-	m_currentContext = context;
-	eventContextChanged(context, oldContext);
+
+	if (m_currentContextPID) {
+		CrossfireContext* newContext = iterator->second;
+		iterator = m_contexts->find(m_currentContextPID);
+		if (iterator == m_contexts->end()) {
+			Logger::error("CrossfireServer.setCurrentContext(): unknown old context", m_currentContextPID);
+		} else {
+			CrossfireContext* oldContext = iterator->second;
+			eventContextSelected(newContext, oldContext);
+		}
+	}
+
+	m_currentContextPID = processId;
 	return S_OK;
 }
 
@@ -564,9 +599,9 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port, unsigned int
 	}
 	m_port = port;
 	if (m_connection->acceptConnection()) {
-		std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+		std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
 		while (iterator != m_listeners->end()) {
-			(*iterator)->ServerStateChanged(STATE_LISTENING, m_port);
+			iterator->second->serverStateChanged(STATE_LISTENING, m_port);
 			iterator++;
 		}
 	}
@@ -582,9 +617,9 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
 	}
 	reset();
 
-	std::vector<ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
 	while (iterator != m_listeners->end()) {
-		(*iterator)->ServerStateChanged(STATE_DISCONNECTED, m_port);
+		iterator->second->serverStateChanged(STATE_DISCONNECTED, m_port);
 		iterator++;
 	}
 
@@ -593,6 +628,132 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
 
 /* commands */
 
+bool CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBody) {
+	Value* value_url = arguments->getObjectValue(KEY_URL);
+	if (!value_url || value_url->getType() != TYPE_STRING) {
+		Logger::error("'createContext' request does not have a valid 'url' value");
+		return false;
+	}
+	std::wstring* url = value_url->getStringValue();
+
+	std::wstring* contextId = NULL;
+	Value* value_contextId = arguments->getObjectValue(KEY_CONTEXTID);
+	if (value_contextId) {
+		int type = value_contextId->getType();
+		if (type != TYPE_NULL) {
+			if (type != TYPE_STRING) {
+				Logger::error("'createContext' request has an invalid 'contextId' value");
+				return false;
+			}
+			contextId = value_contextId->getStringValue();
+		}
+	}
+
+	CrossfireContext* context = NULL;
+	if (contextId) {
+		context = getContext((wchar_t*)contextId->c_str());
+		if (!context) {
+			Logger::error("'createContext' request specified an unknown 'contextId' value");
+			return false;
+		}
+		DWORD processId = context->getProcessId();
+		ICrossfireServerListener* listener = m_listeners->at(processId);
+		if (!listener) {
+			Logger::error("commandCreateContext(): the specified contextId is not listening to the server");
+			return false;
+		}
+		if (FAILED(listener->navigate((OLECHAR*)url->c_str(), false))) {
+			return false;
+		}
+	} else {
+		/* go through the listeners to find one that can create the context in a new tab */
+
+		std::map<DWORD,ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+		while (iterator != m_listeners->end()) {
+			ICrossfireServerListener* listener = iterator->second;
+			if (SUCCEEDED(listener->navigate((OLECHAR*)url->c_str(), true))) {
+				break;
+			}
+		}
+		if (iterator == m_listeners->end()) {
+			/* none of the listeners could create the context successfully */
+			return false;
+		}
+	}
+
+	Value* result = new Value();
+	result->setType(TYPE_OBJECT);
+	*_responseBody = result;
+	return true;
+}
+
+bool CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody) {
+	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
+	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
+		Logger::error("'commandDisableTools' request does not have a valid 'tools' value");
+		return false;
+	}
+
+	Value toolsArray;
+	toolsArray.setType(TYPE_ARRAY);
+	Value** values = NULL;
+	value_tools->getArrayValues(&values);
+	int index = 0;
+	Value* currentValue = values[index];
+	while (currentValue) {
+		if (currentValue->getType() != TYPE_STRING) {
+			Logger::error("'commanDisableTools' request contains a non-String 'tools' value");
+			return false;
+		}
+		// TODO do something here, add tool object to toolsArray
+		currentValue = values[++index];
+	}
+	delete[] values;
+
+	Value* result = new Value();
+	result->addObjectValue(KEY_TOOLS, &toolsArray);
+	*_responseBody = result;
+	return false; // TODO return true when implementation complete
+}
+
+bool CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody) {
+	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
+	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
+		Logger::error("'commandEnableTools' request does not have a valid 'tools' value");
+		return false;
+	}
+
+	Value toolsArray;
+	toolsArray.setType(TYPE_ARRAY);
+	Value** values = NULL;
+	value_tools->getArrayValues(&values);
+	int index = 0;
+	Value* currentValue = values[index];
+	while (currentValue) {
+		if (currentValue->getType() != TYPE_STRING) {
+			Logger::error("'commandEnableTools' request contains a non-String 'tools' value");
+			return false;
+		}
+		// TODO do something here, add tool object to toolsArray
+		currentValue = values[++index];
+	}
+	delete[] values;
+
+	Value* result = new Value();
+	result->addObjectValue(KEY_TOOLS, &toolsArray);
+	*_responseBody = result;
+	return false; // TODO return true when implementation complete
+}
+
+bool CrossfireServer::commandGetTools(Value* arguments, Value** _responseBody) {
+	Value toolsArray;
+	toolsArray.setType(TYPE_ARRAY);
+	Value* result = new Value();
+	result->addObjectValue(KEY_TOOLS, &toolsArray);
+	*_responseBody = result;
+	return true;
+}
+
 bool CrossfireServer::commandListContexts(Value* arguments, Value** _responseBody) {
 	Value contexts;
 	contexts.setType(TYPE_ARRAY);
@@ -600,9 +761,9 @@ bool CrossfireServer::commandListContexts(Value* arguments, Value** _responseBod
 	while (iterator != m_contexts->end()) {
 		CrossfireContext* context = iterator->second;
 		Value value_context;
-		value_context.addObjectValue(/*KEY_CONTEXTID*/L"context_id", &Value(context->getName()));
-		value_context.addObjectValue(KEY_HREF, &Value(context->getUrl()));
-		value_context.addObjectValue(KEY_CURRENT, &Value((bool)(context == m_currentContext)));
+		value_context.addObjectValue(KEY_CONTEXTID, &Value(context->getName()));
+		value_context.addObjectValue(KEY_URL, &Value(context->getUrl()));
+		value_context.addObjectValue(KEY_CURRENT, &Value((bool)(context->getProcessId() == m_currentContextPID)));
 		contexts.addArrayValue(&value_context);
 		iterator++;
 	}
@@ -628,25 +789,12 @@ void CrossfireServer::eventClosed() {
 	sendEvent(&eventObj);
 }
 
-void CrossfireServer::eventContextChanged(CrossfireContext* newContext, CrossfireContext* oldContext) {
-	CrossfireEvent eventObj;
-	eventObj.setName(EVENT_CONTEXTCHANGED);
-	eventObj.setContextId(&std::wstring(newContext->getName()));
-	Value data;
-	data.addObjectValue(KEY_NEWHREF, &Value(&std::wstring(newContext->getUrl())));
-	if (oldContext) {
-		data.addObjectValue(KEY_HREF, &Value(&std::wstring(oldContext->getUrl())));
-	}
-	eventObj.setData(&data);
-	sendEvent(&eventObj);
-}
-
 void CrossfireServer::eventContextCreated(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTCREATED);
-	eventObj.setContextId(&std::wstring(context->getName()));
 	Value data;
-	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getUrl())));
+	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
+	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
 	eventObj.setData(&data);
 	sendEvent(&eventObj);
 }
@@ -654,16 +802,30 @@ void CrossfireServer::eventContextCreated(CrossfireContext* context) {
 void CrossfireServer::eventContextDestroyed(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTDESTROYED);
-	eventObj.setContextId(&std::wstring(context->getName()));
+	Value data;
+	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	eventObj.setData(&data);
 	sendEvent(&eventObj);
 }
 
 void CrossfireServer::eventContextLoaded(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTLOADED);
-	eventObj.setContextId(&std::wstring(context->getName()));
 	Value data;
-	data.addObjectValue(KEY_HREF, &Value(&std::wstring(context->getUrl())));
+	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
+	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	eventObj.setData(&data);
+	sendEvent(&eventObj);
+}
+
+void CrossfireServer::eventContextSelected(CrossfireContext* context, CrossfireContext* oldContext) {
+	CrossfireEvent eventObj;
+	eventObj.setName(EVENT_CONTEXTSELECTED);
+	Value data;
+	data.addObjectValue(KEY_OLDCONTEXTID, &Value(&std::wstring(oldContext->getName())));
+	data.addObjectValue(KEY_OLDURL, &Value(&std::wstring(oldContext->getUrl())));
+	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
 	eventObj.setData(&data);
 	sendEvent(&eventObj);
 }

@@ -44,7 +44,6 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnBeforeNavigate2(IDispatch* pDisp, VARIA
 	if (!m_firstNavigate) {
 		return;
 	}
-	m_firstNavigate = false;
 
 	std::wstring string(URL->bstrVal);
 	size_t index = string.find(DEBUG_START);
@@ -160,7 +159,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 }
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VARIANT *pvarURL) {
-	if (!(initServer(false) && getServerState() == STATE_CONNECTED)) {
+	if (getServerState() != STATE_CONNECTED) {
 		return;
 	}
 
@@ -177,7 +176,11 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 			if (webBrowserIUnknown == pDispIUnknown) {
 				/* this is the top-level page frame */
 				DWORD processId = GetCurrentProcessId();
-				m_server->contextDestroyed(processId);
+				if (!m_firstNavigate) {
+					m_server->contextDestroyed(processId);
+				} else {
+					m_firstNavigate = false;
+				}
 				HRESULT hr = m_server->contextCreated(processId, pvarURL->bstrVal);
 				if (FAILED(hr)) {
 					Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
@@ -187,9 +190,56 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 	}
 }
 
+void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask) {
+	if (m_firstNavigate || getServerState() != STATE_CONNECTED) {
+		return;
+	}
+
+	if (dwFlags != (OLECMDIDF_WINDOWSTATE_USERVISIBLE | OLECMDIDF_WINDOWSTATE_ENABLED)) {
+		return;
+	}
+
+	CComBSTR url = NULL;
+	HRESULT hr = m_webBrowser->get_LocationURL(&url);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.OnWindowStateChanged(): get_LocationURL() failed");
+		return;
+	}
+
+	DWORD processId = GetCurrentProcessId();
+	hr = m_server->setCurrentContext(processId);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.OnWindowStateChanged(): setCurrentContext() failed");
+		return;
+	}
+}
+
 /* ICrossfireServerListener */
 
-STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
+STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* href, boolean openNewTab) {
+	VARIANT variant_null;
+	variant_null.vt = VT_NULL;
+
+	VARIANT variant_url;
+	variant_url.vt = VT_BSTR;
+	variant_url.bstrVal = href;
+
+	VARIANT variant_flags;
+	if (openNewTab) {
+		variant_flags.vt = VT_I4;
+		variant_flags.intVal = navOpenInNewTab;
+	} else {
+		variant_flags = variant_null;
+	}
+
+	HRESULT hr = m_webBrowser->Navigate2(&variant_url, &variant_flags, &variant_null, &variant_null, &variant_null);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.navigate(): Navigate2() failed", hr);
+	}
+	return hr;
+}
+
+STDMETHODIMP IECrossfireBHO::serverStateChanged(int state, unsigned int port) {
 	m_serverState = state;
 
 	/* If a connection was just established then create a context on the server for the current page */
@@ -200,14 +250,14 @@ STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
 	CComBSTR url = NULL;
 	HRESULT hr = m_webBrowser->get_LocationURL(&url);
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.ServerStateChanged(): get_LocationURL() failed", hr);
+		Logger::error("IECrossfireBHO.serverStateChanged(): get_LocationURL() failed", hr);
 		return S_OK;
 	}
 
 	DWORD processId = GetCurrentProcessId();
 	hr = m_server->contextCreated(processId, url);
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.ServerStateChanged(): contextCreated() failed", hr);
+		Logger::error("IECrossfireBHO.serverStateChanged(): contextCreated() failed", hr);
 		return S_OK;
 	}
 
@@ -221,7 +271,7 @@ STDMETHODIMP IECrossfireBHO::ServerStateChanged(int state, unsigned int port) {
 	if (SUCCEEDED(hr) && !busy) {
 		hr = m_server->contextLoaded(processId);
 		if (FAILED(hr)) {
-			Logger::error("IECrossfireBHO.ServerStateChanged(): contextLoaded() failed", hr);
+			Logger::error("IECrossfireBHO.serverStateChanged(): contextLoaded() failed", hr);
 			return S_OK;
 		}
 	}
@@ -378,7 +428,7 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	hr = m_server->addListener(static_cast<ICrossfireServerListener*>(this));
+	hr = m_server->addListener(GetCurrentProcessId(), static_cast<ICrossfireServerListener*>(this));
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.initServer(): addListener() failed", hr);
 		/* Cause context events to always be sent to the server */
@@ -412,26 +462,6 @@ bool IECrossfireBHO::startDebugging(unsigned int port) {
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.startDebugging(): start() failed");
 		return false;
-	}
-
-	CComBSTR url = NULL;
-	hr = m_webBrowser->get_LocationURL(&url);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.startDebugging(): get_LocationURL() failed");
-		return true;
-	}
-
-	DWORD processId = GetCurrentProcessId();
-	hr = m_server->registerContext(processId, url);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.startDebugging(): registerContext() failed");
-		return true;
-	}
-
-	hr = m_server->setCurrentContext(processId);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.startDebugging(): setCurrentContext() failed");
-		return true;
 	}
 
 	return true;

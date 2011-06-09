@@ -121,8 +121,19 @@ const wchar_t* CrossfireContext::KEY_SOURCESTART = L"sourceStart";
 const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
+/* constants */
+const wchar_t* CrossfireContext::ID_PREAMBLE = L"xfIE::";
 
-CrossfireContext::CrossfireContext(DWORD processId, CrossfireServer* server) {
+CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server) {
+	static int s_counter = 0;
+	m_processId = processId;
+	std::wstringstream stream;
+	stream << ID_PREAMBLE;
+	stream << m_processId;
+	stream << "-";
+	stream << s_counter++;
+	m_name = _wcsdup((wchar_t*)stream.str().c_str());
+
 	CComObject<IEDebugger>* result = NULL;
 	HRESULT hr = CComObject<IEDebugger>::CreateInstance(&result);
 	if (FAILED(hr)) {
@@ -135,14 +146,12 @@ CrossfireContext::CrossfireContext(DWORD processId, CrossfireServer* server) {
 	m_server = server;
 	m_debugApplicationThread = NULL;
 	m_debuggerHooked = false;
-	m_name = NULL;
 	m_nextObjectHandle = 1;
 	m_nextUnnamedUrlIndex = 1;
 	m_objects = new std::map<unsigned int, JSObject*>;
 	m_pendingScriptLoads = new std::vector<PendingScriptLoad*>;
-	m_processId = processId;
 	m_running = true;
-	m_url = NULL;
+	m_url = _wcsdup(url);
 
 	IEDebugger* ieDebugger = static_cast<IEDebugger*>(m_debugger);
 	ieDebugger->setContext(this);
@@ -287,6 +296,17 @@ bool CrossfireContext::clearBreakpoint(unsigned int handle) {
 		Logger::error("CrossfireContext.clearBreakpoint(): SetBreakPoint() failed", hr);
 		return false;
 	}
+
+	CrossfireEvent toggleEvent;
+	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
+	Value data;
+	data.addObjectValue(KEY_SET, &Value(false));
+	Value* value_breakpoint = NULL;
+	breakpoint->toValueObject(&value_breakpoint);
+	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	delete value_breakpoint;
+	toggleEvent.setData(&data);
+	sendEvent(&toggleEvent);
 
 	delete iterator->second;
 	m_breakpoints->erase(iterator);
@@ -672,7 +692,7 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	line0chars[line1start] = NULL;
 
 	Value* result = new Value();
-	result->addObjectValue(KEY_ID, &Value(url));
+	result->addObjectValue(/*KEY_ID*/ L"url", &Value(url)); // TODO
 	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
 	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0));
 	result->addObjectValue(KEY_SOURCESTART, &Value(line0chars));
@@ -844,6 +864,29 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
         return false;
 	}
 
+	CComPtr<IDebugApplicationNode> rootNode = NULL;
+	hr = debugApplication->GetRootNode(&rootNode);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): GetRootNode() failed", hr);
+	} else {
+		CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
+		hr = rootNode->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IConnectionPointContainer) failed", hr);
+		} else {
+			CComPtr<IConnectionPoint> connectionPoint = NULL;
+			hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &connectionPoint);
+			if (FAILED(hr)) {
+				Logger::error("CrossfireContext.getDebugApplicationThread(): FindConnectionPoint() failed", hr);
+			} else {
+				hr = connectionPoint->Advise(m_debugger, &m_cpcApplicationNodeEvents);
+				if (FAILED(hr)) {
+					Logger::error("CrossfireContext.getDebugApplicationThread(): Advise() failed", hr);
+				}
+			}
+		}
+	}
+
 	CComPtr<IEnumRemoteDebugApplicationThreads> debugApplicationThreads;
 	hr = debugApplication->EnumThreads(&debugApplicationThreads);
 	if (FAILED(hr)) {
@@ -865,6 +908,10 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 
 wchar_t* CrossfireContext::getName() {
 	return m_name;
+}
+
+DWORD CrossfireContext::getProcessId() {
+	return m_processId;
 }
 
 wchar_t* CrossfireContext::getUrl() {
@@ -1135,13 +1182,6 @@ bool CrossfireContext::setBreakpointEnabled(unsigned int handle, bool enabled) {
 	return true;
 }
 
-void CrossfireContext::setUrl(wchar_t* value) {
-	if (m_url) {
-		free(m_url);
-	}
-	m_url = _wcsdup(value);
-}
-
 bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bool isRetry) {
 	// TODO uncomment the following once Refreshes cause new contexts to be created
 
@@ -1293,13 +1333,6 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 	toggleEvent.setData(&data);
 	sendEvent(&toggleEvent);
 	return true;
-}
-
-void CrossfireContext::setName(wchar_t* value) {
-	if (m_name) {
-		free(m_name);
-	}
-	m_name = _wcsdup(value);
 }
 
 void CrossfireContext::setRunning(bool value) {
@@ -1684,7 +1717,7 @@ bool CrossfireContext::commandScopes(Value* arguments, Value** _responseBody) {
 }
 
 bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
-	Value* value_id = arguments->getObjectValue(KEY_ID);
+	Value* value_id = arguments->getObjectValue(/*KEY_ID*/ L"url"); // TODO
 	if (!value_id || value_id->getType() != TYPE_STRING) {
 		Logger::error("'script' command does not have a valid 'id' value");
 		return false;
@@ -1755,9 +1788,7 @@ bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
 void CrossfireContext::addScriptsToArray(IDebugApplicationNode* node, bool includeSource, Value* scriptsArray) {
 	Value* value_script = NULL;
 	if (createValueForScript(node, includeSource, &value_script)) {
-		Value script;
-		script.addObjectValue(KEY_SCRIPT, value_script);
-		scriptsArray->addArrayValue(&script);
+		scriptsArray->addArrayValue(value_script);
 		delete value_script;
 	}
 

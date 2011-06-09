@@ -34,17 +34,16 @@ class CrossfireContext; // forward declaration
 class CrossfireContext : IBreakpointTarget {
 
 public:
-	CrossfireContext(DWORD processId, CrossfireServer* server);
+	CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server);
 	~CrossfireContext();
 	virtual wchar_t* getName();
+	virtual DWORD getProcessId();
 	virtual wchar_t* getUrl();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual bool scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry);
 	virtual void sendEvent(CrossfireEvent* eventObj);
-	virtual void setName(wchar_t* value);
 	virtual void setRunning(bool value);
-	virtual void setUrl(wchar_t* value);
 
 	/* IBreakpointTarget methods */
 	virtual bool clearBreakpoint(unsigned int handle);
@@ -206,4 +205,7 @@ private:
 	static const wchar_t* KEY_SOURCESTART;
 	static const wchar_t* KEY_SOURCELENGTH;
 	static const wchar_t* VALUE_TOPLEVEL;
+
+	/* other */
+	static const wchar_t* ID_PREAMBLE;
 };

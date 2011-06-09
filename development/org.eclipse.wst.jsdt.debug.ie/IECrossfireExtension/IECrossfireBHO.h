@@ -61,13 +61,16 @@ public:
 		SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, OnBeforeNavigate2)
 		SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, OnDocumentComplete)
 		SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2, OnNavigateComplete2)
+		SINK_ENTRY_EX(1, DIID_DWebBrowserEvents2, DISPID_WINDOWSTATECHANGED, OnWindowStateChanged)
 	END_SINK_MAP()
     void STDMETHODCALLTYPE OnBeforeNavigate2(IDispatch* pDisp, VARIANT* URL, VARIANT* Flags, VARIANT* TargetFrameName, VARIANT* PostData, VARIANT* Headers, VARIANT_BOOL* Cancel);
 	void STDMETHODCALLTYPE OnDocumentComplete(IDispatch* pDisp, VARIANT* URL);
 	void STDMETHODCALLTYPE OnNavigateComplete2(IDispatch* pDisp, VARIANT* URL);
+	void STDMETHODCALLTYPE OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask);
 
 	/* ICrossfireServerListener */
-	virtual HRESULT STDMETHODCALLTYPE ServerStateChanged(int state, unsigned int port);
+	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* href, boolean openNewTab);
+	virtual HRESULT STDMETHODCALLTYPE serverStateChanged(int state, unsigned int port);
 
 	/* IObjectWithSite */
 	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);

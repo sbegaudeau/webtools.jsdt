@@ -98,6 +98,8 @@ private:
 	
 	/* event: onBreak */
 	static const wchar_t* EVENT_ONBREAK;
+	static const wchar_t* KEY_CAUSE;
+	static const wchar_t* KEY_LOCATION;
 	static const wchar_t* KEY_LINE;
 	static const wchar_t* KEY_URL;
 	virtual HRESULT handleError(IActiveScriptErrorDebug *pScriptErrorDebug);

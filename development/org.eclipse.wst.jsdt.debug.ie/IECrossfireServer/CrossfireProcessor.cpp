@@ -58,6 +58,10 @@ bool CrossfireProcessor::createEventPacket(CrossfireEvent* eventObj, std::wstrin
 	/* context id */
 	if (eventObj->getContextId()) {
 		value_packet.addObjectValue(NAME_CONTEXTID, &Value(eventObj->getContextId()));
+	} else {
+		Value value_null;
+		value_null.setType(TYPE_NULL);
+		value_packet.addObjectValue(NAME_CONTEXTID, &value_null);
 	}
 
 	/* data */
@@ -108,6 +112,10 @@ bool CrossfireProcessor::createResponsePacket(CrossfireResponse *response, std::
 	/* contextId */
 	if (response->getContextId()) {
 		value_packet.addObjectValue(NAME_CONTEXTID, &Value(response->getContextId()));
+	} else {
+		Value value_null;
+		value_null.setType(TYPE_NULL);
+		value_packet.addObjectValue(NAME_CONTEXTID, &value_null);
 	}
 
 	/* request seq */

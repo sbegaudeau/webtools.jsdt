@@ -30,7 +30,8 @@ interface IIECrossfireBHO : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServerListener : IUnknown {
-	HRESULT ServerStateChanged([in] int state, [in] unsigned int port);
+	HRESULT navigate([in, string] OLECHAR* href, [in] boolean openNewTab);
+	HRESULT serverStateChanged([in] int state, [in] unsigned int port);
 };
 [
 	object,
@@ -42,7 +43,7 @@ interface ICrossfireServerListener : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServer : IDispatch {
-	HRESULT addListener([in] ICrossfireServerListener* listener);
+	HRESULT addListener([in] DWORD processId, [in] ICrossfireServerListener* listener);
 	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* href);
 	HRESULT contextDestroyed([in] DWORD processId);
 	HRESULT contextLoaded([in] DWORD processId);

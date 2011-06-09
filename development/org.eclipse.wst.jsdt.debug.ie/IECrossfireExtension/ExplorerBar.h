@@ -90,7 +90,8 @@ public:
     virtual HRESULT STDMETHODCALLTYPE TranslateAcceleratorIO(LPMSG lpMsg);
 
 	/* ICrossfireServerListener */
-	virtual HRESULT STDMETHODCALLTYPE ServerStateChanged(int state, unsigned int port);
+	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* href, boolean openNewTab);
+	virtual HRESULT STDMETHODCALLTYPE serverStateChanged(int state, unsigned int port);
 
 private:
 	bool createWindow();

@@ -54,13 +54,13 @@ public:
 	~CrossfireServer();
 
 	/* ICrossfireServer */
-	virtual HRESULT STDMETHODCALLTYPE addListener(ICrossfireServerListener* listener);
-	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, OLECHAR* href);
+	virtual HRESULT STDMETHODCALLTYPE addListener(DWORD processId, ICrossfireServerListener* listener);
+	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, OLECHAR* url);
 	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
 	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
-	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* href);
+	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* url);
 	virtual HRESULT STDMETHODCALLTYPE removeListener(ICrossfireServerListener* listener);
 	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
@@ -75,20 +75,22 @@ public:
 	virtual void setWindowHandle(unsigned long value);
 
 private:
+	virtual CrossfireContext* getContext(wchar_t* contextId);
 	virtual void getContextsArray(CrossfireContext*** _value);
 	virtual CrossfireContext* getRequestContext(CrossfireRequest* request);
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual bool processHandshake(wchar_t* msg);
 	virtual void reset();
+	virtual void sendPendingEvents();
 
 	CrossfireBPManager* m_bpManager;
 	WindowsSocketConnection* m_connection;
 	std::map<DWORD, CrossfireContext*>* m_contexts;
-	CrossfireContext* m_currentContext;
+	DWORD m_currentContextPID;
 	bool m_handshakeReceived;
 	std::wstring* m_inProgressPacket;
 	unsigned int m_lastRequestSeq;
-	std::vector<ICrossfireServerListener*>* m_listeners;
+	std::map<DWORD, ICrossfireServerListener*>* m_listeners;
 	std::vector<CrossfireEvent*>* m_pendingEvents;
 	unsigned int m_port;
 	bool m_processingRequest;
@@ -100,6 +102,22 @@ private:
 	static const wchar_t* COMMAND_GETBREAKPOINT;
 	static const wchar_t* COMMAND_GETBREAKPOINTS;
 	static const wchar_t* COMMAND_SETBREAKPOINT;
+
+	/* command: createContext */
+	static const wchar_t* COMMAND_CREATECONTEXT;
+	virtual bool commandCreateContext(Value* arguments, Value** _responseBody);
+
+	/* command: disableTools */
+	static const wchar_t* COMMAND_DISABLETOOLS;
+	virtual bool commandDisableTools(Value* arguments, Value** _responseBody);
+
+	/* command: enableTools */
+	static const wchar_t* COMMAND_ENABLETOOLS;
+	virtual bool commandEnableTools(Value* arguments, Value** _responseBody);
+
+	/* command: getTools */
+	static const wchar_t* COMMAND_GETTOOLS;
+	virtual bool commandGetTools(Value* arguments, Value** _responseBody);
 
 	/* command: listContexts */
 	static const wchar_t* COMMAND_LISTCONTEXTS;
@@ -117,11 +135,6 @@ private:
 	static const wchar_t* EVENT_CLOSED;
 	virtual void eventClosed();
 
-	/* event: onContextChanged */
-	static const wchar_t* EVENT_CONTEXTCHANGED;
-	static const wchar_t* KEY_NEWHREF;
-	virtual void eventContextChanged(CrossfireContext* newContext, CrossfireContext* oldContext);
-
 	/* event: onContextCreated */
 	static const wchar_t* EVENT_CONTEXTCREATED;
 	virtual void eventContextCreated(CrossfireContext* context);
@@ -134,8 +147,16 @@ private:
 	static const wchar_t* EVENT_CONTEXTLOADED;
 	virtual void eventContextLoaded(CrossfireContext* context);
 
+	/* event: onContextSelected */
+	static const wchar_t* EVENT_CONTEXTSELECTED;
+	static const wchar_t* KEY_OLDCONTEXTID;
+	static const wchar_t* KEY_OLDURL;
+	virtual void eventContextSelected(CrossfireContext* context, CrossfireContext* oldContext);
+
 	/* shared */
-	static const wchar_t* KEY_HREF;
+	static const wchar_t* KEY_CONTEXTID;
+	static const wchar_t* KEY_TOOLS;
+	static const wchar_t* KEY_URL;
 
 	/* constants */
 	static const wchar_t* CONTEXTID_PREAMBLE;

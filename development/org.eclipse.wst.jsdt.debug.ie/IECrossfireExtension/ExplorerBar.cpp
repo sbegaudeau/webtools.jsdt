@@ -210,7 +210,11 @@ STDMETHODIMP CExplorerBar::TranslateAcceleratorIO(LPMSG pMsg) {
 
 /* ICrossfireServerListener */
 
-STDMETHODIMP CExplorerBar::ServerStateChanged(int state, unsigned int port) {
+STDMETHODIMP CExplorerBar::navigate(OLECHAR* href, boolean openNewTab) {
+	return S_FALSE;
+}
+
+STDMETHODIMP CExplorerBar::serverStateChanged(int state, unsigned int port) {
 	m_serverPort = port;
 	m_serverState = state;
 	layoutControls();
@@ -219,11 +223,11 @@ STDMETHODIMP CExplorerBar::ServerStateChanged(int state, unsigned int port) {
 		HKEY key;
 		LONG result = RegCreateKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &key, NULL);
 		if (result != ERROR_SUCCESS) {
-			Logger::error("ExplorerBar.ServerStateChanged(): RegCreateKeyEx() failed", result);
+			Logger::error("ExplorerBar.serverStateChanged(): RegCreateKeyEx() failed", result);
 		} else {
 			result = RegSetValueEx(key, L"LastPort", 0, REG_DWORD, (BYTE*)&m_serverPort, sizeof(unsigned int));
 			if (result != ERROR_SUCCESS) {
-				Logger::error("ExplorerBar.ServerStateChanged(): RegSetValueEx() failed", result);
+				Logger::error("ExplorerBar.serverStateChanged(): RegSetValueEx() failed", result);
 			}
 			RegCloseKey(key);
 		}
@@ -472,7 +476,7 @@ bool CExplorerBar::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	hr = m_server->addListener(static_cast<ICrossfireServerListener*>(this));
+	hr = m_server->addListener(GetCurrentProcessId(), static_cast<ICrossfireServerListener*>(this));
 	if (FAILED(hr)) {
 		Logger::error("ExplorerBar.initServer(): addListener() failed", hr);
 		return false;
