@@ -118,7 +118,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 				Scope s = new Scope(
 						(Number)map.get(Attributes.INDEX), 
 						(Number)map.get(Attributes.FRAME_INDEX), 
-						(Number) ((Map)map.get(Attributes.OBJECT)).get(Attributes.HANDLE));
+						(Number) ((Map)map.get(Attributes.SCOPE)).get(Attributes.HANDLE));
 				scopes.add(s);
 			}
 		}
@@ -329,7 +329,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	void allScopes() {
 		CFRequestPacket request = new CFRequestPacket(Commands.SCOPES, thread.id());
-		request.setArgument(Attributes.FRAME_NUMBER, new Integer(index));
+		request.setArgument(Attributes.FRAME_INDEX, new Integer(index));
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			List list = (List) response.getBody().get(Attributes.SCOPES);
@@ -347,14 +347,14 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	void scope() {
 		CFRequestPacket request = new CFRequestPacket(Commands.SCOPE, thread.id());
-		request.setArgument(Attributes.FRAME_NUMBER, new Integer(index));
-		request.setArgument(Attributes.NUMBER, new Integer(0));
+		request.setArgument(Attributes.FRAME_INDEX, new Integer(index));
+		request.setArgument(Attributes.INDEX, new Integer(0));
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			Scope s = new Scope(
 					(Number)response.getBody().get(Attributes.INDEX), 
 					(Number)response.getBody().get(Attributes.FRAME_INDEX),
-					(Number) ((Map)response.getBody().get(Attributes.OBJECT)).get(Attributes.HANDLE));
+					(Number) ((Map)response.getBody().get(Attributes.SCOPE)).get(Attributes.HANDLE));
 			scopes.add(s);
 		}
 		else if(TRACE) {

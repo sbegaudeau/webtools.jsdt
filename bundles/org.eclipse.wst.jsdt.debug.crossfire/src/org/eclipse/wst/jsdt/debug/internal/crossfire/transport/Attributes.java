@@ -194,6 +194,10 @@ public interface Attributes {
 	 */
 	public static final String RUNNING = "running"; //$NON-NLS-1$
 	/**
+	 * The "scope" attribute
+	 */
+	public static final String SCOPE = "scope"; //$NON-NLS-1$
+	/**
 	 * The "scopes" attribute
 	 */
 	public static final String SCOPES = "scopes"; //$NON-NLS-1$
