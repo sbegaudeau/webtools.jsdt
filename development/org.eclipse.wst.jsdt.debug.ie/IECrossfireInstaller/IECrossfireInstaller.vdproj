@@ -27,6 +27,18 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2BE6F9D69F0A4B098A470FAA2404F55E"
+        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_2BE6F9D69F0A4B098A470FAA2404F55E"
+        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -39,37 +51,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
+        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
         "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
+        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
         "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
+        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
         "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
-        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BD7F564C89834C73B61D45A429B089B7"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_BD7F564C89834C73B61D45A429B089B7"
+        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
         "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -301,7 +301,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{71A8EFB0-530C-494B-8E31-9C20EF18A218}"
+        "PackageCode" = "8:{B04D87CD-683D-4AEA-A81D-C20FE2FF01D5}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -3719,11 +3719,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9C5B5A5670FF4D9BB8CF11ED0A5F70F8"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_2BE6F9D69F0A4B098A470FAA2404F55E"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
                 "Properties"
                 {
                 }
@@ -3733,11 +3733,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_BD7F564C89834C73B61D45A429B089B7"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_64B88F4F3920498395429FBE89B744AA"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -3773,6 +3773,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_383962F6509D471DBDB2BD3C7B02BBCB"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Symbols"
+            "OutputProjectGuid" = "8:{2B73B89A-A1B4-479B-8751-A25B9036A9AF}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
@@ -3829,6 +3857,34 @@
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_860DFB010DEC44098EA78F14B9FD2E4B"
+            {
+            "SourcePath" = "8:"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:"
+            "OutputGroupCanonicalName" = "8:Symbols"
+            "OutputProjectGuid" = "8:{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {

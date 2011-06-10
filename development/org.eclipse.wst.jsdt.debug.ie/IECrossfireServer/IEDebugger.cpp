@@ -35,11 +35,6 @@ const wchar_t* IEDebugger::EVENT_ONCONSOLELOG = L"onConsoleLog";
 /* event: onResume */
 const wchar_t* IEDebugger::EVENT_ONRESUME = L"onResume";
 
-/* event: onScript */
-const wchar_t* IEDebugger::EVENT_ONSCRIPT = L"onScript";
-const wchar_t* IEDebugger::KEY_CONTEXTHREF = L"context_href";
-const wchar_t* IEDebugger::KEY_HREF = L"href";
-
 
 IEDebugger::IEDebugger() {
 	m_context = NULL;

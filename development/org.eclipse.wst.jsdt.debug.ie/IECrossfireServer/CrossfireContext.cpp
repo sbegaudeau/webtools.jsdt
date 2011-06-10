@@ -112,12 +112,10 @@ const wchar_t* CrossfireContext::VALUE_UNDEFINED = L"undefined";
 
 /* script objects */
 const wchar_t* CrossfireContext::KEY_COLUMNOFFSET = L"columnOffset";
-const wchar_t* CrossfireContext::KEY_COMPILATIONTYPE = L"compilationType";
 const wchar_t* CrossfireContext::KEY_ID = L"id";
 const wchar_t* CrossfireContext::KEY_LINECOUNT = L"lineCount";
 const wchar_t* CrossfireContext::KEY_LINEOFFSET = L"lineOffset";
 const wchar_t* CrossfireContext::KEY_SOURCE = L"source";
-const wchar_t* CrossfireContext::KEY_SOURCESTART = L"sourceStart";
 const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
@@ -643,7 +641,7 @@ bool CrossfireContext::createValueForObject(JSObject* object, Value** _value) {
 	return true;
 }
 
-bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value) {
+bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
 
 	CComBSTR url = L"NULL";
@@ -674,45 +672,30 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 		Logger::error("CrossfireContext.createValueForScript(): GetSize() failed", hr);
 		return false;
 	}
-
-	ULONG line1start = 0;
-	hr = documentText->GetPositionOfLine(1, &line1start);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetPositionOfLine() failed [2]", hr);
+	if (failIfEmpty && numChars == 0) {
 		return false;
 	}
-
-	wchar_t* line0chars = new wchar_t[line1start + 1];
-	ULONG charsRead = 0;
-	hr = documentText->GetText(0, line0chars, NULL, &charsRead, line1start);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetText() failed", hr);
-		return false;
-	}
-	line0chars[line1start] = NULL;
 
 	Value* result = new Value();
 	result->addObjectValue(/*KEY_ID*/ L"url", &Value(url)); // TODO
 	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
 	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0));
-	result->addObjectValue(KEY_SOURCESTART, &Value(line0chars));
+	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numChars));
 	result->addObjectValue(KEY_LINECOUNT, &Value((double)numLines));
-	result->addObjectValue(KEY_COMPILATIONTYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
-	delete[] line0chars;
+	result->addObjectValue(KEY_TYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
 
-	wchar_t* sourceChars = new wchar_t[numChars + 1];
-	charsRead = 0;
-	hr = documentText->GetText(0, sourceChars, NULL, &charsRead, numChars);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetText()[2] failed", hr);
-		return false;
-	}
-	sourceChars[numChars] = NULL;
-	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numLines));
 	if (includeSource) {
+		wchar_t* sourceChars = new wchar_t[numChars + 1];
+		ULONG charsRead = 0;
+		hr = documentText->GetText(0, sourceChars, NULL, &charsRead, numChars);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.createValueForScript(): GetText()[2] failed", hr);
+			return false;
+		}
+		sourceChars[numChars] = NULL;
 		result->addObjectValue(KEY_SOURCE, &Value(sourceChars));
+		delete[] sourceChars;
 	}
-	delete[] sourceChars;
 
 	*_value = result;
 	return true;
@@ -963,6 +946,30 @@ void CrossfireContext::installBreakpoints(std::vector<Value*>* breakpoints) {
 	}
 }
 
+void CrossfireContext::loadCompleted() {
+	if (m_pendingScriptLoads->empty()) {
+		return;
+	}
+
+	std::vector<PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
+	while (iterator != m_pendingScriptLoads->end()) {
+		IDebugApplicationNode* node = (*iterator)->getApplicationNode();
+		Value* script = NULL;
+		if (createValueForScript(node, false, false, &script)) {
+			CrossfireEvent onScriptEvent;
+			onScriptEvent.setName(EVENT_ONSCRIPT);
+			Value data;
+			data.addObjectValue(KEY_SCRIPT, script);
+			delete script;
+			onScriptEvent.setData(&data);
+			sendEvent(&onScriptEvent);
+		}
+		(*iterator)->Release();
+		iterator++;
+	}
+	m_pendingScriptLoads->clear();
+}
+
 bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	if (!m_debuggerHooked) {
 		hookDebugger();
@@ -1036,7 +1043,7 @@ bool CrossfireContext::scriptLoaded(std::wstring* url, IDebugApplicationNode *ap
 	m_currentScriptNode = NULL;
 
 	Value* script = NULL;
-	if (createValueForScript(applicationNode, false, &script)) {
+	if (createValueForScript(applicationNode, false, true, &script)) {
 		CrossfireEvent onScriptEvent;
 		onScriptEvent.setName(EVENT_ONSCRIPT);
 		Value data;
@@ -1052,24 +1059,17 @@ bool CrossfireContext::scriptLoaded(std::wstring* url, IDebugApplicationNode *ap
 	}
 
 	/*
-	 * The script's content has been loaded yet, so create a listener object
+	 * The script's content has not been loaded yet, so create a listener object
 	 * that will call this method again when this script has been loaded
 	 */
-	CComPtr<IDebugDocument> document = NULL;
-	HRESULT hr = applicationNode->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.scriptLoaded(): GetDocument() failed", hr);
-		return false;
-	}
-
 	CComObject<PendingScriptLoad>* pendingScriptLoad = NULL;
-	hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
+	HRESULT hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.scriptLoaded(): CreateInstance(CLSID_PendingScriptLoad) failed [1]", hr);
 		return false;
 	}
 
-	if (pendingScriptLoad->init(document, this)) {
+	if (pendingScriptLoad->init(applicationNode, this)) {
 		pendingScriptLoad->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
 		m_pendingScriptLoads->push_back(pendingScriptLoad);
 	}
@@ -1319,7 +1319,7 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 	CrossfireLineBreakpoint* copy = NULL;
 	breakpoint->clone((CrossfireBreakpoint**)&copy);
 	copy->setLine(bpLineNumber + 1);
-	copy->setContextId(&std::wstring(getName()));
+	copy->setContextId(&std::wstring(m_name));
 	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
 
 	CrossfireEvent toggleEvent;
@@ -1741,7 +1741,7 @@ bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
 	}
 
 	Value* script = NULL;
-	if (!createValueForScript(node, includeSource, &script)) {
+	if (!createValueForScript(node, includeSource, false, &script)) {
 		return false;
 	}
 
@@ -1787,7 +1787,7 @@ bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
 
 void CrossfireContext::addScriptsToArray(IDebugApplicationNode* node, bool includeSource, Value* scriptsArray) {
 	Value* value_script = NULL;
-	if (createValueForScript(node, includeSource, &value_script)) {
+	if (createValueForScript(node, includeSource, false, &value_script)) {
 		scriptsArray->addArrayValue(value_script);
 		delete value_script;
 	}

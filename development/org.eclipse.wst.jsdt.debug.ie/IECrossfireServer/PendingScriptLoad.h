@@ -44,6 +44,8 @@ public:
 	PendingScriptLoad();
 	~PendingScriptLoad();
 
+	virtual IDebugApplicationNode* getApplicationNode();
+
 	/* IDebugDocumentTextEvents */
 	virtual HRESULT STDMETHODCALLTYPE onDestroy();
 	virtual HRESULT STDMETHODCALLTYPE onInsertText(
@@ -62,14 +64,14 @@ public:
 		/* [in] */ TEXT_DOC_ATTR textdocattr);
 
 	/* PendingScriptLoad */
-	virtual bool init(IDebugDocument* document, CrossfireContext* context);
+	virtual bool init(IDebugApplicationNode* applicationNode, CrossfireContext* context);
 
 private:
 	void unadvise();
 
 	CrossfireContext* m_context;
 	DWORD m_cookie;
-	IDebugDocument* m_document;
+	IDebugApplicationNode* m_applicationNode;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PendingScriptLoad), PendingScriptLoad)

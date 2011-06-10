@@ -210,7 +210,7 @@ STDMETHODIMP CExplorerBar::TranslateAcceleratorIO(LPMSG pMsg) {
 
 /* ICrossfireServerListener */
 
-STDMETHODIMP CExplorerBar::navigate(OLECHAR* href, boolean openNewTab) {
+STDMETHODIMP CExplorerBar::navigate(OLECHAR* url, boolean openNewTab) {
 	return S_FALSE;
 }
 

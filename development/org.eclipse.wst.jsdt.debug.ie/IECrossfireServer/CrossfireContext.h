@@ -40,6 +40,7 @@ public:
 	virtual DWORD getProcessId();
 	virtual wchar_t* getUrl();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
+	virtual void loadCompleted();
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual bool scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry);
 	virtual void sendEvent(CrossfireEvent* eventObj);
@@ -66,7 +67,7 @@ private:
 	virtual void clearObjects();
 	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
 	virtual bool createValueForObject(JSObject* object, Value** _value);
-	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, Value** _value);
+	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
 	virtual bool findNode(wchar_t* name, IDebugApplicationNode* startNode, IDebugApplicationNode** _value);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
@@ -197,12 +198,10 @@ private:
 
 	/* script objects */
 	static const wchar_t* KEY_COLUMNOFFSET;
-	static const wchar_t* KEY_COMPILATIONTYPE;
 	static const wchar_t* KEY_ID;
 	static const wchar_t* KEY_LINECOUNT;
 	static const wchar_t* KEY_LINEOFFSET;
 	static const wchar_t* KEY_SOURCE;
-	static const wchar_t* KEY_SOURCESTART;
 	static const wchar_t* KEY_SOURCELENGTH;
 	static const wchar_t* VALUE_TOPLEVEL;
 

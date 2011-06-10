@@ -118,11 +118,6 @@ private:
 
 	/* event: onResume */
 	static const wchar_t* EVENT_ONRESUME;
-
-	/* event: onScript */
-	static const wchar_t* EVENT_ONSCRIPT;
-	static const wchar_t* KEY_CONTEXTHREF;
-	static const wchar_t* KEY_HREF;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(IEDebugger), IEDebugger)

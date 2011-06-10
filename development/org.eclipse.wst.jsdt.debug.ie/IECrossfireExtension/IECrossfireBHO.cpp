@@ -22,6 +22,7 @@ IECrossfireBHO::IECrossfireBHO() {
 	m_eventsHooked = false;
 	m_firstNavigate = true;
 	m_htmlToDisplay = NULL;
+	m_lastUrl = NULL;
 	m_server = NULL;
 	m_serverState = STATE_DISCONNECTED;
 	m_webBrowser = NULL;
@@ -35,6 +36,9 @@ IECrossfireBHO::~IECrossfireBHO() {
 	}
 	if (m_htmlToDisplay) {
 		free(m_htmlToDisplay);
+	}
+	if (m_lastUrl) {
+		free(m_lastUrl);
 	}
 }
 
@@ -133,25 +137,25 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 		return;
 	}
 
-	if (m_serverState != STATE_CONNECTED) {
+	if (getServerState() != STATE_CONNECTED) {
 		return;
 	}
 
 	CComPtr<IUnknown> webBrowserIUnknown = NULL;
 	HRESULT hr = m_webBrowser->QueryInterface(IID_IUnknown, (void**)&webBrowserIUnknown);
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.OnNavigateComplete2(): QI(IUnknown)[1] failed", hr);
+		Logger::error("IECrossfireBHO.OnDocumentComplete(): QI(IUnknown)[1] failed", hr);
 	} else {
 		CComPtr<IUnknown> pDispIUnknown = NULL;
 		hr = pDisp->QueryInterface(IID_IUnknown, (void**)&pDispIUnknown);
 		if (FAILED(hr)) {
-			Logger::error("IECrossfireBHO.OnNavigateComplete2(): QI(IUnknown)[2] failed", hr);
+			Logger::error("IECrossfireBHO.OnDocumentComplete(): QI(IUnknown)[2] failed", hr);
 		} else {
 			if (webBrowserIUnknown == pDispIUnknown) {
 				/* this is the top-level page frame */
 				HRESULT hr = m_server->contextLoaded(GetCurrentProcessId());
 				if (FAILED(hr)) {
-					Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextLoaded() failed", hr);
+					Logger::error("IECrossfireBHO.OnDocumentComplete(): contextLoaded() failed", hr);
 				}
 			}
 		}
@@ -175,16 +179,23 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 		} else {
 			if (webBrowserIUnknown == pDispIUnknown) {
 				/* this is the top-level page frame */
-				DWORD processId = GetCurrentProcessId();
-				if (!m_firstNavigate) {
-					m_server->contextDestroyed(processId);
-				} else {
-					m_firstNavigate = false;
+				wchar_t* url = pvarURL->bstrVal;
+				wchar_t* hash = wcschr(url, wchar_t('#'));
+				if (!hash || m_firstNavigate || wcsncmp(url, m_lastUrl, hash - url) != 0) {
+					DWORD processId = GetCurrentProcessId();
+					if (!m_firstNavigate) {
+						m_server->contextDestroyed(processId);
+					}
+					HRESULT hr = m_server->contextCreated(processId, url);
+					if (FAILED(hr)) {
+						Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
+					}
 				}
-				HRESULT hr = m_server->contextCreated(processId, pvarURL->bstrVal);
-				if (FAILED(hr)) {
-					Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
+				m_firstNavigate = false;
+				if (m_lastUrl) {
+					free(m_lastUrl);
 				}
+				m_lastUrl = _wcsdup(url);
 			}
 		}
 	}
@@ -216,13 +227,13 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG d
 
 /* ICrossfireServerListener */
 
-STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* href, boolean openNewTab) {
+STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* url, boolean openNewTab) {
 	VARIANT variant_null;
 	variant_null.vt = VT_NULL;
 
 	VARIANT variant_url;
 	variant_url.vt = VT_BSTR;
-	variant_url.bstrVal = href;
+	variant_url.bstrVal = url;
 
 	VARIANT variant_flags;
 	if (openNewTab) {

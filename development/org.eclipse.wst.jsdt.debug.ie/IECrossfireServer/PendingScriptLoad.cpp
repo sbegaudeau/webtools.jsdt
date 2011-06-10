@@ -16,16 +16,20 @@
 PendingScriptLoad::PendingScriptLoad() {
 	m_context = NULL;
 	m_cookie = 0;
-	m_document = NULL;
+	m_applicationNode = NULL;
 }
 
 PendingScriptLoad::~PendingScriptLoad() {
 	if (m_cookie) {
 		unadvise();
 	}
-	if (m_document) {
-		m_document->Release();
+	if (m_applicationNode) {
+		m_applicationNode->Release();
 	}
+}
+
+IDebugApplicationNode* PendingScriptLoad::getApplicationNode() {
+	return m_applicationNode;
 }
 
 /* IDebugDocumentTextEvents */
@@ -38,7 +42,7 @@ STDMETHODIMP PendingScriptLoad::onDestroy() {
 
 STDMETHODIMP PendingScriptLoad::onInsertText(ULONG cCharacterPosition, ULONG cNumToInsert) {
 	CComBSTR url = NULL;
-	HRESULT hr = m_document->GetName(DOCUMENTNAMETYPE_URL, &url);
+	HRESULT hr = m_applicationNode->GetName(DOCUMENTNAMETYPE_URL, &url);
 	if (FAILED(hr)) {
 		Logger::error("PendingScriptLoad::onInsertText(): GetName() failed", hr);
 		return S_OK;
@@ -68,9 +72,16 @@ STDMETHODIMP PendingScriptLoad::onUpdateDocumentAttributes(TEXT_DOC_ATTR textdoc
 
 /* PendingScriptLoad */
 
-bool PendingScriptLoad::init(IDebugDocument* document, CrossfireContext* context) {
+bool PendingScriptLoad::init(IDebugApplicationNode* applicationNode, CrossfireContext* context) {
+	CComPtr<IDebugDocument> document = NULL;
+	HRESULT hr = applicationNode->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("PendingScriptLoad.init(): GetDocument() failed", hr);
+		return false;
+	}
+
 	CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
-	HRESULT hr = document->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
+	hr = document->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
 	if (FAILED(hr)) {
 		Logger::error("PendingScriptLoad.init(): QI(IConnectionPointContainer) failed", hr);
 		return false;
@@ -89,15 +100,22 @@ bool PendingScriptLoad::init(IDebugDocument* document, CrossfireContext* context
 		return false;
 	}
 
-	document->AddRef();
-	m_document = document;
+	applicationNode->AddRef();
+	m_applicationNode = applicationNode;
 	m_context = context;
 	return true;
 }
 
 void PendingScriptLoad::unadvise() {
+	CComPtr<IDebugDocument> document = NULL;
+	HRESULT hr = m_applicationNode->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("PendingScriptLoad.unadvise(): GetDocument() failed", hr);
+		return;
+	}
+
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
-	HRESULT hr = m_document->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
+	hr = document->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
 	if (FAILED(hr)) {
 		Logger::error("PendingScriptLoad.unadvise() failed to QI for IID_IConnectionPointContainer", hr);
 		return;

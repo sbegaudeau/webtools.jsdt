@@ -38,7 +38,7 @@ interface IIEDebugger : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServerListener : IUnknown {
-	HRESULT navigate([in, string] OLECHAR* href, [in] boolean openNewTab);
+	HRESULT navigate([in, string] OLECHAR* url, [in] boolean openNewTab);
 	HRESULT serverStateChanged([in] int state, [in] unsigned int port);
 };
 [
@@ -52,12 +52,12 @@ interface ICrossfireServerListener : IUnknown {
 ]
 interface ICrossfireServer : IDispatch {
 	HRESULT addListener([in] DWORD processId, [in] ICrossfireServerListener* listener);
-	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* href);
+	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* url);
 	HRESULT contextDestroyed([in] DWORD processId);
 	HRESULT contextLoaded([in] DWORD processId);
 	HRESULT getPort([out] unsigned int* value);
 	HRESULT getState([out] int* value);
-	HRESULT registerContext([in] DWORD processId, [in, string] OLECHAR* href);
+	HRESULT registerContext([in] DWORD processId, [in, string] OLECHAR* url);
 	HRESULT removeListener([in] ICrossfireServerListener* listener);
 	HRESULT setCurrentContext([in] DWORD processId);
 	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);

@@ -69,7 +69,7 @@ public:
 	void STDMETHODCALLTYPE OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask);
 
 	/* ICrossfireServerListener */
-	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* href, boolean openNewTab);
+	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
 	virtual HRESULT STDMETHODCALLTYPE serverStateChanged(int state, unsigned int port);
 
 	/* IObjectWithSite */
@@ -85,6 +85,7 @@ private:
 	bool m_eventsHooked;
 	bool m_firstNavigate;
 	wchar_t* m_htmlToDisplay;
+	wchar_t* m_lastUrl;
 	ICrossfireServer* m_server;
 	int m_serverState;
 	IWebBrowser2* m_webBrowser;

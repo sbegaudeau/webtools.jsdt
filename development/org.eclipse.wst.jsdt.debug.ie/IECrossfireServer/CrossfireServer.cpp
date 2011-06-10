@@ -190,6 +190,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;
+	context->loadCompleted();
 	eventContextLoaded(context);
 	return S_OK;
 }
