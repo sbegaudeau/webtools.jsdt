@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -39,39 +38,6 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
  */
 public class CFStackFrame extends CFMirror implements StackFrame {
 
-	/**
-	 * Describes a scope
-	 */
-	class Scope {
-		Number idx = null;
-		Number fidx = null;
-		Number ref = null;
-		public Scope(Number idx, Number fidx, Number ref) {
-			this.idx = idx;
-			this.fidx = fidx;
-			this.ref = ref;
-		}
-		/* (non-Javadoc)
-		 * @see java.lang.Object#hashCode()
-		 */
-		public int hashCode() {
-			return idx.hashCode() + fidx.hashCode() + ref.hashCode();
-		}
-		
-		/* (non-Javadoc)
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
-		public boolean equals(Object obj) {
-			if(obj instanceof Scope) {
-				Scope s = (Scope) obj;
-				return idx.equals(s.idx) && fidx.equals(s.fidx) && ref.equals(s.ref);
-			}
-			return false;
-		}
-	}
-	
-	HashSet scopes = new HashSet();
-	
 	private int index = -1;
 	private String scriptid = null;
 	private String funcname = null;
@@ -100,10 +66,8 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		scriptid = (String) json.get(Attributes.URL);
 		funcname = (String) json.get(Attributes.FUNCTION_NAME);
 		
-		parseScopes((List) json.get(Attributes.SCOPES));
 		parseLocals((Map) json.get(Attributes.LOCALS));
-		//scope();
-		//allScopes();
+		parseScopes((List) json.get(Attributes.SCOPES));
 	}
 
 	/**
@@ -113,19 +77,21 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	void parseScopes(List list) {
 		if(list != null) {
+			if(vars == null) {
+				vars = new ArrayList(list.size());
+			}
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				Map map = (Map) i.next();
-				Scope s = new Scope(
-						(Number)map.get(Attributes.INDEX), 
-						(Number)map.get(Attributes.FRAME_INDEX), 
-						(Number) ((Map)map.get(Attributes.SCOPE)).get(Attributes.HANDLE));
-				scopes.add(s);
+				Map scope = (Map)map.get(Attributes.SCOPE);
+				if(scope != null) {
+					vars.add(0, new CFVariable(crossfire(), this, "Enclosing Scope", (Number) scope.get(Attributes.HANDLE), scope)); //$NON-NLS-1$
+				}
 			}
 		}
 	}
 	
 	/**
-	 * Read the local variable information from the json mapping
+	 * Read the local variable information from the JSON mapping
 	 * 
 	 * @param json
 	 */
@@ -345,17 +311,19 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	/**
 	 * Gets the scope for this frame
 	 */
-	void scope() {
+	void scope(int frameindex, int scopeindex) {
 		CFRequestPacket request = new CFRequestPacket(Commands.SCOPE, thread.id());
-		request.setArgument(Attributes.FRAME_INDEX, new Integer(index));
-		request.setArgument(Attributes.INDEX, new Integer(0));
+		request.setArgument(Attributes.FRAME_INDEX, new Integer(frameindex));
+		request.setArgument(Attributes.INDEX, new Integer(scopeindex));
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
-			Scope s = new Scope(
-					(Number)response.getBody().get(Attributes.INDEX), 
-					(Number)response.getBody().get(Attributes.FRAME_INDEX),
-					(Number) ((Map)response.getBody().get(Attributes.SCOPE)).get(Attributes.HANDLE));
-			scopes.add(s);
+			if(vars == null) {
+				vars = new ArrayList();
+			}
+			Map scope = (Map)response.getBody().get(Attributes.SCOPE);
+			if(scope != null) {
+				vars.add(0, new CFVariable(crossfire(), this, "Enclosing Scope", (Number) scope.get(Attributes.HANDLE), scope)); //$NON-NLS-1$
+			}
 		}
 		else if(TRACE) {
 			Tracing.writeString("VM [failed scopes request]: "+JSON.serialize(request)); //$NON-NLS-1$

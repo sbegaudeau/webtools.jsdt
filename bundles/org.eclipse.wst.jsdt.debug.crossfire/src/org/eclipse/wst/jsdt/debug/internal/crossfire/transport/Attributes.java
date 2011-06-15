@@ -238,6 +238,10 @@ public interface Attributes {
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
 	/**
+	 * the "toFrame" attribute
+	 */
+	public static final String TO_FRAME = "toFrame"; //$NON-NLS-1$
+	/**
 	 * The "tools" attribute
 	 */
 	public static final String TOOLS = "tools"; //$NON-NLS-1$
