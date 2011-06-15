@@ -106,10 +106,12 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			loc.put(Attributes.LINE, new Integer(location.lineNumber()));
 			loc.put(Attributes.URL, script.id());
 			request.setArgument(Attributes.LOCATION, loc);
+			Map attribs = new HashMap();
 			if (condition != null) {
-				request.setArgument(Attributes.CONDITION, condition);	
+				attribs.put(Attributes.CONDITION, condition);	
 			}
-			request.setArgument(Attributes.ENABLED, Boolean.TRUE);
+			attribs.put(Attributes.ENABLED, Boolean.TRUE);
+			request.setArgument(Attributes.ATTRIBUTES, attribs);
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
 				//process the response to get the id of the breakpoint
@@ -117,6 +119,9 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 				if(bp != null) {
 					Number id = (Number) bp.get(Attributes.HANDLE);
 					bpid = new Long(id.longValue());
+				}
+				else {
+					//TODO create a dummy breakpoint whose details can be filled in when an onToggleBreakpoint event is received
 				}
 			}
 		}
