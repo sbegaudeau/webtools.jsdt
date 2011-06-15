@@ -230,11 +230,11 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				parsedUnit.bits |= ASTNode.IsImplicitUnit;
 				parser.inferTypes(parsedUnit, this.options);
 				parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
+				if (sourceUnit instanceof SourceFile)
+					this.addCompilationUnit(sourceUnit, parsedUnit);
 			}
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
-			if (sourceUnit instanceof SourceFile)
-				this.addCompilationUnit(sourceUnit, parsedUnit);
 
 			// binding resolution
 			lookupEnvironment.completeTypeBindings(parsedUnit);
