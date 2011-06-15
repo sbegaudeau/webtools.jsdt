@@ -91,26 +91,74 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			Map bp = null;
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				bp = (Map) i.next();
-				try {
-					//TODO this works for now because we only handle breakpoints with url / line locations
-					//in the future we need to create based on location / type
-					Number id = (Number) bp.get(Attributes.HANDLE);
-					Map loc = (Map) bp.get(Attributes.LOCATION);
-					this.breakpointHandles.put(id, 
-							new RemoteBreakpoint(
-									this, 
-									id, 
-									(String)loc.get(Attributes.URL), 
-									((Number)loc.get(Attributes.LINE)).intValue(), 
-									((Boolean)bp.get(Attributes.ENABLED)).booleanValue(), 
-									(String)bp.get(Attributes.CONDITION), 
-									(String)bp.get(Attributes.TYPE)));
-				}
-				catch(Exception e) {}
+				addBreakpoint(bp);
 			}
 		}
 		else if(TRACE) {
 			Tracing.writeString("VM [failed getbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		}
+		HashMap map = new HashMap();
+		map.put(Attributes.CONDITION, "typeOf(foo) == undefined"); //$NON-NLS-1$
+		map.put(Attributes.ENABLED, Boolean.FALSE);
+		changeBreakpoint(new Integer(1), map);
+		getBreakpoint(new Integer(1));
+	}
+	
+	/**
+	 * Sends the <code>getbreakpoint</code> request for the given breakpoint handle
+	 * @param handle
+	 * @return the {@link RemoteBreakpoint} representing the request or <code>null</code> if the breakpoint could not be found
+	 */
+	public RemoteBreakpoint getBreakpoint(Number handle) {
+		CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINT, null);
+		request.setArgument(Attributes.HANDLE, handle);
+		CFResponsePacket response = sendRequest(request);
+		if(response.isSuccess()) {
+			addBreakpoint(response.getBody());
+		}
+		else if(TRACE) {
+			Tracing.writeString("VM [failed getbreakpoint request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		}
+		return (RemoteBreakpoint) breakpointHandles.get(handle);
+	}
+	
+	/**
+	 * Sends the <code>changebreakpoint</code> request for the given breakpoint handle to change the given map of attributes
+	 * @param handle
+	 * @param attributes
+	 * @return the changed {@link RemoteBreakpoint} object or <code>null</code> if the request failed
+	 */
+	public RemoteBreakpoint changeBreakpoint(Number handle, Map attributes) {
+		CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, null);
+		request.setArgument(Attributes.HANDLE, handle);
+		request.setArgument(Attributes.ATTRIBUTES, attributes);
+		CFResponsePacket response = sendRequest(request);
+		if(response.isSuccess()) {
+			updateBreakpoint(response.getBody());
+		}
+		else if(TRACE) {
+			Tracing.writeString("VM [failed getbreakpoint request]: "+JSON.serialize(request)); //$NON-NLS-1$
+		}
+		return (RemoteBreakpoint) breakpointHandles.get(handle);
+	}
+	
+	/**
+	 * Add the breakpoint described by the given JSON to the handles list
+	 * @param json
+	 */
+	public void addBreakpoint(Map json) {
+		if(json != null) {
+			Number id = (Number) json.get(Attributes.HANDLE);
+			if(id != null) {
+				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(id);
+				if(bp == null) {
+					bp = new RemoteBreakpoint(this, 
+							id, 
+							(Map) json.get(Attributes.LOCATION),
+							(Map) json.get(Attributes.ATTRIBUTES), 
+							(String)json.get(Attributes.TYPE));
+				}
+			}
 		}
 	}
 	

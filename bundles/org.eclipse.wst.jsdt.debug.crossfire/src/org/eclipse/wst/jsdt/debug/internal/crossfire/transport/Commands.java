@@ -26,9 +26,9 @@ public interface Commands {
 	 */
 	public static final String CHANGE_BREAKPOINT = "changebreakpoint"; //$NON-NLS-1$
 	/**
-	 * The "clearbreakpoint" command
+	 * The "deletebreakpoint" command
 	 */
-	public static final String CLEAR_BREAKPOINT = "clearbreakpoint"; //$NON-NLS-1$
+	public static final String DELETE_BREAKPOINT = "deletebreakpoint"; //$NON-NLS-1$
 	/**
 	 * The "continue" command
 	 */

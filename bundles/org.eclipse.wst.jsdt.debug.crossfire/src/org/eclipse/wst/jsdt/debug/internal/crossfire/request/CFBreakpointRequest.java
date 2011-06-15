@@ -100,7 +100,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 		if(enabled) {
 			//send setbreakpoint request
 			CFScriptReference script = (CFScriptReference) location.scriptReference();
-			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, script.context());
+			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, null);
 			request.setArgument(Attributes.TYPE, Attributes.LINE);
 			Map loc = new HashMap();
 			loc.put(Attributes.LINE, new Integer(location.lineNumber()));
@@ -127,8 +127,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 		}
 		else if(bpid != null) {
 			//send clearbreakpoint request
-			CFScriptReference script = (CFScriptReference) location.scriptReference();
-			CFRequestPacket request = new CFRequestPacket(Commands.CLEAR_BREAKPOINT, script.context());
+			CFRequestPacket request = new CFRequestPacket(Commands.DELETE_BREAKPOINT, null);
 			request.getArguments().put(Attributes.HANDLE, bpid);
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {

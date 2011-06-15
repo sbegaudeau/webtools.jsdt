@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 
@@ -31,29 +34,23 @@ public class RemoteBreakpoint implements Comparable {
 	
 	CFVirtualMachine vm = null;
 	Number id = null;
-	String url = null;
-	boolean enabled = false;
-	String condition = null;
-	int line = -1;
 	String kind = null;
+	Map location = null;
+	Map attributes = null;
 	
 	/**
 	 * Constructor
 	 * @param vm
 	 * @param id
-	 * @param url
-	 * @param line
-	 * @param enabled
-	 * @param condition
+	 * @param location
+	 * @param attributes
 	 * @param kind
 	 */
-	public RemoteBreakpoint(CFVirtualMachine vm, Number id, String url, int line, boolean enabled, String condition, String kind) {
+	public RemoteBreakpoint(CFVirtualMachine vm, Number id, Map location, Map attributes, String kind) {
 		this.vm = vm;
 		this.id = id;
-		this.url = url;
-		this.enabled = enabled;
-		this.condition = condition;
-		this.line = line;
+		this.location = location;
+		this.attributes = attributes;
 		this.kind = kind;
 	}
 	
@@ -68,42 +65,71 @@ public class RemoteBreakpoint implements Comparable {
 	 * @return the url
 	 */
 	public String getUrl() {
-		return url;
+		if(this.location != null) {
+			return (String) this.location.get(Attributes.URL);
+		}
+		return null;
 	}
 	
 	/**
 	 * @return the line
 	 */
 	public int getLine() {
-		return line;
+		if(this.location != null) {
+			Number line = (Number) this.location.get(Attributes.LINE);
+			if(line != null) {
+				return line.intValue();
+			}
+		}
+		return -1;
 	}
 	
 	/**
 	 * @return the condition
 	 */
 	public String getCondition() {
-		return condition;
+		if(this.attributes != null) {
+			return (String) this.attributes.get(Attributes.CONDITION);
+		}
+		return null;
 	}
 	
 	/**
 	 * @param condition the condition to set
 	 */
 	public void setCondition(String condition) {
-		this.condition = condition;
+		if(this.attributes == null) {
+			this.attributes = new HashMap();
+		}
+		if(condition != null) {
+			this.attributes.put(Attributes.CONDITION, condition);
+		}
+		else {
+			this.attributes.remove(Attributes.CONDITION);
+		}
 	}
 	
 	/**
 	 * @return the enabled
 	 */
 	public boolean isEnabled() {
-		return enabled;
+		if(this.attributes != null) {
+			Boolean bool = (Boolean) this.attributes.get(Attributes.ENABLED);
+			if(bool != null) {
+				return bool.booleanValue();
+			}
+		}
+		return false;
 	}
 	
 	/**
 	 * @param enabled the enabled to set
 	 */
 	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		if(this.attributes == null) {
+			this.attributes = new HashMap();
+		}
+		this.attributes.put(Attributes.ENABLED, Boolean.valueOf(enabled));
 	}
 	
 	/**
@@ -119,16 +145,66 @@ public class RemoteBreakpoint implements Comparable {
 	public boolean equals(Object o) {
 		if(o instanceof RemoteBreakpoint) {
 			RemoteBreakpoint bp = (RemoteBreakpoint) o;
-			return id.equals(bp.id) && url.equals(bp.url) && line == bp.line && kind.equals(bp.kind);
+			return id.equals(bp.id) && mapsEqual(location, bp.location) && mapsEqual(attributes, bp.attributes) && kind.equals(bp.kind);
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns if the given maps are equal. 
+	 * <br><br>
+	 * They are considered equal iff:
+	 * <ul>
+	 * <li>both maps are <code>null</code></li>
+	 * <li>the maps have the same number of values and the those values are equal using the default {@link #equals(Object)} method</li>
+	 * </ul>
+	 * 
+	 * @param m1
+	 * @param m2
+	 * @return <code>true</code> if the maps are equal <code>false</code> otherwise
+	 */
+	boolean mapsEqual(Map m1, Map m2) {
+		if(m1 == null && m2 == null) {
+			return true;
+		}
+		if(m1 == null ^ m2 == null) {
+			return false;
+		}
+		if(m1.size() != m2.size()) {
+			return false;
+		}
+		Entry entry = null;
+		for (Iterator i = m1.entrySet().iterator(); i.hasNext();) {
+			entry = (Entry) i.next();
+			Object val = m2.get(entry.getKey());
+			if(val == null) {
+				return false;
+			}
+			if(!val.equals(entry.getValue())) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return id.hashCode() + url.hashCode() + line + kind.hashCode();
+		return id.hashCode() + mapHashCode(location) + mapHashCode(attributes) + kind.hashCode();
+	}
+	
+	/**
+	 * Computes the hash code for the given map
+	 * @param m
+	 * @return the hash code to use for the given map
+	 */
+	int mapHashCode(Map m) {
+		int hashcode = 0;
+		for (Iterator i = m.values().iterator(); i.hasNext();) {
+			hashcode += i.next().hashCode();
+		}
+		return hashcode;
 	}
 	
 	/* (non-Javadoc)
@@ -137,7 +213,7 @@ public class RemoteBreakpoint implements Comparable {
 	public int compareTo(Object o) {
 		if(o instanceof RemoteBreakpoint) {
 			RemoteBreakpoint bp = (RemoteBreakpoint) o;
-			return this.url.compareTo(bp.url);
+			return this.kind.compareTo(bp.kind);
 		}
 		return 0;
 	}
@@ -148,10 +224,6 @@ public class RemoteBreakpoint implements Comparable {
 	public String toString() {
 		StringBuffer buff = new StringBuffer("RemoteBreakpoint\n"); //$NON-NLS-1$
 		buff.append("\t[handle: ").append(id.toString()).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		buff.append("\t[url: ").append(url).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		buff.append("\t[line: ").append(line).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		buff.append("\t[enabled: ").append(enabled).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
-		buff.append("\t[condition: ").append(condition).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		return super.toString();
 	}
 	
