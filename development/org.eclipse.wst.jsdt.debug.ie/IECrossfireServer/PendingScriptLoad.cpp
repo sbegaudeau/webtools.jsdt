@@ -20,9 +20,7 @@ PendingScriptLoad::PendingScriptLoad() {
 }
 
 PendingScriptLoad::~PendingScriptLoad() {
-	if (m_cookie) {
-		unadvise();
-	}
+	unadvise();
 	if (m_applicationNode) {
 		m_applicationNode->Release();
 	}
@@ -35,20 +33,11 @@ IDebugApplicationNode* PendingScriptLoad::getApplicationNode() {
 /* IDebugDocumentTextEvents */
 
 STDMETHODIMP PendingScriptLoad::onDestroy() {
-	//Logger::error("PendingScriptLoad::onDestroy");
-	unadvise();
 	return S_OK;
 }
 
 STDMETHODIMP PendingScriptLoad::onInsertText(ULONG cCharacterPosition, ULONG cNumToInsert) {
-	CComBSTR url = NULL;
-	HRESULT hr = m_applicationNode->GetName(DOCUMENTNAMETYPE_URL, &url);
-	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad::onInsertText(): GetName() failed", hr);
-		return S_OK;
-	}
-
-	if (m_context->scriptLoaded(&std::wstring(url), NULL, true)) {
+	if (m_context->scriptLoaded(m_applicationNode)) {
 		unadvise();
 	}
 	return S_OK;
@@ -90,13 +79,13 @@ bool PendingScriptLoad::init(IDebugApplicationNode* applicationNode, CrossfireCo
 	CComPtr<IConnectionPoint> connectionPoint = NULL;
 	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugDocumentTextEvents, &connectionPoint);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.init(): FindConnectionPoint failed", hr);
+		Logger::error("PendingScriptLoad.init(): FindConnectionPoint() failed", hr);
 		return false;
 	}
 
 	hr = connectionPoint->Advise(static_cast<IPendingScriptLoad*>(this), &m_cookie);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.init(): Advise failed", hr);
+		Logger::error("PendingScriptLoad.init(): Advise() failed", hr);
 		return false;
 	}
 
@@ -107,28 +96,32 @@ bool PendingScriptLoad::init(IDebugApplicationNode* applicationNode, CrossfireCo
 }
 
 void PendingScriptLoad::unadvise() {
+	if (!m_cookie) {
+		return;
+	}
+
 	CComPtr<IDebugDocument> document = NULL;
 	HRESULT hr = m_applicationNode->GetDocument(&document);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.unadvise(): GetDocument() failed", hr);
+		/* The node is already destroyed, so nothing to unadvise on */
 		return;
 	}
 
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
 	hr = document->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.unadvise() failed to QI for IID_IConnectionPointContainer", hr);
+		Logger::error("PendingScriptLoad.unadvise(): QI(IID_IConnectionPointContainer) failed", hr);
 		return;
 	}
 	CComPtr <IConnectionPoint> connectionPoint = NULL;
 	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugDocumentTextEvents,&connectionPoint);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.unadvise(): FindConnectionPoint failed", hr);
+		Logger::error("PendingScriptLoad.unadvise(): FindConnectionPoint() failed", hr);
 		return;
 	}
 	hr = connectionPoint->Unadvise(m_cookie);
 	if (FAILED(hr)) {
-		Logger::error("PendingScriptLoad.unadvise(): Unadvise failed", hr);
+		Logger::error("PendingScriptLoad.unadvise(): Unadvise() failed", hr);
 		return;
 	}
 

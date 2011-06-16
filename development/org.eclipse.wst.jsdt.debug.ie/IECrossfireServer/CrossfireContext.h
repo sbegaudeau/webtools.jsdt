@@ -40,9 +40,9 @@ public:
 	virtual DWORD getProcessId();
 	virtual wchar_t* getUrl();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
-	virtual void loadCompleted();
 	virtual bool performRequest(CrossfireRequest* request);
-	virtual bool scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry);
+	virtual bool scriptInitialized(IDebugApplicationNode *applicationNode);
+	virtual bool scriptLoaded(IDebugApplicationNode *applicationNode);
 	virtual void sendEvent(CrossfireEvent* eventObj);
 	virtual void setRunning(bool value);
 
@@ -68,10 +68,12 @@ private:
 	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
 	virtual bool createValueForObject(JSObject* object, Value** _value);
 	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
-	virtual bool findNode(wchar_t* name, IDebugApplicationNode* startNode, IDebugApplicationNode** _value);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
+	virtual wchar_t* getScriptId(IDebugApplicationNode* node);
+	virtual IDebugApplicationNode* getScriptNode(wchar_t* name);
 	virtual bool hookDebugger();
+	virtual bool registerScript(IDebugApplicationNode* applicationNode);
 	virtual bool unhookDebugger();
 
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
@@ -82,11 +84,11 @@ private:
 	bool m_debuggerHooked;
 	wchar_t* m_name;
 	unsigned int m_nextObjectHandle;
-	unsigned int m_nextUnnamedUrlIndex;
 	std::map<unsigned int, JSObject*>* m_objects;
-	std::vector<PendingScriptLoad*>* m_pendingScriptLoads;
+	std::map<IDebugApplicationNode*, PendingScriptLoad*>* m_pendingScriptLoads;
 	DWORD m_processId;
 	bool m_running;
+	std::map<std::wstring, IDebugApplicationNode*>* m_scriptNodes;
 	CrossfireServer* m_server;
 	wchar_t* m_url;
 
@@ -143,7 +145,6 @@ private:
 	static const wchar_t* COMMAND_SCRIPTS;
 	static const wchar_t* KEY_SCRIPTS;
 	virtual bool commandScripts(Value* arguments, Value** _responseBody);
-	virtual void addScriptsToArray(IDebugApplicationNode* node, bool includeSource, Value* arrayValue);
 
 	/* command: suspend */
 	static const wchar_t* COMMAND_SUSPEND;
@@ -203,6 +204,8 @@ private:
 	static const wchar_t* KEY_LINEOFFSET;
 	static const wchar_t* KEY_SOURCE;
 	static const wchar_t* KEY_SOURCELENGTH;
+	static const wchar_t* VALUE_EVALCODE;
+	static const wchar_t* VALUE_EVALLEVEL;
 	static const wchar_t* VALUE_TOPLEVEL;
 
 	/* other */

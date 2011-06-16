@@ -117,6 +117,8 @@ const wchar_t* CrossfireContext::KEY_LINECOUNT = L"lineCount";
 const wchar_t* CrossfireContext::KEY_LINEOFFSET = L"lineOffset";
 const wchar_t* CrossfireContext::KEY_SOURCE = L"source";
 const wchar_t* CrossfireContext::KEY_SOURCELENGTH = L"sourceLength";
+const wchar_t* CrossfireContext::VALUE_EVALCODE = L"eval code";
+const wchar_t* CrossfireContext::VALUE_EVALLEVEL = L"eval-level";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
 /* constants */
@@ -145,10 +147,10 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 	m_debugApplicationThread = NULL;
 	m_debuggerHooked = false;
 	m_nextObjectHandle = 1;
-	m_nextUnnamedUrlIndex = 1;
 	m_objects = new std::map<unsigned int, JSObject*>;
-	m_pendingScriptLoads = new std::vector<PendingScriptLoad*>;
+	m_pendingScriptLoads = new std::map<IDebugApplicationNode*, PendingScriptLoad*>;
 	m_running = true;
+	m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
 	m_url = _wcsdup(url);
 
 	IEDebugger* ieDebugger = static_cast<IEDebugger*>(m_debugger);
@@ -167,14 +169,23 @@ CrossfireContext::~CrossfireContext() {
 	}
 
 	if (m_pendingScriptLoads) {
-		std::vector<PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
+		std::map<IDebugApplicationNode*, PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
 		while (iterator != m_pendingScriptLoads->end()) {
-			(*iterator)->Release();
+			iterator->first->Release();
+			iterator->second->Release();
 			iterator++;
 		}
 		delete m_pendingScriptLoads;
 	}
 
+	if (m_scriptNodes) {
+		std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+		while (iterator != m_scriptNodes->end()) {
+			iterator->second->Release();
+			iterator++;
+		}
+		delete m_scriptNodes;
+	}
 
 	if (m_cpcApplicationNodeEvents) {
 		CComPtr<IRemoteDebugApplication> debugApplication = NULL;
@@ -240,8 +251,8 @@ bool CrossfireContext::clearBreakpoint(unsigned int handle) {
 	}
 	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
 
-	CComPtr<IDebugApplicationNode> node = NULL;
-	if (!findNode((wchar_t*)breakpoint->getUrl()->c_str(), NULL, &node)) {
+	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+	if (!node) {
 		Logger::error("CrossfireContext.clearBreakpoint(): unknown target url");
 		return false;
 	}
@@ -437,13 +448,13 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 				DEBUG_TEXT_RETURNVALUE,
 				&expression);
 			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText failed [2]", hr);
+				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText() failed [2]", hr);
 				return false;
 			}
 
 			hr = expression->Start(NULL);
 			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): Start failed", hr);
+				Logger::error("CrossfireContext.createValueForFrame(): Start() failed", hr);
 				return false;
 			}
 
@@ -464,11 +475,11 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 				CComPtr<IDebugProperty> debugProperty2 = NULL;
 				hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
 				if (FAILED(hr)) {
-					Logger::error("CrossfireContext.createValueForFrame(): GetResultAsDebugProperty failed", hr);
+					Logger::error("CrossfireContext.createValueForFrame(): GetResultAsDebugProperty() failed", hr);
 					return false;
 				}
 				if (FAILED(evalResult)) {
-					Logger::error("CrossfireContext.createValueForFrame(): evaluation of GetResultAsDebugProperty failed", evalResult);
+					Logger::error("CrossfireContext.createValueForFrame(): evaluation of GetResultAsDebugProperty() failed", evalResult);
 					return false;
 				}
 
@@ -499,7 +510,7 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 				locals->addObjectValue(KEY_THIS, &value_this2);
 			}
 
-			hr = document->GetName(DOCUMENTNAMETYPE_URL, &scriptId);
+			hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &scriptId);
 			if (FAILED(hr)) {
 				Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
 				return false;
@@ -644,15 +655,14 @@ bool CrossfireContext::createValueForObject(JSObject* object, Value** _value) {
 bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
 
-	CComBSTR url = L"NULL";
-	HRESULT hr = node->GetName(DOCUMENTNAMETYPE_URL, &url);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForScript(): GetName() failed", hr);
+	wchar_t* id = getScriptId(node);
+	if (!id) {
+		Logger::error("CrossfireContext.createValueForScript(): unknown script");
 		return false;
 	}
 
 	CComPtr<IDebugDocument> document = NULL;
-	hr = node->GetDocument(&document);
+	HRESULT hr = node->GetDocument(&document);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): GetDocument() failed", hr);
 		return false;
@@ -677,12 +687,16 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	}
 
 	Value* result = new Value();
-	result->addObjectValue(/*KEY_ID*/ L"url", &Value(url)); // TODO
+	result->addObjectValue(/*KEY_ID*/ L"url", &Value(id)); // TODO
 	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
 	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0));
 	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numChars));
 	result->addObjectValue(KEY_LINECOUNT, &Value((double)numLines));
-	result->addObjectValue(KEY_TYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
+	if (wcsstr(id, VALUE_EVALCODE)) {
+		result->addObjectValue(KEY_TYPE, &Value(VALUE_EVALLEVEL)); // TODO right?
+	} else {
+		result->addObjectValue(KEY_TYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
+	}
 
 	if (includeSource) {
 		wchar_t* sourceChars = new wchar_t[numChars + 1];
@@ -699,59 +713,6 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 
 	*_value = result;
 	return true;
-}
-
-bool CrossfireContext::findNode(wchar_t* name, IDebugApplicationNode* startNode, IDebugApplicationNode** _value) {
-	*_value = NULL;
-
-	if (!startNode) {
-		CComPtr<IRemoteDebugApplication> application = NULL;
-		if (!getDebugApplication(&application)) {
-			return false;
-		}
-
-		CComPtr<IDebugApplicationNode> rootNode = NULL;
-		HRESULT hr = application->GetRootNode(&startNode);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext::findNode: GetRootNode() failed", hr);
-			return false;
-		}
-	}
-
-	CComBSTR url = NULL;
-	if (SUCCEEDED(startNode->GetName(DOCUMENTNAMETYPE_URL, &url))) {
-		if (wcscmp(std::wstring(url).c_str(), name) == 0) {
-			startNode->AddRef();
-			*_value = startNode;
-			return true;
-		}
-	}
-
-	CComPtr<IEnumDebugApplicationNodes> children = NULL;
-	HRESULT	hr = startNode->EnumChildren(&children);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.findNode(): EnumChildren() failed", hr);
-		return false;
-	}
-
-	ULONG fetched = 0;
-	do {
-		CComPtr<IDebugApplicationNode> current = NULL;
-		hr = children->Next(1, &current, &fetched);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.findNode(): Next() failed", hr);
-			continue;
-		}
-		if (fetched) {
-			IDebugApplicationNode* node = NULL;
-			if (findNode(name, current, &node)) {
-				*_value = node;
-				return true;
-			}
-		}
-	} while (fetched);
-
-	return false;
 }
 
 bool CrossfireContext::getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value) {
@@ -811,7 +772,7 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
     CComPtr<IDebugProgramProvider2> pPDM;
     HRESULT hr = pPDM.CoCreateInstance(__uuidof(MsProgramProvider), NULL, CLSCTX_INPROC_SERVER);
     if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance failed", hr);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance() failed", hr);
         return false;
     }
 
@@ -824,11 +785,11 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 	PROVIDER_PROCESS_DATA processData;
     hr = pPDM->GetProviderProcessData(PFLAG_GET_PROGRAM_NODES | PFLAG_DEBUGGEE | PFLAG_ATTACHED_TO_DEBUGGEE, NULL, processId, filter, &processData);
 	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData failed", hr);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData() failed", hr);
         return false;
 	}
 	if (processData.ProgramNodes.dwCount != 1) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData returned program nodes count != 1", processData.ProgramNodes.dwCount);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData() returned program nodes count != 1", processData.ProgramNodes.dwCount);
         return false;
 	}
 
@@ -836,14 +797,14 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 	CComPtr<IDebugProviderProgramNode2> providerProgramNode;
 	hr = node->QueryInterface(__uuidof(IDebugProviderProgramNode2), (void**)&providerProgramNode);
 	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): QueryInterface failed", hr);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IDebugProviderProgramNode2) failed", hr);
         return false;
 	}
 
 	CComPtr<IRemoteDebugApplication> debugApplication;
 	hr = providerProgramNode->UnmarshalDebuggeeInterface(IID_IRemoteDebugApplication, (void**)&debugApplication);
 	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): UnmarshalDebuggeeInterface failed", hr);
+        Logger::error("CrossfireContext.getDebugApplicationThread(): UnmarshalDebuggeeInterface() failed", hr);
         return false;
 	}
 
@@ -897,6 +858,26 @@ DWORD CrossfireContext::getProcessId() {
 	return m_processId;
 }
 
+wchar_t* CrossfireContext::getScriptId(IDebugApplicationNode* node) {
+	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+	while (iterator != m_scriptNodes->end()) {
+		if (iterator->second == node) {
+			return (wchar_t*)iterator->first.c_str();
+		}
+		iterator++;
+	}
+	return NULL;
+}
+
+IDebugApplicationNode* CrossfireContext::getScriptNode(wchar_t* name) {
+	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(name);
+	if (iterator == m_scriptNodes->end()) {
+		return NULL;
+	}
+
+	return iterator->second;
+}
+
 wchar_t* CrossfireContext::getUrl() {
 	return m_url;
 }
@@ -944,30 +925,6 @@ void CrossfireContext::installBreakpoints(std::vector<Value*>* breakpoints) {
 		}
 		iterator++;
 	}
-}
-
-void CrossfireContext::loadCompleted() {
-	if (m_pendingScriptLoads->empty()) {
-		return;
-	}
-
-	std::vector<PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
-	while (iterator != m_pendingScriptLoads->end()) {
-		IDebugApplicationNode* node = (*iterator)->getApplicationNode();
-		Value* script = NULL;
-		if (createValueForScript(node, false, false, &script)) {
-			CrossfireEvent onScriptEvent;
-			onScriptEvent.setName(EVENT_ONSCRIPT);
-			Value data;
-			data.addObjectValue(KEY_SCRIPT, script);
-			delete script;
-			onScriptEvent.setData(&data);
-			sendEvent(&onScriptEvent);
-		}
-		(*iterator)->Release();
-		iterator++;
-	}
-	m_pendingScriptLoads->clear();
 }
 
 bool CrossfireContext::performRequest(CrossfireRequest* request) {
@@ -1025,56 +982,116 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	return true;
 }
 
-bool CrossfireContext::scriptLoaded(std::wstring* url, IDebugApplicationNode *applicationNode, bool isRetry) {
-	if (!applicationNode) {
-		if (!findNode((wchar_t*)url->c_str(), NULL, &applicationNode)) {
+bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
+	CComBSTR value = NULL;
+	wchar_t* id = NULL;
+	HRESULT hr = applicationNode->GetName(DOCUMENTNAMETYPE_URL, &value);
+	if (SUCCEEDED(hr)) {
+		id = value.m_str;
+	} else {
+		/*
+		 * Failure to get the URL indicates that the node represents something like a JScript
+		 * block or eval code.  For these cases get the node's title instead and append an
+		 * index which will uniquely distinguish it from other nodes of a similar kind.
+		 */
+		hr = applicationNode->GetName(DOCUMENTNAMETYPE_TITLE, &value);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
 			return false;
+		} else {
+			id = value.m_str;
 		}
 	}
 
+	/*
+	 * There could be another script with the same id already registered for id's that
+	 * are not urls.  In this case append a qualifier to the id to make it unique.
+	 */
+	int qualifierIndex = 1;
+	std::wstring key(id);
+	applicationNode->AddRef();
+	while (true) {
+		if (m_scriptNodes->insert(std::pair<std::wstring, IDebugApplicationNode*>(key, applicationNode)).second) {
+			/* script was successfully inserted */
+			break;
+		}
+		key.assign(id);
+		key += wchar_t(' ');
+		key += wchar_t('[');
+		wchar_t qualifierString[4];
+		_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
+		key += qualifierString;
+		key += wchar_t(']');
+	}
+	
+	return true;
+}
+
+bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode) {
+	registerScript(applicationNode);
+
+	if (!scriptLoaded(applicationNode)) {
+		/*
+		 * The script's content has not been loaded yet, so create a listener
+		 * object that will invoke #scriptLoaded() when this happens
+		 */
+		CComObject<PendingScriptLoad>* pendingScriptLoad = NULL;
+		HRESULT hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.scriptInitialized(): CreateInstance(CLSID_PendingScriptLoad) failed [1]", hr);
+			return false;
+		}
+
+		if (pendingScriptLoad->init(applicationNode, this)) {
+			applicationNode->AddRef();
+			pendingScriptLoad->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+			m_pendingScriptLoads->insert(std::pair<IDebugApplicationNode*, PendingScriptLoad*>(applicationNode, pendingScriptLoad));
+		}
+	}
+
+	return true;
+}
+
+bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 	CrossfireBPManager* bpManager = m_server->getBreakpointManager();
+
+	wchar_t* id = getScriptId(applicationNode);
+	if (!id) {
+		Logger::error("CrossfireContext.scriptLoaded(): unknown script");
+		return false;
+	}
+
 	/*
 	 * Incoming IBreakpointTarget method invocations should always be for this
 	 * application node, so store it temporarily so that's it's easily accessible,
 	 * rather than repeatedly looking it up for each IBreakpointTarget invocation.
 	 */
 	m_currentScriptNode = applicationNode;
-	bpManager->setBreakpointsForScript(url, this);
+	bpManager->setBreakpointsForScript(&std::wstring(id), this);
 	m_currentScriptNode = NULL;
 
 	Value* script = NULL;
-	if (createValueForScript(applicationNode, false, true, &script)) {
-		CrossfireEvent onScriptEvent;
-		onScriptEvent.setName(EVENT_ONSCRIPT);
-		Value data;
-		data.addObjectValue(KEY_SCRIPT, script);
-		delete script;
-		onScriptEvent.setData(&data);
-		sendEvent(&onScriptEvent);
-		return true;
-	}
-
-	if (isRetry) {
+	if (!createValueForScript(applicationNode, false, true, &script)) {
+		/* the script's content has probably not loaded yet */
 		return false;
 	}
 
-	/*
-	 * The script's content has not been loaded yet, so create a listener object
-	 * that will call this method again when this script has been loaded
-	 */
-	CComObject<PendingScriptLoad>* pendingScriptLoad = NULL;
-	HRESULT hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.scriptLoaded(): CreateInstance(CLSID_PendingScriptLoad) failed [1]", hr);
-		return false;
+	/* Ensure that there is not a PendingScriptLoad remaining for this node */
+	std::map<IDebugApplicationNode*, PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->find(applicationNode);
+	if (iterator != m_pendingScriptLoads->end()) {
+		iterator->first->Release();
+		iterator->second->Release();
+		m_pendingScriptLoads->erase(iterator);
 	}
 
-	if (pendingScriptLoad->init(applicationNode, this)) {
-		pendingScriptLoad->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-		m_pendingScriptLoads->push_back(pendingScriptLoad);
-	}
-
-	return false;
+	CrossfireEvent onScriptEvent;
+	onScriptEvent.setName(EVENT_ONSCRIPT);
+	Value data;
+	data.addObjectValue(KEY_SCRIPT, script);
+	delete script;
+	onScriptEvent.setData(&data);
+	sendEvent(&onScriptEvent);
+	return true;
 }
 
 void CrossfireContext::sendEvent(CrossfireEvent* eventObj) {
@@ -1123,8 +1140,8 @@ bool CrossfireContext::setBreakpointEnabled(unsigned int handle, bool enabled) {
 	}
 	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
 
-	CComPtr<IDebugApplicationNode> node = NULL;
-	if (!findNode((wchar_t*)breakpoint->getUrl()->c_str(), NULL, &node)) {
+	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+	if (!node) {
 		Logger::error("CrossfireContext.setBreakpointEnabled(): unknown target url");
 		return false;
 	}
@@ -1192,11 +1209,12 @@ bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bo
 //		return true;
 //	}
 
-	CComPtr<IDebugApplicationNode> node = NULL;
+	IDebugApplicationNode* node = NULL;
 	if (m_currentScriptNode) {
 		node = m_currentScriptNode;
 	} else {
-		if (!findNode((wchar_t*)breakpoint->getUrl()->c_str(), NULL, &node)) {
+		node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+		if (!node) {
 			Logger::error("CrossfireContext.setLineBreakpoint(): unknown target url");
 			return false;
 		}
@@ -1578,7 +1596,7 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 		DEBUG_TEXT_ISEXPRESSION | DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_ALLOWBREAKPOINTS | DEBUG_TEXT_ALLOWERRORREPORT,
 		&expression);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): ParseLanguageText failed", hr);
+		Logger::error("CrossfireContext.commandEvaluate(): ParseLanguageText() failed", hr);
 		return false;
 	}
 
@@ -1734,8 +1752,8 @@ bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
 		includeSource = value_includeSource->getBooleanValue();
 	}
 
-	CComPtr<IDebugApplicationNode> node = NULL;
-	if (!findNode((wchar_t*)id->c_str(), NULL, &node)) {
+	IDebugApplicationNode* node = getScriptNode((wchar_t*)id->c_str());
+	if (!node) {
 		Logger::error("'script' command specifies an unknown script id");
 		return false;
 	}
@@ -1763,54 +1781,21 @@ bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
 		includeSource = value_includeSource->getBooleanValue();
 	}
 
-	CComPtr<IRemoteDebugApplication> application = NULL;
-	if (!getDebugApplication(&application)) {
-		return false;
-	}
-
-	CComPtr<IDebugApplicationNode> rootNode = NULL;
-	HRESULT hr = application->GetRootNode(&rootNode);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandScripts(): GetRootNode() failed", hr);
-		return false;
-	}
-
 	Value scriptsArray;
 	scriptsArray.setType(TYPE_ARRAY);
-	addScriptsToArray(rootNode, includeSource, &scriptsArray);
-
+	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+	while (iterator != m_scriptNodes->end()) {
+		Value* value = NULL;
+		if (createValueForScript(iterator->second, includeSource, false, &value)) {
+			scriptsArray.addArrayValue(value);
+			delete value;
+		}
+		iterator++;
+	}
 	Value* result = new Value();
 	result->addObjectValue(KEY_SCRIPTS, &scriptsArray);
 	*_responseBody = result;
 	return true;
-}
-
-void CrossfireContext::addScriptsToArray(IDebugApplicationNode* node, bool includeSource, Value* scriptsArray) {
-	Value* value_script = NULL;
-	if (createValueForScript(node, includeSource, false, &value_script)) {
-		scriptsArray->addArrayValue(value_script);
-		delete value_script;
-	}
-
-	CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
-	HRESULT hr = node->EnumChildren(&nodes);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.addScriptsToArray(): EnumChildren() failed", hr);
-		return;
-	}
-
-	ULONG fetched = 0;
-	do {
-		CComPtr<IDebugApplicationNode> current = NULL;
-		hr = nodes->Next(1, &current, &fetched);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.addScriptsToArray(): Next() failed", hr);
-		} else {
-			if (fetched) {
-				addScriptsToArray(current, includeSource, scriptsArray);
-			}
-		}
-	} while (fetched);
 }
 
 bool CrossfireContext::commandSuspend(Value* arguments, Value** _responseBody) {

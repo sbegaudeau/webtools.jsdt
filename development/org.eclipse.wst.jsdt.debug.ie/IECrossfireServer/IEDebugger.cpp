@@ -135,7 +135,7 @@ STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebu
 	}
 
 	CComBSTR bstrUrl;
-	hr = document->GetName(DOCUMENTNAMETYPE_URL, &bstrUrl);
+	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 	if (FAILED(hr)) {
 		Logger::error("'onHandleBreakPoint' GetName() failed", hr);
 		return S_OK;
@@ -192,7 +192,7 @@ HRESULT IEDebugger::handleError(IActiveScriptErrorDebug *pScriptErrorDebug) {
 		hr = documentContext->GetDocument(&document);
 		if (SUCCEEDED(hr)) {
 			CComBSTR bstrUrl;
-			hr = document->GetName(DOCUMENTNAMETYPE_URL, &bstrUrl);
+			hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 			if (SUCCEEDED(hr)) {
 				error.addObjectValue(KEY_FILENAME, &Value(bstrUrl));
 			}
@@ -253,30 +253,32 @@ STDMETHODIMP IEDebugger::BringDocumentContextToTop(IDebugDocumentContext *pddc) 
 /* IDebugApplicationNodeEvents */
 
 STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
-	CComBSTR url = NULL;
-	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_URL, &url))) {
-		return S_OK;
-	}
-
-	m_context->scriptLoaded(&std::wstring(url), prddpChild, false);
+	m_context->scriptInitialized(prddpChild);
 
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
 	HRESULT hr = prddpChild->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
 	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild failed to QI for IID_IConnectionPointContainer", hr);
+		Logger::error("IEDebugger.onAddChild(): QI(IID_IConnectionPointContainer) failed", hr);
 		return S_FALSE;
 	}
 	CComPtr <IConnectionPoint> nodeConnectionPoint = NULL;
 	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
 	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild FindConnectionPoint failed", hr);
+		Logger::error("IEDebugger.onAddChild(): FindConnectionPoint() failed", hr);
 		return S_FALSE;
 	}
 
 	DWORD connectionPointCookie = 0;
 	hr = nodeConnectionPoint->Advise(static_cast<IIEDebugger*>(this), &connectionPointCookie);
 	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild Advise failed", hr);
+		Logger::error("IEDebugger.onAddChild(): Advise() failed", hr);
+		return S_FALSE;
+	}
+
+	CComBSTR url = NULL;
+	hr = prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &url);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.onAddChild(): GetName() failed", hr);
 		return S_FALSE;
 	}
 	m_adviseCookies->insert(std::pair<std::wstring,DWORD>(std::wstring(url), connectionPointCookie));
@@ -285,20 +287,20 @@ STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
 
 STDMETHODIMP IEDebugger::onRemoveChild(IDebugApplicationNode *prddpChild) {
 	CComBSTR url = NULL;
-	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_URL, &url))) {
+	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &url))) {
 		return S_OK;
 	}
 
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
 	HRESULT hr = prddpChild->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
 	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onRemoveChild() failed to QI for IID_IConnectionPointContainer", hr);
+		Logger::error("IEDebugger.onRemoveChild(): QI(IID_IConnectionPointContainer) failed", hr);
 		return S_FALSE;
 	}
 	CComPtr <IConnectionPoint> nodeConnectionPoint = NULL;
 	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
 	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onRemoveChild() FindConnectionPoint failed", hr);
+		Logger::error("IEDebugger.onRemoveChild(): FindConnectionPoint() failed", hr);
 		return S_FALSE;
 	}
 
