@@ -417,13 +417,13 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 	CLSID clsid;
 	hr = IIDFromString(L"{47836AF4-3E0C-4995-8029-FF931C5A43FC}", &clsid);
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): IIDFromString failed[1]", hr);
+		Logger::error("IECrossfireBHO.initServer(): IIDFromString() failed[1]", hr);
 		return false;
 	}
 	IID iid;
 	hr = IIDFromString(L"{F48260BB-C061-4410-9CE1-4C5C7602690E}", &iid);
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): IIDFromString failed[2]", hr);
+		Logger::error("IECrossfireBHO.initServer(): IIDFromString() failed[2]", hr);
 		return false;
 	}
 	CComPtr<ICrossfireServerClass> serverClass = NULL;
