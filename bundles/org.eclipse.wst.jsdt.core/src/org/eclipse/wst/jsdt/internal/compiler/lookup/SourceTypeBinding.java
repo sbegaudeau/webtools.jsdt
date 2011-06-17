@@ -1151,7 +1151,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 				}
 				
 				newParameters[i] = parameterType;
-				arg.binding = new LocalVariableBinding(arg, parameterType,
+				if(arg.binding == null)
+					arg.binding = new LocalVariableBinding(arg, parameterType,
 						arg.modifiers, true);
 				
 			}
