@@ -36,6 +36,7 @@ class CrossfireContext : IBreakpointTarget {
 public:
 	CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server);
 	~CrossfireContext();
+	virtual IDebugApplicationNode* getLastInitializedScriptNode();
 	virtual wchar_t* getName();
 	virtual DWORD getProcessId();
 	virtual wchar_t* getUrl();
@@ -81,6 +82,7 @@ private:
 	IDebugApplicationNode* m_currentScriptNode;
 	IRemoteDebugApplicationThread* m_debugApplicationThread;
 	IIEDebugger* m_debugger;
+	IDebugApplicationNode* m_lastInitializedScriptNode;
 	bool m_debuggerHooked;
 	wchar_t* m_name;
 	unsigned int m_nextObjectHandle;

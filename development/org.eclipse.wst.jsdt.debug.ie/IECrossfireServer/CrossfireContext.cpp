@@ -146,6 +146,7 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 	m_server = server;
 	m_debugApplicationThread = NULL;
 	m_debuggerHooked = false;
+	m_lastInitializedScriptNode = NULL;
 	m_nextObjectHandle = 1;
 	m_objects = new std::map<unsigned int, JSObject*>;
 	m_pendingScriptLoads = new std::map<IDebugApplicationNode*, PendingScriptLoad*>;
@@ -166,6 +167,10 @@ CrossfireContext::~CrossfireContext() {
 			iterator++;
 		}
 		delete m_breakpoints;
+	}
+
+	if (m_lastInitializedScriptNode) {
+		m_lastInitializedScriptNode->Release();
 	}
 
 	if (m_pendingScriptLoads) {
@@ -797,7 +802,7 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 	CComPtr<IDebugProviderProgramNode2> providerProgramNode;
 	hr = node->QueryInterface(__uuidof(IDebugProviderProgramNode2), (void**)&providerProgramNode);
 	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IDebugProviderProgramNode2) failed", hr);
+		Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IDebugProviderProgramNode2) failed", hr);
         return false;
 	}
 
@@ -848,6 +853,10 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 	m_debugApplicationThread->AddRef();
 	*_value = m_debugApplicationThread;
 	return true;
+}
+
+IDebugApplicationNode* CrossfireContext::getLastInitializedScriptNode() {
+	return m_lastInitializedScriptNode;
 }
 
 wchar_t* CrossfireContext::getName() {
@@ -1028,6 +1037,12 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
 }
 
 bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode) {
+	if (m_lastInitializedScriptNode) {
+		m_lastInitializedScriptNode->Release();
+	}
+	m_lastInitializedScriptNode = applicationNode;
+	m_lastInitializedScriptNode->AddRef();
+
 	registerScript(applicationNode);
 
 	if (!scriptLoaded(applicationNode)) {

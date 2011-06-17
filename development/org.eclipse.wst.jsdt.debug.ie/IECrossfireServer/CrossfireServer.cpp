@@ -153,10 +153,34 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECH
 		return S_FALSE;
 	}
 
+	/*
+	 * When navigating from one page to another, a script node is initialized for the
+	 * new page before notification of the navigation is received.  As a result this
+	 * first script node for the new page becomes associated with the context of the
+	 * old page.  The workaround for this is to detect the case of a page re-navigation
+	 * within a given process and copy the last initialized script node to the newly-
+	 * created context.
+	 */
+	IDebugApplicationNode* scriptNode = NULL;
+
+	/* If there's already a context for the specified processId then destroy it */
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
+	if (iterator != m_contexts->end()) {
+		scriptNode = iterator->second->getLastInitializedScriptNode();
+		if (scriptNode) {
+			scriptNode->AddRef();
+		}
+		contextDestroyed(processId);
+	}
+
 	HRESULT hr = registerContext(processId, url);
 	if (SUCCEEDED(hr)) {
 		std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 		CrossfireContext* context = iterator->second;
+		if (scriptNode) {
+			context->scriptInitialized(scriptNode);
+			scriptNode->Release();
+		}
 		eventContextCreated(context);
 	}
 	return hr;
@@ -389,7 +413,6 @@ void CrossfireServer::received(wchar_t* msg) {
 		packet.clear();
 		if (m_inProgressPacket->find(HEADER_CONTENTLENGTH) != 0) {
 			Logger::error("request packet does not start with 'Content-Length:', not processing it");
-			Logger::log(m_inProgressPacket);
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -397,7 +420,6 @@ void CrossfireServer::received(wchar_t* msg) {
 		size_t endIndex = m_inProgressPacket->find(wchar_t('\r'));
 		if (endIndex == std::wstring::npos) {
 			Logger::error("request packet does not contain '\r', not processing it");
-			Logger::log(m_inProgressPacket);
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -407,14 +429,12 @@ void CrossfireServer::received(wchar_t* msg) {
 		int lengthValue = _wtoi(lengthString.c_str());
 		if (!lengthValue) {
 			Logger::error("request packet does not have a valid 'Content-Length' value, not processing it");
-			Logger::log(m_inProgressPacket);
 			m_inProgressPacket->clear();
 			break;
 		}
 
 		if (m_inProgressPacket->find(L"\r\n", endIndex) != endIndex) {
 			Logger::error("request packet does not follow initial '\\r' with '\\n', not processing it");
-			Logger::log(m_inProgressPacket);
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -424,7 +444,6 @@ void CrossfireServer::received(wchar_t* msg) {
 		size_t toolEnd = m_inProgressPacket->find(L"\r\n\r\n", endIndex);
 		if (toolEnd == std::wstring::npos) {
 			Logger::error("request packet does not contain '\\r\\n\\r\\n' to delimit its header, not processing it");
-			Logger::log(m_inProgressPacket);
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -457,11 +476,9 @@ void CrossfireServer::received(wchar_t* msg) {
 					CrossfireContext* context = getRequestContext(request);
 					if (!context) {
 						Logger::error("request command was unknown to the server and a valid context id was not provided, not processing it");
-						Logger::log(&packet);
 					} else {
 						if (!context->performRequest(request)) {
 							Logger::error("request command was unknown to the server and to the specified context, not processing it");
-							Logger::log(&packet);
 						}
 					}
 				}

@@ -183,9 +183,6 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 				wchar_t* hash = wcschr(url, wchar_t('#'));
 				if (!hash || m_firstNavigate || wcsncmp(url, m_lastUrl, hash - url) != 0) {
 					DWORD processId = GetCurrentProcessId();
-					if (!m_firstNavigate) {
-						m_server->contextDestroyed(processId);
-					}
 					HRESULT hr = m_server->contextCreated(processId, url);
 					if (FAILED(hr)) {
 						Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
