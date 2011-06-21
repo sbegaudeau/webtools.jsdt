@@ -28,7 +28,6 @@ Export-Package: org.eclipse.wst.jsdt.debug.internal.ui;x-friends:="org.eclipse.w
  org.eclipse.wst.jsdt.debug.internal.ui.dialogs;x-friends:="org.eclipse.wst.jsdt.debug.rhino.ui",
  org.eclipse.wst.jsdt.debug.internal.ui.display;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.eval;x-internal:=true,
- org.eclipse.wst.jsdt.debug.internal.ui.filters;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.launching;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.preferences;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.ui.source;x-internal:=true,
