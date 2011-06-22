@@ -171,6 +171,80 @@ bool Value::addObjectValue(std::wstring* key, Value* value) {
 //	return true;
 //}
 
+bool Value::equals(Value* value) {
+	if (!value || value->getType() != m_type) {
+		return false;
+	}
+
+	switch (m_type) {
+		case TYPE_UNDEFINED:
+		case TYPE_NULL: {
+			return true;
+		}
+		case TYPE_BOOLEAN: {
+			return value->getBooleanValue() == getBooleanValue();
+		}
+		case TYPE_NUMBER: {
+			return value->getNumberValue() == getNumberValue();
+		}
+		case TYPE_STRING: {
+			return value->getStringValue()->compare(*getStringValue()) == 0;
+		}
+		case TYPE_ARRAY: {
+			Value** selfItems = NULL;
+			getArrayValues(&selfItems);
+			Value** valueItems = NULL;
+			value->getArrayValues(&valueItems);
+			bool isEqual = true;
+			int index = 0;
+			while (selfItems[index]) {
+				if (!selfItems[index]->equals(valueItems[index])) {
+					isEqual = false;
+					break;
+				}
+				index++;
+			}
+			if (isEqual) {
+				isEqual = valueItems[index] == NULL;
+			}
+			delete[] valueItems;
+			delete[] selfItems;
+			return isEqual;
+		}
+		case TYPE_OBJECT: {
+			std::wstring** selfKeys = NULL;
+			Value** selfValues = NULL;
+			getObjectValues(&selfKeys, &selfValues);
+			bool isEqual = true;
+			int index = 0;
+			while (selfKeys[index]) {
+				Value* valueValue = value->getObjectValue(selfKeys[index]);
+				if (!valueValue || !selfValues[index]->equals(valueValue)) {
+					isEqual = false;
+					break;
+				}
+				index++;
+			}
+			delete[] selfKeys;
+			delete[] selfValues;
+			if (isEqual) {
+				/* ensure that value does not contain extra keys/values */
+				std::wstring** valueKeys = NULL;
+				Value** valueValues = NULL;
+				value->getObjectValues(&valueKeys, &valueValues);
+				int length = 0;
+				while (valueKeys[length++]);
+				isEqual = length == index;
+				delete[] valueKeys;
+				delete[] valueValues;
+			}
+			return isEqual;
+		}
+	}
+
+	return false;	/* should never happen */
+}
+
 void Value::getArrayValues(Value*** __values) {
 	if (m_type != TYPE_ARRAY) {
 		*__values = NULL;

@@ -42,6 +42,7 @@ public:
 //	virtual bool clearObjectValue(const wchar_t* key);
 //	virtual bool clearObjectValue(std::wstring* key);
 	virtual void clone(Value** _value);
+	virtual bool equals(Value* value);
 	virtual void getArrayValues(Value*** __values);
 	virtual bool getBooleanValue();
 	virtual double getNumberValue();
