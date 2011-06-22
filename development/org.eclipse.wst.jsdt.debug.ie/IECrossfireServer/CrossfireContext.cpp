@@ -248,52 +248,64 @@ CrossfireContext::~CrossfireContext() {
 	}
 }
 
-bool CrossfireContext::clearBreakpoint(unsigned int handle) {
+/* IBreakpointTarget */
+
+bool CrossfireContext::breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value) {
 	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
 	if (iterator == m_breakpoints->end()) {
-		Logger::error("clearBreakpoint: unknown breakpoint handle", handle);
+		Logger::error("CrossfireContext.breakpointAttributeChanged(): unknown breakpoint handle", handle);
 		return false;
 	}
-	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
+	CrossfireBreakpoint* breakpoint = iterator->second;
 
-	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+	if (wcscmp(name, CrossfireLineBreakpoint::ATTRIBUTE_ENABLED) == 0) {
+		return setBreakpointEnabled((CrossfireLineBreakpoint*)breakpoint, value->getBooleanValue());
+	}
+
+	/* receiver does not do anything for any other breakpoint attributes, so just answer success */
+	return true;
+}
+
+bool CrossfireContext::setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled) {
+	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
+	IDebugApplicationNode* node = getScriptNode((wchar_t*)lineBp->getUrl()->c_str());
 	if (!node) {
-		Logger::error("CrossfireContext.clearBreakpoint(): unknown target url");
+		Logger::error("CrossfireContext.setBreakpointEnabled(): unknown target url");
 		return false;
 	}
 
 	CComPtr<IDebugDocument> document = NULL;
 	HRESULT hr = node->GetDocument(&document);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): GetDocument() failed", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): GetDocument() failed", hr);
 		return false;
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): QI(IDebugDocumentText) failed", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): QI(IDebugDocumentText) failed", hr);
 		return false;
 	}
 
 	ULONG characterPosition = 0;
-	hr = documentText->GetPositionOfLine(breakpoint->getLine() - 1, &characterPosition);
+	hr = documentText->GetPositionOfLine(lineBp->getLine() - 1, &characterPosition);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): GetPositionOfLine() failed [1]", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): GetPositionOfLine() failed [1]", hr);
 		return false;
 	}
 
 	CComPtr<IDebugDocumentContext> documentContext = NULL;
 	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): GetContextOfPosition() failed", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): GetContextOfPosition() failed", hr);
 		return false;
 	}
 
 	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
 	hr = documentContext->EnumCodeContexts(&codeContexts);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): EnumCodeContexts() failed", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): EnumCodeContexts() failed", hr);
 		return false;
 	}
 
@@ -301,13 +313,80 @@ bool CrossfireContext::clearBreakpoint(unsigned int handle) {
 	IDebugCodeContext* codeContext = NULL;
 	hr = codeContexts->Next(1, &codeContext, &fetched);
 	if (FAILED(hr) || fetched == 0) {
-		Logger::error("CrossfireContext.clearBreakpoint(): Next() failed", hr);
+		Logger::error("CrossfireContext.setBreakpointEnabled(): Next() failed", hr);
+		return false;
+	}
+
+	hr = codeContext->SetBreakPoint(enabled ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setBreakpointEnabled(): SetBreakPoint() failed", hr);
+		return false;
+	}
+
+	lineBp->setEnabled(enabled);
+	return true;
+}
+
+bool CrossfireContext::deleteBreakpoint(unsigned int handle) {
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+	if (iterator == m_breakpoints->end()) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): unknown breakpoint handle", handle);
+		return false;
+	}
+	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
+
+	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+	if (!node) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): unknown target url");
+		return false;
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	HRESULT hr = node->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): GetDocument() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText,(void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): QI(IDebugDocumentText) failed", hr);
+		return false;
+	}
+
+	ULONG characterPosition = 0;
+	hr = documentText->GetPositionOfLine(breakpoint->getLine() - 1, &characterPosition);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): GetPositionOfLine() failed [1]", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocumentContext> documentContext = NULL;
+	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): GetContextOfPosition() failed", hr);
+		return false;
+	}
+
+	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
+	hr = documentContext->EnumCodeContexts(&codeContexts);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): EnumCodeContexts() failed", hr);
+		return false;
+	}
+
+	ULONG fetched = 0;
+	IDebugCodeContext* codeContext = NULL;
+	hr = codeContexts->Next(1, &codeContext, &fetched);
+	if (FAILED(hr) || fetched == 0) {
+		Logger::error("CrossfireContext.deleteBreakpoint(): Next() failed", hr);
 		return false;
 	}
 
 	hr = codeContext->SetBreakPoint(BREAKPOINT_DELETED);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.clearBreakpoint(): SetBreakPoint() failed", hr);
+		Logger::error("CrossfireContext.deleteBreakpoint(): SetBreakPoint() failed", hr);
 		return false;
 	}
 
@@ -324,6 +403,186 @@ bool CrossfireContext::clearBreakpoint(unsigned int handle) {
 
 	delete iterator->second;
 	m_breakpoints->erase(iterator);
+	return true;
+}
+
+CrossfireBreakpoint* CrossfireContext::getBreakpoint(unsigned int handle) {
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+	if (iterator == m_breakpoints->end()) {
+		Logger::error("CrossfireContext.getBreakpoint(): unknown breakpoint handle", handle);
+		return false;
+	}
+	return iterator->second;
+}
+
+bool CrossfireContext::getBreakpoints(CrossfireBreakpoint*** ___values) {
+	size_t size = m_breakpoints->size();
+	CrossfireBreakpoint** breakpoints = new CrossfireBreakpoint*[size + 1];
+
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator it = m_breakpoints->begin();
+	int index = 0;
+	while (it != m_breakpoints->end()) {
+		it->second->clone(&breakpoints[index++]);
+		it++;
+	}
+	breakpoints[index] = NULL;
+
+	*___values = breakpoints;
+	return true;
+}
+
+bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRetry) {
+	// TODO uncomment the following once Refreshes cause new contexts to be created
+
+//	unsigned int handle = breakpoint->getHandle();
+//	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+//	if (iterator != m_breakpoints->end()) {
+//		/* this breakpoint is already set on this context */
+//		return true;
+//	}
+
+	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
+	IDebugApplicationNode* node = NULL;
+	if (m_currentScriptNode) {
+		node = m_currentScriptNode;
+	} else {
+		node = getScriptNode((wchar_t*)lineBp->getUrl()->c_str());
+		if (!node) {
+			Logger::error("CrossfireContext.setLineBreakpoint(): unknown target url");
+			return false;
+		}
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	HRESULT hr = node->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocument() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): QI(IDebugDocumentText) failed", hr);
+		return false;
+	}
+
+	ULONG characterPosition = 0;
+	hr = documentText->GetPositionOfLine(lineBp->getLine() - 1, &characterPosition);
+	if (FAILED(hr)) {
+//		/*
+//		 * In this context E_INVALIDARG failures are often caused by the target document
+//		 * not being adequately loaded yet.  If this is the first attempt to set this
+//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
+//		 * later if it is detected that the document load may have completed.
+//		 */
+//		if (!isRetry && hr == E_INVALIDARG) {
+//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
+//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
+//			if (FAILED(hr)) {
+//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
+//				return false;
+//			}
+//
+//			if (pendingBreakpoint->init(breakpoint, document, this)) {
+//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+//				m_pendingBreakpoints->push_back(pendingBreakpoint);
+//			}
+//		} else {
+			Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfLine() failed [1]", hr);
+//		}
+		return false;
+	}
+
+	CComPtr<IDebugDocumentContext> documentContext = NULL;
+	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): GetContextOfPosition() failed", hr);
+		return false;
+	}
+
+	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
+	hr = documentContext->EnumCodeContexts(&codeContexts);
+	if (FAILED(hr)) {
+//		/*
+//		 * In this context E_INVALIDARG failures are often caused by the target document
+//		 * not being adequately loaded yet.  If this is the first attempt to set this
+//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
+//		 * later if it is detected that the document load may have completed.
+//		 */
+//		if (!isRetry && hr == E_INVALIDARG) {
+//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
+//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
+//			if (FAILED(hr)) {
+//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [2]", hr);
+//				return false;
+//			}
+//
+//			if (pendingBreakpoint->init(breakpoint, document, this)) {
+//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+//				m_pendingBreakpoints->push_back(pendingBreakpoint);
+//			}
+//		} else {
+			Logger::error("CrossfireContext.setLineBreakpoint(): EnumCodeContexts() failed", hr);
+//		}
+		return false;
+	}
+
+	ULONG fetched = 0;
+	CComPtr<IDebugCodeContext> codeContext = NULL;
+	hr = codeContexts->Next(1, &codeContext, &fetched);
+	if (FAILED(hr) || fetched == 0) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): Next() failed", hr);
+		return false;
+	}
+
+	hr = codeContext->SetBreakPoint(lineBp->isEnabled() ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): SetBreakPoint() failed", hr);
+		return false;
+	}
+
+	/* Determine the line number the breakpoint was set on (it may not match the requested line number) */
+
+	CComPtr<IDebugDocumentContext> bpDocumentContext = NULL;
+	hr = codeContext->GetDocumentContext(&bpDocumentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocumentContext() failed", hr);
+		return false;
+	}
+
+	characterPosition = 0;
+	ULONG numChars = 0;
+	hr = documentText->GetPositionOfContext(bpDocumentContext, &characterPosition, &numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfContext() failed", hr);
+		return false;
+	}
+
+	ULONG bpLineNumber = 0;
+	ULONG offset = 0;
+	hr = documentText->GetLineOfPosition(characterPosition, &bpLineNumber, &offset);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.setLineBreakpoint(): GetLineOfPosition() failed", hr);
+		return false;
+	}
+
+	CrossfireLineBreakpoint* copy = NULL;
+	breakpoint->clone((CrossfireBreakpoint**)&copy);
+	copy->setLine(bpLineNumber + 1);
+	copy->setContextId(&std::wstring(m_name));
+	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
+
+	CrossfireEvent toggleEvent;
+	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
+	Value data;
+	data.addObjectValue(KEY_SET, &Value(true));
+	Value* value_breakpoint = NULL;
+	copy->toValueObject(&value_breakpoint);
+	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	delete value_breakpoint;
+	toggleEvent.setData(&data);
+	sendEvent(&toggleEvent);
 	return true;
 }
 
@@ -532,7 +791,7 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	result->addObjectValue(KEY_INDEX, &Value((double)frameIndex));
 	result->addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
 	result->addObjectValue(KEY_LOCALS, locals);
-	result->addObjectValue(KEY_SCRIPTID, &Value(scriptId));
+	result->addObjectValue(/*KEY_SCRIPTID*/ L"url", &Value(scriptId));
 	// TODO includeScopes
 	delete locals;
 
@@ -717,34 +976,6 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	}
 
 	*_value = result;
-	return true;
-}
-
-bool CrossfireContext::getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("CrossfireContext.getBreakpoint(): unknown breakpoint handle", handle);
-		return false;
-	}
-	CrossfireBreakpoint* breakpoint = iterator->second;
-	breakpoint->clone(_value);
-	return true;
-}
-
-bool CrossfireContext::getBreakpoints(CrossfireBreakpoint*** ___values) {
-	size_t size = m_breakpoints->size();
-	CrossfireBreakpoint** breakpoints = new CrossfireBreakpoint*[size + 1];
-
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator it = m_breakpoints->begin();
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator end = m_breakpoints->end();
-	int index = 0;
-	while (it != end) {
-		it->second->clone(&breakpoints[index++]);
-		it++;
-	}
-	breakpoints[index] = NULL;
-
-	*___values = breakpoints;
 	return true;
 }
 
@@ -1025,12 +1256,10 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
 			break;
 		}
 		key.assign(id);
-		key += wchar_t(' ');
-		key += wchar_t('[');
+		key += wchar_t('/');
 		wchar_t qualifierString[4];
 		_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
 		key += qualifierString;
-		key += wchar_t(']');
 	}
 	
 	return true;
@@ -1134,238 +1363,6 @@ void CrossfireContext::sendEvent(CrossfireEvent* eventObj) {
 		}
 	}
 	// -------------------------------------------------
-}
-
-bool CrossfireContext::setBreakpointCondition(unsigned int handle, std::wstring* condition) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("setBreakpointCondition: unknown breakpoint handle", handle);
-		return false;
-	}
-	CrossfireBreakpoint* breakpoint = iterator->second;
-	breakpoint->setCondition(condition);
-	return true;
-}
-
-bool CrossfireContext::setBreakpointEnabled(unsigned int handle, bool enabled) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("setBreakpointEnabled: unknown breakpoint handle", handle);
-		return false;
-	}
-	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
-
-	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
-	if (!node) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): unknown target url");
-		return false;
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	HRESULT hr = node->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): GetDocument() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): QI(IDebugDocumentText) failed", hr);
-		return false;
-	}
-
-	ULONG characterPosition = 0;
-	hr = documentText->GetPositionOfLine(breakpoint->getLine() - 1, &characterPosition);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): GetPositionOfLine() failed [1]", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): GetContextOfPosition() failed", hr);
-		return false;
-	}
-
-	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
-	hr = documentContext->EnumCodeContexts(&codeContexts);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): EnumCodeContexts() failed", hr);
-		return false;
-	}
-
-	ULONG fetched = 0;
-	IDebugCodeContext* codeContext = NULL;
-	hr = codeContexts->Next(1, &codeContext, &fetched);
-	if (FAILED(hr) || fetched == 0) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): Next() failed", hr);
-		return false;
-	}
-
-	hr = codeContext->SetBreakPoint(enabled ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setBreakpointEnabled(): SetBreakPoint() failed", hr);
-		return false;
-	}
-
-	breakpoint->setEnabled(enabled);
-	return true;
-}
-
-bool CrossfireContext::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bool isRetry) {
-	// TODO uncomment the following once Refreshes cause new contexts to be created
-
-//	unsigned int handle = breakpoint->getHandle();
-//	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-//	if (iterator != m_breakpoints->end()) {
-//		/* this breakpoint is already set on this context */
-//		return true;
-//	}
-
-	IDebugApplicationNode* node = NULL;
-	if (m_currentScriptNode) {
-		node = m_currentScriptNode;
-	} else {
-		node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
-		if (!node) {
-			Logger::error("CrossfireContext.setLineBreakpoint(): unknown target url");
-			return false;
-		}
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	HRESULT hr = node->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocument() failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): QI(IDebugDocumentText) failed", hr);
-		return false;
-	}
-
-	ULONG characterPosition = 0;
-	hr = documentText->GetPositionOfLine(breakpoint->getLine() - 1, &characterPosition);
-	if (FAILED(hr)) {
-//		/*
-//		 * In this context E_INVALIDARG failures are often caused by the target document
-//		 * not being adequately loaded yet.  If this is the first attempt to set this
-//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-//		 * later if it is detected that the document load may have completed.
-//		 */
-//		if (!isRetry && hr == E_INVALIDARG) {
-//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-//			if (FAILED(hr)) {
-//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
-//				return false;
-//			}
-//
-//			if (pendingBreakpoint->init(breakpoint, document, this)) {
-//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-//				m_pendingBreakpoints->push_back(pendingBreakpoint);
-//			}
-//		} else {
-			Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfLine() failed [1]", hr);
-//		}
-		return false;
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetContextOfPosition() failed", hr);
-		return false;
-	}
-
-	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
-	hr = documentContext->EnumCodeContexts(&codeContexts);
-	if (FAILED(hr)) {
-//		/*
-//		 * In this context E_INVALIDARG failures are often caused by the target document
-//		 * not being adequately loaded yet.  If this is the first attempt to set this
-//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-//		 * later if it is detected that the document load may have completed.
-//		 */
-//		if (!isRetry && hr == E_INVALIDARG) {
-//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-//			if (FAILED(hr)) {
-//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [2]", hr);
-//				return false;
-//			}
-//
-//			if (pendingBreakpoint->init(breakpoint, document, this)) {
-//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-//				m_pendingBreakpoints->push_back(pendingBreakpoint);
-//			}
-//		} else {
-			Logger::error("CrossfireContext.setLineBreakpoint(): EnumCodeContexts() failed", hr);
-//		}
-		return false;
-	}
-
-	ULONG fetched = 0;
-	CComPtr<IDebugCodeContext> codeContext = NULL;
-	hr = codeContexts->Next(1, &codeContext, &fetched);
-	if (FAILED(hr) || fetched == 0) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): Next() failed", hr);
-		return false;
-	}
-
-	hr = codeContext->SetBreakPoint(breakpoint->isEnabled() ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): SetBreakPoint() failed", hr);
-		return false;
-	}
-
-	/* Determine the line number the breakpoint was set on (it may not match the requested line number) */
-
-	CComPtr<IDebugDocumentContext> bpDocumentContext = NULL;
-	hr = codeContext->GetDocumentContext(&bpDocumentContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocumentContext() failed", hr);
-		return false;
-	}
-
-	characterPosition = 0;
-	ULONG numChars = 0;
-	hr = documentText->GetPositionOfContext(bpDocumentContext, &characterPosition, &numChars);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfContext() failed", hr);
-		return false;
-	}
-
-	ULONG bpLineNumber = 0;
-	ULONG offset = 0;
-	hr = documentText->GetLineOfPosition(characterPosition, &bpLineNumber, &offset);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetLineOfPosition() failed", hr);
-		return false;
-	}
-
-	CrossfireLineBreakpoint* copy = NULL;
-	breakpoint->clone((CrossfireBreakpoint**)&copy);
-	copy->setLine(bpLineNumber + 1);
-	copy->setContextId(&std::wstring(m_name));
-	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
-
-	CrossfireEvent toggleEvent;
-	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
-	Value data;
-	data.addObjectValue(KEY_SET, &Value(true));
-	Value* value_breakpoint = NULL;
-	copy->toValueObject(&value_breakpoint);
-	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
-	delete value_breakpoint;
-	toggleEvent.setData(&data);
-	sendEvent(&toggleEvent);
-	return true;
 }
 
 void CrossfireContext::setRunning(bool value) {

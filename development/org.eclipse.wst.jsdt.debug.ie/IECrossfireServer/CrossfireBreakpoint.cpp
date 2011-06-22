@@ -14,32 +14,34 @@
 #include "CrossfireBreakpoint.h"
 
 /* initialize statics */
-const wchar_t* CrossfireBreakpoint::KEY_CONDITION = L"condition";
+const wchar_t* CrossfireBreakpoint::KEY_ATTRIBUTES = L"attributes";
 const wchar_t* CrossfireBreakpoint::KEY_CONTEXTID = L"contextId";
-const wchar_t* CrossfireBreakpoint::KEY_ENABLED = L"enabled";
 const wchar_t* CrossfireBreakpoint::KEY_HANDLE = L"handle";
 const wchar_t* CrossfireBreakpoint::KEY_LOCATION = L"location";
 const wchar_t* CrossfireBreakpoint::KEY_TYPE = L"type";
 
 CrossfireBreakpoint::CrossfireBreakpoint() {
 	static unsigned int s_nextBreakpointHandle = 1;
-	m_condition = NULL;
+	m_attributes = new std::map<std::wstring, Value*>;
 	m_contextId = NULL;
-	m_enabled = true;
 	m_handle = s_nextBreakpointHandle++;
+	m_target = NULL;
 }
 
 CrossfireBreakpoint::CrossfireBreakpoint(unsigned int handle) {
-	m_condition = NULL;
+	m_attributes = new std::map<std::wstring, Value*>;
 	m_contextId = NULL;
-	m_enabled = true;
 	m_handle = handle;
+	m_target = NULL;
 }
 
 CrossfireBreakpoint::~CrossfireBreakpoint() {
-	if (m_condition) {
-		delete m_condition;
+	std::map<std::wstring, Value*>::iterator iterator = m_attributes->begin();
+	while (iterator != m_attributes->end()) {
+		delete iterator->second;
+		iterator++;
 	}
+	delete m_attributes;
 	if (m_contextId) {
 		delete m_contextId;
 	}
@@ -49,8 +51,20 @@ bool CrossfireBreakpoint::appliesToUrl(std::wstring* url) {
 	return true;
 }
 
-const std::wstring* CrossfireBreakpoint::getCondition() {
-	return m_condition;
+void CrossfireBreakpoint::clearAttribute(wchar_t* name) {
+	std::map<std::wstring, Value*>::iterator iterator = m_attributes->find(std::wstring(name));
+	if (iterator != m_attributes->end()) {
+		delete iterator->second;
+		m_attributes->erase(iterator);
+	}
+}
+
+Value* CrossfireBreakpoint::getAttribute(wchar_t* name) {
+	std::map<std::wstring, Value*>::iterator iterator = m_attributes->find(std::wstring(name));
+	if (iterator == m_attributes->end()) {
+		return NULL;
+	}
+	return iterator->second;
 }
 
 const std::wstring* CrossfireBreakpoint::getContextId() {
@@ -61,19 +75,54 @@ unsigned int CrossfireBreakpoint::getHandle() {
 	return m_handle;
 }
 
-bool CrossfireBreakpoint::isEnabled() {
-	return m_enabled;
+IBreakpointTarget* CrossfireBreakpoint::getTarget() {
+	return m_target;
 }
 
-void CrossfireBreakpoint::setCondition(std::wstring* value) {
-	if (m_condition) {
-		delete m_condition;
-		m_condition = NULL;
+void CrossfireBreakpoint::setAttribute(wchar_t* name, Value* value) {
+	std::map<std::wstring, Value*>::iterator iterator = m_attributes->find(std::wstring(name));
+	if (iterator != m_attributes->end()) {
+		if (iterator->second->equals(value)) {
+			return;
+		}
+		delete iterator->second;
+		m_attributes->erase(iterator);
 	}
-	if (value) {
-		m_condition = new std::wstring;
-		m_condition->assign(*value);
+	Value* valueCopy = NULL;
+	value->clone(&valueCopy);
+	m_attributes->insert(std::pair<std::wstring, Value*>(std::wstring(name), valueCopy));
+	if (m_target) {
+		m_target->breakpointAttributeChanged(m_handle, name, value);
 	}
+}
+
+bool CrossfireBreakpoint::setAttributesFromValue(Value* value) {
+	std::wstring** objectKeys = NULL;
+	Value** objectValues = NULL;
+	value->getObjectValues(&objectKeys, &objectValues);
+	bool success = true;
+	int index = 0;
+	std::wstring* currentKey = objectKeys[index];
+	while (currentKey) {
+		if (!attributeIsValid((wchar_t*)currentKey->c_str(), objectValues[index])) {
+			Logger::log("breakpoint attribute arguments specify an invalid attribute name or value");
+			success = false;
+			break;
+		}
+		currentKey = objectKeys[++index];
+	}
+	if (success) {
+		index = 0;
+		currentKey = objectKeys[index];
+		while (currentKey) {
+			setAttribute((wchar_t*)currentKey->c_str(), objectValues[index]);
+			currentKey = objectKeys[++index];
+		}
+	}
+
+	delete[] objectKeys;
+	delete[] objectValues;
+	return success;
 }
 
 void CrossfireBreakpoint::setContextId(std::wstring* value) {
@@ -87,8 +136,8 @@ void CrossfireBreakpoint::setContextId(std::wstring* value) {
 	}
 }
 
-void CrossfireBreakpoint::setEnabled(bool value) {
-	m_enabled = value;
+void CrossfireBreakpoint::setTarget(IBreakpointTarget* value) {
+	m_target = value;
 }
 
 bool CrossfireBreakpoint::toValueObject(Value** _value) {
@@ -98,9 +147,17 @@ bool CrossfireBreakpoint::toValueObject(Value** _value) {
 	Value* result = new Value();
 	result->addObjectValue(KEY_HANDLE, &Value((double)m_handle));
 	result->addObjectValue(KEY_TYPE, &Value(getTypeString()));
-	result->addObjectValue(KEY_CONDITION, m_condition ? &Value(m_condition) : &value_null);
 	result->addObjectValue(KEY_CONTEXTID, m_contextId ? &Value(m_contextId) : &value_null);
-	result->addObjectValue(KEY_ENABLED, &Value(m_enabled));
+
+	Value value_attributes;
+	value_attributes.setType(TYPE_OBJECT);
+	std::map<std::wstring, Value*>::iterator iterator = m_attributes->begin();
+	while (iterator != m_attributes->end()) {
+		value_attributes.addObjectValue((std::wstring*)&iterator->first, iterator->second);
+		iterator++;
+	}
+	result->addObjectValue(KEY_ATTRIBUTES, &value_attributes);
+
 	Value* value_location = NULL;
 	if (!getLocationAsValue(&value_location)) {
 		delete result;
@@ -108,6 +165,7 @@ bool CrossfireBreakpoint::toValueObject(Value** _value) {
 	}
 	result->addObjectValue(KEY_LOCATION, value_location);
 	delete value_location;
+
 	*_value = result;
 	return true;
 }

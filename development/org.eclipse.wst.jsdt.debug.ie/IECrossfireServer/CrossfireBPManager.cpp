@@ -29,10 +29,17 @@ CrossfireBPManager::~CrossfireBPManager() {
 	delete m_breakpoints;
 }
 
-bool CrossfireBPManager::clearBreakpoint(unsigned int handle) {
+/* IBreakpointTarget */
+
+bool CrossfireBPManager::breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value) {
+	/* no further action required since this object just stores the breakpoint data */
+	return true;
+}
+
+bool CrossfireBPManager::deleteBreakpoint(unsigned int handle) {
 	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
 	if (iterator == m_breakpoints->end()) {
-		Logger::error("clearBreakpoint: unknown breakpoint handle", handle);
+		Logger::error("CrossfireBPManager.deleteBreakpoint(): unknown breakpoint handle", handle);
 		return false;
 	}
 
@@ -41,67 +48,72 @@ bool CrossfireBPManager::clearBreakpoint(unsigned int handle) {
 	return true;
 }
 
+CrossfireBreakpoint* CrossfireBPManager::getBreakpoint(unsigned int handle) {
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+	if (iterator == m_breakpoints->end()) {
+		Logger::error("CrossfireBPManager.getBreakpoint(): unknown breakpoint handle", handle);
+		return NULL;
+	}
+
+	return iterator->second;
+}
+
+bool CrossfireBPManager::getBreakpoints(CrossfireBreakpoint*** ___values) {
+	size_t size = m_breakpoints->size();
+	CrossfireBreakpoint** breakpoints = new CrossfireBreakpoint*[size + 1];
+
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator it = m_breakpoints->begin();
+	int index = 0;
+	while (it != m_breakpoints->end()) {
+		it->second->clone(&breakpoints[index++]);
+		it++;
+	}
+	breakpoints[index] = NULL;
+
+	*___values = breakpoints;
+	return true;
+}
+
+bool CrossfireBPManager::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRetry) {
+	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
+	CrossfireLineBreakpoint* copy = NULL;
+	lineBp->clone((CrossfireBreakpoint**)&copy);
+	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(lineBp->getHandle(), copy));
+	return true;
+}
+
+/* CrossfireBPManager */
+
 bool CrossfireBPManager::commandChangeBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody) {
 	*_responseBody = NULL;
 
 	Value* value_handle = arguments->getObjectValue(CrossfireBreakpoint::KEY_HANDLE);
 	if (!value_handle || value_handle->getType() != TYPE_NUMBER || (unsigned int)value_handle->getNumberValue() < 1) {
-		Logger::error("'changeBreakpoint' command does not have a valid 'handle' value ");
+		Logger::error("'changeBreakpoint' command does not have a valid 'handle' value");
 		return false;
 	}
 
-	Value* value_condition = arguments->getObjectValue(CrossfireBreakpoint::KEY_CONDITION);
-	if (value_condition && (value_condition->getType() & (TYPE_NULL | TYPE_STRING)) == 0) {
-		Logger::error("'changeBreakpoint' command has 'condition' value of type != String | Null");
-		return false;
-	}
-
-	Value* value_enabled = arguments->getObjectValue(CrossfireBreakpoint::KEY_ENABLED);
-	if (value_enabled && value_enabled->getType() != TYPE_BOOLEAN) {
-		Logger::error("'changeBreakpoint' command has 'enabled' value of type != Boolean | Null");
+	Value* value_attributes = arguments->getObjectValue(CrossfireBreakpoint::KEY_ATTRIBUTES);
+	if (!value_attributes || value_attributes->getType() != TYPE_OBJECT) {
+		Logger::error("'changeBreakpoint' command does not have a valid 'attributes' value");
 		return false;
 	}
 
 	unsigned int handle = (unsigned int)value_handle->getNumberValue();
-	bool enabled;
-	std::wstring* condition;
-
-	/*
-	 * Attempt to update the breakpoint in the local breakpoints table first,
-	 * as this is where an invalid breakpoint handle can be easily detected.
-	 */
-	if (value_enabled) {
-		enabled = value_enabled->getBooleanValue();
-		if (!setBreakpointEnabled(handle, enabled)) {
-			return false;
-		}
+	CrossfireBreakpoint* breakpoint = getBreakpoint(handle);
+	if (!breakpoint || !breakpoint->setAttributesFromValue(value_attributes)) {
+		return false;
 	}
 
-	if (value_condition) {
-		condition = value_condition->getType() == TYPE_STRING ? value_condition->getStringValue() : NULL;
-		if (!setBreakpointCondition(handle, condition)) {
-			return false;
-		}
-	}
-
-	/*
-	 * It's valid for the breakpoint to not be set in some (or even all) of the targets,
-	 * so a false result value for a setBreakpointEnabled() or setBreakpointCondition()
-	 * call does not indicate a problem.
-	 */
-	if (targets && value_enabled) {
+	/* it's valid for the breakpoint to not be set in some (or even all) of the targets */
+	if (targets) {
 		int index = 0;
 		IBreakpointTarget* current = targets[index++];
 		while (current != NULL) {
-			current->setBreakpointEnabled(handle, enabled);
-			current = targets[index++];
-		}
-	}
-	if (targets && value_condition) {
-		int index = 0;
-		IBreakpointTarget* current = targets[index++];
-		while (current != NULL) {
-			current->setBreakpointCondition(handle, condition);
+			CrossfireBreakpoint* breakpoint = current->getBreakpoint(handle);
+			if (breakpoint) {
+				breakpoint->setAttributesFromValue(value_attributes);
+			}
 			current = targets[index++];
 		}
 	}
@@ -112,12 +124,12 @@ bool CrossfireBPManager::commandChangeBreakpoint(Value* arguments, IBreakpointTa
 	return true;
 }
 
-bool CrossfireBPManager::commandClearBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody) {
+bool CrossfireBPManager::commandDeleteBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody) {
 	*_responseBody = NULL;
 
 	Value* value_handle = arguments->getObjectValue(CrossfireBreakpoint::KEY_HANDLE);
 	if (!value_handle || value_handle->getType() != TYPE_NUMBER || (unsigned int)value_handle->getNumberValue() < 1) {
-		Logger::error("'clearBreakpoint' command does not have a valid 'handle' value");
+		Logger::error("'deleteBreakpoint' command does not have a valid 'handle' value");
 		return false;
 	}
 
@@ -127,19 +139,19 @@ bool CrossfireBPManager::commandClearBreakpoint(Value* arguments, IBreakpointTar
 	 * Attempt to clear the breakpoint in the local breakpoints table first,
 	 * as this is where an invalid breakpoint handle can be easily detected.
 	 */
-	if (!clearBreakpoint(handle)) {
+	if (!deleteBreakpoint(handle)) {
 		return false;
 	}
 
 	/*
 	 * It's valid for the breakpoint to not be set in some (or even all) of the targets,
-	 * so a false result value for a clearBreakpoint() call does not indicate a problem.
+	 * so a false result value for the deleteBreakpoint() call does not indicate a problem.
 	 */
 	if (targets) {
 		int index = 0;
 		IBreakpointTarget* current = targets[index++];
 		while (current != NULL) {
-			current->clearBreakpoint(handle);
+			current->deleteBreakpoint(handle);
 			current = targets[index++];
 		}
 	}
@@ -159,15 +171,14 @@ bool CrossfireBPManager::commandGetBreakpoint(Value* arguments, IBreakpointTarge
 		return false;
 	}
 
-	CrossfireBreakpoint* breakpoint = NULL;
 	unsigned int handle = (unsigned int)value_handle->getNumberValue();
-	if (!target->getBreakpoint(handle, &breakpoint)) {
+	CrossfireBreakpoint* breakpoint = target->getBreakpoint(handle);
+	if (!breakpoint) {
 		return false;
 	}
 
 	Value* value_breakpoint = NULL;
 	bool success = breakpoint->toValueObject(&value_breakpoint);
-	delete breakpoint;
 	if (!success) {
 		return false;
 	}
@@ -214,19 +225,24 @@ bool CrossfireBPManager::commandSetBreakpoint(Value* arguments, IBreakpointTarge
 		return false;
 	}
 
-	setBreakpointOnTarget(breakpoint, this);
+	breakpoint->setTarget(this);
+	setBreakpoint(breakpoint, false);
 	if (targets) {
 		int index = 0;
 		IBreakpointTarget* current = targets[index++];
 		while (current != NULL) {
-			setBreakpointOnTarget(breakpoint, current);
+			breakpoint->setTarget(current);
+			current->setBreakpoint(breakpoint, false);
 			current = targets[index++];
 		}
 	}
-	delete breakpoint;
 
 	Value* result = new Value();
-	result->setType(TYPE_OBJECT);
+	Value* value_breakpoint = NULL;
+	breakpoint->toValueObject(&value_breakpoint);
+	result->addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	delete breakpoint;
+	delete value_breakpoint;
 	*_responseBody = result;
 	return true;
 }
@@ -240,15 +256,9 @@ bool CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint*
 		return false;
 	}
 
-	Value* value_condition = arguments->getObjectValue(CrossfireBreakpoint::KEY_CONDITION);
-	if (value_condition && (value_condition->getType() & (TYPE_NULL | TYPE_STRING)) == 0) {
-		Logger::error("breakpoint creation arguments have a 'condition' value of type != String | Null");
-		return false;
-	}
-
-	Value* value_enabled = arguments->getObjectValue(CrossfireBreakpoint::KEY_ENABLED);
-	if (value_enabled && value_enabled->getType() != TYPE_BOOLEAN) {
-		Logger::error("breakpoint creation arguments have an 'enabled' value of type != Boolean");
+	Value* value_attributes = arguments->getObjectValue(CrossfireBreakpoint::KEY_ATTRIBUTES);
+	if (value_attributes && value_attributes->getType() != TYPE_OBJECT) {
+		Logger::error("breakpoint creation arguments have an invalid 'attributes' value");
 		return false;
 	}
 
@@ -267,12 +277,11 @@ bool CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint*
 		return false;
 	}
 
-	if (value_condition && value_condition->getType() == TYPE_STRING) {
-		breakpoint->setCondition(value_condition->getStringValue());
+	if (value_attributes && !breakpoint->setAttributesFromValue(value_attributes)) {
+		delete breakpoint;
+		return false;
 	}
-	if (value_enabled) {
-		breakpoint->setEnabled(value_enabled->getBooleanValue());
-	}
+
 	if (!breakpoint->setLocationFromValue(value_location)) {
 		delete breakpoint;
 		return false;
@@ -282,85 +291,15 @@ bool CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint*
 	return true;
 }
 
-bool CrossfireBPManager::getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("getBreakpoint: unknown breakpoint handle");
-		return false;
-	}
-
-	CrossfireBreakpoint* breakpoint = iterator->second;
-	breakpoint->clone(_value);
-	return true;
-}
-
-bool CrossfireBPManager::getBreakpoints(CrossfireBreakpoint*** ___values) {
-	size_t size = m_breakpoints->size();
-	CrossfireBreakpoint** breakpoints = new CrossfireBreakpoint*[size + 1];
-
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator it = m_breakpoints->begin();
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator end = m_breakpoints->end();
-	int index = 0;
-	while (it != end) {
-		it->second->clone(&breakpoints[index++]);
-		it++;
-	}
-	breakpoints[index] = NULL;
-
-	*___values = breakpoints;
-	return true;
-}
-
-bool CrossfireBPManager::setBreakpointCondition(unsigned int handle, std::wstring* condition) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("setBreakpointCondition: unknown breakpoint handle", handle);
-		return false;
-	}
-
-	CrossfireBreakpoint* breakpoint = iterator->second;
-	breakpoint->setCondition(condition);
-	return true;
-}
-
-bool CrossfireBPManager::setBreakpointEnabled(unsigned int handle, bool enabled) {
-	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
-	if (iterator == m_breakpoints->end()) {
-		Logger::error("setBreakpointEnabled: unknown breakpoint handle", handle);
-		return false;
-	}
-
-	CrossfireBreakpoint* breakpoint = iterator->second;
-	breakpoint->setEnabled(enabled);
-	return true;
-}
-
-bool CrossfireBPManager::setBreakpointOnTarget(CrossfireBreakpoint* breakpoint, IBreakpointTarget* target) {
-	bool success = false;
-	switch (breakpoint->getType()) {
-		case CrossfireBreakpoint::BPTYPE_LINE: {
-			success = target->setLineBreakpoint((CrossfireLineBreakpoint*)breakpoint, false);
-			break;
-		}
-	}
-	return success;
-}
-
 void CrossfireBPManager::setBreakpointsForScript(std::wstring* url, IBreakpointTarget* target) {
 	std::map<unsigned int,CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
 	while (iterator != m_breakpoints->end()) {
 		CrossfireBreakpoint* breakpoint = iterator->second;
 		if (breakpoint->appliesToUrl(url)) {
-			bool success = setBreakpointOnTarget(breakpoint, target);
+			bool success = target->setBreakpoint(breakpoint, false);
 			// TODO it looks like the result of the above line was to be used for something
 		}
 		iterator++;
 	}
 }
 
-bool CrossfireBPManager::setLineBreakpoint(CrossfireLineBreakpoint *breakpoint, bool isRetry) {
-	CrossfireLineBreakpoint* copy = NULL;
-	breakpoint->clone((CrossfireBreakpoint**)&copy);
-	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
-	return true;
-}
