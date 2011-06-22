@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "CrossfireEvent.h"
+#include "CrossfireLineBreakpoint.h"
 #include "CrossfireRequest.h"
 #include "CrossfireResponse.h"
 #include "JSEvalCallback.h"
@@ -48,12 +49,11 @@ public:
 	virtual void setRunning(bool value);
 
 	/* IBreakpointTarget methods */
-	virtual bool clearBreakpoint(unsigned int handle);
-	virtual bool getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value);
+	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
+	virtual bool deleteBreakpoint(unsigned int handle);
+	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
 	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values);
-	virtual bool setBreakpointCondition(unsigned int handle, std::wstring* condition);
-	virtual bool setBreakpointEnabled(unsigned int handle, bool enabled);
-	virtual bool setLineBreakpoint(CrossfireLineBreakpoint* breakpoint, bool isRetry);
+	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry);
 
 private:
 	struct JSObject {
@@ -75,6 +75,7 @@ private:
 	virtual IDebugApplicationNode* getScriptNode(wchar_t* name);
 	virtual bool hookDebugger();
 	virtual bool registerScript(IDebugApplicationNode* applicationNode);
+	virtual bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
 	virtual bool unhookDebugger();
 
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;

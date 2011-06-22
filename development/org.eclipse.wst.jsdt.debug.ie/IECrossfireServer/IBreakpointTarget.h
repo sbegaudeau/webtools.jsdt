@@ -12,7 +12,9 @@
 
 #pragma once
 
-#include "CrossfireLineBreakpoint.h"
+#include "Value.h"
+class IBreakpointTarget; // forward declaration
+#include "CrossfireBreakpoint.h"
 
 class IBreakpointTarget {
 
@@ -23,10 +25,9 @@ public:
 	virtual ~IBreakpointTarget() {
 	}
 
-	virtual bool clearBreakpoint(unsigned int handle) = 0;
-	virtual bool getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value) = 0;
+	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value) = 0;
+	virtual bool deleteBreakpoint(unsigned int handle) = 0;
+	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle) = 0;
 	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values) = 0;
-	virtual bool setBreakpointCondition(unsigned int handle, std::wstring* condition) = 0;
-	virtual bool setBreakpointEnabled(unsigned int handle, bool enabled) = 0;
-	virtual bool setLineBreakpoint(CrossfireLineBreakpoint* breakpoint, bool isRetry) = 0;
+	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry) = 0;
 };

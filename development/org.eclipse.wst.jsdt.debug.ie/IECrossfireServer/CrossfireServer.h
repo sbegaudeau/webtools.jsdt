@@ -98,7 +98,7 @@ private:
 	unsigned long m_windowHandle;
 
 	static const wchar_t* COMMAND_CHANGEBREAKPOINT;
-	static const wchar_t* COMMAND_CLEARBREAKPOINT;
+	static const wchar_t* COMMAND_DELETEBREAKPOINT;
 	static const wchar_t* COMMAND_GETBREAKPOINT;
 	static const wchar_t* COMMAND_GETBREAKPOINTS;
 	static const wchar_t* COMMAND_SETBREAKPOINT;

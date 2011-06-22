@@ -20,7 +20,7 @@ const wchar_t* CrossfireServer::LINEBREAK = L"\r\n";
 const size_t CrossfireServer::LINEBREAK_LENGTH = 2;
 
 const wchar_t* CrossfireServer::COMMAND_CHANGEBREAKPOINT = L"changebreakpoint";
-const wchar_t* CrossfireServer::COMMAND_CLEARBREAKPOINT = L"clearbreakpoint";
+const wchar_t* CrossfireServer::COMMAND_DELETEBREAKPOINT = L"deletebreakpoint";
 const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINT = L"getbreakpoint";
 const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINTS = L"getbreakpoints";
 const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINT = L"setbreakpoint";
@@ -296,23 +296,25 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	} else if (wcscmp(command, COMMAND_VERSION) == 0) {
 		success = commandVersion(arguments, &responseBody);
 	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINT) == 0) {
-		if (request->getContextId()) {
-			Logger::error("'changeBreakpoint' command should not specify a context_id");
-			return false;
-		}
+		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
-		getContextsArray(&contexts);
+		if (context) {
+			getContextsArray(&contexts);
+		}
 		success = m_bpManager->commandChangeBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
-		delete contexts;
-	} else if (wcscmp(command, COMMAND_CLEARBREAKPOINT) == 0) {
-		if (request->getContextId()) {
-			Logger::error("'clearBreakpoint' command should not specify a context_id");
-			return false;
+		if (contexts) {
+			delete contexts;
 		}
+	} else if (wcscmp(command, COMMAND_DELETEBREAKPOINT) == 0) {
+		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
-		getContextsArray(&contexts);
-		success = m_bpManager->commandClearBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
-		delete contexts;
+		if (context) {
+			getContextsArray(&contexts);
+		}
+		success = m_bpManager->commandDeleteBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		if (contexts) {
+			delete contexts;
+		}
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;

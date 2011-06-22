@@ -15,30 +15,28 @@
 #include <map>
 
 #include "Logger.h"
-#include "Value.h"
+class CrossfireBreakpoint; // forward declaration
+#include "IBreakpointTarget.h"
 
 class CrossfireBreakpoint {
 
 public:
 	virtual ~CrossfireBreakpoint();
-	virtual bool appliesToUrl(std::wstring* url);
+	virtual bool appliesToUrl(std::wstring* url); // TODO needed?
 	virtual void clone(CrossfireBreakpoint** _value) = 0;
-	virtual const std::wstring* getCondition();
 	virtual const std::wstring* getContextId();
 	virtual unsigned int getHandle();
+	virtual IBreakpointTarget* getTarget();
 	virtual int getType() = 0;
-	virtual const wchar_t* getTypeString() = 0;
-	virtual bool isEnabled();
-	virtual void setCondition(std::wstring* value);
+	virtual bool setAttributesFromValue(Value* value);
 	virtual void setContextId(std::wstring* value);
-	virtual void setEnabled(bool value);
 	virtual bool setLocationFromValue(Value* value) = 0;
+	virtual void setTarget(IBreakpointTarget* value);
 	virtual bool toValueObject(Value** _value);
 
 	static const int BPTYPE_LINE = 1;
-	static const wchar_t* KEY_CONDITION;
+	static const wchar_t* KEY_ATTRIBUTES;
 	static const wchar_t* KEY_CONTEXTID;
-	static const wchar_t* KEY_ENABLED;
 	static const wchar_t* KEY_HANDLE;
 	static const wchar_t* KEY_LOCATION;
 	static const wchar_t* KEY_TYPE;
@@ -46,12 +44,17 @@ public:
 protected:
 	CrossfireBreakpoint();
 	CrossfireBreakpoint(unsigned int handle);
+	virtual bool attributeIsValid(wchar_t* name, Value* value) = 0;
+	virtual void clearAttribute(wchar_t* name);
+	virtual Value* getAttribute(wchar_t* name);
 	virtual bool getLocationAsValue(Value** _value) = 0;
+	virtual const wchar_t* getTypeString() = 0;
+	virtual void setAttribute(wchar_t* name, Value* value);
 
 	unsigned int m_handle;
 
 private:
-	std::wstring* m_condition;
+	std::map<std::wstring, Value*>* m_attributes;
 	std::wstring* m_contextId;
-	bool m_enabled;
+	IBreakpointTarget* m_target;
 };

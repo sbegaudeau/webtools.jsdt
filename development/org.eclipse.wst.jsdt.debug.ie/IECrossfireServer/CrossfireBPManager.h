@@ -14,6 +14,7 @@
 
 #include <map>
 
+#include "CrossfireLineBreakpoint.h"
 #include "IBreakpointTarget.h"
 #include "Logger.h"
 #include "Value.h"
@@ -25,23 +26,21 @@ public:
 	~CrossfireBPManager();
 
 	virtual bool commandChangeBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
-	virtual bool commandClearBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
+	virtual bool commandDeleteBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
 	virtual bool commandGetBreakpoint(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
 	virtual bool commandGetBreakpoints(Value* arguments, IBreakpointTarget* target, Value** _responseBody);
 	virtual bool commandSetBreakpoint(Value* arguments, IBreakpointTarget** targets, Value** _responseBody);
 	virtual void setBreakpointsForScript(std::wstring* url, IBreakpointTarget* target);
 
 	/* IBreakpointTarget methods */
-	virtual bool clearBreakpoint(unsigned int handle);
-	virtual bool getBreakpoint(unsigned int handle, CrossfireBreakpoint** _value);
+	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
+	virtual bool deleteBreakpoint(unsigned int handle);
+	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
 	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values);
-	virtual bool setBreakpointCondition(unsigned int handle, std::wstring* condition);
-	virtual bool setBreakpointEnabled(unsigned int handle, bool enabled);
-	virtual bool setLineBreakpoint(CrossfireLineBreakpoint* breakpoint, bool isRetry);
+	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry);
 
 private:
 	virtual bool createBreakpoint(Value* arguments, CrossfireBreakpoint** _result);
-	virtual bool setBreakpointOnTarget(CrossfireBreakpoint* breakpoint, IBreakpointTarget* target);
 
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
 
