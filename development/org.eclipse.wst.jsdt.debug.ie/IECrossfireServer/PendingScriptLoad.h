@@ -64,11 +64,10 @@ public:
 		/* [in] */ TEXT_DOC_ATTR textdocattr);
 
 	/* PendingScriptLoad */
-	virtual bool init(IDebugApplicationNode* applicationNode, CrossfireContext* context);
+	virtual bool attach(IDebugApplicationNode* applicationNode, CrossfireContext* context);
+	virtual bool detach();
 
 private:
-	void unadvise();
-
 	CrossfireContext* m_context;
 	DWORD m_cookie;
 	IDebugApplicationNode* m_applicationNode;

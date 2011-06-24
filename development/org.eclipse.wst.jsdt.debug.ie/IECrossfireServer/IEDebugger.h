@@ -115,9 +115,6 @@ private:
 
 	/* event: onConsoleLog */
 	static const wchar_t* EVENT_ONCONSOLELOG;
-
-	/* event: onResume */
-	static const wchar_t* EVENT_ONRESUME;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(IEDebugger), IEDebugger)

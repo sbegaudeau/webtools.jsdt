@@ -32,9 +32,6 @@ const wchar_t* IEDebugger::KEY_STACK = L"stack";
 /* event: onConsoleLog */
 const wchar_t* IEDebugger::EVENT_ONCONSOLELOG = L"onConsoleLog";
 
-/* event: onResume */
-const wchar_t* IEDebugger::EVENT_ONRESUME = L"onResume";
-
 
 IEDebugger::IEDebugger() {
 	m_context = NULL;
@@ -58,6 +55,10 @@ STDMETHODIMP IEDebugger::CreateInstanceAtDebugger(REFCLSID rclsid, IUnknown *pUn
 }
 
 STDMETHODIMP IEDebugger::onDebugOutput(LPCOLESTR pstr) {
+	if (!m_context) {
+		return S_OK;
+	}
+
 	CrossfireEvent onConsoleLogEvent;
 	onConsoleLogEvent.setName(EVENT_ONCONSOLELOG);
 	Value data;
@@ -68,6 +69,10 @@ STDMETHODIMP IEDebugger::onDebugOutput(LPCOLESTR pstr) {
 }
 
 STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
+	if (!m_context) {
+		return S_OK; // TODO should probably resume in this case?
+	}
+
 	m_context->setRunning(false);
 
 	if (br == BREAKREASON_ERROR) {
@@ -253,6 +258,10 @@ STDMETHODIMP IEDebugger::BringDocumentContextToTop(IDebugDocumentContext *pddc) 
 /* IDebugApplicationNodeEvents */
 
 STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
+	if (!m_context) {
+		return S_OK;
+	}
+
 	m_context->scriptInitialized(prddpChild);
 
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
