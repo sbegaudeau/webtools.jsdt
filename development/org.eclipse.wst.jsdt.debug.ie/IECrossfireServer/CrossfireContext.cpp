@@ -28,6 +28,7 @@ const wchar_t* CrossfireContext::COMMAND_CONTINUE = L"continue";
 /* command: evaluate */
 const wchar_t* CrossfireContext::COMMAND_EVALUATE = L"evaluate";
 const wchar_t* CrossfireContext::KEY_EXPRESSION = L"expression";
+const wchar_t* CrossfireContext::KEY_RESULT = L"result";
 
 /* command: frame */
 const wchar_t* CrossfireContext::COMMAND_FRAME = L"frame";
@@ -141,6 +142,7 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 		return;
 	}
 	m_debugger = result;
+	m_debugger->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
 	m_breakpoints = new std::map<unsigned int, CrossfireBreakpoint*>;
 	m_cpcApplicationNodeEvents = 0;
 	m_server = server;
@@ -153,9 +155,6 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 	m_running = true;
 	m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
 	m_url = _wcsdup(url);
-
-	IEDebugger* ieDebugger = static_cast<IEDebugger*>(m_debugger);
-	ieDebugger->setContext(this);
 	hookDebugger();
 }
 
@@ -177,6 +176,7 @@ CrossfireContext::~CrossfireContext() {
 		std::map<IDebugApplicationNode*, PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
 		while (iterator != m_pendingScriptLoads->end()) {
 			iterator->first->Release();
+			iterator->second->detach();
 			iterator->second->Release();
 			iterator++;
 		}
@@ -232,15 +232,10 @@ CrossfireContext::~CrossfireContext() {
 		clearObjects();
 		delete m_objects;
 	}
-	if (m_debuggerHooked && unhookDebugger()) {
-		/*
-		* Hooking our debugger and then unhooking it later appears to change its
-		* refcount by a net value of -1 instead of the expected 0.  To work around
-		* this we do not Release our debugger below if it has been hooked and unhooked,
-		* even though this Release should be required in order to offset the refcount
-		* that it starts with when instantiated.
-		*/
-	} else if (m_debugger) {
+	if (m_debuggerHooked) {
+		unhookDebugger();
+	}
+	if (m_debugger) {
 		m_debugger->Release();
 	}
 	if (m_debugApplicationThread) {
@@ -591,10 +586,6 @@ void CrossfireContext::clearObjects() {
 	while (iterator != m_objects->end()) {
 		JSObject* jsObject = iterator->second;
 		jsObject->debugProperty->Release();
-		delete jsObject->name;
-		if (jsObject->objects) {
-			delete jsObject->objects;
-		}
 		jsObject->stackFrame->Release();
 		delete jsObject;
 		iterator++;
@@ -684,16 +675,16 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 			// get the full benefit of handle reuse it should be stored and
 			// reused for cases where the frame command is invoked on the same
 			// frame multiple times
-			JSObject frameObject;
-			frameObject.debugProperty = debugProperty;
-			frameObject.isFunction = false;
-			frameObject.name = NULL;
-			frameObject.objects = NULL;
-			frameObject.parentHandle = 0;
-			frameObject.stackFrame = stackFrame;
-			if (!createValueForObject(&frameObject, &locals)) {
+			JSObject* newObject = new JSObject();
+			newObject->debugProperty = debugProperty;
+			//newObject->debugProperty->AddRef();
+			newObject->stackFrame = stackFrame;
+			//newObject->stackFrame->AddRef();
+			if (!createValueForObject(newObject, true, &locals)) {
+				delete newObject;
 				return false;
 			}
+			delete newObject;
 
 			/* get "this" */
 
@@ -712,7 +703,7 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 				DEBUG_TEXT_RETURNVALUE,
 				&expression);
 			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText() failed [2]", hr);
+				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText() failed", hr);
 				return false;
 			}
 
@@ -751,14 +742,13 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 				// get the full benefit of handle reuse it should be stored and
 				// reused for cases where the frame command is invoked on the same
 				// frame multiple times
-				JSObject thisObject;
-				thisObject.debugProperty = debugProperty2;
-				thisObject.isFunction = false;
-				thisObject.name = NULL;
-				thisObject.objects = NULL;
-				thisObject.parentHandle = 0;
-				thisObject.stackFrame = stackFrame;
-				createValueForObject(&thisObject, &value_this);
+				JSObject* newObject = new JSObject();
+				newObject->debugProperty = debugProperty2;
+				//newObject->debugProperty->AddRef();
+				newObject->stackFrame = stackFrame;
+				//newObject->stackFrame->AddRef();
+				createValueForObject(newObject, true, &value_this);
+				delete newObject;
 			}
 
 			if (value_this) {
@@ -799,122 +789,267 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	return true;
 }
 
-bool CrossfireContext::createValueForObject(JSObject* object, Value** _value) {
+bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildObjects, Value** _value) {
 	*_value = NULL;
+
+	DebugPropertyInfo propertyInfo;
 	IDebugProperty* debugProperty = object->debugProperty;
-
-	CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
-	HRESULT hr = debugProperty->EnumMembers(
-		/*DBGPROP_INFO_NAME | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE | DBGPROP_INFO_DEBUGPROP*/ 0x3F,
-		10,
-		IID_IDebugPropertyEnumType_LocalsPlusArgs,
-		&enumPropertyInfo);
+	HRESULT hr = debugProperty->GetPropertyInfo(PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP, 10, &propertyInfo);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
+		Logger::error("CrossfireContext.createValueForObject(): GetPropertyInfo() failed", hr);
 		return false;
 	}
 
-	/* The IDebugExpressionContext will be needed for each encountered object/function */
-	CComPtr<IDebugExpressionContext> expressionContext = NULL;
-	hr = object->stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForObject(): QI(IDebugExpressionContext) failed", hr);
-		return false;
-	}
-
-	Value membersCollection;
-	membersCollection.setType(TYPE_OBJECT);
-
-	std::map<wchar_t*, unsigned int>* newObjectsTable = NULL;
-	ULONG fetched;
-	do {
-		DebugPropertyInfo propertyInfo;
-		HRESULT hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
-		if (SUCCEEDED(hr) && fetched) {
-			BSTR type = propertyInfo.m_bstrType;
-			Value local;
-			if (wcscmp(type, JSVALUE_NULL) == 0) {
-				local.setType(TYPE_NULL);
-			} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
-				local.setValue(VALUE_UNDEFINED);
+	BSTR type = propertyInfo.m_bstrType;
+	Value result;
+	if (wcscmp(type, JSVALUE_NULL) == 0) {
+		result.setType(TYPE_NULL);
+	} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
+		result.setValue(VALUE_UNDEFINED);
+	} else {
+		BSTR stringValue = propertyInfo.m_bstrValue;
+		if (wcscmp(type, JSVALUE_NUMBER) == 0) {
+			wchar_t* endPtr = 0;
+			double value = wcstod(stringValue, &endPtr);
+			result.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
+			result.addObjectValue(KEY_VALUE, &Value(value));
+		} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
+			result.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
+			if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
+				result.addObjectValue(KEY_VALUE, &Value(true));
 			} else {
-				BSTR stringValue = propertyInfo.m_bstrValue;
-				if (wcscmp(type, JSVALUE_NUMBER) == 0) {
-					wchar_t* endPtr = 0;
-					double value = wcstod(stringValue, &endPtr);
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
-					local.addObjectValue(KEY_VALUE, &Value(value));
-				} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
-					if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
-						local.addObjectValue(KEY_VALUE, &Value(true));
-					} else {
-						local.addObjectValue(KEY_VALUE, &Value(false));
-					}
-				} else if (wcscmp(type, JSVALUE_STRING) == 0) {
-					std::wstring string(stringValue);
-					string = string.substr(1, string.length() - 2);
-					local.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
-					local.addObjectValue(KEY_VALUE, &Value(&string));
-				} else {
-					bool isFunction = (propertyInfo.m_dwAttrib & /*DBGPROP_ATTRIB_VALUE_IS_EXPANDABLE*/ 0x10) == 0;
-					if (!newObjectsTable) {
-						newObjectsTable = new std::map<wchar_t*, unsigned int>;
-					}
+				result.addObjectValue(KEY_VALUE, &Value(false));
+			}
+		} else if (wcscmp(type, JSVALUE_STRING) == 0) {
+			std::wstring string(stringValue);
+			string = string.substr(1, string.length() - 2);
+			result.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
+			result.addObjectValue(KEY_VALUE, &Value(&string));
+		} else if ((propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_INVALID) != 0) {
+			// TODO error object, should fail?
+		} else if ((propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_OBJECT) == 0) {
+			/* object is a function */
+			result.addObjectValue(KEY_TYPE, &Value(VALUE_FUNCTION));
+			if (resolveChildObjects) {
+				// TODO
+				Value value_empty;
+				value_empty.setType(TYPE_OBJECT);
+				result.addObjectValue(KEY_VALUE, &value_empty);
+			}
+		} else {
+			if (!resolveChildObjects) {
+				result.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
+			} else {
+				CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
+				HRESULT hr = debugProperty->EnumMembers(
+					PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP,
+					10,
+					IID_IDebugPropertyEnumType_LocalsPlusArgs,
+					&enumPropertyInfo);
+				if (FAILED(hr)) {
+					Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
+					return false;
+				}
 
-					wchar_t* name = propertyInfo.m_bstrName;
-					unsigned int handle = 0;
-					if (object->objects) {
-						std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
-						if (iterator != object->objects->end()) {
-							std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
-							if (iterator2 != m_objects->end()) {
-								JSObject* existingObject = iterator2->second;
-								if (existingObject->isFunction == isFunction) {
-									handle = iterator2->first;
+				Value children;
+				children.setType(TYPE_OBJECT);
+				ULONG fetched;
+				do {
+					DebugPropertyInfo propertyInfo;
+					hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
+					if (SUCCEEDED(hr) && fetched) {
+						Value* value_child = NULL;
+						IDebugStackFrame* stackFrame = object->stackFrame;
+						JSObject childObject;
+						childObject.debugProperty = propertyInfo.m_pDebugProp;
+						childObject.stackFrame = stackFrame;
+						if (createValueForObject(&childObject, false, &value_child)) {
+							if (value_child->getType() == TYPE_OBJECT) {
+								Value* value_type = value_child->getObjectValue(KEY_TYPE);
+								const wchar_t* type = value_type->getStringValue()->c_str();
+								if (wcscmp(type, VALUE_OBJECT) == 0 || (wcscmp(type, VALUE_FUNCTION) == 0)) {
+									std::map<std::wstring, unsigned int> objects = object->children;
+									std::map<std::wstring, unsigned int>::iterator iterator = objects.find(propertyInfo.m_bstrName);
+									Value value_handle;
+									if (iterator != objects.end()) {
+										value_handle.setValue((double)iterator->second);
+									} else {
+										value_handle.setValue((double)m_nextObjectHandle);
+										JSObject* newObject = new JSObject();
+										newObject->debugProperty = propertyInfo.m_pDebugProp;
+										newObject->debugProperty->AddRef();
+										newObject->isObject = wcscmp(type, VALUE_OBJECT) == 0;
+										newObject->stackFrame = stackFrame;
+										newObject->stackFrame->AddRef();
+										m_objects->insert(std::pair<unsigned int, JSObject*>(m_nextObjectHandle++, newObject));
+									}
+									value_child->addObjectValue(KEY_HANDLE, &value_handle);
 								}
 							}
+							children.addObjectValue(propertyInfo.m_bstrName, value_child);
+							delete value_child;
 						}
 					}
-					if (!handle) {
-						JSObject* newObject = new JSObject();
-						IDebugProperty* objectProperty = propertyInfo.m_pDebugProp;
-						objectProperty->AddRef();
-						newObject->debugProperty = objectProperty;
-						newObject->isFunction = isFunction;
-						newObject->name = _wcsdup(name);
-						newObject->objects = NULL;
-						newObject->parentHandle = 0;
-						newObject->stackFrame = object->stackFrame;
-						newObject->stackFrame->AddRef();
-						handle = m_nextObjectHandle++;
-						m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
-					}
-					newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
-					local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-					local.addObjectValue(KEY_HANDLE, &Value((double)handle));
-				}
+				} while (fetched);
+				result.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
+				result.addObjectValue(KEY_VALUE, &children);
 			}
-			membersCollection.addObjectValue(propertyInfo.m_bstrName, &local);
 		}
-	} while (fetched);
-
-	if (object->objects) {
-		std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->begin();
-		while (iterator != object->objects->end()) {
-			delete iterator->first;
-			iterator++;
-		}
-		delete object->objects;
 	}
-	object->objects = newObjectsTable;
 
-	Value* result = new Value();
-	result->setObjectValue(KEY_TYPE, object->isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-	result->setObjectValue(KEY_VALUE, &membersCollection);
-	*_value = result;
+	Value* copy = NULL;
+	result.clone(&copy);
+	*_value = copy;
 	return true;
 }
+
+/*
+			if (!newObjectsTable) {
+				newObjectsTable = new std::map<wchar_t*, unsigned int>;
+			}
+
+			wchar_t* name = propertyInfo.m_bstrName;
+			unsigned int handle = 0;
+			if (object->objects) {
+				std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
+				if (iterator != object->objects->end()) {
+					std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
+					if (iterator2 != m_objects->end()) {
+						JSObject* existingObject = iterator2->second;
+						if (existingObject->isFunction == isFunction) {
+							handle = iterator2->first;
+						}
+					}
+				}
+			}
+			if (!handle) {
+				JSObject* newObject = new JSObject();
+				newObject->debugProperty = propertyInfo.m_pDebugProp;
+				newObject->debugProperty->AddRef();
+				newObject->isFunction = isFunction;
+				newObject->objects = NULL;
+				newObject->stackFrame = object->stackFrame;
+				newObject->stackFrame->AddRef();
+				handle = m_nextObjectHandle++;
+				m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
+			}
+//			newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
+			local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
+			local.addObjectValue(KEY_HANDLE, &Value((double)handle));
+		}
+	}
+*/
+
+//	CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
+//	HRESULT hr = debugProperty->EnumMembers(
+//		PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP,
+//		10,
+//		IID_IDebugPropertyEnumType_LocalsPlusArgs,
+//		&enumPropertyInfo);
+//	if (FAILED(hr)) {
+//		Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
+//		return false;
+//	}
+
+	/* The IDebugExpressionContext will be needed for each encountered object/function */
+//	CComPtr<IDebugExpressionContext> expressionContext = NULL;
+//	hr = object->stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
+//	if (FAILED(hr)) {
+//		Logger::error("CrossfireContext.createValueForObject(): QI(IDebugExpressionContext) failed", hr);
+//		return false;
+//	}
+
+//	Value membersCollection;
+//	membersCollection.setType(TYPE_OBJECT);
+
+//	std::map<wchar_t*, unsigned int>* newObjectsTable = NULL;
+//	ULONG fetched;
+//	do {
+//		DebugPropertyInfo propertyInfo;
+//		HRESULT hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
+//		if (SUCCEEDED(hr) && fetched) {
+//// VVVVVVVVVVVVVVVVVVVVV
+//			BSTR type = propertyInfo.m_bstrType;
+//			Value local;
+//			if (wcscmp(type, JSVALUE_NULL) == 0) {
+//				local.setType(TYPE_NULL);
+//			} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
+//				local.setValue(VALUE_UNDEFINED);
+//			} else {
+//				BSTR stringValue = propertyInfo.m_bstrValue;
+//				if (wcscmp(type, JSVALUE_NUMBER) == 0) {
+//					wchar_t* endPtr = 0;
+//					double value = wcstod(stringValue, &endPtr);
+//					local.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
+//					local.addObjectValue(KEY_VALUE, &Value(value));
+//				} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
+//					local.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
+//					if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
+//						local.addObjectValue(KEY_VALUE, &Value(true));
+//					} else {
+//						local.addObjectValue(KEY_VALUE, &Value(false));
+//					}
+//				} else if (wcscmp(type, JSVALUE_STRING) == 0) {
+//					std::wstring string(stringValue);
+//					string = string.substr(1, string.length() - 2);
+//					local.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
+//					local.addObjectValue(KEY_VALUE, &Value(&string));
+//				} else {
+//					bool isFunction = (propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_OBJECT) == 0;
+//					if (!newObjectsTable) {
+//						newObjectsTable = new std::map<wchar_t*, unsigned int>;
+//					}
+
+//					wchar_t* name = propertyInfo.m_bstrName;
+//					unsigned int handle = 0;
+//					if (object->objects) {
+//						std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
+//						if (iterator != object->objects->end()) {
+//							std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
+//							if (iterator2 != m_objects->end()) {
+//								JSObject* existingObject = iterator2->second;
+//								if (existingObject->isFunction == isFunction) {
+//									handle = iterator2->first;
+//								}
+//							}
+//						}
+//					}
+//					if (!handle) {
+//						JSObject* newObject = new JSObject();
+//						IDebugProperty* objectProperty = propertyInfo.m_pDebugProp;
+//						objectProperty->AddRef();
+//						newObject->debugProperty = objectProperty;
+//						newObject->isFunction = isFunction;
+//						newObject->objects = NULL;
+//						newObject->stackFrame = object->stackFrame;
+//						newObject->stackFrame->AddRef();
+//						handle = m_nextObjectHandle++;
+//						m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
+//					}
+//					newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
+//					local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
+//					local.addObjectValue(KEY_HANDLE, &Value((double)handle));
+//				}
+//			}
+// ^^^^^^^^^^^^^^^^^^^^^^^^^
+//			membersCollection.addObjectValue(propertyInfo.m_bstrName, &local);
+//		}
+//	} while (fetched);
+
+//	if (object->objects) {
+//		std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->begin();
+//		while (iterator != object->objects->end()) {
+//			delete iterator->first;
+//			iterator++;
+//		}
+//		delete object->objects;
+//	}
+//	object->objects = newObjectsTable;
+
+//	Value* result = new Value();
+//	result->setObjectValue(KEY_TYPE, object->isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
+//	result->setObjectValue(KEY_VALUE, &membersCollection);
+//	*_value = result;
 
 bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
@@ -1140,9 +1275,11 @@ bool CrossfireContext::hookDebugger() {
 	}
 
 	IEDebugger* ieDebugger = static_cast<IEDebugger*>(m_debugger);
+	ieDebugger->setContext(this);
 	hr = application->ConnectDebugger(ieDebugger);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.hookDebugger(): ConnectDebugger() failed", hr);
+		ieDebugger->setContext(NULL);
 		return false;
 	}
 
@@ -1286,7 +1423,7 @@ bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode)
 			return false;
 		}
 
-		if (pendingScriptLoad->init(applicationNode, this)) {
+		if (pendingScriptLoad->attach(applicationNode, this)) {
 			applicationNode->AddRef();
 			pendingScriptLoad->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
 			m_pendingScriptLoads->insert(std::pair<IDebugApplicationNode*, PendingScriptLoad*>(applicationNode, pendingScriptLoad));
@@ -1382,6 +1519,8 @@ bool CrossfireContext::unhookDebugger() {
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.unhookDebugger(): DisconnectDebugger() failed", hr);
 	}
+
+	static_cast<IEDebugger*>(m_debugger)->setContext(NULL);
 	return SUCCEEDED(hr);
 }
 
@@ -1549,7 +1688,7 @@ bool CrossfireContext::commandContinue(Value* arguments, Value** _responseBody) 
 
 bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq, Value** _responseBody) {
 	unsigned int frame = 0;
-	Value* value_frame = arguments->getObjectValue(KEY_FRAME);
+	Value* value_frame = arguments->getObjectValue(KEY_FRAMEINDEX);
 	if (value_frame) {
 		if (value_frame->getType() != TYPE_NUMBER || (unsigned int)value_frame->getNumberValue() < 0) {
 			Logger::error("'evaluate' command has invalid 'frame' value");
@@ -1600,7 +1739,7 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 		return false;
 	}
 
-	IDebugExpression* expression = NULL;
+	CComPtr<IDebugExpression> expression = NULL;
 	hr = expressionContext->ParseLanguageText(
 		value_expression->getStringValue()->c_str(),
 		10,
@@ -1612,29 +1751,49 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 		return false;
 	}
 
-	JSEvalCallback* callback = NULL;
-	hr = CoCreateInstance(CLSID_JSEvalCallback, NULL, CLSCTX_INPROC_SERVER, IID_IJSEvalCallback, (LPVOID*)&callback);
+	hr = expression->Start(NULL);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): CoCreateInstance(CLSID_JSEvalCallback) failed", hr);
+		Logger::error("CrossfireContext.commandEvaluate(): Start() failed", hr);
 		return false;
 	}
 
-	// TODO finish this, note that "expression" and "callback" need to be released by someone)
-	/*
-	CrossfireResponse response;
-	response.setCommand(COMMAND_EVALUATE);
-	response.setRequestSeq(requestSeq);
-	response.setRunning(true); // TODO better way to determine this?
-	response.setSuccess(true);
-	//callback->init(&response, crossfire, expression);
-
-	hr = expression->Start(static_cast<IDebugExpressionCallBack*>(callback));
-	if (FAILED(hr)) {
-		Logger::error("'evaluate' Start() failed", hr);
-		callback->Release();
+	int ms = 0;
+	while (ms < 2000) {
+		if (expression->QueryIsComplete() == S_OK) {
+			break;
+		}
+		ms += 10;
+		::Sleep(10);
+	}
+	if (2000 <= ms) {
+		Logger::error("CrossfireContext.commandEvaluate(): Evaluation took too long");
 		return false;
 	}
-	*/
+
+	HRESULT evalResult;
+	CComPtr<IDebugProperty> debugProperty2 = NULL;
+	hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.commandEvaluate(): GetResultAsDebugProperty() failed", hr);
+		return false;
+	}
+	if (FAILED(evalResult)) {
+		Logger::error("CrossfireContext.commandEvaluate(): evaluation of GetResultAsDebugProperty() failed", evalResult);
+		return false;
+	}
+
+	Value* value_result = NULL;
+	JSObject newObject;
+	newObject.debugProperty = debugProperty2;
+	newObject.stackFrame = stackFrame;
+	if (!createValueForObject(&newObject, true, &value_result)) {
+		return false;
+	}
+
+	Value* result = new Value();
+	result->addObjectValue(KEY_RESULT, value_result);
+	delete value_result;
+	*_responseBody = result;
 	return true;
 }
 
@@ -1725,14 +1884,43 @@ bool CrossfireContext::commandLookup(Value* arguments, Value** _responseBody) {
 	}
 	JSObject* object = iterator->second;
 
-	Value* result = NULL;
-	if (!createValueForObject(object, &result)) {
+	Value* value_object = NULL;
+	if (!createValueForObject(object, true, &value_object)) {
 		return false;
 	}
 	
-	// TODO includeSource
+	if (includeSource && !object->isObject) {
+		// TODO
+//		GUID iid;
+//		IIDFromString(OLESTR("{94E1E004-0672-423d-AD62-78783DEF1E76}"), &iid);
+//		CComPtr<IDebugProperty3> documentContext = NULL;
+//		HRESULT hr2 = object->debugProperty->QueryInterface(iid, (LPVOID*)&documentContext);
+//		if (SUCCEEDED(hr2)) {
+//			ULONG len = 0;
+//			hr2 = documentContext->GetStringCharLength(&len);
+//			if (SUCCEEDED(hr2)) {
+//				Logger::error("maybe?");
+//			}
+//		}
+//		VARIANT info;
+//		object->debugProperty->GetExtendedInfo(1, &iid, &info); 
+//		if (info.vt == VT_UNKNOWN) {
+//			CComPtr<IDebugDocumentContext2> documentContext = NULL;
+//			IIDFromString(OLESTR("{931516ad-b600-419c-88fc-dcf5183b5fa9}"), &iid);
+//			HRESULT hr = info.punkVal->QueryInterface(/*IID_IDebugDocumentContext2*/iid, (LPVOID*)&documentContext);
+//			if (FAILED(hr)) {
+//				Logger::error("CrossfireContext.commandLookup(): QI(IDebugDocumentContext2) failed", hr);
+//			} else {
+//				TEXT_POSITION start, end;
+//				hr = documentContext->GetSourceRange(&start, &end);
+//				if (FAILED(hr)) {
+//					Logger::error("CrossfireContext.commandLookup(): GetSourceRange() failed", hr);
+//				}
+//			}
+//		}
+	}
 
-	*_responseBody = result;
+	*_responseBody = value_object;
 	return true;
 }
 

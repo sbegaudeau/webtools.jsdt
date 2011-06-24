@@ -57,17 +57,15 @@ public:
 
 private:
 	struct JSObject {
+		std::map<std::wstring, unsigned int> children;
 		IDebugProperty* debugProperty;
+		bool isObject;
 		IDebugStackFrame* stackFrame;
-		bool isFunction;
-		wchar_t* name;
-		std::map<wchar_t*, unsigned int>* objects;
-		unsigned int parentHandle;
 	};
 
 	virtual void clearObjects();
 	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
-	virtual bool createValueForObject(JSObject* object, Value** _value);
+	virtual bool createValueForObject(JSObject* object, bool resolveChildObjects, Value** _value);
 	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
@@ -110,6 +108,7 @@ private:
 	/* command: evaluate */
 	static const wchar_t* COMMAND_EVALUATE;
 	static const wchar_t* KEY_EXPRESSION;
+	static const wchar_t* KEY_RESULT;
 	virtual bool commandEvaluate(Value* arguments, unsigned int requestSeq, Value** _responseBody);
 
 	/* command: frame */
