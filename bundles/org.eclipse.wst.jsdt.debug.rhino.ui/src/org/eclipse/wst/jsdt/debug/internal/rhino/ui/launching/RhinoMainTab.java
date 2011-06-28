@@ -64,7 +64,7 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 	/**
 	 * The id of the tab
 	 * <br><br>
-	 * Value is: <code>thino.main.tab</code>
+	 * Value is: <code>rhino.main.tab</code>
 	 */
 	public static final String TAB_ID = "rhino.main.tab"; //$NON-NLS-1$
 	public static final String[] VERSIONS = {"100", "110", "120", "130", "140", "150", "160", "170"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
