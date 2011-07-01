@@ -4580,7 +4580,7 @@ public final class CompletionEngine
 
 			if (method.isDefaultAbstract())	continue next;
 
-			//if (method.isConstructor()) continue next;
+			if (method.isConstructor()) continue next;
 
 			if (this.options.checkDeprecation &&
 					method.isViewedAsDeprecated() &&

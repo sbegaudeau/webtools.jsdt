@@ -183,7 +183,8 @@ public class MethodScope extends BlockScope {
 		if (method.isConstructor() || isConstructor) {
 			if (method.isDefaultConstructor() || isConstructor)
 				modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
-			methodBinding = new MethodBinding(modifiers, null, declaringClass);
+			methodBinding = new MethodBinding(modifiers, name, TypeBinding.UNKNOWN, null, declaringClass);
+			methodBinding.tagBits|=TagBits.IsConstructor;
 			checkAndSetModifiersForConstructor(methodBinding);
 		} else {
 //			if (declaringClass.isInterface()) // interface or annotation type
