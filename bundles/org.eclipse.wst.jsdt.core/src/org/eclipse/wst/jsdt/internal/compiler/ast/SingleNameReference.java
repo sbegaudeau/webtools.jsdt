@@ -121,13 +121,14 @@ public class SingleNameReference extends NameReference implements ISingleNameRef
 				if(binding instanceof LocalVariableBinding) {
 					LocalVariableBinding localBinding= (LocalVariableBinding) binding;
 	
-					if(!flowInfo.isDefinitelyAssigned(localBinding)) {
-						if (localBinding.declaringScope instanceof MethodScope) {
-							// ignore the arguments variable inside a function
-							if(!CharOperation.equals(localBinding.name, new char[]{'a','r','g','u','m','e','n','t','s'}))
+					// ignore the arguments variable inside a function
+					if(!(CharOperation.equals(localBinding.name, new char[]{'a','r','g','u','m','e','n','t','s'}) && (localBinding.declaringScope instanceof MethodScope))) {
+						if(!flowInfo.isDefinitelyAssigned(localBinding)) {
+							if (localBinding.declaringScope instanceof MethodScope) {
 									currentScope.problemReporter().uninitializedLocalVariable(localBinding, this);		
-						} else if(localBinding.isSameCompilationUnit(currentScope)) {
-							currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+							} else if(localBinding.isSameCompilationUnit(currentScope)) {
+								currentScope.problemReporter().uninitializedGlobalVariable(localBinding, this);
+							}
 						}
 					}
 					
