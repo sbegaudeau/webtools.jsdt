@@ -110,6 +110,9 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			if (condition != null) {
 				attribs.put(Attributes.CONDITION, condition);	
 			}
+			if (hitcount > 0) {
+				attribs.put(Attributes.HIT_COUNT, new Long(hitcount));
+			}
 			attribs.put(Attributes.ENABLED, Boolean.TRUE);
 			request.setArgument(Attributes.ATTRIBUTES, attribs);
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);

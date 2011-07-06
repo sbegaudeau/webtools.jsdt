@@ -118,6 +118,10 @@ public interface Attributes {
 	 */
 	public static final String HANDSHAKE = "handshake"; //$NON-NLS-1$
 	/**
+	 * The "hitCount" attribute
+	 */
+	public static final String HIT_COUNT = "hitCount"; //$NON-NLS-1$
+	/**
 	 * The "href" attribute
 	 */
 	public static final String HREF = "href"; //$NON-NLS-1$
