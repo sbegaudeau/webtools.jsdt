@@ -95,26 +95,6 @@ public:
 private:
 	CrossfireContext* m_context;
 	std::multimap<std::wstring, DWORD>* m_adviseCookies;
-	
-	/* event: onBreak */
-	static const wchar_t* EVENT_ONBREAK;
-	static const wchar_t* KEY_CAUSE;
-	static const wchar_t* KEY_LOCATION;
-	static const wchar_t* KEY_LINE;
-	static const wchar_t* KEY_URL;
-	virtual HRESULT handleError(IActiveScriptErrorDebug *pScriptErrorDebug);
-
-	/* event: onConsoleError */
-	static const wchar_t* EVENT_ONCONSOLEERROR;
-	static const wchar_t* KEY_FILENAME;
-	static const wchar_t* KEY_LINENUMBER;
-	static const wchar_t* KEY_MESSAGE;
-	static const wchar_t* KEY_NAME;
-	static const wchar_t* KEY_SOURCE;
-	static const wchar_t* KEY_STACK;
-
-	/* event: onConsoleLog */
-	static const wchar_t* EVENT_ONCONSOLELOG;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(IEDebugger), IEDebugger)

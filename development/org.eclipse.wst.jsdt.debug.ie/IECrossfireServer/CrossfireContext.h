@@ -21,9 +21,9 @@
 #include "CrossfireLineBreakpoint.h"
 #include "CrossfireRequest.h"
 #include "CrossfireResponse.h"
-#include "JSEvalCallback.h"
-#include "IECrossfireServer.h"
 #include "IBreakpointTarget.h"
+#include "IECrossfireServer.h"
+#include "JSEvalCallback.h"
 #include "Value.h"
 #include "Logger.h"
 
@@ -32,11 +32,12 @@ class CrossfireContext; // forward declaration
 #include "CrossfireServer.h"
 #include "IEDebugger.h"
 
-class CrossfireContext : IBreakpointTarget {
+class CrossfireContext : IBreakpointTarget, IJSEvalHandler {
 
 public:
 	CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server);
 	~CrossfireContext();
+	virtual void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
 	virtual IDebugApplicationNode* getLastInitializedScriptNode();
 	virtual wchar_t* getName();
 	virtual DWORD getProcessId();
@@ -45,8 +46,6 @@ public:
 	virtual bool performRequest(CrossfireRequest* request);
 	virtual bool scriptInitialized(IDebugApplicationNode *applicationNode);
 	virtual bool scriptLoaded(IDebugApplicationNode *applicationNode);
-	virtual void sendEvent(CrossfireEvent* eventObj);
-	virtual void setRunning(bool value);
 
 	/* IBreakpointTarget methods */
 	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
@@ -54,6 +53,9 @@ public:
 	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
 	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values);
 	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry);
+
+	/* IJSEvalHandler methods */
+	virtual void evalComplete(IDebugProperty* value, void* data);
 
 private:
 	struct JSObject {
@@ -67,15 +69,19 @@ private:
 	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
 	virtual bool createValueForObject(JSObject* object, bool resolveChildObjects, Value** _value);
 	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
+	virtual bool evaluate(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IDebugProperty** _result);
+	virtual bool evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
 	virtual wchar_t* getScriptId(IDebugApplicationNode* node);
 	virtual IDebugApplicationNode* getScriptNode(wchar_t* name);
 	virtual bool hookDebugger();
 	virtual bool registerScript(IDebugApplicationNode* applicationNode);
+	virtual void sendEvent(CrossfireEvent* eventObj);
 	virtual bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
 	virtual bool unhookDebugger();
 
+	std::vector<JSEvalCallback*>* m_asyncEvals;
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
 	DWORD m_cpcApplicationNodeEvents;
 	IDebugApplicationNode* m_currentScriptNode;
@@ -156,6 +162,13 @@ private:
 	static const wchar_t* VALUE_OUT;
 	virtual bool commandSuspend(Value* arguments, Value** _responseBody);
 
+	/* event: onBreak */
+	static const wchar_t* EVENT_ONBREAK;
+	static const wchar_t* KEY_CAUSE;
+	static const wchar_t* KEY_MESSAGE;
+	static const wchar_t* KEY_TITLE;
+	static const wchar_t* KEY_URL;
+
 	/* event: onScript */
 	static const wchar_t* EVENT_ONSCRIPT;
 
@@ -171,11 +184,11 @@ private:
 	static const wchar_t* KEY_INCLUDESCOPES;
 	static const wchar_t* KEY_INCLUDESOURCE;
 	static const wchar_t* KEY_LINE;
+	static const wchar_t* KEY_LOCATION;
 	static const wchar_t* KEY_TYPE;
 
 	/* breakpoint objects */
 	static const wchar_t* BPTYPE_LINE;
-	static const wchar_t* KEY_LOCATION;
 
 	/* frame objects */
 	static const wchar_t* KEY_FUNCTIONNAME;

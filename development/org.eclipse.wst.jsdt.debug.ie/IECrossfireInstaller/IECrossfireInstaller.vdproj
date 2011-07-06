@@ -27,18 +27,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_2BE6F9D69F0A4B098A470FAA2404F55E"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2BE6F9D69F0A4B098A470FAA2404F55E"
-        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -47,30 +35,6 @@
         {
         "MsmKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
-        "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
-        "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_64B88F4F3920498395429FBE89B744AA"
-        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -301,7 +265,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{B04D87CD-683D-4AEA-A81D-C20FE2FF01D5}"
+        "PackageCode" = "8:{6A50BF00-F4AE-4A99-8679-B2A9396C27ED}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1175,6 +1139,102 @@
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
                                     "Value" = "8:ICrossfireServerClass"
+                                    }
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_F7E064D187904527A1ABDB34EF0AEBD1"
+                            {
+                            "Name" = "8:{31DC44C3-7C98-4737-8D62-0E78FCCC503D}"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2D3F710A45A1434F93A92412A702472A"
+                                    {
+                                    "Name" = "8:ProxyStubClsid32"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_340155EB426647BD98AA10A123DC345E"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{00020424-0000-0000-C000-000000000046}"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_556A0DE2229E473699BE51B5745373F2"
+                                    {
+                                    "Name" = "8:ProxyStubClsid"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_0C6C99C3E52849CB9A64E0B2B4964173"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{00020424-0000-0000-C000-000000000046}"
+                                            }
+                                        }
+                                    }
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9285E9BFC18F4622B37D37EA44AFAD0D"
+                                    {
+                                    "Name" = "8:TypeLib"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_57BF5E56729C4ABDAF9927D8314D1661"
+                                            {
+                                            "Name" = "8:Version"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:1.0"
+                                            }
+                                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B55872EF6DF54498B908ED6C6CAF878D"
+                                            {
+                                            "Name" = "8:"
+                                            "Condition" = "8:"
+                                            "Transitive" = "11:FALSE"
+                                            "ValueTypes" = "3:1"
+                                            "Value" = "8:{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}"
+                                            }
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_40E1972E828F460A85C2A7C390B9B354"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:IJSEvalCallback2"
                                     }
                                 }
                             }
@@ -3719,34 +3779,6 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_2BE6F9D69F0A4B098A470FAA2404F55E"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_64B88F4F3920498395429FBE89B744AA"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
         }
         "ProjectOutput"
         {

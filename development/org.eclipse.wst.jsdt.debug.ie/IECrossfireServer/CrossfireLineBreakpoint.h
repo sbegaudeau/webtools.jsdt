@@ -35,6 +35,7 @@ public:
 	virtual bool setLocationFromValue(Value* value);
 	virtual bool setUrl(std::wstring* value);
 
+	/* static methods */
 	static bool CanHandleBPType(wchar_t* type);
 
 	static const wchar_t* ATTRIBUTE_CONDITION;

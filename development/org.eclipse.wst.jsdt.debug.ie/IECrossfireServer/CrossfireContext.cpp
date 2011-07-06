@@ -68,6 +68,13 @@ const wchar_t* CrossfireContext::VALUE_IN = L"in";
 const wchar_t* CrossfireContext::VALUE_NEXT = L"next";
 const wchar_t* CrossfireContext::VALUE_OUT = L"out";
 
+/* event: onBreak */
+const wchar_t* CrossfireContext::EVENT_ONBREAK = L"onBreak";
+const wchar_t* CrossfireContext::KEY_CAUSE = L"cause";
+const wchar_t* CrossfireContext::KEY_MESSAGE = L"message";
+const wchar_t* CrossfireContext::KEY_TITLE = L"title";
+const wchar_t* CrossfireContext::KEY_URL = L"url";
+
 /* event: onScript */
 const wchar_t* CrossfireContext::EVENT_ONSCRIPT = L"onScript";
 
@@ -80,6 +87,7 @@ const wchar_t* CrossfireContext::KEY_BREAKPOINT = L"breakpoint";
 const wchar_t* CrossfireContext::KEY_CONTEXTID = L"contextId";
 const wchar_t* CrossfireContext::KEY_FRAMEINDEX = L"frameIndex";
 const wchar_t* CrossfireContext::KEY_HANDLE = L"handle";
+const wchar_t* CrossfireContext::KEY_LOCATION = L"location";
 const wchar_t* CrossfireContext::KEY_INCLUDESCOPES = L"includeScopes";
 const wchar_t* CrossfireContext::KEY_INCLUDESOURCE = L"includeSource";
 const wchar_t* CrossfireContext::KEY_LINE = L"line";
@@ -87,7 +95,6 @@ const wchar_t* CrossfireContext::KEY_TYPE = L"type";
 
 /* breakpoint objects */
 const wchar_t* CrossfireContext::BPTYPE_LINE = L"line";
-const wchar_t* CrossfireContext::KEY_LOCATION = L"location";
 
 /* frame objects */
 const wchar_t* CrossfireContext::KEY_FUNCTIONNAME = L"functionName";
@@ -141,6 +148,7 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 		Logger::error("CrossfireContext(): CoCreateInstance(IIEDebugger) failed", hr);
 		return;
 	}
+	m_asyncEvals = new std::vector<JSEvalCallback*>;
 	m_debugger = result;
 	m_debugger->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
 	m_breakpoints = new std::map<unsigned int, CrossfireBreakpoint*>;
@@ -159,6 +167,15 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 }
 
 CrossfireContext::~CrossfireContext() {
+	if (m_asyncEvals) {
+		std::vector<JSEvalCallback*>::iterator iterator = m_asyncEvals->begin();
+		while (iterator != m_asyncEvals->end()) {
+			delete *iterator;
+			iterator++;
+		}
+		delete m_asyncEvals;
+	}
+
 	if (m_breakpoints) {
 		std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
 		while (iterator != m_breakpoints->end()) {
@@ -593,6 +610,214 @@ void CrossfireContext::clearObjects() {
 	m_objects->clear();
 }
 
+/* IJSEvalHandler methods */
+
+void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
+	/*
+	 * Currently only breakpoint conditions are evaluated asynchronously, so it's assumed
+	 * that data is a breakpoint.  If more asynchronous evaluations are introduced in the
+	 * future then a new class implementing IJSEvalHandler should be created for handling
+	 * breakpoint condition evals.
+	 */
+
+	bool resume = false;
+	DebugPropertyInfo propertyInfo;
+	HRESULT hr = value->GetPropertyInfo(PROP_INFO_TYPE | PROP_INFO_VALUE, 10, &propertyInfo);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evalComplete(): GetPropertyInfo() failed", hr);
+		resume = true;
+	} else {
+		BSTR type = propertyInfo.m_bstrType;
+		if (wcscmp(type, JSVALUE_BOOLEAN) != 0) {
+			resume = true;
+		} else {
+			BSTR stringValue = propertyInfo.m_bstrValue;
+			if (wcscmp(stringValue, JSVALUE_TRUE) != 0) {
+				resume = true;
+			}
+		}
+	}
+
+	if (resume) {
+		CComPtr<IRemoteDebugApplicationThread> thread = NULL;
+		hr = getDebugApplicationThread(&thread);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.evalComplete(): getDebugApplicationThread() failed", hr);
+			return;
+		}
+		CComPtr<IRemoteDebugApplication> application = NULL;
+		hr = thread->GetApplication(&application);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.evalComplete(): GetApplication() failed", hr);
+			return;
+		}
+		hr = application->ResumeFromBreakPoint(thread, BREAKRESUMEACTION_CONTINUE, ERRORRESUMEACTION_SkipErrorStatement);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.evalComplete(): ResumeFromBreakPoint() failed", hr);
+		}
+		return;
+	}
+
+	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)data;
+	CrossfireEvent onBreakEvent;
+	onBreakEvent.setName(EVENT_ONBREAK);
+	Value value_data;
+	Value location;
+	location.addObjectValue(KEY_LINE, &Value((double)breakpoint->getLine()));
+	location.addObjectValue(KEY_URL, &Value(breakpoint->getUrl()->c_str()));
+	value_data.addObjectValue(KEY_LOCATION, &location);
+	Value cause;
+	cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
+	value_data.addObjectValue(KEY_CAUSE, &cause);
+	onBreakEvent.setData(&value_data);
+	sendEvent(&onBreakEvent);
+}
+
+/* CrossfireContext */
+
+void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
+	m_running = false;
+
+	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
+	HRESULT hr = pDebugAppThread->EnumStackFrames(&stackFrames);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames() failed", hr);
+		return;
+	}
+
+	DebugStackFrameDescriptor stackFrameDescriptor;
+	ULONG numFetched = 0;
+	hr = stackFrames->Next(1,&stackFrameDescriptor,&numFetched);
+	if (FAILED(hr) || numFetched != 1) {
+		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames->Next() failed", hr);
+		return;
+	}
+
+	IDebugStackFrame* frame = stackFrameDescriptor.pdsf;
+	CComPtr<IDebugCodeContext> codeContext = NULL;
+	hr = frame->GetCodeContext(&codeContext);
+	// TODO This fails if the current position is not in a user document (eg.- following
+	// a return).  Not sure what to do here (send an event with no url/line?  Or no event?)
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetCodeContext() failed", hr);
+		return;
+	}
+
+	CComPtr<IDebugDocumentContext> documentContext = NULL;
+	hr = codeContext->GetDocumentContext(&documentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetDocumentContext() failed", hr);
+		return;
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	hr = documentContext->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetDocument() failed", hr);
+		return;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): QueryInterface() failed", hr);
+		return;
+	}
+
+	ULONG position, numChars;
+	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetPositionOfContext() failed", hr);
+		return;
+	}
+
+	ULONG lineNumber, column;
+	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetLineOfContext() failed", hr);
+		return;
+	}
+	lineNumber++;
+
+	CComBSTR bstrUrl;
+	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.breakpointHit(): GetName() failed", hr);
+		return;
+	}
+
+	/*
+	 * If the cause of the break is a breakpoint then locate the breakpoint and
+	 * determine whether the onBreak event should be sent (eg.- does the breakpoint
+	 * have a hit count to respect, a condition to evaluate, etc.).
+	 */
+	if (br == BREAKREASON_BREAKPOINT) {
+		CrossfireBreakpoint* breakpoint = NULL;
+		std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
+		while (iterator != m_breakpoints->end()) {
+			CrossfireBreakpoint* current = iterator->second;
+			if (current->getType() == CrossfireLineBreakpoint::BPTYPE_LINE) {
+				CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)current;
+				if (lineBp->getLine() == lineNumber && wcscmp(lineBp->getUrl()->c_str(), bstrUrl) == 0) {
+					const std::wstring* conditionString = lineBp->getCondition();
+					if (conditionString) {
+						wchar_t* condition = (wchar_t*)conditionString->c_str();
+						if (evaluateAsync(frame, condition, DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_NOSIDEEFFECTS, this, lineBp)) {
+							return;
+						}
+					}
+					break;
+				}
+			}
+			iterator++;
+		}
+	}
+
+	CrossfireEvent onBreakEvent;
+	onBreakEvent.setName(EVENT_ONBREAK);
+	Value data;
+	Value location;
+	location.addObjectValue(KEY_LINE, &Value((double)lineNumber));
+	location.addObjectValue(KEY_URL, &Value(bstrUrl));
+	data.addObjectValue(KEY_LOCATION, &location);
+	Value cause;
+	switch (br) {
+		case BREAKREASON_ERROR: {
+			cause.addObjectValue(KEY_TITLE, &Value(L"error"));
+			EXCEPINFO excepInfo;
+			HRESULT hr = pScriptErrorDebug->GetExceptionInfo(&excepInfo);
+			if (FAILED(hr)) {
+				Logger::error("IEDebugger::onHandleBreakPoint(): GetExceptionInfo() failed", hr);
+			} else {
+				if (excepInfo.bstrDescription) {
+					cause.addObjectValue(KEY_MESSAGE, &Value(excepInfo.bstrDescription));
+				}
+			}
+			break;
+		}
+		case BREAKREASON_DEBUGGER_HALT: {
+			cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
+			break;
+		}
+		case BREAKREASON_STEP: {
+			cause.addObjectValue(KEY_TITLE, &Value(L"step"));
+			break;
+		}
+		case BREAKREASON_BREAKPOINT: {
+			cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
+			break;
+		}
+		default: {
+			cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
+			break;
+		}
+	}
+	data.addObjectValue(KEY_CAUSE, &cause);
+	onBreakEvent.setData(&data);
+	sendEvent(&onBreakEvent);
+	return;
+}
+
 bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value) {
 	*_value = NULL;
 
@@ -612,165 +837,103 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForFrame(): GetCodeContext() failed", hr);
 		return false;
-//		wchar_t indexString[9];
-//		_itow_s(m_nextUnnamedUrlIndex++, indexString, 9, 10);
-//		size_t length = wcslen(URL_ANONYMOUS) + wcslen(indexString) + 1;
-//		wchar_t* urlString = new wchar_t[length];
-//		wcscpy_s(urlString, length, URL_ANONYMOUS);
-//		wcscat_s(urlString, length, indexString);
-//		scriptId = CComBSTR(urlString);
-//		delete[] urlString;
-	} else {
-		CComPtr<IDebugDocumentContext> documentContext = NULL;
-		hr = codeContext->GetDocumentContext(&documentContext);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.createValueForFrame(): GetDocumentContext() failed", hr);
-			return false;
-//			wchar_t indexString[9];
-//			_itow_s(m_nextUnnamedUrlIndex++, indexString, 9, 10);
-//			size_t length = wcslen(URL_ANONYMOUS) + wcslen(indexString) + 1;
-//			wchar_t* urlString = new wchar_t[length];
-//			wcscpy_s(urlString, length, URL_ANONYMOUS);
-//			wcscat_s(urlString, length, indexString);
-//			scriptId = CComBSTR(urlString);
-//			delete[] urlString;
-		} else {
-			CComPtr<IDebugDocument> document = NULL;
-			hr = documentContext->GetDocument(&document);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): GetDocument() failed", hr);
-				return false;
-			}
-
-			CComPtr<IDebugDocumentText> documentText = NULL;
-			hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): QI(IDebugDocumentText) failed", hr);
-				return false;
-			}
-
-			ULONG position, numChars;
-			hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): GetPositionOfContext() failed", hr);
-				return false;
-			}
-
-			hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): GetLineOfPosition() failed", hr);
-				return false;
-			}
-
-			/* get the locals */
-
-			CComPtr<IDebugProperty> debugProperty = NULL;
-			hr = stackFrame->GetDebugProperty(&debugProperty);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): GetDebugProperty() failed", hr);
-				return false;
-			}
-
-			// TODO this frameObject is currently created temporarily, but to
-			// get the full benefit of handle reuse it should be stored and
-			// reused for cases where the frame command is invoked on the same
-			// frame multiple times
-			JSObject* newObject = new JSObject();
-			newObject->debugProperty = debugProperty;
-			//newObject->debugProperty->AddRef();
-			newObject->stackFrame = stackFrame;
-			//newObject->stackFrame->AddRef();
-			if (!createValueForObject(newObject, true, &locals)) {
-				delete newObject;
-				return false;
-			}
-			delete newObject;
-
-			/* get "this" */
-
-			CComPtr<IDebugExpressionContext> expressionContext = NULL;
-			hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): QI(IDebugExpressionContext) failed", hr);
-				return false;
-			}
-
-			CComPtr<IDebugExpression> expression = NULL;
-			hr = expressionContext->ParseLanguageText(
-				OLESTR("this"),
-				10,
-				L"",
-				DEBUG_TEXT_RETURNVALUE,
-				&expression);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): ParseLanguageText() failed", hr);
-				return false;
-			}
-
-			hr = expression->Start(NULL);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): Start() failed", hr);
-				return false;
-			}
-
-			int ms = 0;
-			while (ms < 2000) {
-				if (expression->QueryIsComplete() == S_OK) {
-					break;
-				}
-				ms += 10;
-				::Sleep(10);
-			}
-
-			Value* value_this = NULL;
-			if (2000 <= ms) {
-				Logger::error("CrossfireContext.createValueForFrame(): Evaluating 'this' took too long (continuing)");
-			} else {
-				HRESULT evalResult;
-				CComPtr<IDebugProperty> debugProperty2 = NULL;
-				hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
-				if (FAILED(hr)) {
-					Logger::error("CrossfireContext.createValueForFrame(): GetResultAsDebugProperty() failed", hr);
-					return false;
-				}
-				if (FAILED(evalResult)) {
-					Logger::error("CrossfireContext.createValueForFrame(): evaluation of GetResultAsDebugProperty() failed", evalResult);
-					return false;
-				}
-
-				// TODO this thisObject is currently created temporarily, but to
-				// get the full benefit of handle reuse it should be stored and
-				// reused for cases where the frame command is invoked on the same
-				// frame multiple times
-				JSObject* newObject = new JSObject();
-				newObject->debugProperty = debugProperty2;
-				//newObject->debugProperty->AddRef();
-				newObject->stackFrame = stackFrame;
-				//newObject->stackFrame->AddRef();
-				createValueForObject(newObject, true, &value_this);
-				delete newObject;
-			}
-
-			if (value_this) {
-				locals->addObjectValue(KEY_THIS, value_this);
-				delete value_this;
-			} else {
-				/* create an empty "this" value */
-				Value value_thisChildren;
-				value_thisChildren.setType(TYPE_OBJECT);
-				Value value_this2;
-				value_this2.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
-				value_this2.addObjectValue(KEY_VALUE, &value_thisChildren);
-				locals->addObjectValue(KEY_THIS, &value_this2);
-			}
-
-			hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &scriptId);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
-				return false;
-			}
-		}
 	}
+
+	CComPtr<IDebugDocumentContext> documentContext = NULL;
+	hr = codeContext->GetDocumentContext(&documentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetDocumentContext() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	hr = documentContext->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetDocument() failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): QI(IDebugDocumentText) failed", hr);
+		return false;
+	}
+
+	ULONG position, numChars;
+	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetPositionOfContext() failed", hr);
+		return false;
+	}
+
+	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetLineOfPosition() failed", hr);
+		return false;
+	}
+
+	/* get the locals */
+
+	CComPtr<IDebugProperty> debugProperty = NULL;
+	hr = stackFrame->GetDebugProperty(&debugProperty);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetDebugProperty() failed", hr);
+		return false;
+	}
+
+	// TODO this frameObject is currently created temporarily, but to
+	// get the full benefit of handle reuse it should be stored and
+	// reused for cases where the frame command is invoked on the same
+	// frame multiple times
+	JSObject* newObject = new JSObject();
+	newObject->debugProperty = debugProperty;
+	//newObject->debugProperty->AddRef();
+	newObject->stackFrame = stackFrame;
+	//newObject->stackFrame->AddRef();
+	if (!createValueForObject(newObject, true, &locals)) {
+		delete newObject;
+		return false;
+	}
+	delete newObject;
+
+	/* get "this" */
+
+	Value* value_this = NULL;
+	CComPtr<IDebugProperty> debugProperty2 = NULL;
+	if (evaluate(stackFrame, L"this", DEBUG_TEXT_RETURNVALUE, &debugProperty2)) {
+		// TODO this thisObject is currently created temporarily, but to
+		// get the full benefit of handle reuse it should be stored and
+		// reused for cases where the frame command is invoked on the same
+		// frame multiple times
+		JSObject* newObject = new JSObject();
+		newObject->debugProperty = debugProperty2;
+		//newObject->debugProperty->AddRef();
+		newObject->stackFrame = stackFrame;
+		//newObject->stackFrame->AddRef();
+		createValueForObject(newObject, true, &value_this); /* proceed even if fails */
+		delete newObject;
+	}
+
+	if (value_this) {
+		locals->addObjectValue(KEY_THIS, value_this);
+		delete value_this;
+	} else {
+		/* create an empty "this" value */
+		Value value_thisChildren;
+		value_thisChildren.setType(TYPE_OBJECT);
+		Value value_this2;
+		value_this2.addObjectValue(KEY_TYPE, &Value(VALUE_OBJECT));
+		value_this2.addObjectValue(KEY_VALUE, &value_thisChildren);
+		locals->addObjectValue(KEY_THIS, &value_this2);
+	}
+
+	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &scriptId);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
+		return false;
+	}
+
 	if (!locals) {
 		locals = new Value();
 		locals->setType(TYPE_OBJECT);
@@ -903,154 +1066,6 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 	return true;
 }
 
-/*
-			if (!newObjectsTable) {
-				newObjectsTable = new std::map<wchar_t*, unsigned int>;
-			}
-
-			wchar_t* name = propertyInfo.m_bstrName;
-			unsigned int handle = 0;
-			if (object->objects) {
-				std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
-				if (iterator != object->objects->end()) {
-					std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
-					if (iterator2 != m_objects->end()) {
-						JSObject* existingObject = iterator2->second;
-						if (existingObject->isFunction == isFunction) {
-							handle = iterator2->first;
-						}
-					}
-				}
-			}
-			if (!handle) {
-				JSObject* newObject = new JSObject();
-				newObject->debugProperty = propertyInfo.m_pDebugProp;
-				newObject->debugProperty->AddRef();
-				newObject->isFunction = isFunction;
-				newObject->objects = NULL;
-				newObject->stackFrame = object->stackFrame;
-				newObject->stackFrame->AddRef();
-				handle = m_nextObjectHandle++;
-				m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
-			}
-//			newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
-			local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-			local.addObjectValue(KEY_HANDLE, &Value((double)handle));
-		}
-	}
-*/
-
-//	CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
-//	HRESULT hr = debugProperty->EnumMembers(
-//		PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP,
-//		10,
-//		IID_IDebugPropertyEnumType_LocalsPlusArgs,
-//		&enumPropertyInfo);
-//	if (FAILED(hr)) {
-//		Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
-//		return false;
-//	}
-
-	/* The IDebugExpressionContext will be needed for each encountered object/function */
-//	CComPtr<IDebugExpressionContext> expressionContext = NULL;
-//	hr = object->stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-//	if (FAILED(hr)) {
-//		Logger::error("CrossfireContext.createValueForObject(): QI(IDebugExpressionContext) failed", hr);
-//		return false;
-//	}
-
-//	Value membersCollection;
-//	membersCollection.setType(TYPE_OBJECT);
-
-//	std::map<wchar_t*, unsigned int>* newObjectsTable = NULL;
-//	ULONG fetched;
-//	do {
-//		DebugPropertyInfo propertyInfo;
-//		HRESULT hr = enumPropertyInfo->Next(1, &propertyInfo, &fetched);
-//		if (SUCCEEDED(hr) && fetched) {
-//// VVVVVVVVVVVVVVVVVVVVV
-//			BSTR type = propertyInfo.m_bstrType;
-//			Value local;
-//			if (wcscmp(type, JSVALUE_NULL) == 0) {
-//				local.setType(TYPE_NULL);
-//			} else if (wcscmp(type, JSVALUE_UNDEFINED) == 0) {
-//				local.setValue(VALUE_UNDEFINED);
-//			} else {
-//				BSTR stringValue = propertyInfo.m_bstrValue;
-//				if (wcscmp(type, JSVALUE_NUMBER) == 0) {
-//					wchar_t* endPtr = 0;
-//					double value = wcstod(stringValue, &endPtr);
-//					local.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
-//					local.addObjectValue(KEY_VALUE, &Value(value));
-//				} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
-//					local.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
-//					if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
-//						local.addObjectValue(KEY_VALUE, &Value(true));
-//					} else {
-//						local.addObjectValue(KEY_VALUE, &Value(false));
-//					}
-//				} else if (wcscmp(type, JSVALUE_STRING) == 0) {
-//					std::wstring string(stringValue);
-//					string = string.substr(1, string.length() - 2);
-//					local.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
-//					local.addObjectValue(KEY_VALUE, &Value(&string));
-//				} else {
-//					bool isFunction = (propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_OBJECT) == 0;
-//					if (!newObjectsTable) {
-//						newObjectsTable = new std::map<wchar_t*, unsigned int>;
-//					}
-
-//					wchar_t* name = propertyInfo.m_bstrName;
-//					unsigned int handle = 0;
-//					if (object->objects) {
-//						std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->find(name);
-//						if (iterator != object->objects->end()) {
-//							std::map<unsigned int, JSObject*>::iterator iterator2 = m_objects->find(iterator->second);
-//							if (iterator2 != m_objects->end()) {
-//								JSObject* existingObject = iterator2->second;
-//								if (existingObject->isFunction == isFunction) {
-//									handle = iterator2->first;
-//								}
-//							}
-//						}
-//					}
-//					if (!handle) {
-//						JSObject* newObject = new JSObject();
-//						IDebugProperty* objectProperty = propertyInfo.m_pDebugProp;
-//						objectProperty->AddRef();
-//						newObject->debugProperty = objectProperty;
-//						newObject->isFunction = isFunction;
-//						newObject->objects = NULL;
-//						newObject->stackFrame = object->stackFrame;
-//						newObject->stackFrame->AddRef();
-//						handle = m_nextObjectHandle++;
-//						m_objects->insert(std::pair<unsigned int, JSObject*>(handle, newObject));
-//					}
-//					newObjectsTable->insert(std::pair<wchar_t*, unsigned int>(name, handle));
-//					local.setObjectValue(KEY_TYPE, isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-//					local.addObjectValue(KEY_HANDLE, &Value((double)handle));
-//				}
-//			}
-// ^^^^^^^^^^^^^^^^^^^^^^^^^
-//			membersCollection.addObjectValue(propertyInfo.m_bstrName, &local);
-//		}
-//	} while (fetched);
-
-//	if (object->objects) {
-//		std::map<wchar_t*, unsigned int>::iterator iterator = object->objects->begin();
-//		while (iterator != object->objects->end()) {
-//			delete iterator->first;
-//			iterator++;
-//		}
-//		delete object->objects;
-//	}
-//	object->objects = newObjectsTable;
-
-//	Value* result = new Value();
-//	result->setObjectValue(KEY_TYPE, object->isFunction ? &Value(VALUE_FUNCTION) : &Value(VALUE_OBJECT));
-//	result->setObjectValue(KEY_VALUE, &membersCollection);
-//	*_value = result;
-
 bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
 
@@ -1111,6 +1126,94 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	}
 
 	*_value = result;
+	return true;
+}
+
+bool CrossfireContext::evaluate(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IDebugProperty** _result) {
+	*_result = NULL;
+
+	CComPtr<IDebugExpressionContext> expressionContext = NULL;
+	HRESULT hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluate(): QI(IDebugExpressionContext) failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugExpression> parsedExpression = NULL;
+	hr = expressionContext->ParseLanguageText(
+		expression,
+		10,
+		L"",
+		flags,
+		&parsedExpression);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluate(): ParseLanguageText() failed", hr);
+		return false;
+	}
+
+	hr = parsedExpression->Start(NULL);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluate(): Start() failed", hr);
+		return false;
+	}
+
+	int ms = 0;
+	while (ms < 2000) {
+		if (parsedExpression->QueryIsComplete() == S_OK) {
+			break;
+		}
+		ms += 10;
+		::Sleep(10);
+	}
+	if (2000 <= ms) {
+		Logger::error("CrossfireContext.evaluate(): Evaluation took too long");
+		return false;
+	}
+
+	HRESULT evalResult;
+	hr = parsedExpression->GetResultAsDebugProperty(&evalResult, _result);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluate(): GetResultAsDebugProperty() failed", hr);
+		return false;
+	}
+	if (FAILED(evalResult)) {
+		Logger::error("CrossfireContext.evaluate(): evaluation of GetResultAsDebugProperty() failed", evalResult);
+		return false;
+	}
+
+	return true;
+}
+
+bool CrossfireContext::evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data) {
+	CComPtr<IDebugExpressionContext> expressionContext = NULL;
+	HRESULT hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluateAsync(): QI(IDebugExpressionContext) failed", hr);
+		return false;
+	}
+
+	CComPtr<IDebugExpression> parsedExpression = NULL;
+	hr = expressionContext->ParseLanguageText(
+		expression,
+		10,
+		L"",
+		flags,
+		&parsedExpression);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluateAsync(): ParseLanguageText() failed", hr);
+		return false;
+	}
+
+	CComObject<JSEvalCallback>* listener = NULL;
+	hr = CComObject<JSEvalCallback>::CreateInstance(&listener);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.evaluateAsync(): CreateInstance() failed", hr);
+		return false;
+	}
+
+	listener->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
+	m_asyncEvals->push_back(listener);
+	listener->start(parsedExpression, handler, data);
 	return true;
 }
 
@@ -1478,32 +1581,6 @@ bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 void CrossfireContext::sendEvent(CrossfireEvent* eventObj) {
 	eventObj->setContextId(&std::wstring(m_name));
 	m_server->sendEvent(eventObj);
-
-	// TODO REMOVE!  This is done just to prevent errors from leaving IE hanging forever
-	if (wcscmp(eventObj->getName(), L"onConsoleError") == 0) {
-		Logger::log("sending onConsoleError, so doing auto-resume, don't forget to remove me!!!");
-		CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
-		if (!getDebugApplicationThread(&applicationThread)) {
-			Logger::error("failed to do auto-resume: getDebugApplicationThread() failed");
-			return;
-		}
-		CComPtr<IRemoteDebugApplication> application = NULL;
-		HRESULT hr = applicationThread->GetApplication(&application);
-		if (FAILED(hr)) {
-			Logger::error("failed to do auto-resume: GetApplication() failed", hr);
-			return;
-		}
-
-		hr = application->ResumeFromBreakPoint(applicationThread, BREAKRESUMEACTION_CONTINUE, ERRORRESUMEACTION_SkipErrorStatement);
-		if (FAILED(hr)) {
-			Logger::error("failed to do auto-resume: ResumeFromBreakPoint() failed", hr);
-		}
-	}
-	// -------------------------------------------------
-}
-
-void CrossfireContext::setRunning(bool value) {
-	m_running = value;
 }
 
 bool CrossfireContext::unhookDebugger() {
@@ -1732,60 +1809,19 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 	}
 
 	IDebugStackFrame* stackFrame = stackFrameDescriptor.pdsf;
-	CComPtr<IDebugExpressionContext> expressionContext = NULL;
-	hr = stackFrame->QueryInterface(IID_IDebugExpressionContext, (void**)&expressionContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): QI(IDebugExpressionContext) failed", hr);
-		return false;
-	}
-
-	CComPtr<IDebugExpression> expression = NULL;
-	hr = expressionContext->ParseLanguageText(
-		value_expression->getStringValue()->c_str(),
-		10,
-		OLESTR(""),
+	CComPtr<IDebugProperty> debugProperty = NULL;
+	if (!evaluate(
+		stackFrame,
+		(wchar_t *)value_expression->getStringValue()->c_str(),
 		DEBUG_TEXT_ISEXPRESSION | DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_ALLOWBREAKPOINTS | DEBUG_TEXT_ALLOWERRORREPORT,
-		&expression);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): ParseLanguageText() failed", hr);
-		return false;
+		&debugProperty)) {
+			return false;
 	}
 
-	hr = expression->Start(NULL);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): Start() failed", hr);
-		return false;
-	}
-
-	int ms = 0;
-	while (ms < 2000) {
-		if (expression->QueryIsComplete() == S_OK) {
-			break;
-		}
-		ms += 10;
-		::Sleep(10);
-	}
-	if (2000 <= ms) {
-		Logger::error("CrossfireContext.commandEvaluate(): Evaluation took too long");
-		return false;
-	}
-
-	HRESULT evalResult;
-	CComPtr<IDebugProperty> debugProperty2 = NULL;
-	hr = expression->GetResultAsDebugProperty(&evalResult, &debugProperty2);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.commandEvaluate(): GetResultAsDebugProperty() failed", hr);
-		return false;
-	}
-	if (FAILED(evalResult)) {
-		Logger::error("CrossfireContext.commandEvaluate(): evaluation of GetResultAsDebugProperty() failed", evalResult);
-		return false;
-	}
-
-	Value* value_result = NULL;
 	JSObject newObject;
-	newObject.debugProperty = debugProperty2;
+	newObject.debugProperty = debugProperty;
 	newObject.stackFrame = stackFrame;
+	Value* value_result = NULL;
 	if (!createValueForObject(&newObject, true, &value_result)) {
 		return false;
 	}

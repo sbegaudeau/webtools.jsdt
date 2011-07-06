@@ -13,26 +13,6 @@
 #include "stdafx.h"
 #include "IEDebugger.h"
 
-/* event: onBreak */
-const wchar_t* IEDebugger::EVENT_ONBREAK = L"onBreak";
-const wchar_t* IEDebugger::KEY_CAUSE = L"cause";
-const wchar_t* IEDebugger::KEY_LOCATION = L"location";
-const wchar_t* IEDebugger::KEY_LINE = L"line";
-const wchar_t* IEDebugger::KEY_URL = L"url";
-
-/* event: onConsoleError */
-const wchar_t* IEDebugger::EVENT_ONCONSOLEERROR = L"onConsoleError";
-const wchar_t* IEDebugger::KEY_FILENAME = L"fileName";
-const wchar_t* IEDebugger::KEY_LINENUMBER = L"lineNumber";
-const wchar_t* IEDebugger::KEY_MESSAGE = L"message";
-const wchar_t* IEDebugger::KEY_NAME = L"name";
-const wchar_t* IEDebugger::KEY_SOURCE = L"source";
-const wchar_t* IEDebugger::KEY_STACK = L"stack";
-
-/* event: onConsoleLog */
-const wchar_t* IEDebugger::EVENT_ONCONSOLELOG = L"onConsoleLog";
-
-
 IEDebugger::IEDebugger() {
 	m_context = NULL;
 	m_adviseCookies = new std::multimap<std::wstring, DWORD>;
@@ -55,181 +35,16 @@ STDMETHODIMP IEDebugger::CreateInstanceAtDebugger(REFCLSID rclsid, IUnknown *pUn
 }
 
 STDMETHODIMP IEDebugger::onDebugOutput(LPCOLESTR pstr) {
-	if (!m_context) {
-		return S_OK;
-	}
-
-	CrossfireEvent onConsoleLogEvent;
-	onConsoleLogEvent.setName(EVENT_ONCONSOLELOG);
-	Value data;
-	data.addObjectValue(L"0", &Value(pstr));
-	onConsoleLogEvent.setData(&data);
-	m_context->sendEvent(&onConsoleLogEvent);
+	Logger::log("onDebugOutput invoked");
 	return S_OK;
 }
 
 STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
-	if (!m_context) {
-		return S_OK; // TODO should probably resume in this case?
-	}
-
-	m_context->setRunning(false);
-
-	if (br == BREAKREASON_ERROR) {
-		return handleError(pScriptErrorDebug);
-	}
-
-	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
-	HRESULT hr = pDebugAppThread->EnumStackFrames(&stackFrames);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' EnumStackFrames() failed", hr);
-		return S_OK;
-	}
-
-	DebugStackFrameDescriptor stackFrameDescriptor;
-	ULONG numFetched = 0;
-	hr = stackFrames->Next(1,&stackFrameDescriptor,&numFetched);
-	if (FAILED(hr) || numFetched != 1) {
-		Logger::error("'onHandleBreakPoint' EnumStackFrames->Next() failed", hr);
-		return S_OK;
-	}
-
-	IDebugStackFrame* frame = stackFrameDescriptor.pdsf;
-	CComPtr<IDebugCodeContext> codeContext = NULL;
-	hr = frame->GetCodeContext(&codeContext);
-	// TODO This fails if the current position is not in a user document (eg.- following
-	// a return).  Not sure what to do here (send an event with no url/line?  Or no event?)
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetCodeContext() failed", hr);
-		return S_OK;
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = codeContext->GetDocumentContext(&documentContext);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetDocumentContext() failed", hr);
-		return S_OK;
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	hr = documentContext->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetDocument() failed", hr);
-		return S_OK;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' QueryInterface() failed", hr);
-		return S_OK;
-	}
-
-	ULONG position, numChars;
-	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetPositionOfContext() failed", hr);
-		return S_OK;
-	}
-
-	ULONG lineNumber, column;
-	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetLineOfContext() failed", hr);
-		return S_OK;
-	}
-
-	CComBSTR bstrUrl;
-	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
-	if (FAILED(hr)) {
-		Logger::error("'onHandleBreakPoint' GetName() failed", hr);
-		return S_OK;
-	}
-
-	/* Evaluate the the hit breakpoint's condition if it has one. */
-	if (br == BREAKREASON_BREAKPOINT) {
-
-	}
-
-	CrossfireEvent onBreakEvent;
-	onBreakEvent.setName(EVENT_ONBREAK);
-	Value location;
-	location.addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
-	location.addObjectValue(KEY_URL, &Value(bstrUrl));
-	Value cause;
-	cause.setType(TYPE_OBJECT);
-	Value data;
-	data.addObjectValue(KEY_LOCATION, &location);
-	data.addObjectValue(KEY_CAUSE, &cause);
-	onBreakEvent.setData(&data);
-	m_context->sendEvent(&onBreakEvent);
-	return S_OK;
-}
-
-HRESULT IEDebugger::handleError(IActiveScriptErrorDebug *pScriptErrorDebug) {
-	Value error;
-	CComBSTR sourceLine = NULL;
-	if (SUCCEEDED(pScriptErrorDebug->GetSourceLineText(&sourceLine))) {
-		error.addObjectValue(KEY_SOURCE, &Value(sourceLine));
+	if (m_context) {
+		m_context->breakpointHit(pDebugAppThread, br, pScriptErrorDebug);
 	} else {
-		error.addObjectValue(KEY_SOURCE, &Value(L"")); // TODO should this just be omitted?
+		// TODO should probably resume in this case?
 	}
-
-	EXCEPINFO excepInfo;
-	HRESULT hr = pScriptErrorDebug->GetExceptionInfo(&excepInfo);
-	if (FAILED(hr)) {
-		Logger::error("handleError GetExceptionInfo() failed", hr);
-		return S_OK;
-	}
-
-	if (excepInfo.bstrDescription) {
-		error.addObjectValue(KEY_NAME, &Value(excepInfo.bstrDescription));
-		error.addObjectValue(KEY_MESSAGE, &Value(excepInfo.bstrDescription)); // TODO can do better than this?
-	} else {
-		error.addObjectValue(KEY_NAME, &Value(L"")); // TODO should these just be omitted?
-		error.addObjectValue(KEY_MESSAGE, &Value(L"")); // TODO can do better than this?
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = pScriptErrorDebug->GetDocumentContext(&documentContext);
-	if (SUCCEEDED(hr)) {
-		CComPtr<IDebugDocument> document = NULL;
-		hr = documentContext->GetDocument(&document);
-		if (SUCCEEDED(hr)) {
-			CComBSTR bstrUrl;
-			hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
-			if (SUCCEEDED(hr)) {
-				error.addObjectValue(KEY_FILENAME, &Value(bstrUrl));
-			}
-		}
-	}
-	if (FAILED(hr)) {			
-		/* fall back to trying the excepInfo struct */
-		if (excepInfo.bstrSource) {
-			error.addObjectValue(KEY_FILENAME, &Value(excepInfo.bstrSource));
-		} else {
-			error.addObjectValue(KEY_FILENAME, &Value(L"")); // TODO should this just be omitted?
-		}
-	}
-
-	DWORD sourceContext;
-	ULONG lineNumber;
-	LONG charPosition;
-	hr = pScriptErrorDebug->GetSourcePosition(&sourceContext, &lineNumber, &charPosition);
-	if (FAILED(hr)) {
-		Logger::error("handleError GetSourcePosition() failed", hr);
-		return S_OK;
-	}
-	error.addObjectValue(KEY_LINENUMBER, &Value((double)lineNumber));
-	Logger::error("scode", excepInfo.scode);
-	Logger::error("wcode", excepInfo.wCode);
-
-	CrossfireEvent onConsoleErrorEvent;
-	onConsoleErrorEvent.setName(EVENT_ONCONSOLEERROR);
-	Value data;
-	data.addObjectValue(L"0", &error);
-	onConsoleErrorEvent.setData(&data);
-	m_context->sendEvent(&onConsoleErrorEvent);
 	return S_OK;
 }
 
