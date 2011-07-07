@@ -638,23 +638,7 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 		}
 	}
 
-	if (resume) {
-		CComPtr<IRemoteDebugApplicationThread> thread = NULL;
-		hr = getDebugApplicationThread(&thread);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.evalComplete(): getDebugApplicationThread() failed", hr);
-			return;
-		}
-		CComPtr<IRemoteDebugApplication> application = NULL;
-		hr = thread->GetApplication(&application);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.evalComplete(): GetApplication() failed", hr);
-			return;
-		}
-		hr = application->ResumeFromBreakPoint(thread, BREAKRESUMEACTION_CONTINUE, ERRORRESUMEACTION_SkipErrorStatement);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.evalComplete(): ResumeFromBreakPoint() failed", hr);
-		}
+	if (resume && resumeFromBreak()) {
 		return;
 	}
 
@@ -759,6 +743,10 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 			if (current->getType() == CrossfireLineBreakpoint::BPTYPE_LINE) {
 				CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)current;
 				if (lineBp->getLine() == lineNumber && wcscmp(lineBp->getUrl()->c_str(), bstrUrl) == 0) {
+					lineBp->breakpointHit();
+					if (!lineBp->matchesHitCount() && resumeFromBreak()) {
+						return;
+					}
 					const std::wstring* conditionString = lineBp->getCondition();
 					if (conditionString) {
 						wchar_t* condition = (wchar_t*)conditionString->c_str();
@@ -1502,6 +1490,27 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
 		key += qualifierString;
 	}
 	
+	return true;
+}
+
+bool CrossfireContext::resumeFromBreak() {
+	CComPtr<IRemoteDebugApplicationThread> thread = NULL;
+	HRESULT hr = getDebugApplicationThread(&thread);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.resumeFromBreak(): getDebugApplicationThread() failed", hr);
+		return false;
+	}
+	CComPtr<IRemoteDebugApplication> application = NULL;
+	hr = thread->GetApplication(&application);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.resumeFromBreak(): GetApplication() failed", hr);
+		return false;
+	}
+	hr = application->ResumeFromBreakPoint(thread, BREAKRESUMEACTION_CONTINUE, ERRORRESUMEACTION_SkipErrorStatement);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.resumeFromBreak(): ResumeFromBreakPoint() failed", hr);
+		return false;
+	}
 	return true;
 }
 

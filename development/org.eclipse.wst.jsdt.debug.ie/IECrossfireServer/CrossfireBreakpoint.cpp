@@ -51,12 +51,7 @@ bool CrossfireBreakpoint::appliesToUrl(std::wstring* url) {
 	return true;
 }
 
-void CrossfireBreakpoint::clearAttribute(wchar_t* name) {
-	std::map<std::wstring, Value*>::iterator iterator = m_attributes->find(std::wstring(name));
-	if (iterator != m_attributes->end()) {
-		delete iterator->second;
-		m_attributes->erase(iterator);
-	}
+void CrossfireBreakpoint::breakpointHit() {
 }
 
 Value* CrossfireBreakpoint::getAttribute(wchar_t* name) {
@@ -88,6 +83,12 @@ void CrossfireBreakpoint::setAttribute(wchar_t* name, Value* value) {
 		delete iterator->second;
 		m_attributes->erase(iterator);
 	}
+
+	if (value->getType() == TYPE_NULL) {
+		/* a null value indicates that the attribute is to be cleared */
+		return;
+	}
+
 	Value* valueCopy = NULL;
 	value->clone(&valueCopy);
 	m_attributes->insert(std::pair<std::wstring, Value*>(std::wstring(name), valueCopy));
@@ -104,7 +105,8 @@ bool CrossfireBreakpoint::setAttributesFromValue(Value* value) {
 	int index = 0;
 	std::wstring* currentKey = objectKeys[index];
 	while (currentKey) {
-		if (!attributeIsValid((wchar_t*)currentKey->c_str(), objectValues[index])) {
+		Value* currentValue = objectValues[index];
+		if (currentValue->getType() != TYPE_NULL && !attributeIsValid((wchar_t*)currentKey->c_str(), currentValue)) {
 			Logger::log("breakpoint attribute arguments specify an invalid attribute name or value");
 			success = false;
 			break;

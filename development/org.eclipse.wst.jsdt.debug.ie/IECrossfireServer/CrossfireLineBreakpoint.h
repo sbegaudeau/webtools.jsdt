@@ -22,15 +22,19 @@ public:
 	CrossfireLineBreakpoint();
 	virtual ~CrossfireLineBreakpoint();
 	virtual bool appliesToUrl(std::wstring* url);
+	virtual void breakpointHit();
 	virtual void clone(CrossfireBreakpoint** _value);
 	virtual const std::wstring* getCondition();
+	virtual unsigned int getHitCount();
 	virtual unsigned int getLine();
 	virtual int getType();
 	virtual const wchar_t* getTypeString();
 	virtual const std::wstring* getUrl();
 	virtual bool isEnabled();
+	virtual bool matchesHitCount();
 	virtual void setCondition(std::wstring* value);
 	virtual void setEnabled(bool value);
+	virtual void setHitCount(unsigned int value);
 	virtual void setLine(unsigned int value);
 	virtual bool setLocationFromValue(Value* value);
 	virtual bool setUrl(std::wstring* value);
@@ -40,6 +44,7 @@ public:
 
 	static const wchar_t* ATTRIBUTE_CONDITION;
 	static const wchar_t* ATTRIBUTE_ENABLED;
+	static const wchar_t* ATTRIBUTE_HITCOUNT;
 
 protected:
 	CrossfireLineBreakpoint(unsigned int handle);
@@ -47,12 +52,14 @@ protected:
 	virtual bool getLocationAsValue(Value** _value);
 
 private:
+	unsigned int m_hitCounter;
 	unsigned int m_line;
 	std::wstring* m_url;
 
 	static const wchar_t* BPTYPESTRING_LINE;
 	static const wchar_t* KEY_CONDITION;
 	static const wchar_t* KEY_ENABLED;
+	static const wchar_t* KEY_HITCOUNT;
 	static const wchar_t* KEY_LINE;
 	static const wchar_t* KEY_URL;
 };

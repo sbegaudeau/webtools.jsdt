@@ -23,6 +23,7 @@ class CrossfireBreakpoint {
 public:
 	virtual ~CrossfireBreakpoint();
 	virtual bool appliesToUrl(std::wstring* url); // TODO needed?
+	virtual void breakpointHit();
 	virtual void clone(CrossfireBreakpoint** _value) = 0;
 	virtual const std::wstring* getContextId();
 	virtual unsigned int getHandle();
@@ -45,7 +46,6 @@ protected:
 	CrossfireBreakpoint();
 	CrossfireBreakpoint(unsigned int handle);
 	virtual bool attributeIsValid(wchar_t* name, Value* value) = 0;
-	virtual void clearAttribute(wchar_t* name);
 	virtual Value* getAttribute(wchar_t* name);
 	virtual bool getLocationAsValue(Value** _value) = 0;
 	virtual const wchar_t* getTypeString() = 0;

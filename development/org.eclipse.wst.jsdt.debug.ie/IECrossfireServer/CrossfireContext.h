@@ -77,6 +77,7 @@ private:
 	virtual IDebugApplicationNode* getScriptNode(wchar_t* name);
 	virtual bool hookDebugger();
 	virtual bool registerScript(IDebugApplicationNode* applicationNode);
+	virtual bool resumeFromBreak();
 	virtual void sendEvent(CrossfireEvent* eventObj);
 	virtual bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
 	virtual bool unhookDebugger();
