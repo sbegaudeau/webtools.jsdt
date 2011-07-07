@@ -130,7 +130,7 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 * @return <code>true</code> if the path is in the external source project, <code>false</code> otherwise
 	 */
 	public static boolean isExternalSource(IPath path) {
-		if(path.segment(0).equals(Messages.external_javascript_source)) {
+		if(Messages.external_javascript_source.equals(path.segment(0))) {
 			return true;
 		}
 		//try to look it up. The name might not have the project name in it
