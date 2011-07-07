@@ -185,6 +185,13 @@ public class IncludeTab extends AbstractLaunchConfigurationTab {
 		setControl(comp);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTab#getHelpContextId()
+	 */
+	public String getHelpContextId() {
+		return IHelpConstants.INCLUDE_TAB_CONTEXT;
+	}
+	
 	/**
 	 * Updates the buttons based on the selection from the viewer
 	 * 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,4 +34,19 @@ public interface IHelpContextIds {
 	 * @since 1.1
 	 */
 	public static final String DEBUG_PREFERENCE_PAGE = JavaScriptDebugUIPlugin.PLUGIN_ID + ".debug_pref_page"; //$NON-NLS-1$
+	/**
+	 * Help constant for the Source tab
+	 * @since 1.2
+	 */
+	public static final String SOURCE_LOOKUP_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".source_lookup_tab"; //$NON-NLS-1$
+	/**
+	 * Help constant for the Environment tab
+	 * @since 1.2
+	 */
+	public static final String ENVIRONMENT_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".environment_tab"; //$NON-NLS-1$
+	/**
+	 * Help constant for the Common tab
+	 * @since 1.2
+	 */
+	public static final String COMMON_TAB = JavaScriptDebugUIPlugin.PLUGIN_ID + ".common_tab"; //$NON-NLS-1$
 }

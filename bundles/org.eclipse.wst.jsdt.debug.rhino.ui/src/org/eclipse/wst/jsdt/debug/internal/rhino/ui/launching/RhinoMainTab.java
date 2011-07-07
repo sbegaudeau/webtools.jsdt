@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,10 @@ public class RhinoMainTab extends AbstractLaunchConfigurationTab {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IHelpConstants.MAIN_TAB_CONTEXT);
 		setControl(comp);
 	}
+	
+	public String getHelpContextId() {
+		return IHelpConstants.MAIN_TAB_CONTEXT;
+	};
 	
 	/**
 	 * Allows users to select a script from either a project context, if there is one or the workspace
