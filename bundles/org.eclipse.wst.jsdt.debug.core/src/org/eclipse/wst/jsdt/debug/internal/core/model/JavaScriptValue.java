@@ -46,6 +46,8 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
  */
 public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScriptValue {
 
+	public static final IVariable[] NO_VARIABLES = new IVariable[0];
+	
 	/**
 	 * the '[proto]' value
 	 */
@@ -206,7 +208,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 */
 	public synchronized IVariable[] getVariables() throws DebugException {
 		if (!hasVariables()) {
-			return null;
+			return NO_VARIABLES;
 		}
 		if (this.properties == null) {
 			final ObjectReference reference = (ObjectReference) this.value;
