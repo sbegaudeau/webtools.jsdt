@@ -46,7 +46,7 @@ public class CFFunctionReference extends CFObjectReference implements FunctionRe
 	public String functionName() {
 		synchronized (frame()) {
 			if(funcname == null) {
-				Value val = frame().lookup(handle());
+				Value val = frame().lookup(id());
 				System.out.println(val);
 			}
 		}
