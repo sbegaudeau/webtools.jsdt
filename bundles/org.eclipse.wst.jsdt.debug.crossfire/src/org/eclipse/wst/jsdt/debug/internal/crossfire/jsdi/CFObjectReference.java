@@ -152,7 +152,7 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.ObjectReference#handle()
 	 */
-	public Number handle() {
+	public Number id() {
 		return handle;
 	}
 	
