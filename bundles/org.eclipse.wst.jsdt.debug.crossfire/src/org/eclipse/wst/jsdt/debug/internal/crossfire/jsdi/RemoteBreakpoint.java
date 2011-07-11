@@ -33,7 +33,7 @@ public class RemoteBreakpoint implements Comparable {
 	public static final String TYPE_HTML_UNKNOWN = "html_unknown_type"; //$NON-NLS-1$
 	
 	CFVirtualMachine vm = null;
-	Number id = null;
+	Number handle = null;
 	String kind = null;
 	Map location = null;
 	Map attributes = null;
@@ -41,24 +41,24 @@ public class RemoteBreakpoint implements Comparable {
 	/**
 	 * Constructor
 	 * @param vm
-	 * @param id
+	 * @param handle
 	 * @param location
 	 * @param attributes
 	 * @param kind
 	 */
-	public RemoteBreakpoint(CFVirtualMachine vm, Number id, Map location, Map attributes, String kind) {
+	public RemoteBreakpoint(CFVirtualMachine vm, Number handle, Map location, Map attributes, String kind) {
 		this.vm = vm;
-		this.id = id;
+		this.handle = handle;
 		this.location = location;
 		this.attributes = attributes;
 		this.kind = kind;
 	}
 	
 	/**
-	 * @return the id
+	 * @return the handle
 	 */
-	public Number getId() {
-		return id;
+	public Number getHandle() {
+		return handle;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public class RemoteBreakpoint implements Comparable {
 	public boolean equals(Object o) {
 		if(o instanceof RemoteBreakpoint) {
 			RemoteBreakpoint bp = (RemoteBreakpoint) o;
-			return id.equals(bp.id) && mapsEqual(location, bp.location) && mapsEqual(attributes, bp.attributes) && kind.equals(bp.kind);
+			return handle.equals(bp.handle) && mapsEqual(location, bp.location) && mapsEqual(attributes, bp.attributes) && kind.equals(bp.kind);
 		}
 		return false;
 	}
@@ -191,7 +191,7 @@ public class RemoteBreakpoint implements Comparable {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return id.hashCode() + mapHashCode(location) + mapHashCode(attributes) + kind.hashCode();
+		return handle.hashCode() + mapHashCode(location) + mapHashCode(attributes) + kind.hashCode();
 	}
 	
 	/**
@@ -223,7 +223,7 @@ public class RemoteBreakpoint implements Comparable {
 	 */
 	public String toString() {
 		StringBuffer buff = new StringBuffer("RemoteBreakpoint\n"); //$NON-NLS-1$
-		buff.append("\t[handle: ").append(id.toString()).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
+		buff.append("\t[handle: ").append(handle.toString()).append("]\n"); //$NON-NLS-1$ //$NON-NLS-2$
 		return super.toString();
 	}
 	

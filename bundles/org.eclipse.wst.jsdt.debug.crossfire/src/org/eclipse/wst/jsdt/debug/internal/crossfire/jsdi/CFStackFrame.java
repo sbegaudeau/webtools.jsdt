@@ -39,7 +39,7 @@ import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.JSON;
 public class CFStackFrame extends CFMirror implements StackFrame {
 
 	private int index = -1;
-	private String scriptid = null;
+	private String scriptUrl = null;
 	private String funcname = null;
 	private int linenumber = -1;
 	private List vars = null;
@@ -63,7 +63,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 		if(value != null) {
 			linenumber = value.intValue();
 		}
-		scriptid = (String) json.get(Attributes.URL);
+		scriptUrl = (String) json.get(Attributes.URL);
 		funcname = (String) json.get(Attributes.FUNCTION_NAME);
 		
 		parseLocals((Map) json.get(Attributes.LOCALS));
@@ -161,7 +161,7 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 */
 	public synchronized Location location() {
 		if(loc == null) {
-			CFScriptReference script = crossfire().findScript(scriptid); 
+			CFScriptReference script = crossfire().findScript(scriptUrl); 
 			if(script != null) {
 				loc = new CFLocation(crossfire(), script, funcname, linenumber);
 			}

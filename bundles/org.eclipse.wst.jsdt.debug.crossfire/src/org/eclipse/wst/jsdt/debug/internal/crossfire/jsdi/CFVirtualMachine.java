@@ -148,15 +148,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void addBreakpoint(Map json) {
 		if(json != null) {
-			Number id = (Number) json.get(Attributes.HANDLE);
-			if(id != null) {
-				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(id);
+			Number handle = (Number) json.get(Attributes.HANDLE);
+			if(handle != null) {
+				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(handle);
 				if(bp == null) {
 					bp = new RemoteBreakpoint(this, 
-							id, 
-							(Map) json.get(Attributes.LOCATION),
-							(Map) json.get(Attributes.ATTRIBUTES), 
-							(String)json.get(Attributes.TYPE));
+						handle,
+						(Map) json.get(Attributes.LOCATION),
+						(Map) json.get(Attributes.ATTRIBUTES),
+						(String)json.get(Attributes.TYPE));
 				}
 			}
 		}
@@ -169,9 +169,9 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 */
 	public void updateBreakpoint(Map json) {
 		if(json != null) {
-			Number id = (Number) json.get(Attributes.HANDLE);
-			if(id != null) {
-				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(id);
+			Number handle = (Number) json.get(Attributes.HANDLE);
+			if(handle != null) {
+				RemoteBreakpoint bp = (RemoteBreakpoint) breakpointHandles.get(handle);
 				if(bp != null) {
 					bp.setEnabled(RemoteBreakpoint.getEnabled(json));
 					bp.setCondition(RemoteBreakpoint.getCondition(json));
@@ -192,8 +192,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 				updateBreakpoint(json);
 			}
 			else {
-				Number id = (Number) json.get(Attributes.HANDLE);
-				breakpointHandles.remove(id);
+				Number handle = (Number) json.get(Attributes.HANDLE);
+				breakpointHandles.remove(handle);
 			}
 		}
 	}
@@ -503,7 +503,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 						Map smap = (Map) iter2.next();
 						if(smap != null) {
 							CFScriptReference script = new CFScriptReference(this, thread.id(), smap); 
-							scripts.put(script.id(), script);
+							scripts.put(script.url(), script);
 						}
 					}
 				}
@@ -520,12 +520,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 
 	/**
-	 * Returns the script with the given id or <code>null</code>
+	 * Returns the script with the given url or <code>null</code>
 	 * 
-	 * @param id
+	 * @param url
 	 * @return the thread or <code>null</code>
 	 */
-	public synchronized CFScriptReference findScript(String id) {
+	public synchronized CFScriptReference findScript(String url) {
 		if(scripts == null) {
 			allScripts();
 		}
@@ -536,12 +536,12 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			//we do not keep the initialized collection so that any successive 
 			//calls the this method or allScripts will cause the remote target 
 			//to be asked for all of its scripts
-			script = (CFScriptReference) scripts.get(id);
+			script = (CFScriptReference) scripts.get(url);
 		}
 		//if we find we have a script id that is not cached, we should try a lookup + add in the vm
 		if(script == null) {
 			if(TRACE) {
-				Tracing.writeString("VM [failed to find script]: "+id); //$NON-NLS-1$
+				Tracing.writeString("VM [failed to find script]: "+url); //$NON-NLS-1$
 			}
 		}
 		return script;
@@ -560,7 +560,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 			allScripts();
 		}
 		CFScriptReference script = new CFScriptReference(this, context_id, json);
-		scripts.put(script.id(), script);
+		scripts.put(script.url(), script);
 		return script;
 	}
 	
@@ -582,15 +582,15 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 	
 	/**
-	 * Removes the script with the given id form the listing
+	 * Removes the script with the given url from the listing
 	 * 
-	 * @param id the script to remove
+	 * @param url the script to remove
 	 */
-	public void removeScript(String id) {
+	public void removeScript(String url) {
 		if(scripts != null) {
-			Object obj = scripts.remove(id);
+			Object obj = scripts.remove(url);
 			if(TRACE && obj == null) {
-				Tracing.writeString("VM [failed to remove script]: "+id); //$NON-NLS-1$
+				Tracing.writeString("VM [failed to remove script]: "+url); //$NON-NLS-1$
 			}
 		}
 	}

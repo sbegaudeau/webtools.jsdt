@@ -34,7 +34,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 	private String condition = null;
 	private int hitcount = 0;
 	private Location location = null;
-	private Long bpid = null;
+	private Long bpHandle = null;
 	
 	/**
 	 * Constructor
@@ -104,7 +104,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			request.setArgument(Attributes.TYPE, Attributes.LINE);
 			Map loc = new HashMap();
 			loc.put(Attributes.LINE, new Integer(location.lineNumber()));
-			loc.put(Attributes.URL, script.id());
+			loc.put(Attributes.URL, script.url());
 			request.setArgument(Attributes.LOCATION, loc);
 			Map attribs = new HashMap();
 			if (condition != null) {
@@ -117,24 +117,24 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			request.setArgument(Attributes.ATTRIBUTES, attribs);
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
-				//process the response to get the id of the breakpoint
+				//process the response to get the handle of the breakpoint
 				Map bp = (Map) response.getBody().get(Attributes.BREAKPOINT);
 				if(bp != null) {
-					Number id = (Number) bp.get(Attributes.HANDLE);
-					bpid = new Long(id.longValue());
+					Number handle = (Number) bp.get(Attributes.HANDLE);
+					bpHandle = new Long(handle.longValue());
 				}
 				else {
 					//TODO create a dummy breakpoint whose details can be filled in when an onToggleBreakpoint event is received
 				}
 			}
 		}
-		else if(bpid != null) {
+		else if(bpHandle != null) {
 			//send clearbreakpoint request
 			CFRequestPacket request = new CFRequestPacket(Commands.DELETE_BREAKPOINT, null);
-			request.getArguments().put(Attributes.HANDLE, bpid);
+			request.getArguments().put(Attributes.HANDLE, bpHandle);
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
-				bpid = null;
+				bpHandle = null;
 			}
 		}
 	}

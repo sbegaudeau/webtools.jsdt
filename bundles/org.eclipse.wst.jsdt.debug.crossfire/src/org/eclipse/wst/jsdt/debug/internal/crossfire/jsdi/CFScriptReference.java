@@ -131,10 +131,10 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	}
 
 	/**
-	 * The id of the script
-	 * @return the id
+	 * The url of the script
+	 * @return the url
 	 */
-	public String id() {
+	public String url() {
 		return url;
 	}
 	

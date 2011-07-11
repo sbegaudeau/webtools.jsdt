@@ -126,10 +126,6 @@ public interface Attributes {
 	 */
 	public static final String HREF = "href"; //$NON-NLS-1$
 	/**
-	 * The "id" attribute
-	 */
-	public static final String ID = "id"; //$NON-NLS-1$
-	/**
 	 * The "includeScopes" attribute
 	 */
 	public static final String INCLUDE_SCOPES = "includeScopes"; //$NON-NLS-1$
