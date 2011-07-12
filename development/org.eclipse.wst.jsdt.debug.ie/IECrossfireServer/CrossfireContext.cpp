@@ -20,7 +20,7 @@ const wchar_t* CrossfireContext::COMMAND_BACKTRACE = L"backtrace";
 const wchar_t* CrossfireContext::KEY_FRAMES = L"frames";
 const wchar_t* CrossfireContext::KEY_FROMFRAME = L"fromFrame";
 const wchar_t* CrossfireContext::KEY_TOFRAME = L"toFrame";
-const wchar_t* CrossfireContext::KEY_TOTALFRAMECOUNT = L"totalFrameCount";
+const wchar_t* CrossfireContext::KEY_TOTALFRAMES = L"totalFrames";
 
 /* command: continue */
 const wchar_t* CrossfireContext::COMMAND_CONTINUE = L"continue";
@@ -73,7 +73,6 @@ const wchar_t* CrossfireContext::EVENT_ONBREAK = L"onBreak";
 const wchar_t* CrossfireContext::KEY_CAUSE = L"cause";
 const wchar_t* CrossfireContext::KEY_MESSAGE = L"message";
 const wchar_t* CrossfireContext::KEY_TITLE = L"title";
-const wchar_t* CrossfireContext::KEY_URL = L"url";
 
 /* event: onScript */
 const wchar_t* CrossfireContext::EVENT_ONSCRIPT = L"onScript";
@@ -92,13 +91,13 @@ const wchar_t* CrossfireContext::KEY_INCLUDESCOPES = L"includeScopes";
 const wchar_t* CrossfireContext::KEY_INCLUDESOURCE = L"includeSource";
 const wchar_t* CrossfireContext::KEY_LINE = L"line";
 const wchar_t* CrossfireContext::KEY_TYPE = L"type";
+const wchar_t* CrossfireContext::KEY_URL = L"url";
 
 /* breakpoint objects */
 const wchar_t* CrossfireContext::BPTYPE_LINE = L"line";
 
 /* frame objects */
 const wchar_t* CrossfireContext::KEY_FUNCTIONNAME = L"functionName";
-const wchar_t* CrossfireContext::KEY_SCRIPTID = L"scriptId";
 
 /* object objects */
 const wchar_t* CrossfireContext::JSVALUE_BOOLEAN = L"Boolean";
@@ -120,7 +119,6 @@ const wchar_t* CrossfireContext::VALUE_UNDEFINED = L"undefined";
 
 /* script objects */
 const wchar_t* CrossfireContext::KEY_COLUMNOFFSET = L"columnOffset";
-const wchar_t* CrossfireContext::KEY_ID = L"id";
 const wchar_t* CrossfireContext::KEY_LINECOUNT = L"lineCount";
 const wchar_t* CrossfireContext::KEY_LINEOFFSET = L"lineOffset";
 const wchar_t* CrossfireContext::KEY_SOURCE = L"source";
@@ -932,7 +930,7 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	result->addObjectValue(KEY_INDEX, &Value((double)frameIndex));
 	result->addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
 	result->addObjectValue(KEY_LOCALS, locals);
-	result->addObjectValue(/*KEY_SCRIPTID*/ L"url", &Value(scriptId));
+	result->addObjectValue(KEY_URL, &Value(scriptId));
 	// TODO includeScopes
 	delete locals;
 
@@ -1402,30 +1400,31 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	wchar_t* command = request->getName();
 	Value* arguments = request->getArguments();
 	Value* responseBody = NULL;
-	bool success = false;
+	wchar_t* message = NULL;
+	int code = CODE_OK;
 
 	if (wcscmp(command, COMMAND_BACKTRACE) == 0) {
-		success = commandBacktrace(arguments, &responseBody);
+		code = commandBacktrace(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_CONTINUE) == 0) {
-		success = commandContinue(arguments, &responseBody);
+		code = commandContinue(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_EVALUATE) == 0) {
-		success = commandEvaluate(arguments, request->getSeq(), &responseBody);
+		code = commandEvaluate(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_FRAME) == 0) {
-		success = commandFrame(arguments, &responseBody);
+		code = commandFrame(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_LOOKUP) == 0) {
-		success = commandLookup(arguments, &responseBody);
+		code = commandLookup(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SCRIPT) == 0) {
-		success = commandScript(arguments, &responseBody);
+		code = commandScript(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SCRIPTS) == 0) {
-		success = commandScripts(arguments, &responseBody);
+		code = commandScripts(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SCOPE) == 0) {
-		success = commandScope(arguments, &responseBody);
+		code = commandScope(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SCOPES) == 0) {
-		success = commandScopes(arguments, &responseBody);
+		code = commandScopes(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SUSPEND) == 0) {
-		success = commandSuspend(arguments, &responseBody);
+		code = commandSuspend(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_INSPECT) == 0) {
-		success = false;
+		code = CODE_NOTIMPLEMENTED;
 	} else {
 		return false;	/* command not handled */
 	}
@@ -1435,8 +1434,12 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	response.setName(command);
 	response.setRequestSeq(request->getSeq());
 	response.setRunning(m_running);
-	response.setSuccess(success);
-	if (success) {
+	response.setCode(code);
+	response.setMessage(message);
+	if (message) {
+		free(message);
+	}
+	if (code == CODE_OK) {
 		response.setBody(responseBody);
 	} else {
 		Value emptyBody;
@@ -1612,13 +1615,13 @@ bool CrossfireContext::unhookDebugger() {
 
 /* commands */
 
-bool CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	unsigned int fromFrame = 0;
 	Value* value_fromFrame = arguments->getObjectValue(KEY_FROMFRAME);
 	if (value_fromFrame) {
 		if (value_fromFrame->getType() != TYPE_NUMBER || (unsigned int)value_fromFrame->getNumberValue() < 0) {
-			Logger::error("'backtrace' command has an invalid 'fromFrame' value");
-			return false;
+			*_message = _wcsdup(L"'backtrace' command has an invalid 'fromFrame' value");
+			return CODE_INVALIDPACKET;
 		}
 		fromFrame = (unsigned int)value_fromFrame->getNumberValue();
 	}
@@ -1627,13 +1630,13 @@ bool CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody)
 	Value* value_toFrame = arguments->getObjectValue(KEY_TOFRAME);
 	if (value_toFrame) {
 		if (value_toFrame->getType() != TYPE_NUMBER || (unsigned int)value_toFrame->getNumberValue() < 0) {
-			Logger::error("'backtrace' command has an invalid 'toFrame' value");
-			return false;
+			*_message = _wcsdup(L"'backtrace' command has an invalid 'toFrame' value");
+			return CODE_INVALIDPACKET;
 		}
 		toFrame = (unsigned int)value_toFrame->getNumberValue();
 		if (toFrame < fromFrame) {
-			Logger::error("'backtrace' command has 'toFrame' value < 'fromFrame' value");
-			return false;
+			*_message = _wcsdup(L"'backtrace' command has 'toFrame' value < 'fromFrame' value");
+			return CODE_INVALIDPACKET;
 		}
 	}
 
@@ -1641,29 +1644,29 @@ bool CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody)
 	Value* value_includeScopes = arguments->getObjectValue(KEY_INCLUDESCOPES);
 	if (value_includeScopes) {
 		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
-			Logger::error("'backtrace' command has an invalid 'includeScopes' value");
-			return false;
+			*_message = _wcsdup(L"'backtrace' command has an invalid 'includeScopes' value");
+			return CODE_INVALIDPACKET;
 		}
 		includeScopes = value_includeScopes->getBooleanValue();
 	}
 
 	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
 	if (!getDebugApplicationThread(&applicationThread)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
 	HRESULT hr = applicationThread->EnumStackFrames(&stackFrames);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandBacktrace(): EnumStackFrames() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	if (fromFrame > 0) {
 		HRESULT hr = stackFrames->Skip(fromFrame);
 		if (FAILED(hr)) {
 			Logger::error("CrossfireContext.commandBacktrace(): Skip() failed", hr);
-			return false;
+			return CODE_FAILURE;
 		}
 	}
 
@@ -1718,12 +1721,12 @@ bool CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody)
 	result->addObjectValue(KEY_FRAMES, &framesArray);
 	result->addObjectValue(KEY_FROMFRAME, &Value((double)fromFrame));
 	result->addObjectValue(KEY_TOFRAME, &Value((double)index - 1));
-	result->addObjectValue(KEY_TOTALFRAMECOUNT, &Value((double)totalFrameCount));
+	result->addObjectValue(KEY_TOTALFRAMES, &Value((double)totalFrameCount));
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandContinue(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandContinue(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	BREAKRESUMEACTION action;
 	Value* value_action = NULL;
 	if (arguments) {
@@ -1733,8 +1736,8 @@ bool CrossfireContext::commandContinue(Value* arguments, Value** _responseBody) 
 		action = BREAKRESUMEACTION_CONTINUE;
 	} else {
 		if (value_action->getType() != TYPE_STRING) {
-			Logger::error("'continue' command has invalid 'stepaction' value");
-			return false;
+			*_message = _wcsdup(L"'continue' command has invalid 'stepaction' value");
+			return CODE_INVALIDPACKET;
 		}
 		std::wstring* actionString = value_action->getStringValue();
 		if (actionString->compare(VALUE_IN) == 0) {
@@ -1744,68 +1747,69 @@ bool CrossfireContext::commandContinue(Value* arguments, Value** _responseBody) 
 		} else if (actionString->compare(VALUE_OUT) == 0) {
 			action = BREAKRESUMEACTION_STEP_OUT;
 		} else {
-			Logger::error("'continue' command has invalid 'stepaction' value");
-			return false;
+			*_message = _wcsdup(L"'continue' command has invalid 'stepaction' value");
+			return CODE_INVALIDPACKET;
 		}
 	}
 
 	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
 	if (!getDebugApplicationThread(&applicationThread)) {
-		return false;
+		return CODE_FAILURE;
 	}
 	CComPtr<IRemoteDebugApplication> application = NULL;
 	HRESULT hr = applicationThread->GetApplication(&application);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandContinue(): GetApplication() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	hr = application->ResumeFromBreakPoint(applicationThread, action, ERRORRESUMEACTION_SkipErrorStatement);
-	if (SUCCEEDED(hr)) {
-		clearObjects();
-		*_responseBody = new Value();
-		(*_responseBody)->setType(TYPE_OBJECT);
-		m_running = true;
-	} else {
+	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandContinue(): ResumeFromBreakPoint() failed", hr);
+		return CODE_FAILURE;
 	}
-	return SUCCEEDED(hr);
+	
+	clearObjects();
+	*_responseBody = new Value();
+	(*_responseBody)->setType(TYPE_OBJECT);
+	m_running = true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq, Value** _responseBody) {
+int CrossfireContext::commandEvaluate(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	unsigned int frame = 0;
 	Value* value_frame = arguments->getObjectValue(KEY_FRAMEINDEX);
 	if (value_frame) {
 		if (value_frame->getType() != TYPE_NUMBER || (unsigned int)value_frame->getNumberValue() < 0) {
-			Logger::error("'evaluate' command has invalid 'frame' value");
-			return false;
+			*_message = _wcsdup(L"'evaluate' command has invalid 'frame' value");
+			return CODE_INVALIDPACKET;
 		}
 		frame = (unsigned int)value_frame->getNumberValue();
 	}
 
 	Value* value_expression = arguments->getObjectValue(KEY_EXPRESSION);
 	if (!value_expression || value_expression->getType() != TYPE_STRING) {
-		Logger::error("'evaluate' command does not have a valid 'expression' value");
-		return false;
+		*_message = _wcsdup(L"'evaluate' command does not have a valid 'expression' value");
+		return CODE_INVALIDPACKET;
 	}
 
 	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
 	if (!getDebugApplicationThread(&applicationThread)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
 	HRESULT hr = applicationThread->EnumStackFrames(&stackFrames);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandEvaluate(): EnumStackFrames() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	if (frame > 0) {
 		hr = stackFrames->Skip(frame);
 		if (FAILED(hr)) {
 			Logger::error("CrossfireContext.commandEvaluate(): Skip() failed", hr);
-			return false;
+			return CODE_FAILURE;
 		}
 	}
 
@@ -1814,7 +1818,7 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 	hr = stackFrames->Next(1, &stackFrameDescriptor, &fetched);
 	if (FAILED(hr) || fetched == 0) {
 		Logger::error("CrossfireContext.commandEvaluate(): Next() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	IDebugStackFrame* stackFrame = stackFrameDescriptor.pdsf;
@@ -1824,7 +1828,7 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 		(wchar_t *)value_expression->getStringValue()->c_str(),
 		DEBUG_TEXT_ISEXPRESSION | DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_ALLOWBREAKPOINTS | DEBUG_TEXT_ALLOWERRORREPORT,
 		&debugProperty)) {
-			return false;
+			return CODE_FAILURE;
 	}
 
 	JSObject newObject;
@@ -1832,23 +1836,23 @@ bool CrossfireContext::commandEvaluate(Value* arguments, unsigned int requestSeq
 	newObject.stackFrame = stackFrame;
 	Value* value_result = NULL;
 	if (!createValueForObject(&newObject, true, &value_result)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	Value* result = new Value();
 	result->addObjectValue(KEY_RESULT, value_result);
 	delete value_result;
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandFrame(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	bool includeScopes = true;
 	Value* value_includeScopes = arguments->getObjectValue(KEY_INCLUDESCOPES);
 	if (value_includeScopes) {
 		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
-			Logger::error("'frame' command has an invalid 'includeScopes' value");
-			return false;
+			*_message = _wcsdup(L"'frame' command has an invalid 'includeScopes' value");
+			return CODE_INVALIDPACKET;
 		}
 		includeScopes = value_includeScopes->getBooleanValue();
 	}
@@ -1857,8 +1861,8 @@ bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
 	Value* value_index = arguments->getObjectValue(KEY_INDEX);
 	if (value_index) {
 		if (value_index->getType() != TYPE_NUMBER || (unsigned int)value_index->getNumberValue() < 0) {
-			Logger::error("'frame' command has an invalid 'index' value");
-			return false;
+			*_message = _wcsdup(L"'frame' command has an invalid 'index' value");
+			return CODE_INVALIDPACKET;
 		}
 		index = (unsigned int)value_index->getNumberValue();
 	}
@@ -1872,14 +1876,14 @@ bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
 	HRESULT hr = applicationThread->EnumStackFrames(&stackFrames);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandFrame(): EnumStackFrames() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	if (index > 0) {
 		hr = stackFrames->Skip(index);
 		if (FAILED(hr)) {
 			Logger::error("CrossfireContext.commandFrame(): Skip() failed", hr);
-			return false;
+			return CODE_FAILURE;
 		}
 	}
 
@@ -1888,34 +1892,34 @@ bool CrossfireContext::commandFrame(Value* arguments, Value** _responseBody) {
 	hr = stackFrames->Next(1, &stackFrameDescriptor, &fetched);
 	if (FAILED(hr) || fetched == 0) {
 		Logger::error("CrossfireContext.commandFrame(): Next() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	Value* frame = NULL;
 	if (!createValueForFrame(stackFrameDescriptor.pdsf, index, includeScopes, &frame)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	Value* result = new Value();
 	result->addObjectValue(KEY_FRAME, frame);
 	*_responseBody = result;
 	delete frame;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandLookup(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandLookup(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_handle = arguments->getObjectValue(KEY_HANDLE);
 	if (!value_handle || value_handle->getType() != TYPE_NUMBER || (unsigned int)value_handle->getNumberValue() < 1) {
-		Logger::error("'lookup' command does not have a valid 'handle' value");
-		return false;
+		*_message = _wcsdup(L"'lookup' command does not have a valid 'handle' value");
+		return CODE_INVALIDPACKET;
 	}
 
 	bool includeSource = false;
 	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
 	if (value_includeSource) {
 		if (value_includeSource->getType() != TYPE_BOOLEAN) {
-			Logger::error("'lookup' command has an invalid 'includeSource' value");
-			return false;
+			*_message = _wcsdup(L"'lookup' command has an invalid 'includeSource' value");
+			return CODE_INVALIDPACKET;
 		}
 		includeSource = value_includeSource->getBooleanValue();
 	}
@@ -1924,14 +1928,14 @@ bool CrossfireContext::commandLookup(Value* arguments, Value** _responseBody) {
 
 	std::map<unsigned int, JSObject*>::iterator iterator = m_objects->find(handle);
 	if (iterator == m_objects->end()) {
-		Logger::error("'lookup' handle value is not a known object handle");
-		return false;
+		*_message = _wcsdup(L"'lookup' handle value is not a known object handle");
+		return CODE_INVALIDPACKET;
 	}
 	JSObject* object = iterator->second;
 
 	Value* value_object = NULL;
 	if (!createValueForObject(object, true, &value_object)) {
-		return false;
+		return CODE_FAILURE;
 	}
 	
 	if (includeSource && !object->isObject) {
@@ -1966,24 +1970,24 @@ bool CrossfireContext::commandLookup(Value* arguments, Value** _responseBody) {
 	}
 
 	*_responseBody = value_object;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandScope(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandScope(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	// TODO
-	return false;
+	return CODE_NOTIMPLEMENTED;
 }
 
-bool CrossfireContext::commandScopes(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandScopes(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	// TODO
-	return false;
+	return CODE_NOTIMPLEMENTED;
 }
 
-bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandScript(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_id = arguments->getObjectValue(/*KEY_ID*/ L"url"); // TODO
 	if (!value_id || value_id->getType() != TYPE_STRING) {
-		Logger::error("'script' command does not have a valid 'id' value");
-		return false;
+		*_message = _wcsdup(L"'script' command does not have a valid 'id' value");
+		return CODE_INVALIDPACKET;
 	}
 	std::wstring* id = value_id->getStringValue();
 
@@ -1991,37 +1995,37 @@ bool CrossfireContext::commandScript(Value* arguments, Value** _responseBody) {
 	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
 	if (value_includeSource) {
 		if (value_includeSource->getType() != TYPE_BOOLEAN) {
-			Logger::error("'script' command has an invalid 'includeSource' value");
-			return false;
+			*_message = _wcsdup(L"'script' command has an invalid 'includeSource' value");
+			return CODE_INVALIDPACKET;
 		}
 		includeSource = value_includeSource->getBooleanValue();
 	}
 
 	IDebugApplicationNode* node = getScriptNode((wchar_t*)id->c_str());
 	if (!node) {
-		Logger::error("'script' command specifies an unknown script id");
-		return false;
+		*_message = _wcsdup(L"'script' command specifies an unknown script id");
+		return CODE_INVALIDPACKET;
 	}
 
 	Value* script = NULL;
 	if (!createValueForScript(node, includeSource, false, &script)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	Value* result = new Value();
 	result->addObjectValue(KEY_SCRIPT, script);
 	*_responseBody = result;
 	delete script;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	bool includeSource = false;
 	Value* value_includeSource = arguments->getObjectValue(KEY_INCLUDESOURCE);
 	if (value_includeSource) {
 		if (value_includeSource->getType() != TYPE_BOOLEAN) {
-			Logger::error("'scripts' command has an invalid 'includeSource' value");
-			return false;
+			*_message = _wcsdup(L"'scripts' command has an invalid 'includeSource' value");
+			return CODE_INVALIDPACKET;
 		}
 		includeSource = value_includeSource->getBooleanValue();
 	}
@@ -2040,22 +2044,22 @@ bool CrossfireContext::commandScripts(Value* arguments, Value** _responseBody) {
 	Value* result = new Value();
 	result->addObjectValue(KEY_SCRIPTS, &scriptsArray);
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireContext::commandSuspend(Value* arguments, Value** _responseBody) {
+int CrossfireContext::commandSuspend(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	CComPtr<IRemoteDebugApplication> application = NULL;
 	if (!getDebugApplication(&application)) {
-		return false;
+		return CODE_FAILURE;
 	}
 
 	HRESULT hr = application->CauseBreak();
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.commandSuspend(): CauseBreak() failed", hr);
-		return false;
+		return CODE_FAILURE;
 	}
 
 	*_responseBody = new Value();
 	(*_responseBody)->setType(TYPE_OBJECT);
-	return true;
+	return CODE_OK;
 }

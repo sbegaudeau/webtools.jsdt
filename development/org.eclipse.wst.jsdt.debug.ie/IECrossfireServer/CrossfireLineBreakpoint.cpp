@@ -167,13 +167,11 @@ void CrossfireLineBreakpoint::setLine(unsigned int value) {
 bool CrossfireLineBreakpoint::setLocationFromValue(Value* value) {
 	Value* value_url = value->getObjectValue(KEY_URL);
 	if (!value_url || value_url->getType() != TYPE_STRING) {
-		Logger::error("breakpoint 'location' argument does not have a valid 'url' value");
 		return false;
 	}
 
 	Value* value_line = value->getObjectValue(KEY_LINE);
-	if (!value_line || value_line->getType() != TYPE_NUMBER) {
-		Logger::error("breakpoint 'location' argument does not have a valid 'line' value");
+	if (!value_line || value_line->getType() != TYPE_NUMBER || value_line->getNumberValue() < 1) {
 		return false;
 	}
 

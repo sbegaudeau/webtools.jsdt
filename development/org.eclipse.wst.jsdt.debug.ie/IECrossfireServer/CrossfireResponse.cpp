@@ -15,29 +15,42 @@
 
 CrossfireResponse::CrossfireResponse() : CrossfirePacket() {
 	m_body = NULL;
+	m_code = CODE_OK;
+	m_message = NULL;
 	m_requestSeq = -1;
 	m_running = false;
-	m_success = false;
 }
 
 CrossfireResponse::~CrossfireResponse() {
 	if (m_body) {
 		delete m_body;
 	}
+	if (m_message) {
+		free(m_message);
+	}
 }
 
 void CrossfireResponse::clone(CrossfirePacket** _value) {
 	CrossfireResponse* result = new CrossfireResponse();
 	result->setBody(m_body);
+	result->setCode(m_code);
+	result->setMessage(m_message);
 	result->setName(getName());
 	result->setRequestSeq(m_requestSeq);
 	result->setRunning(m_running);
-	result->setSuccess(m_success);
 	*_value = result;
 }
 
 Value* CrossfireResponse::getBody() {
 	return m_body;
+}
+
+int CrossfireResponse::getCode() {
+	return m_code;
+}
+
+wchar_t* CrossfireResponse::getMessage() {
+	return m_message;
 }
 
 unsigned int CrossfireResponse::getRequestSeq() {
@@ -48,10 +61,6 @@ bool CrossfireResponse::getRunning() {
 	return m_running;
 }
 
-bool CrossfireResponse::getSuccess() {
-	return m_success;
-}
-
 int CrossfireResponse::getType() {
 	return TYPE_RESPONSE;
 }
@@ -60,10 +69,28 @@ bool CrossfireResponse::setBody(Value* value) {
 	if (value && value->getType() != TYPE_OBJECT) {
 		return false;
 	}
+	if (m_body) {
+		delete m_body;
+		m_body = NULL;
+	}
 	if (value) {
 		value->clone(&m_body);
 	}
 	return true;
+}
+
+void CrossfireResponse::setCode(int value) {
+	m_code = value;
+}
+
+void CrossfireResponse::setMessage(wchar_t* value) {
+	if (m_message) {
+		free(m_message);
+		m_message = NULL;
+	}
+	if (value) {
+		m_message = _wcsdup(value);
+	}
 }
 
 void CrossfireResponse::setRequestSeq(unsigned int value) {
@@ -74,8 +101,5 @@ void CrossfireResponse::setRunning(bool value) {
 	m_running = value;
 }
 
-void CrossfireResponse::setSuccess(bool value) {
-	m_success = value;
-}
 
 

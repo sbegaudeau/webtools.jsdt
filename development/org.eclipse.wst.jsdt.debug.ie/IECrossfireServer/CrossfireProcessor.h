@@ -40,14 +40,16 @@ private:
 	static const size_t LINEBREAK_LENGTH;
 	static const wchar_t* NAME_ARGUMENTS;
 	static const wchar_t* NAME_BODY;
+	static const wchar_t* NAME_CODE;
 	static const wchar_t* NAME_COMMAND;
 	static const wchar_t* NAME_CONTEXTID;
 	static const wchar_t* NAME_DATA;
 	static const wchar_t* NAME_EVENT;
+	static const wchar_t* NAME_MESSAGE;
 	static const wchar_t* NAME_REQUESTSEQ;
 	static const wchar_t* NAME_RUNNING;
 	static const wchar_t* NAME_SEQ;
-	static const wchar_t* NAME_SUCCESS;
+	static const wchar_t* NAME_STATUS;
 	static const wchar_t* NAME_TYPE;
 	static const wchar_t* VALUE_EVENT;
 	static const wchar_t* VALUE_REQUEST;

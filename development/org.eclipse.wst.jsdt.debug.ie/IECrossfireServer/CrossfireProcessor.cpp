@@ -19,14 +19,16 @@ const wchar_t* CrossfireProcessor::LINEBREAK = L"\r\n";
 const size_t CrossfireProcessor::LINEBREAK_LENGTH = 2;
 const wchar_t* CrossfireProcessor::NAME_ARGUMENTS = L"arguments";
 const wchar_t* CrossfireProcessor::NAME_BODY = L"body";
+const wchar_t* CrossfireProcessor::NAME_CODE = L"code";
 const wchar_t* CrossfireProcessor::NAME_COMMAND = L"command";
 const wchar_t* CrossfireProcessor::NAME_CONTEXTID = L"contextId";
 const wchar_t* CrossfireProcessor::NAME_DATA = L"data";
 const wchar_t* CrossfireProcessor::NAME_EVENT = L"event";
+const wchar_t* CrossfireProcessor::NAME_MESSAGE = L"message";
 const wchar_t* CrossfireProcessor::NAME_REQUESTSEQ = L"request_seq";
 const wchar_t* CrossfireProcessor::NAME_RUNNING = L"running";
 const wchar_t* CrossfireProcessor::NAME_SEQ = L"seq";
-const wchar_t* CrossfireProcessor::NAME_SUCCESS = L"success";
+const wchar_t* CrossfireProcessor::NAME_STATUS = L"status";
 const wchar_t* CrossfireProcessor::NAME_TYPE = L"type";
 const wchar_t* CrossfireProcessor::VALUE_EVENT = L"event";
 const wchar_t* CrossfireProcessor::VALUE_REQUEST = L"request";
@@ -125,11 +127,15 @@ bool CrossfireProcessor::createResponsePacket(CrossfireResponse *response, std::
 	}
 	value_packet.addObjectValue(NAME_REQUESTSEQ, &Value((double)response->getRequestSeq()));
 
-	/* running */
-	value_packet.addObjectValue(NAME_RUNNING, &Value(response->getRunning()));
-
-	/* success */
-	value_packet.addObjectValue(NAME_SUCCESS, &Value(response->getSuccess()));
+	/* status */
+	Value status;
+	status.addObjectValue(NAME_CODE, &Value((double)response->getCode()));
+	status.addObjectValue(NAME_RUNNING, &Value(response->getRunning()));
+	wchar_t* message = response->getMessage();
+	if (message) {
+		status.addObjectValue(NAME_MESSAGE, &Value(message));
+	}
+	value_packet.addObjectValue(NAME_STATUS, &status);
 
 	/* body */
 	Value* bodyValue = response->getBody();

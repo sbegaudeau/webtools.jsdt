@@ -282,26 +282,28 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	wchar_t* command = request->getName();
 	Value* arguments = request->getArguments();
 	Value* responseBody = NULL;
-	bool success = false;
+	wchar_t* message = NULL;
+	int code = CODE_OK;
+
 	if (wcscmp(command, COMMAND_CREATECONTEXT) == 0) {
-		success = commandCreateContext(arguments, &responseBody);
+		code = commandCreateContext(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_DISABLETOOLS) == 0) {
-		success = commandDisableTools(arguments, &responseBody);
+		code = commandDisableTools(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_ENABLETOOLS) == 0) {
-		success = commandEnableTools(arguments, &responseBody);
+		code = commandEnableTools(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_GETTOOLS) == 0) {
-		success = commandGetTools(arguments, &responseBody);
+		code = commandGetTools(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_LISTCONTEXTS) == 0) {
-		success = commandListContexts(arguments, &responseBody);
+		code = commandListContexts(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_VERSION) == 0) {
-		success = commandVersion(arguments, &responseBody);
+		code = commandVersion(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		success = m_bpManager->commandChangeBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		code = m_bpManager->commandChangeBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
@@ -311,25 +313,25 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		success = m_bpManager->commandDeleteBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		code = m_bpManager->commandDeleteBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		success = m_bpManager->commandGetBreakpoint(arguments, target, &responseBody);
+		code = m_bpManager->commandGetBreakpoint(arguments, target, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINTS) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		success = m_bpManager->commandGetBreakpoints(arguments, target, &responseBody);
+		code = m_bpManager->commandGetBreakpoints(arguments, target, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_SETBREAKPOINT) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		success = m_bpManager->commandSetBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody);
+		code = m_bpManager->commandSetBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
@@ -341,8 +343,12 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 	response.setName(command);
 	response.setRequestSeq(request->getSeq());
 	response.setRunning(true);
-	response.setSuccess(success);
-	if (success) {
+	response.setCode(code);
+	response.setMessage(message);
+	if (message) {
+		free(message);
+	}
+	if (code == CODE_OK) {
 		response.setBody(responseBody);
 	} else {
 		Value emptyBody;
@@ -647,11 +653,11 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
 
 /* commands */
 
-bool CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_url = arguments->getObjectValue(KEY_URL);
 	if (!value_url || value_url->getType() != TYPE_STRING) {
-		Logger::error("'createContext' request does not have a valid 'url' value");
-		return false;
+		*_message = _wcsdup(L"'createContext' request does not have a valid 'url' value");
+		return CODE_INVALIDPACKET;
 	}
 	std::wstring* url = value_url->getStringValue();
 
@@ -661,8 +667,8 @@ bool CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBo
 		int type = value_contextId->getType();
 		if (type != TYPE_NULL) {
 			if (type != TYPE_STRING) {
-				Logger::error("'createContext' request has an invalid 'contextId' value");
-				return false;
+				*_message = _wcsdup(L"'createContext' request has an invalid 'contextId' value");
+				return CODE_INVALIDPACKET;
 			}
 			contextId = value_contextId->getStringValue();
 		}
@@ -672,17 +678,17 @@ bool CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBo
 	if (contextId) {
 		context = getContext((wchar_t*)contextId->c_str());
 		if (!context) {
-			Logger::error("'createContext' request specified an unknown 'contextId' value");
-			return false;
+			*_message = _wcsdup(L"'createContext' request specified an unknown 'contextId' value");
+			return CODE_INVALIDPACKET;
 		}
 		DWORD processId = context->getProcessId();
 		ICrossfireServerListener* listener = m_listeners->at(processId);
 		if (!listener) {
 			Logger::error("commandCreateContext(): the specified contextId is not listening to the server");
-			return false;
+			return CODE_FAILURE;
 		}
 		if (FAILED(listener->navigate((OLECHAR*)url->c_str(), false))) {
-			return false;
+			return CODE_FAILURE;
 		}
 	} else {
 		/* go through the listeners to find one that can create the context in a new tab */
@@ -696,21 +702,21 @@ bool CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBo
 		}
 		if (iterator == m_listeners->end()) {
 			/* none of the listeners could create the context successfully */
-			return false;
+			return CODE_FAILURE;
 		}
 	}
 
 	Value* result = new Value();
 	result->setType(TYPE_OBJECT);
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
-		Logger::error("'commandDisableTools' request does not have a valid 'tools' value");
-		return false;
+		*_message = _wcsdup(L"'disableTools' request does not have a valid 'tools' value");
+		return CODE_INVALIDPACKET;
 	}
 
 	Value toolsArray;
@@ -721,25 +727,25 @@ bool CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBod
 	Value* currentValue = values[index];
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
-			Logger::error("'commanDisableTools' request contains a non-String 'tools' value");
-			return false;
+			*_message = _wcsdup(L"'disableTools' request contains a non-String 'tools' value");
+			return CODE_INVALIDPACKET;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];
 	}
 	delete[] values;
 
-	Value* result = new Value();
-	result->addObjectValue(KEY_TOOLS, &toolsArray);
-	*_responseBody = result;
-	return false; // TODO return true when implementation complete
+//	Value* result = new Value();
+//	result->addObjectValue(KEY_TOOLS, &toolsArray);
+//	*_responseBody = result;
+	return CODE_NOTIMPLEMENTED; // TODO implement
 }
 
-bool CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
-		Logger::error("'commandEnableTools' request does not have a valid 'tools' value");
-		return false;
+		*_message = _wcsdup(L"'enableTools' request does not have a valid 'tools' value");
+		return CODE_INVALIDPACKET;
 	}
 
 	Value toolsArray;
@@ -750,30 +756,30 @@ bool CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody
 	Value* currentValue = values[index];
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
-			Logger::error("'commandEnableTools' request contains a non-String 'tools' value");
-			return false;
+			*_message = _wcsdup(L"'enableTools' request contains a non-String 'tools' value");
+			return CODE_INVALIDPACKET;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];
 	}
 	delete[] values;
 
-	Value* result = new Value();
-	result->addObjectValue(KEY_TOOLS, &toolsArray);
-	*_responseBody = result;
-	return false; // TODO return true when implementation complete
+//	Value* result = new Value();
+//	result->addObjectValue(KEY_TOOLS, &toolsArray);
+//	*_responseBody = result;
+	return CODE_NOTIMPLEMENTED; // TODO implement
 }
 
-bool CrossfireServer::commandGetTools(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value toolsArray;
 	toolsArray.setType(TYPE_ARRAY);
 	Value* result = new Value();
 	result->addObjectValue(KEY_TOOLS, &toolsArray);
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireServer::commandListContexts(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandListContexts(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value contexts;
 	contexts.setType(TYPE_ARRAY);
 	std::map<DWORD,CrossfireContext*>::iterator iterator = m_contexts->begin();
@@ -790,14 +796,14 @@ bool CrossfireServer::commandListContexts(Value* arguments, Value** _responseBod
 	Value* result = new Value();
 	result->addObjectValue(KEY_CONTEXTS, &contexts);
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
-bool CrossfireServer::commandVersion(Value* arguments, Value** _responseBody) {
+int CrossfireServer::commandVersion(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* result = new Value();
 	result->addObjectValue(KEY_VERSION, &Value(VERSION_STRING));
 	*_responseBody = result;
-	return true;
+	return CODE_OK;
 }
 
 /* events */

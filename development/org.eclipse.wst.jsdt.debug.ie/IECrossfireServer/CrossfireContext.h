@@ -105,37 +105,37 @@ private:
 	static const wchar_t* KEY_FRAMES;
 	static const wchar_t* KEY_FROMFRAME;
 	static const wchar_t* KEY_TOFRAME;
-	static const wchar_t* KEY_TOTALFRAMECOUNT;
-	virtual bool commandBacktrace(Value* arguments, Value** _responseBody);
+	static const wchar_t* KEY_TOTALFRAMES;
+	virtual int commandBacktrace(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: continue */
 	static const wchar_t* COMMAND_CONTINUE;
-	virtual bool commandContinue(Value* arguments, Value** _responseBody);
+	virtual int commandContinue(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: evaluate */
 	static const wchar_t* COMMAND_EVALUATE;
 	static const wchar_t* KEY_EXPRESSION;
 	static const wchar_t* KEY_RESULT;
-	virtual bool commandEvaluate(Value* arguments, unsigned int requestSeq, Value** _responseBody);
+	virtual int commandEvaluate(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: frame */
 	static const wchar_t* COMMAND_FRAME;
 	static const wchar_t* KEY_FRAME;
 	static const wchar_t* KEY_INDEX;
-	virtual bool commandFrame(Value* arguments, Value** _responseBody);
+	virtual int commandFrame(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: inspect */
 	static const wchar_t* COMMAND_INSPECT;
 
 	/* command: lookup */
 	static const wchar_t* COMMAND_LOOKUP;
-	virtual bool commandLookup(Value* arguments, Value** _responseBody);
+	virtual int commandLookup(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scope */
 	static const wchar_t* COMMAND_SCOPE;
 	static const wchar_t* KEY_SCOPE;
 	static const wchar_t* KEY_SCOPEINDEX;
-	virtual bool commandScope(Value* arguments, Value** _responseBody);
+	virtual int commandScope(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scopes */
 	static const wchar_t* COMMAND_SCOPES;
@@ -143,17 +143,17 @@ private:
 	static const wchar_t* KEY_SCOPES;
 	static const wchar_t* KEY_TOSCOPE;
 	static const wchar_t* KEY_TOTALSCOPECOUNT;
-	virtual bool commandScopes(Value* arguments, Value** _responseBody);
+	virtual int commandScopes(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: script */
 	static const wchar_t* COMMAND_SCRIPT;
 	static const wchar_t* KEY_SCRIPT;
-	virtual bool commandScript(Value* arguments, Value** _responseBody);
+	virtual int commandScript(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scripts */
 	static const wchar_t* COMMAND_SCRIPTS;
 	static const wchar_t* KEY_SCRIPTS;
-	virtual bool commandScripts(Value* arguments, Value** _responseBody);
+	virtual int commandScripts(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: suspend */
 	static const wchar_t* COMMAND_SUSPEND;
@@ -161,14 +161,13 @@ private:
 	static const wchar_t* VALUE_IN;
 	static const wchar_t* VALUE_NEXT;
 	static const wchar_t* VALUE_OUT;
-	virtual bool commandSuspend(Value* arguments, Value** _responseBody);
+	virtual int commandSuspend(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* event: onBreak */
 	static const wchar_t* EVENT_ONBREAK;
 	static const wchar_t* KEY_CAUSE;
 	static const wchar_t* KEY_MESSAGE;
 	static const wchar_t* KEY_TITLE;
-	static const wchar_t* KEY_URL;
 
 	/* event: onScript */
 	static const wchar_t* EVENT_ONSCRIPT;
@@ -187,13 +186,13 @@ private:
 	static const wchar_t* KEY_LINE;
 	static const wchar_t* KEY_LOCATION;
 	static const wchar_t* KEY_TYPE;
+	static const wchar_t* KEY_URL;
 
 	/* breakpoint objects */
 	static const wchar_t* BPTYPE_LINE;
 
 	/* frame objects */
 	static const wchar_t* KEY_FUNCTIONNAME;
-	static const wchar_t* KEY_SCRIPTID;
 
 	/* object objects */
 	static const wchar_t* JSVALUE_BOOLEAN;
@@ -215,7 +214,6 @@ private:
 
 	/* script objects */
 	static const wchar_t* KEY_COLUMNOFFSET;
-	static const wchar_t* KEY_ID;
 	static const wchar_t* KEY_LINECOUNT;
 	static const wchar_t* KEY_LINEOFFSET;
 	static const wchar_t* KEY_SOURCE;

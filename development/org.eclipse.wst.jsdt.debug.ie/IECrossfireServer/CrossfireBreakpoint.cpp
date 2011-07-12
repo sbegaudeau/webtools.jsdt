@@ -85,7 +85,7 @@ void CrossfireBreakpoint::setAttribute(wchar_t* name, Value* value) {
 	}
 
 	if (value->getType() == TYPE_NULL) {
-		/* a null value indicates that the attribute is to be cleared */
+		/* a null value indicates that the attribute value should be cleared */
 		return;
 	}
 
@@ -107,7 +107,6 @@ bool CrossfireBreakpoint::setAttributesFromValue(Value* value) {
 	while (currentKey) {
 		Value* currentValue = objectValues[index];
 		if (currentValue->getType() != TYPE_NULL && !attributeIsValid((wchar_t*)currentKey->c_str(), currentValue)) {
-			Logger::log("breakpoint attribute arguments specify an invalid attribute name or value");
 			success = false;
 			break;
 		}

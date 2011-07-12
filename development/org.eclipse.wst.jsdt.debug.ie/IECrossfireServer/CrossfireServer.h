@@ -105,31 +105,31 @@ private:
 
 	/* command: createContext */
 	static const wchar_t* COMMAND_CREATECONTEXT;
-	virtual bool commandCreateContext(Value* arguments, Value** _responseBody);
+	virtual int commandCreateContext(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: disableTools */
 	static const wchar_t* COMMAND_DISABLETOOLS;
-	virtual bool commandDisableTools(Value* arguments, Value** _responseBody);
+	virtual int commandDisableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: enableTools */
 	static const wchar_t* COMMAND_ENABLETOOLS;
-	virtual bool commandEnableTools(Value* arguments, Value** _responseBody);
+	virtual int commandEnableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: getTools */
 	static const wchar_t* COMMAND_GETTOOLS;
-	virtual bool commandGetTools(Value* arguments, Value** _responseBody);
+	virtual int commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: listContexts */
 	static const wchar_t* COMMAND_LISTCONTEXTS;
 	static const wchar_t* KEY_CONTEXTS;
 	static const wchar_t* KEY_CURRENT;
-	virtual bool commandListContexts(Value* arguments, Value** _responseBody);
+	virtual int commandListContexts(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: version */
 	static const wchar_t* COMMAND_VERSION;
 	static const wchar_t* KEY_VERSION;
 	static const wchar_t* VERSION_STRING;
-	virtual bool commandVersion(Value* arguments, Value** _responseBody);
+	virtual int commandVersion(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* event: closed */
 	static const wchar_t* EVENT_CLOSED;

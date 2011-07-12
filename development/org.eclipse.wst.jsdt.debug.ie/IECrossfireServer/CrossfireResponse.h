@@ -15,6 +15,14 @@
 #include "CrossfirePacket.h"
 #include "Value.h"
 
+enum {
+	CODE_OK = 0,
+	CODE_MALFORMEDPACKET,
+	CODE_INVALIDPACKET,
+	CODE_NOTIMPLEMENTED,
+	CODE_FAILURE,
+};
+
 class CrossfireResponse : public CrossfirePacket {
 
 public:
@@ -22,18 +30,22 @@ public:
 	~CrossfireResponse();
 	virtual void clone(CrossfirePacket** _value);
 	virtual Value* getBody();
+	virtual int getCode();
+	virtual wchar_t* getMessage();
 	virtual unsigned int getRequestSeq();
 	virtual bool getRunning();
-	virtual bool getSuccess();
 	virtual int getType();
 	virtual bool setBody(Value* value);
+	virtual void setCode(int code);
+	virtual void setMessage(wchar_t* value);
 	virtual void setRequestSeq(unsigned int value);
 	virtual void setRunning(bool value);
-	virtual void setSuccess(bool value);
+	
 
 private:
 	Value* m_body;
+	int m_code;
+	wchar_t* m_message;
 	unsigned int m_requestSeq;
 	bool m_running;
-	bool m_success;
 };
