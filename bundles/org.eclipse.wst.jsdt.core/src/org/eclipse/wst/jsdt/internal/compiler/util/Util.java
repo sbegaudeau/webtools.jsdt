@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,12 @@ import java.util.zip.ZipFile;
 
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFieldReference;
+import org.eclipse.wst.jsdt.core.ast.ILiteral;
+import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
+import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 
 /**
  * No classes outside of this package and the JRE should be used to ensure
@@ -510,25 +513,64 @@ public class Util implements SuffixConstants {
 	 */
 	public final static char [] getTypeName( IExpression expression ){
 
-		char [] name = null;
+		IExpression currExpr = expression;
+		
+		char[] selector = null;
+		while (currExpr != null) {
+			if (currExpr instanceof IFieldReference) {
+				if (selector == null) {
+					selector = ((IFieldReference) currExpr).getToken();
+				}
+				else {
+					selector = CharOperation.concatWith(new char[][]{((IFieldReference) currExpr).getToken(), selector}, '.');
+				}
+				currExpr = ((IFieldReference) currExpr).getReceiver();
+			}
+			else if (currExpr instanceof ISingleNameReference) {
+				if (selector == null) {
+					selector = ((ISingleNameReference) currExpr).getToken();
+				}
+				else {
+					selector = CharOperation.concatWith(new char[][]{((ISingleNameReference) currExpr).getToken(), selector}, '.');
+				}
+				currExpr = null;
+			}
+			else if (currExpr instanceof ArrayReference) {
+				ArrayReference arrayRef = (ArrayReference) currExpr;
 
-		if (expression instanceof FieldReference) {
-			FieldReference fieldRef = (FieldReference) expression;
-
-			if( !fieldRef.isPrototype() ){
-				//a prototype on the Field Reference will put a stop to constructing the name
-
-				char [] receiverName = getTypeName( fieldRef.receiver );
-
-				if( receiverName != null )
-					name = CharOperation.concat( receiverName, fieldRef.token,'.');
+				/*
+				 * if the array reference position is a literately keep
+				 * building selector else there is a dynamic selector of some
+				 * sort so there is no way to build a type name from it
+				 */
+				if (arrayRef.position instanceof ILiteral) {
+					if (selector == null) {
+						selector = ((ILiteral) arrayRef.position).source();
+					}
+					else {
+						selector = CharOperation.concatWith(new char[][]{((ILiteral) arrayRef.position).source(), selector}, '.');
+					}
+					currExpr = arrayRef.receiver;
+				}
+				else {
+					currExpr = null;
+				}
+			}
+			else if (currExpr instanceof IThisReference) {
+				// this can not be handled right now because the resolved type
+				// for 'this' never seems to be resolved yet
+				currExpr = null;
+				selector = null;
+			}
+			else {
+				// do not know how to handle the rest of the expression so
+				// give up
+				currExpr = null;
+				selector = null;
+			}
 		}
-		}
-		else if (expression instanceof SingleNameReference) {
-			SingleNameReference singleNameReference = (SingleNameReference) expression;
-			name = singleNameReference.token;
-		}
-		return name;
+		
+		return selector;
 	}
 	
 

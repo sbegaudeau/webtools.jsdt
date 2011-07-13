@@ -292,13 +292,12 @@ public static String createTypeSignature(char[] typeName, boolean isResolved) {
  *  
  */
 public static char[] createCharArrayTypeSignature(char[] typeName, boolean isResolved) {
-	if (typeName == null)
+	if (typeName == null || typeName.length == 0)
 	{
 		return new char[]{C_ANY};
 	}
 
 	int length = typeName.length;
-	if (length == 0) throw new IllegalArgumentException(new String(typeName));
 	StringBuffer buffer = new StringBuffer(5);
 	int pos = encodeTypeSignature(typeName, 0, isResolved, length, buffer);
 	pos = consumeWhitespace(typeName, pos, length);
