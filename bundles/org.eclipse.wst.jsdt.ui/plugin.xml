@@ -5275,14 +5275,15 @@
 				priority="high">
 			<triggerPoints>
 			     <or>
-					<adapt type="org.eclipse.core.resources.IProject">
-						<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-					</adapt>
 					<and>
-						<instanceof value="org.eclipse.core.resources.IResource" />
-						<not>
-							<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
-						</not>
+						<instanceof	value="org.eclipse.core.resources.IResource" />
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</and>
+					<and>
+						<instanceof value="org.eclipse.core.resources.IFile" />
+      					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
 					</and>
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5295,9 +5296,13 @@
 				<or>
 					<and>
 						<instanceof value="org.eclipse.core.resources.IResource" />
-						<not>
-							<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
-						</not>
+						<adapt type="org.eclipse.core.resources.IProject">
+							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+						</adapt>
+					</and>
+					<and>
+						<instanceof value="org.eclipse.core.resources.IFile" />
+          				<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
 					</and>
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5311,14 +5316,14 @@
 				<enablement>
 					<or>
 						<and>
-							<instanceof value="org.eclipse.core.resources.IProject" />
-							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
+							<instanceof	value="org.eclipse.core.resources.IResource" />
+							<adapt type="org.eclipse.core.resources.IProject">
+								<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+							</adapt>
 						</and>
 						<and>
-							<instanceof value="org.eclipse.core.resources.IResource" />
-							<not>
-								<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
-							</not>
+							<instanceof value="org.eclipse.core.resources.IFile" />
+          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
 						</and>
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5333,8 +5338,10 @@
 				<enablement>
 					<or>   
 						<and>
-							<instanceof value="org.eclipse.core.resources.IProject" />
-          					<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature" />
+							<instanceof	value="org.eclipse.core.resources.IResource" />
+							<adapt type="org.eclipse.core.resources.IProject">
+								<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+							</adapt>
 						</and>
 						<and>
 							<instanceof value="org.eclipse.core.resources.IFile" />
@@ -5372,19 +5379,9 @@
 
 		   <actionProvider
 		         class="org.eclipse.wst.jsdt.internal.ui.navigator.PackageExplorerOpenActionProvider"
-		         id="org.eclipse.wst.jsdt.ui.navigator.actions.OpenActions"
-		         overrides="org.eclipse.ui.navigator.resources.OpenActions"> 
+		         id="org.eclipse.wst.jsdt.ui.navigator.actions.OpenActions"> 
 		         <enablement>
 					<or>
-						<adapt type="org.eclipse.core.resources.IProject">
-							<test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-						</adapt>
-						<and>
-							<instanceof value="org.eclipse.core.resources.IResource" />
-							<not>
-								<instanceof value="org.eclipse.core.resources.IWorkspaceRoot" />
-							</not>
-						</and>
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 				
@@ -5392,9 +5389,6 @@
 				</enablement>
 		   </actionProvider> 
 		   
-           <override
-					policy="InvokeAlwaysRegardlessOfSuppressedExt"
-					suppressedExtensionId="org.eclipse.ui.navigator.resourceContent"/>
 			<commonSorter
 					class="org.eclipse.wst.jsdt.ui.JavaElementSorter"
 					id="org.eclipse.wst.jsdt.ui.javaElementSorter"/>
