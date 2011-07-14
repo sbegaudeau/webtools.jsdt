@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
+import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
+import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -56,6 +58,7 @@ import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.BindingKeyResolver;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
 import org.eclipse.wst.jsdt.internal.core.util.DOMFinder;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 /**
  * 
@@ -143,15 +146,53 @@ class JavaScriptUnitResolver extends Compiler {
 		this.hasCompilationAborted = false;
 		this.monitor =monitor;
 	}
+	
+	/**
+	 * <p>Checks cancel state, runs parent operation, checks cancel state again.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.Compiler#accept(org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType, org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+	 */
+	public void accept(IBinaryType binaryType, PackageBinding packageBinding, AccessRestriction accessRestriction) {
+		this.checkCanceled();
+		super.accept(binaryType, packageBinding, accessRestriction);
+		this.checkCanceled();
+	}
+	
+	/**
+	 * <p>Checks cancel state, runs parent operation, checks cancel state again.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.Compiler#accept(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+	 */
+	public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
+		this.checkCanceled();
+		super.accept(sourceUnit, accessRestriction);
+		this.checkCanceled();
+	}
+	
+	/**
+	 * <p>Checks cancel state, runs parent operation, checks cancel state again.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.Compiler#accept(org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs)
+	 */
+	public void accept(LibraryAPIs libraryMetaData) {
+		this.checkCanceled();
+		super.accept(libraryMetaData);
+		this.checkCanceled();
+	}
 
-	/*
-	 * Add additional source types
+	/**
+	 * <p>Checks cancel state, adds additional source types, checks cancel state again.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.Compiler#accept(org.eclipse.wst.jsdt.internal.compiler.env.ISourceType[], org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
 	 */
 	public void accept(ISourceType[] sourceTypes, PackageBinding packageBinding, AccessRestriction accessRestriction) {
+		this.checkCanceled();
 		// Need to reparse the entire source of the javaScript unit so as to get source positions
 		// (case of processing a source that was not known by beginToCompile (e.g. when asking to createBinding))
 		SourceTypeElementInfo sourceType = (SourceTypeElementInfo) sourceTypes[0];
 		accept((org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) sourceType.getHandle().getJavaScriptUnit(), accessRestriction);
+		
+		this.checkCanceled();
 	}
 
 	/**
@@ -871,6 +912,9 @@ class JavaScriptUnitResolver extends Compiler {
 		} catch (Error e) {
 			this.handleInternalException(e, unit, null);
 			throw e; // rethrow
+		} catch(OperationCanceledException e) {
+			this.reset();
+			throw e;
 		} catch (RuntimeException e) {
 			this.handleInternalException(e, unit, null);
 			throw e; // rethrow
@@ -921,11 +965,30 @@ class JavaScriptUnitResolver extends Compiler {
 			generateCode);
 	}
 
+	/**
+	 * <p>Reports the amount of work completed on this resolvers {@link IProgressMonitor}
+	 * if it has one.  The canceled state of monitor will also be checked.</p>
+	 * 
+	 * @param work amount of work completed
+	 * 
+	 * @see #checkCanceled()
+	 */
 	private void worked(int work) {
 		if (this.monitor != null) {
-			if (this.monitor.isCanceled())
-				throw new OperationCanceledException();
+			this.checkCanceled();
 			this.monitor.worked(work);
+		}
+	}
+	
+	/**
+	 * <p>Checks if the {@link IProgressMonitor} for this resolver is canceled,
+	 * if it is then an {@link OperationCanceledException} is thrown.</p>
+	 * 
+	 * @throws OperationCanceledException - if this recievers monitor has been canceled
+	 */
+	private void checkCanceled() {
+		if(this.monitor != null && this.monitor.isCanceled()) {
+			throw new OperationCanceledException();
 		}
 	}
 }
