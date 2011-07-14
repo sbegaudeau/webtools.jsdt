@@ -6847,10 +6847,16 @@ public final class CompletionEngine
 
 	private void setSourceRange(int start, int end, boolean emptyTokenAdjstment) {
 		this.startPosition = start;
-		if(emptyTokenAdjstment) {
-			int endOfEmptyToken = ((CompletionScanner)this.parser.scanner).endOfEmptyToken;
-			this.endPosition = endOfEmptyToken > end ? endOfEmptyToken + 1 : end + 1;
-		} else {
+		if (emptyTokenAdjstment) {
+			int endOfEmptyToken = ((CompletionScanner) this.parser.scanner).endOfEmptyToken;
+			if (end == 0) {
+				this.endPosition = 0;
+			}
+			else {
+				this.endPosition = endOfEmptyToken > end ? endOfEmptyToken + 1 : end + 1;
+			}
+		}
+		else {
 			this.endPosition = end + 1;
 		}
 	}
