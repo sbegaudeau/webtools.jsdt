@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,11 +95,18 @@ public class CompletionProposalLabelProvider {
 		// TODO remove once https://bugs.eclipse.org/bugs/show_bug.cgi?id=85293
 		// gets fixed.
 		char[] signature= methodProposal.getSignature();
-		char[][] parameterNames= methodProposal.findParameterNames(null);
-		char[][] parameterTypes= Signature.getParameterTypes(signature);
+		char[][] parameterNames= methodProposal.getParamaterNames();
+		char[][] parameterTypes;
 
-		for (int i= 0; i < parameterTypes.length; i++)
-			parameterTypes[i]= createTypeDisplayName(parameterTypes[i]);
+		//if there is a signature use that, else get type names from proposal
+		if(signature != null && signature.length > 0) {
+			parameterTypes = Signature.getParameterTypes(signature);
+			for (int i= 0; i < parameterTypes.length; i++) {
+				parameterTypes[i]= createTypeDisplayName(parameterTypes[i]);
+			}
+		} else {
+			parameterTypes = methodProposal.getParameterTypeNames();
+		}
 
 		if (Flags.isVarargs(methodProposal.getFlags())) {
 			int index= parameterTypes.length - 1;
@@ -196,7 +203,7 @@ public class CompletionProposalLabelProvider {
 					buffer.append(',');
 					buffer.append(' ');
 				}
-				if (!Arrays.equals(Signature.ANY, parameterTypes[i])) {
+				if (parameterTypes[i].length > 0 & !Arrays.equals(Signature.ANY, parameterTypes[i])) {
 					buffer.append(parameterTypes[i]);
 					buffer.append(' ');
 				}
@@ -249,14 +256,12 @@ public class CompletionProposalLabelProvider {
 				nameBuffer.append("  "); //$NON-NLS-1$
 				//@GINO: Anonymous UI Label
 				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( returnType, nameBuffer );
-				//nameBuffer.append(returnType);
 			}
 		}
 
 		// declaring type
 		nameBuffer.append(" - "); //$NON-NLS-1$
 		String declaringType= extractDeclaringTypeFQN(methodProposal);
-//		declaringType= Signature.getSimpleName(declaringType);
 		
 		//@GINO: Anonymous UI Label
 		org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaringType, nameBuffer );
@@ -521,6 +526,7 @@ public class CompletionProposalLabelProvider {
 	 */
 	public String createLabel(CompletionProposal proposal) {
 		switch (proposal.getKind()) {
+			case CompletionProposal.CONSTRUCTOR_INVOCATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.METHOD_REF:
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
@@ -565,25 +571,11 @@ public class CompletionProposalLabelProvider {
 	 * @return the created image descriptor, or <code>null</code> if no image is available
 	 */
 	public ImageDescriptor createImageDescriptor(CompletionProposal proposal) {
-//		char[] compUnit = proposal.getDeclarationTypeName();
-//		char[] propType = proposal.getName();
-//		IJavaScriptProject project = proposal.getJavaProject();
-//		
-//		IJsGlobalScopeContainerInitializerExtension init = null;
-//		IType type = proposal.getNameLookup().findType(new String(compUnit), true, NameLookup.ACCEPT_ALL);
-//		IPackageFragment frag = type.getPackageFragment();
-//		
-//		if(compUnit!=null && propType!=null)
-//			 init = JSDScopeUiUtil.findLibraryUiInitializer(new Path(new String(compUnit)),project);
-//		if(init!=null) {
-//			ImageDescriptor description = init.getImage(new Path(new String(compUnit)),new String(propType), project);
-//			if( description!=null) return description;
-//		}
-		
 		final int flags= proposal.getFlags();
 
 		ImageDescriptor descriptor;
 		switch (proposal.getKind()) {
+			case CompletionProposal.CONSTRUCTOR_INVOCATION:
 			case CompletionProposal.METHOD_DECLARATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.METHOD_REF:

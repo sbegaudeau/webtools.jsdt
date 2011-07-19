@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
+import org.eclipse.wst.jsdt.internal.core.search.IConstructorRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
 
@@ -674,6 +675,108 @@ public class SearchableEnvironment implements INameEnvironment,
 		}
 	}
 
+	/**
+	 * <p>The progress monitor is used to be able to cancel completion operations</p>
+	 * 
+	 * <p>Find constructor declarations that are defined
+	 * in the current environment and whose name starts with the
+	 * given prefix. The prefix is a qualified name separated by periods
+	 * or a simple name (ex. foo.bar.V or V).</p>
+	 *
+	 * <p>The constructors found are passed to
+	 * {@link ISearchRequestor#acceptConstructor(int, char[], int, char[][], char[][], String, AccessRestriction)}</p>
+	 * 
+	 * @param prefix to use in the search
+	 * @param storage to report constructor declarations matching the given prefix to
+	 */
+	public void findConstructorDeclarations(char[] prefix, final ISearchRequestor storage) {
+		final String excludePath;
+		if (this.unitToSkip != null && this.unitToSkip instanceof IJavaScriptElement) {
+			excludePath = ((IJavaScriptElement) this.unitToSkip).getPath().toString();
+		} else {
+			excludePath = null;
+		}
+
+		IProgressMonitor progressMonitor = new IProgressMonitor() {
+			boolean isCanceled = false;
+			public void beginTask(String name, int totalWork) {
+				// implements interface method
+			}
+			public void done() {
+				// implements interface method
+			}
+			public void internalWorked(double work) {
+				// implements interface method
+			}
+			public boolean isCanceled() {
+				return this.isCanceled;
+			}
+			public void setCanceled(boolean value) {
+				this.isCanceled = value;
+			}
+			public void setTaskName(String name) {
+				// implements interface method
+			}
+			public void subTask(String name) {
+				// implements interface method
+			}
+			public void worked(int work) {
+				// implements interface method
+			}
+		};
+		
+		IConstructorRequestor constructorRequestor = new IConstructorRequestor() {
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.core.search.IConstructorRequestor#acceptConstructor(
+			 * 		int, char[], int, char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+			 */
+			public void acceptConstructor(
+					int modifiers,
+					char[] typeName,
+					int parameterCount,
+					char[][] parameterTypes,
+					char[][] parameterNames,
+					String path,
+					AccessRestriction access) {
+				
+				if (excludePath != null && excludePath.equals(path))
+					return;
+				
+				storage.acceptConstructor(
+						modifiers,
+						typeName,
+						parameterCount,
+						parameterTypes,
+						parameterNames, 
+						path,
+						access);
+			}
+		};
+		
+		/* when matching on "Test|" will match on
+		 * Test
+		 * TestBar
+		 * foo.Test
+		 * foo.TestBar
+		 * test.foo.Bar
+		 */
+		int matchRule = SearchPattern.R_REGEXP_MATCH;
+		String escapedPrefix = new String(prefix);
+		escapedPrefix.replaceAll("\\.", "\\."); //replace all "." with "\."
+		String regex = "(.*\\." + escapedPrefix + "[^\\.]*)|(" + escapedPrefix + ".*)";
+		
+		try {
+			new BasicSearchEngine(this.workingCopies).searchAllConstructorDeclarations(
+					regex.toCharArray(),
+					matchRule,
+					this.searchScope,
+					constructorRequestor,
+					CANCEL_IF_NOT_READY_TO_SEARCH,
+					progressMonitor);
+		} catch (OperationCanceledException e) {
+			Logger.logException("Constructor search operation canceled.", e);
+		}
+	}
 
 	/**
 	 * Returns all types whose name starts with the given (qualified)

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -177,6 +179,27 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 			return false;
 		}
 
+		/**
+		 * <p>Visit assignments so that if the right hand side is a function it can be indexed
+		 * with the right hand side used as the selector.</p>
+		 * 
+		 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.Assignment, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
+		 */
+		public boolean visit(Assignment assignment, BlockScope scope) {
+			boolean keepVisiting = true;
+			IExpression righHandSide = assignment.getExpression();
+			if(righHandSide instanceof IFunctionExpression) {
+				IExpression leftHandSide = assignment.getLeftHandSide();
+				
+				char[] selector = Util.getTypeName(leftHandSide);
+				if(selector != null) {
+					notifySourceElementRequestor(((IFunctionExpression) righHandSide).getMethodDeclaration(),
+							selector);
+				}
+				
+			}
+			return keepVisiting;
+		}
 
 		public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
 			nestedMethodIndex--;
@@ -653,44 +676,10 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 				&& scanner.eofPosition >= parsedUnit.sourceEnd;
 
 	// collect the top level ast nodes
-//	int length = 0;
-//	ASTNode[] nodes = null;
 	if (sourceType == null){
 		if (isInRange) {
 			requestor.enterCompilationUnit();
 		}
-		
-//		ImportReference currentPackage = parsedUnit.currentPackage;
-//		ImportReference[] imports = parsedUnit.imports;
-//		TypeDeclaration[] types = parsedUnit.types;
-//		length =
-//			(currentPackage == null ? 0 : 1)
-//			+ (imports == null ? 0 : imports.length)
-//			+ (types == null ? 0 : types.length);
-//		nodes = new ASTNode[length];
-//		int index = 0;
-//		if (currentPackage != null) {
-//			nodes[index++] = currentPackage;
-//		}
-//		if (imports != null) {
-//			for (int i = 0, max = imports.length; i < max; i++) {
-//				nodes[index++] = imports[i];
-//			}
-//		}
-//		if (types != null) {
-//			for (int i = 0, max = types.length; i < max; i++) {
-//				nodes[index++] = types[i];
-//			}
-//		}
-	} else {
-//		TypeDeclaration[] types = parsedUnit.types;
-//		if (types != null) {
-//			length = types.length;
-//			nodes = new ASTNode[length];
-//			for (int i = 0, max = types.length; i < max; i++) {
-//				nodes[i] = types[i];
-//			}
-//		}
 	}
 
 	//visit each statement to notify context declarations
@@ -698,45 +687,9 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 
 		for( int i=0; i<parsedUnit.statements.length; i++ ){
 			parsedUnit.statements[i].traverse( contextDeclarationNotifier, parsedUnit.scope );
-
 		}
 
 	}
-
-//	length=(parsedUnit.statements!=null)? parsedUnit.statements.length : 0;
-//	nodes = new ASTNode[length];
-//
-//	// notify the nodes in the syntactical order
-//	if (nodes != null && length > 0) {
-//		System.arraycopy(parsedUnit.statements, 0, nodes, 0, length);
-//		quickSort(nodes, 0, length-1);
-//		for (int i=0;i<length;i++) {
-//			ASTNode node = nodes[i];
-//			if (node instanceof LocalDeclaration) {
-//				LocalDeclaration var = (LocalDeclaration) node;
-//				notifySourceElementRequestor(var, null);
-//
-//			}
-//			else if (node instanceof AbstractMethodDeclaration) {
-//				AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-//				notifySourceElementRequestor(methodDeclaration);
-//			}
-//			else
-//			{
-//				notifySourceStatment(node);
-//			}
-////			if (node instanceof ImportReference) {
-////				ImportReference importRef = (ImportReference)node;
-////				if (node == parsedUnit.currentPackage) {
-////					notifySourceElementRequestor(importRef, true);
-////				} else {
-////					notifySourceElementRequestor(importRef, false);
-////				}
-////			} else { // instanceof TypeDeclaration
-////				notifySourceElementRequestor((TypeDeclaration)node, sourceType == null, null);
-////			}
-//		}
-//	}
 
 	for (int inx=0;inx<parsedUnit.numberInferredTypes;inx++) {
 			InferredType type = parsedUnit.inferredTypes[inx];
@@ -796,9 +749,6 @@ public void notifySourceElementRequestor( InferredType type ) {
 		fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
 
 		fieldInfo.type = field.type!=null ? field.type.getName():null;
-
-//			fieldInfo.annotationPositions = collectAnnotationPositions(fieldDeclaration.annotations);
-//			fieldInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
 		requestor.enterField(fieldInfo);
 
 		//If this field is of an anonymous type, need to notify so that it shows as a child
@@ -826,13 +776,14 @@ public void notifySourceElementRequestor( InferredType type ) {
 			argumentTypes = new char[argumentLength][];
 			argumentNames = new char[argumentLength][];
 			for (int i = 0; i < argumentLength; i++) {
-				if (arguments[i].type!=null)
+				if (arguments[i].type!=null) {
 					argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
+				} else if(arguments[i].inferredType != null) {
+					argumentTypes[i] = arguments[i].inferredType.getName();
+				}
 				argumentNames[i] = arguments[i].name;
 			}
 		}
-//		int selectorSourceEnd = this.sourceEnds.get(methodDeclaration);
-
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = methodDeclaration.modifiers;
 		if (method.isStatic) {
@@ -846,8 +797,14 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
-		requestor.enterMethod(methodInfo);
-
+		
+		//enter either constructor or method where appropriate
+		if(methodInfo.isConstructor) {
+			requestor.enterConstructor(methodInfo);
+		} else {
+			requestor.enterMethod(methodInfo);
+		}
+		
 		visitIfNeeded( (MethodDeclaration)method.getFunctionDeclaration() );
 
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
@@ -859,15 +816,28 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 }
 
-//private void notifySourceStatment(ASTNode node) {
-//	// TODO Auto-generated method stub
-//
-//}
-
-/*
- * Update the bodyStart of the corresponding parse node
+/**
+ * <p>Notifies the requester of a method declaration using the {@link AbstractMethodDeclaration#selector} as the 
+ * selector to notify with.</p>
+ * 
+ * @param methodDeclaration to notify the requester of
+ * 
+ * @see #notifySourceElementRequestor(AbstractMethodDeclaration, char[])
  */
 public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclaration) {
+	this.notifySourceElementRequestor(methodDeclaration, methodDeclaration.selector);
+}
+
+/**
+ * <p>Notifies the requester of a method declaration using the given selector rather then the selector set
+ * on the declaration itself.</p>
+ * 
+ * <p>This is useful when the selector on the declaration is not set but it can be pre-determined some other way.</p>
+ * 
+ * @param methodDeclaration to notify the requester of
+ * @param selector to use when notifying the requester of the given <code>methodDeclaration</code>
+ */
+public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclaration, char[] selector) {
 
 	this.nestedMethodIndex++;
 	// range check
@@ -914,8 +884,11 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		argumentTypes = new char[argumentLength][];
 		argumentNames = new char[argumentLength][];
 		for (int i = 0; i < argumentLength; i++) {
-			if (arguments[i].type!=null)
+			if (arguments[i].type!=null) {
 				argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
+			} else if(arguments[i].inferredType != null) {
+				argumentTypes[i] = arguments[i].inferredType.getName();
+			}
 			argumentNames[i] = arguments[i].name;
 		}
 		isVarArgs = arguments[argumentLength-1].isVarArgs();
@@ -936,7 +909,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.isConstructor = true;
 			methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 			methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-			methodInfo.name = methodDeclaration.selector;
+			methodInfo.name = selector;
 			methodInfo.nameSourceStart = methodDeclaration.sourceStart;
 			methodInfo.nameSourceEnd = selectorSourceEnd;
 			methodInfo.parameterTypes = argumentTypes;
@@ -944,7 +917,10 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 			requestor.enterConstructor(methodInfo);
 		}
-		if (reportReferenceInfo) {
+		/* need this check because a constructor could have been made a constructor after the
+		 * method declaration was created, and thus it is not a ConstructorDeclaration
+		 */
+		if (reportReferenceInfo && methodDeclaration instanceof ConstructorDeclaration) {
 			ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) methodDeclaration;
 			ExplicitConstructorCall constructorCall = constructorDeclaration.constructorCall;
 			if (constructorCall != null) {
@@ -987,7 +963,7 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
 		methodInfo.returnType = returnType == null ? null : returnType.getName();
-		methodInfo.name = methodDeclaration.selector;
+		methodInfo.name = selector;
 		methodInfo.nameSourceStart = methodDeclaration.sourceStart;
 		methodInfo.nameSourceEnd = selectorSourceEnd;
 		methodInfo.parameterTypes = argumentTypes;
@@ -1029,53 +1005,22 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				// remember deprecation so as to not lose it below
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
 
-				if (fieldDeclaration.initialization instanceof FunctionExpression) 
+				if (fieldDeclaration.initialization instanceof FunctionExpression) {
 					methodDeclaration=((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
-				else if (fieldDeclaration.initialization instanceof Assignment &&
-						((Assignment)fieldDeclaration.initialization).getExpression() instanceof FunctionExpression)
+				} else if (fieldDeclaration.initialization instanceof Assignment &&
+						((Assignment)fieldDeclaration.initialization).getExpression() instanceof FunctionExpression) {
+					
 					methodDeclaration=((FunctionExpression)((Assignment)fieldDeclaration.initialization).getExpression()).methodDeclaration;
+				}
 				
+				/* if the variable declaration has a method declaration on the right hand side notify of the declaration using the variable name as the method selector
+				 * else notify of a field declaration
+				 */
 				if (methodDeclaration!=null) {
-
-
-					char[][] argumentTypes = null;
-					char[][] argumentNames = null;
-//					boolean isVarArgs = false;
-					Argument[] arguments = methodDeclaration.arguments;
-					if (arguments != null) {
-						int argumentLength = arguments.length;
-						argumentTypes = new char[argumentLength][];
-						argumentNames = new char[argumentLength][];
-						for (int i = 0; i < argumentLength; i++) {
-							if (arguments[i].type!=null)
-								argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
-							argumentNames[i] = arguments[i].name;
-						}
-//						isVarArgs = arguments[argumentLength-1].isVarArgs();
-					}
-
-					ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-					methodInfo.declarationStart = fieldDeclaration.declarationSourceStart;
-					methodInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag) | ClassFileConstants.AccDeprecated : currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-					methodInfo.returnType = methodDeclaration.returnType == null ? null : CharOperation.concatWith(methodDeclaration.returnType.getTypeName(), '.');
-					methodInfo.name = fieldDeclaration.name;
-					methodInfo.nameSourceStart = fieldDeclaration.sourceStart;
-					methodInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
-					methodInfo.parameterTypes = argumentTypes;
-					methodInfo.parameterNames = argumentNames;
-					methodInfo.categories = (char[][]) this.nodesToCategories.get(fieldDeclaration);
-					requestor.enterMethod(methodInfo);
+					this.notifySourceElementRequestor(methodDeclaration, fieldDeclaration.getName());
 				}
 				else
 				{
-					//				if (fieldDeclaration.type == null) {
-					//					// enum constant
-					//					typeName = declaringType.name;
-					//					currentModifiers |= ClassFileConstants.AccEnum;
-					//				} else {
-					//					// regular field
-					//					typeName = CharOperation.concatWith(fieldDeclaration.type.getParameterizedTypeName(), '.');
-					//				}
 					ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 					fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
 					fieldInfo.name = fieldDeclaration.name;
@@ -1096,16 +1041,10 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 						notifySourceElementRequestor(fieldDeclaration.inferredType);
 					}
 				}
-
 			}
 			this.visitIfNeeded(fieldDeclaration, declaringType);
 			if (isInRange){
-				if (methodDeclaration!=null)
-				{
-					requestor.exitMethod(fieldDeclaration.declarationSourceEnd, -1, -1);
-				}
-				else
-				{
+				if (methodDeclaration == null) {
 					requestor.exitField(
 							// filter out initializations that are not a constant (simple check)
 							(fieldDeclaration.initialization == null

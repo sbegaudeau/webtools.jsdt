@@ -192,15 +192,32 @@ public class SourceTypeBinding extends ReferenceBinding {
 		MethodBinding[] methodBindings = new MethodBinding[size];
 		// create bindings for source methods
 		for (int i = 0; i < size; i++) {
-			InferredMethod method = (InferredMethod) inferredType.methods
-					.get(i);
-			MethodScope scope = new MethodScope(this.scope,
-					(MethodDeclaration) method.getFunctionDeclaration(), false);
+			InferredMethod method = (InferredMethod) inferredType.methods.get(i);
+			
+			//determine if the method already has a resolved scope or not
+			boolean doesNotHaveResolvedScope = method.getFunctionDeclaration() instanceof AbstractMethodDeclaration &&
+					((AbstractMethodDeclaration)method.getFunctionDeclaration()).scope == null;
+			
+			//build method scope
+			MethodDeclaration methDec = (MethodDeclaration) method.getFunctionDeclaration();
+			MethodScope scope = new MethodScope(this.scope, methDec, false);
 			MethodBinding methodBinding = scope.createMethod(method, this);
+			
+			//bind arguments
 			method.methodBinding = methodBinding;
+			methDec.binding = methodBinding;
+			methDec.bindArguments();
+			
 			if (methodBinding != null) // is null if binding could not be
 										// created
 				methodBindings[count++] = methodBinding;
+			
+			// if method did not already have a resolved scope, then add it to the environment
+			if(doesNotHaveResolvedScope) {
+				this.scope.environment().defaultPackage.addBinding(
+						methodBinding, methodBinding.selector,
+						Binding.METHOD);
+			}
 		}
 		if (count != methodBindings.length)
 			System.arraycopy(methodBindings, 0,
@@ -211,83 +228,6 @@ public class SourceTypeBinding extends ReferenceBinding {
 		setMethods(methodBindings);
 	}
 
-	// private void addDefaultAbstractMethods() {
-	// if ((this.tagBits & TagBits.KnowsDefaultAbstractMethods) != 0) return;
-	//
-	// this.tagBits |= TagBits.KnowsDefaultAbstractMethods;
-	// if (isClass() && isAbstract()) {
-	// if (this.scope.compilerOptions().targetJDK >= ClassFileConstants.JDK1_2)
-	// return; // no longer added for post 1.2 targets
-	//
-	// ReferenceBinding[] itsInterfaces = superInterfaces();
-	// if (itsInterfaces != Binding.NO_SUPERINTERFACES) {
-	// FunctionBinding[] defaultAbstracts = null;
-	// int defaultAbstractsCount = 0;
-	// ReferenceBinding[] interfacesToVisit = itsInterfaces;
-	// int nextPosition = interfacesToVisit.length;
-	// for (int i = 0; i < nextPosition; i++) {
-	// ReferenceBinding superType = interfacesToVisit[i];
-	// if (superType.isValidBinding()) {
-	// FunctionBinding[] superMethods = superType.methods();
-	// nextAbstractMethod: for (int m = superMethods.length; --m >= 0;) {
-	// FunctionBinding method = superMethods[m];
-	// // explicitly implemented ?
-	// if (implementsMethod(method))
-	// continue nextAbstractMethod;
-	// if (defaultAbstractsCount == 0) {
-	// defaultAbstracts = new FunctionBinding[5];
-	// } else {
-	// // already added as default abstract ?
-	// for (int k = 0; k < defaultAbstractsCount; k++) {
-	// FunctionBinding alreadyAdded = defaultAbstracts[k];
-	// if (CharOperation.equals(alreadyAdded.selector, method.selector) &&
-	// alreadyAdded.areParametersEqual(method))
-	// continue nextAbstractMethod;
-	// }
-	// }
-	// FunctionBinding defaultAbstract = new FunctionBinding(
-	// method.modifiers | ExtraCompilerModifiers.AccDefaultAbstract,
-	// method.selector,
-	// method.returnType,
-	// method.parameters,
-	// method.thrownExceptions,
-	// this);
-	// if (defaultAbstractsCount == defaultAbstracts.length)
-	// System.arraycopy(defaultAbstracts, 0, defaultAbstracts = new
-	// FunctionBinding[2 * defaultAbstractsCount], 0, defaultAbstractsCount);
-	// defaultAbstracts[defaultAbstractsCount++] = defaultAbstract;
-	// }
-	//
-	// if ((itsInterfaces = superType.superInterfaces()) !=
-	// Binding.NO_SUPERINTERFACES) {
-	// int itsLength = itsInterfaces.length;
-	// if (nextPosition + itsLength >= interfacesToVisit.length)
-	// System.arraycopy(interfacesToVisit, 0, interfacesToVisit = new
-	// ReferenceBinding[nextPosition + itsLength + 5], 0, nextPosition);
-	// nextInterface : for (int a = 0; a < itsLength; a++) {
-	// ReferenceBinding next = itsInterfaces[a];
-	// for (int b = 0; b < nextPosition; b++)
-	// if (next == interfacesToVisit[b]) continue nextInterface;
-	// interfacesToVisit[nextPosition++] = next;
-	// }
-	// }
-	// }
-	// }
-	// if (defaultAbstractsCount > 0) {
-	// int length = this.methods.length;
-	// System.arraycopy(this.methods, 0, this.methods = new
-	// FunctionBinding[length + defaultAbstractsCount], 0, length);
-	// System.arraycopy(defaultAbstracts, 0, this.methods, length,
-	// defaultAbstractsCount);
-	// // re-sort methods
-	// length = length + defaultAbstractsCount;
-	// if (length > 1)
-	// ReferenceBinding.sortMethods(this.methods, 0, length);
-	// // this.tagBits |= TagBits.AreMethodsSorted; -- already set in #methods()
-	// }
-	// }
-	// }
-	// }
 	public int kind() {
 		return Binding.TYPE;
 	}

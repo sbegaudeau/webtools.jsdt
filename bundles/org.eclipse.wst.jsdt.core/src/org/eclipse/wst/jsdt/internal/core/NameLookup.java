@@ -307,10 +307,6 @@ public class NameLookup implements SuffixConstants {
 						String path, AccessRestriction access) {
 					if (excludePath!=null && path.equals(excludePath))
 						return false;
-					for (int i = 0; workingCopies!=null && i < workingCopies.length; i++) {
-						if (workingCopies[i].getPath().toString().equals(path))
-							return false;
-					}
 					foundPaths.add(path);
 					return true;
 				}
@@ -2149,9 +2145,6 @@ public class NameLookup implements SuffixConstants {
 			Path excludePath= (exclude!=null)? new Path(exclude) : null;
 
 			MyRequestor requestor=new MyRequestor();
-//			JavaElementRequestor elementRequestor = new JavaElementRequestor();
-//			seekPackageFragments(packageName, false, elementRequestor);
-//			IPackageFragment[] packages= elementRequestor.getPackageFragments();
 			seekBindingsInWorkingCopies(bindingName, bindingType, -1, partialMatch,
 					bindingName, acceptFlags, requestor);
 			if (requestor.element != null) {

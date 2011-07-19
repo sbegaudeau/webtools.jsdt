@@ -722,9 +722,8 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				this.currentContext.currentType=type;
 				type.isDefinition=true;
 				int nameStart = assignment.getLeftHandSide().sourceStart();
-//				InferredMethod method = 
 				type.addConstructorMethod(type.name, methodDeclaration, nameStart);
-				type.updatePositions(assignment.getLeftHandSide().sourceStart(), assignment.getExpression().sourceEnd());
+				type.updatePositions(nameStart, assignment.getExpression().sourceEnd());
 			}
 
 		}
@@ -844,7 +843,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				type.isDefinition=true;
 				int nameStart = localDeclaration.sourceStart();
 				type.addConstructorMethod(type.name, methodDeclaration, nameStart);
-				type.updatePositions(localDeclaration.sourceStart(), localDeclaration.getInitialization().sourceEnd());
+				type.updatePositions(nameStart, localDeclaration.getInitialization().sourceEnd());
 			}
 			
 			keepVisiting = false;
@@ -1442,6 +1441,11 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 
 		this.isTopLevelAnonymousFunction=false; 
 		char[] methodName = methodDeclaration.getName();
+		//if declaration didn't have name get name from inferred method if there is one
+		if(methodName == null && methodDeclaration.getInferredMethod() != null) {
+			methodName = methodDeclaration.getInferredMethod().name;
+		}
+		
 		if (passNumber==1)
 		{
 			buildDefinedMembers((ProgramElement[])methodDeclaration.getStatements(),(Argument[])methodDeclaration.getArguments());
@@ -1504,9 +1508,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					this.currentContext.currentType = type;
 					type.isDefinition = true;
 					int nameStart = methodDeclaration.sourceStart();
-					InferredMethod method = type.addConstructorMethod(methodName, methodDeclaration, nameStart);
-					method.isConstructor = true;
-					//methodDeclaration.setInferredType(type);
+					type.addConstructorMethod(methodName, methodDeclaration, nameStart);
 				}
 			}
 		}
@@ -1521,8 +1523,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 	protected void handleJSDocConstructor(InferredType type,IFunctionDeclaration methodDeclaration, int nameStart) {
 		Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
 		type.isDefinition=true;
-		InferredMethod method = type.addConstructorMethod(type.name, methodDeclaration, nameStart);
-		method.isConstructor=true;
+		type.addConstructorMethod(type.name, methodDeclaration, nameStart);
 
 		if (javadoc.extendsType!=null)
 		{

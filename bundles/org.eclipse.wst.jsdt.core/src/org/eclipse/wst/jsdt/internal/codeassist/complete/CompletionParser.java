@@ -20,6 +20,9 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  *  n  means completion behind the n-th character
  */
 
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFieldReference;
+import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.Keywords;
@@ -3283,18 +3286,46 @@ protected JavadocParser createJavadocParser() {
 	return new CompletionJavadocParser(this);
 }
 
-public void createAssistTypeForAllocation(AllocationExpression expression) {
-	Expression member = expression.member;
-	if (member instanceof SingleNameReference) {
-		SingleNameReference snr = (SingleNameReference) member;
-		long position =  (((long)snr.sourceStart)<<32)+snr.sourceEnd;
-		expression.member= new CompletionOnSingleTypeName(snr.token,position);
-	}
-	else
-		if (member instanceof CompletionOnQualifiedNameReference) {
-			CompletionOnQualifiedNameReference qnr = (CompletionOnQualifiedNameReference) member;
-			expression.member=new CompletionOnQualifiedType(qnr.tokens,qnr.completionIdentifier, qnr.sourcePositions);
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser#createAssistTypeForAllocation(org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression)
+	 */
+	public void createAssistTypeForAllocation(AllocationExpression expression) {
+		Expression member = expression.member;
+		
+		/* create a CompletionOnSingleTypeReference from the existing
+		 * member expression for the given allocation expression
+		 */
+		if (member instanceof SingleNameReference) {
+			SingleNameReference snr = (SingleNameReference) member;
+			long position =  (((long)snr.sourceStart)<<32)+snr.sourceEnd;
+			expression.member= new CompletionOnSingleTypeReference(snr.token,position);
+			((CompletionOnSingleTypeReference)expression.member).isConstructorType = true;
 		}
-}
+		else if(member instanceof CompletionOnMemberAccess) {
+			CompletionOnMemberAccess memberAccess = (CompletionOnMemberAccess) member;
+			
+			//iterate over the receivers to build the token and find the start of the expression
+			IExpression receiver = memberAccess.getReceiver();
+			String token = new String(memberAccess.getToken());
+			int start = memberAccess.sourceStart();
+			while(receiver != null) {
+				start = receiver.sourceStart();
+				if(receiver instanceof IFieldReference) {
+					IFieldReference ref = (IFieldReference)receiver;
+					token = new String(ref.getToken()) + "." + token;
+					receiver = ref.getReceiver();
+				} else if(receiver instanceof ISingleNameReference) {
+					ISingleNameReference ref = (ISingleNameReference)receiver;
+					token = new String(ref.getToken()) + "." + token;
+					receiver = null;
+				}
+			}
+			
+			//create and set the CompletionOnSingleTypeReference
+			long position =  (((long)start)<<32)+memberAccess.sourceEnd;
+			expression.member = new CompletionOnSingleTypeReference(token.toCharArray(), position);
+			((CompletionOnSingleTypeReference)expression.member).isConstructorType = true;
+		}
+	}
 
 }

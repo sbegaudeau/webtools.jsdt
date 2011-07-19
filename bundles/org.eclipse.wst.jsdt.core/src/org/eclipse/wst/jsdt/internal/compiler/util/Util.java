@@ -29,10 +29,6 @@ import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
 
-/**
- * No classes outside of this package and the JRE should be used to ensure
- * that the parser update mechanisms are runnable.
- */
 public class Util implements SuffixConstants {
 
 	public interface Displayable {
@@ -504,14 +500,14 @@ public class Util implements SuffixConstants {
 		return buffer.toString();
 	}
 
-	/*
-	 * For SNR it returns the name
-	 * For FR it construct a Qualified name separated by '.'
-	 *
-	 * If at any point it hits a portion of the Field reference that is
-	 * not supported (such as a function call, a prototype, or this )
+	/**
+	 * <p>Builds a type name from an expression by iterating over all parts of the expression.<p>
+	 * 
+	 * @param expression to iterate over and build a type name from
+	 * @return type name built from iterating over the given <code>expression</code>, or
+	 * <code>null</code> if a type name can not be built from the given expression
 	 */
-	public final static char [] getTypeName( IExpression expression ){
+	public final static char[] getTypeName(IExpression expression) {
 
 		IExpression currExpr = expression;
 		
@@ -572,6 +568,4 @@ public class Util implements SuffixConstants {
 		
 		return selector;
 	}
-	
-
 }

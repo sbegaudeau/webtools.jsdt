@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.core.search.indexing;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
+import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.FieldPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
@@ -44,9 +45,9 @@ public abstract class AbstractIndexer implements IIndexConstants {
 			SuperTypeReferencePattern.createIndexKey(
 				modifiers, packageName, name, enclosingTypeNames, superclass));
 	}
-	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes) {
+	public void addConstructorDeclaration(char[] typeName, char[][] parameterTypes, char[][] parameterNames, int modifiers) {
 		int argCount = parameterTypes == null ? 0 : parameterTypes.length;
-		addIndexEntry(CONSTRUCTOR_DECL, ConstructorPattern.createIndexKey(CharOperation.lastSegment(typeName,'.'), argCount));
+		addIndexEntry(CONSTRUCTOR_DECL, ConstructorDeclarationPattern.createDeclarationIndexKey(typeName, argCount, parameterTypes, parameterNames, modifiers));
 
 		if (parameterTypes != null) {
 			for (int i = 0; i < argCount; i++)

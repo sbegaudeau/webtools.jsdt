@@ -291,6 +291,18 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	public void acceptPackage(char[] packageName) {
 		// implementation of interface method
 	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptConstructor(
+	 * 		int, char[], int, char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+	 */
+	public void acceptConstructor(int modifiers, char[] typeName,
+			int parameterCount, char[][] parameterTypes,
+			char[][] parameterNames, String path,
+			AccessRestriction access) {
+		
+		// do nothing
+	}
 
 	private void acceptQualifiedTypes() {
 		if(this.acceptedClasses != null){

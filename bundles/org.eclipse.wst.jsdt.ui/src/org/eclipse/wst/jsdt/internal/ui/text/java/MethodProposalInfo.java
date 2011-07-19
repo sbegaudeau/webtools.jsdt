@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -62,8 +62,20 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 			String typeName = SignatureUtil.stripSignatureToFQN(String
 					.valueOf(declarationSignature));
 			String name = String.valueOf(fProposal.getName());
-			String[] parameters = Signature.getParameterTypes(String
-					.valueOf(fProposal.getSignature()));
+			
+			//get the parameter type names
+			String[] paramTypeNameStrings;
+			char[] signature = fProposal.getSignature();
+			if(signature != null && signature.length > 0) {
+				paramTypeNameStrings = Signature.getParameterTypes(String.valueOf(fProposal.getSignature()));
+			} else {
+				char[][] paramTypeNameChars = this.fProposal.getParameterTypeNames();
+				paramTypeNameStrings = new String[paramTypeNameChars.length];
+				for(int i = 0; i < paramTypeNameChars.length; ++i) {
+					paramTypeNameStrings[i] = String.valueOf(paramTypeNameChars[i]);
+				}
+			}
+			
 			//search all the possible types until a match is found
 			IType[] types = fJavaProject.findTypes(typeName);
 			if(types != null && types.length >0) {
@@ -72,7 +84,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 					if (type != null) {
 						boolean isConstructor = fProposal.isConstructor();
 						try {
-							func = findMethod(name, parameters, isConstructor, type);
+							func = findMethod(name, paramTypeNameStrings, isConstructor, type);
 						} catch(JavaScriptModelException e) {
 							//ignore, could not find method
 						}
@@ -81,7 +93,7 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 			} else {
 				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
 				if(typeRoot != null) {
-					func = typeRoot.getFunction(name, parameters);
+					func = typeRoot.getFunction(name, paramTypeNameStrings);
 				}
 			}
 		}		
@@ -205,13 +217,17 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @return the simple erased name for signature
 	 */
 	private String computeSimpleTypeName(String signature, Map typeVariables) {
-		// method equality uses erased types
-		String erasure=signature;
-		erasure= erasure.replaceAll("/", ".");  //$NON-NLS-1$//$NON-NLS-2$
-		String simpleName= Signature.getSimpleName(Signature.toString(erasure));
-		char[] typeVar= (char[]) typeVariables.get(simpleName);
-		if (typeVar != null)
-			simpleName= String.valueOf(Signature.getSignatureSimpleName(typeVar));
+		String simpleName = ""; //$NON-NLS-1$
+		if(signature != null && signature.length() > 0) {
+			// method equality uses erased types
+			String erasure=signature;
+			erasure= erasure.replaceAll("/", ".");  //$NON-NLS-1$//$NON-NLS-2$
+			simpleName= Signature.getSimpleName(Signature.toString(erasure));
+			char[] typeVar= (char[]) typeVariables.get(simpleName);
+			if (typeVar != null) {
+				simpleName= String.valueOf(Signature.getSignatureSimpleName(typeVar));
+			}
+		}
 		return simpleName;
 	}
 }

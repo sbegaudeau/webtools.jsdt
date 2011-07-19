@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -212,7 +212,9 @@ public class InferredType extends ASTNode {
 	 */
 	public InferredMethod addConstructorMethod(char [] methodName, IFunctionDeclaration functionDeclaration, int nameStart) {
 		InferredMethod method = this.addMethod(methodName, functionDeclaration, nameStart, true);
+		method.isConstructor = true;
 		this.setNameStart(nameStart);
+		method.getFunctionDeclaration().setInferredType(this);
 		return method;
 	}
 	
@@ -239,8 +241,7 @@ public class InferredType extends ASTNode {
 	private InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, int nameStart, boolean isConstructor) {
 		MethodDeclaration methodDeclaration = (MethodDeclaration)functionDeclaration;
 		InferredMethod method = findMethod(methodName, methodDeclaration);
-		if (method==null)
-		{
+		if (method==null) {
 			method=new InferredMethod(methodName,methodDeclaration,this);
 			if (methodDeclaration.inferredMethod==null) 
 				methodDeclaration.inferredMethod = method;
@@ -263,11 +264,13 @@ public class InferredType extends ASTNode {
 			if( !isAnonymous )
 				this.updatePositions(methodDeclaration.sourceStart, methodDeclaration.sourceEnd);
 			method.isConstructor=isConstructor;
-		}
-		else
-			if (methodDeclaration.inferredMethod==null)
+			method.nameStart = nameStart;
+		} else {
+			if (methodDeclaration.inferredMethod==null) {
 				methodDeclaration.inferredMethod=method;
-		method.nameStart = nameStart;
+			}
+		}
+		
 		return method;
 	}
 

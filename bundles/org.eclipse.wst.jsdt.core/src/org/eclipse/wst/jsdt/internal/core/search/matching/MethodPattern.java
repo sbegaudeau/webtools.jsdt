@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,8 +55,8 @@ char[][] methodArguments;
 protected static char[][] REF_CATEGORIES = { METHOD_REF };
 protected static char[][] REF_AND_DECL_CATEGORIES = { METHOD_REF, METHOD_DECL };
 protected static char[][] DECL_CATEGORIES = { METHOD_DECL };
-protected static char[][] FUNCTION_REF_AND_DECL_CATEGORIES = { METHOD_REF, FUNCTION_DECL };
-protected static char[][] FUNCTION_DECL_CATEGORIES = { FUNCTION_DECL };
+protected static char[][] FUNCTION_REF_AND_DECL_CATEGORIES = { METHOD_REF, FUNCTION_DECL, METHOD_DECL };
+protected static char[][] FUNCTION_DECL_CATEGORIES = { FUNCTION_DECL, METHOD_DECL };
 
 /**
  * Method entries are encoded as selector '/' Arity:

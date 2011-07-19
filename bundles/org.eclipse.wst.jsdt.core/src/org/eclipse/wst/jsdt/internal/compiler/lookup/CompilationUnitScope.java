@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
@@ -76,18 +77,32 @@ class DeclarationVisitor extends ASTVisitor
 {
 	ArrayList methods=new ArrayList();
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-		TypeBinding type=localDeclaration.resolveVarType(scope);
-		LocalVariableBinding binding = new LocalVariableBinding(localDeclaration, type, 0, false);
-		localDeclaration.binding=binding;
-		addLocalVariable(binding);
+		if(localDeclaration.initialization instanceof FunctionExpression) {
+			this.visit(((FunctionExpression)localDeclaration.initialization).getMethodDeclaration(), scope);
+		} else {
+			TypeBinding type=localDeclaration.resolveVarType(scope);
+			LocalVariableBinding binding = new LocalVariableBinding(localDeclaration, type, 0, false);
+			localDeclaration.binding=binding;
+			addLocalVariable(binding);
+		}
 		return false;
 	}
 
 	public boolean visit(MethodDeclaration methodDeclaration, Scope parentScope) {
-		if (methodDeclaration.selector!=null)
+		
+		char[] selector = null;
+		
+		if(methodDeclaration.selector != null) {
+			selector = methodDeclaration.selector;
+		} else if(methodDeclaration.inferredMethod != null && methodDeclaration.inferredMethod.isConstructor) {
+			//this is that inferred constructors get added to the methods list
+			selector = methodDeclaration.inferredMethod.name;
+		}
+		
+		if (selector!=null)
 		{
 			MethodScope scope = new MethodScope(parentScope,methodDeclaration, false);
-			MethodBinding methodBinding = scope.createMethod(methodDeclaration,methodDeclaration.selector,referenceContext.compilationUnitBinding,false,false);
+			MethodBinding methodBinding = scope.createMethod(methodDeclaration,selector,referenceContext.compilationUnitBinding,false,false);
 			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methods.add(methodBinding);
 			if (methodBinding.selector!=null)
@@ -96,10 +111,10 @@ class DeclarationVisitor extends ASTVisitor
 				fPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
 			}
 			methodDeclaration.binding=methodBinding;
+			methodDeclaration.bindArguments();
 		}
 		return false;
 	}
-
 }
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
+import org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfAccessedFieldsPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedMethodsPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.DeclarationOfReferencedTypesPattern;
@@ -85,7 +86,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * Search basic engine. Public search engine (see {@link org.eclipse.wst.jsdt.core.search.SearchEngine}
  * for detailed comment), now uses basic engine functionalities.
- * Note that serch basic engine does not implement deprecated functionalities...
+ * Note that search basic engine does not implement depreciated functionalities...
  */
 public class BasicSearchEngine {
 
@@ -518,7 +519,6 @@ public class BasicSearchEngine {
 			final char[] bindingName,
 			final int bindingType,
 			final int matchRule,
-//			int searchFor,
 			IJavaScriptSearchScope scope,
 			final IRestrictedAccessBindingRequestor nameRequestor,
 			int waitingPolicy,
@@ -533,16 +533,6 @@ public class BasicSearchEngine {
 				Util.verbose("	- bindingType for: "+bindingType); //$NON-NLS-1$
 				Util.verbose("	- scope: "+scope); //$NON-NLS-1$
 			}
-
-			// Return on invalid combination of package and type names
-//			if (packageName == null || packageName.length == 0) {
-//				if (bindingName != null && bindingName.length == 0) {
-//					if (VERBOSE) {
-//						Util.verbose("	=> return no result due to invalid empty values for package and type names!"); //$NON-NLS-1$
-//					}
-//					return;
-//				}
-//			}
 
 			IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 			SearchPattern searchPattern=null;
@@ -642,47 +632,9 @@ public class BasicSearchEngine {
 				public boolean acceptIndexMatch(String documentPath, SearchPattern indexRecord, SearchParticipant participant, AccessRuleSet access) {
 					// Filter unexpected types
 					JavaSearchPattern record = (JavaSearchPattern)indexRecord;
-//					if (record.enclosingTypeNames == IIndexConstants.ONE_ZERO_CHAR) {
-//						return true; // filter out local and anonymous classes
-//					}
-					switch (copiesLength) {
-						case 0:
-							break;
-						case 1:
-							if (singleWkcpPath.equals(documentPath)) {
-								return true; // fliter out *the* working copy
-							}
-							break;
-						default:
-							if (workingCopyPaths.contains(documentPath)) {
-								return true; // filter out working copies
-							}
-							break;
-					}
 
 					// Accept document path
 					AccessRestriction accessRestriction = null;
-//					if (access != null) {
-//						// Compute document relative path
-//						int pkgLength = (record.pkg==null || record.pkg.length==0) ? 0 : record.pkg.length+1;
-//						int nameLength = record.simpleName==null ? 0 : record.simpleName.length;
-//						char[] path = new char[pkgLength+nameLength];
-//						int pos = 0;
-//						if (pkgLength > 0) {
-//							System.arraycopy(record.pkg, 0, path, pos, pkgLength-1);
-//							CharOperation.replace(path, '.', '/');
-//							path[pkgLength-1] = '/';
-//							pos += pkgLength;
-//						}
-//						if (nameLength > 0) {
-//							System.arraycopy(record.simpleName, 0, path, pos, nameLength);
-//							pos += nameLength;
-//						}
-//						// Update access restriction if path is not empty
-//						if (pos > 0) {
-//							accessRestriction = access.getViolatedRestriction(path);
-//						}
-//					}
 					int modifiers=ClassFileConstants.AccPublic;
 					char[] packageName=null;
 					char[] simpleBindingName=null;
@@ -1582,5 +1534,107 @@ public class BasicSearchEngine {
 		}
 		SearchPattern pattern = new DeclarationOfReferencedMethodsPattern(enclosingElement);
 		searchDeclarations(enclosingElement, requestor, pattern, monitor);
+	}
+	
+	/**
+	 * <p>Used to search all constructor declarations for ones that match the given type name using the given role,
+	 * in the given scope, reporting to the given requester.</p>
+	 * 
+	 * @param typeNamePattern type name pattern to search for
+	 * @param typeMatchRule Search pattern matching rule to use with the given <code>typeNamePattern</code>
+	 * @param scope scope of the search
+	 * @param nameRequester requester to report findings to
+	 * @param waitingPolicy Policy to use when waiting for the index
+	 * @param progressMonitor monitor to report index search progress to
+	 * 
+	 * @see SearchPattern#R_CAMELCASE_MATCH
+	 * @see SearchPattern#R_CASE_SENSITIVE
+	 * @see SearchPattern#R_EQUIVALENT_MATCH
+	 * @see SearchPattern#R_EXACT_MATCH
+	 * @see SearchPattern#R_FULL_MATCH
+	 * @see SearchPattern#R_PATTERN_MATCH
+	 * @see SearchPattern#R_PREFIX_MATCH
+	 * @see SearchPattern#R_REGEXP_MATCH
+	 * 
+	 * @see IJavaScriptSearchConstants#FORCE_IMMEDIATE_SEARCH
+	 * @see IJavaScriptSearchConstants#CANCEL_IF_NOT_READY_TO_SEARCH
+	 * @see IJavaScriptSearchConstants#WAIT_UNTIL_READY_TO_SEARCH
+	 */
+	public void searchAllConstructorDeclarations(
+			final char[] typeNamePattern,
+			final int typeMatchRule,
+			IJavaScriptSearchScope scope,
+			final IConstructorRequestor nameRequester,
+			int waitingPolicy,
+			IProgressMonitor progressMonitor) {
+		
+		// Debug
+		if (VERBOSE) {
+			Util.verbose("BasicSearchEngine.searchAllConstructorDeclarations(char[], char[], int, IJavaSearchScope, IRestrictedAccessConstructorRequestor, int, IProgressMonitor)"); //$NON-NLS-1$
+			Util.verbose("	- type name: "+(typeNamePattern==null?"null":new String(typeNamePattern))); //$NON-NLS-1$ //$NON-NLS-2$
+			Util.verbose("	- type match rule: "+getMatchRuleString(typeMatchRule)); //$NON-NLS-1$
+			Util.verbose("	- scope: "+scope); //$NON-NLS-1$
+		}
+
+		// Create pattern
+		IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
+		final ConstructorDeclarationPattern pattern = new ConstructorDeclarationPattern(
+				typeNamePattern,
+				typeMatchRule);
+
+		// Index requester
+		IndexQueryRequestor searchRequestor = new IndexQueryRequestor(){
+			public boolean acceptIndexMatch(String documentPath, SearchPattern indexRecord, SearchParticipant participant, AccessRuleSet access) {
+				// Filter unexpected types
+				ConstructorDeclarationPattern record = (ConstructorDeclarationPattern)indexRecord;
+				
+				
+				// Accept document path
+				AccessRestriction accessRestriction = null;
+				if (access != null) {
+					// Compute document relative path
+					int nameLength = record.declaringSimpleName==null ? 0 : record.declaringSimpleName.length;
+					char[] path = new char[nameLength];
+					int pos = 0;
+					
+					if (nameLength > 0) {
+						System.arraycopy(record.declaringSimpleName, 0, path, pos, nameLength);
+						pos += nameLength;
+					}
+					// Update access restriction if path is not empty
+					if (pos > 0) {
+						accessRestriction = access.getViolatedRestriction(path);
+					}
+				}
+				nameRequester.acceptConstructor(
+						record.modifiers,
+						record.declaringSimpleName,
+						record.parameterCount,
+						record.parameterTypes,
+						record.parameterNames,
+						documentPath,
+						accessRestriction);
+				return true;
+			}
+		};
+
+		try {
+			if (progressMonitor != null) {
+				progressMonitor.beginTask(Messages.engine_searching, 1000);
+			}
+			// Find constructor declarations from index
+			indexManager.performConcurrentJob(
+				new PatternSearchJob(
+					pattern,
+					getDefaultSearchParticipant(), // JavaScript search only
+					scope,
+					searchRequestor),
+				waitingPolicy,
+				progressMonitor == null ? null : new SubProgressMonitor(progressMonitor, 1000));
+		} finally {
+			if (progressMonitor != null) {
+				progressMonitor.done();
+			}
+		}
 	}
 }

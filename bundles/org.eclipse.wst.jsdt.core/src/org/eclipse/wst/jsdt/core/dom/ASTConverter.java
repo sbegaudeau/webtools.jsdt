@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.dom.Modifier.ModifierKeyword;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocArgumentExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocFieldReference;
@@ -364,8 +365,11 @@ class ASTConverter {
 			}
 		}
 		org.eclipse.wst.jsdt.internal.compiler.ast.ExplicitConstructorCall explicitConstructorCall = null;
-		if (isConstructor) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration constructorDeclaration = (org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration) methodDeclaration;
+		/* need this check because a constructor could have been made a constructor after the
+		 * method declaration was created, and thus it is not a ConstructorDeclaration
+		 */
+		if (isConstructor  && methodDeclaration instanceof ConstructorDeclaration) {
+			ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) methodDeclaration;
 			explicitConstructorCall = constructorDeclaration.constructorCall;
 			switch(this.ast.apiLevel) {
 				case AST.JLS2_INTERNAL :

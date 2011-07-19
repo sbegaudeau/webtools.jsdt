@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -639,6 +639,41 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 *
 	 */
 	public static final int TYPE_IMPORT = 23;
+	
+	/**
+	 * Completion is a reference to a constructor.
+	 * This kind of completion might occur in a context like
+	 * <code>"new Lis"</code> and complete it to
+	 * <code>"new List();"</code> if List is a class that is not abstract.
+	 * <p>
+	 * The following additional context information is available
+	 * for this kind of completion proposal at little extra cost:
+	 * <ul>
+	 * <li>{@link #getDeclarationSignature()} -
+	 * the type signature of the type that declares the constructor that is referenced
+	 * </li>
+	 * <li>{@link #getFlags()} -
+	 * the modifiers flags of the constructor that is referenced
+	 * </li>
+	 * <li>{@link #getName()} -
+	 * the simple name of the constructor that is referenced
+	 * </li>
+	 * <li>{@link #getSignature()} -
+	 * the method signature of the constructor that is referenced
+	 * </li>
+	 * </ul>
+	 * </p>
+	 * <p>
+	 * This kind of proposal could require a long computation, so they are computed only if completion operation is called with a {@link IProgressMonitor}
+	 * (e.g. {@link ICodeAssist#codeComplete(int, CompletionRequestor, IProgressMonitor)}).<br>
+	 * This kind of proposal is always is only proposals with a {@link #TYPE_REF} required proposal, so this kind of required proposal must be allowed:
+	 * <code>requestor.setAllowsRequiredProposals(CONSTRUCTOR_INVOCATION, TYPE_REF, true)</code>.
+	 * </p>
+	 *
+	 * @see #getKind()
+	 * @see CompletionRequestor#setAllowsRequiredProposals(int, int, boolean)
+	 */
+	public static final int CONSTRUCTOR_INVOCATION = 26;
 
 	/**
 	 * First valid completion kind.
@@ -650,7 +685,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 * Last valid completion kind.
 	 *
 	 */
-	protected static final int LAST_KIND = TYPE_IMPORT;
+	protected static final int LAST_KIND = CONSTRUCTOR_INVOCATION;
 
 	/**
 	 * Kind of completion request.
@@ -1798,6 +1833,33 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	public void setParameterNames(char[][] parameterNames) {
 		this.parameterNames = parameterNames;
 		this.parameterNamesComputed = true;
+	}
+	
+	/**
+	 * @return <code>true</code> if this proposal includes parameters,
+	 * <code>false</code> if it does not
+	 */
+	public boolean hasParameters() {
+		return this.parameterNames != null && this.parameterNames.length > 0;
+	}
+	
+	/**
+	 * @return parameter names for this proposal, or <code>null</code> if they are not set
+	 * 
+	 * @see #findParameterNames(IProgressMonitor)
+	 * @see #setParameterNames(char[][])
+	 */
+	public char[][] getParamaterNames() {
+		return this.parameterNames;
+	}
+	
+	/**
+	 * @return type names of the parameters for this proposal, or <code>null</code> none are set
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.codeassist.InternalCompletionProposal#getParameterTypeNames()
+	 */
+	public char[][] getParameterTypeNames() {
+		return this.parameterTypeNames;
 	}
 
 	/**

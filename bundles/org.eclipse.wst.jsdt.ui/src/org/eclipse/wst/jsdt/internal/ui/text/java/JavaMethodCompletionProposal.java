@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
@@ -76,7 +77,9 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 	}
 	
 	protected char[] computeTriggerCharacters() {
-		if (fProposal.getKind() == CompletionProposal.METHOD_NAME_REFERENCE)
+		if (fProposal.getKind() == CompletionProposal.METHOD_NAME_REFERENCE ||
+				fProposal.getKind() == CompletionProposal.METHOD_REF ||
+				fProposal.getKind() == CompletionProposal.CONSTRUCTOR_INVOCATION)
 			return METHOD_NAME_TRIGGERS;
 		if (hasParameters())
 			return METHOD_WITH_ARGUMENTS_TRIGGERS;
@@ -101,7 +104,7 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 	}
 
 	private boolean computeHasParameters() throws IllegalArgumentException {
-		return Signature.getParameterCount(fProposal.getSignature()) > 0;
+		return fProposal.hasParameters() || Signature.getParameterCount(fProposal.getSignature()) > 0;
 	}
 
 	/**
@@ -187,8 +190,18 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 		 * 4) by parameter type names
 		 */
 		char[] name= fProposal.getName();
-		char[] parameterList= Signature.toCharArray(fProposal.getSignature(), null, null, false, false);
-		int parameterCount= Signature.getParameterCount(fProposal.getSignature()) % 10; // we don't care about insane methods with >9 parameters
+		char[] signature = fProposal.getSignature();
+		char[] parameterList;
+		int parameterCount;
+		if(signature != null) {
+			parameterList= Signature.toCharArray(fProposal.getSignature(), null, null, false, false);
+			parameterCount= Signature.getParameterCount(fProposal.getSignature()) % 10; // we don't care about insane methods with >9 parameters
+		} else {
+			char[][] params = this.fProposal.getParamaterNames();
+			parameterList = CharOperation.concatWith(params, ',');
+			parameterCount = params.length % 10; // we don't care about insane methods with >9 parameters
+		}
+		
 		StringBuffer buf= new StringBuffer(name.length + 2 + parameterList.length);
 		
 		buf.append(name);
@@ -204,6 +217,17 @@ public class JavaMethodCompletionProposal extends LazyJavaCompletionProposal {
 	protected boolean isValidPrefix(String prefix) {
 		if (super.isValidPrefix(prefix))
 			return true;
+		
+		// match on last part of the proposal
+		String name = new String(fProposal.getName());
+		int lastSeperatorIndex = name.lastIndexOf('.');
+		if(lastSeperatorIndex != -1) {
+			name = name.substring(lastSeperatorIndex+1);
+			name = name.toLowerCase();
+			if(name.indexOf(prefix.toLowerCase()) == 0) {
+				return true;
+			}
+		}
 		
 		String word= getDisplayString();
 		if (isInJavadoc()) {

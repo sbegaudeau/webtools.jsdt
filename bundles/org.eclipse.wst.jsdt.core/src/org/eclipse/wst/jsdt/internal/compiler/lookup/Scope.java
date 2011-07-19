@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
+import org.eclipse.wst.jsdt.internal.core.Logger;
 
 public abstract class Scope implements TypeConstants, TypeIds {
 
@@ -1331,6 +1332,16 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 	}
 
+	/**
+	 * <p><b>NOTE:</b> This function does not validate the given argument types because any number of arguments
+	 * can be passed to any JavaScript function or constructor.</p>
+	 * 
+	 * @param receiverType
+	 * @param argumentTypes
+	 * @param invocationSite
+	 * @return The constructor for the given receiver type or a {@link ProblemMethodBinding} if the
+	 * constructor is not visible. 
+	 */
 	public MethodBinding getConstructor(ReferenceBinding receiverType, TypeBinding[] argumentTypes, InvocationSite invocationSite) {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		LookupEnvironment env = unitScope.environment;
@@ -1342,47 +1353,34 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (methodBinding != null && methodBinding.canBeSeenBy(invocationSite, this)) {
 				return methodBinding;
 			}
-			MethodBinding[] methods = receiverType.getMethods(TypeConstants.INIT);
-			if (methods == Binding.NO_METHODS)
-			{
-				return new MethodBinding(0, TypeConstants.INIT, TypeBinding.UNKNOWN, null,receiverType);
- 
-			}
-			MethodBinding[] compatible = new MethodBinding[methods.length];
-			int compatibleIndex = 0;
-			MethodBinding problemMethod = null;
-			for (int i = 0, length = methods.length; i < length; i++) {
-				MethodBinding compatibleMethod = computeCompatibleMethod(methods[i], argumentTypes, invocationSite);
-				if (compatibleMethod != null) {
-					if (compatibleMethod.isValidBinding())
-						compatible[compatibleIndex++] = compatibleMethod;
-					else if (problemMethod == null)
-						problemMethod = compatibleMethod;
+			
+			//get the methods
+			MethodBinding[] methods = receiverType.getMethods(receiverType.sourceName);
+			MethodBinding constructor = null;
+			if (methods == null || methods == Binding.NO_METHODS || methods.length == 0){
+				constructor = new MethodBinding(0, receiverType.sourceName, receiverType, null,receiverType);
+			} else {
+				
+				if(methods.length > 1) {
+					Logger.log(Logger.WARNING, "There should only ever be one match for a constructor search" +
+							" but found " + methods.length + " when looking for " +
+							new String(receiverType.sourceName) + ". Using the first match.");
 				}
+				
+				//should only ever be one constructor so use the first one in the list
+				constructor = methods[0];
 			}
-			if (compatibleIndex == 0) {
-				if (problemMethod == null)
-					return new ProblemMethodBinding(TypeConstants.INIT, argumentTypes, ProblemReasons.NotFound);
-				return problemMethod;
+			
+			//if can't be seen return problem binding
+			if(!constructor.canBeSeenBy(invocationSite, this)) {
+				constructor = new ProblemMethodBinding(
+						methods[0],
+						methods[0].selector,
+						methods[0].parameters,
+						ProblemReasons.NotVisible);
 			}
-			// need a more descriptive error... cannot convert from X to Y
-
-			MethodBinding[] visible = new MethodBinding[compatibleIndex];
-			int visibleIndex = 0;
-			for (int i = 0; i < compatibleIndex; i++) {
-				MethodBinding method = compatible[i];
-				if (method.canBeSeenBy(invocationSite, this))
-					visible[visibleIndex++] = method;
-			}
-			if (visibleIndex == 1) return visible[0];
-			if (visibleIndex == 0)
-				return new ProblemMethodBinding(
-					compatible[0],
-					TypeConstants.INIT,
-					compatible[0].parameters,
-					ProblemReasons.NotVisible);
-			// all of visible are from the same declaringClass, even before 1.4 we can call this method instead of mostSpecificClassMethodBinding
-			return mostSpecificMethodBinding(visible, visibleIndex, argumentTypes, invocationSite, receiverType);
+			
+			return constructor;
 		} catch (AbortCompilation e) {
 			e.updateContext(invocationSite, referenceCompilationUnit().compilationResult);
 			throw e;
@@ -2004,8 +2002,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					case BLOCK_SCOPE :
 						ReferenceBinding localType = ((BlockScope) scope).findLocalType(name); // looks in this scope only
 						if (localType != null) {
-							if (foundType != null && foundType != localType)
-								return new ProblemReferenceBinding(name, (ReferenceBinding)foundType, ProblemReasons.InheritedNameHidesEnclosingName);
 							return localType;
 						}
 						break;
@@ -2023,8 +2019,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				}
 				scope = scope.parent;
 			}
-			if (foundType != null && foundType.problemId() != ProblemReasons.NotVisible)
-				return foundType;
 		}
 
 		// at this point the scope is a compilation unit scope
@@ -2043,8 +2037,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						typeOrPackageCache.put(name, binding = ((ImportBinding) binding).resolvedImport); // already know its visible
 				}
 				if ((mask & Binding.TYPE) != 0) {
-					if (foundType != null && foundType.problemId() != ProblemReasons.NotVisible && binding.problemId() != ProblemReasons.Ambiguous)
-						return foundType; // problem type from above supercedes NotFound type but not Ambiguous import case
 					if (binding instanceof ReferenceBinding)
 						return binding; // cached type found in previous walk below
 				}
@@ -2081,8 +2073,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 			// check on file imports
 			if (imports != null) {
-				boolean foundInImport = false;
-				Binding type = null;
 				for (int i = 0, length = imports.length; i < length; i++) {
 					ImportBinding someImport = imports[i];
 					if (someImport.reference!=null && someImport.reference.isFileImport())

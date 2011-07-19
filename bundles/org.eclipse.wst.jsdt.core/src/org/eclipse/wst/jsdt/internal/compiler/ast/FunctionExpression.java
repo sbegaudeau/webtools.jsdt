@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public class FunctionExpression extends Expression implements IFunctionExpressio
 		constant = Constant.NotAConstant;
 		this.methodDeclaration.scope=new MethodScope(scope,this.methodDeclaration,false);
 		this.methodDeclaration.binding=this.methodDeclaration.scope.createMethod(this.methodDeclaration, null, scope.enclosingCompilationUnit(), false, false);
+		methodDeclaration.bindArguments();
 		this.methodDeclaration.binding.createFunctionTypeBinding(scope);
 		this.methodDeclaration.resolve(scope);
 		return this.methodDeclaration.binding.functionTypeBinding;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -395,6 +395,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.FIELD_REF:
 			case CompletionProposal.JSDOC_FIELD_REF:
 				return createFieldProposal(proposal);
+			case CompletionProposal.CONSTRUCTOR_INVOCATION:
 			case CompletionProposal.METHOD_REF:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.JSDOC_METHOD_REF:
@@ -544,6 +545,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	 */
 	protected final char[] getDeclaringType(CompletionProposal proposal) {
 		switch (proposal.getKind()) {
+			case CompletionProposal.CONSTRUCTOR_INVOCATION:
 			case CompletionProposal.METHOD_DECLARATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.JSDOC_METHOD_REF:
@@ -721,7 +723,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 		if(preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_FILL_ARGUMENT_NAMES)) {
 			String completion= String.valueOf(methodProposal.getCompletion());
 			// normal behavior if this is not a normal completion or has no parameters
-			if ((completion.length() == 0) || ((completion.length() == 1) && completion.charAt(0) == ')') || Signature.getParameterCount(methodProposal.getSignature()) == 0 || getContext().isInJsdoc()) {
+			if ((completion.length() == 0) || ((completion.length() == 1) && completion.charAt(0) == ')') || getContext().isInJsdoc()) {
 				proposal= new JavaMethodCompletionProposal(methodProposal, getInvocationContext());
 			} else {
 				if (preferenceStore.getBoolean(PreferenceConstants.CODEASSIST_GUESS_METHOD_ARGUMENTS))

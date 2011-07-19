@@ -1039,12 +1039,49 @@ public static final char[] fixLibPackageTail(char[] packageName) {
  *    => result = { }
  * </pre></li>
  * </ol>
+ * 
+ * <p><b>NOTE:</b> This implementation ignores any elements in the given array that are empty.</p>
  *
  * @param array the given array
  * @param separator the given separator
+ * 
  * @return the concatenation of the given array parts using the given separator between each part
+ * 
+ * @see #concatWith(char[][], char, boolean)
  */
 public static final char[] concatWith(char[][] array, char separator) {
+	return concatWith(array, separator, true);
+}
+
+/**
+ * Answers the concatenation of the given array parts using the given separator between each part.
+ * <br>
+ * <br>
+ * For example:<br>
+ * <ol>
+ * <li><pre>
+ *    array = { { 'a' }, { 'b' } }
+ *    separator = '.'
+ *    => result = { 'a', '.', 'b' }
+ * </pre>
+ * </li>
+ * <li><pre>
+ *    array = null
+ *    separator = '.'
+ *    => result = { }
+ * </pre></li>
+ * </ol>
+ * 
+ * <p>This implementation allows the caller to decide if empty elements in the array should be skipped or not</p>
+ * 
+ * @param array char string array to concatenate with itself
+ * @param separator the separator to use between each element of the char string array
+ * @param ignoreEmptyElements <code>true</code> to skip any empty elements in the char string array,
+ * <code>false</code> to include an empty element in the return char string
+ * 
+ *  @return the concatenation of the given array parts using the given separator between each part
+ */
+public static final char[] concatWith(char[][] array, char separator, boolean ignoreEmptyElements) {
 	int length = array == null ? 0 : array.length;
 	if (length == 0)
 		return CharOperation.NO_CHAR;
@@ -1052,7 +1089,7 @@ public static final char[] concatWith(char[][] array, char separator) {
 	int size = length - 1;
 	int index = length;
 	while (--index >= 0) {
-		if (array[index].length == 0)
+		if (array[index].length == 0 && ignoreEmptyElements)
 			size--;
 		else
 			size += array[index].length;
@@ -1063,7 +1100,7 @@ public static final char[] concatWith(char[][] array, char separator) {
 	index = length;
 	while (--index >= 0) {
 		length = array[index].length;
-		if (length > 0) {
+		if (length > 0 || (length == 0 && !ignoreEmptyElements)) {
 			System.arraycopy(
 				array[index],
 				0,

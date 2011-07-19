@@ -1312,7 +1312,12 @@ private static int appendTypeSignature(char[] string, int start, boolean fullyQu
 				buffer.append(VOID);
 				return start;
 			default :
-				throw new IllegalArgumentException();
+				/* either the string is not formated as a signature, or we do not know
+				 * how to handle it, so just return it, this is preferable to throwing
+				 * an unnecessary exception
+				 */
+				buffer.append(string);
+				return start;
 		}
 	}
 }

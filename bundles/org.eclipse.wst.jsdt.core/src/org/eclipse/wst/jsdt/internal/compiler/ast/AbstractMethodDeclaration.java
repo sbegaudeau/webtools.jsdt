@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -48,6 +47,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 	implements IAbstractFunctionDeclaration,  ProblemSeverities, ReferenceContext {
 
 	public MethodScope scope;
+	private MethodScope prevScope;
 	//it is not relevent for constructor but it helps to have the name of the constructor here
 	//which is always the name of the class.....parsing do extra work to fill it up while it do not have to....
 	public char[] selector;
@@ -77,6 +77,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 
 	AbstractMethodDeclaration(CompilationResult compilationResult){
 		this.compilationResult = compilationResult;
+		this.prevScope = null;
 	}
 
 	public void setArguments( IArgument[] args) {
@@ -115,7 +116,10 @@ public abstract class AbstractMethodDeclaration extends Statement
 	 * Bind and add argument's binding into the scope of the method
 	 */
 	public void bindArguments() {
-		if (this.arguments != null) {
+		//only bind arguments if the current scope does not equal the scope last used to bind args
+		if (this.arguments != null && (this.prevScope == null || this.prevScope != this.scope)) {
+			this.prevScope = this.scope;
+			
 			// by default arguments in abstract/native methods are considered to be used (no complaint is expected)
 			if (this.binding == null) {
 				for (int i = 0, length = this.arguments.length; i < length; i++) {
@@ -126,9 +130,9 @@ public abstract class AbstractMethodDeclaration extends Statement
 			if (this.arguments.length>0 && this.binding.parameters.length==0)  // types not set yet
 			{
 				ReferenceBinding declaringClass = this.binding.declaringClass;
-				if (declaringClass instanceof CompilationUnitBinding) {
-					CompilationUnitBinding compilationUnitBinding = (CompilationUnitBinding) declaringClass;
-					compilationUnitBinding.resolveTypesFor(this.binding,this);
+				if (declaringClass instanceof SourceTypeBinding) {
+					SourceTypeBinding binding = (SourceTypeBinding) declaringClass;
+					binding.resolveTypesFor(this.binding,this);
 				}
 			}
 			boolean used = this.binding.isAbstract();
@@ -160,9 +164,17 @@ public abstract class AbstractMethodDeclaration extends Statement
 		return false;
 	}
 
-	public boolean isConstructor() {
 
-		return false;
+	/**
+	 * @return If the {@link #inferredMethod} is set then use that to determine if
+	 * this declaration is a constructor, else <code>false</code>
+	 */
+	public boolean isConstructor() {
+		boolean isConstructor = false;
+		if(this.inferredMethod != null) {
+			isConstructor = this.inferredMethod.isConstructor;
+		}
+		return isConstructor;
 	}
 
 	public boolean isDefaultConstructor() {

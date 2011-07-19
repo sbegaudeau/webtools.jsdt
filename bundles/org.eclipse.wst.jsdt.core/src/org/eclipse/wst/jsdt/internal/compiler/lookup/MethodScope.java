@@ -181,47 +181,49 @@ public class MethodScope extends BlockScope {
 		if (method.inferredMethod!=null &&  method.inferredMethod.isStatic)
 			modifiers|= ClassFileConstants.AccStatic;
 		if (method.isConstructor() || isConstructor) {
-			if (method.isDefaultConstructor() || isConstructor)
+			if (method.isDefaultConstructor() || isConstructor) {
 				modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
+			}
 			methodBinding = new MethodBinding(modifiers, name, TypeBinding.UNKNOWN, null, declaringClass);
 			methodBinding.tagBits|=TagBits.IsConstructor;
 			checkAndSetModifiersForConstructor(methodBinding);
 		} else {
-//			if (declaringClass.isInterface()) // interface or annotation type
-//				modifiers |= ClassFileConstants.AccPublic | ClassFileConstants.AccAbstract;
 			TypeBinding returnType =
 				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.UNKNOWN;
-//			TypeBinding returnType =
-//			 (method instanceof FunctionDeclaration && ((FunctionDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((FunctionDeclaration)method).returnType):TypeBinding.ANY;
 			if (method.inferredType==null && method.inferredMethod!=null && method.inferredMethod.isConstructor
-					&& method.inferredMethod.inType!=null)
-			{
+					&& method.inferredMethod.inType!=null) {
 				returnType=method.inferredMethod.inType.resolveType(this,method);
 			}
-			if (returnType==null)
-				returnType=TypeBinding.UNKNOWN;
 			
-			if (isLocal && method.selector!=null)
-			{
+			//return type still null, return type is unknown
+			if (returnType==null) {
+				returnType=TypeBinding.UNKNOWN;
+			}
+			
+			if (isLocal && method.selector!=null) {
 				methodBinding =
 					new LocalFunctionBinding(modifiers, name,returnType, null, declaringClass);
-			}
-			else	// not local method
+			} else{// not local method
 				methodBinding =
 					new MethodBinding(modifiers, name,returnType, null, declaringClass);
-			if (method.inferredMethod!=null)
-			{
+			}
+			
+			if (method.inferredMethod!=null) {
 				methodBinding.tagBits |= TagBits.IsInferredType;
-				if ((method.bits&ASTNode.IsInferredJsDocType)!=0)
+				if ((method.bits&ASTNode.IsInferredJsDocType)!=0) {
 					methodBinding.tagBits |= TagBits.IsInferredJsDocType;
+			
+				}
 			}
 			methodBinding.createFunctionTypeBinding(this);
-			if (method.inferredMethod!=null && method.inferredMethod.isConstructor)
+			if (method.inferredMethod!=null && method.inferredMethod.isConstructor) {
 				methodBinding.tagBits|=TagBits.IsConstructor;
+			}
 			checkAndSetModifiersForMethod(methodBinding);
 		}
 		this.isStatic =methodBinding.isStatic();
 
+		//set arguments
 		Argument[] argTypes = method.arguments;
 		int argLength = argTypes == null ? 0 : argTypes.length;
 		if (argLength > 0 && compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
@@ -232,16 +234,6 @@ public class MethodScope extends BlockScope {
 		return methodBinding;
 	}
 
-	/* Overridden to detect the error case inside an explicit constructor call:
-
-	class X {
-		int i;
-		X myX;
-		X(X x) {
-			this(i, myX.i, x.i); // same for super calls... only the first 2 field accesses are errors
-		}
-	}
-	*/
 	public FieldBinding findField(
 		TypeBinding receiverType,
 		char[] fieldName,
