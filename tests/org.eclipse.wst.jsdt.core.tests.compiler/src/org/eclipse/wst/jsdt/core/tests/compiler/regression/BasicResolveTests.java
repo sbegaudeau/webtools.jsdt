@@ -368,7 +368,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var d=new Date(1);\n" +
+						"var d=new Date(\"1\");\n" +
 						"" 
 				},
 				""

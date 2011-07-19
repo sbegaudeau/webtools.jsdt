@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -506,7 +506,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"  return \"\";" +
 					"}",
 				"X.js",
-				"class ___anonymous9_10 extends Object{\n  void foo()\n}\n"+
+				"class ___anonymous9_10 extends Object{\n  ns.foo foo()\n}\n"+
 				"class ns.foo extends Object{\n  String bar;\n  String bar2()\n  ns.foo()\n}\n",
 				getDefaultOptions()
 				
@@ -556,7 +556,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 					"}",
 				"X.js",
 				"class ___anonymous10_20 extends Object{\n  ___anonymous18_19 ns2;\n}\n"+
-				"class ___anonymous18_19 extends Object{\n  void foo()\n}\n"+
+				"class ___anonymous18_19 extends Object{\n  ns1.ns2.foo foo()\n}\n"+
 				"class ns1.ns2.foo extends Object{\n  String bar;\n  String bar2()\n  ns1.ns2.foo()\n}\n",
 				getDefaultOptions()
 				

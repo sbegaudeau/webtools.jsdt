@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.ui.tests.contentassist.ContentAssistTests;
 import org.eclipse.wst.jsdt.ui.tests.format.FormattingTests;
 
 /**
@@ -54,6 +55,8 @@ public class JSDTUITests extends TestSuite {
 			Class test = (Class) iter.next();
 			all.addTestSuite(test); 
 		}
+		
+		all.addTest(ContentAssistTests.suite());
 		
 		// $JUnit-BEGIN$
 		all.addTest(FormattingTests.suite());

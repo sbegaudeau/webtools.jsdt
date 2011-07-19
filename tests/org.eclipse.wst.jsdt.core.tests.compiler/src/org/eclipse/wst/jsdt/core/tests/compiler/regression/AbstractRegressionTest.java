@@ -1065,29 +1065,6 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 	 */
 	protected void runNegativeTest(String[] testFiles, String expectedProblemLog) {
 		runNegativeTest(testFiles, expectedProblemLog, null, true);
-		runNegativeTest(testFiles, expectedProblemLog, null /*
-															 * no extra class
-															 * libraries
-															 */, true /*
-																	 * flush
-																	 * output
-																	 * directory
-																	 */,
-				null /* no custom options */,
-				false /* do not generate output */,
-				false /* do not show category */,
-				false /* do not show warning token */, false /*
-															 * do not skip javac
-															 * for this peculiar
-															 * test
-															 */, false /*
-																		 * do
-																		 * not
-																		 * perform
-																		 * statements
-																		 * recovery
-																		 */,
-				null);
 	}
 
 	/**

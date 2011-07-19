@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -267,8 +267,8 @@ public void testBug29832() throws Exception {
 //			requestor.getResults());
 		assertEquals(
 					"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED) + "\n"+
-					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
-					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+					"element:ZZZ_FUNCTION    completion:ZZZ_FUNCTION()    relevance:11\n" +
+					"element:ZZZ_FUNCTION    completion:ZZZ_FUNCTION()    relevance:11\n" +
 					"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
 					requestor.getResults());
 		
@@ -396,8 +396,8 @@ public void testBug33560() throws Exception {
 		cu.codeComplete(cursorLocation, requestor);
 		assertEquals(
 		"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED ) + "\n"+
-		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
-		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+		"element:ZZZ_FUNCTION    completion:ZZZ_FUNCTION()    relevance:11\n" +
+		"element:ZZZ_FUNCTION    completion:ZZZ_FUNCTION()    relevance:11\n" +
 		"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
 		requestor.getResults());
 		
