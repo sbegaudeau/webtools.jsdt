@@ -215,7 +215,7 @@ public final class JSON {
 	public static void writeContentLength(StringBuffer buffer, int length) {
 		StringBuffer buff = new StringBuffer(18);
 		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED).append(LINE_FEED);
-		buffer.insert(0, buff);
+		buffer.insert(0, buff.toString());
 	}
 	
 	/**
@@ -230,7 +230,6 @@ public final class JSON {
 		StringBuffer buffer = new StringBuffer();
 		writeValue(json, buffer);
 		int length = buffer.length();
-		buffer.append(LINE_FEED);
 		writeContentLength(buffer, length);
 		if(TRACE) {
 			Tracing.writeString("SERIALIZE: " + packet.getType() +" packet as "+buffer.toString()); //$NON-NLS-1$ //$NON-NLS-2$

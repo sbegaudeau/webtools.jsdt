@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -226,7 +226,7 @@ public final class JSON {
 	public static void writeContentLength(StringBuffer buffer, int length) {
 		StringBuffer buff = new StringBuffer(18);
 		buff.append(CONTENT_LENGTH).append(length).append(LINE_FEED);
-		buffer.insert(0, buff);
+		buffer.insert(0, buff.toString());
 	}
 	
 	/**
@@ -238,13 +238,13 @@ public final class JSON {
 	public static void writeToolHeader(StringBuffer buffer, String tool) {
 		StringBuffer buff = new StringBuffer(18);
 		buff.append(TOOL_HEADER).append(tool).append(LINE_FEED).append(LINE_FEED);
-		buffer.insert(0, buff);
+		buffer.insert(0, buff.toString());
 	}
 	
 	public static void writeDestinationHeader(StringBuffer buffer, Number destination) {
 		StringBuffer buff = new StringBuffer();
 		buff.append(DESTINATION_HEADER).append(destination).append(LINE_FEED);
-		buffer.insert(0, buff);
+		buffer.insert(0, buff.toString());
 	}
 	
 	/**
