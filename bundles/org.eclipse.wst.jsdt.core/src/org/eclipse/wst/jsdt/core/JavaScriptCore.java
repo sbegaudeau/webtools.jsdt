@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -3196,7 +3196,7 @@ public final class JavaScriptCore extends Plugin {
 			boolean isExported) {
 
 		if (path == null) Assert.isTrue(false, "Library path cannot be null"); //$NON-NLS-1$
-		if (!path.isAbsolute()) Assert.isTrue(false, "Path for IIncludePathEntry must be absolute"); //$NON-NLS-1$
+		if (!path.isAbsolute()) Assert.isTrue(false, "Path for IIncludePathEntry must be absolute " + path.toString()); //$NON-NLS-1$
 		if (sourceAttachmentPath != null) {
 			if (sourceAttachmentPath.isEmpty()) {
 				sourceAttachmentPath = null; // treat empty path as none
