@@ -1051,7 +1051,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				if (methodDecl!=null)
 				{
 					InferredMember method = newType.addMethod(memberName, methodDecl, nameStart);
-					if (methodDecl.getInferredType() == null && assignment.getJsDoc() != null) {
+					if (methodDecl.getInferredType() == null && assignment.getJsDoc() != null && ((Javadoc) assignment.getJsDoc()).returnType != null) {
 						if (((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
 							methodDecl.setInferredType(addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName()));
 					}
@@ -1060,7 +1060,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment, nameStart);
-					if (attribute.type == null && assignment.getJsDoc() != null) {
+					if (attribute.type == null && assignment.getJsDoc() != null && ((Javadoc) assignment.getJsDoc()).returnType != null) {
 						if (((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
 							attribute.type = addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName());
 					}
