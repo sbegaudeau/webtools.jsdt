@@ -360,8 +360,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			/*
 			 * this.foo = bar //assume that bar is not a function and create a new attribute in the current type
 			 */
-			else{
-
+			else {
 				member = this.currentContext.currentType.addAttribute(memberName, assignment, nameStart);
 				handleAttributeDeclaration((InferredAttribute) member, assignment.getExpression());
 				if (((InferredAttribute) member).type == null)
@@ -1052,11 +1051,19 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 				if (methodDecl!=null)
 				{
 					InferredMember method = newType.addMethod(memberName, methodDecl, nameStart);
+					if (methodDecl.getInferredType() == null && assignment.getJsDoc() != null) {
+						if (((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
+							methodDecl.setInferredType(addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName()));
+					}
 				}
 				// http://bugs.eclipse.org/269053 - constructor property not supported in JSDT
 				else /*if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))*/
 				{
 					InferredAttribute attribute = newType.addAttribute(memberName, assignment, nameStart);
+					if (attribute.type == null && assignment.getJsDoc() != null) {
+						if (((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName() != null)
+							attribute.type = addType(((Javadoc) assignment.getJsDoc()).returnType.getFullTypeName());
+					}
 					handleAttributeDeclaration(attribute, assignment.getExpression());
 					attribute.initializationStart=assignment.getExpression().sourceStart();
 					if (attribute.type==null)
@@ -1564,6 +1571,24 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 					}
 					InferredType paramType=this.addType(name);
 					arguments[i].setInferredType(paramType);
+				}
+			}
+			/**
+			 * http://code.google.com/p/jsdoc-toolkit/wiki/InlineDocs 
+			 **/
+			else if (arguments[i].getJsDoc() != null) {
+				if (((Javadoc) arguments[i].getJsDoc()).returnType != null) {
+					arguments[i].setInferredType(this.addType(((Javadoc) arguments[i].getJsDoc()).returnType.getFullTypeName()));
+				}
+			}
+			else if(arguments[i].getComment() != null) {
+				char[] comment = CharOperation.trim(arguments[i].getComment());
+				boolean validForName = true;
+				for (int j = 0; j < comment.length && validForName; j++) {
+					validForName &= !CharOperation.isWhitespace(comment[j]) && (Character.isJavaIdentifierPart(comment[j]) || comment[j] == '.');
+				}
+				if (validForName) {
+					arguments[i].setInferredType(this.addType(comment));
 				}
 			}
 		}
