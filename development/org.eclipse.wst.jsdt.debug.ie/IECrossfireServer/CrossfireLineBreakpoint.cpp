@@ -52,15 +52,15 @@ bool CrossfireLineBreakpoint::appliesToUrl(std::wstring* url) {
 
 bool CrossfireLineBreakpoint::attributeIsValid(wchar_t* name, Value* value) {
 	if (wcscmp(name, ATTRIBUTE_CONDITION) == 0) {
-		return value->getType() == TYPE_STRING;
+		return (value->getType() & (TYPE_STRING | TYPE_NULL)) != 0;
 	}
 
 	if (wcscmp(name, ATTRIBUTE_ENABLED) == 0) {
-		return value->getType() == TYPE_BOOLEAN;
+		return (value->getType() & (TYPE_BOOLEAN | TYPE_NULL)) != 0;
 	}
 
 	if (wcscmp(name, ATTRIBUTE_HITCOUNT) == 0) {
-		return value->getType() == TYPE_NUMBER && value->getNumberValue() >= 0;
+		return value->getType() == TYPE_NULL || (value->getType() == TYPE_NUMBER && value->getNumberValue() >= 0);
 	}
 
 	/* unknown attribute */

@@ -28,7 +28,7 @@ public:
 	~CrossfireProcessor();
 	virtual bool createEventPacket(CrossfireEvent* eventObj, std::wstring** _value);
 	virtual bool createResponsePacket(CrossfireResponse* response, std::wstring** _value);
-	virtual bool parseRequestPacket(std::wstring* msg, CrossfireRequest** _value);
+	virtual int parseRequestPacket(std::wstring* msg, CrossfireRequest** _value, wchar_t** _message);
 
 private:
 	JSONParser* m_jsonParser;

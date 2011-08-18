@@ -97,11 +97,10 @@ private:
 	CrossfireProcessor* m_processor;
 	unsigned long m_windowHandle;
 
-	static const wchar_t* COMMAND_CHANGEBREAKPOINT;
-	static const wchar_t* COMMAND_DELETEBREAKPOINT;
-	static const wchar_t* COMMAND_GETBREAKPOINT;
+	static const wchar_t* COMMAND_CHANGEBREAKPOINTS;
+	static const wchar_t* COMMAND_DELETEBREAKPOINTS;
 	static const wchar_t* COMMAND_GETBREAKPOINTS;
-	static const wchar_t* COMMAND_SETBREAKPOINT;
+	static const wchar_t* COMMAND_SETBREAKPOINTS;
 
 	/* command: createContext */
 	static const wchar_t* COMMAND_CREATECONTEXT;

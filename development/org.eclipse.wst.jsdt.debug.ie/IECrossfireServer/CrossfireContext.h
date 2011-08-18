@@ -51,7 +51,7 @@ public:
 	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
 	virtual bool deleteBreakpoint(unsigned int handle);
 	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
-	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values);
+	virtual void getBreakpoints(CrossfireBreakpoint*** ___values);
 	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry);
 
 	/* IJSEvalHandler methods */
@@ -129,13 +129,9 @@ private:
 
 	/* command: lookup */
 	static const wchar_t* COMMAND_LOOKUP;
+	static const wchar_t* KEY_HANDLES;
+	static const wchar_t* KEY_VALUES;
 	virtual int commandLookup(Value* arguments, Value** _responseBody, wchar_t** _message);
-
-	/* command: scope */
-	static const wchar_t* COMMAND_SCOPE;
-	static const wchar_t* KEY_SCOPE;
-	static const wchar_t* KEY_SCOPEINDEX;
-	virtual int commandScope(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scopes */
 	static const wchar_t* COMMAND_SCOPES;
@@ -145,14 +141,10 @@ private:
 	static const wchar_t* KEY_TOTALSCOPECOUNT;
 	virtual int commandScopes(Value* arguments, Value** _responseBody, wchar_t** _message);
 
-	/* command: script */
-	static const wchar_t* COMMAND_SCRIPT;
-	static const wchar_t* KEY_SCRIPT;
-	virtual int commandScript(Value* arguments, Value** _responseBody, wchar_t** _message);
-
 	/* command: scripts */
 	static const wchar_t* COMMAND_SCRIPTS;
 	static const wchar_t* KEY_SCRIPTS;
+	static const wchar_t* KEY_URLS;
 	virtual int commandScripts(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: suspend */
@@ -171,6 +163,7 @@ private:
 
 	/* event: onScript */
 	static const wchar_t* EVENT_ONSCRIPT;
+	static const wchar_t* KEY_SCRIPT;
 
 	/* event: onToggleBreakpoint */
 	static const wchar_t* EVENT_ONTOGGLEBREAKPOINT;

@@ -23,13 +23,14 @@ class CrossfireBreakpoint {
 public:
 	virtual ~CrossfireBreakpoint();
 	virtual bool appliesToUrl(std::wstring* url); // TODO needed?
+	virtual bool attributesValueIsValid(Value* attributes);
 	virtual void breakpointHit();
 	virtual void clone(CrossfireBreakpoint** _value) = 0;
 	virtual const std::wstring* getContextId();
 	virtual unsigned int getHandle();
 	virtual IBreakpointTarget* getTarget();
 	virtual int getType() = 0;
-	virtual bool setAttributesFromValue(Value* value);
+	virtual void setAttributesFromValue(Value* value);
 	virtual void setContextId(std::wstring* value);
 	virtual bool setLocationFromValue(Value* value) = 0;
 	virtual void setTarget(IBreakpointTarget* value);
@@ -39,6 +40,7 @@ public:
 	static const wchar_t* KEY_ATTRIBUTES;
 	static const wchar_t* KEY_CONTEXTID;
 	static const wchar_t* KEY_HANDLE;
+	static const wchar_t* KEY_HANDLES;
 	static const wchar_t* KEY_LOCATION;
 	static const wchar_t* KEY_TYPE;
 

@@ -19,11 +19,10 @@ const wchar_t* CrossfireServer::HEADER_CONTENTLENGTH = L"Content-Length:";
 const wchar_t* CrossfireServer::LINEBREAK = L"\r\n";
 const size_t CrossfireServer::LINEBREAK_LENGTH = 2;
 
-const wchar_t* CrossfireServer::COMMAND_CHANGEBREAKPOINT = L"changebreakpoint";
-const wchar_t* CrossfireServer::COMMAND_DELETEBREAKPOINT = L"deletebreakpoint";
-const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINT = L"getbreakpoint";
+const wchar_t* CrossfireServer::COMMAND_CHANGEBREAKPOINTS = L"changebreakpoints";
+const wchar_t* CrossfireServer::COMMAND_DELETEBREAKPOINTS = L"deletebreakpoints";
 const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINTS = L"getbreakpoints";
-const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINT = L"setbreakpoint";
+const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINTS = L"setbreakpoints";
 
 /* command: createContext */
 const wchar_t* CrossfireServer::COMMAND_CREATECONTEXT = L"createContext";
@@ -297,41 +296,37 @@ bool CrossfireServer::performRequest(CrossfireRequest* request) {
 		code = commandListContexts(arguments, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_VERSION) == 0) {
 		code = commandVersion(arguments, &responseBody, &message);
-	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINT) == 0) {
+	} else if (wcscmp(command, COMMAND_CHANGEBREAKPOINTS) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		code = m_bpManager->commandChangeBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
+		code = m_bpManager->commandChangeBreakpoints(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
-	} else if (wcscmp(command, COMMAND_DELETEBREAKPOINT) == 0) {
+	} else if (wcscmp(command, COMMAND_DELETEBREAKPOINTS) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		code = m_bpManager->commandDeleteBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
+		code = m_bpManager->commandDeleteBreakpoints(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
-	} else if (wcscmp(command, COMMAND_GETBREAKPOINT) == 0) {
-		CrossfireContext* context = getRequestContext(request);
-		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
-		code = m_bpManager->commandGetBreakpoint(arguments, target, &responseBody, &message);
 	} else if (wcscmp(command, COMMAND_GETBREAKPOINTS) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		IBreakpointTarget* target = context ? (IBreakpointTarget*)context : (IBreakpointTarget*)m_bpManager;
 		code = m_bpManager->commandGetBreakpoints(arguments, target, &responseBody, &message);
-	} else if (wcscmp(command, COMMAND_SETBREAKPOINT) == 0) {
+	} else if (wcscmp(command, COMMAND_SETBREAKPOINTS) == 0) {
 		CrossfireContext* context = getRequestContext(request);
 		CrossfireContext** contexts = NULL;
 		if (context) {
 			getContextsArray(&contexts);
 		}
-		code = m_bpManager->commandSetBreakpoint(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
+		code = m_bpManager->commandSetBreakpoints(arguments, (IBreakpointTarget**)contexts, &responseBody, &message);
 		if (contexts) {
 			delete contexts;
 		}
@@ -418,16 +413,22 @@ void CrossfireServer::received(wchar_t* msg) {
 	m_inProgressPacket->append(std::wstring(msg));
 	std::wstring packet;
 	do {
+		wchar_t* parseErrorMessage = NULL;
+		bool errorMessageRequiresFree = false;
+		int code = CODE_OK;
 		packet.clear();
+
 		if (m_inProgressPacket->find(HEADER_CONTENTLENGTH) != 0) {
-			Logger::error("request packet does not start with 'Content-Length:', not processing it");
+			code = CODE_MALFORMED_PACKET;
+			parseErrorMessage = L"request packet does not start with 'Content-Length:', not processing it";
 			m_inProgressPacket->clear();
 			break;
 		}
 
 		size_t endIndex = m_inProgressPacket->find(wchar_t('\r'));
 		if (endIndex == std::wstring::npos) {
-			Logger::error("request packet does not contain '\r', not processing it");
+			code = CODE_MALFORMED_PACKET;
+			parseErrorMessage = L"request packet does not contain '\r', not processing it";
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -436,13 +437,15 @@ void CrossfireServer::received(wchar_t* msg) {
 		std::wstring lengthString = m_inProgressPacket->substr(headerLength, endIndex - headerLength);
 		int lengthValue = _wtoi(lengthString.c_str());
 		if (!lengthValue) {
-			Logger::error("request packet does not have a valid 'Content-Length' value, not processing it");
+			code = CODE_MALFORMED_PACKET;
+			parseErrorMessage = L"request packet does not have a valid 'Content-Length' value, not processing it";
 			m_inProgressPacket->clear();
 			break;
 		}
 
 		if (m_inProgressPacket->find(L"\r\n", endIndex) != endIndex) {
-			Logger::error("request packet does not follow initial '\\r' with '\\n', not processing it");
+			code = CODE_MALFORMED_PACKET;
+			parseErrorMessage = L"request packet does not follow initial '\\r' with '\\n', not processing it";
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -451,7 +454,8 @@ void CrossfireServer::received(wchar_t* msg) {
 
 		size_t toolEnd = m_inProgressPacket->find(L"\r\n\r\n", endIndex);
 		if (toolEnd == std::wstring::npos) {
-			Logger::error("request packet does not contain '\\r\\n\\r\\n' to delimit its header, not processing it");
+			code = CODE_MALFORMED_PACKET;
+			parseErrorMessage = L"request packet does not contain '\\r\\n\\r\\n' to delimit its header, not processing it";
 			m_inProgressPacket->clear();
 			break;
 		}
@@ -465,9 +469,9 @@ void CrossfireServer::received(wchar_t* msg) {
 
 		if (packet.length()) {
 			CrossfireRequest* request = NULL;
-			if (!m_processor->parseRequestPacket(&packet, &request)) {
-				Logger::error("invalid request packet received, not processing it");
-				Logger::log(&packet);
+			code = m_processor->parseRequestPacket(&packet, &request, &parseErrorMessage);
+			if (code != CODE_OK) {
+				errorMessageRequiresFree = true;
 			} else {
 				unsigned int seq = request->getSeq();
 				if (seq <= m_lastRequestSeq) {
@@ -500,6 +504,19 @@ void CrossfireServer::received(wchar_t* msg) {
 				 */
 				sendPendingEvents();
 			}
+		}
+
+		if (code) {
+			CrossfireResponse response;
+			response.setCode(CODE_MALFORMED_PACKET);
+			response.setMessage(parseErrorMessage);
+			if (errorMessageRequiresFree) {
+				free(parseErrorMessage);
+			}
+			Value emptyBody;
+			emptyBody.setType(TYPE_OBJECT);
+			response.setBody(&emptyBody);
+			sendResponse(&response);
 		}
 	} while (packet.length() > 0 && m_inProgressPacket->length() > 0);
 }
@@ -657,7 +674,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 	Value* value_url = arguments->getObjectValue(KEY_URL);
 	if (!value_url || value_url->getType() != TYPE_STRING) {
 		*_message = _wcsdup(L"'createContext' request does not have a valid 'url' value");
-		return CODE_INVALIDPACKET;
+		return CODE_INVALID_ARGUMENTS;
 	}
 	std::wstring* url = value_url->getStringValue();
 
@@ -668,7 +685,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		if (type != TYPE_NULL) {
 			if (type != TYPE_STRING) {
 				*_message = _wcsdup(L"'createContext' request has an invalid 'contextId' value");
-				return CODE_INVALIDPACKET;
+				return CODE_INVALID_ARGUMENTS;
 			}
 			contextId = value_contextId->getStringValue();
 		}
@@ -679,16 +696,16 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		context = getContext((wchar_t*)contextId->c_str());
 		if (!context) {
 			*_message = _wcsdup(L"'createContext' request specified an unknown 'contextId' value");
-			return CODE_INVALIDPACKET;
+			return CODE_INVALID_ARGUMENTS;
 		}
 		DWORD processId = context->getProcessId();
 		ICrossfireServerListener* listener = m_listeners->at(processId);
 		if (!listener) {
 			Logger::error("commandCreateContext(): the specified contextId is not listening to the server");
-			return CODE_FAILURE;
+			return CODE_UNEXPECTED_EXCEPTION;
 		}
 		if (FAILED(listener->navigate((OLECHAR*)url->c_str(), false))) {
-			return CODE_FAILURE;
+			return CODE_COMMAND_FAILED;
 		}
 	} else {
 		/* go through the listeners to find one that can create the context in a new tab */
@@ -702,7 +719,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		}
 		if (iterator == m_listeners->end()) {
 			/* none of the listeners could create the context successfully */
-			return CODE_FAILURE;
+			return CODE_COMMAND_FAILED;
 		}
 	}
 
@@ -716,7 +733,7 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'disableTools' request does not have a valid 'tools' value");
-		return CODE_INVALIDPACKET;
+		return CODE_INVALID_ARGUMENTS;
 	}
 
 	Value toolsArray;
@@ -728,7 +745,8 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
 			*_message = _wcsdup(L"'disableTools' request contains a non-String 'tools' value");
-			return CODE_INVALIDPACKET;
+			delete[] values;
+			return CODE_INVALID_ARGUMENTS;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];
@@ -738,14 +756,14 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 //	Value* result = new Value();
 //	result->addObjectValue(KEY_TOOLS, &toolsArray);
 //	*_responseBody = result;
-	return CODE_NOTIMPLEMENTED; // TODO implement
+	return CODE_COMMAND_NOT_IMPLEMENTED; // TODO implement
 }
 
 int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody, wchar_t** _message) {
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'enableTools' request does not have a valid 'tools' value");
-		return CODE_INVALIDPACKET;
+		return CODE_INVALID_ARGUMENTS;
 	}
 
 	Value toolsArray;
@@ -757,7 +775,8 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
 			*_message = _wcsdup(L"'enableTools' request contains a non-String 'tools' value");
-			return CODE_INVALIDPACKET;
+			delete[] values;
+			return CODE_INVALID_ARGUMENTS;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];
@@ -767,7 +786,7 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 //	Value* result = new Value();
 //	result->addObjectValue(KEY_TOOLS, &toolsArray);
 //	*_responseBody = result;
-	return CODE_NOTIMPLEMENTED; // TODO implement
+	return CODE_COMMAND_NOT_IMPLEMENTED; // TODO implement
 }
 
 int CrossfireServer::commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message) {

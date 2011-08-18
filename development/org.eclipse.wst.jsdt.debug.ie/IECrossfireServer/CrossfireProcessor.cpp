@@ -164,19 +164,20 @@ bool CrossfireProcessor::createResponsePacket(CrossfireResponse *response, std::
 	return true;
 }
 
-bool CrossfireProcessor::parseRequestPacket(std::wstring* msg, CrossfireRequest** _value) {
+int CrossfireProcessor::parseRequestPacket(std::wstring* msg, CrossfireRequest** _value, wchar_t** _message) {
 	*_value = NULL;
+	*_message = NULL;
 
 	size_t startIndex = msg->find(L"\r\n\r\n") + 2 * LINEBREAK_LENGTH; /* header linebreak */
 	size_t msgLength = msg->length();
 
 	if (msg->at(msgLength - 2) != wchar_t('\r')) {
-		Logger::error("Request packet does not contain terminating '\\r'");
-		return false;
+		*_message = _wcsdup(L"Request packet does not contain terminating '\\r'");
+		return CODE_MALFORMED_PACKET;
 	}
 	if (msg->at(msgLength - 1) != wchar_t('\n')) {
-		Logger::error("Request packet does not contain terminating '\\n'");
-		return false;
+		*_message = _wcsdup(L"Request packet does not contain terminating '\\n'");
+		return CODE_MALFORMED_PACKET;
 	}
 
 	std::wstring content = msg->substr(startIndex, msgLength - startIndex - LINEBREAK_LENGTH); /* trailing linebreak */
@@ -184,43 +185,43 @@ bool CrossfireProcessor::parseRequestPacket(std::wstring* msg, CrossfireRequest*
 	Value* value_request = NULL;
 	m_jsonParser->parse(&content, &value_request);
 	if (!value_request) {
-		Logger::error("Failure occurred while parsing Request packet content");
-		return false;
+		*_message = _wcsdup(L"Failure occurred while parsing Request packet content");
+		return CODE_MALFORMED_PACKET;
 	}
 
 	Value* value_type = value_request->getObjectValue(NAME_TYPE);
 	if (!value_type || value_type->getType() != TYPE_STRING || value_type->getStringValue()->compare(VALUE_REQUEST) != 0) {
-		Logger::error("Request packet does not contain a 'type' value of \"request\"");
+		*_message = _wcsdup(L"Request packet does not contain a 'type' value of \"request\"");
 		delete value_request;
-		return false;
+		return CODE_MALFORMED_REQUEST;
 	}
 
 	Value* value_seq = value_request->getObjectValue(NAME_SEQ);
 	if (!value_seq || value_seq->getType() != TYPE_NUMBER || value_seq->getNumberValue() < 0) {
-		Logger::error("Request packet does not contain a 'seq' Number value >= 0");
+		*_message = _wcsdup(L"Request packet does not contain a 'seq' Number value >= 0");
 		delete value_request;
-		return false;
+		return CODE_MALFORMED_REQUEST;
 	}
 
 	Value* value_command = value_request->getObjectValue(NAME_COMMAND);
 	if (!value_command || value_command->getType() != TYPE_STRING) {
-		Logger::error("Request packet does not contain a String 'command' value");
+		*_message = _wcsdup(L"Request packet does not contain a String 'command' value");
 		delete value_request;
-		return false;
+		return CODE_MALFORMED_REQUEST;
 	}
 
 	Value* value_contextId = value_request->getObjectValue(NAME_CONTEXTID);
 	if (value_contextId && value_contextId->getType() != TYPE_STRING) {
-		Logger::error("Request packet contains a non-string 'context_id' value");
+		*_message = _wcsdup(L"Request packet contains a non-string 'context_id' value");
 		delete value_request;
-		return false;
+		return CODE_MALFORMED_REQUEST;
 	}
 
 	Value* value_arguments = value_request->getObjectValue(NAME_ARGUMENTS);
 	if (value_arguments && value_arguments->getType() != TYPE_OBJECT) {
-		Logger::error("Request packet contains a non-object 'arguments' value");
+		*_message = _wcsdup(L"Request packet contains a non-object 'arguments' value");
 		delete value_request;
-		return false;
+		return CODE_MALFORMED_REQUEST;
 	}
 
 	CrossfireRequest* result = new CrossfireRequest();
@@ -231,6 +232,10 @@ bool CrossfireProcessor::parseRequestPacket(std::wstring* msg, CrossfireRequest*
 	}
 	if (value_arguments) {
 		result->setArguments(value_arguments);
+	} else {
+		Value value_empty;
+		value_empty.setType(TYPE_OBJECT);
+		result->setArguments(&value_empty);
 	}
 
 	*_value = result;

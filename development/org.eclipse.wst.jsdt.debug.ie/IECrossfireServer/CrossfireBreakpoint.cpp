@@ -17,6 +17,7 @@
 const wchar_t* CrossfireBreakpoint::KEY_ATTRIBUTES = L"attributes";
 const wchar_t* CrossfireBreakpoint::KEY_CONTEXTID = L"contextId";
 const wchar_t* CrossfireBreakpoint::KEY_HANDLE = L"handle";
+const wchar_t* CrossfireBreakpoint::KEY_HANDLES = L"handles";
 const wchar_t* CrossfireBreakpoint::KEY_LOCATION = L"location";
 const wchar_t* CrossfireBreakpoint::KEY_TYPE = L"type";
 
@@ -49,6 +50,31 @@ CrossfireBreakpoint::~CrossfireBreakpoint() {
 
 bool CrossfireBreakpoint::appliesToUrl(std::wstring* url) {
 	return true;
+}
+
+bool CrossfireBreakpoint::attributesValueIsValid(Value* attributes) {
+	if (attributes->getType() != TYPE_OBJECT) {
+		return false;
+	}
+
+	std::wstring** keys = NULL;
+	Value** values = NULL;
+	attributes->getObjectValues(&keys, &values);
+	bool success = true;
+	int index = 0;
+	std::wstring* currentKey = keys[index];
+	while (currentKey) {
+		Value* currentValue = values[index];
+		if (!attributeIsValid((wchar_t*)currentKey->c_str(), currentValue)) {
+			success = false;
+			break;
+		}
+		currentKey = keys[++index];
+	}
+
+	delete[] keys;
+	delete[] values;
+	return success;
 }
 
 void CrossfireBreakpoint::breakpointHit() {
@@ -97,33 +123,19 @@ void CrossfireBreakpoint::setAttribute(wchar_t* name, Value* value) {
 	}
 }
 
-bool CrossfireBreakpoint::setAttributesFromValue(Value* value) {
+void CrossfireBreakpoint::setAttributesFromValue(Value* value) {
 	std::wstring** objectKeys = NULL;
 	Value** objectValues = NULL;
 	value->getObjectValues(&objectKeys, &objectValues);
-	bool success = true;
 	int index = 0;
 	std::wstring* currentKey = objectKeys[index];
 	while (currentKey) {
-		Value* currentValue = objectValues[index];
-		if (currentValue->getType() != TYPE_NULL && !attributeIsValid((wchar_t*)currentKey->c_str(), currentValue)) {
-			success = false;
-			break;
-		}
+		setAttribute((wchar_t*)currentKey->c_str(), objectValues[index]);
 		currentKey = objectKeys[++index];
-	}
-	if (success) {
-		index = 0;
-		currentKey = objectKeys[index];
-		while (currentKey) {
-			setAttribute((wchar_t*)currentKey->c_str(), objectValues[index]);
-			currentKey = objectKeys[++index];
-		}
 	}
 
 	delete[] objectKeys;
 	delete[] objectValues;
-	return success;
 }
 
 void CrossfireBreakpoint::setContextId(std::wstring* value) {

@@ -28,6 +28,6 @@ public:
 	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value) = 0;
 	virtual bool deleteBreakpoint(unsigned int handle) = 0;
 	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle) = 0;
-	virtual bool getBreakpoints(CrossfireBreakpoint*** ___values) = 0;
+	virtual void getBreakpoints(CrossfireBreakpoint*** ___values) = 0;
 	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry) = 0;
 };
