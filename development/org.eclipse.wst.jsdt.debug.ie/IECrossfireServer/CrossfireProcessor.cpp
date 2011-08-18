@@ -240,5 +240,5 @@ int CrossfireProcessor::parseRequestPacket(std::wstring* msg, CrossfireRequest**
 
 	*_value = result;
 	delete value_request;
-	return true;
+	return CODE_OK;
 }

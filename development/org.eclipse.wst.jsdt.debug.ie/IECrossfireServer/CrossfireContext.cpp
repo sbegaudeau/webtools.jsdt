@@ -68,6 +68,9 @@ const wchar_t* CrossfireContext::KEY_CAUSE = L"cause";
 const wchar_t* CrossfireContext::KEY_MESSAGE = L"message";
 const wchar_t* CrossfireContext::KEY_TITLE = L"title";
 
+/* event: onResume */
+const wchar_t* CrossfireContext::EVENT_ONRESUME = L"onResume";
+
 /* event: onScript */
 const wchar_t* CrossfireContext::EVENT_ONSCRIPT = L"onScript";
 const wchar_t* CrossfireContext::KEY_SCRIPT = L"script";
@@ -1768,7 +1771,14 @@ int CrossfireContext::commandContinue(Value* arguments, Value** _responseBody, w
 		Logger::error("CrossfireContext.commandContinue(): ResumeFromBreakPoint() failed", hr);
 		return CODE_UNEXPECTED_EXCEPTION;
 	}
-	
+
+	CrossfireEvent onResumeEvent;
+	onResumeEvent.setName(EVENT_ONRESUME);
+	Value data;
+	data.setType(TYPE_OBJECT);
+	onResumeEvent.setData(&data);
+	sendEvent(&onResumeEvent);
+
 	clearObjects();
 	*_responseBody = new Value();
 	(*_responseBody)->setType(TYPE_OBJECT);

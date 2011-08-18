@@ -161,6 +161,9 @@ private:
 	static const wchar_t* KEY_MESSAGE;
 	static const wchar_t* KEY_TITLE;
 
+	/* event: onResume */
+	static const wchar_t* EVENT_ONRESUME;
+
 	/* event: onScript */
 	static const wchar_t* EVENT_ONSCRIPT;
 	static const wchar_t* KEY_SCRIPT;
