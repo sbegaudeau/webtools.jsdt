@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -154,12 +155,15 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	public synchronized String source() {
 		if(source == null) {
-			CFRequestPacket request = new CFRequestPacket(Commands.SCRIPT, context_id);
+			CFRequestPacket request = new CFRequestPacket(Commands.SCRIPTS, context_id);
 			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
-			request.setArgument(Attributes.URL, url);
+			request.setArgument(Attributes.URLS, Arrays.asList(new String[] {url}));
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				initializeScript((Map) response.getBody().get(Attributes.SCRIPT));
+				List list = (List)response.getBody().get(Attributes.SCRIPTS);
+				if (list != null && list.size() > 0) {
+					initializeScript((Map)list.get(0));
+				}
 			}
 			else if(TRACE) {
 				Tracing.writeString("SCRIPTREF [failed source request]: "+JSON.serialize(request)); //$NON-NLS-1$

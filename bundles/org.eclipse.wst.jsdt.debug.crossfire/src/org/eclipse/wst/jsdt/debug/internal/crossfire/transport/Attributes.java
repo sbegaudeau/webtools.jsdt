@@ -42,6 +42,10 @@ public interface Attributes {
 	 */
 	public static final String BREAKPOINTS = "breakpoints"; //$NON-NLS-1$
 	/**
+	 * The code attribute for this packet
+	 */
+	public static final String CODE = "code"; //$NON-NLS-1$
+	/**
 	 * The "columnOffset" attribute
 	 */
 	public static final String COLUMN_OFFSET = "columnOffset"; //$NON-NLS-1$
@@ -113,6 +117,10 @@ public interface Attributes {
 	 * The "handle" attribute
 	 */
 	public static final String HANDLE = "handle"; //$NON-NLS-1$
+	/**
+	 * The "handles" attribute
+	 */
+	public static final String HANDLES = "handles"; //$NON-NLS-1$
 	/**
 	 * The "handshake" attribute
 	 */
@@ -202,9 +210,17 @@ public interface Attributes {
 	 */
 	public static final String SCOPES = "scopes"; //$NON-NLS-1$
 	/**
+	 * The "scopeIndexes" attribute
+	 */
+	public static final String SCOPE_INDEXES = "scopeIndexes"; //$NON-NLS-1$
+	/**
 	 * The "script" attribute
 	 */
 	public static final String SCRIPT = "script"; //$NON-NLS-1$
+	/**
+	 * The "scripts" attribute
+	 */
+	public static final String SCRIPTS = "scripts"; //$NON-NLS-1$
 	/**
 	 * The "seq" attribute
 	 */
@@ -222,6 +238,14 @@ public interface Attributes {
 	 */
 	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
 	/**
+	 * The "stacktrace" attribute
+	 */
+	public static final String STACKTRACE = "stackTrace"; //$NON-NLS-1$
+	/**
+	 * The "status" attribute
+	 */
+	public static final String STATUS = "status"; //$NON-NLS-1$
+	/**
 	 * The "stepaction" attribute
 	 */
 	public static final String STEPACTION = "stepAction"; //$NON-NLS-1$
@@ -229,10 +253,6 @@ public interface Attributes {
 	 * The type "string"
 	 */
 	public static final String STRING = "string"; //$NON-NLS-1$
-	/**
-	 * The success attribute for this packet
-	 */
-	public static final String SUCCESS = "success"; //$NON-NLS-1$
 	/**
 	 * The "this" attribute
 	 */
@@ -254,7 +274,15 @@ public interface Attributes {
 	 */
 	public static final String URL = "url"; //$NON-NLS-1$
 	/**
+	 * The "urls" attribute
+	 */
+	public static final String URLS = "urls"; //$NON-NLS-1$
+	/**
 	 * The "value" attribute
 	 */
 	public static final String VALUE = "value"; //$NON-NLS-1$
+	/**
+	 * The "values" attribute
+	 */
+	public static final String VALUES = "values"; //$NON-NLS-1$
 }

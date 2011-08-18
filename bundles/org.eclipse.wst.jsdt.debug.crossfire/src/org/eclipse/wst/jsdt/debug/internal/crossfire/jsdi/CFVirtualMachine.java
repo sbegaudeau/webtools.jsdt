@@ -97,11 +97,6 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		else if(TRACE) {
 			Tracing.writeString("VM [failed getbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$
 		}
-		HashMap map = new HashMap();
-		map.put(Attributes.CONDITION, "typeOf(foo) == undefined"); //$NON-NLS-1$
-		map.put(Attributes.ENABLED, Boolean.FALSE);
-		changeBreakpoint(new Integer(1), map);
-		getBreakpoint(new Integer(1));
 	}
 	
 	/**
@@ -110,11 +105,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 * @return the {@link RemoteBreakpoint} representing the request or <code>null</code> if the breakpoint could not be found
 	 */
 	public RemoteBreakpoint getBreakpoint(Number handle) {
-		CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINT, null);
-		request.setArgument(Attributes.HANDLE, handle);
+		CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINTS, null);
+		request.setArgument(Attributes.HANDLES, Arrays.asList(new Number[] {handle}));
 		CFResponsePacket response = sendRequest(request);
 		if(response.isSuccess()) {
-			addBreakpoint(response.getBody());
+			List list = (List)response.getBody().get(Attributes.BREAKPOINTS);
+			if (list != null && list.size() > 0) {
+				addBreakpoint((Map)list.get(0));
+			}
 		}
 		else if(TRACE) {
 			Tracing.writeString("VM [failed getbreakpoint request]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -129,8 +127,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	 * @return the changed {@link RemoteBreakpoint} object or <code>null</code> if the request failed
 	 */
 	public RemoteBreakpoint changeBreakpoint(Number handle, Map attributes) {
-		CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINT, null);
-		request.setArgument(Attributes.HANDLE, handle);
+		CFRequestPacket request = new CFRequestPacket(Commands.CHANGE_BREAKPOINTS, null);
+		request.setArgument(Attributes.HANDLES, Arrays.asList(new Number[] {handle}));
 		request.setArgument(Attributes.ATTRIBUTES, attributes);
 		CFResponsePacket response = sendRequest(request);
 		if(response.isSuccess()) {
@@ -498,7 +496,7 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 				request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.FALSE);
 				CFResponsePacket response = sendRequest(request);
 				if(response.isSuccess()) {
-					List scriptz = (List) response.getBody().get(Commands.SCRIPTS);
+					List scriptz = (List) response.getBody().get(Attributes.SCRIPTS);
 					for (Iterator iter2 = scriptz.iterator(); iter2.hasNext();) {
 						Map smap = (Map) iter2.next();
 						if(smap != null) {

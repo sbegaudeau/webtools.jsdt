@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.crossfire.request;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
@@ -100,12 +102,13 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 		if(enabled) {
 			//send setbreakpoint request
 			CFScriptReference script = (CFScriptReference) location.scriptReference();
-			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINT, null);
-			request.setArgument(Attributes.TYPE, Attributes.LINE);
+			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINTS, null);
+			Map bp = new HashMap();
+			bp.put(Attributes.TYPE, Attributes.LINE);
 			Map loc = new HashMap();
 			loc.put(Attributes.LINE, new Integer(location.lineNumber()));
 			loc.put(Attributes.URL, script.url());
-			request.setArgument(Attributes.LOCATION, loc);
+			bp.put(Attributes.LOCATION, loc);
 			Map attribs = new HashMap();
 			if (condition != null) {
 				attribs.put(Attributes.CONDITION, condition);	
@@ -114,14 +117,18 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 				attribs.put(Attributes.HIT_COUNT, new Long(hitcount));
 			}
 			attribs.put(Attributes.ENABLED, Boolean.TRUE);
-			request.setArgument(Attributes.ATTRIBUTES, attribs);
+			bp.put(Attributes.ATTRIBUTES, attribs);
+			request.setArgument(Attributes.BREAKPOINTS, Arrays.asList(new Object[] {bp}));
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
 				//process the response to get the handle of the breakpoint
-				Map bp = (Map) response.getBody().get(Attributes.BREAKPOINT);
-				if(bp != null) {
-					Number handle = (Number) bp.get(Attributes.HANDLE);
-					bpHandle = new Long(handle.longValue());
+				List list = (List)response.getBody().get(Attributes.BREAKPOINTS);
+				if (list != null && list.size() > 0) {
+					bp = (Map)list.get(0);
+					if (bp != null) {
+						Number handle = (Number) bp.get(Attributes.HANDLE);
+						bpHandle = new Long(handle.longValue());
+					}
 				}
 				else {
 					//TODO create a dummy breakpoint whose details can be filled in when an onToggleBreakpoint event is received
@@ -129,9 +136,9 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			}
 		}
 		else if(bpHandle != null) {
-			//send clearbreakpoint request
-			CFRequestPacket request = new CFRequestPacket(Commands.DELETE_BREAKPOINT, null);
-			request.getArguments().put(Attributes.HANDLE, bpHandle);
+			//send deletebreakpoint request
+			CFRequestPacket request = new CFRequestPacket(Commands.DELETE_BREAKPOINTS, null);
+			request.getArguments().put(Attributes.HANDLES, Arrays.asList(new Number[] {bpHandle}));
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
 				bpHandle = null;

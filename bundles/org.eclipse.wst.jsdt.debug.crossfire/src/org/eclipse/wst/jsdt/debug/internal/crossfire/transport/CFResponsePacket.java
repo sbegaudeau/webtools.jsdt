@@ -26,6 +26,18 @@ public class CFResponsePacket extends CFPacket implements Response {
 	 */
 	public static final String RESPONSE = "response"; //$NON-NLS-1$
 	
+	/**
+	 * Response codes
+	 */
+	public static final int CODE_OK = 0;
+	public static final int CODE_MALFORMED_PACKET = 1;
+	public static final int CODE_MALFORMED_REQUEST = 2;
+	public static final int CODE_COMMAND_NOT_IMPLEMENTED = 3;
+	public static final int CODE_INVALID_ARGUMENTS = 4;
+	public static final int CODE_UNEXPECTED_EXCEPTION = 5;
+	public static final int CODE_COMMAND_FAILED = 6;
+	public static final int CODE_INVALID_STATE = 7;
+
 	static final Map failed_attributes;
 	static {
 		failed_attributes = new HashMap();
@@ -34,8 +46,11 @@ public class CFResponsePacket extends CFPacket implements Response {
 		failed_attributes.put(Attributes.TYPE, RESPONSE);
 		failed_attributes.put(Attributes.REQUEST_SEQ, value);
 		failed_attributes.put(Attributes.COMMAND, "failed"); //$NON-NLS-1$
-		failed_attributes.put(Attributes.SUCCESS, Boolean.FALSE);
-		failed_attributes.put(Attributes.RUNNING, Boolean.FALSE);
+		Map status = new HashMap();
+		failed_attributes.put(Attributes.STATUS, status);
+		status.put(Attributes.CODE, new Integer(CODE_UNEXPECTED_EXCEPTION));
+		status.put(Attributes.RUNNING, Boolean.FALSE);
+		status.put(Attributes.MESSAGE, "failed"); //$NON-NLS-1$
 	}
 	
 	public static final CFResponsePacket FAILED = new CFResponsePacket(failed_attributes);
@@ -43,9 +58,10 @@ public class CFResponsePacket extends CFPacket implements Response {
 	private String command;
 	private int requestSequence;
 	private Map body = Collections.synchronizedMap(new HashMap());
-	private volatile boolean success = true;
+	private volatile int code = 0;
 	private volatile boolean running = true;
 	private volatile String message;
+	private Map stackTrace = Collections.synchronizedMap(new HashMap());
 
 	/**
 	 * Constructor
@@ -81,13 +97,20 @@ public class CFResponsePacket extends CFPacket implements Response {
 			body.putAll(packetBody);
 		}
 
-		Boolean packetSuccess = (Boolean) json.get(Attributes.SUCCESS);
-		success = packetSuccess.booleanValue();
-
-		Boolean packetRunning = (Boolean) json.get(Attributes.RUNNING);
-		running = packetRunning.booleanValue();
-
-		message = (String) json.get(Attributes.MESSAGE);
+		Object status = json.get(Attributes.STATUS);
+		if (status != null && status instanceof Map) {
+			Map packetStatus = (Map)status;
+			Object codeObj = packetStatus.get(Attributes.CODE);
+			if (codeObj != null) {
+				code = ((Number)codeObj).intValue();
+			}
+			Boolean runningObj = (Boolean)packetStatus.get(Attributes.RUNNING);
+			if (runningObj != null) {
+				running = runningObj.booleanValue();
+			}
+			message = (String)packetStatus.get(Attributes.MESSAGE);
+			stackTrace = (Map)packetStatus.get(Attributes.STACKTRACE);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -115,16 +138,25 @@ public class CFResponsePacket extends CFPacket implements Response {
 	 * @see org.eclipse.wst.jsdt.debug.transport.packet.Response#isSuccess()
 	 */
 	public boolean isSuccess() {
-		return success;
+		return code == CODE_OK;
 	}
 
 	/**
-	 * Set the success flag for the response
+	 * Set the success code for the response
 	 * 
-	 * @param success the new success flag
+	 * @param code the new success code
 	 */
-	public void setSuccess(boolean success) {
-		this.success = success;
+	public void setCode(int code) {
+		this.code = code;
+	}
+
+	/**
+	 * Get the success code for the response
+	 * 
+	 * return the success code
+	 */
+	public int getCode() {
+		return code;
 	}
 
 	/* (non-Javadoc)
@@ -162,6 +194,26 @@ public class CFResponsePacket extends CFPacket implements Response {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	/**
+	 * Returns the stack trace for this {@link CFResponsePacket}.<br>
+	 * <br>
+	 * This method can return <code>null</code>
+	 * 
+	 * @return the stack trace for this {@link CFResponsePacket} or <code>null</code>
+	 */
+	public Map getStackTrace() {
+		return stackTrace;
+	}
+
+	/**
+	 * Set the stack trace for this {@link CFResponsePacket}
+	 * 
+	 * @param stackTrace the new stack trace, <code>null</code> is accepted
+	 */
+	public void setStackTrace(Map stackTrace) {
+		this.stackTrace = stackTrace;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFPacket#toJSON()
@@ -173,10 +225,15 @@ public class CFResponsePacket extends CFPacket implements Response {
 		if(body != null && body.size() > 0) {
 			json.put(Attributes.BODY, body);
 		}
-		json.put(Attributes.SUCCESS, new Boolean(success));
-		json.put(Attributes.RUNNING, new Boolean(running));
+		Map status = new HashMap();
+		json.put(Attributes.STATUS, status);
+		status.put(Attributes.RUNNING, new Boolean(running));
+		status.put(Attributes.CODE, new Integer(code));
 		if (message != null) {
-			json.put(Attributes.MESSAGE, message);
+			status.put(Attributes.MESSAGE, message);
+		}
+		if (stackTrace != null) {
+			status.put(Attributes.STACKTRACE, stackTrace);
 		}
 		return json;
 	}

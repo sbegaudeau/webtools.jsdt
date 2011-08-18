@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -204,11 +205,14 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	public Value lookup(Number ref) {
 		if(ref != null) {
 			CFRequestPacket request = new CFRequestPacket(Commands.LOOKUP, thread.id());
-			request.setArgument(Attributes.HANDLE, ref);
+			request.setArgument(Attributes.HANDLES, Arrays.asList(new Number[] {ref}));
 			request.setArgument(Attributes.INCLUDE_SOURCE, Boolean.TRUE);
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
-				return createValue(response.getBody());
+				List list = (List)response.getBody().get(Attributes.VALUES);
+				if (list != null && list.size() > 0) {
+					return createValue(list.get(0));
+				}
 			}
 			else if(TRACE) {
 				Tracing.writeString("STACKFRAME [request for value lookup failed]: "+JSON.serialize(request)); //$NON-NLS-1$
@@ -312,16 +316,17 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 	 * Gets the scope for this frame
 	 */
 	void scope(int frameindex, int scopeindex) {
-		CFRequestPacket request = new CFRequestPacket(Commands.SCOPE, thread.id());
+		CFRequestPacket request = new CFRequestPacket(Commands.SCOPES, thread.id());
 		request.setArgument(Attributes.FRAME_INDEX, new Integer(frameindex));
-		request.setArgument(Attributes.INDEX, new Integer(scopeindex));
+		request.setArgument(Attributes.SCOPE_INDEXES, Arrays.asList(new Number[] {new Integer(scopeindex)}));
 		CFResponsePacket response = crossfire().sendRequest(request);
 		if(response.isSuccess()) {
 			if(vars == null) {
 				vars = new ArrayList();
 			}
-			Map scope = (Map)response.getBody().get(Attributes.SCOPE);
-			if(scope != null) {
+			List list = (List)response.getBody().get(Attributes.SCOPES);
+			if (list != null && list.size() > 0) {
+				Map scope = ((Map)list.get(0));
 				vars.add(0, new CFVariable(crossfire(), this, "Enclosing Scope", (Number) scope.get(Attributes.HANDLE), scope)); //$NON-NLS-1$
 			}
 		}
