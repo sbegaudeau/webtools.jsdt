@@ -15,6 +15,9 @@
 
 #include "JSONParser.h"
 
+/* initialize constants */
+const wchar_t* CrossfireContext::ID_PREAMBLE = L"xfIE::";
+
 /* command: backtrace */
 const wchar_t* CrossfireContext::COMMAND_BACKTRACE = L"backtrace";
 const wchar_t* CrossfireContext::KEY_FRAMES = L"frames";
@@ -125,8 +128,6 @@ const wchar_t* CrossfireContext::VALUE_EVALCODE = L"eval code";
 const wchar_t* CrossfireContext::VALUE_EVALLEVEL = L"eval-level";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
-/* constants */
-const wchar_t* CrossfireContext::ID_PREAMBLE = L"xfIE::";
 
 CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server) {
 	static int s_counter = 0;

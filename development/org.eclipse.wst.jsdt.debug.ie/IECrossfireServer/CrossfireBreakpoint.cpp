@@ -13,7 +13,7 @@
 #include "StdAfx.h"
 #include "CrossfireBreakpoint.h"
 
-/* initialize statics */
+/* initialize constants */
 const wchar_t* CrossfireBreakpoint::KEY_ATTRIBUTES = L"attributes";
 const wchar_t* CrossfireBreakpoint::KEY_CONTEXTID = L"contextId";
 const wchar_t* CrossfireBreakpoint::KEY_HANDLE = L"handle";

@@ -13,7 +13,7 @@
 #include "StdAfx.h"
 #include "CrossfireLineBreakpoint.h"
 
-/* initialize statics */
+/* initialize constants */
 const wchar_t* CrossfireLineBreakpoint::BPTYPESTRING_LINE = L"line";
 const wchar_t* CrossfireLineBreakpoint::KEY_CONDITION = L"condition";
 const wchar_t* CrossfireLineBreakpoint::KEY_ENABLED = L"enabled";

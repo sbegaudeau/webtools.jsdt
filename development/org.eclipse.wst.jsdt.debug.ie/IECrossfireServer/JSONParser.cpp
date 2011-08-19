@@ -13,7 +13,7 @@
 #include "StdAfx.h"
 #include "JSONParser.h"
 
-/* initialize statics */
+/* initialize constants */
 const wchar_t* JSONParser::VALUE_NULL = L"null";
 const wchar_t* JSONParser::VALUE_TRUE = L"true";
 const wchar_t* JSONParser::VALUE_FALSE = L"false";

@@ -13,7 +13,7 @@
 #include "stdafx.h"
 #include "CrossfireProcessor.h"
 
-/* initialize statics */
+/* initialize constants */
 const wchar_t* CrossfireProcessor::HEADER_CONTENTLENGTH = L"Content-Length:";
 const wchar_t* CrossfireProcessor::LINEBREAK = L"\r\n";
 const size_t CrossfireProcessor::LINEBREAK_LENGTH = 2;
