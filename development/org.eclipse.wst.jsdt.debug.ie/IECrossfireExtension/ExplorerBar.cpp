@@ -14,6 +14,8 @@
 #include "ExplorerBar.h"
 
 /* initialize constants */
+const wchar_t* CExplorerBar::ServerWindowClass = L"_IECrossfireServer";
+
 const wchar_t* CExplorerBar::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
 
 CExplorerBar::CExplorerBar() {
@@ -419,27 +421,11 @@ bool CExplorerBar::createWindow() {
 
 bool CExplorerBar::initServer(bool startIfNeeded) {
 	if (!startIfNeeded) {
-		HKEY key;
-		LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, KEY_QUERY_VALUE, &key);
-		if (result != ERROR_SUCCESS) {
-			if (result == ERROR_FILE_NOT_FOUND) {
-				/* the registry key does not exist, which is valid */
-				return false;
-			}
-			Logger::error("CExplorerBar.initServer(): RegOpenKeyEx() failed", result);
+		if (!FindWindow(ServerWindowClass, NULL)) {
+			Logger::error("didn't find it, run away");
 			return false;
-		}
-
-		int value = 0;
-		DWORD size = sizeof(int);
-		result = RegQueryValueEx(key, L"Loaded", NULL, NULL, (LPBYTE)&value, &size);
-		RegCloseKey(key);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("CExplorerBar.initServer(): RegQueryValueEx() failed", result);
-			return false;
-		}
-		if (value == 0) {
-			return false;
+		} else {
+			Logger::error("found it, proceed!");
 		}
 	}
 

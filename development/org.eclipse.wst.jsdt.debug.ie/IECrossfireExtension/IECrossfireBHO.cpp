@@ -14,6 +14,8 @@
 #include "IECrossfireBHO.h"
 
 /* initialize constants */
+const wchar_t* IECrossfireBHO::ServerWindowClass = L"_IECrossfireServer";
+
 const wchar_t* IECrossfireBHO::ABOUT_BLANK = L"about:blank";
 const wchar_t* IECrossfireBHO::DEBUG_START = L"-crossfire-server-port";
 const wchar_t* IECrossfireBHO::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
@@ -366,26 +368,11 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 	}
 
 	if (!startIfNeeded) {
-		HKEY key;
-		LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, KEY_QUERY_VALUE, &key);
-		if (result != ERROR_SUCCESS) {
-			/* ERROR_FILE_NOT_FOUND indicates that the registry key does not exist, which is valid */
-			if (result != ERROR_FILE_NOT_FOUND) {
-				Logger::error("IECrossfireBHO.initServer(): RegOpenKeyEx() failed", result);
-			}
+		if (!FindWindow(ServerWindowClass, NULL)) {
+			Logger::error("didn't find it, run away");
 			return false;
-		}
-
-		int value = 0;
-		DWORD size = sizeof(int);
-		result = RegQueryValueEx(key, L"Loaded", NULL, NULL, (LPBYTE)&value, &size);
-		RegCloseKey(key);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("IECrossfireBHO.initServer(): RegQueryValueEx() failed", result);
-			return false;
-		}
-		if (value == 0) {
-			return false;
+		} else {
+			Logger::error("found it, proceed!");
 		}
 	}
 

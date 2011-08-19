@@ -50,21 +50,6 @@ extern "C" int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LP
 		return 0;
 	}
 
-	HKEY key;
-	LONG result = RegCreateKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, NULL, REG_OPTION_VOLATILE, KEY_WRITE, NULL, &key, NULL);
-	if (result != ERROR_SUCCESS) {
-		Logger::error("IECrossfireServer.main(): RegCreateKeyEx() failed", result);
-		return 0;
-	}
-
-	int value = 1;
-	result = RegSetValueEx(key, L"Loaded", 0, REG_DWORD, (BYTE*)&value, sizeof(int));
-	RegCloseKey(key);
-	if (result != ERROR_SUCCESS) {
-		Logger::error("IECrossfireServer.main(): RegSetValueEx() failed", result);
-		return 0;
-	}
-
 	BOOL ret;
 	MSG msg;
 	while ((ret = GetMessage(&msg, 0, 0, 0)) != 0) {
@@ -73,18 +58,6 @@ extern "C" int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LP
 		} else {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-		}
-	}
-
-	value = 0;
-	result = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, KEY_WRITE, &key);
-	if (result != ERROR_SUCCESS) {
-		Logger::error("IECrossfireServer.main(): RegOpenKeyEx() failed", result);
-	} else {
-		result = RegSetValueEx(key, L"Loaded", 0, REG_DWORD, (BYTE*)&value, sizeof(int));
-		RegCloseKey(key);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("IECrossfireServer.main(): RegSetValueEx() failed [2]", result);
 		}
 	}
 

@@ -91,6 +91,8 @@ private:
 	IWebBrowser2* m_webBrowser;
 
 	/* constants */
+	static const wchar_t* ServerWindowClass;
+
 	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* DEBUG_START;
 	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;

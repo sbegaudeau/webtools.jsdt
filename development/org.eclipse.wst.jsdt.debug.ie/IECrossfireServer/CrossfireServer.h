@@ -97,6 +97,9 @@ private:
 	CrossfireProcessor* m_processor;
 	unsigned long m_windowHandle;
 
+	static const wchar_t* WindowClass;
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 	static const wchar_t* COMMAND_CHANGEBREAKPOINTS;
 	static const wchar_t* COMMAND_DELETEBREAKPOINTS;
 	static const wchar_t* COMMAND_GETBREAKPOINTS;

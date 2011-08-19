@@ -104,8 +104,6 @@ private:
 	LRESULT onWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	void setErrorText(wchar_t* text);
 
-	static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
-
 	bool m_bFocus;
 	HINSTANCE g_hInst;
 	HWND m_hWnd;
@@ -126,7 +124,11 @@ private:
 	HWND m_separator;
 	HWND m_statusLabel;
 
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
+
 	/* constants */
+	static const wchar_t* ServerWindowClass;
+
 	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 	static const int SEPARATOR_WIDTH = 5;
 	static const int SPACING_WIDTH = 10;

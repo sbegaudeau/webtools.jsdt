@@ -13,7 +13,9 @@
 #include "stdafx.h"
 #include "CrossfireServer.h"
 
-/* initialize statics */
+/* initialize constants */
+const wchar_t* CrossfireServer::WindowClass = L"_IECrossfireServer";
+
 const wchar_t* CrossfireServer::HANDSHAKE = L"CrossfireHandshake\r\n";
 const wchar_t* CrossfireServer::HEADER_CONTENTLENGTH = L"Content-Length:";
 const wchar_t* CrossfireServer::LINEBREAK = L"\r\n";
@@ -83,6 +85,22 @@ CrossfireServer::CrossfireServer() {
 	m_processingRequest = false;
 	m_processor = new CrossfireProcessor();
 	m_windowHandle = 0;
+
+	/* create a window to help clients detect the server's presence */
+	HINSTANCE module = GetModuleHandle(NULL);
+	WNDCLASS ex;
+	ex.style = 0;
+	ex.lpfnWndProc = WndProc;
+	ex.cbClsExtra = 0;
+	ex.cbWndExtra = 0;
+	ex.hInstance = module;
+	ex.hIcon = NULL;
+	ex.hCursor = NULL;
+	ex.hbrBackground = NULL;
+	ex.lpszMenuName = NULL;
+	ex.lpszClassName = WindowClass;
+	RegisterClass(&ex);
+	CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
 }
 
 CrossfireServer::~CrossfireServer() {
@@ -666,6 +684,10 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
 	}
 
 	return S_OK;
+}
+
+LRESULT CALLBACK CrossfireServer::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 /* commands */
