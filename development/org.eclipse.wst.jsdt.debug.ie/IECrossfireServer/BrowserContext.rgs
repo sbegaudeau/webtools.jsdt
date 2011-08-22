@@ -11,17 +11,17 @@
 
 
 HKCR {
-	IECrossfireServer.CrossfireServerList.1 = s 'CrossfireServerListener Class' {
+	IECrossfireServer.BrowserContext.1 = s 'BrowserContext Class' {
 		CLSID = s '{260387C9-60BB-4E1E-A1D8-4428488E9421}'
 	}
-	IECrossfireServer.CrossfireServerListen = s 'CrossfireServerListener Class' {
+	IECrossfireServer.BrowserContext = s 'BrowserContext Class' {
 		CLSID = s '{260387C9-60BB-4E1E-A1D8-4428488E9421}'
-		CurVer = s 'IECrossfireServer.CrossfireServerList.1'
+		CurVer = s 'IECrossfireServer.IBrowserContext.1'
 	}
 	NoRemove CLSID {
-		ForceRemove {260387C9-60BB-4E1E-A1D8-4428488E9421} = s 'CrossfireServerListener Class' {
-			ProgID = s 'IECrossfireServer.CrossfireServerList.1'
-			VersionIndependentProgID = s 'IECrossfireServer.CrossfireServerListen'
+		ForceRemove {260387C9-60BB-4E1E-A1D8-4428488E9421} = s 'BrowserContext Class' {
+			ProgID = s 'IECrossfireServer.BrowserContext.1'
+			VersionIndependentProgID = s 'IECrossfireServer.BrowserContext'
 			ForceRemove 'Programmable'
 			LocalServer32 = s '%MODULE%'
 			val AppID = s '%APPID%'

@@ -14,7 +14,9 @@
 #include "ExplorerBar.h"
 
 /* initialize constants */
+const UINT CExplorerBar::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
 const wchar_t* CExplorerBar::ServerWindowClass = L"_IECrossfireServer";
+const wchar_t* CExplorerBar::WindowClass = L"_ExplorerBarMessageWindow";
 
 const wchar_t* CExplorerBar::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
 
@@ -22,8 +24,9 @@ CExplorerBar::CExplorerBar() {
 	m_hWnd = m_hWndParent = 0;
 	m_pSite = NULL;
 	m_server = NULL;
-	m_serverState = STATE_DISCONNECTED;
 	m_serverPort = 0;
+	m_serverState = STATE_DISCONNECTED;
+
 	HKEY key;
 	LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, KEY_QUERY_VALUE, &key);
 	if (result != ERROR_SUCCESS && result != ERROR_FILE_NOT_FOUND) {
@@ -39,9 +42,34 @@ CExplorerBar::CExplorerBar() {
 	if (!m_serverPort) {
 		m_serverPort = 5000;
 	}
+
+	/* create a message-only window to receive server state change notifications */
+	HINSTANCE module = GetModuleHandle(NULL);
+	WNDCLASS ex;
+	ex.style = 0;
+	ex.lpfnWndProc = WndProc;
+	ex.cbClsExtra = 0;
+	ex.cbWndExtra = 0;
+	ex.hInstance = module;
+	ex.hIcon = NULL;
+	ex.hCursor = NULL;
+	ex.hbrBackground = NULL;
+	ex.lpszMenuName = NULL;
+	ex.lpszClassName = WindowClass;
+	RegisterClass(&ex);
+	m_messageWindow = CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
+	if (!m_messageWindow) {
+		Logger::error("CExplorerBar ctor(): failed to create message-only window", GetLastError());
+	} else {
+		SetWindowLongPtr(m_messageWindow, GWL_USERDATA, (__int3264)(LONG_PTR)this);
+	}
 }
 
 CExplorerBar::~CExplorerBar() {
+	if (m_messageWindow) {
+		DestroyWindow(m_messageWindow);
+		UnregisterClass(WindowClass, GetModuleHandle(NULL));
+	}
 }
 
 
@@ -208,34 +236,6 @@ STDMETHODIMP CExplorerBar::HasFocusIO() {
 
 STDMETHODIMP CExplorerBar::TranslateAcceleratorIO(LPMSG pMsg) {
 	return E_NOTIMPL;
-}
-
-/* ICrossfireServerListener */
-
-STDMETHODIMP CExplorerBar::navigate(OLECHAR* url, boolean openNewTab) {
-	return S_FALSE;
-}
-
-STDMETHODIMP CExplorerBar::serverStateChanged(int state, unsigned int port) {
-	m_serverPort = port;
-	m_serverState = state;
-	layoutControls();
-
-	if (m_serverState == STATE_CONNECTED) {
-		HKEY key;
-		LONG result = RegCreateKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &key, NULL);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("ExplorerBar.serverStateChanged(): RegCreateKeyEx() failed", result);
-		} else {
-			result = RegSetValueEx(key, L"LastPort", 0, REG_DWORD, (BYTE*)&m_serverPort, sizeof(unsigned int));
-			if (result != ERROR_SUCCESS) {
-				Logger::error("ExplorerBar.serverStateChanged(): RegSetValueEx() failed", result);
-			}
-			RegCloseKey(key);
-		}
-	}
-
-	return S_OK;
 }
 
 /* ExplorerBar */
@@ -420,13 +420,11 @@ bool CExplorerBar::createWindow() {
 }
 
 bool CExplorerBar::initServer(bool startIfNeeded) {
-	if (!startIfNeeded) {
-		if (!FindWindow(ServerWindowClass, NULL)) {
-			Logger::error("didn't find it, run away");
-			return false;
-		} else {
-			Logger::error("found it, proceed!");
-		}
+	if (m_server) {
+		return true;
+	}
+	if (!startIfNeeded && !FindWindow(ServerWindowClass, NULL)) {
+		return false;
 	}
 
 	HKEY key;
@@ -448,7 +446,7 @@ bool CExplorerBar::initServer(bool startIfNeeded) {
 	IIDFromString(OLESTR("{47836AF4-3E0C-4995-8029-FF931C5A43FC}"), &clsid);
 	GUID iid;
 	IIDFromString(OLESTR("{F48260BB-C061-4410-9CE1-4C5C7602690E}"), &iid);
-	HWND rootWindow = GetAncestor(m_hWndParent, GA_ROOT);
+
 	CComPtr<ICrossfireServerClass> serverClass = NULL;
 	hr = CoGetClassObject(/*CLSID_CrossfireServer*/clsid, CLSCTX_ALL, 0, /*IID_ICrossfireServerClass*/iid, (LPVOID*)&serverClass);
 	if (FAILED(hr)) {
@@ -456,15 +454,10 @@ bool CExplorerBar::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	hr = serverClass->GetServer((unsigned long)rootWindow, &m_server);
+//	HWND rootWindow = GetAncestor(m_hWndParent, GA_ROOT);
+	hr = serverClass->GetServer(/*(unsigned long)rootWindow,*/ &m_server);
 	if (FAILED(hr)) {
 		Logger::error("ExplorerBar.initServer(): GetController() failed", hr);
-		return false;
-	}
-
-	hr = m_server->addListener(GetCurrentProcessId(), static_cast<ICrossfireServerListener*>(this));
-	if (FAILED(hr)) {
-		Logger::error("ExplorerBar.initServer(): addListener() failed", hr);
 		return false;
 	}
 
@@ -671,8 +664,34 @@ bool CExplorerBar::onNCCreate(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 //    return false;
 //}
 
+void CExplorerBar::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
+	m_serverState = wParam;
+	m_serverPort = lParam;
+	initServer(false);
+	layoutControls();
+
+	if (m_serverState == STATE_CONNECTED) {
+		HKEY key;
+		LONG result = RegCreateKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &key, NULL);
+		if (result != ERROR_SUCCESS) {
+			Logger::error("ExplorerBar.serverStateChanged(): RegCreateKeyEx() failed", result);
+		} else {
+			result = RegSetValueEx(key, L"LastPort", 0, REG_DWORD, (BYTE*)&m_serverPort, sizeof(unsigned int));
+			if (result != ERROR_SUCCESS) {
+				Logger::error("ExplorerBar.serverStateChanged(): RegSetValueEx() failed", result);
+			}
+			RegCloseKey(key);
+		}
+	}
+}
+
 LRESULT CExplorerBar::onWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	bool result = true;
+	if (msg == ServerStateChangeMsg) {
+		onServerStateChanged(wParam, lParam);
+		return 0;
+	}
+
 	switch (msg) {
 		case WM_COMMAND: {
 			result = onCommand(hWnd, wParam, lParam);

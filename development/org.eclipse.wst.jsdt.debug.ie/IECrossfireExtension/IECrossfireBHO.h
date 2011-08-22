@@ -32,7 +32,7 @@ class ATL_NO_VTABLE IECrossfireBHO :
 	public CComCoClass<IECrossfireBHO, &CLSID_IECrossfireBHO>,
 	public IObjectWithSiteImpl<IECrossfireBHO>,
 	public IIECrossfireBHO,
-	public ICrossfireServerListener,
+	public IBrowserContext,
 	public IDispEventImpl<1, IECrossfireBHO, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 1> {
 
 public:
@@ -40,7 +40,7 @@ public:
 	DECLARE_NOT_AGGREGATABLE(IECrossfireBHO)
 	BEGIN_COM_MAP(IECrossfireBHO)
 		COM_INTERFACE_ENTRY(IIECrossfireBHO)
-		COM_INTERFACE_ENTRY(ICrossfireServerListener)
+		COM_INTERFACE_ENTRY(IBrowserContext)
 		COM_INTERFACE_ENTRY(IObjectWithSite)
 	END_COM_MAP()
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
@@ -68,9 +68,8 @@ public:
 	void STDMETHODCALLTYPE OnNavigateComplete2(IDispatch* pDisp, VARIANT* URL);
 	void STDMETHODCALLTYPE OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask);
 
-	/* ICrossfireServerListener */
+	/* IBrowserContext */
 	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
-	virtual HRESULT STDMETHODCALLTYPE serverStateChanged(int state, unsigned int port);
 
 	/* IObjectWithSite */
 	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
@@ -80,18 +79,24 @@ private:
 	virtual bool displayHTML(wchar_t* htmlText);
 	virtual int getServerState();
 	virtual bool initServer(bool startIfNeeded);
+	virtual void onServerStateChanged(WPARAM wParam, LPARAM lParam);
 	bool startDebugging(unsigned int port);
 
 	bool m_eventsHooked;
 	bool m_firstNavigate;
 	wchar_t* m_htmlToDisplay;
 	wchar_t* m_lastUrl;
+	HWND m_messageWindow;
 	ICrossfireServer* m_server;
 	int m_serverState;
 	IWebBrowser2* m_webBrowser;
 
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 	/* constants */
+	static const UINT ServerStateChangeMsg;
 	static const wchar_t* ServerWindowClass;
+	static const wchar_t* WindowClass;
 
 	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* DEBUG_START;

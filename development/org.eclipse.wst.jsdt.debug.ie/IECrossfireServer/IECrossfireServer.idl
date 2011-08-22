@@ -34,12 +34,11 @@ interface IIEDebugger : IUnknown {
 	uuid(19DAE1A1-1FAA-4D1C-8788-F03260303AEB),
 	oleautomation,
 	nonextensible,
-	helpstring("ICrossfireServerListener Interface"),
+	helpstring("IBrowserContext Interface"),
 	pointer_default(unique)
 ]
-interface ICrossfireServerListener : IUnknown {
+interface IBrowserContext : IUnknown {
 	HRESULT navigate([in, string] OLECHAR* url, [in] boolean openNewTab);
-	HRESULT serverStateChanged([in] int state, [in] unsigned int port);
 };
 [
 	object,
@@ -51,14 +50,14 @@ interface ICrossfireServerListener : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServer : IDispatch {
-	HRESULT addListener([in] DWORD processId, [in] ICrossfireServerListener* listener);
 	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* url);
 	HRESULT contextDestroyed([in] DWORD processId);
 	HRESULT contextLoaded([in] DWORD processId);
 	HRESULT getPort([out] unsigned int* value);
 	HRESULT getState([out] int* value);
+	HRESULT registerBrowser([in] DWORD processId, [in] IBrowserContext* listener);
 	HRESULT registerContext([in] DWORD processId, [in, string] OLECHAR* url);
-	HRESULT removeListener([in] ICrossfireServerListener* listener);
+	HRESULT removeBrowser([in] IBrowserContext* listener);
 	HRESULT setCurrentContext([in] DWORD processId);
 	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
 	HRESULT stop();
@@ -73,8 +72,9 @@ interface ICrossfireServer : IDispatch {
 	pointer_default(unique)
 ]
 interface ICrossfireServerClass : IDispatch {
-	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
-	HRESULT RemoveServer([in] unsigned long windowHandle);
+//	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
+	HRESULT GetServer([out, retval] ICrossfireServer** _value);
+//	HRESULT RemoveServer([in] unsigned long windowHandle);
 };
 [
 	object,
@@ -135,10 +135,10 @@ library IECrossfireServerLib {
 	};
 	[
 		uuid(260387C9-60BB-4E1E-A1D8-4428488E9421),
-		helpstring("CrossfireServerListener Class")
+		helpstring("BrowserContext Class")
 	]
-	coclass CrossfireServerListener
+	coclass BrowserContext
 	{
-		[default] interface ICrossfireServerListener;
+		[default] interface IBrowserContext;
 	};
 };

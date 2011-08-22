@@ -32,8 +32,7 @@ class ATL_NO_VTABLE CExplorerBar :
 	public IObjectWithSite,
 	public IPersistStream,
 	public IDeskBand,
-	public IInputObject,
-	public ICrossfireServerListener  {
+	public IInputObject {
 
 public:
 	DECLARE_REGISTRY_RESOURCEID(IDR_EXPLORERBAR)
@@ -46,7 +45,6 @@ public:
 		COM_INTERFACE_ENTRY(IPersistStream)
 		COM_INTERFACE_ENTRY(IDeskBand)
 	//	COM_INTERFACE_ENTRY(IInputObject)
-		COM_INTERFACE_ENTRY(ICrossfireServerListener)
 	END_COM_MAP()
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
@@ -89,10 +87,6 @@ public:
     virtual HRESULT STDMETHODCALLTYPE HasFocusIO();
     virtual HRESULT STDMETHODCALLTYPE TranslateAcceleratorIO(LPMSG lpMsg);
 
-	/* ICrossfireServerListener */
-	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
-	virtual HRESULT STDMETHODCALLTYPE serverStateChanged(int state, unsigned int port);
-
 private:
 	bool createWindow();
 	void createControls();
@@ -102,12 +96,14 @@ private:
 	bool onNCCreate(HWND hWnd, WPARAM wParam, LPARAM lParam);
 //	bool onPaint(HWND hWnd, WPARAM wParam, LPARAM lParam);
 	LRESULT onWndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
+	void onServerStateChanged(WPARAM wParam, LPARAM lParam);
 	void setErrorText(wchar_t* text);
 
 	bool m_bFocus;
 	HINSTANCE g_hInst;
 	HWND m_hWnd;
 	HWND m_hWndParent;
+	HWND m_messageWindow;
 	POINT m_portTextSize;
 	IInputObjectSite* m_pSite;
 	ICrossfireServer* m_server;
@@ -127,7 +123,9 @@ private:
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 
 	/* constants */
+	static const UINT ServerStateChangeMsg;
 	static const wchar_t* ServerWindowClass;
+	static const wchar_t* WindowClass;
 
 	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 	static const int SEPARATOR_WIDTH = 5;

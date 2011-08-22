@@ -54,18 +54,19 @@ public:
 	~CrossfireServer();
 
 	/* ICrossfireServer */
-	virtual HRESULT STDMETHODCALLTYPE addListener(DWORD processId, ICrossfireServerListener* listener);
 	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, OLECHAR* url);
 	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
 	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
+	virtual HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* listener);
 	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* url);
-	virtual HRESULT STDMETHODCALLTYPE removeListener(ICrossfireServerListener* listener);
+	virtual HRESULT STDMETHODCALLTYPE removeBrowser(IBrowserContext* listener);
 	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
 	virtual HRESULT STDMETHODCALLTYPE stop();
 
+	/* CrossfireServer */
 	virtual void connected();
 	virtual void disconnected();
 	virtual CrossfireBPManager* getBreakpointManager();
@@ -90,13 +91,15 @@ private:
 	bool m_handshakeReceived;
 	std::wstring* m_inProgressPacket;
 	unsigned int m_lastRequestSeq;
-	std::map<DWORD, ICrossfireServerListener*>* m_listeners;
+	std::map<DWORD, IBrowserContext*>* m_listeners;
+	HWND m_messageWindow;
 	std::vector<CrossfireEvent*>* m_pendingEvents;
 	unsigned int m_port;
 	bool m_processingRequest;
 	CrossfireProcessor* m_processor;
 	unsigned long m_windowHandle;
 
+	static const UINT ServerStateChangeMsg;
 	static const wchar_t* WindowClass;
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

@@ -43,13 +43,13 @@ public:
 	}
 
 public:
-	/* ICrossfireServerClass */
-	virtual HRESULT STDMETHODCALLTYPE GetServer(unsigned long windowHandle, ICrossfireServer** _value);
-	virtual HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
-
 	/* IClassFactory */
 	virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
 	virtual HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock);
+
+	/* ICrossfireServerClass */
+	virtual HRESULT STDMETHODCALLTYPE GetServer(/*unsigned long windowHandle,*/ ICrossfireServer** _value);
+	//virtual HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
 
 protected:
 	CrossfireServerClass();

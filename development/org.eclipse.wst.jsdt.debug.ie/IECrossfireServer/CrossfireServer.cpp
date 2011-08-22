@@ -14,6 +14,7 @@
 #include "CrossfireServer.h"
 
 /* initialize constants */
+const UINT CrossfireServer::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
 const wchar_t* CrossfireServer::WindowClass = L"_IECrossfireServer";
 
 const wchar_t* CrossfireServer::HANDSHAKE = L"CrossfireHandshake\r\n";
@@ -79,14 +80,14 @@ CrossfireServer::CrossfireServer() {
 	m_handshakeReceived = false;
 	m_inProgressPacket = new std::wstring;
 	m_lastRequestSeq = -1;
-	m_listeners = new std::map<DWORD, ICrossfireServerListener*>;
+	m_listeners = new std::map<DWORD, IBrowserContext*>;
 	m_pendingEvents = new std::vector<CrossfireEvent*>;
 	m_port = -1;
 	m_processingRequest = false;
 	m_processor = new CrossfireProcessor();
 	m_windowHandle = 0;
 
-	/* create a window to help clients detect the server's presence */
+	/* create a message-only window to help clients detect the server's presence */
 	HINSTANCE module = GetModuleHandle(NULL);
 	WNDCLASS ex;
 	ex.style = 0;
@@ -100,7 +101,7 @@ CrossfireServer::CrossfireServer() {
 	ex.lpszMenuName = NULL;
 	ex.lpszClassName = WindowClass;
 	RegisterClass(&ex);
-	CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
+	m_messageWindow = CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
 }
 
 CrossfireServer::~CrossfireServer() {
@@ -113,7 +114,7 @@ CrossfireServer::~CrossfireServer() {
 	}
 	delete m_contexts;
 
-	std::map<DWORD, ICrossfireServerListener*>::iterator iterator2 = m_listeners->begin();
+	std::map<DWORD, IBrowserContext*>::iterator iterator2 = m_listeners->begin();
 	while (iterator2 != m_listeners->end()) {
 		iterator2->second->Release();
 		iterator2++;
@@ -136,34 +137,30 @@ CrossfireServer::~CrossfireServer() {
 		delete m_connection;
 	}
 
-	if (m_windowHandle) {
-		CComPtr<ICrossfireServerClass> serverClass = NULL;
-		HRESULT hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
-		if (FAILED(hr)) {
-			Logger::error("~CrossfireServer: CoGetClassObject() failed", hr);
-			return;
-		}
-		hr = serverClass->RemoveServer(m_windowHandle);
-		if (FAILED(hr)) {
-			Logger::error("~CrossfireServer: RemoveServer() failed", hr);
-			return;
-		}
+	if (m_messageWindow) {
+		DestroyWindow(m_messageWindow);
+		UnregisterClass(WindowClass, GetModuleHandle(NULL));
 	}
+
+	/* the following is intentionally commented */
+
+//	if (m_windowHandle) {
+//		CComPtr<ICrossfireServerClass> serverClass = NULL;
+//		HRESULT hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
+//		if (FAILED(hr)) {
+//			Logger::error("~CrossfireServer: CoGetClassObject() failed", hr);
+//			return;
+//		}
+
+//		hr = serverClass->RemoveServer(m_windowHandle);
+//		if (FAILED(hr)) {
+//			Logger::error("~CrossfireServer: RemoveServer() failed", hr);
+//			return;
+//		}
+//	}
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::addListener(DWORD processId, ICrossfireServerListener* listener) {
-	listener->AddRef();
-	m_listeners->insert(std::pair<DWORD,ICrossfireServerListener*>(processId, listener));
-	return S_OK;
-}
-
-void CrossfireServer::connected() {
-	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
-	while (iterator != m_listeners->end()) {
-		iterator->second->serverStateChanged(STATE_CONNECTED, m_port);
-		iterator++;
-	}
-}
+/* ICrossfireServer */
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* url) {
 	if (m_port == -1) {
@@ -235,11 +232,134 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
 	return S_OK;
 }
 
+HRESULT STDMETHODCALLTYPE CrossfireServer::getPort(unsigned int* value) {
+	*value = m_port;
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::getState(int* value) {
+	if (m_connection == NULL) {
+		*value = STATE_DISCONNECTED;
+	} else {
+		*value = m_connection->isConnected() ? STATE_CONNECTED : STATE_LISTENING;
+	}
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::registerBrowser(DWORD processId, IBrowserContext* listener) {
+	listener->AddRef();
+	m_listeners->insert(std::pair<DWORD,IBrowserContext*>(processId, listener));
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* url) {
+	if (m_port == -1) {
+		return S_FALSE;
+	}
+
+	CrossfireContext* context = NULL;
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
+	if (iterator == m_contexts->end()) {
+		context = new CrossfireContext(processId, url, this);
+		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(processId, context));
+	} else {
+		Logger::error("CrossfireServer.registerContext(): a context already exists for process", processId);
+		return S_FALSE;
+	}
+
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::removeBrowser(IBrowserContext* listener) {
+	// TODO
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD processId) {
+	if (m_port == -1) {
+		return S_FALSE;
+	}
+
+	if (processId == m_currentContextPID) {
+		return S_OK; /* nothing to do */
+	}
+
+	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
+	if (iterator == m_contexts->end()) {
+		Logger::error("CrossfireServer.setCurrentContext(): unknown context", processId);
+		return S_FALSE;
+	}
+
+	if (m_currentContextPID) {
+		CrossfireContext* newContext = iterator->second;
+		iterator = m_contexts->find(m_currentContextPID);
+		if (iterator == m_contexts->end()) {
+			Logger::error("CrossfireServer.setCurrentContext(): unknown old context", m_currentContextPID);
+		} else {
+			CrossfireContext* oldContext = iterator->second;
+			eventContextSelected(newContext, oldContext);
+		}
+	}
+
+	m_currentContextPID = processId;
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port, unsigned int debugPort) {
+	if (m_connection) {
+		return S_FALSE;
+	}
+
+	m_connection = new WindowsSocketConnection(this);
+	if (!m_connection->init(port)) {
+		delete m_connection;
+		return S_FALSE;
+	}
+	m_port = port;
+	if (m_connection->acceptConnection()) {
+		HWND current = FindWindowEx(HWND_MESSAGE, NULL, NULL, NULL);
+		while (current) {
+			PostMessage(current, ServerStateChangeMsg, STATE_LISTENING, m_port);
+			current = FindWindowEx(HWND_MESSAGE, current, NULL, NULL);
+		}
+	}
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
+	if (!m_connection) {
+		return S_FALSE;
+	}
+	if (m_connection->isConnected()) {
+		eventClosed();
+	}
+	reset();
+
+	HWND current = FindWindowEx(HWND_MESSAGE, NULL, NULL, NULL);
+	while (current) {
+		PostMessage(current, ServerStateChangeMsg, STATE_DISCONNECTED, m_port);
+		current = FindWindowEx(HWND_MESSAGE, current, NULL, NULL);
+	}
+
+	return S_OK;
+}
+
+
+/* CrossfireServer */
+
+void CrossfireServer::connected() {
+	HWND current = FindWindowEx(HWND_MESSAGE, NULL, NULL, NULL);
+	while (current) {
+		PostMessage(current, ServerStateChangeMsg, STATE_CONNECTED, m_port);
+		current = FindWindowEx(HWND_MESSAGE, current, NULL, NULL);
+	}
+}
+
 void CrossfireServer::disconnected() {
-	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
-	while (iterator != m_listeners->end()) {
-		iterator->second->serverStateChanged(STATE_DISCONNECTED, -1);
-		iterator++;
+	HWND current = FindWindowEx(HWND_MESSAGE, NULL, NULL, NULL);
+	while (current) {
+		PostMessage(current, ServerStateChangeMsg, STATE_DISCONNECTED, m_port);
+		current = FindWindowEx(HWND_MESSAGE, current, NULL, NULL);
 	}
 	reset();
 }
@@ -271,11 +391,6 @@ void CrossfireServer::getContextsArray(CrossfireContext*** _value) {
 	*_value = result;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::getPort(unsigned int* value) {
-	*value = m_port;
-	return S_OK;
-}
-
 CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) {
 	std::wstring* contextId = request->getContextId();
 	if (!contextId) {
@@ -284,15 +399,6 @@ CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) 
 
 	wchar_t* searchString = (wchar_t*)contextId->c_str();
 	return getContext(searchString);
-}
-
-HRESULT STDMETHODCALLTYPE CrossfireServer::getState(int* value) {
-	if (m_connection == NULL) {
-		*value = STATE_DISCONNECTED;
-	} else {
-		*value = m_connection->isConnected() ? STATE_CONNECTED : STATE_LISTENING;
-	}
-	return S_OK;
 }
 
 bool CrossfireServer::performRequest(CrossfireRequest* request) {
@@ -539,29 +645,6 @@ void CrossfireServer::received(wchar_t* msg) {
 	} while (packet.length() > 0 && m_inProgressPacket->length() > 0);
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* url) {
-	if (m_port == -1) {
-		return S_FALSE;
-	}
-
-	CrossfireContext* context = NULL;
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
-	if (iterator == m_contexts->end()) {
-		context = new CrossfireContext(processId, url, this);
-		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(processId, context));
-	} else {
-		Logger::error("CrossfireServer.registerContext(): a context already exists for process", processId);
-		return S_FALSE;
-	}
-
-	return S_OK;
-}
-
-HRESULT STDMETHODCALLTYPE CrossfireServer::removeListener(ICrossfireServerListener* listener) {
-	// TODO
-	return S_OK;
-}
-
 void CrossfireServer::reset() {
 	m_connection->close();
 	delete m_connection;
@@ -613,77 +696,8 @@ void CrossfireServer::sendResponse(CrossfireResponse* response) {
 	delete string;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD processId) {
-	if (m_port == -1) {
-		return S_FALSE;
-	}
-
-	if (processId == m_currentContextPID) {
-		return S_OK; /* nothing to do */
-	}
-
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
-	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.setCurrentContext(): unknown context", processId);
-		return S_FALSE;
-	}
-
-	if (m_currentContextPID) {
-		CrossfireContext* newContext = iterator->second;
-		iterator = m_contexts->find(m_currentContextPID);
-		if (iterator == m_contexts->end()) {
-			Logger::error("CrossfireServer.setCurrentContext(): unknown old context", m_currentContextPID);
-		} else {
-			CrossfireContext* oldContext = iterator->second;
-			eventContextSelected(newContext, oldContext);
-		}
-	}
-
-	m_currentContextPID = processId;
-	return S_OK;
-}
-
 void CrossfireServer::setWindowHandle(unsigned long value) {
 	m_windowHandle = value;
-}
-
-HRESULT STDMETHODCALLTYPE CrossfireServer::start(unsigned int port, unsigned int debugPort) {
-	if (m_connection) {
-		return S_FALSE;
-	}
-
-	m_connection = new WindowsSocketConnection(this);
-	if (!m_connection->init(port)) {
-		delete m_connection;
-		return S_FALSE;
-	}
-	m_port = port;
-	if (m_connection->acceptConnection()) {
-		std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
-		while (iterator != m_listeners->end()) {
-			iterator->second->serverStateChanged(STATE_LISTENING, m_port);
-			iterator++;
-		}
-	}
-	return S_OK;
-}
-
-HRESULT STDMETHODCALLTYPE CrossfireServer::stop() {
-	if (!m_connection) {
-		return S_FALSE;
-	}
-	if (m_connection->isConnected()) {
-		eventClosed();
-	}
-	reset();
-
-	std::map<DWORD, ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
-	while (iterator != m_listeners->end()) {
-		iterator->second->serverStateChanged(STATE_DISCONNECTED, m_port);
-		iterator++;
-	}
-
-	return S_OK;
 }
 
 LRESULT CALLBACK CrossfireServer::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -721,7 +735,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 			return CODE_INVALID_ARGUMENTS;
 		}
 		DWORD processId = context->getProcessId();
-		ICrossfireServerListener* listener = m_listeners->at(processId);
+		IBrowserContext* listener = m_listeners->at(processId);
 		if (!listener) {
 			Logger::error("commandCreateContext(): the specified contextId is not listening to the server");
 			return CODE_UNEXPECTED_EXCEPTION;
@@ -732,9 +746,9 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 	} else {
 		/* go through the listeners to find one that can create the context in a new tab */
 
-		std::map<DWORD,ICrossfireServerListener*>::iterator iterator = m_listeners->begin();
+		std::map<DWORD,IBrowserContext*>::iterator iterator = m_listeners->begin();
 		while (iterator != m_listeners->end()) {
-			ICrossfireServerListener* listener = iterator->second;
+			IBrowserContext* listener = iterator->second;
 			if (SUCCEEDED(listener->navigate((OLECHAR*)url->c_str(), true))) {
 				break;
 			}

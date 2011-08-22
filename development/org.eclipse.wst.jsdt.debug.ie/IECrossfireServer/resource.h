@@ -21,7 +21,7 @@
 #define IDR_IEDEBUGGER                  104
 #define IDR_CROSSFIRESERVERCLASS        111
 #define IDR_PENDINGSCRIPTLOAD           113
-#define IDR_CROSSFIRESERVERLISTENER     114
+#define IDR_BROWSERCONTEXT     114
 
 // Next default values for new objects
 // 

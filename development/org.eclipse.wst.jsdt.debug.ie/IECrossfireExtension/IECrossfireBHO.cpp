@@ -14,7 +14,9 @@
 #include "IECrossfireBHO.h"
 
 /* initialize constants */
+const UINT IECrossfireBHO::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
 const wchar_t* IECrossfireBHO::ServerWindowClass = L"_IECrossfireServer";
+const wchar_t* IECrossfireBHO::WindowClass = L"_IECrossfireBHOMessageWindow";
 
 const wchar_t* IECrossfireBHO::ABOUT_BLANK = L"about:blank";
 const wchar_t* IECrossfireBHO::DEBUG_START = L"-crossfire-server-port";
@@ -28,6 +30,27 @@ IECrossfireBHO::IECrossfireBHO() {
 	m_server = NULL;
 	m_serverState = STATE_DISCONNECTED;
 	m_webBrowser = NULL;
+
+	/* create a message-only window to receive server state change notifications */
+	HINSTANCE module = GetModuleHandle(NULL);
+	WNDCLASS ex;
+	ex.style = 0;
+	ex.lpfnWndProc = WndProc;
+	ex.cbClsExtra = 0;
+	ex.cbWndExtra = 0;
+	ex.hInstance = module;
+	ex.hIcon = NULL;
+	ex.hCursor = NULL;
+	ex.hbrBackground = NULL;
+	ex.lpszMenuName = NULL;
+	ex.lpszClassName = WindowClass;
+	RegisterClass(&ex);
+	m_messageWindow = CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
+	if (!m_messageWindow) {
+		Logger::error("IECrossfireBHO ctor(): failed to create message-only window", GetLastError());
+	} else {
+		SetWindowLongPtr(m_messageWindow, GWL_USERDATA, (__int3264)(LONG_PTR)this);
+	}
 }
 
 IECrossfireBHO::~IECrossfireBHO() {
@@ -41,6 +64,10 @@ IECrossfireBHO::~IECrossfireBHO() {
 	}
 	if (m_lastUrl) {
 		free(m_lastUrl);
+	}
+	if (m_messageWindow) {
+		DestroyWindow(m_messageWindow);
+		UnregisterClass(WindowClass, GetModuleHandle(NULL));
 	}
 }
 
@@ -224,7 +251,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG d
 	}
 }
 
-/* ICrossfireServerListener */
+/* IBrowserContext */
 
 STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* url, boolean openNewTab) {
 	VARIANT variant_null;
@@ -247,46 +274,6 @@ STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* url, boolean openNewTab) {
 		Logger::error("IECrossfireBHO.navigate(): Navigate2() failed", hr);
 	}
 	return hr;
-}
-
-STDMETHODIMP IECrossfireBHO::serverStateChanged(int state, unsigned int port) {
-	m_serverState = state;
-
-	/* If a connection was just established then create a context on the server for the current page */
-	if (m_serverState != STATE_CONNECTED) {
-		return S_OK;
-	}
-	
-	CComBSTR url = NULL;
-	HRESULT hr = m_webBrowser->get_LocationURL(&url);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.serverStateChanged(): get_LocationURL() failed", hr);
-		return S_OK;
-	}
-
-	DWORD processId = GetCurrentProcessId();
-	hr = m_server->contextCreated(processId, url);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.serverStateChanged(): contextCreated() failed", hr);
-		return S_OK;
-	}
-
-	/*
-	 * If the current page is fully-loaded then inform the server.  If the current
-	 * page is still loading then the server will be notified of its completion
-	 * from the usual OnDocumentComplete listener.
-	 */
-	VARIANT_BOOL busy;
-	hr = m_webBrowser->get_Busy(&busy);
-	if (SUCCEEDED(hr) && !busy) {
-		hr = m_server->contextLoaded(processId);
-		if (FAILED(hr)) {
-			Logger::error("IECrossfireBHO.serverStateChanged(): contextLoaded() failed", hr);
-			return S_OK;
-		}
-	}
-
-	return S_OK;
 }
 
 /* IObjectWithSite */
@@ -366,40 +353,36 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 	if (m_server) {
 		return true;
 	}
-
-	if (!startIfNeeded) {
-		if (!FindWindow(ServerWindowClass, NULL)) {
-			Logger::error("didn't find it, run away");
-			return false;
-		} else {
-			Logger::error("found it, proceed!");
-		}
-	}
-
-	CComPtr<IDispatch> dispatch = NULL;
-	long applicationHwnd = 0;
-	HRESULT hr = m_webBrowser->get_Application(&dispatch);
-	if (SUCCEEDED(hr)) {
-		DISPID dispId;
-		CComBSTR name("HWND");
-		hr = dispatch->GetIDsOfNames(IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispId);
-		if (SUCCEEDED(hr)) {
-			DISPPARAMS params;
-			memset(&params, 0, sizeof(DISPPARAMS));
-			VARIANT variant;
-			hr = dispatch->Invoke(dispId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_PROPERTYGET, &params, &variant, NULL, NULL);
-			if (SUCCEEDED(hr)) {
-				applicationHwnd = variant.lVal;
-			}
-		}
-	}
-	if (!applicationHwnd) {
-		Logger::error("IECrossfireBHO.initServer(): failed to get the application HWND", hr);
+	if (!startIfNeeded && !FindWindow(ServerWindowClass, NULL)) {
 		return false;
 	}
 
+	/* the following is intentionally commented */
+
+//	CComPtr<IDispatch> dispatch = NULL;
+//	long applicationHwnd = 0;
+//	HRESULT hr = m_webBrowser->get_Application(&dispatch);
+//	if (SUCCEEDED(hr)) {
+//		DISPID dispId;
+//		CComBSTR name("HWND");
+//		hr = dispatch->GetIDsOfNames(IID_NULL, &name, 1, LOCALE_SYSTEM_DEFAULT, &dispId);
+//		if (SUCCEEDED(hr)) {
+//			DISPPARAMS params;
+//			memset(&params, 0, sizeof(DISPPARAMS));
+//			VARIANT variant;
+//			hr = dispatch->Invoke(dispId, IID_NULL, LOCALE_SYSTEM_DEFAULT, DISPATCH_PROPERTYGET, &params, &variant, NULL, NULL);
+//			if (SUCCEEDED(hr)) {
+//				applicationHwnd = variant.lVal;
+//			}
+//		}
+//	}
+//	if (!applicationHwnd) {
+//		Logger::error("IECrossfireBHO.initServer(): failed to get the application HWND", hr);
+//		return false;
+//	}
+
 	CLSID clsid;
-	hr = IIDFromString(L"{47836AF4-3E0C-4995-8029-FF931C5A43FC}", &clsid);
+	HRESULT hr = IIDFromString(L"{47836AF4-3E0C-4995-8029-FF931C5A43FC}", &clsid);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.initServer(): IIDFromString() failed[1]", hr);
 		return false;
@@ -417,20 +400,60 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	hr = serverClass->GetServer(applicationHwnd, &m_server);
+	hr = serverClass->GetServer(/*applicationHwnd,*/ &m_server);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.initServer(): GetController() failed", hr);
 		return false;
 	}
 
-	hr = m_server->addListener(GetCurrentProcessId(), static_cast<ICrossfireServerListener*>(this));
+	hr = m_server->registerBrowser(GetCurrentProcessId(), static_cast<IBrowserContext*>(this));
 	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): addListener() failed", hr);
-		/* Cause context events to always be sent to the server */
+		Logger::error("IECrossfireBHO.initServer(): registerBrowser() failed", hr);
+		/* cause context events to always be sent to the server */
 		m_serverState = STATE_CONNECTED;
 	}
 
 	return true;
+}
+
+void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
+	m_serverState = wParam;
+	initServer(false);
+
+	/* If a connection was just established then create a context on the server for the current page */
+
+	if (m_serverState != STATE_CONNECTED) {
+		return;
+	}
+	
+	CComBSTR url = NULL;
+	HRESULT hr = m_webBrowser->get_LocationURL(&url);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.onServerStateChanged(): get_LocationURL() failed", hr);
+		return;
+	}
+
+	DWORD processId = GetCurrentProcessId();
+	hr = m_server->contextCreated(processId, url);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.onServerStateChanged(): contextCreated() failed", hr);
+		return;
+	}
+
+	/*
+	 * If the current page is fully-loaded then inform the server.  If the current
+	 * page is still loading then the server will be notified of its completion
+	 * from the usual OnDocumentComplete listener.
+	 */
+	VARIANT_BOOL busy;
+	hr = m_webBrowser->get_Busy(&busy);
+	if (SUCCEEDED(hr) && !busy) {
+		hr = m_server->contextLoaded(processId);
+		if (FAILED(hr)) {
+			Logger::error("IECrossfireBHO.onServerStateChanged(): contextLoaded() failed", hr);
+			return;
+		}
+	}
 }
 
 bool IECrossfireBHO::startDebugging(unsigned int port) {
@@ -462,3 +485,15 @@ bool IECrossfireBHO::startDebugging(unsigned int port) {
 	return true;
 }
 
+LRESULT CALLBACK IECrossfireBHO::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	if (message == ServerStateChangeMsg) {
+		IECrossfireBHO *pThis = (IECrossfireBHO*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+		if (!pThis) {
+			Logger::error("IECrossfireBHO.WndProc(): GetWindowLongPtr() failed");
+		} else {
+			pThis->onServerStateChanged(wParam, lParam);
+		}
+		return 0;
+	}
+	return DefWindowProc(hWnd, message, wParam, lParam);
+}
