@@ -47,9 +47,9 @@ interface ICrossfireServer : IDispatch {
 	HRESULT contextLoaded([in] DWORD processId);
 	HRESULT getPort([out] unsigned int* value);
 	HRESULT getState([out] int* value);
-	HRESULT registerBrowser([in] DWORD processId, [in] IBrowserContext* listener);
+	HRESULT registerBrowser([in] DWORD processId, [in] IBrowserContext* browser);
 	HRESULT registerContext([in] DWORD processId, [in, string] OLECHAR* url);
-	HRESULT removeBrowser([in] IBrowserContext* listener);
+	HRESULT removeBrowser([in] IBrowserContext* browser);
 	HRESULT setCurrentContext([in] DWORD processId);
 	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
 	HRESULT stop();
@@ -66,7 +66,7 @@ interface ICrossfireServer : IDispatch {
 interface ICrossfireServerClass : IDispatch {
 //	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
 	HRESULT GetServer([out, retval] ICrossfireServer** _value);
-//	HRESULT RemoveServer([in] unsigned long windowHandle);
+	HRESULT RemoveServer([in] unsigned long windowHandle);
 };
 [
 	object,

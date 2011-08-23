@@ -74,17 +74,23 @@ STDMETHODIMP CrossfireServerClass::GetServer(/*unsigned long windowHandle,*/ ICr
 	return S_OK;
 }
 
-/* the following is intentionally commented */
+STDMETHODIMP CrossfireServerClass::RemoveServer(unsigned long windowHandle) {
+	/*
+	 * TEMPORARY CODE: windowHandle is set to a consistent value so that the same
+	 * CrossfireServer is always used.  If this is determined to be the correct
+	 * behavior then this method can be replaced with one that does not receive a
+	 * handle for identifying the specific server.
+	 */
+	windowHandle = 0;
 
-//STDMETHODIMP CrossfireServerClass::RemoveServer(unsigned long windowHandle) {
-//	std::map<unsigned long,ICrossfireServer*>::iterator iterator = m_servers->find(windowHandle);
-//	if (iterator == m_servers->end()) {
-//		Logger::error("CrossfireServerClass.RemoveServer(): unknown windowHandle");
-//		return S_FALSE;
-//	}
-//	m_servers->erase(iterator);
-//	if (!lockCount && m_servers->empty()) {
-//		PostQuitMessage(0);
-//	}
-//	return S_OK;
-//}
+	std::map<unsigned long,ICrossfireServer*>::iterator iterator = m_servers->find(windowHandle);
+	if (iterator == m_servers->end()) {
+		Logger::error("CrossfireServerClass.RemoveServer(): unknown windowHandle");
+		return S_FALSE;
+	}
+	m_servers->erase(iterator);
+	if (!lockCount && m_servers->empty()) {
+		PostQuitMessage(0);
+	}
+	return S_OK;
+}

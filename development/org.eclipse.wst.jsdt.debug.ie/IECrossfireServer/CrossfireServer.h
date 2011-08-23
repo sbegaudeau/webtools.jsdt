@@ -59,9 +59,9 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
 	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
-	virtual HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* listener);
+	virtual HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* browser);
 	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* url);
-	virtual HRESULT STDMETHODCALLTYPE removeBrowser(IBrowserContext* listener);
+	virtual HRESULT STDMETHODCALLTYPE removeBrowser(IBrowserContext* browser);
 	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
 	virtual HRESULT STDMETHODCALLTYPE stop();
@@ -85,13 +85,13 @@ private:
 	virtual void sendPendingEvents();
 
 	CrossfireBPManager* m_bpManager;
+	std::map<DWORD, IBrowserContext*>* m_browsers;
 	WindowsSocketConnection* m_connection;
 	std::map<DWORD, CrossfireContext*>* m_contexts;
 	DWORD m_currentContextPID;
 	bool m_handshakeReceived;
 	std::wstring* m_inProgressPacket;
 	unsigned int m_lastRequestSeq;
-	std::map<DWORD, IBrowserContext*>* m_listeners;
 	HWND m_messageWindow;
 	std::vector<CrossfireEvent*>* m_pendingEvents;
 	unsigned int m_port;

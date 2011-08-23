@@ -49,7 +49,7 @@ public:
 
 	/* ICrossfireServerClass */
 	virtual HRESULT STDMETHODCALLTYPE GetServer(/*unsigned long windowHandle,*/ ICrossfireServer** _value);
-	//virtual HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
+	virtual HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
 
 protected:
 	CrossfireServerClass();
