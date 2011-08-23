@@ -42,7 +42,7 @@ void Logger::log(char* message) {
 		return;
 	}
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(54124); // TODO
+	server_addr.sin_port = htons(54124 /* debug port */); // TODO
 	server_addr.sin_addr = *((struct in_addr *)host->h_addr);
     sendto(sock, message, (int)strlen(message), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
 	closesocket(sock);
