@@ -14,13 +14,13 @@
 #include "ExplorerBar.h"
 
 /* initialize constants */
-const UINT CExplorerBar::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
-const wchar_t* CExplorerBar::ServerWindowClass = L"_IECrossfireServer";
-const wchar_t* CExplorerBar::WindowClass = L"_ExplorerBarMessageWindow";
+const UINT ExplorerBar::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
+const wchar_t* ExplorerBar::ServerWindowClass = L"_IECrossfireServer";
+const wchar_t* ExplorerBar::WindowClass = L"_ExplorerBarMessageWindow";
 
-const wchar_t* CExplorerBar::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
+const wchar_t* ExplorerBar::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
 
-CExplorerBar::CExplorerBar() {
+ExplorerBar::ExplorerBar() {
 	m_hWnd = m_hWndParent = 0;
 	m_pSite = NULL;
 	m_server = NULL;
@@ -30,12 +30,12 @@ CExplorerBar::CExplorerBar() {
 	HKEY key;
 	LONG result = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\IBM\\IECrossfireServer", 0, KEY_QUERY_VALUE, &key);
 	if (result != ERROR_SUCCESS && result != ERROR_FILE_NOT_FOUND) {
-		Logger::error("CExplorerBar ctor: RegOpenKeyEx() failed", result);
+		Logger::error("ExplorerBar ctor: RegOpenKeyEx() failed", result);
 	} else {
 		DWORD size = sizeof(unsigned int);
 		result = RegQueryValueEx(key, L"LastPort", NULL, NULL, (LPBYTE)&m_serverPort, &size);
 		if (result != ERROR_SUCCESS) {
-			Logger::error("CExplorerBar ctor: RegQueryValueEx() failed", result);
+			Logger::error("ExplorerBar ctor: RegQueryValueEx() failed", result);
 		}
 		RegCloseKey(key);
 	}
@@ -59,13 +59,16 @@ CExplorerBar::CExplorerBar() {
 	RegisterClass(&ex);
 	m_messageWindow = CreateWindow(WindowClass, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, module, NULL);
 	if (!m_messageWindow) {
-		Logger::error("CExplorerBar ctor(): failed to create message-only window", GetLastError());
+		Logger::error("ExplorerBar ctor(): failed to create message-only window", GetLastError());
 	} else {
 		SetWindowLongPtr(m_messageWindow, GWL_USERDATA, (__int3264)(LONG_PTR)this);
 	}
 }
 
-CExplorerBar::~CExplorerBar() {
+ExplorerBar::~ExplorerBar() {
+	if (m_server) {
+		m_server->Release();
+	}
 	if (m_messageWindow) {
 		DestroyWindow(m_messageWindow);
 		UnregisterClass(WindowClass, GetModuleHandle(NULL));
@@ -75,11 +78,11 @@ CExplorerBar::~CExplorerBar() {
 
 /* IClassFactory */
 
-STDMETHODIMP CExplorerBar::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject) {
-	CComObject<CExplorerBar>* explorerBar = NULL;
-	HRESULT hr = CComObject<CExplorerBar>::CreateInstance(&explorerBar);
+STDMETHODIMP ExplorerBar::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject) {
+	CComObject<ExplorerBar>* explorerBar = NULL;
+	HRESULT hr = CComObject<ExplorerBar>::CreateInstance(&explorerBar);
 	if (FAILED(hr)) {
-		Logger::error("CExplorerBar.CreateInstance(): CreateInstance() failed", hr);
+		Logger::error("ExplorerBar.CreateInstance(): CreateInstance() failed", hr);
 		return S_FALSE;
 	}
 	explorerBar->AddRef();
@@ -88,13 +91,13 @@ STDMETHODIMP CExplorerBar::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void
 	return hr;
 }
 
-STDMETHODIMP CExplorerBar::LockServer(BOOL fLock) {
+STDMETHODIMP ExplorerBar::LockServer(BOOL fLock) {
 	return S_OK;
 }
 
 /* IObjectWithSite */
 
-STDMETHODIMP CExplorerBar::SetSite(IUnknown *punkSite) {
+STDMETHODIMP ExplorerBar::SetSite(IUnknown *punkSite) {
 	if (m_pSite) {
 		m_pSite->Release();
 		m_pSite = NULL;
@@ -119,7 +122,7 @@ STDMETHODIMP CExplorerBar::SetSite(IUnknown *punkSite) {
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::GetSite(REFIID riid, LPVOID *ppvReturn) {
+STDMETHODIMP ExplorerBar::GetSite(REFIID riid, LPVOID *ppvReturn) {
 	*ppvReturn = NULL;
 	if (m_pSite) {
 		return m_pSite->QueryInterface(riid, ppvReturn);
@@ -129,46 +132,46 @@ STDMETHODIMP CExplorerBar::GetSite(REFIID riid, LPVOID *ppvReturn) {
 
 /* IPersistStream */
 
-STDMETHODIMP CExplorerBar::GetClassID(CLSID *pClassID) {
+STDMETHODIMP ExplorerBar::GetClassID(CLSID *pClassID) {
 	*pClassID = CLSID_ExplorerBar;
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::IsDirty() {
+STDMETHODIMP ExplorerBar::IsDirty() {
 	return S_FALSE;
 }
 
-STDMETHODIMP CExplorerBar::Load(IStream *pStm) {
+STDMETHODIMP ExplorerBar::Load(IStream *pStm) {
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::Save(IStream *pStm, BOOL fClearDirty) {
+STDMETHODIMP ExplorerBar::Save(IStream *pStm, BOOL fClearDirty) {
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::GetSizeMax(ULARGE_INTEGER *pcbSize) {
+STDMETHODIMP ExplorerBar::GetSizeMax(ULARGE_INTEGER *pcbSize) {
 	return E_NOTIMPL;
 }
 
 /* IDeskBand */
 
-STDMETHODIMP CExplorerBar::GetWindow(HWND *phwnd) {
+STDMETHODIMP ExplorerBar::GetWindow(HWND *phwnd) {
 	*phwnd = m_hWnd;
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::ContextSensitiveHelp(BOOL fEnterMode) {
+STDMETHODIMP ExplorerBar::ContextSensitiveHelp(BOOL fEnterMode) {
 	return E_NOTIMPL;
 }
 
-STDMETHODIMP CExplorerBar::ShowDW(BOOL fShow) {
+STDMETHODIMP ExplorerBar::ShowDW(BOOL fShow) {
 	if (m_hWnd) {
 		ShowWindow(m_hWnd, fShow ? SW_SHOW : SW_HIDE);
 	}
     return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::CloseDW(DWORD dwReserved) {
+STDMETHODIMP ExplorerBar::CloseDW(DWORD dwReserved) {
 	ShowWindow(m_hWnd, SW_HIDE);
 	if (IsWindow(m_hWnd)) {
 		DestroyWindow(m_hWnd);
@@ -177,11 +180,11 @@ STDMETHODIMP CExplorerBar::CloseDW(DWORD dwReserved) {
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::ResizeBorderDW(LPCRECT prcBorder, IUnknown *punkToolbarSite, BOOL fReserved) {
+STDMETHODIMP ExplorerBar::ResizeBorderDW(LPCRECT prcBorder, IUnknown *punkToolbarSite, BOOL fReserved) {
 	return E_NOTIMPL;
 }
 
-STDMETHODIMP CExplorerBar::GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBANDINFO *pdbi) {
+STDMETHODIMP ExplorerBar::GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBANDINFO *pdbi) {
 	if (pdbi) {
 		if (pdbi->dwMask & DBIM_MINSIZE) {
 			pdbi->ptMinSize.x = 0;
@@ -223,24 +226,24 @@ STDMETHODIMP CExplorerBar::GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBAN
 
 /* IInputObject */
 
-STDMETHODIMP CExplorerBar::UIActivateIO(BOOL fActivate, LPMSG pMsg) {
+STDMETHODIMP ExplorerBar::UIActivateIO(BOOL fActivate, LPMSG pMsg) {
 	if (fActivate) {
 		SetFocus(m_hWnd);
 	}
 	return S_OK;
 }
 
-STDMETHODIMP CExplorerBar::HasFocusIO() {
+STDMETHODIMP ExplorerBar::HasFocusIO() {
 	return m_bFocus ? S_OK : S_FALSE;
 }
 
-STDMETHODIMP CExplorerBar::TranslateAcceleratorIO(LPMSG pMsg) {
+STDMETHODIMP ExplorerBar::TranslateAcceleratorIO(LPMSG pMsg) {
 	return E_NOTIMPL;
 }
 
 /* ExplorerBar */
 
-void CExplorerBar::createControls() {
+void ExplorerBar::createControls() {
 	m_statusLabel = CreateWindowEx(
 		0,
 		WC_STATIC,
@@ -298,7 +301,6 @@ void CExplorerBar::createControls() {
 		g_hInst,
 		(LPVOID)this);
 	SendMessage(m_portUpDown, UDM_SETRANGE32, 1000, 65534);
-	SendMessage(m_portUpDown, UDM_SETPOS32, 0, m_serverPort);
 
 	m_button = CreateWindowEx(
         0,
@@ -367,7 +369,7 @@ void CExplorerBar::createControls() {
 //	Logger::error("handle: m_hWndParent", (int)m_hWndParent);
 }
 
-bool CExplorerBar::createWindow() {
+bool ExplorerBar::createWindow() {
 	if (!m_hWnd) {
 		if (!m_hWndParent) {
 			return false;
@@ -419,7 +421,7 @@ bool CExplorerBar::createWindow() {
 	return NULL != m_hWnd;
 }
 
-bool CExplorerBar::initServer(bool startIfNeeded) {
+bool ExplorerBar::initServer(bool startIfNeeded) {
 	if (m_server) {
 		return true;
 	}
@@ -476,7 +478,7 @@ bool CExplorerBar::initServer(bool startIfNeeded) {
 	return true;
 }
 
-void CExplorerBar::layoutControls() {
+void ExplorerBar::layoutControls() {
 	int x = SPACING_WIDTH;
 	int y = SPACING_WIDTH;
 	const int BUFFER_SIZE = 64;
@@ -555,6 +557,7 @@ void CExplorerBar::layoutControls() {
 		ShowWindow(m_portText, SW_HIDE);
 		ShowWindow(m_portUpDown, SW_HIDE);
 	} else {
+		SendMessage(m_portUpDown, UDM_SETPOS32, 0, m_serverPort);
 		ShowWindow(m_portText, SW_SHOW);
 		ShowWindow(m_portUpDown, SW_SHOW);
 
@@ -603,7 +606,7 @@ void CExplorerBar::layoutControls() {
 	setErrorText(L"");
 }
 
-bool CExplorerBar::onCommand(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+bool ExplorerBar::onCommand(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	if ((HWND)lParam != m_button) {
 		return true;
 	}
@@ -630,7 +633,7 @@ bool CExplorerBar::onCommand(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 					if (!initServer(true)) {
 						setErrorText(L"Failed to initialize Crossfire server");
 					} else {
-						if (FAILED(m_server->start(port, 54124))) {
+						if (FAILED(m_server->start(port, 54124 /* debug port */))) {
 							setErrorText(L"Failed to start the Crossfire server");
 						}
 					}
@@ -642,14 +645,14 @@ bool CExplorerBar::onCommand(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	return true;
 }
 
-bool CExplorerBar::onNCCreate(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+bool ExplorerBar::onNCCreate(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 	if (!m_hWnd) {
 		m_hWnd = hWnd;
 	}
 	return true;
 }
 
-//bool CExplorerBar::onPaint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
+//bool ExplorerBar::onPaint(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 //	if (hWnd != m_separator) {
 //		return true;
 //	}
@@ -664,9 +667,11 @@ bool CExplorerBar::onNCCreate(HWND hWnd, WPARAM wParam, LPARAM lParam) {
 //    return false;
 //}
 
-void CExplorerBar::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
+void ExplorerBar::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 	m_serverState = wParam;
-	m_serverPort = lParam;
+	if (m_serverState != STATE_DISCONNECTED) {
+		m_serverPort = lParam;
+	}
 	initServer(false);
 	layoutControls();
 
@@ -685,7 +690,7 @@ void CExplorerBar::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 	}
 }
 
-LRESULT CExplorerBar::onWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT ExplorerBar::onWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	bool result = true;
 	if (msg == ServerStateChangeMsg) {
 		onServerStateChanged(wParam, lParam);
@@ -715,7 +720,7 @@ LRESULT CExplorerBar::onWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-void CExplorerBar::setErrorText(wchar_t* text) {
+void ExplorerBar::setErrorText(wchar_t* text) {
 	SetWindowText(m_errorLabel, text);
 	int length = (int)wcslen(text);
 	if (length) {
@@ -738,11 +743,11 @@ void CExplorerBar::setErrorText(wchar_t* text) {
 	}
 }
 
-LRESULT CALLBACK CExplorerBar::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	CExplorerBar *pThis = (CExplorerBar*)GetWindowLongPtr(hWnd, GWL_USERDATA);
+LRESULT CALLBACK ExplorerBar::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	ExplorerBar *pThis = (ExplorerBar*)GetWindowLongPtr(hWnd, GWL_USERDATA);
 	if (!pThis && msg == WM_NCCREATE) {
 		LPCREATESTRUCT lpcs = (LPCREATESTRUCT)lParam;
-		pThis = (CExplorerBar*)(lpcs->lpCreateParams);
+		pThis = (ExplorerBar*)(lpcs->lpCreateParams);
 		SetWindowLongPtr(hWnd, GWL_USERDATA, (__int3264)(LONG_PTR)pThis);
 	}
 

@@ -25,9 +25,9 @@ enum {
 	STATE_CONNECTED,
 };
 
-class ATL_NO_VTABLE CExplorerBar :
+class ATL_NO_VTABLE ExplorerBar :
 	public CComObjectRootEx<CComSingleThreadModel>,
-	public CComCoClass<CExplorerBar, &CLSID_ExplorerBar>,
+	public CComCoClass<ExplorerBar, &CLSID_ExplorerBar>,
 	public IClassFactory,
 	public IObjectWithSite,
 	public IPersistStream,
@@ -36,8 +36,8 @@ class ATL_NO_VTABLE CExplorerBar :
 
 public:
 	DECLARE_REGISTRY_RESOURCEID(IDR_EXPLORERBAR)
-	DECLARE_NOT_AGGREGATABLE(CExplorerBar)
-	BEGIN_COM_MAP(CExplorerBar)
+	DECLARE_NOT_AGGREGATABLE(ExplorerBar)
+	BEGIN_COM_MAP(ExplorerBar)
 		COM_INTERFACE_ENTRY_IID(IID_IInputObject, IInputObject)
 //		COM_INTERFACE_ENTRY(IExplorerBar)
 		COM_INTERFACE_ENTRY(IClassFactory)
@@ -56,8 +56,8 @@ public:
 	}
 
 public:
-	CExplorerBar();
-	~CExplorerBar();
+	ExplorerBar();
+	~ExplorerBar();
 
 	/* IClassFactory */
 	virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
@@ -132,4 +132,4 @@ private:
 	static const int SPACING_WIDTH = 10;
 };
 
-OBJECT_ENTRY_AUTO(__uuidof(ExplorerBar), CExplorerBar)
+OBJECT_ENTRY_AUTO(__uuidof(ExplorerBar), ExplorerBar)
