@@ -476,7 +476,7 @@ bool IECrossfireBHO::startDebugging(unsigned int port) {
 		return false;
 	}
 
-	hr = m_server->start(port, 54124);
+	hr = m_server->start(port, 54124 /* debug port */);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.startDebugging(): start() failed");
 		return false;
