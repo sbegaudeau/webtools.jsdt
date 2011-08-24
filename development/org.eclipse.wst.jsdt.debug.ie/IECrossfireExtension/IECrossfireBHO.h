@@ -85,6 +85,7 @@ private:
 	bool m_eventsHooked;
 	bool m_firstNavigate;
 	wchar_t* m_htmlToDisplay;
+	bool m_isCurrentContext;
 	wchar_t* m_lastUrl;
 	HWND m_messageWindow;
 	ICrossfireServer* m_server;

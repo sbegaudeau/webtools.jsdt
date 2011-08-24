@@ -26,6 +26,7 @@ IECrossfireBHO::IECrossfireBHO() {
 	m_eventsHooked = false;
 	m_firstNavigate = true;
 	m_htmlToDisplay = NULL;
+	m_isCurrentContext = false;
 	m_lastUrl = NULL;
 	m_server = NULL;
 	m_serverState = STATE_DISCONNECTED;
@@ -78,6 +79,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnBeforeNavigate2(IDispatch* pDisp, VARIA
 		return;
 	}
 
+	m_firstNavigate = false;
 	std::wstring string(URL->bstrVal);
 	size_t index = string.find(DEBUG_START);
 	if (index == std::string::npos) {
@@ -210,14 +212,13 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 				/* this is the top-level page frame */
 				wchar_t* url = pvarURL->bstrVal;
 				wchar_t* hash = wcschr(url, wchar_t('#'));
-				if (!hash || m_firstNavigate || wcsncmp(url, m_lastUrl, hash - url) != 0) {
+				if (!hash || !m_lastUrl || wcsncmp(url, m_lastUrl, hash - url) != 0) {
 					DWORD processId = GetCurrentProcessId();
 					HRESULT hr = m_server->contextCreated(processId, url);
 					if (FAILED(hr)) {
 						Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
 					}
 				}
-				m_firstNavigate = false;
 				if (m_lastUrl) {
 					free(m_lastUrl);
 				}
@@ -228,23 +229,13 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 }
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask) {
-	if (m_firstNavigate || getServerState() != STATE_CONNECTED) {
-		return;
-	}
-
-	if (dwFlags != (OLECMDIDF_WINDOWSTATE_USERVISIBLE | OLECMDIDF_WINDOWSTATE_ENABLED)) {
-		return;
-	}
-
-	CComBSTR url = NULL;
-	HRESULT hr = m_webBrowser->get_LocationURL(&url);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.OnWindowStateChanged(): get_LocationURL() failed");
+	m_isCurrentContext = (dwFlags == (OLECMDIDF_WINDOWSTATE_USERVISIBLE | OLECMDIDF_WINDOWSTATE_ENABLED));
+	if (!m_isCurrentContext || getServerState() != STATE_CONNECTED) {
 		return;
 	}
 
 	DWORD processId = GetCurrentProcessId();
-	hr = m_server->setCurrentContext(processId);
+	HRESULT hr = m_server->setCurrentContext(processId);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.OnWindowStateChanged(): setCurrentContext() failed");
 		return;
@@ -451,6 +442,14 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 		hr = m_server->contextLoaded(processId);
 		if (FAILED(hr)) {
 			Logger::error("IECrossfireBHO.onServerStateChanged(): contextLoaded() failed", hr);
+			return;
+		}
+	}
+
+	if (m_isCurrentContext) {
+		hr = m_server->setCurrentContext(processId);
+		if (FAILED(hr)) {
+			Logger::error("IECrossfireBHO.onServerStateChanged(): setCurrentContext() failed", hr);
 			return;
 		}
 	}
