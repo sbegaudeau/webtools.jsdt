@@ -158,7 +158,7 @@ CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServe
 	m_objects = new std::map<unsigned int, JSObject*>;
 	m_pendingScriptLoads = new std::map<IDebugApplicationNode*, PendingScriptLoad*>;
 	m_running = true;
-	m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
+	m_scriptNodes = NULL;
 	m_url = _wcsdup(url);
 	hookDebugger();
 }
@@ -1321,6 +1321,10 @@ DWORD CrossfireContext::getProcessId() {
 }
 
 wchar_t* CrossfireContext::getScriptId(IDebugApplicationNode* node) {
+	if (!m_scriptNodes) {
+		return NULL;
+	}
+
 	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
 	while (iterator != m_scriptNodes->end()) {
 		if (iterator->second == node) {
@@ -1332,6 +1336,10 @@ wchar_t* CrossfireContext::getScriptId(IDebugApplicationNode* node) {
 }
 
 IDebugApplicationNode* CrossfireContext::getScriptNode(wchar_t* name) {
+	if (!m_scriptNodes) {
+		return NULL;
+	}
+
 	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(name);
 	if (iterator == m_scriptNodes->end()) {
 		return NULL;
@@ -1447,7 +1455,7 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 	return true;
 }
 
-bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
+bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bool recurse) {
 	CComBSTR value = NULL;
 	wchar_t* id = NULL;
 	HRESULT hr = applicationNode->GetName(DOCUMENTNAMETYPE_URL, &value);
@@ -1466,6 +1474,10 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
 		} else {
 			id = value.m_str;
 		}
+	}
+
+	if (!m_scriptNodes) {
+		m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
 	}
 
 	/*
@@ -1487,6 +1499,22 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode) {
 		key += qualifierString;
 	}
 	
+	if (recurse) {
+		CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
+		hr = applicationNode->EnumChildren(&nodes);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.registerScript(): EnumChildren() failed", hr);
+		} else {
+			CComPtr<IDebugApplicationNode> current = NULL;
+			ULONG count = 0;
+			hr = nodes->Next(1, &current, &count);
+			while (SUCCEEDED(hr) && count) {
+				registerScript(current, true);
+				hr = nodes->Next(1, &current, &count);
+			}
+		}
+	}
+
 	return true;
 }
 
@@ -1518,7 +1546,7 @@ bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode)
 	m_lastInitializedScriptNode = applicationNode;
 	m_lastInitializedScriptNode->AddRef();
 
-	registerScript(applicationNode);
+	registerScript(applicationNode, false);
 
 	if (!scriptLoaded(applicationNode)) {
 		/*
@@ -2041,34 +2069,63 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 		value_ids->getArrayValues(&ids);
 	}
 
-	Value scriptsArray;
-	scriptsArray.setType(TYPE_ARRAY);
-	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
-	while (iterator != m_scriptNodes->end()) {
-		Value* value = NULL;
-		IDebugApplicationNode* node = iterator->second;
-		bool include = false;
-		if (!ids) {
-			include = true;
-		} else {
-			wchar_t* nodeId = getScriptId(node);
-			int index = 0;
-			Value* current = ids[index++];
-			while (current) {
-				if (current->getType() == TYPE_STRING) {
-					if (wcscmp(nodeId, current->getStringValue()->c_str()) == 0) {
-						include = true;
-						break;
+	/*
+	 * If no scripts have attempted to register yet then this context may have been
+	 * created after its page had already loaded (eg.- before a connection to the
+	 * crossfire server was established).  If the application has a tree of scripts
+	 * then register them now, starting one level below the root.
+	 */
+	if (!m_scriptNodes) {
+		CComPtr<IRemoteDebugApplication> application = NULL;
+		if (getDebugApplication(&application)) {
+			CComPtr<IDebugApplicationNode> rootNode = NULL;
+			HRESULT hr = application->GetRootNode(&rootNode);
+			if (SUCCEEDED(hr)) {
+				CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
+				hr = rootNode->EnumChildren(&nodes);
+				if (SUCCEEDED(hr)) {
+					CComPtr<IDebugApplicationNode> current = NULL;
+					ULONG count = 0;
+					hr = nodes->Next(1, &current, &count);
+					while (SUCCEEDED(hr) && count) {
+						registerScript(current, true);
+						hr = nodes->Next(1, &current, &count);
 					}
 				}
-				current = ids[index++];
 			}
 		}
-		if (include && createValueForScript(node, includeSource, false, &value)) {
-			scriptsArray.addArrayValue(value);
-			delete value;
+	}
+
+	Value scriptsArray;
+	scriptsArray.setType(TYPE_ARRAY);
+	if (m_scriptNodes) {
+		std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+		while (iterator != m_scriptNodes->end()) {
+			Value* value = NULL;
+			IDebugApplicationNode* node = iterator->second;
+			bool include = false;
+			if (!ids) {
+				include = true;
+			} else {
+				wchar_t* nodeId = getScriptId(node);
+				int index = 0;
+				Value* current = ids[index++];
+				while (current) {
+					if (current->getType() == TYPE_STRING) {
+						if (wcscmp(nodeId, current->getStringValue()->c_str()) == 0) {
+							include = true;
+							break;
+						}
+					}
+					current = ids[index++];
+				}
+			}
+			if (include && createValueForScript(node, includeSource, false, &value)) {
+				scriptsArray.addArrayValue(value);
+				delete value;
+			}
+			iterator++;
 		}
-		iterator++;
 	}
 
 	delete[] ids;
