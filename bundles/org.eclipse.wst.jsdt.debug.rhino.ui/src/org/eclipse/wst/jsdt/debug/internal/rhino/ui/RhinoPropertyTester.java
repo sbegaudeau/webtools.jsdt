@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -57,11 +57,11 @@ public class RhinoPropertyTester extends PropertyTester {
 		IJavaScriptElement jselement = (IJavaScriptElement) element.getAdapter(IJavaScriptElement.class);
 		if(jselement != null) {
 			int type = jselement.getElementType();
-			return type == IJavaScriptElement.JAVASCRIPT_UNIT || type == IJavaScriptElement.JAVASCRIPT_UNIT;
+			return type == IJavaScriptElement.JAVASCRIPT_UNIT;
 		}
 		IFile file = (IFile) element.getAdapter(IFile.class);
 		if(file != null) {
-			return file.getFileExtension().equals("js"); //$NON-NLS-1$
+			return "js".equals(file.getFileExtension()); //$NON-NLS-1$
 		}
 		return false;
 	}
