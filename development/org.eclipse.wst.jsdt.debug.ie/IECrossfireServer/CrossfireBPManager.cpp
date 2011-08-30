@@ -87,13 +87,13 @@ int CrossfireBPManager::commandChangeBreakpoints(Value* arguments, IBreakpointTa
 	Value* value_handles = arguments->getObjectValue(CrossfireBreakpoint::KEY_HANDLES);
 	if (!value_handles || value_handles->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'changeBreakpoints' command does not have a valid 'handles' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value* value_attributes = arguments->getObjectValue(CrossfireBreakpoint::KEY_ATTRIBUTES);
 	if (!value_attributes || value_attributes->getType() != TYPE_OBJECT) {
 		*_message = _wcsdup(L"'changeBreakpoints' command does not have a valid 'attributes' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	int code = CODE_OK;
@@ -104,7 +104,7 @@ int CrossfireBPManager::commandChangeBreakpoints(Value* arguments, IBreakpointTa
 	while (value_handle) {
 		if (value_handle->getType() != TYPE_NUMBER || value_handle->getNumberValue() < 1) {
 			*_message = _wcsdup(L"'changeBreakpoints' command specifies an invalid handle value");
-			code = CODE_INVALID_ARGUMENTS;
+			code = CODE_INVALID_ARGUMENT;
 			break;
 		}
 
@@ -113,14 +113,14 @@ int CrossfireBPManager::commandChangeBreakpoints(Value* arguments, IBreakpointTa
 		CrossfireBreakpoint* breakpoint = getBreakpoint(handle);
 		if (!breakpoint) {
 			*_message = _wcsdup(L"'changeBreakpoints' command specifies an unknown breakpoint handle");
-			code = CODE_INVALID_ARGUMENTS;
+			code = CODE_COMMAND_FAILED;
 			break;
 		}
 
 		/* ensure that all attributes can be applied to the current breakpoint */
 		if (!breakpoint->attributesValueIsValid(value_attributes)) {
 			*_message = _wcsdup(L"'changeBreakpoints' command specifies an invalid breakpoint attribute");
-			code = CODE_INVALID_ARGUMENTS;
+			code = CODE_COMMAND_FAILED;
 			break;
 		}
 
@@ -170,7 +170,7 @@ int CrossfireBPManager::commandDeleteBreakpoints(Value* arguments, IBreakpointTa
 	Value* value_handles = arguments->getObjectValue(CrossfireBreakpoint::KEY_HANDLES);
 	if (!value_handles || value_handles->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'deleteBreakpoints' command does not have a valid 'handles' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value** handles = NULL;
@@ -181,7 +181,7 @@ int CrossfireBPManager::commandDeleteBreakpoints(Value* arguments, IBreakpointTa
 		if (value_current->getType() != TYPE_NUMBER || (unsigned int)value_current->getNumberValue() < 1) {
 			*_message = _wcsdup(L"'deleteBreakpoints' command specifies an invalid handle value");
 			delete[] handles;
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 
 		unsigned int handle = (unsigned int)value_current->getNumberValue();
@@ -191,7 +191,7 @@ int CrossfireBPManager::commandDeleteBreakpoints(Value* arguments, IBreakpointTa
 		if (iterator == m_breakpoints->end()) {
 			*_message = _wcsdup(L"'deleteBreakpoints' command specifies an unknown breakpoint handle");
 			delete[] handles;
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_COMMAND_FAILED;
 		}
 		value_current = handles[index++];
 	}
@@ -232,7 +232,7 @@ int CrossfireBPManager::commandGetBreakpoints(Value* arguments, IBreakpointTarge
 	if (value_handles) {
 		if (value_handles->getType() != TYPE_ARRAY) {
 			*_message = _wcsdup(L"'getBreakpoints' command has an invalid 'handles' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		std::vector<CrossfireBreakpoint*> breakpointsCollection;
 		Value** handles = NULL;
@@ -288,7 +288,7 @@ int CrossfireBPManager::commandSetBreakpoints(Value* arguments, IBreakpointTarge
 	Value* value_breakpoints = arguments->getObjectValue(KEY_BREAKPOINTS);
 	if (!value_breakpoints || value_breakpoints->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'setBreakpoints' command does not have a valid 'breakpoints' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	std::vector<CrossfireBreakpoint*> bpObjects;
@@ -355,19 +355,19 @@ int CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint**
 	Value* value_type = arguments->getObjectValue(CrossfireBreakpoint::KEY_TYPE);
 	if (!value_type || value_type->getType() != TYPE_STRING) {
 		*_message = _wcsdup(L"breakpoint creation arguments do not have a valid 'type' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value* value_attributes = arguments->getObjectValue(CrossfireBreakpoint::KEY_ATTRIBUTES);
 	if (value_attributes && value_attributes->getType() != TYPE_OBJECT) {
 		*_message = _wcsdup(L"breakpoint creation arguments have an invalid 'attributes' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value* value_location = arguments->getObjectValue(CrossfireBreakpoint::KEY_LOCATION);
 	if (!value_location || value_location->getType() != TYPE_OBJECT) {
 		*_message = _wcsdup(L"breakpoint creation arguments do not have a valid 'location' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	CrossfireBreakpoint* breakpoint = NULL;
@@ -376,14 +376,14 @@ int CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint**
 		breakpoint = new CrossfireLineBreakpoint();
 	} else {
 		*_message = _wcsdup(L"breakpoint creation arguments specify an unknown 'type' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_COMMAND_FAILED;
 	}
 
 	if (value_attributes) {
 		if (!breakpoint->attributesValueIsValid(value_attributes)) {
 			*_message = _wcsdup(L"breakpoint creation arguments specify an invalid attribute name or value");
 			delete breakpoint;
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_COMMAND_FAILED;
 		}
 		breakpoint->setAttributesFromValue(value_attributes);
 	}
@@ -391,7 +391,7 @@ int CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint**
 	if (!breakpoint->setLocationFromValue(value_location)) {
 		*_message = _wcsdup(L"breakpoint creation arguments do not validly specify a location");
 		delete breakpoint;
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_COMMAND_FAILED;
 	}
 
 	*_result = breakpoint;

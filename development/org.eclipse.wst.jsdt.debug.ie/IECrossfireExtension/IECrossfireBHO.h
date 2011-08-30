@@ -77,7 +77,7 @@ public:
 
 private:
 	virtual bool displayHTML(wchar_t* htmlText);
-	virtual int getServerState();
+//	virtual int getServerState();
 	virtual bool initServer(bool startIfNeeded);
 	virtual void onServerStateChanged(WPARAM wParam, LPARAM lParam);
 	bool startDebugging(unsigned int port);

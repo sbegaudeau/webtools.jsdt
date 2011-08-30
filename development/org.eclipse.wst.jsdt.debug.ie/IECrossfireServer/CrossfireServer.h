@@ -60,8 +60,7 @@ public:
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
 	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
 	virtual HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* browser);
-	virtual HRESULT STDMETHODCALLTYPE registerContext(DWORD processId, OLECHAR* url);
-	virtual HRESULT STDMETHODCALLTYPE removeBrowser(IBrowserContext* browser);
+	virtual HRESULT STDMETHODCALLTYPE removeBrowser(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
 	virtual HRESULT STDMETHODCALLTYPE stop();
@@ -70,6 +69,7 @@ public:
 	virtual void connected();
 	virtual void disconnected();
 	virtual CrossfireBPManager* getBreakpointManager();
+	virtual bool isConnected();
 	virtual void received(wchar_t* msg);
 	virtual void sendEvent(CrossfireEvent* eventObj);
 	virtual void sendResponse(CrossfireResponse* response);

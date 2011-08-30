@@ -161,7 +161,7 @@ CrossfireServer::~CrossfireServer() {
 /* ICrossfireServer */
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* url) {
-	if (m_port == -1) {
+	if (!isConnected()) {
 		return S_FALSE;
 	}
 
@@ -185,21 +185,18 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECH
 		contextDestroyed(processId);
 	}
 
-	HRESULT hr = registerContext(processId, url);
-	if (SUCCEEDED(hr)) {
-		std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
-		CrossfireContext* context = iterator->second;
-		if (scriptNode) {
-			context->scriptInitialized(scriptNode);
-			scriptNode->Release();
-		}
-		eventContextCreated(context);
+	CrossfireContext* context = new CrossfireContext(processId, url, this);
+	m_contexts->insert(std::pair<DWORD,CrossfireContext*> (processId, context));
+	if (scriptNode) {
+		context->scriptInitialized(scriptNode);
+		scriptNode->Release();
 	}
-	return hr;
+	eventContextCreated(context);
+	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD processId) {
-	if (m_port == -1) {
+	if (!isConnected()) {
 		return S_FALSE;
 	}
 
@@ -216,7 +213,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD processId) {
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
-	if (m_port == -1) {
+	if (!isConnected()) {
 		return S_FALSE;
 	}
 
@@ -245,36 +242,32 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::getState(int* value) {
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::registerBrowser(DWORD processId, IBrowserContext* browser) {
+	if (!isConnected()) {
+		return S_FALSE;
+	}
+
 	browser->AddRef();
 	m_browsers->insert(std::pair<DWORD,IBrowserContext*>(processId, browser));
 	return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::registerContext(DWORD processId, OLECHAR* url) {
-	if (m_port == -1) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::removeBrowser(DWORD processId) {
+	if (!isConnected()) {
 		return S_FALSE;
 	}
 
-	CrossfireContext* context = NULL;
-	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
-	if (iterator == m_contexts->end()) {
-		context = new CrossfireContext(processId, url, this);
-		m_contexts->insert(std::pair<DWORD,CrossfireContext*>(processId, context));
-	} else {
-		Logger::error("CrossfireServer.registerContext(): a context already exists for process", processId);
+	std::map<DWORD,IBrowserContext*>::iterator iterator = m_browsers->find(processId);
+	if (iterator == m_browsers->end()) {
+		Logger::error("CrossfireServer.removeBrowser(): browser not registered", processId);
 		return S_FALSE;
 	}
-
-	return S_OK;
-}
-
-HRESULT STDMETHODCALLTYPE CrossfireServer::removeBrowser(IBrowserContext* browser) {
-	// TODO
+	iterator->second->Release();
+	m_browsers->erase(iterator);
 	return S_OK;
 }
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::setCurrentContext(DWORD processId) {
-	if (m_port == -1) {
+	if (!isConnected()) {
 		return S_FALSE;
 	}
 
@@ -354,12 +347,12 @@ void CrossfireServer::connected() {
 }
 
 void CrossfireServer::disconnected() {
+	reset();
 	HWND current = FindWindowEx(HWND_MESSAGE, NULL, NULL, NULL);
 	while (current) {
 		PostMessage(current, ServerStateChangeMsg, STATE_DISCONNECTED, 0);
 		current = FindWindowEx(HWND_MESSAGE, current, NULL, NULL);
 	}
-	reset();
 }
 
 CrossfireBPManager* CrossfireServer::getBreakpointManager() {
@@ -397,6 +390,12 @@ CrossfireContext* CrossfireServer::getRequestContext(CrossfireRequest* request) 
 
 	wchar_t* searchString = (wchar_t*)contextId->c_str();
 	return getContext(searchString);
+}
+
+bool CrossfireServer::isConnected() {
+	int state;
+	getState(&state);
+	return state == STATE_CONNECTED;
 }
 
 bool CrossfireServer::performRequest(CrossfireRequest* request) {
@@ -709,7 +708,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 	Value* value_url = arguments->getObjectValue(KEY_URL);
 	if (!value_url || value_url->getType() != TYPE_STRING) {
 		*_message = _wcsdup(L"'createContext' request does not have a valid 'url' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 	std::wstring* url = value_url->getStringValue();
 
@@ -720,7 +719,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		if (type != TYPE_NULL) {
 			if (type != TYPE_STRING) {
 				*_message = _wcsdup(L"'createContext' request has an invalid 'contextId' value");
-				return CODE_INVALID_ARGUMENTS;
+				return CODE_INVALID_ARGUMENT;
 			}
 			contextId = value_contextId->getStringValue();
 		}
@@ -731,7 +730,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		context = getContext((wchar_t*)contextId->c_str());
 		if (!context) {
 			*_message = _wcsdup(L"'createContext' request specified an unknown 'contextId' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_COMMAND_FAILED;
 		}
 		DWORD processId = context->getProcessId();
 		IBrowserContext* listener = m_browsers->at(processId);
@@ -768,7 +767,7 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'disableTools' request does not have a valid 'tools' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value toolsArray;
@@ -779,9 +778,9 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 	Value* currentValue = values[index];
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
-			*_message = _wcsdup(L"'disableTools' request contains a non-String 'tools' value");
+			*_message = _wcsdup(L"'disableTools' request contains an invalid 'tools' value");
 			delete[] values;
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];
@@ -798,7 +797,7 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
 	if (!value_tools || value_tools->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'enableTools' request does not have a valid 'tools' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	Value toolsArray;
@@ -809,9 +808,9 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 	Value* currentValue = values[index];
 	while (currentValue) {
 		if (currentValue->getType() != TYPE_STRING) {
-			*_message = _wcsdup(L"'enableTools' request contains a non-String 'tools' value");
+			*_message = _wcsdup(L"'enableTools' request contains an invalid 'tools' value");
 			delete[] values;
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		// TODO do something here, add tool object to toolsArray
 		currentValue = values[++index];

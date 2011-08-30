@@ -103,6 +103,7 @@ STDMETHODIMP ExplorerBar::SetSite(IUnknown *punkSite) {
 		m_pSite = NULL;
 	}
 	if (punkSite) {
+		initServer(false);
 		IOleWindow *pOleWindow;
 		m_hWndParent = NULL;
 		if (SUCCEEDED(punkSite->QueryInterface(IID_IOleWindow, (LPVOID*)&pOleWindow))) {
@@ -466,12 +467,12 @@ bool ExplorerBar::initServer(bool startIfNeeded) {
 	hr = m_server->getState(&m_serverState);
 	if (FAILED(hr)) {
 		Logger::error("ExplorerBar.initServer(): getState() failed", hr);
-	} else {
-		if (m_serverState != STATE_DISCONNECTED) {
-			hr = m_server->getPort(&m_serverPort);
-			if (FAILED(hr)) {
-				Logger::error("ExplorerBar.initServer(): getPort() failed", hr);
-			}
+	}
+
+	if (m_serverState != STATE_DISCONNECTED) {
+		hr = m_server->getPort(&m_serverPort);
+		if (FAILED(hr)) {
+			Logger::error("ExplorerBar.initServer(): getPort() failed", hr);
 		}
 	}
 

@@ -58,6 +58,7 @@ IECrossfireBHO::~IECrossfireBHO() {
 	DWORD processId = GetCurrentProcessId();
 	if (m_server) {
 		m_server->contextDestroyed(processId);
+		m_server->removeBrowser(processId);
 		m_server->Release();
 	}
 	if (m_htmlToDisplay) {
@@ -168,7 +169,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 		return;
 	}
 
-	if (getServerState() != STATE_CONNECTED) {
+	if (m_serverState != STATE_CONNECTED) {
 		return;
 	}
 
@@ -194,7 +195,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 }
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VARIANT *pvarURL) {
-	if (getServerState() != STATE_CONNECTED) {
+	if (m_serverState != STATE_CONNECTED) {
 		return;
 	}
 
@@ -230,7 +231,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask) {
 	m_isCurrentContext = (dwFlags == (OLECMDIDF_WINDOWSTATE_USERVISIBLE | OLECMDIDF_WINDOWSTATE_ENABLED));
-	if (!m_isCurrentContext || getServerState() != STATE_CONNECTED) {
+	if (!m_isCurrentContext || m_serverState != STATE_CONNECTED) {
 		return;
 	}
 
@@ -293,6 +294,7 @@ STDMETHODIMP IECrossfireBHO::SetSite(IUnknown* pUnkSite) {
 				Logger::error("IECrossfireBHO.SetSite(): DispEventAdvise() failed", hr);
 			}
 		}
+		initServer(false);
 	} else {
 		if (m_eventsHooked) {
 			HRESULT hr = DispEventUnadvise(m_webBrowser);
@@ -325,20 +327,20 @@ bool IECrossfireBHO::displayHTML(wchar_t* htmlText) {
 	return true;
 }
 
-int IECrossfireBHO::getServerState() {
-	initServer(false);
-	if (!m_server) {
-		return STATE_DISCONNECTED;
-	}
-
-	int state;
-	HRESULT hr = m_server->getState(&state);
-	if (FAILED(hr)) {
-		return STATE_DISCONNECTED;
-	}
-
-	return state;
-}
+//int IECrossfireBHO::getServerState() {
+//	initServer(false);
+//	if (!m_server) {
+//		return STATE_DISCONNECTED;
+//	}
+//
+//	int state;
+//	HRESULT hr = m_server->getState(&state);
+//	if (FAILED(hr)) {
+//		return STATE_DISCONNECTED;
+//	}
+//
+//	return state;
+//}
 
 bool IECrossfireBHO::initServer(bool startIfNeeded) {
 	if (m_server) {
@@ -397,6 +399,11 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 		return false;
 	}
 
+	hr = m_server->getState(&m_serverState);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.initServer(): getState() failed", hr);
+	}
+
 	hr = m_server->registerBrowser(GetCurrentProcessId(), static_cast<IBrowserContext*>(this));
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.initServer(): registerBrowser() failed", hr);
@@ -431,6 +438,13 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 		return;
 	}
 
+	if (m_isCurrentContext) {
+		hr = m_server->setCurrentContext(processId);
+		if (FAILED(hr)) {
+			Logger::error("IECrossfireBHO.onServerStateChanged(): setCurrentContext() failed", hr);
+		}
+	}
+
 	/*
 	 * If the current page is fully-loaded then inform the server.  If the current
 	 * page is still loading then the server will be notified of its completion
@@ -442,14 +456,6 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 		hr = m_server->contextLoaded(processId);
 		if (FAILED(hr)) {
 			Logger::error("IECrossfireBHO.onServerStateChanged(): contextLoaded() failed", hr);
-			return;
-		}
-	}
-
-	if (m_isCurrentContext) {
-		hr = m_server->setCurrentContext(processId);
-		if (FAILED(hr)) {
-			Logger::error("IECrossfireBHO.onServerStateChanged(): setCurrentContext() failed", hr);
 			return;
 		}
 	}
@@ -471,7 +477,7 @@ bool IECrossfireBHO::startDebugging(unsigned int port) {
 		Logger::error("Failed to access the DisableScriptDebuggerIE registry setting", hr);
 	}
 
-	if (!initServer(true) || getServerState() != STATE_DISCONNECTED) {
+	if (!initServer(true) || m_serverState != STATE_DISCONNECTED) {
 		return false;
 	}
 

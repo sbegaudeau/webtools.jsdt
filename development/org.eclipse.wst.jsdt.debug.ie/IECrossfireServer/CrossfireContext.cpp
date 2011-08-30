@@ -1648,7 +1648,7 @@ int CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody, 
 	if (value_fromFrame) {
 		if (value_fromFrame->getType() != TYPE_NUMBER || (unsigned int)value_fromFrame->getNumberValue() < 0) {
 			*_message = _wcsdup(L"'backtrace' command has an invalid 'fromFrame' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		fromFrame = (unsigned int)value_fromFrame->getNumberValue();
 	}
@@ -1658,12 +1658,12 @@ int CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody, 
 	if (value_toFrame) {
 		if (value_toFrame->getType() != TYPE_NUMBER || (unsigned int)value_toFrame->getNumberValue() < 0) {
 			*_message = _wcsdup(L"'backtrace' command has an invalid 'toFrame' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		toFrame = (unsigned int)value_toFrame->getNumberValue();
 		if (toFrame < fromFrame) {
 			*_message = _wcsdup(L"'backtrace' command has 'toFrame' value < 'fromFrame' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 	}
 
@@ -1672,7 +1672,7 @@ int CrossfireContext::commandBacktrace(Value* arguments, Value** _responseBody, 
 	if (value_includeScopes) {
 		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
 			*_message = _wcsdup(L"'backtrace' command has an invalid 'includeScopes' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		includeScopes = value_includeScopes->getBooleanValue();
 	}
@@ -1769,7 +1769,7 @@ int CrossfireContext::commandContinue(Value* arguments, Value** _responseBody, w
 	} else {
 		if (value_action->getType() != TYPE_STRING) {
 			*_message = _wcsdup(L"'continue' command has invalid 'stepaction' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		std::wstring* actionString = value_action->getStringValue();
 		if (actionString->compare(VALUE_IN) == 0) {
@@ -1780,7 +1780,7 @@ int CrossfireContext::commandContinue(Value* arguments, Value** _responseBody, w
 			action = BREAKRESUMEACTION_STEP_OUT;
 		} else {
 			*_message = _wcsdup(L"'continue' command has invalid 'stepaction' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 	}
 
@@ -1826,7 +1826,7 @@ int CrossfireContext::commandEvaluate(Value* arguments, Value** _responseBody, w
 	if (value_frame) {
 		if (value_frame->getType() != TYPE_NUMBER || (unsigned int)value_frame->getNumberValue() < 0) {
 			*_message = _wcsdup(L"'evaluate' command has invalid 'frame' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		frame = (unsigned int)value_frame->getNumberValue();
 	}
@@ -1834,7 +1834,7 @@ int CrossfireContext::commandEvaluate(Value* arguments, Value** _responseBody, w
 	Value* value_expression = arguments->getObjectValue(KEY_EXPRESSION);
 	if (!value_expression || value_expression->getType() != TYPE_STRING) {
 		*_message = _wcsdup(L"'evaluate' command does not have a valid 'expression' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	CComPtr<IRemoteDebugApplicationThread> applicationThread = NULL;
@@ -1901,7 +1901,7 @@ int CrossfireContext::commandFrame(Value* arguments, Value** _responseBody, wcha
 	if (value_includeScopes) {
 		if (value_includeScopes->getType() != TYPE_BOOLEAN) {
 			*_message = _wcsdup(L"'frame' command has an invalid 'includeScopes' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		includeScopes = value_includeScopes->getBooleanValue();
 	}
@@ -1911,7 +1911,7 @@ int CrossfireContext::commandFrame(Value* arguments, Value** _responseBody, wcha
 	if (value_index) {
 		if (value_index->getType() != TYPE_NUMBER || (unsigned int)value_index->getNumberValue() < 0) {
 			*_message = _wcsdup(L"'frame' command has an invalid 'index' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		index = (unsigned int)value_index->getNumberValue();
 	}
@@ -1965,7 +1965,7 @@ int CrossfireContext::commandLookup(Value* arguments, Value** _responseBody, wch
 	Value* value_handles = arguments->getObjectValue(KEY_HANDLES);
 	if (!value_handles || value_handles->getType() != TYPE_ARRAY) {
 		*_message = _wcsdup(L"'lookup' command does not have a valid 'handles' value");
-		return CODE_INVALID_ARGUMENTS;
+		return CODE_INVALID_ARGUMENT;
 	}
 
 	bool includeSource = false;
@@ -1973,7 +1973,7 @@ int CrossfireContext::commandLookup(Value* arguments, Value** _responseBody, wch
 	if (value_includeSource) {
 		if (value_includeSource->getType() != TYPE_BOOLEAN) {
 			*_message = _wcsdup(L"'lookup' command has an invalid 'includeSource' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		includeSource = value_includeSource->getBooleanValue();
 	}
@@ -2054,7 +2054,7 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 	if (value_includeSource) {
 		if (value_includeSource->getType() != TYPE_BOOLEAN) {
 			*_message = _wcsdup(L"'scripts' command has an invalid 'includeSource' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		includeSource = value_includeSource->getBooleanValue();
 	}
@@ -2064,7 +2064,7 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 	if (value_ids) {
 		if (value_ids->getType() != TYPE_ARRAY) {
 			*_message = _wcsdup(L"'scripts' command has an invalid 'urls' value");
-			return CODE_INVALID_ARGUMENTS;
+			return CODE_INVALID_ARGUMENT;
 		}
 		value_ids->getArrayValues(&ids);
 	}
