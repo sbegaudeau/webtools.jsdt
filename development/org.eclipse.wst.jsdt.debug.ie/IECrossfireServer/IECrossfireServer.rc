@@ -13,13 +13,27 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
 // English (Canada) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENC)
-#ifdef _WIN32
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_CAN
 #pragma code_page(1252)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -97,14 +111,14 @@ IDR_IEDEBUGGER          REGISTRY                "IEDebugger.rgs"
 IDR_CROSSFIRESERVER     REGISTRY                "CrossfireServer1.rgs"
 IDR_CROSSFIRESERVERCLASS REGISTRY                "CrossfireServerClass.rgs"
 IDR_PENDINGSCRIPTLOAD   REGISTRY                "PendingScriptLoad.rgs"
-IDR_BROWSERCONTEXT		REGISTRY                "BrowserContext.rgs"
+IDR_BROWSERCONTEXT      REGISTRY                "BrowserContext.rgs"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "IECrossfireServer"
 END

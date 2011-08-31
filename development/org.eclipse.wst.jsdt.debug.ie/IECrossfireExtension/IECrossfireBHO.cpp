@@ -374,20 +374,8 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 //		return false;
 //	}
 
-	CLSID clsid;
-	HRESULT hr = IIDFromString(L"{47836AF4-3E0C-4995-8029-FF931C5A43FC}", &clsid);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): IIDFromString() failed[1]", hr);
-		return false;
-	}
-	IID iid;
-	hr = IIDFromString(L"{F48260BB-C061-4410-9CE1-4C5C7602690E}", &iid);
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): IIDFromString() failed[2]", hr);
-		return false;
-	}
 	CComPtr<ICrossfireServerClass> serverClass = NULL;
-	hr = CoGetClassObject(/*CLSID_CrossfireServer*/clsid, CLSCTX_ALL, 0, /*IID_ICrossfireServerClass*/iid, (LPVOID*)&serverClass);
+	HRESULT hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.initServer(): CoGetClassObject() failed", hr);
 		return false;
@@ -404,11 +392,12 @@ bool IECrossfireBHO::initServer(bool startIfNeeded) {
 		Logger::error("IECrossfireBHO.initServer(): getState() failed", hr);
 	}
 
-	hr = m_server->registerBrowser(GetCurrentProcessId(), static_cast<IBrowserContext*>(this));
-	if (FAILED(hr)) {
-		Logger::error("IECrossfireBHO.initServer(): registerBrowser() failed", hr);
-		/* cause context events to always be sent to the server */
-		m_serverState = STATE_CONNECTED;
+	if (m_serverState == STATE_CONNECTED) {
+		hr = m_server->registerBrowser(GetCurrentProcessId(), this);
+		if (FAILED(hr)) {
+			Logger::error("IECrossfireBHO.initServer(): registerBrowser() failed", hr);
+			/* continue */
+		}
 	}
 
 	return true;
@@ -424,8 +413,14 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 		return;
 	}
 	
+	HRESULT hr = m_server->registerBrowser(GetCurrentProcessId(), this);
+	if (FAILED(hr)) {
+		Logger::error("IECrossfireBHO.onServerStateChanged(): registerBrowser() failed", hr);
+		/* continue */
+	}
+
 	CComBSTR url = NULL;
-	HRESULT hr = m_webBrowser->get_LocationURL(&url);
+	hr = m_webBrowser->get_LocationURL(&url);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.onServerStateChanged(): get_LocationURL() failed", hr);
 		return;

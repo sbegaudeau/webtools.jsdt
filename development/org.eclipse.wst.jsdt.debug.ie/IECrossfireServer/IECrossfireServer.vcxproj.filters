@@ -158,9 +158,6 @@
     <ClInclude Include="IJSEvalHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CrossfireServerListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="CrossfireServer1.rgs">
@@ -182,9 +179,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="BrowserContext.rgs">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="CrossfireServerListener.rgs">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="registry.bin">

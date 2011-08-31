@@ -184,7 +184,6 @@
     <ClInclude Include="CrossfireResponse.h" />
     <ClInclude Include="CrossfireServer.h" />
     <ClInclude Include="CrossfireServerClass.h" />
-    <ClInclude Include="CrossfireServerListener.h" />
     <ClInclude Include="IBreakpointTarget.h" />
     <ClInclude Include="IEDebugger.h" />
     <ClInclude Include="JSEvalCallback.h" />
@@ -202,7 +201,6 @@
     <None Include="CrossfireServer1.rgs" />
     <None Include="CrossfireServerClass.rgs" />
     <None Include="BrowserContext.rgs" />
-    <None Include="CrossfireServerListener.rgs" />
     <None Include="IECrossfireServer.rgs" />
     <None Include="IEDebugger.rgs" />
     <None Include="JSEvalCallback.rgs">

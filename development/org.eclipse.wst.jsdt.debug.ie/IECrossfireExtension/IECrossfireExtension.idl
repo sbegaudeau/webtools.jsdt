@@ -16,7 +16,7 @@ import "ocidl.idl";
 [
 	object,
 	uuid(201244D7-94C6-4fb0-9948-2634523A475B),
-	dual,
+	oleautomation,
 	nonextensible,
 	helpstring("IIECrossfireBHO Interface"),
 	pointer_default(unique)
@@ -25,7 +25,10 @@ interface IIECrossfireBHO : IUnknown {
 };
 [
 	object,
-	uuid(19DAE1A1-1FAA-4D1C-8788-F03260303AEB),
+	uuid(E4121804-5350-4DDD-BE57-9C5B2A13EA29),
+	oleautomation,
+	dual,
+	nonextensible,
 	helpstring("IBrowserContext Interface"),
 	pointer_default(unique)
 ]
@@ -119,7 +122,7 @@ library IECrossfireExtensionLib
 		[default] interface ICrossfireServerClass;
 	};
 	[
-		uuid(260387C9-60BB-4E1E-A1D8-4428488E9421),
+		uuid(2FA65B09-5063-45FA-91F9-50EB7F4AF2C6),
 		helpstring("BrowserContext Class")
 	]
 	coclass BrowserContext

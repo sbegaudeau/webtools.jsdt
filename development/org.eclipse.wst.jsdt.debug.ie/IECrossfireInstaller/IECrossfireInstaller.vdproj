@@ -21,62 +21,44 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
+        "MsmKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
+        "MsmKey" = "8:_5C526B1447F84D0FB59F36D162BE9789"
+        "OwnerKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5C526B1447F84D0FB59F36D162BE9789"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5C526B1447F84D0FB59F36D162BE9789"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5C526B1447F84D0FB59F36D162BE9789"
+        "OwnerKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
+        "MsmKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_629136AD90F9476D9AB899F83106BA6C"
-        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_629136AD90F9476D9AB899F83106BA6C"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_97BD1CB5FA2C47E782E267AFE63D8B0E"
-        "OwnerKey" = "8:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_97BD1CB5FA2C47E782E267AFE63D8B0E"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_97BD1CB5FA2C47E782E267AFE63D8B0E"
-        "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_97BD1CB5FA2C47E782E267AFE63D8B0E"
-        "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A47807AB739CFA6967EC6CF27D596CF1"
-        "OwnerKey" = "8:_135FEE75997E472EBE5334E37A5A865B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -87,20 +69,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
+        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
+        "OwnerKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
+        "OwnerKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E24AA7A6367E47A4BD75F73B2EAAA4A5"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E24AA7A6367E47A4BD75F73B2EAAA4A5"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
-        "OwnerKey" = "8:_5F42F5CFFE6349B99D0F777B803AB909"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
-        "OwnerKey" = "8:_C99F2874BC864A309B70733CEE4BB66B"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -210,26 +204,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A47807AB739CFA6967EC6CF27D596CF1"
-            {
-            "SourcePath" = "8:PSAPI.DLL"
-            "TargetName" = "8:PSAPI.DLL"
-            "Tag" = "8:"
-            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C3E67FD0862F4535B94CCB13D4B57844"
             {
             "SourcePath" = "8:IECrossfireServer.ico"
@@ -327,7 +301,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{A5895F35-ED65-4C30-B8D0-6CB14E54ED83}"
+        "PackageCode" = "8:{CD340A48-ED4B-40AD-B1EC-6F5C0A7968AF}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1014,7 +988,7 @@
                             }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_89543F6C86D5492D9131A7300AB39A4C"
                             {
-                            "Name" = "8:{19DAE1A1-1FAA-4D1C-8788-F03260303AEB}"
+                            "Name" = "8:{E4121804-5350-4DDD-BE57-9C5B2A13EA29}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:FALSE"
                             "DeleteAtUninstall" = "11:FALSE"
@@ -1104,7 +1078,7 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
-                                    "Value" = "8:ICrossfireServerListener"
+                                    "Value" = "8:IBrowserContext"
                                     }
                                 }
                             }
@@ -1303,6 +1277,50 @@
                         }
                         "Values"
                         {
+                        }
+                    }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2D25E30548D542F4B33AE6F44BABCBD1"
+                    {
+                    "Name" = "8:IECrossfireServer.BrowserContext.1"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A4755051F9B94879AD6361D3A1308374"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_5F293AAD63564BCBBC9DA0535905DD42"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{2FA65B09-5063-45FA-91F9-50EB7F4AF2C6}"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6EECB0140A9A4EA2B47F3FD58857401D"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:BrowserContext Class"
+                            }
                         }
                     }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_38003254C8CB4ED4AE5E87F366DE40CC"
@@ -1514,50 +1532,6 @@
                             "Transitive" = "11:FALSE"
                             "ValueTypes" = "3:1"
                             "Value" = "8:CrossfireServerClass Class"
-                            }
-                        }
-                    }
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_485BD53348F143DC9F92B2D8AE30D454"
-                    {
-                    "Name" = "8:IECrossfireServer.CrossfireServerList.1"
-                    "Condition" = "8:"
-                    "AlwaysCreate" = "11:TRUE"
-                    "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:FALSE"
-                        "Keys"
-                        {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_55399287443849DAA30D05349E770C63"
-                            {
-                            "Name" = "8:CLSID"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C548E9A8FADE4D889E252F210F565A2B"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
-                                    }
-                                }
-                            }
-                        }
-                        "Values"
-                        {
-                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B21ECEBACAD14556A43FCD9275C17FFF"
-                            {
-                            "Name" = "8:"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "ValueTypes" = "3:1"
-                            "Value" = "8:CrossfireServerListener Class"
                             }
                         }
                     }
@@ -2372,7 +2346,7 @@
                             }
                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_31FE7680CCAD496880BA404E46BC9342"
                             {
-                            "Name" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
+                            "Name" = "8:{2FA65B09-5063-45FA-91F9-50EB7F4AF2C6}"
                             "Condition" = "8:"
                             "AlwaysCreate" = "11:TRUE"
                             "DeleteAtUninstall" = "11:TRUE"
@@ -2441,7 +2415,7 @@
                                             "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
-                                            "Value" = "8:IECrossfireServer.CrossfireServerListen"
+                                            "Value" = "8:IECrossfireServer.BrowserContext"
                                             }
                                         }
                                     }
@@ -2463,7 +2437,7 @@
                                             "Condition" = "8:"
                                             "Transitive" = "11:FALSE"
                                             "ValueTypes" = "3:1"
-                                            "Value" = "8:IECrossfireServer.CrossfireServerList.1"
+                                            "Value" = "8:IECrossfireServer.BrowserContext.1"
                                             }
                                         }
                                     }
@@ -2498,7 +2472,7 @@
                                     "Condition" = "8:"
                                     "Transitive" = "11:FALSE"
                                     "ValueTypes" = "3:1"
-                                    "Value" = "8:CrossfireServerListener Class"
+                                    "Value" = "8:BrowserContext Class"
                                     }
                                 }
                             }
@@ -3293,6 +3267,72 @@
                             }
                         }
                     }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D6B79D15D35C4F6B8E85A1BE0CE099D9"
+                    {
+                    "Name" = "8:IECrossfireServer.BrowserContext"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_2F787B1D9DFD40A3AD84C50BEE9DA734"
+                            {
+                            "Name" = "8:CurVer"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C68E68F33B4E4355A233450B7BDABD19"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:IECrossfireServer.IBrowserContext.1"
+                                    }
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5B6862B0D817480A9BF9D232525B3BBD"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:TRUE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_B9BD386B695A4F5AB8D855D111CE4398"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{2FA65B09-5063-45FA-91F9-50EB7F4AF2C6}"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_13994CAB3E484AB79A7D86033662E28F"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:BrowserContext Class"
+                            }
+                        }
+                    }
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DDE8E336BE8745C393882C835283FD46"
                     {
                     "Name" = "8:IECrossfireServer.IEDebugger"
@@ -3356,72 +3396,6 @@
                             "Transitive" = "11:FALSE"
                             "ValueTypes" = "3:1"
                             "Value" = "8:IEDebugger Class"
-                            }
-                        }
-                    }
-                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_DEA558B1F5A74B76B651B2B7BDF0212E"
-                    {
-                    "Name" = "8:IECrossfireServer.CrossfireServerListen"
-                    "Condition" = "8:"
-                    "AlwaysCreate" = "11:TRUE"
-                    "DeleteAtUninstall" = "11:TRUE"
-                    "Transitive" = "11:FALSE"
-                        "Keys"
-                        {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_20C6DF4C14934F2D91B72E6EEB670A03"
-                            {
-                            "Name" = "8:CurVer"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C78B22C2A0324E72AFFF3E4411D5EE1D"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:IECrossfireServer.CrossfireServerList.1"
-                                    }
-                                }
-                            }
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_79BC07F9AE9444649B2E79558A5B3B9B"
-                            {
-                            "Name" = "8:CLSID"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:TRUE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C7464EB3ABCE460AAB21EA773C374829"
-                                    {
-                                    "Name" = "8:"
-                                    "Condition" = "8:"
-                                    "Transitive" = "11:FALSE"
-                                    "ValueTypes" = "3:1"
-                                    "Value" = "8:{260387C9-60BB-4E1E-A1D8-4428488E9421}"
-                                    }
-                                }
-                            }
-                        }
-                        "Values"
-                        {
-                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_2FB94913F167494EBE001E530BA48FCA"
-                            {
-                            "Name" = "8:"
-                            "Condition" = "8:"
-                            "Transitive" = "11:FALSE"
-                            "ValueTypes" = "3:1"
-                            "Value" = "8:CrossfireServerListener Class"
                             }
                         }
                     }
@@ -3841,21 +3815,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_629136AD90F9476D9AB899F83106BA6C"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_97BD1CB5FA2C47E782E267AFE63D8B0E"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_5C526B1447F84D0FB59F36D162BE9789"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3869,12 +3829,26 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_E24AA7A6367E47A4BD75F73B2EAAA4A5"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_135FEE75997E472EBE5334E37A5A865B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0F2BD160D0CD47E9ACD9EB10FEED1697"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
+            "SourcePath" = "8:..\\IECrossfireServer\\ReleasePS\\IECrossfireServerPS.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3894,13 +3868,13 @@
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
+            "OutputProjectGuid" = "8:{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_383962F6509D471DBDB2BD3C7B02BBCB"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_15F66E823EB84B5497A9F369FE54E6DA"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -3928,7 +3902,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_45B2DFC9DF4244B8B14D1AA1DBD805E0"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_68B2C602B4B448ADBFC58961A342D06B"
             {
             "SourcePath" = "8:..\\IECrossfireServer\\Release\\IECrossfireServer.exe"
             "TargetName" = "8:"
@@ -3956,9 +3930,9 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5F42F5CFFE6349B99D0F777B803AB909"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A558BCE26AC6426C9ABA48959A6EB3C6"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\ReleasePS\\IECrossfireServerPS.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3975,16 +3949,16 @@
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:2"
+            "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
+            "OutputProjectGuid" = "8:{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_860DFB010DEC44098EA78F14B9FD2E4B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AA4375A840F54EC4A247CB698ADBA7FC"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -4012,7 +3986,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_C99F2874BC864A309B70733CEE4BB66B"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
             {
             "SourcePath" = "8:..\\IECrossfireExtension\\ReleasePS\\IECrossfireExtensionPS.dll"
             "TargetName" = "8:"
@@ -4031,7 +4005,7 @@
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:2"
+            "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}"
