@@ -13,6 +13,10 @@
 #include "StdAfx.h"
 #include "Logger.h"
 
+/* initialize constants */
+const char* Logger::PREAMBLE_LOG = "LOG::";
+const char* Logger::PREAMBLE_ERROR = "ERROR::";
+
 Logger::Logger() {
 }
 
@@ -20,7 +24,12 @@ Logger::~Logger() {
 }
 
 void Logger::error(char* message) {
-	log(message);
+	int length = strlen(PREAMBLE_ERROR) + strlen(message) + 1;
+	char* sendString = new char[length];
+	strcpy_s(sendString, length, PREAMBLE_ERROR);
+	strcat_s(sendString, length, message);
+	send(sendString);
+	delete[] sendString;
 }
 
 void Logger::error(char* message, int errorCode) {
@@ -34,18 +43,12 @@ void Logger::error(char* message, int errorCode) {
 }
 
 void Logger::log(char* message) {
-	SOCKET sock;
-	struct sockaddr_in server_addr;
-	struct hostent *host;
-	host = (struct hostent *)gethostbyname((char *)"127.0.0.1");
-	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-		return;
-	}
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(54124 /* debug port */); // TODO
-	server_addr.sin_addr = *((struct in_addr *)host->h_addr);
-    sendto(sock, message, (int)strlen(message), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
-	closesocket(sock);
+	int length = strlen(PREAMBLE_LOG) + strlen(message) + 1;
+	char* sendString = new char[length];
+	strcpy_s(sendString, length, PREAMBLE_LOG);
+	strcat_s(sendString, length, message);
+	send(sendString);
+	delete[] sendString;
 }
 
 void Logger::log(wchar_t* message) {
@@ -59,4 +62,19 @@ void Logger::log(wchar_t* message) {
 
 void Logger::log(std::wstring* message) {
 	log((wchar_t*)message->c_str());
+}
+
+void Logger::send(char* message) {
+	SOCKET sock;
+	struct sockaddr_in server_addr;
+	struct hostent *host;
+	host = (struct hostent *)gethostbyname((char *)"127.0.0.1");
+	if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
+		return;
+	}
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_port = htons(54124 /* debug port */); // TODO
+	server_addr.sin_addr = *((struct in_addr *)host->h_addr);
+    sendto(sock, message, (int)strlen(message), 0, (struct sockaddr *)&server_addr, sizeof(sockaddr_in));
+	closesocket(sock);
 }

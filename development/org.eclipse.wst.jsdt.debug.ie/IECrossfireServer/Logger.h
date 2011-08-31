@@ -26,4 +26,11 @@ public:
 protected:
 	Logger();
 	~Logger();
+
+private:
+	static void send(char* message);
+
+	/* constants */
+	static const char* PREAMBLE_ERROR;
+	static const char* PREAMBLE_LOG;
 };
