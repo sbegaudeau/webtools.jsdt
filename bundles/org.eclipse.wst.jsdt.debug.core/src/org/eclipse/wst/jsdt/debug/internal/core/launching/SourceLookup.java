@@ -133,7 +133,7 @@ public final class SourceLookup {
 			else {
 				file = doFormat(file, source);
 			}
-			file.setPersistentProperty(SCRIPT_URL, sourceuri.getPath());
+			file.setPersistentProperty(SCRIPT_URL, sourceuri.toString());
 			return file;
 		}
 		return null;
