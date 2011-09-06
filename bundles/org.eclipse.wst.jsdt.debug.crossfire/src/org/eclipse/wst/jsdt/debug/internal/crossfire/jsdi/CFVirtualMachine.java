@@ -18,12 +18,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IMarkerDelta;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IBreakpointListener;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
@@ -34,6 +40,8 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
+import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
+import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Constants;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
@@ -75,15 +83,68 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	public CFVirtualMachine(DebugSession session) {
 		super();
 		this.session = session;
-		IBreakpointManager bpManager = DebugPlugin.getDefault().getBreakpointManager();
-		bpManager.addBreakpointListener(this);
 		initializeBreakpoints();
 	}
 	
 	/**
-	 * Collects all of the breakpoints 
+	 * Synchronizes the set of breakpoints between client and server 
 	 */
 	void initializeBreakpoints() {
+		IBreakpointManager manager = DebugPlugin.getDefault().getBreakpointManager();
+		manager.addBreakpointListener(this);
+		IBreakpoint[] managerBreakpoints = manager.getBreakpoints(JavaScriptDebugModel.MODEL_ID);
+		Vector allBps = new Vector();
+		for (int i = 0; i < managerBreakpoints.length; i++) {
+			IBreakpoint current = managerBreakpoints[i];
+			if (current instanceof JavaScriptLineBreakpoint) {
+				try {
+					JavaScriptLineBreakpoint breakpoint = (JavaScriptLineBreakpoint)current;
+
+					IResource resource = breakpoint.getMarker().getResource();
+					QualifiedName qName = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
+					String url = resource.getPersistentProperty(qName);
+					if (url == null) {
+						String path = breakpoint.getScriptPath();
+						url = JavaScriptDebugPlugin.getExternalScriptPath(new Path(path));
+					}
+					
+					if (url != null) {
+						Map location = new HashMap();
+						location.put(Attributes.LINE, new Integer(breakpoint.getLineNumber()));
+						location.put(Attributes.URL, url);
+						Map attributes = new HashMap();
+						if (breakpoint.isConditionEnabled()) {
+							String condition = breakpoint.getCondition();
+							if (condition != null) {
+								attributes.put(Attributes.CONDITION, condition);
+							}
+						}
+						int hitCount = breakpoint.getHitCount();
+						if (hitCount != -1) {
+							attributes.put(Attributes.HIT_COUNT, new Integer(hitCount));
+						}
+						Map bpMap = new HashMap();
+						bpMap.put(Attributes.TYPE, Attributes.LINE);
+						bpMap.put(Attributes.LOCATION, location);
+						bpMap.put(Attributes.ATTRIBUTES, attributes);
+						allBps.add(bpMap);
+					}
+				} catch (CoreException e) {
+					CrossFirePlugin.log(e);
+				}				
+			}
+		}
+		if (allBps.size() > 0) {
+			CFRequestPacket request = new CFRequestPacket(Commands.SET_BREAKPOINTS, null);
+			request.setArgument(Attributes.BREAKPOINTS, Arrays.asList(allBps.toArray()));
+			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
+			if (!response.isSuccess()) {
+				if(TRACE) {
+					Tracing.writeString("VM [failed setbreakpoints request]: "+JSON.serialize(request)); //$NON-NLS-1$
+				}
+			}
+		}
+		
 		CFRequestPacket request = new CFRequestPacket(Commands.GET_BREAKPOINTS, null);
 		CFResponsePacket response = sendRequest(request);
 		if(response.isSuccess()) {
