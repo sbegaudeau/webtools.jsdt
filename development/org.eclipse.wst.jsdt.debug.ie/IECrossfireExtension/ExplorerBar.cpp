@@ -707,6 +707,9 @@ LRESULT ExplorerBar::onWndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 			result = onNCCreate(hWnd, wParam, lParam);
 			break;
 		}
+		case WM_CTLCOLORSTATIC: {
+			return (LRESULT)GetStockObject(NULL_BRUSH);
+		}
 //		case WM_PAINT: {
 //			result = onPaint(hWnd, wParam, lParam);
 //			break;
