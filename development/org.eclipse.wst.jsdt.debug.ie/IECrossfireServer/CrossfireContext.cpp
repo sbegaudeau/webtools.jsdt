@@ -277,7 +277,7 @@ bool CrossfireContext::breakpointAttributeChanged(unsigned int handle, wchar_t* 
 
 bool CrossfireContext::setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled) {
 	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
-	IDebugApplicationNode* node = getScriptNode((wchar_t*)lineBp->getUrl()->c_str());
+	IDebugApplicationNode* node = getScriptNode((URL*)lineBp->getUrl());
 	if (!node) {
 		Logger::error("CrossfireContext.setBreakpointEnabled(): unknown target url");
 		return false;
@@ -344,7 +344,7 @@ bool CrossfireContext::deleteBreakpoint(unsigned int handle) {
 	}
 	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)iterator->second;
 
-	IDebugApplicationNode* node = getScriptNode((wchar_t*)breakpoint->getUrl()->c_str());
+	IDebugApplicationNode* node = getScriptNode((URL*)breakpoint->getUrl());
 	if (!node) {
 		Logger::error("CrossfireContext.deleteBreakpoint(): unknown target url");
 		return false;
@@ -454,7 +454,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRet
 	if (m_currentScriptNode) {
 		node = m_currentScriptNode;
 	} else {
-		node = getScriptNode((wchar_t*)lineBp->getUrl()->c_str());
+		node = getScriptNode((URL*)lineBp->getUrl());
 		if (!node) {
 			Logger::error("CrossfireContext.setLineBreakpoint(): unknown target url");
 			return false;
@@ -478,27 +478,14 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRet
 	ULONG characterPosition = 0;
 	hr = documentText->GetPositionOfLine(lineBp->getLine() - 1, &characterPosition);
 	if (FAILED(hr)) {
-//		/*
-//		 * In this context E_INVALIDARG failures are often caused by the target document
-//		 * not being adequately loaded yet.  If this is the first attempt to set this
-//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-//		 * later if it is detected that the document load may have completed.
-//		 */
-//		if (!isRetry && hr == E_INVALIDARG) {
-//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-//			if (FAILED(hr)) {
-//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [1]", hr);
-//				return false;
-//			}
-//
-//			if (pendingBreakpoint->init(breakpoint, document, this)) {
-//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-//				m_pendingBreakpoints->push_back(pendingBreakpoint);
-//			}
-//		} else {
+		/*
+		 * In this context E_INVALIDARG failures are often caused by the target document
+		 * not being adequately loaded yet.  If this happens then a subsequent attempt
+		 * to set the breakpoint should be made once its source has loaded.
+		 */
+		if (hr != E_INVALIDARG) {
 			Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfLine() failed [1]", hr);
-//		}
+		}
 		return false;
 	}
 
@@ -512,27 +499,14 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRet
 	CComPtr<IEnumDebugCodeContexts> codeContexts = NULL;
 	hr = documentContext->EnumCodeContexts(&codeContexts);
 	if (FAILED(hr)) {
-//		/*
-//		 * In this context E_INVALIDARG failures are often caused by the target document
-//		 * not being adequately loaded yet.  If this is the first attempt to set this
-//		 * breakpoint then create a pending breakpoint that will attempt to hook itself
-//		 * later if it is detected that the document load may have completed.
-//		 */
-//		if (!isRetry && hr == E_INVALIDARG) {
-//			CComObject<PendingBreakpoint>* pendingBreakpoint = NULL;
-//			HRESULT hr = CComObject<PendingBreakpoint>::CreateInstance(&pendingBreakpoint);
-//			if (FAILED(hr)) {
-//				Logger::error("CrossfireContext.setLineBreakpoint(): CreateInstance(CLSID_PendingBreakpoint) failed [2]", hr);
-//				return false;
-//			}
-//
-//			if (pendingBreakpoint->init(breakpoint, document, this)) {
-//				pendingBreakpoint->AddRef(); /* CComObject::CreateInstance gives initial ref count of 0 */
-//				m_pendingBreakpoints->push_back(pendingBreakpoint);
-//			}
-//		} else {
+		/*
+		 * In this context E_INVALIDARG failures are often caused by the target document
+		 * not being adequately loaded yet.  If this happens then a subsequent attempt
+		 * to set the breakpoint should be made once its source has loaded.
+		 */
+		if (hr != E_INVALIDARG) {
 			Logger::error("CrossfireContext.setLineBreakpoint(): EnumCodeContexts() failed", hr);
-//		}
+		}
 		return false;
 	}
 
@@ -634,7 +608,7 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 		}
 	}
 
-	if (resume && resumeFromBreak()) {
+	if (resume && resumeFromBreak(BREAKRESUMEACTION_CONTINUE)) {
 		return;
 	}
 
@@ -644,7 +618,7 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 	Value value_data;
 	Value location;
 	location.addObjectValue(KEY_LINE, &Value((double)breakpoint->getLine()));
-	location.addObjectValue(KEY_URL, &Value(breakpoint->getUrl()->c_str()));
+	location.addObjectValue(KEY_URL, &Value(((URL*)breakpoint->getUrl())->getString()));
 	value_data.addObjectValue(KEY_LOCATION, &location);
 	Value cause;
 	cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
@@ -658,28 +632,34 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
 	m_running = false;
 
+	/*
+	 * IE has just entered a suspended state.  If any of the steps preceeding the
+	 * sending of the onBreak event fail then a resume (step out) must be done so
+	 * that the server is not left in a suspended state without the client's knowledge.
+	 */
 	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
 	HRESULT hr = pDebugAppThread->EnumStackFrames(&stackFrames);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
 	DebugStackFrameDescriptor stackFrameDescriptor;
 	ULONG numFetched = 0;
-	hr = stackFrames->Next(1,&stackFrameDescriptor,&numFetched);
+	hr = stackFrames->Next(1, &stackFrameDescriptor, &numFetched);
 	if (FAILED(hr) || numFetched != 1) {
 		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames->Next() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
 	IDebugStackFrame* frame = stackFrameDescriptor.pdsf;
 	CComPtr<IDebugCodeContext> codeContext = NULL;
 	hr = frame->GetCodeContext(&codeContext);
-	// TODO This fails if the current position is not in a user document (eg.- following
-	// a return).  Not sure what to do here (send an event with no url/line?  Or no event?)
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetCodeContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
@@ -687,6 +667,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = codeContext->GetDocumentContext(&documentContext);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetDocumentContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
@@ -694,6 +675,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = documentContext->GetDocument(&document);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetDocument() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
@@ -701,6 +683,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): QueryInterface() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
@@ -708,6 +691,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetPositionOfContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 
@@ -715,6 +699,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetLineOfContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
 	lineNumber++;
@@ -723,8 +708,10 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.breakpointHit(): GetName() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
 		return;
 	}
+	URL url(bstrUrl);
 
 	/*
 	 * If the cause of the break is a breakpoint then locate the breakpoint and
@@ -738,9 +725,9 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 			CrossfireBreakpoint* current = iterator->second;
 			if (current->getType() == CrossfireLineBreakpoint::BPTYPE_LINE) {
 				CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)current;
-				if (lineBp->getLine() == lineNumber && wcscmp(lineBp->getUrl()->c_str(), bstrUrl) == 0) {
+				if (lineBp->getLine() == lineNumber && ((URL*)lineBp->getUrl())->isEqual(&url)) {
 					lineBp->breakpointHit();
-					if (!lineBp->matchesHitCount() && resumeFromBreak()) {
+					if (!lineBp->matchesHitCount() && resumeFromBreak(BREAKRESUMEACTION_CONTINUE)) {
 						return;
 					}
 					const std::wstring* conditionString = lineBp->getCondition();
@@ -762,7 +749,7 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	Value data;
 	Value location;
 	location.addObjectValue(KEY_LINE, &Value((double)lineNumber));
-	location.addObjectValue(KEY_URL, &Value(bstrUrl));
+	location.addObjectValue(KEY_URL, &Value(url.getString()));
 	data.addObjectValue(KEY_LOCATION, &location);
 	Value cause;
 	switch (br) {
@@ -799,7 +786,6 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 	data.addObjectValue(KEY_CAUSE, &cause);
 	onBreakEvent.setData(&data);
 	sendEvent(&onBreakEvent);
-	return;
 }
 
 bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value) {
@@ -813,7 +799,6 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	}
 
 	ULONG lineNumber = 0, column;
-	CComBSTR scriptId = NULL;
 	Value* locals = NULL;
 
 	CComPtr<IDebugCodeContext> codeContext = NULL;
@@ -912,11 +897,13 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 		locals->addObjectValue(KEY_THIS, &value_this2);
 	}
 
-	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &scriptId);
+	CComBSTR bstrUrl = NULL;
+	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
 		return false;
 	}
+	URL url(bstrUrl);
 
 	if (!locals) {
 		locals = new Value();
@@ -928,7 +915,7 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 	result->addObjectValue(KEY_INDEX, &Value((double)frameIndex));
 	result->addObjectValue(KEY_LINE, &Value((double)lineNumber + 1));
 	result->addObjectValue(KEY_LOCALS, locals);
-	result->addObjectValue(KEY_URL, &Value(scriptId));
+	result->addObjectValue(KEY_URL, &Value(url.getString()));
 	// TODO includeScopes
 	delete locals;
 
@@ -1053,9 +1040,10 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
 
-	wchar_t* id = getScriptId(node);
-	if (!id) {
+	URL* url = NULL;
+	if (!getScriptUrl(node, &url)) {
 		Logger::error("CrossfireContext.createValueForScript(): unknown script");
+		delete url;
 		return false;
 	}
 
@@ -1063,6 +1051,7 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	HRESULT hr = node->GetDocument(&document);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): GetDocument() failed", hr);
+		delete url;
 		return false;
 	}
 
@@ -1070,6 +1059,7 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): QI(IDebugDocumentText) failed", hr);
+		delete url;
 		return false;
 	}
 
@@ -1078,23 +1068,26 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	hr = documentText->GetSize(&numLines, &numChars);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): GetSize() failed", hr);
+		delete url;
 		return false;
 	}
 	if (failIfEmpty && numChars == 0) {
+		delete url;
 		return false;
 	}
 
 	Value* result = new Value();
-	result->addObjectValue(/*KEY_ID*/ L"url", &Value(id)); // TODO
+	result->addObjectValue(KEY_URL, &Value(url->getString()));
 	result->addObjectValue(KEY_LINEOFFSET, &Value((double)0)); // TODO right?
 	result->addObjectValue(KEY_COLUMNOFFSET, &Value((double)0));
 	result->addObjectValue(KEY_SOURCELENGTH, &Value((double)numChars));
 	result->addObjectValue(KEY_LINECOUNT, &Value((double)numLines));
-	if (wcsstr(id, VALUE_EVALCODE)) {
+	if (wcsstr(url->getString(), VALUE_EVALCODE)) {
 		result->addObjectValue(KEY_TYPE, &Value(VALUE_EVALLEVEL)); // TODO right?
 	} else {
 		result->addObjectValue(KEY_TYPE, &Value(VALUE_TOPLEVEL)); // TODO right?
 	}
+	delete url;
 
 	if (includeSource) {
 		wchar_t* sourceChars = new wchar_t[numChars + 1];
@@ -1320,27 +1313,31 @@ DWORD CrossfireContext::getProcessId() {
 	return m_processId;
 }
 
-wchar_t* CrossfireContext::getScriptId(IDebugApplicationNode* node) {
+bool CrossfireContext::getScriptUrl(IDebugApplicationNode* node, URL** _value) {
+	*_value = NULL;
+
 	if (!m_scriptNodes) {
-		return NULL;
+		return false;
 	}
 
 	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
 	while (iterator != m_scriptNodes->end()) {
 		if (iterator->second == node) {
-			return (wchar_t*)iterator->first.c_str();
+			*_value = new URL((wchar_t*)iterator->first.c_str());
+			return true;
 		}
 		iterator++;
 	}
-	return NULL;
+	return false;
 }
 
-IDebugApplicationNode* CrossfireContext::getScriptNode(wchar_t* name) {
+IDebugApplicationNode* CrossfireContext::getScriptNode(URL* url) {
 	if (!m_scriptNodes) {
 		return NULL;
 	}
 
-	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(name);
+	std::wstring string(url->getString());
+	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(string);
 	if (iterator == m_scriptNodes->end()) {
 		return NULL;
 	}
@@ -1475,6 +1472,7 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 			id = value.m_str;
 		}
 	}
+	URL url(id);
 
 	if (!m_scriptNodes) {
 		m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
@@ -1485,14 +1483,14 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 	 * are not urls.  In this case append a qualifier to the id to make it unique.
 	 */
 	int qualifierIndex = 1;
-	std::wstring key(id);
+	std::wstring key(url.getString());
 	applicationNode->AddRef();
 	while (true) {
 		if (m_scriptNodes->insert(std::pair<std::wstring, IDebugApplicationNode*>(key, applicationNode)).second) {
 			/* script was successfully inserted */
 			break;
 		}
-		key.assign(id);
+		key.assign(url.getString());
 		key += wchar_t('/');
 		wchar_t qualifierString[4];
 		_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
@@ -1518,7 +1516,7 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 	return true;
 }
 
-bool CrossfireContext::resumeFromBreak() {
+bool CrossfireContext::resumeFromBreak(BREAKRESUMEACTION action) {
 	CComPtr<IRemoteDebugApplicationThread> thread = NULL;
 	HRESULT hr = getDebugApplicationThread(&thread);
 	if (FAILED(hr)) {
@@ -1531,7 +1529,7 @@ bool CrossfireContext::resumeFromBreak() {
 		Logger::error("CrossfireContext.resumeFromBreak(): GetApplication() failed", hr);
 		return false;
 	}
-	hr = application->ResumeFromBreakPoint(thread, BREAKRESUMEACTION_CONTINUE, ERRORRESUMEACTION_SkipErrorStatement);
+	hr = application->ResumeFromBreakPoint(thread, action, ERRORRESUMEACTION_SkipErrorStatement);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.resumeFromBreak(): ResumeFromBreakPoint() failed", hr);
 		return false;
@@ -1573,8 +1571,8 @@ bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode)
 bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 	CrossfireBPManager* bpManager = m_server->getBreakpointManager();
 
-	wchar_t* id = getScriptId(applicationNode);
-	if (!id) {
+	URL* url = NULL;
+	if (!getScriptUrl(applicationNode, &url)) {
 		Logger::error("CrossfireContext.scriptLoaded(): unknown script");
 		return false;
 	}
@@ -1585,8 +1583,9 @@ bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 	 * rather than repeatedly looking it up for each IBreakpointTarget invocation.
 	 */
 	m_currentScriptNode = applicationNode;
-	bpManager->setBreakpointsForScript(&std::wstring(id), this);
+	bpManager->setBreakpointsForScript(url, this);
 	m_currentScriptNode = NULL;
+	delete url;
 
 	Value* script = NULL;
 	if (!createValueForScript(applicationNode, false, true, &script)) {
@@ -2107,18 +2106,20 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 			if (!ids) {
 				include = true;
 			} else {
-				wchar_t* nodeId = getScriptId(node);
+				URL* url = NULL;
+				getScriptUrl(node, &url);
 				int index = 0;
 				Value* current = ids[index++];
 				while (current) {
 					if (current->getType() == TYPE_STRING) {
-						if (wcscmp(nodeId, current->getStringValue()->c_str()) == 0) {
+						if (url->isEqual((wchar_t*)current->getStringValue()->c_str())) {
 							include = true;
 							break;
 						}
 					}
 					current = ids[index++];
 				}
+				delete url;
 			}
 			if (include && createValueForScript(node, includeSource, false, &value)) {
 				scriptsArray.addArrayValue(value);

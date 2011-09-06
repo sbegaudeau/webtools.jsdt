@@ -99,21 +99,23 @@ STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
 		return S_FALSE;
 	}
 
-	CComBSTR url = NULL;
-	hr = prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &url);
+	CComBSTR bstrUrl = NULL;
+	hr = prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 	if (FAILED(hr)) {
 		Logger::error("IEDebugger.onAddChild(): GetName() failed", hr);
 		return S_FALSE;
 	}
-	m_adviseCookies->insert(std::pair<std::wstring,DWORD>(std::wstring(url), connectionPointCookie));
+	URL url(bstrUrl);
+	m_adviseCookies->insert(std::pair<std::wstring,DWORD>(std::wstring(url.getString()), connectionPointCookie));
 	return S_OK;
 }
 
 STDMETHODIMP IEDebugger::onRemoveChild(IDebugApplicationNode *prddpChild) {
-	CComBSTR url = NULL;
-	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &url))) {
+	CComBSTR bstrUrl = NULL;
+	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl))) {
 		return S_OK;
 	}
+	URL url(bstrUrl);
 
 	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
 	HRESULT hr = prddpChild->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
@@ -129,7 +131,7 @@ STDMETHODIMP IEDebugger::onRemoveChild(IDebugApplicationNode *prddpChild) {
 	}
 
 	std::pair<std::multimap<std::wstring,DWORD>::iterator,std::multimap<std::wstring,DWORD>::iterator> range;
-	range = m_adviseCookies->equal_range(std::wstring(url));
+	range = m_adviseCookies->equal_range(std::wstring(url.getString()));
 	std::multimap<std::wstring,DWORD>::iterator it;
 	for (it = range.first; it != range.second; ++it) {
 		if (SUCCEEDED(nodeConnectionPoint->Unadvise(it->second))) {

@@ -13,6 +13,7 @@
 #pragma once
 
 #include "Logger.h"
+#include "URL.h"
 class CrossfireLineBreakpoint; // forward declaration
 #include "CrossfireBreakpoint.h"
 
@@ -21,7 +22,7 @@ class CrossfireLineBreakpoint : public CrossfireBreakpoint {
 public:
 	CrossfireLineBreakpoint();
 	virtual ~CrossfireLineBreakpoint();
-	virtual bool appliesToUrl(std::wstring* url);
+	virtual bool appliesToUrl(URL* url);
 	virtual void breakpointHit();
 	virtual void clone(CrossfireBreakpoint** _value);
 	virtual const std::wstring* getCondition();
@@ -29,7 +30,7 @@ public:
 	virtual unsigned int getLine();
 	virtual int getType();
 	virtual const wchar_t* getTypeString();
-	virtual const std::wstring* getUrl();
+	virtual const URL* getUrl();
 	virtual bool isEnabled();
 	virtual bool matchesHitCount();
 	virtual void setCondition(std::wstring* value);
@@ -37,7 +38,7 @@ public:
 	virtual void setHitCount(unsigned int value);
 	virtual void setLine(unsigned int value);
 	virtual bool setLocationFromValue(Value* value);
-	virtual bool setUrl(std::wstring* value);
+	virtual bool setUrl(URL* value);
 
 	/* static methods */
 	static bool CanHandleBPType(wchar_t* type);
@@ -54,7 +55,7 @@ protected:
 private:
 	unsigned int m_hitCounter;
 	unsigned int m_line;
-	std::wstring* m_url;
+	URL* m_url;
 
 	static const wchar_t* BPTYPESTRING_LINE;
 	static const wchar_t* KEY_CONDITION;

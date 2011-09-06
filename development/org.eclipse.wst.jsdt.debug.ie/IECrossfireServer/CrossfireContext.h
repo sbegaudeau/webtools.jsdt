@@ -73,11 +73,11 @@ private:
 	virtual bool evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
-	virtual wchar_t* getScriptId(IDebugApplicationNode* node);
-	virtual IDebugApplicationNode* getScriptNode(wchar_t* name);
+	virtual bool getScriptUrl(IDebugApplicationNode* node, URL** _value);
+	virtual IDebugApplicationNode* getScriptNode(URL* url);
 	virtual bool hookDebugger();
 	virtual bool registerScript(IDebugApplicationNode* applicationNode, bool recurse);
-	virtual bool resumeFromBreak();
+	virtual bool resumeFromBreak(BREAKRESUMEACTION action);
 	virtual void sendEvent(CrossfireEvent* eventObj);
 	virtual bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
 	virtual bool unhookDebugger();

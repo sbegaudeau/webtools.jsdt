@@ -15,6 +15,7 @@
 #include <map>
 
 #include "Logger.h"
+#include "URL.h"
 class CrossfireBreakpoint; // forward declaration
 #include "IBreakpointTarget.h"
 
@@ -22,7 +23,7 @@ class CrossfireBreakpoint {
 
 public:
 	virtual ~CrossfireBreakpoint();
-	virtual bool appliesToUrl(std::wstring* url); // TODO needed?
+	virtual bool appliesToUrl(URL* url); // TODO needed?
 	virtual bool attributesValueIsValid(Value* attributes);
 	virtual void breakpointHit();
 	virtual void clone(CrossfireBreakpoint** _value) = 0;

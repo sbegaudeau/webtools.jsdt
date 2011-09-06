@@ -398,7 +398,7 @@ int CrossfireBPManager::createBreakpoint(Value* arguments, CrossfireBreakpoint**
 	return CODE_OK;
 }
 
-void CrossfireBPManager::setBreakpointsForScript(std::wstring* url, IBreakpointTarget* target) {
+void CrossfireBPManager::setBreakpointsForScript(URL* url, IBreakpointTarget* target) {
 	std::map<unsigned int,CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
 	while (iterator != m_breakpoints->end()) {
 		CrossfireBreakpoint* breakpoint = iterator->second;

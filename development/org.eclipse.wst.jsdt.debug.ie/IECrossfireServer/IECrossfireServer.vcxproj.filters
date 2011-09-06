@@ -82,6 +82,9 @@
     <ClCompile Include="IECrossfireServer_i.c">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="URL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="IECrossfireServer.idl">
@@ -156,6 +159,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="IJSEvalHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="URL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

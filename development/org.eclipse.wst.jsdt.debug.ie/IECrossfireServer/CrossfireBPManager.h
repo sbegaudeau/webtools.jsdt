@@ -30,7 +30,7 @@ public:
 	virtual int commandDeleteBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
 	virtual int commandGetBreakpoints(Value* arguments, IBreakpointTarget* target, Value** _responseBody, wchar_t** _message);
 	virtual int commandSetBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
-	virtual void setBreakpointsForScript(std::wstring* url, IBreakpointTarget* target);
+	virtual void setBreakpointsForScript(URL* url, IBreakpointTarget* target);
 
 	/* IBreakpointTarget methods */
 	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);

@@ -46,8 +46,11 @@ bool CrossfireLineBreakpoint::CanHandleBPType(wchar_t* type) {
 	return wcscmp(type, BPTYPESTRING_LINE) == 0;
 }
 
-bool CrossfireLineBreakpoint::appliesToUrl(std::wstring* url) {
-	return m_url->compare(*url) == 0;
+bool CrossfireLineBreakpoint::appliesToUrl(URL* url) {
+	if (!m_url) {
+		return false;
+	}
+	return m_url->isEqual(url);
 }
 
 bool CrossfireLineBreakpoint::attributeIsValid(wchar_t* name, Value* value) {
@@ -79,7 +82,7 @@ void CrossfireLineBreakpoint::clone(CrossfireBreakpoint** _value) {
 	result->setHitCount(getHitCount());
 	result->setLine(getLine());
 	result->setTarget(getTarget());
-	result->setUrl((std::wstring*)getUrl());
+	result->setUrl((URL*)getUrl());
 	*_value = result;
 }
 
@@ -108,7 +111,7 @@ bool CrossfireLineBreakpoint::getLocationAsValue(Value** _value) {
 		return false;
 	}
 	Value* result = new Value();
-	result->setObjectValue(KEY_URL, &Value(m_url));
+	result->setObjectValue(KEY_URL, &Value(m_url->getString()));
 	result->setObjectValue(KEY_LINE, &Value((double)m_line));
 	*_value = result;
 	return true;
@@ -122,7 +125,7 @@ const wchar_t* CrossfireLineBreakpoint::getTypeString() {
 	return BPTYPESTRING_LINE;
 }
 
-const std::wstring* CrossfireLineBreakpoint::getUrl() {
+const URL* CrossfireLineBreakpoint::getUrl() {
 	return m_url;
 }
 
@@ -175,18 +178,24 @@ bool CrossfireLineBreakpoint::setLocationFromValue(Value* value) {
 		return false;
 	}
 
+	std::wstring* url = value_url->getStringValue();
+	if (!setUrl(&URL((wchar_t*)url->c_str()))) {
+		return false;
+	}
 	setLine((unsigned int)value_line->getNumberValue());
-	setUrl(value_url->getStringValue());
+
 	return true;
 }
 
-bool CrossfireLineBreakpoint::setUrl(std::wstring* value) {
+bool CrossfireLineBreakpoint::setUrl(URL* value) {
 	if (!value) {
 		return false;
 	}
-	if (!m_url) {
-		m_url = new std::wstring;
+
+	if (m_url) {
+		delete m_url;
 	}
-	m_url->assign(*value);
+
+	m_url = new URL(value->getString());
 	return true;
 }

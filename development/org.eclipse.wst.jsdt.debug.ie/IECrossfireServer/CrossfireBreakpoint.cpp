@@ -48,7 +48,7 @@ CrossfireBreakpoint::~CrossfireBreakpoint() {
 	}
 }
 
-bool CrossfireBreakpoint::appliesToUrl(std::wstring* url) {
+bool CrossfireBreakpoint::appliesToUrl(URL* url) {
 	return true;
 }
 

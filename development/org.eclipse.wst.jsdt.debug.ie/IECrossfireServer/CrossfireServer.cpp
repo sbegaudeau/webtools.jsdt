@@ -158,6 +158,7 @@ CrossfireServer::~CrossfireServer() {
 //	}
 }
 
+
 /* ICrossfireServer */
 
 HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* url) {

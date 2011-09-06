@@ -156,6 +156,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="URL.cpp" />
     <ClCompile Include="Value.cpp" />
     <ClCompile Include="WindowsSocketConnection.cpp" />
     <ClCompile Include="IECrossfireServer_i.c">
@@ -193,6 +194,7 @@
     <ClInclude Include="PendingScriptLoad.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="URL.h" />
     <ClInclude Include="Value.h" />
     <ClInclude Include="WindowsSocketConnection.h" />
     <ClInclude Include="IECrossfireServer.h" />
