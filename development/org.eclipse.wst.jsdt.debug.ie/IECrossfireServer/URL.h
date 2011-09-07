@@ -17,12 +17,14 @@
 class URL {
 
 public:
+	URL();
 	URL(wchar_t* value);
 	~URL();
 	wchar_t* getString();
 	bool isEqual(wchar_t* urlString);
 	bool isEqual(URL* url);
 	bool isValid();
+	bool setString(wchar_t* value);
 
 private:
 	bool standardize(std::wstring* url);

@@ -13,6 +13,10 @@
 #include "StdAfx.h"
 #include "URL.h"
 
+URL::URL() {
+	m_value = NULL;
+}
+
 URL::URL(wchar_t* urlString) {
 	m_value = NULL;
 
@@ -63,6 +67,22 @@ bool URL::isEqual(wchar_t* urlString) {
 
 bool URL::isValid() {
 	return m_value != NULL;
+}
+
+bool URL::setString(wchar_t* value) {
+	if (m_value) {
+		delete[] m_value;
+		m_value = NULL;
+	}
+
+	if (value) {
+		std::wstring string(value);
+		if (!standardize(&string)) {
+			return false;
+		}
+		m_value = _wcsdup(string.c_str());
+	}
+	return true;
 }
 
 bool URL::standardize(std::wstring* url) {
