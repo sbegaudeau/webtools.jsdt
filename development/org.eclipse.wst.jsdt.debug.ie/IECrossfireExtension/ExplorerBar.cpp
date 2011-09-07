@@ -445,13 +445,8 @@ bool ExplorerBar::initServer(bool startIfNeeded) {
 		Logger::error("Failed to access the DisableScriptDebuggerIE registry setting", hr);
 	}
 
-	GUID clsid;
-	IIDFromString(OLESTR("{47836AF4-3E0C-4995-8029-FF931C5A43FC}"), &clsid);
-	GUID iid;
-	IIDFromString(OLESTR("{F48260BB-C061-4410-9CE1-4C5C7602690E}"), &iid);
-
 	CComPtr<ICrossfireServerClass> serverClass = NULL;
-	hr = CoGetClassObject(/*CLSID_CrossfireServer*/clsid, CLSCTX_ALL, 0, /*IID_ICrossfireServerClass*/iid, (LPVOID*)&serverClass);
+	hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
 	if (FAILED(hr)) {
 		Logger::error("ExplorerBar.initServer(): CoGetClassObject() failed", hr);
 		return false;
