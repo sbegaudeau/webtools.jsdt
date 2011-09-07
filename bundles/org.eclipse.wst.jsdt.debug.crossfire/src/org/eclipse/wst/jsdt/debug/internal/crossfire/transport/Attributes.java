@@ -192,7 +192,7 @@ public interface Attributes {
 	/**
 	 * The "request_seq" attribute
 	 */
-	public static final String REQUEST_SEQ = "request_seq"; //$NON-NLS-1$
+	public static final String REQUEST_SEQ = "requestSeq"; //$NON-NLS-1$
 	/**
 	 * The "result" attribute
 	 */
