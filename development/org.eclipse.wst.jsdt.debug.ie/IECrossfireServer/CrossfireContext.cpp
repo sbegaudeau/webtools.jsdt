@@ -16,7 +16,9 @@
 #include "JSONParser.h"
 
 /* initialize constants */
+const wchar_t* CrossfireContext::ABOUT_BLANK = L"about:blank";
 const wchar_t* CrossfireContext::ID_PREAMBLE = L"xfIE::";
+const wchar_t* CrossfireContext::SCHEME_JSCRIPT = L"jscript://";
 
 /* command: backtrace */
 const wchar_t* CrossfireContext::COMMAND_BACKTRACE = L"backtrace";
@@ -1455,24 +1457,33 @@ bool CrossfireContext::performRequest(CrossfireRequest* request) {
 bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bool recurse) {
 	CComBSTR value = NULL;
 	wchar_t* id = NULL;
+	URL url;
 	HRESULT hr = applicationNode->GetName(DOCUMENTNAMETYPE_URL, &value);
 	if (SUCCEEDED(hr)) {
-		id = value.m_str;
+		/* don't register about:blank as a script */
+		if (wcscmp(value.m_str, ABOUT_BLANK) == 0) {
+			return false;
+		}
+		url.setString(value.m_str);
 	} else {
 		/*
 		 * Failure to get the URL indicates that the node represents something like a JScript
-		 * block or eval code.  For these cases get the node's title instead and append an
-		 * index which will uniquely distinguish it from other nodes of a similar kind.
+		 * block or eval code.  For these cases get the node's title instead and prepend a
+		 * scheme to make it url-like.
 		 */
 		hr = applicationNode->GetName(DOCUMENTNAMETYPE_TITLE, &value);
 		if (FAILED(hr)) {
 			Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
 			return false;
-		} else {
-			id = value.m_str;
 		}
+		int length = wcslen(SCHEME_JSCRIPT) + wcslen(value.m_str) + 1;
+		wchar_t* string = new wchar_t[length];
+		ZeroMemory(string, length * sizeof(wchar_t));
+		wcscat_s(string, length, SCHEME_JSCRIPT);
+		wcscat_s(string, length, value.m_str);
+		url.setString(string);
+		delete[] string;
 	}
-	URL url(id);
 
 	if (!m_scriptNodes) {
 		m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
@@ -1503,11 +1514,12 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 		if (FAILED(hr)) {
 			Logger::error("CrossfireContext.registerScript(): EnumChildren() failed", hr);
 		} else {
-			CComPtr<IDebugApplicationNode> current = NULL;
+			IDebugApplicationNode* current = NULL;
 			ULONG count = 0;
 			hr = nodes->Next(1, &current, &count);
 			while (SUCCEEDED(hr) && count) {
 				registerScript(current, true);
+				current->Release();
 				hr = nodes->Next(1, &current, &count);
 			}
 		}
@@ -2083,11 +2095,12 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 				CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
 				hr = rootNode->EnumChildren(&nodes);
 				if (SUCCEEDED(hr)) {
-					CComPtr<IDebugApplicationNode> current = NULL;
+					IDebugApplicationNode* current = NULL;
 					ULONG count = 0;
 					hr = nodes->Next(1, &current, &count);
 					while (SUCCEEDED(hr) && count) {
 						registerScript(current, true);
+						current->Release();
 						hr = nodes->Next(1, &current, &count);
 					}
 				}

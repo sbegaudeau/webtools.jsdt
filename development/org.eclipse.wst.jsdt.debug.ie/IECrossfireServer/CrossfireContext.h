@@ -219,5 +219,7 @@ private:
 	static const wchar_t* VALUE_TOPLEVEL;
 
 	/* other */
+	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* ID_PREAMBLE;
+	static const wchar_t* SCHEME_JSCRIPT;
 };
