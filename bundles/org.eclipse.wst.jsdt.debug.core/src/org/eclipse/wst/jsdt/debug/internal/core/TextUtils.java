@@ -34,7 +34,7 @@ public final class TextUtils {
 		if(length > threshold) {
 			int chomp = length - threshold + 3;
 			int begin = Math.round(threshold/2)-1;
-			return string.replaceAll(string.substring(begin, begin+chomp), "..."); //$NON-NLS-1$
+			return string.replace(string.substring(begin, begin+chomp), "..."); //$NON-NLS-1$
 		}
 		return string;
 	}
