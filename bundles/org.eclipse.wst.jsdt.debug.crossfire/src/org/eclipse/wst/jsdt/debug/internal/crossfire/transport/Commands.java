@@ -24,11 +24,11 @@ public interface Commands {
 	/**
 	 * The "changebreakpoint" command
 	 */
-	public static final String CHANGE_BREAKPOINTS = "changebreakpoints"; //$NON-NLS-1$
+	public static final String CHANGE_BREAKPOINTS = "changeBreakpoints"; //$NON-NLS-1$
 	/**
 	 * The "deletebreakpoint" command
 	 */
-	public static final String DELETE_BREAKPOINTS = "deletebreakpoints"; //$NON-NLS-1$
+	public static final String DELETE_BREAKPOINTS = "deleteBreakpoints"; //$NON-NLS-1$
 	/**
 	 * The "continue" command
 	 */
@@ -36,11 +36,11 @@ public interface Commands {
 	/**
 	 * The "disabletools" command
 	 */
-	public static final String DISABLE_TOOLS = "disabletools"; //$NON-NLS-1$
+	public static final String DISABLE_TOOLS = "disableTools"; //$NON-NLS-1$
 	/**
 	 * The "enabletools" command
 	 */
-	public static final String ENABLE_TOOLS = "enabletools"; //$NON-NLS-1$
+	public static final String ENABLE_TOOLS = "enableTools"; //$NON-NLS-1$
 	/**
 	 * The "evaluate" command
 	 */
@@ -52,11 +52,11 @@ public interface Commands {
 	/**
 	 * The "getbreakpoints" command
 	 */
-	public static final String GET_BREAKPOINTS = "getbreakpoints"; //$NON-NLS-1$
+	public static final String GET_BREAKPOINTS = "getBreakpoints"; //$NON-NLS-1$
 	/**
 	 * The "gettools" command
 	 */
-	public static final String GET_TOOLS = "gettools"; //$NON-NLS-1$
+	public static final String GET_TOOLS = "getTools"; //$NON-NLS-1$
 	/**
 	 * The "inspect" command
 	 */
@@ -64,7 +64,7 @@ public interface Commands {
 	/**
 	 * The "listcontexts" command
 	 */
-	public static final String LISTCONTEXTS = "listcontexts"; //$NON-NLS-1$
+	public static final String LISTCONTEXTS = "listContexts"; //$NON-NLS-1$
 	/**
 	 * The "lookup" command
 	 */
@@ -80,7 +80,7 @@ public interface Commands {
 	/**
 	 * The "setbreakpoint" command
 	 */
-	public static final String SET_BREAKPOINTS = "setbreakpoints"; //$NON-NLS-1$
+	public static final String SET_BREAKPOINTS = "setBreakpoints"; //$NON-NLS-1$
 	/**
 	 * The "in" step action
 	 */
@@ -104,7 +104,7 @@ public interface Commands {
 	/** 
 	 * The "createcontext" command
 	 */
-	public static final String CREATE_CONTEXT = "createcontext"; //$NON-NLS-1$
+	public static final String CREATE_CONTEXT = "createContext"; //$NON-NLS-1$
 	/**
 	 * The "version" command
 	 */
