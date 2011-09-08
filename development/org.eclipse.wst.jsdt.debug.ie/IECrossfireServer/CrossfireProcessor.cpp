@@ -22,10 +22,9 @@ const wchar_t* CrossfireProcessor::NAME_BODY = L"body";
 const wchar_t* CrossfireProcessor::NAME_CODE = L"code";
 const wchar_t* CrossfireProcessor::NAME_COMMAND = L"command";
 const wchar_t* CrossfireProcessor::NAME_CONTEXTID = L"contextId";
-const wchar_t* CrossfireProcessor::NAME_DATA = L"data";
 const wchar_t* CrossfireProcessor::NAME_EVENT = L"event";
 const wchar_t* CrossfireProcessor::NAME_MESSAGE = L"message";
-const wchar_t* CrossfireProcessor::NAME_REQUESTSEQ = L"request_seq";
+const wchar_t* CrossfireProcessor::NAME_REQUESTSEQ = L"requestSeq";
 const wchar_t* CrossfireProcessor::NAME_RUNNING = L"running";
 const wchar_t* CrossfireProcessor::NAME_SEQ = L"seq";
 const wchar_t* CrossfireProcessor::NAME_STATUS = L"status";
@@ -66,14 +65,14 @@ bool CrossfireProcessor::createEventPacket(CrossfireEvent* eventObj, std::wstrin
 		value_packet.addObjectValue(NAME_CONTEXTID, &value_null);
 	}
 
-	/* data */
-	Value* dataValue = eventObj->getData();
-	if (dataValue) {
-		if (dataValue->getType() != TYPE_OBJECT) {
-			Logger::error("CrossfireProcessor.createEventPacket(): event has data object of wrong type");
+	/* body */
+	Value* bodyValue = eventObj->getBody();
+	if (bodyValue) {
+		if (bodyValue->getType() != TYPE_OBJECT) {
+			Logger::error("CrossfireProcessor.createEventPacket(): event has body object of wrong type");
 			return false;
 		}
-		value_packet.addObjectValue(NAME_DATA, dataValue);
+		value_packet.addObjectValue(NAME_BODY, bodyValue);
 	}
 
 	/* seq */

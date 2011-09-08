@@ -14,41 +14,41 @@
 #include "CrossfireEvent.h"
 
 CrossfireEvent::CrossfireEvent() : CrossfirePacket() {
-	m_data = NULL;
+	m_body = NULL;
 }
 
 CrossfireEvent::~CrossfireEvent() {
-	if (m_data) {
-		delete m_data;
+	if (m_body) {
+		delete m_body;
 	}
 }
 
 void CrossfireEvent::clone(CrossfirePacket** _value) {
 	CrossfireEvent* result = new CrossfireEvent();
 	result->setContextId(getContextId());
-	result->setData(m_data);
+	result->setBody(m_body);
 	result->setName(getName());
 	*_value = result;
 }
 
-Value* CrossfireEvent::getData() {
-	return m_data;
+Value* CrossfireEvent::getBody() {
+	return m_body;
 }
 
 int CrossfireEvent::getType() {
 	return TYPE_EVENT;
 }
 
-bool CrossfireEvent::setData(Value* value) {
+bool CrossfireEvent::setBody(Value* value) {
 	if (value && value->getType() != TYPE_OBJECT) {
 		return false;
 	}
-	if (m_data) {
-		delete m_data;
-		m_data = NULL;
+	if (m_body) {
+		delete m_body;
+		m_body = NULL;
 	}
 	if (value) {
-		value->clone(&m_data);
+		value->clone(&m_body);
 	}
 	return true;
 }

@@ -43,7 +43,6 @@ private:
 	static const wchar_t* NAME_CODE;
 	static const wchar_t* NAME_COMMAND;
 	static const wchar_t* NAME_CONTEXTID;
-	static const wchar_t* NAME_DATA;
 	static const wchar_t* NAME_EVENT;
 	static const wchar_t* NAME_MESSAGE;
 	static const wchar_t* NAME_REQUESTSEQ;

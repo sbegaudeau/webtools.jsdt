@@ -22,10 +22,10 @@ const wchar_t* CrossfireServer::HEADER_CONTENTLENGTH = L"Content-Length:";
 const wchar_t* CrossfireServer::LINEBREAK = L"\r\n";
 const size_t CrossfireServer::LINEBREAK_LENGTH = 2;
 
-const wchar_t* CrossfireServer::COMMAND_CHANGEBREAKPOINTS = L"changebreakpoints";
-const wchar_t* CrossfireServer::COMMAND_DELETEBREAKPOINTS = L"deletebreakpoints";
-const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINTS = L"getbreakpoints";
-const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINTS = L"setbreakpoints";
+const wchar_t* CrossfireServer::COMMAND_CHANGEBREAKPOINTS = L"changeBreakpoints";
+const wchar_t* CrossfireServer::COMMAND_DELETEBREAKPOINTS = L"deleteBreakpoints";
+const wchar_t* CrossfireServer::COMMAND_GETBREAKPOINTS = L"getBreakpoints";
+const wchar_t* CrossfireServer::COMMAND_SETBREAKPOINTS = L"setBreakpoints";
 
 /* command: createContext */
 const wchar_t* CrossfireServer::COMMAND_CREATECONTEXT = L"createContext";
@@ -40,7 +40,7 @@ const wchar_t* CrossfireServer::COMMAND_ENABLETOOLS = L"enableTools";
 const wchar_t* CrossfireServer::COMMAND_GETTOOLS = L"getTools";
 
 /* command: listContexts */
-const wchar_t* CrossfireServer::COMMAND_LISTCONTEXTS = L"listcontexts";
+const wchar_t* CrossfireServer::COMMAND_LISTCONTEXTS = L"listContexts";
 const wchar_t* CrossfireServer::KEY_CONTEXTS = L"contexts";
 const wchar_t* CrossfireServer::KEY_CURRENT = L"current";
 
@@ -771,8 +771,6 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 		return CODE_INVALID_ARGUMENT;
 	}
 
-	Value toolsArray;
-	toolsArray.setType(TYPE_ARRAY);
 	Value** values = NULL;
 	value_tools->getArrayValues(&values);
 	int index = 0;
@@ -783,13 +781,12 @@ int CrossfireServer::commandDisableTools(Value* arguments, Value** _responseBody
 			delete[] values;
 			return CODE_INVALID_ARGUMENT;
 		}
-		// TODO do something here, add tool object to toolsArray
+		// TODO do something here
 		currentValue = values[++index];
 	}
 	delete[] values;
 
 //	Value* result = new Value();
-//	result->addObjectValue(KEY_TOOLS, &toolsArray);
 //	*_responseBody = result;
 	return CODE_COMMAND_NOT_IMPLEMENTED; // TODO implement
 }
@@ -801,8 +798,6 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 		return CODE_INVALID_ARGUMENT;
 	}
 
-	Value toolsArray;
-	toolsArray.setType(TYPE_ARRAY);
 	Value** values = NULL;
 	value_tools->getArrayValues(&values);
 	int index = 0;
@@ -813,7 +808,7 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 			delete[] values;
 			return CODE_INVALID_ARGUMENT;
 		}
-		// TODO do something here, add tool object to toolsArray
+		// TODO do something here
 		currentValue = values[++index];
 	}
 	delete[] values;
@@ -825,6 +820,14 @@ int CrossfireServer::commandEnableTools(Value* arguments, Value** _responseBody,
 }
 
 int CrossfireServer::commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message) {
+	Value* value_tools = arguments->getObjectValue(KEY_TOOLS);
+	if (value_tools) {
+		if (value_tools->getType() != TYPE_ARRAY) {
+			*_message = _wcsdup(L"'getTools' request has an invalid 'tools' value");
+			return CODE_INVALID_ARGUMENT;
+		}
+	}
+
 	Value toolsArray;
 	toolsArray.setType(TYPE_ARRAY);
 	Value* result = new Value();
@@ -871,40 +874,40 @@ void CrossfireServer::eventClosed() {
 void CrossfireServer::eventContextCreated(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTCREATED);
-	Value data;
-	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
-	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
-	eventObj.setData(&data);
+	Value body;
+	body.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
+	body.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	eventObj.setBody(&body);
 	sendEvent(&eventObj);
 }
 
 void CrossfireServer::eventContextDestroyed(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTDESTROYED);
-	Value data;
-	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
-	eventObj.setData(&data);
+	Value body;
+	body.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	eventObj.setBody(&body);
 	sendEvent(&eventObj);
 }
 
 void CrossfireServer::eventContextLoaded(CrossfireContext* context) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTLOADED);
-	Value data;
-	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
-	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
-	eventObj.setData(&data);
+	Value body;
+	body.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
+	body.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	eventObj.setBody(&body);
 	sendEvent(&eventObj);
 }
 
 void CrossfireServer::eventContextSelected(CrossfireContext* context, CrossfireContext* oldContext) {
 	CrossfireEvent eventObj;
 	eventObj.setName(EVENT_CONTEXTSELECTED);
-	Value data;
-	data.addObjectValue(KEY_OLDCONTEXTID, &Value(&std::wstring(oldContext->getName())));
-	data.addObjectValue(KEY_OLDURL, &Value(&std::wstring(oldContext->getUrl())));
-	data.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
-	data.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
-	eventObj.setData(&data);
+	Value body;
+	body.addObjectValue(KEY_OLDCONTEXTID, &Value(&std::wstring(oldContext->getName())));
+	body.addObjectValue(KEY_OLDURL, &Value(&std::wstring(oldContext->getUrl())));
+	body.addObjectValue(KEY_CONTEXTID, &Value(&std::wstring(context->getName())));
+	body.addObjectValue(KEY_URL, &Value(&std::wstring(context->getUrl())));
+	eventObj.setBody(&body);
 	sendEvent(&eventObj);
 }

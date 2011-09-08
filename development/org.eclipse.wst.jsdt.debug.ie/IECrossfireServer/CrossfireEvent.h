@@ -21,10 +21,10 @@ public:
 	CrossfireEvent();
 	~CrossfireEvent();
 	virtual void clone(CrossfirePacket** _value);
-	virtual Value* getData();
+	virtual Value* getBody();
 	virtual int getType();
-	virtual bool setData(Value* value);
+	virtual bool setBody(Value* value);
 
 private:
-	Value* m_data;
+	Value* m_body;
 };

@@ -403,13 +403,13 @@ bool CrossfireContext::deleteBreakpoint(unsigned int handle) {
 
 	CrossfireEvent toggleEvent;
 	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
-	Value data;
-	data.addObjectValue(KEY_SET, &Value(false));
+	Value body;
+	body.addObjectValue(KEY_SET, &Value(false));
 	Value* value_breakpoint = NULL;
 	breakpoint->toValueObject(&value_breakpoint);
-	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	body.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
 	delete value_breakpoint;
-	toggleEvent.setData(&data);
+	toggleEvent.setBody(&body);
 	sendEvent(&toggleEvent);
 
 	delete iterator->second;
@@ -559,13 +559,13 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRet
 
 	CrossfireEvent toggleEvent;
 	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);
-	Value data;
-	data.addObjectValue(KEY_SET, &Value(true));
+	Value body;
+	body.addObjectValue(KEY_SET, &Value(true));
 	Value* value_breakpoint = NULL;
 	copy->toValueObject(&value_breakpoint);
-	data.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
+	body.addObjectValue(KEY_BREAKPOINT, value_breakpoint);
 	delete value_breakpoint;
-	toggleEvent.setData(&data);
+	toggleEvent.setBody(&body);
 	sendEvent(&toggleEvent);
 	return true;
 }
@@ -617,15 +617,15 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 	CrossfireLineBreakpoint* breakpoint = (CrossfireLineBreakpoint*)data;
 	CrossfireEvent onBreakEvent;
 	onBreakEvent.setName(EVENT_ONBREAK);
-	Value value_data;
+	Value value_body;
 	Value location;
 	location.addObjectValue(KEY_LINE, &Value((double)breakpoint->getLine()));
 	location.addObjectValue(KEY_URL, &Value(((URL*)breakpoint->getUrl())->getString()));
-	value_data.addObjectValue(KEY_LOCATION, &location);
+	value_body.addObjectValue(KEY_LOCATION, &location);
 	Value cause;
 	cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
-	value_data.addObjectValue(KEY_CAUSE, &cause);
-	onBreakEvent.setData(&value_data);
+	value_body.addObjectValue(KEY_CAUSE, &cause);
+	onBreakEvent.setBody(&value_body);
 	sendEvent(&onBreakEvent);
 }
 
@@ -748,11 +748,11 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 
 	CrossfireEvent onBreakEvent;
 	onBreakEvent.setName(EVENT_ONBREAK);
-	Value data;
+	Value body;
 	Value location;
 	location.addObjectValue(KEY_LINE, &Value((double)lineNumber));
 	location.addObjectValue(KEY_URL, &Value(url.getString()));
-	data.addObjectValue(KEY_LOCATION, &location);
+	body.addObjectValue(KEY_LOCATION, &location);
 	Value cause;
 	switch (br) {
 		case BREAKREASON_ERROR: {
@@ -785,8 +785,8 @@ void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThr
 			break;
 		}
 	}
-	data.addObjectValue(KEY_CAUSE, &cause);
-	onBreakEvent.setData(&data);
+	body.addObjectValue(KEY_CAUSE, &cause);
+	onBreakEvent.setBody(&body);
 	sendEvent(&onBreakEvent);
 }
 
@@ -1615,10 +1615,10 @@ bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 
 	CrossfireEvent onScriptEvent;
 	onScriptEvent.setName(EVENT_ONSCRIPT);
-	Value data;
-	data.addObjectValue(KEY_SCRIPT, script);
+	Value body;
+	body.addObjectValue(KEY_SCRIPT, script);
 	delete script;
-	onScriptEvent.setData(&data);
+	onScriptEvent.setBody(&body);
 	sendEvent(&onScriptEvent);
 	return true;
 }
@@ -1814,9 +1814,9 @@ int CrossfireContext::commandContinue(Value* arguments, Value** _responseBody, w
 
 	CrossfireEvent onResumeEvent;
 	onResumeEvent.setName(EVENT_ONRESUME);
-	Value data;
-	data.setType(TYPE_OBJECT);
-	onResumeEvent.setData(&data);
+	Value body;
+	body.setType(TYPE_OBJECT);
+	onResumeEvent.setBody(&body);
 	sendEvent(&onResumeEvent);
 
 	clearObjects();
