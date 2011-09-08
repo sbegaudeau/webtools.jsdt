@@ -109,13 +109,13 @@ public class CFEventPacket extends CFPacket implements Event {
 		super(json);
 		String packetEvent = (String) json.get(EVENT);
 		event = packetEvent.intern();
-		Object data = json.get(Attributes.DATA);
+		Object data = json.get(Attributes.BODY);
 		if(data instanceof Map) {
 			body.putAll((Map) data);
 		}
 		else if(data instanceof String ||
 				data instanceof List) {
-			body.put(Attributes.DATA, data);
+			body.put(Attributes.BODY, data);
 		}
 		
 	}
