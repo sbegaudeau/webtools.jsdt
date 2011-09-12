@@ -203,7 +203,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextDestroyed(DWORD processId) {
 
 	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.contextDestroyed(): unknown context", processId);
+		Logger::log("CrossfireServer.contextDestroyed(): unknown context", processId);
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;
@@ -220,7 +220,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextLoaded(DWORD processId) {
 
 	std::map<DWORD, CrossfireContext*>::iterator iterator = m_contexts->find(processId);
 	if (iterator == m_contexts->end()) {
-		Logger::error("CrossfireServer.contextLoaded(): unknown context", processId);
+		Logger::log("CrossfireServer.contextLoaded(): unknown context", processId);
 		return S_FALSE;
 	}
 	CrossfireContext* context = iterator->second;

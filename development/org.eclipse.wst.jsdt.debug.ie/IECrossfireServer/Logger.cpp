@@ -51,6 +51,16 @@ void Logger::log(char* message) {
 	delete[] sendString;
 }
 
+void Logger::log(char* message, int code) {
+	std::string result;
+	std::stringstream stringStream;
+	stringStream << message;
+	stringStream << ": ";
+	stringStream << code;
+	result.assign(stringStream.str());
+	log((char *)result.c_str());
+}
+
 void Logger::log(wchar_t* message) {
 	size_t newSize = 0;
 	wcstombs_s(&newSize, NULL, 0, message, 0);

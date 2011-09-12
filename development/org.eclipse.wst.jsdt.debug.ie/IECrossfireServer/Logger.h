@@ -20,6 +20,7 @@ public:
 	static void error(char* message);
 	static void error(char* message, int errorCode);
 	static void log(char* message);
+	static void log(char* message, int code);
 	static void log(wchar_t* message);
 	static void log(std::wstring* message);
 
