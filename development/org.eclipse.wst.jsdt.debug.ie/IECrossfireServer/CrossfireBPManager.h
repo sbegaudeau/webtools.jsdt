@@ -37,7 +37,7 @@ public:
 	virtual bool deleteBreakpoint(unsigned int handle);
 	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
 	virtual void getBreakpoints(CrossfireBreakpoint*** ___values);
-	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint, bool isRetry);
+	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint);
 
 private:
 	virtual int createBreakpoint(Value* arguments, CrossfireBreakpoint** _result, wchar_t** _message);

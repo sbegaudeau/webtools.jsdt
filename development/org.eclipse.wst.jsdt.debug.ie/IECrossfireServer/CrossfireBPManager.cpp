@@ -71,11 +71,20 @@ void CrossfireBPManager::getBreakpoints(CrossfireBreakpoint*** ___values) {
 	*___values = breakpoints;
 }
 
-bool CrossfireBPManager::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRetry) {
+bool CrossfireBPManager::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
 	CrossfireLineBreakpoint* copy = NULL;
 	lineBp->clone((CrossfireBreakpoint**)&copy);
-	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(lineBp->getHandle(), copy));
+	unsigned int handle = lineBp->getHandle();
+
+	/* if a breakpoint with a duplicate handle exists then replace it with the new breakpoint */
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+	if (iterator != m_breakpoints->end()) {
+		m_breakpoints->erase(iterator);
+		delete iterator->second;
+	}
+
+	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(handle, copy));
 	return true;
 }
 
@@ -316,14 +325,25 @@ int CrossfireBPManager::commandSetBreakpoints(Value* arguments, IBreakpointTarge
 		std::vector<CrossfireBreakpoint*>::iterator iterator = bpObjects.begin();
 		while (iterator != bpObjects.end()) {
 			CrossfireBreakpoint* breakpoint = *iterator;
+
+			/* search registered breakpoints for a duplicate */
+			std::map<unsigned int,CrossfireBreakpoint*>::iterator iterator2 = m_breakpoints->begin();
+			while (iterator2 != m_breakpoints->end()) {
+				CrossfireBreakpoint* current = iterator2->second;
+				if (current->matchesLocation(breakpoint)) {
+					breakpoint->setHandle(current->getHandle());
+					break;
+				}
+				iterator2++;
+			}
 			breakpoint->setTarget(this);
-			setBreakpoint(breakpoint, false);
+			setBreakpoint(breakpoint);
 			if (targets) {
 				int index = 0;
 				IBreakpointTarget* current = targets[index++];
 				while (current != NULL) {
 					breakpoint->setTarget(current);
-					current->setBreakpoint(breakpoint, false);
+					current->setBreakpoint(breakpoint);
 					current = targets[index++];
 				}
 			}
@@ -332,18 +352,13 @@ int CrossfireBPManager::commandSetBreakpoints(Value* arguments, IBreakpointTarge
 			breakpoint->toValueObject(&value_breakpoint);
 			value_array.addArrayValue(value_breakpoint);
 			delete value_breakpoint;
+			delete *iterator;
 			iterator++;
 		}
 
 		Value* result = new Value();
 		result->addObjectValue(KEY_BREAKPOINTS, &value_array);
 		*_responseBody = result;
-	}
-
-	std::vector<CrossfireBreakpoint*>::iterator iterator = bpObjects.begin();
-	while (iterator != bpObjects.end()) {
-		delete *iterator;
-		iterator++;
 	}
 
 	return code;
@@ -403,7 +418,7 @@ void CrossfireBPManager::setBreakpointsForScript(URL* url, IBreakpointTarget* ta
 	while (iterator != m_breakpoints->end()) {
 		CrossfireBreakpoint* breakpoint = iterator->second;
 		if (breakpoint->appliesToUrl(url)) {
-			bool success = target->setBreakpoint(breakpoint, false);
+			bool success = target->setBreakpoint(breakpoint);
 			// TODO it looks like the result of the above line was to be used for something
 		}
 		iterator++;

@@ -31,8 +31,10 @@ public:
 	virtual unsigned int getHandle();
 	virtual IBreakpointTarget* getTarget();
 	virtual int getType() = 0;
+	virtual bool matchesLocation(CrossfireBreakpoint* breakpoint) = 0;
 	virtual void setAttributesFromValue(Value* value);
 	virtual void setContextId(std::wstring* value);
+	virtual void setHandle(unsigned int value);
 	virtual bool setLocationFromValue(Value* value) = 0;
 	virtual void setTarget(IBreakpointTarget* value);
 	virtual bool toValueObject(Value** _value);

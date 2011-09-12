@@ -149,6 +149,10 @@ void CrossfireBreakpoint::setContextId(std::wstring* value) {
 	}
 }
 
+void CrossfireBreakpoint::setHandle(unsigned int value) {
+	m_handle = value;
+}
+
 void CrossfireBreakpoint::setTarget(IBreakpointTarget* value) {
 	m_target = value;
 }

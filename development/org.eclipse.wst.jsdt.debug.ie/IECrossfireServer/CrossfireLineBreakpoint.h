@@ -33,6 +33,7 @@ public:
 	virtual const URL* getUrl();
 	virtual bool isEnabled();
 	virtual bool matchesHitCount();
+	virtual bool matchesLocation(CrossfireBreakpoint* breakpoint);
 	virtual void setCondition(std::wstring* value);
 	virtual void setEnabled(bool value);
 	virtual void setHitCount(unsigned int value);

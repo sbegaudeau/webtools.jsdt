@@ -272,6 +272,14 @@ bool CrossfireContext::breakpointAttributeChanged(unsigned int handle, wchar_t* 
 	if (wcscmp(name, CrossfireLineBreakpoint::ATTRIBUTE_ENABLED) == 0) {
 		return setBreakpointEnabled((CrossfireLineBreakpoint*)breakpoint, value->getBooleanValue());
 	}
+	if (wcscmp(name, CrossfireLineBreakpoint::ATTRIBUTE_CONDITION) == 0) {
+		((CrossfireLineBreakpoint*)breakpoint)->setCondition(value->getStringValue());
+		return true;
+	}
+	if (wcscmp(name, CrossfireLineBreakpoint::ATTRIBUTE_HITCOUNT) == 0) {
+		((CrossfireLineBreakpoint*)breakpoint)->setHitCount((unsigned int)value->getNumberValue());
+		return true;
+	}
 
 	/* receiver does not do anything for any other breakpoint attributes, so just answer success */
 	return true;
@@ -441,7 +449,7 @@ void CrossfireContext::getBreakpoints(CrossfireBreakpoint*** ___values) {
 	*___values = breakpoints;
 }
 
-bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRetry) {
+bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	// TODO uncomment the following once Refreshes cause new contexts to be created
 
 //	unsigned int handle = breakpoint->getHandle();
@@ -551,11 +559,19 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint, bool isRet
 		return false;
 	}
 
+	/* if a breakpoint with a duplicate handle exists then replace it with the new breakpoint */
+	unsigned int handle = lineBp->getHandle();
+	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
+	if (iterator != m_breakpoints->end()) {
+		m_breakpoints->erase(iterator);
+		delete iterator->second;
+	}
+
 	CrossfireLineBreakpoint* copy = NULL;
-	breakpoint->clone((CrossfireBreakpoint**)&copy);
+	lineBp->clone((CrossfireBreakpoint**)&copy);
 	copy->setLine(bpLineNumber + 1);
 	copy->setContextId(&std::wstring(m_name));
-	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(breakpoint->getHandle(), copy));
+	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(handle, copy));
 
 	CrossfireEvent toggleEvent;
 	toggleEvent.setName(EVENT_ONTOGGLEBREAKPOINT);

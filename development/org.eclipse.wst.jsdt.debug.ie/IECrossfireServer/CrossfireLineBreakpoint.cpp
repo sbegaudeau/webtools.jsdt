@@ -145,6 +145,23 @@ bool CrossfireLineBreakpoint::matchesHitCount() {
 	return hitCount == m_hitCounter;
 }
 
+bool CrossfireLineBreakpoint::matchesLocation(CrossfireBreakpoint* breakpoint) {
+	if (!m_url) {
+		return false;
+	}
+	if (breakpoint->getType() != BPTYPE_LINE) {
+		return false;
+	}
+	CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)breakpoint;
+	if (lineBp->getLine() != m_line) {
+		return false;
+	}
+	if (!m_url->isEqual((URL*)lineBp->getUrl())) {
+		return false;
+	}
+	return true;
+}
+
 void CrossfireLineBreakpoint::setCondition(std::wstring* value) {
 	if (!value) {
 		Value value_null;
