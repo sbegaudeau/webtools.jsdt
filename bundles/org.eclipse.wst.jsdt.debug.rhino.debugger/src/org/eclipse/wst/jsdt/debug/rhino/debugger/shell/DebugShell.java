@@ -97,7 +97,7 @@ public final class DebugShell {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("Rhino debugger\n"); //$NON-NLS-1$
 		buffer.append("Start at time: ").append(getStartAtDate()); //$NON-NLS-1$
-		buffer.append("\nListening to socket on"); //$NON-NLS-1$
+		buffer.append("\nListening to socket on "); //$NON-NLS-1$
 		buffer.append("port: ").append(port); //$NON-NLS-1$
 		if (suspended) {
 			buffer.append("\nStarted suspended - waiting for client resume..."); //$NON-NLS-1$

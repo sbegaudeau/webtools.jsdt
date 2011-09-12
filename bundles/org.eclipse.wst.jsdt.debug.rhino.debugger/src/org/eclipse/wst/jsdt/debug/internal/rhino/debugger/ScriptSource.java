@@ -182,9 +182,11 @@ public class ScriptSource {
 	void clearBreakpoints(RhinoDebuggerImpl debugger) {
 		if(this.lines != null) {
 			for (int i = 0; i < this.lines.length; i++) {
-				Breakpoint bp = lines[i].breakpoint;
-				if(bp != null) {
-					debugger.clearBreakpoint(bp.breakpointId);
+				if(lines[i] != null) {
+					Breakpoint bp = lines[i].breakpoint;
+					if(bp != null) {
+						debugger.clearBreakpoint(bp.breakpointId);
+					}
 				}
 			}
 		}
@@ -277,13 +279,13 @@ public class ScriptSource {
 		result.put(JSONConstants.SOURCE, source);
 		result.put(JSONConstants.GENERATED, Boolean.valueOf(generated));
 		if(lines != null) {
-		HashSet lineNumbers = new HashSet();
-		for (int i = 0; i < lines.length; i++) {
-			if(lines[i] != null) {
-				lineNumbers.add(new Integer(i));
+			HashSet lineNumbers = new HashSet();
+			for (int i = 0; i < lines.length; i++) {
+				if(lines[i] != null) {
+					lineNumbers.add(new Integer(i));
+				}
 			}
-		}
-		result.put(JSONConstants.LINES, (lineNumbers == null ? Collections.EMPTY_SET : lineNumbers));
+			result.put(JSONConstants.LINES, (lineNumbers == null ? Collections.EMPTY_SET : lineNumbers));
 		}
 		else {
 			result.put(JSONConstants.LINES, Collections.EMPTY_SET);
