@@ -19,6 +19,7 @@
 #include <string>
 
 #include "IECrossfireExtension.h"
+#include "Util.h"
 #include "Logger.h"
 
 enum {
@@ -101,7 +102,6 @@ private:
 
 	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* DEBUG_START;
-	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(IECrossfireBHO), IECrossfireBHO)

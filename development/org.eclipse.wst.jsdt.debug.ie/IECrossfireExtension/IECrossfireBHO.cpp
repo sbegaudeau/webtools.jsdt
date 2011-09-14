@@ -20,7 +20,7 @@ const wchar_t* IECrossfireBHO::WindowClass = L"_IECrossfireBHOMessageWindow";
 
 const wchar_t* IECrossfireBHO::ABOUT_BLANK = L"about:blank";
 const wchar_t* IECrossfireBHO::DEBUG_START = L"-crossfire-server-port";
-const wchar_t* IECrossfireBHO::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
+
 
 IECrossfireBHO::IECrossfireBHO() {
 	m_eventsHooked = false;
@@ -457,26 +457,18 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 }
 
 bool IECrossfireBHO::startDebugging(unsigned int port) {
-	HKEY key;
-	HRESULT hr = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Internet Explorer\\Main", 0, KEY_READ, &key);
-	if (SUCCEEDED(hr)) {
-		wchar_t value[9];
-		DWORD size = sizeof(value);
-		hr = RegQueryValueEx(key, PREFERENCE_DISABLEIEDEBUG, NULL, NULL, (LPBYTE)value, &size);
-		if (SUCCEEDED(hr) && wcscmp(value, L"no") != 0) {
-			MessageBox(NULL, L"Internet Explorer Option \"Disable Script Debugging (Internet Explorer)\" must be unchecked for remote debugging to work.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
-			return false;
-		}
+	if (!Util::VerifyPDM()) {
+		return false;
 	}
-	if (FAILED(hr)) {
-		Logger::error("Failed to access the DisableScriptDebuggerIE registry setting", hr);
+	if (!Util::VerifyDebugPreference()) {
+		return false;
 	}
 
 	if (!initServer(true) || m_serverState != STATE_DISCONNECTED) {
 		return false;
 	}
 
-	hr = m_server->start(port, 54124 /* debug port */);
+	HRESULT hr = m_server->start(port, 54124 /* debug port */);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.startDebugging(): start() failed");
 		return false;

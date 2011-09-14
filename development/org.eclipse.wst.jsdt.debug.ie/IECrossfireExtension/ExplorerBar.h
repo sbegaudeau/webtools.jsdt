@@ -17,6 +17,7 @@
 #include <ShlGuid.h>
 
 #include "IECrossfireExtension.h"
+#include "Util.h"
 #include "Logger.h"
 
 enum {
@@ -127,7 +128,6 @@ private:
 	static const wchar_t* ServerWindowClass;
 	static const wchar_t* WindowClass;
 
-	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 	static const int SEPARATOR_WIDTH = 5;
 	static const int SPACING_WIDTH = 10;
 };

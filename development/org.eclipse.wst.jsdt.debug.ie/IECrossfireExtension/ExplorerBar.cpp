@@ -18,7 +18,6 @@ const UINT ExplorerBar::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfi
 const wchar_t* ExplorerBar::ServerWindowClass = L"_IECrossfireServer";
 const wchar_t* ExplorerBar::WindowClass = L"_ExplorerBarMessageWindow";
 
-const wchar_t* ExplorerBar::PREFERENCE_DISABLEIEDEBUG = L"DisableScriptDebuggerIE";
 
 ExplorerBar::ExplorerBar() {
 	m_hWnd = m_hWndParent = 0;
@@ -430,23 +429,15 @@ bool ExplorerBar::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	HKEY key;
-	HRESULT hr = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Internet Explorer\\Main", 0, KEY_READ, &key);
-	if (SUCCEEDED(hr)) {
-		wchar_t value[9];
-		DWORD size = sizeof(value);
-		hr = RegQueryValueEx(key, PREFERENCE_DISABLEIEDEBUG, NULL, NULL, (LPBYTE)value, &size);
-		if (SUCCEEDED(hr) && wcscmp(value, L"no") != 0) {
-			MessageBox(NULL, L"Internet Explorer Option \"Disable Script Debugging (Internet Explorer)\" must be unchecked for remote debugging to work.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
-			return false;
-		}
+	if (!Util::VerifyPDM()) {
+		return false;
 	}
-	if (FAILED(hr)) {
-		Logger::error("Failed to access the DisableScriptDebuggerIE registry setting", hr);
+	if (!Util::VerifyDebugPreference()) {
+		return false;
 	}
 
 	CComPtr<ICrossfireServerClass> serverClass = NULL;
-	hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
+	HRESULT hr = CoGetClassObject(CLSID_CrossfireServer, CLSCTX_ALL, 0, IID_ICrossfireServerClass, (LPVOID*)&serverClass);
 	if (FAILED(hr)) {
 		Logger::error("ExplorerBar.initServer(): CoGetClassObject() failed", hr);
 		return false;

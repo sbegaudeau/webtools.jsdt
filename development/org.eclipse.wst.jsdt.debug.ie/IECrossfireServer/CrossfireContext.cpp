@@ -18,7 +18,14 @@
 /* initialize constants */
 const wchar_t* CrossfireContext::ABOUT_BLANK = L"about:blank";
 const wchar_t* CrossfireContext::ID_PREAMBLE = L"xfIE::";
+const wchar_t* CrossfireContext::NUMBER_NaN = L"NaN";
+const wchar_t* CrossfireContext::NUMBER_INFINITY = L"Infinity";
+const wchar_t* CrossfireContext::NUMBER_NEGATIVEINFINITY = L"-Infinity";
+const wchar_t* CrossfireContext::PDM_DLL = L"pdm.dll";
 const wchar_t* CrossfireContext::SCHEME_JSCRIPT = L"jscript://";
+const wchar_t* CrossfireContext::VALUE_NaN = L"NaN";
+const wchar_t* CrossfireContext::VALUE_INFINITY = L"Infinity";
+const wchar_t* CrossfireContext::VALUE_NEGATIVEINFINITY = L"-Infinity";
 
 /* command: backtrace */
 const wchar_t* CrossfireContext::COMMAND_BACKTRACE = L"backtrace";
@@ -466,7 +473,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	} else {
 		node = getScriptNode((URL*)lineBp->getUrl());
 		if (!node) {
-			Logger::error("CrossfireContext.setLineBreakpoint(): unknown target url");
+			Logger::error("CrossfireContext.setBreakpoint(): unknown target url");
 			return false;
 		}
 	}
@@ -474,14 +481,14 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	CComPtr<IDebugDocument> document = NULL;
 	HRESULT hr = node->GetDocument(&document);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocument() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): GetDocument() failed", hr);
 		return false;
 	}
 
 	CComPtr<IDebugDocumentText> documentText = NULL;
 	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): QI(IDebugDocumentText) failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): QI(IDebugDocumentText) failed", hr);
 		return false;
 	}
 
@@ -494,7 +501,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 		 * to set the breakpoint should be made once its source has loaded.
 		 */
 		if (hr != E_INVALIDARG) {
-			Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfLine() failed [1]", hr);
+			Logger::error("CrossfireContext.setBreakpoint(): GetPositionOfLine() failed [1]", hr);
 		}
 		return false;
 	}
@@ -502,7 +509,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	CComPtr<IDebugDocumentContext> documentContext = NULL;
 	hr = documentText->GetContextOfPosition(characterPosition, 1, &documentContext);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetContextOfPosition() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): GetContextOfPosition() failed", hr);
 		return false;
 	}
 
@@ -515,7 +522,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 		 * to set the breakpoint should be made once its source has loaded.
 		 */
 		if (hr != E_INVALIDARG) {
-			Logger::error("CrossfireContext.setLineBreakpoint(): EnumCodeContexts() failed", hr);
+			Logger::error("CrossfireContext.setBreakpoint(): EnumCodeContexts() failed", hr);
 		}
 		return false;
 	}
@@ -524,13 +531,13 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	CComPtr<IDebugCodeContext> codeContext = NULL;
 	hr = codeContexts->Next(1, &codeContext, &fetched);
 	if (FAILED(hr) || fetched == 0) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): Next() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): Next() failed", hr);
 		return false;
 	}
 
 	hr = codeContext->SetBreakPoint(lineBp->isEnabled() ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): SetBreakPoint() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): SetBreakPoint() failed", hr);
 		return false;
 	}
 
@@ -539,7 +546,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	CComPtr<IDebugDocumentContext> bpDocumentContext = NULL;
 	hr = codeContext->GetDocumentContext(&bpDocumentContext);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetDocumentContext() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): GetDocumentContext() failed", hr);
 		return false;
 	}
 
@@ -547,7 +554,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	ULONG numChars = 0;
 	hr = documentText->GetPositionOfContext(bpDocumentContext, &characterPosition, &numChars);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetPositionOfContext() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): GetPositionOfContext() failed", hr);
 		return false;
 	}
 
@@ -555,7 +562,7 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	ULONG offset = 0;
 	hr = documentText->GetLineOfPosition(characterPosition, &bpLineNumber, &offset);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.setLineBreakpoint(): GetLineOfPosition() failed", hr);
+		Logger::error("CrossfireContext.setBreakpoint(): GetLineOfPosition() failed", hr);
 		return false;
 	}
 
@@ -962,9 +969,17 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 		BSTR stringValue = propertyInfo.m_bstrValue;
 		if (wcscmp(type, JSVALUE_NUMBER) == 0) {
 			wchar_t* endPtr = 0;
-			double value = wcstod(stringValue, &endPtr);
 			result.addObjectValue(KEY_TYPE, &Value(VALUE_NUMBER));
-			result.addObjectValue(KEY_VALUE, &Value(value));
+			if (wcscmp(stringValue, NUMBER_NaN) == 0) {
+				result.addObjectValue(KEY_VALUE, &Value(VALUE_NaN));
+			} else if (wcscmp(stringValue, NUMBER_INFINITY) == 0) {
+				result.addObjectValue(KEY_VALUE, &Value(VALUE_INFINITY));
+			} else if (wcscmp(stringValue, NUMBER_NEGATIVEINFINITY) == 0) {
+				result.addObjectValue(KEY_VALUE, &Value(VALUE_NEGATIVEINFINITY));
+			} else {
+				double value = wcstod(stringValue, &endPtr);
+				result.addObjectValue(KEY_VALUE, &Value(value));
+			}
 		} else if (wcscmp(type, JSVALUE_BOOLEAN) == 0) {
 			result.addObjectValue(KEY_TYPE, &Value(VALUE_BOOLEAN));
 			if (wcscmp(stringValue, JSVALUE_TRUE) == 0) {
@@ -1238,12 +1253,88 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return true;
 	}
 
-    CComPtr<IDebugProgramProvider2> pPDM;
-    HRESULT hr = pPDM.CoCreateInstance(__uuidof(MsProgramProvider), NULL, CLSCTX_INPROC_SERVER);
-    if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance() failed", hr);
-        return false;
-    }
+	/* the following is intentionally commented */
+
+//  CComPtr<IDebugProgramProvider2> pPDM;
+//  HRESULT hr = pPDM.CoCreateInstance(__uuidof(MsProgramProvider), NULL, CLSCTX_INPROC_SERVER);
+//  if (FAILED(hr)) {
+//      Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance() failed", hr);
+//      return false;
+//  }
+
+	static HINSTANCE s_module = NULL;
+
+	if (!s_module) {
+		HKEY key;
+		LONG result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE", 0, KEY_QUERY_VALUE, &key);
+		if (result != ERROR_SUCCESS) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): RegOpenKeyEx() failed", result);
+			return false;
+		}
+
+		DWORD type = 0;
+		DWORD size = MAX_PATH;
+		wchar_t chars[MAX_PATH];
+		result = RegQueryValueEx(key, NULL, NULL, &type, (LPBYTE)chars, &size);
+		RegCloseKey(key);
+		if (result != ERROR_SUCCESS) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): RegQueryValueEx() failed", result);
+			return false;
+		}
+		if (type != REG_SZ) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): RegQueryValueEx() returned unexpected registry value type", type);
+			return false;
+		}
+
+		wchar_t* separator = wcsrchr(chars, wchar_t('\\'));
+		if (!separator) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): Registry value HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE does not contain a '\\'");
+			return false;
+		}
+
+		size_t dirLength = separator - chars + 1;
+		size_t totalLength = dirLength + wcslen(PDM_DLL) + 1;
+		wchar_t* path = new wchar_t[totalLength];
+		wcsncpy_s(path, totalLength, chars, dirLength);
+		wcscpy_s(path + dirLength, totalLength - dirLength, PDM_DLL);
+		path[totalLength - 1] = wchar_t('\0');
+		s_module = LoadLibrary(path);
+		if (!s_module) {
+			Logger::error("CrossfireContext.getDebugApplicationThread(): LoadLibrary() failed", GetLastError());
+		}
+		delete[] path;
+	}
+
+	if (!s_module) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): Module not loaded for pdm.dll, cannot proceed");
+		return false;
+	}
+
+	FARPROC proc = GetProcAddress(s_module, "DllGetClassObject");
+	if (!proc) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): GetProcAddress() failed", GetLastError());
+		return false;
+	}
+
+	CComPtr<IClassFactory> factory = NULL;
+	HRESULT hr = ((HRESULT (CALLBACK*)(REFCLSID, REFIID, LPVOID*))proc)(__uuidof(MsProgramProvider), IID_IClassFactory, (void**)&factory);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): DllGetClassObject() failed", hr);
+		return false;
+	}
+
+	IID iid;
+	hr = IIDFromString(L"{1959530a-8e53-4e09-ad11-1b7334811cad}", &iid);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed", hr);
+		return false;
+	}
+	CComPtr<IDebugProgramProvider2> pPDM;
+	hr = factory->CreateInstance(NULL, iid, (void**)&pPDM);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): CreateInstance() failed", hr);
+		return false;
+	}
 
     AD_PROCESS_ID processId;
 	processId.ProcessIdType = AD_PROCESS_ID_SYSTEM;
