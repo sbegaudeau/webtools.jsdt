@@ -80,8 +80,8 @@ bool CrossfireBPManager::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	/* if a breakpoint with a duplicate handle exists then replace it with the new breakpoint */
 	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
 	if (iterator != m_breakpoints->end()) {
-		m_breakpoints->erase(iterator);
 		delete iterator->second;
+		m_breakpoints->erase(iterator);
 	}
 
 	m_breakpoints->insert(std::pair<unsigned int, CrossfireBreakpoint*>(handle, copy));

@@ -570,8 +570,8 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 	unsigned int handle = lineBp->getHandle();
 	std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->find(handle);
 	if (iterator != m_breakpoints->end()) {
-		m_breakpoints->erase(iterator);
 		delete iterator->second;
+		m_breakpoints->erase(iterator);
 	}
 
 	CrossfireLineBreakpoint* copy = NULL;
