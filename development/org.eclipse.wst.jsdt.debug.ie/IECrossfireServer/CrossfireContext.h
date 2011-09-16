@@ -38,6 +38,7 @@ public:
 	CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server);
 	~CrossfireContext();
 	virtual void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
+	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual IDebugApplicationNode* getLastInitializedScriptNode();
 	virtual wchar_t* getName();
 	virtual DWORD getProcessId();
@@ -71,7 +72,6 @@ private:
 	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
 	virtual bool evaluate(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IDebugProperty** _result);
 	virtual bool evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data);
-	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
 	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
 	virtual bool getScriptUrl(IDebugApplicationNode* node, URL** _value);
 	virtual IDebugApplicationNode* getScriptNode(URL* url);

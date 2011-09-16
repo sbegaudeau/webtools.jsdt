@@ -1368,29 +1368,6 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
         return false;
 	}
 
-	CComPtr<IDebugApplicationNode> rootNode = NULL;
-	hr = debugApplication->GetRootNode(&rootNode);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): GetRootNode() failed", hr);
-	} else {
-		CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
-		hr = rootNode->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IConnectionPointContainer) failed", hr);
-		} else {
-			CComPtr<IConnectionPoint> connectionPoint = NULL;
-			hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &connectionPoint);
-			if (FAILED(hr)) {
-				Logger::error("CrossfireContext.getDebugApplicationThread(): FindConnectionPoint() failed", hr);
-			} else {
-				hr = connectionPoint->Advise(m_debugger, &m_cpcApplicationNodeEvents);
-				if (FAILED(hr)) {
-					Logger::error("CrossfireContext.getDebugApplicationThread(): Advise() failed", hr);
-				}
-			}
-		}
-	}
-
 	CComPtr<IEnumRemoteDebugApplicationThreads> debugApplicationThreads;
 	hr = debugApplication->EnumThreads(&debugApplicationThreads);
 	if (FAILED(hr)) {
@@ -1583,11 +1560,12 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 			Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
 			return false;
 		}
-		int length = wcslen(SCHEME_JSCRIPT) + wcslen(value.m_str) + 1;
+		int length = wcslen(SCHEME_JSCRIPT) + wcslen(value.m_str) + 2;
 		wchar_t* string = new wchar_t[length];
 		ZeroMemory(string, length * sizeof(wchar_t));
 		wcscat_s(string, length, SCHEME_JSCRIPT);
 		wcscat_s(string, length, value.m_str);
+		wcscat_s(string, length, L"/");
 		url.setString(string);
 		delete[] string;
 	}
@@ -1609,7 +1587,6 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 			break;
 		}
 		key.assign(url.getString());
-		key += wchar_t('/');
 		wchar_t qualifierString[4];
 		_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
 		key += qualifierString;

@@ -93,8 +93,16 @@ public:
 	virtual void setContext(CrossfireContext* value);
 
 private:
+	virtual bool advise(IDebugApplicationNode* node, bool isRoot, bool recurse);
+	virtual bool unadvise(IDebugApplicationNode* node, bool isRoot, bool recurse);
+
+	std::map<IDebugApplicationNode*, DWORD>* m_adviseCookies;
 	CrossfireContext* m_context;
-	std::multimap<std::wstring, DWORD>* m_adviseCookies;
+	DWORD m_rootCookie;
+	IDebugApplicationNode* m_rootNode;
+
+	/* constants */
+	static const wchar_t* ABOUT_BLANK;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(IEDebugger), IEDebugger)

@@ -13,9 +13,13 @@
 #include "stdafx.h"
 #include "IEDebugger.h"
 
+/* initialize constants */
+const wchar_t* IEDebugger::ABOUT_BLANK = L"about:blank";
+
 IEDebugger::IEDebugger() {
+	m_adviseCookies = new std::map<IDebugApplicationNode*, DWORD>;
 	m_context = NULL;
-	m_adviseCookies = new std::multimap<std::wstring, DWORD>;
+	m_rootNode = NULL;
 }
 
 IEDebugger::~IEDebugger() {
@@ -77,69 +81,23 @@ STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
 		return S_OK;
 	}
 
-	m_context->scriptInitialized(prddpChild);
-
-	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
-	HRESULT hr = prddpChild->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
-	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild(): QI(IID_IConnectionPointContainer) failed", hr);
-		return S_FALSE;
-	}
-	CComPtr <IConnectionPoint> nodeConnectionPoint = NULL;
-	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
-	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild(): FindConnectionPoint() failed", hr);
-		return S_FALSE;
-	}
-
-	DWORD connectionPointCookie = 0;
-	hr = nodeConnectionPoint->Advise(static_cast<IIEDebugger*>(this), &connectionPointCookie);
-	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onAddChild(): Advise() failed", hr);
-		return S_FALSE;
-	}
-
+	/* don't register about:blank as a script */
 	CComBSTR bstrUrl = NULL;
-	hr = prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
+	HRESULT hr = prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
 	if (FAILED(hr)) {
 		Logger::error("IEDebugger.onAddChild(): GetName() failed", hr);
-		return S_FALSE;
+	} else {
+		if (wcscmp(bstrUrl, ABOUT_BLANK) != 0) {
+			m_context->scriptInitialized(prddpChild);
+		}
 	}
-	URL url(bstrUrl);
-	m_adviseCookies->insert(std::pair<std::wstring,DWORD>(std::wstring(url.getString()), connectionPointCookie));
+
+	advise(prddpChild, false, false);
 	return S_OK;
 }
 
 STDMETHODIMP IEDebugger::onRemoveChild(IDebugApplicationNode *prddpChild) {
-	CComBSTR bstrUrl = NULL;
-	if (FAILED(prddpChild->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl))) {
-		return S_OK;
-	}
-	URL url(bstrUrl);
-
-	CComPtr <IConnectionPointContainer> connectionPointContainer = NULL;
-	HRESULT hr = prddpChild->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
-	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onRemoveChild(): QI(IID_IConnectionPointContainer) failed", hr);
-		return S_FALSE;
-	}
-	CComPtr <IConnectionPoint> nodeConnectionPoint = NULL;
-	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
-	if (FAILED(hr)) {
-		Logger::error("IEDebugger.onRemoveChild(): FindConnectionPoint() failed", hr);
-		return S_FALSE;
-	}
-
-	std::pair<std::multimap<std::wstring,DWORD>::iterator,std::multimap<std::wstring,DWORD>::iterator> range;
-	range = m_adviseCookies->equal_range(std::wstring(url.getString()));
-	std::multimap<std::wstring,DWORD>::iterator it;
-	for (it = range.first; it != range.second; ++it) {
-		if (SUCCEEDED(nodeConnectionPoint->Unadvise(it->second))) {
-			m_adviseCookies->erase(it);
-			break;
-		}
-	}
-
+	unadvise(prddpChild, false, false);
 	return S_OK;
 }
 
@@ -160,7 +118,131 @@ STDMETHODIMP IEDebugger::StartDebugSession(IRemoteDebugApplication *pda) {
 
 /* IEDebugger */
 
-void IEDebugger::setContext(CrossfireContext* value) {
-	m_context = value;
+bool IEDebugger::advise(IDebugApplicationNode* node, bool isRoot, bool recurse) {
+	CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
+	HRESULT hr = node->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.advise(): QI(IID_IConnectionPointContainer) failed", hr);
+		return false;
+	}
+	CComPtr<IConnectionPoint> nodeConnectionPoint = NULL;
+	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.advise(): FindConnectionPoint() failed", hr);
+		return false;
+	}
+
+	DWORD connectionPointCookie = 0;
+	hr = nodeConnectionPoint->Advise(static_cast<IIEDebugger*>(this), &connectionPointCookie);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.advise(): Advise() failed", hr);
+		return false;
+	}
+
+	if (isRoot) {
+		m_rootCookie = connectionPointCookie;
+		m_rootNode = node;
+	} else {
+		m_adviseCookies->insert(std::pair<IDebugApplicationNode*,DWORD>(node, connectionPointCookie));
+	}
+	node->AddRef();
+
+	if (recurse) {
+		CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
+		hr = node->EnumChildren(&nodes);
+		if (FAILED(hr)) {
+			Logger::error("IEDebugger.advise(): EnumChildren() failed", hr);
+		} else {
+			IDebugApplicationNode* current = NULL;
+			ULONG count = 0;
+			hr = nodes->Next(1, &current, &count);
+			while (SUCCEEDED(hr) && count) {
+				advise(current, false, true);
+				current->Release();
+				hr = nodes->Next(1, &current, &count);
+			}
+		}
+	}
+	return true;
 }
+
+void IEDebugger::setContext(CrossfireContext* value) {
+	if (m_context == value) {
+		return;
+	}
+	m_context = value;
+
+	if (m_rootNode) {
+		unadvise(m_rootNode, true, true);
+	}
+
+	if (value) {
+		CComPtr<IRemoteDebugApplication> application = NULL;
+		HRESULT hr = m_context->getDebugApplication(&application);
+		if (SUCCEEDED(hr)) {
+			CComPtr<IDebugApplicationNode> rootNode = NULL;
+			hr = application->GetRootNode(&rootNode);
+			if (FAILED(hr)) {
+				Logger::error("IEDebugger.setContext(): GetRootNode() failed", hr);
+				return;
+			}
+			advise(rootNode, true, true);
+		}
+	}
+}
+
+bool IEDebugger::unadvise(IDebugApplicationNode* node, bool isRoot, bool recurse) {
+	CComPtr<IConnectionPointContainer> connectionPointContainer = NULL;
+	HRESULT hr = node->QueryInterface(IID_IConnectionPointContainer, (void**)&connectionPointContainer);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.unadvise(): QI(IID_IConnectionPointContainer) failed", hr);
+		return false;
+	}
+	CComPtr<IConnectionPoint> nodeConnectionPoint = NULL;
+	hr = connectionPointContainer->FindConnectionPoint(IID_IDebugApplicationNodeEvents, &nodeConnectionPoint);
+	if (FAILED(hr)) {
+		Logger::error("IEDebugger.unadvise(): FindConnectionPoint() failed", hr);
+		return false;
+	}
+
+	DWORD cookie = 0;
+	if (isRoot) {
+		cookie = m_rootCookie;
+		m_rootNode->Release();
+		m_rootNode = NULL;
+	} else {
+		std::map<IDebugApplicationNode*, DWORD>::iterator iterator = m_adviseCookies->find(node);
+		if (iterator != m_adviseCookies->end()) {
+			cookie = iterator->second;
+			iterator->first->Release();
+			m_adviseCookies->erase(iterator);
+		}
+	}
+
+	if (cookie) {
+		hr = nodeConnectionPoint->Unadvise(cookie);
+		if (FAILED(hr)) {
+			Logger::error("IEDebugger.unadvise(): Unadvise() failed", hr);
+		}
+	}
+
+	if (recurse) {
+		CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
+		hr = node->EnumChildren(&nodes);
+		if (FAILED(hr)) {
+			Logger::error("IEDebugger.unadvise(): EnumChildren() failed", hr);
+		} else {
+			IDebugApplicationNode* current = NULL;
+			ULONG count = 0;
+			hr = nodes->Next(1, &current, &count);
+			while (SUCCEEDED(hr) && count) {
+				unadvise(current, false, true);
+				current->Release();
+				hr = nodes->Next(1, &current, &count);
+			}
+		}
+	}
+	return true;
+}
+
 
