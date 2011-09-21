@@ -83,6 +83,7 @@ private:
 	virtual void onServerStateChanged(WPARAM wParam, LPARAM lParam);
 	bool startDebugging(unsigned int port);
 
+	bool m_contextCreated;
 	bool m_eventsHooked;
 	bool m_firstNavigate;
 	wchar_t* m_htmlToDisplay;

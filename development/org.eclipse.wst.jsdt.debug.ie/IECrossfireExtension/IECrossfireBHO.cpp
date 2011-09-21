@@ -23,6 +23,7 @@ const wchar_t* IECrossfireBHO::DEBUG_START = L"-crossfire-server-port";
 
 
 IECrossfireBHO::IECrossfireBHO() {
+	m_contextCreated = false;
 	m_eventsHooked = false;
 	m_firstNavigate = true;
 	m_htmlToDisplay = NULL;
@@ -76,6 +77,7 @@ IECrossfireBHO::~IECrossfireBHO() {
 /* DWebBrowserEvents2 */
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnBeforeNavigate2(IDispatch* pDisp, VARIANT* URL, VARIANT* Flags, VARIANT* TargetFrameName, VARIANT* PostData, VARIANT* Headers, VARIANT_BOOL* Cancel) {
+	m_contextCreated = false;
 	if (!m_firstNavigate) {
 		return;
 	}
@@ -195,7 +197,7 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnDocumentComplete(IDispatch *pDisp, VARI
 }
 
 void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VARIANT *pvarURL) {
-	if (m_serverState != STATE_CONNECTED) {
+	if (m_contextCreated || m_serverState != STATE_CONNECTED) {
 		return;
 	}
 
@@ -218,6 +220,8 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 					HRESULT hr = m_server->contextCreated(processId, url);
 					if (FAILED(hr)) {
 						Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
+					} else {
+						m_contextCreated = true;
 					}
 				}
 				if (m_lastUrl) {
