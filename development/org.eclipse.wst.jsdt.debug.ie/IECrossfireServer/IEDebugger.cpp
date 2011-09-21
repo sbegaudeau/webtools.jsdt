@@ -88,7 +88,7 @@ STDMETHODIMP IEDebugger::onAddChild(IDebugApplicationNode *prddpChild) {
 		Logger::error("IEDebugger.onAddChild(): GetName() failed", hr);
 	} else {
 		if (wcscmp(bstrUrl, ABOUT_BLANK) != 0) {
-			m_context->scriptInitialized(prddpChild);
+			m_context->scriptInitialized(prddpChild, false);
 		}
 	}
 

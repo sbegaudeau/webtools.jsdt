@@ -418,8 +418,7 @@ void CrossfireBPManager::setBreakpointsForScript(URL* url, IBreakpointTarget* ta
 	while (iterator != m_breakpoints->end()) {
 		CrossfireBreakpoint* breakpoint = iterator->second;
 		if (breakpoint->appliesToUrl(url)) {
-			bool success = target->setBreakpoint(breakpoint);
-			// TODO it looks like the result of the above line was to be used for something
+			target->setBreakpoint(breakpoint);
 		}
 		iterator++;
 	}

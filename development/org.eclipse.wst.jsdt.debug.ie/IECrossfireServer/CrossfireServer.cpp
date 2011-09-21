@@ -189,7 +189,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECH
 	CrossfireContext* context = new CrossfireContext(processId, url, this);
 	m_contexts->insert(std::pair<DWORD,CrossfireContext*> (processId, context));
 	if (scriptNode) {
-		context->scriptInitialized(scriptNode);
+		context->scriptInitialized(scriptNode, true);
 		scriptNode->Release();
 	}
 	eventContextCreated(context);

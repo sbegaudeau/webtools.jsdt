@@ -19,14 +19,7 @@ URL::URL() {
 
 URL::URL(wchar_t* urlString) {
 	m_value = NULL;
-
-	if (urlString) {
-		std::wstring string(urlString);
-		if (!standardize(&string)) {
-			return;
-		}
-		m_value = _wcsdup(string.c_str());
-	}
+	setString(urlString);
 }
 
 URL::~URL() {

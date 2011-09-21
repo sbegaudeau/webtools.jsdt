@@ -45,8 +45,8 @@ public:
 	virtual wchar_t* getUrl();
 	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
 	virtual bool performRequest(CrossfireRequest* request);
-	virtual bool scriptInitialized(IDebugApplicationNode *applicationNode);
-	virtual bool scriptLoaded(IDebugApplicationNode *applicationNode);
+	virtual bool scriptInitialized(IDebugApplicationNode *applicationNode, bool isFromAnotherContext);
+	virtual void scriptLoaded(IDebugApplicationNode *applicationNode, bool sendScriptLoadEvent);
 
 	/* IBreakpointTarget methods */
 	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);

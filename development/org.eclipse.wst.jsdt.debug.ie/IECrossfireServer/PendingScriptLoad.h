@@ -68,9 +68,9 @@ public:
 	virtual bool detach();
 
 private:
+	IDebugApplicationNode* m_applicationNode;
 	CrossfireContext* m_context;
 	DWORD m_cookie;
-	IDebugApplicationNode* m_applicationNode;
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(PendingScriptLoad), PendingScriptLoad)

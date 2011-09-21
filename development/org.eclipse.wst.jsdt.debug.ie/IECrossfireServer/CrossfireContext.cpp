@@ -199,7 +199,6 @@ CrossfireContext::~CrossfireContext() {
 		std::map<IDebugApplicationNode*, PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->begin();
 		while (iterator != m_pendingScriptLoads->end()) {
 			iterator->first->Release();
-			iterator->second->detach();
 			iterator->second->Release();
 			iterator++;
 		}
@@ -1073,18 +1072,10 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value) {
 	*_value = NULL;
 
-	URL* url = NULL;
-	if (!getScriptUrl(node, &url)) {
-		Logger::error("CrossfireContext.createValueForScript(): unknown script");
-		delete url;
-		return false;
-	}
-
 	CComPtr<IDebugDocument> document = NULL;
 	HRESULT hr = node->GetDocument(&document);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): GetDocument() failed", hr);
-		delete url;
 		return false;
 	}
 
@@ -1092,7 +1083,6 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): QI(IDebugDocumentText) failed", hr);
-		delete url;
 		return false;
 	}
 
@@ -1101,11 +1091,15 @@ bool CrossfireContext::createValueForScript(IDebugApplicationNode* node, bool in
 	hr = documentText->GetSize(&numLines, &numChars);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForScript(): GetSize() failed", hr);
-		delete url;
 		return false;
 	}
 	if (failIfEmpty && numChars == 0) {
-		delete url;
+		return false;
+	}
+
+	URL* url = NULL;
+	if (!getScriptUrl(node, &url)) {
+		Logger::error("CrossfireContext.createValueForScript(): unknown script");
 		return false;
 	}
 
@@ -1570,6 +1564,10 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 		delete[] string;
 	}
 
+	if (!url.isValid()) {
+		return false;
+	}
+
 	if (!m_scriptNodes) {
 		m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
 	}
@@ -1633,20 +1631,38 @@ bool CrossfireContext::resumeFromBreak(BREAKRESUMEACTION action) {
 	return true;
 }
 
-bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode) {
+bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode, bool isFromAnotherContext) {
+	/*
+	 * When navigating from one page to another, the first script node for the new
+	 * page is initialized while the context for the old page is still active, and
+	 * therefore becomes registered in the wrong context.  The CrossfireServer works
+	 * around this by re-initializing the script node in the new context where it
+	 * belongs.  This workaround is aided here by keeping a reference to the last
+	 * script node that has been initialized from the document tree (but not from
+	 * another context) in case it needs to be accessible to the CrossfireServer for
+	 * re-initialization in a new context.
+	 */
 	if (m_lastInitializedScriptNode) {
 		m_lastInitializedScriptNode->Release();
+		m_lastInitializedScriptNode = NULL;
 	}
-	m_lastInitializedScriptNode = applicationNode;
-	m_lastInitializedScriptNode->AddRef();
+	if (!isFromAnotherContext) {
+		m_lastInitializedScriptNode = applicationNode;
+		m_lastInitializedScriptNode->AddRef();
+	}
 
 	registerScript(applicationNode, false);
+	scriptLoaded(applicationNode, true);
 
-	if (!scriptLoaded(applicationNode)) {
-		/*
-		 * The script's content has not been loaded yet, so create a listener
-		 * object that will invoke #scriptLoaded() when this happens
-		 */
+	/*
+	* Script loading is typically not complete when a script node is initialized, and
+	* there is no way to determine whether it is complete, so create a listener that
+	* will repeatedly invoke #scriptLoaded() as loading of the script progresses.
+	*
+	* This is not done for scripts from another context that are being re-initialized
+	* here because such scripts are advised when this context's debugger is created.
+	*/
+	if (!isFromAnotherContext) {
 		CComObject<PendingScriptLoad>* pendingScriptLoad = NULL;
 		HRESULT hr = CComObject<PendingScriptLoad>::CreateInstance(&pendingScriptLoad);
 		if (FAILED(hr)) {
@@ -1664,37 +1680,32 @@ bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode)
 	return true;
 }
 
-bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
-	CrossfireBPManager* bpManager = m_server->getBreakpointManager();
-
+void CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode, bool sendScriptLoadEvent) {
+	/* set the script's breakpoints if possible */
 	URL* url = NULL;
 	if (!getScriptUrl(applicationNode, &url)) {
 		Logger::error("CrossfireContext.scriptLoaded(): unknown script");
-		return false;
+		return;
 	}
-
 	/*
 	 * Incoming IBreakpointTarget method invocations should always be for this
-	 * application node, so store it temporarily so that's it's easily accessible,
+	 * application node, so store it temporarily so that it's easily accessible,
 	 * rather than repeatedly looking it up for each IBreakpointTarget invocation.
 	 */
+	CrossfireBPManager* bpManager = m_server->getBreakpointManager();
 	m_currentScriptNode = applicationNode;
 	bpManager->setBreakpointsForScript(url, this);
 	m_currentScriptNode = NULL;
 	delete url;
 
+	if (!sendScriptLoadEvent) {
+		return;
+	}
+
 	Value* script = NULL;
 	if (!createValueForScript(applicationNode, false, true, &script)) {
 		/* the script's content has probably not loaded yet */
-		return false;
-	}
-
-	/* Ensure that there is not a PendingScriptLoad remaining for this node */
-	std::map<IDebugApplicationNode*, PendingScriptLoad*>::iterator iterator = m_pendingScriptLoads->find(applicationNode);
-	if (iterator != m_pendingScriptLoads->end()) {
-		iterator->first->Release();
-		iterator->second->Release();
-		m_pendingScriptLoads->erase(iterator);
+		return;
 	}
 
 	CrossfireEvent onScriptEvent;
@@ -1704,7 +1715,6 @@ bool CrossfireContext::scriptLoaded(IDebugApplicationNode *applicationNode) {
 	delete script;
 	onScriptEvent.setBody(&body);
 	sendEvent(&onScriptEvent);
-	return true;
 }
 
 void CrossfireContext::sendEvent(CrossfireEvent* eventObj) {
