@@ -848,6 +848,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		if(event instanceof SuspendEvent) {
 			if(canSuspend()) {
 				if(this.thread.equals(((SuspendEvent)event).thread())) {
+					if(pendingstep != null) {
+						pendingstep.abort();
+					}
 					markSuspended();
 					fireSuspendEvent(DebugEvent.UNSPECIFIED);
 					return false;
