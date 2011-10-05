@@ -49,12 +49,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "Eclipse Foundation"
-            VALUE "FileDescription", "IE Crossfire BHO"
+            VALUE "FileDescription", "Crossfire Server for Internet Explorer BHO"
             VALUE "FileVersion", "1.0.0.0"
             VALUE "LegalCopyright", "Copyright (c) 2011 IBM Corp.  All Rights Reserved."
             VALUE "InternalName", "IECrossfireExtension"
             VALUE "OriginalFilename", "IECrossfireExtension.dll"
-            VALUE "ProductName", "IE Crossfire Server"
+            VALUE "ProductName", "Crossfire Server for Internet Explorer"
             VALUE "ProductVersion", "0,0,0,0"
         END
     END
