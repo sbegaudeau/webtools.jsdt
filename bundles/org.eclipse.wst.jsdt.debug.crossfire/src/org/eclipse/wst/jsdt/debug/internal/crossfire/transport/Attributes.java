@@ -42,9 +42,25 @@ public interface Attributes {
 	 */
 	public static final String BREAKPOINTS = "breakpoints"; //$NON-NLS-1$
 	/**
+	 * The "category" attribute
+	 */
+	public static final String CATEGORY = "category"; //$NON-NLS-1$
+	/**
+	 * The "callee attribute"
+	 */
+	public static final String CALLEE = "callee"; //$NON-NLS-1$
+	/**
+	 * The "callingFrame" attribute
+	 */
+	public static final String CALLING_FRAME = "callingFrame"; //$NON-NLS-1$
+	/**
 	 * The code attribute for this packet
 	 */
 	public static final String CODE = "code"; //$NON-NLS-1$
+	/**
+	 * The "columnNumber" attribute
+	 */
+	public static final String COLUMN_NUMBER = "columnNumber"; //$NON-NLS-1$
 	/**
 	 * The "columnOffset" attribute
 	 */
@@ -86,9 +102,33 @@ public interface Attributes {
 	 */
 	public static final String ENABLED = "enabled"; //$NON-NLS-1$
 	/**
+	 * The "error" attribute for an onError event
+	 */
+	public static final String ERROR = "error"; //$NON-NLS-1$
+	/**
+	 * The "errorMessage" attribute
+	 */
+	public static final String ERROR_MESSAGE = "errorMessage"; //$NON-NLS-1$
+	/**
+	 * The "executionContext" attribute
+	 */
+	public static final String EXECUTION_CONTEXT = "executionContext"; //$NON-NLS-1$
+	/**
 	 * The "expression" attribute
 	 */
 	public static final String EXPRESSION = "expression"; //$NON-NLS-1$
+	/**
+	 * The "fileName" attribute
+	 */
+	public static final String FILE_NAME = "fileName"; //$NON-NLS-1$
+	/**
+	 * The "flags" attributes
+	 */
+	public static final String FLAGS = "flags"; //$NON-NLS-1$
+	/**
+	 * The "frame" argument
+	 */
+	public static final String FRAME = "frame"; //$NON-NLS-1$
 	/**
 	 * The "frameIndex" argument
 	 */
@@ -146,6 +186,18 @@ public interface Attributes {
 	 */
 	public static final String INDEX = "index"; //$NON-NLS-1$
 	/**
+	 * The "isConstructing" attribute
+	 */
+	public static final String IS_CONSTRUCTING = "isConstructing"; //$NON-NLS-1$
+	/**
+	 * the "isDebugger" attribute
+	 */
+	public static final String IS_DEBUGGER = "isDebugger"; //$NON-NLS-1$
+	/**
+	 * the "isValid" attribute
+	 */
+	public static final String IS_VALID = "isValid"; //$NON-NLS-1$
+	/**
 	 * The "line" attribute
 	 */
 	public static final String LINE = "line"; //$NON-NLS-1$
@@ -153,6 +205,14 @@ public interface Attributes {
 	 * The "lineCount" attribute
 	 */
 	public static final String LINE_COUNT = "lineCount"; //$NON-NLS-1$
+	/**
+	 * The "lineNumber" attribute
+	 */
+	public static final String LINE_NUMBER = "lineNumber"; //$NON-NLS-1$
+	/**
+	 * The "lineNo" attribute
+	 */
+	public static final String LINE_NO = "lineNo"; //$NON-NLS-1$
 	/**
 	 * The "lineOffset" attribute
 	 */
@@ -190,7 +250,7 @@ public interface Attributes {
 	 */
 	public static final String REF = "ref"; //$NON-NLS-1$
 	/**
-	 * The "request_seq" attribute
+	 * The "requestSeq" attribute
 	 */
 	public static final String REQUEST_SEQ = "requestSeq"; //$NON-NLS-1$
 	/**
@@ -238,6 +298,10 @@ public interface Attributes {
 	 */
 	public static final String SOURCE_LENGTH = "sourceLength"; //$NON-NLS-1$
 	/**
+	 * The "sourceName" attribute
+	 */
+	public static final String SOURCE_NAME = "sourceName"; //$NON-NLS-1$
+	/**
 	 * The "stacktrace" attribute
 	 */
 	public static final String STACKTRACE = "stackTrace"; //$NON-NLS-1$
@@ -257,6 +321,10 @@ public interface Attributes {
 	 * The "this" attribute
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
+	/**
+	 * The thisValue" attribute
+	 */
+	public static final String THIS_VALUE = "thisValue"; //$NON-NLS-1$
 	/**
 	 * the "toFrame" attribute
 	 */

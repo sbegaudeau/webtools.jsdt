@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
  */
 public class CFMirror implements Mirror {
 
-	static boolean TRACE = false;
+	public static boolean TRACE = false;
 	
 	private VirtualMachine vm = null;
 	

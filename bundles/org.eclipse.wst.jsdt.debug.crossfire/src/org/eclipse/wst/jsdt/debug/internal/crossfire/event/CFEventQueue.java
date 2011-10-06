@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.SuspendRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadEnterRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.ThreadExitRequest;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.VMDeathRequest;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.CFThrowable;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.CrossFirePlugin;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.Tracing;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFLocation;
@@ -259,6 +260,17 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_WARN+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
+				}
+				else if(CFEventPacket.ON_ERROR.equals(name)) {
+					//	"QueryInterface":{"type":"function","handle":30},
+					//	"pc":{"type":"number","value":26},
+					//	"eval":{"type":"function","handle":33},
+					Map body = event.getBody();
+					if(body != null) {
+						Throwable thro = new CFThrowable(body);
+						Status status = new Status(IStatus.ERROR, CrossFirePlugin.PLUGIN_ID, thro.getMessage(), thro);
+						CrossFirePlugin.log(status);
+					}
 				}
 				else if(CFEventPacket.ON_INSPECT_NODE.equals(name)) {
 					if(TRACE) {

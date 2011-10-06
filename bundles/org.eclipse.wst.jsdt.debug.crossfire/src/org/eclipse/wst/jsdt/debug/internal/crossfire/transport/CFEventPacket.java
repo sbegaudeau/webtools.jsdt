@@ -61,6 +61,10 @@ public class CFEventPacket extends CFPacket implements Event {
 	 */
 	public static final String ON_CONSOLE_WARN = "onConsoleWarn"; //$NON-NLS-1$
 	/**
+	 * The "onError" event kind
+	 */
+	public static final String ON_ERROR = "onError"; //$NON-NLS-1$
+	/**
 	 * The "onInspectNode" event kind
 	 */
 	public static final String ON_INSPECT_NODE = "onInspectNode"; //$NON-NLS-1$
