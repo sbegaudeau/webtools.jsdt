@@ -54,7 +54,14 @@ public final class SourceLookup {
 			return ((IJavaScriptStackFrame) object).getSourceName();
 		}
 		if(object instanceof IScript) {
-			return URIUtil.lastSegment(((IScript)object).sourceURI());
+			String name = URIUtil.lastSegment(((IScript)object).sourceURI());
+			if(!JavaScriptCore.isJavaScriptLikeFileName(name)) {
+				//append .js, there is no case where we would look up a file with no extension from a script node
+				StringBuffer buf = new StringBuffer(name.length()+3);
+				buf.append(name).append('.').append(Constants.JS_EXTENSION);
+				return buf.toString();
+			}
+			return name;
 		}
 		return null;
 	}
