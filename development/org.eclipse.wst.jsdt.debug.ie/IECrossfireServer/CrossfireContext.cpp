@@ -22,7 +22,7 @@ const wchar_t* CrossfireContext::NUMBER_NaN = L"NaN";
 const wchar_t* CrossfireContext::NUMBER_INFINITY = L"Infinity";
 const wchar_t* CrossfireContext::NUMBER_NEGATIVEINFINITY = L"-Infinity";
 const wchar_t* CrossfireContext::PDM_DLL = L"pdm.dll";
-const wchar_t* CrossfireContext::SCHEME_JSCRIPT = L"jscript://";
+const wchar_t* CrossfireContext::SCHEME_SCRIPT = L"script://";
 const wchar_t* CrossfireContext::VALUE_NaN = L"NaN";
 const wchar_t* CrossfireContext::VALUE_INFINITY = L"Infinity";
 const wchar_t* CrossfireContext::VALUE_NEGATIVEINFINITY = L"-Infinity";
@@ -616,7 +616,7 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 
 	bool resume = false;
 	DebugPropertyInfo propertyInfo;
-	HRESULT hr = value->GetPropertyInfo(PROP_INFO_TYPE | PROP_INFO_VALUE, 10, &propertyInfo);
+	HRESULT hr = value->GetPropertyInfo(DBGPROP_INFO_ATTRIBUTES | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE, 10, &propertyInfo);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.evalComplete(): GetPropertyInfo() failed", hr);
 		resume = true;
@@ -952,7 +952,7 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 
 	DebugPropertyInfo propertyInfo;
 	IDebugProperty* debugProperty = object->debugProperty;
-	HRESULT hr = debugProperty->GetPropertyInfo(PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP, 10, &propertyInfo);
+	HRESULT hr = debugProperty->GetPropertyInfo(DBGPROP_INFO_NAME | DBGPROP_INFO_FULLNAME | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE | DBGPROP_INFO_ATTRIBUTES | DBGPROP_INFO_DEBUGPROP, 10, &propertyInfo);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.createValueForObject(): GetPropertyInfo() failed", hr);
 		return false;
@@ -991,9 +991,9 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 			string = string.substr(1, string.length() - 2);
 			result.addObjectValue(KEY_TYPE, &Value(VALUE_STRING));
 			result.addObjectValue(KEY_VALUE, &Value(&string));
-		} else if ((propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_INVALID) != 0) {
+		} else if ((propertyInfo.m_dwAttrib & DBGPROP_ATTRIB_VALUE_IS_INVALID) != 0) {
 			// TODO error object, should fail?
-		} else if ((propertyInfo.m_dwAttrib & OBJECT_ATTRIB_VALUE_IS_OBJECT) == 0) {
+		} else if ((propertyInfo.m_dwAttrib & DBGPROP_ATTRIB_VALUE_IS_EXPANDABLE) == 0) {
 			/* object is a function */
 			result.addObjectValue(KEY_TYPE, &Value(VALUE_FUNCTION));
 			if (resolveChildObjects) {
@@ -1008,7 +1008,7 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 			} else {
 				CComPtr<IEnumDebugPropertyInfo> enumPropertyInfo = NULL;
 				HRESULT hr = debugProperty->EnumMembers(
-					PROP_INFO_NAME | PROP_INFO_TYPE | PROP_INFO_VALUE | PROP_INFO_ATTRIBUTES | PROP_INFO_DEBUGPROP,
+					DBGPROP_INFO_NAME | DBGPROP_INFO_FULLNAME | DBGPROP_INFO_TYPE | DBGPROP_INFO_VALUE | DBGPROP_INFO_ATTRIBUTES | DBGPROP_INFO_DEBUGPROP,
 					10,
 					IID_IDebugPropertyEnumType_LocalsPlusArgs,
 					&enumPropertyInfo);
@@ -1247,15 +1247,6 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return true;
 	}
 
-	/* the following is intentionally commented */
-
-//  CComPtr<IDebugProgramProvider2> pPDM;
-//  HRESULT hr = pPDM.CoCreateInstance(__uuidof(MsProgramProvider), NULL, CLSCTX_INPROC_SERVER);
-//  if (FAILED(hr)) {
-//      Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance() failed", hr);
-//      return false;
-//  }
-
 	static HINSTANCE s_module = NULL;
 
 	if (!s_module) {
@@ -1310,56 +1301,40 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return false;
 	}
 
+	/* Create IID for MSProgramProvider (IID is made public in MS Visual Studio IDE) */
+	IID iid;
+	HRESULT hr = IIDFromString(L"{170ec3fc-4e80-40ab-a85a-55900c7c70de}", &iid);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed[1]", hr);
+		return false;
+	}
+
 	CComPtr<IClassFactory> factory = NULL;
-	HRESULT hr = ((HRESULT (CALLBACK*)(REFCLSID, REFIID, LPVOID*))proc)(__uuidof(MsProgramProvider), IID_IClassFactory, (void**)&factory);
+	hr = ((HRESULT (CALLBACK*)(REFCLSID, REFIID, LPVOID*))proc)(iid, IID_IClassFactory, (void**)&factory);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.getDebugApplicationThread(): DllGetClassObject() failed", hr);
 		return false;
 	}
 
-	IID iid;
+	/* Create IID for IDebugProgramProvider2 (IID is made public in MS Visual Studio IDE) */
 	hr = IIDFromString(L"{1959530a-8e53-4e09-ad11-1b7334811cad}", &iid);
 	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed", hr);
+		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed[2]", hr);
 		return false;
 	}
-	CComPtr<IDebugProgramProvider2> pPDM;
-	hr = factory->CreateInstance(NULL, iid, (void**)&pPDM);
+
+	IUnknown* programProvider = NULL;
+	hr = factory->CreateInstance(NULL, iid, (void**)&programProvider);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.getDebugApplicationThread(): CreateInstance() failed", hr);
 		return false;
 	}
 
-    AD_PROCESS_ID processId;
-	processId.ProcessIdType = AD_PROCESS_ID_SYSTEM;
-	processId.ProcessId.dwProcessId = m_processId;
-	CONST_GUID_ARRAY filter;
-	filter.dwCount = 0;
-	filter.Members = NULL;
-	PROVIDER_PROCESS_DATA processData;
-    hr = pPDM->GetProviderProcessData(PFLAG_GET_PROGRAM_NODES | PFLAG_DEBUGGEE | PFLAG_ATTACHED_TO_DEBUGGEE, NULL, processId, filter, &processData);
+	CComPtr<IRemoteDebugApplication> debugApplication = NULL;
+	hr = findDebugApplication(programProvider, m_processId, &debugApplication);
 	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData() failed", hr);
-        return false;
-	}
-	if (processData.ProgramNodes.dwCount != 1) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): GetProviderProcessData() returned program nodes count != 1", processData.ProgramNodes.dwCount);
-        return false;
-	}
-
-	IDebugProgramNode2* node = processData.ProgramNodes.Members[0];
-	CComPtr<IDebugProviderProgramNode2> providerProgramNode;
-	hr = node->QueryInterface(__uuidof(IDebugProviderProgramNode2), (void**)&providerProgramNode);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): QI(IDebugProviderProgramNode2) failed", hr);
-        return false;
-	}
-
-	CComPtr<IRemoteDebugApplication> debugApplication;
-	hr = providerProgramNode->UnmarshalDebuggeeInterface(IID_IRemoteDebugApplication, (void**)&debugApplication);
-	if (FAILED(hr)) {
-        Logger::error("CrossfireContext.getDebugApplicationThread(): UnmarshalDebuggeeInterface() failed", hr);
-        return false;
+		Logger::error("findDebugApplication() failed", hr);
+		return false;
 	}
 
 	CComPtr<IEnumRemoteDebugApplicationThreads> debugApplicationThreads;
@@ -1554,10 +1529,10 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 			Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
 			return false;
 		}
-		int length = wcslen(SCHEME_JSCRIPT) + wcslen(value.m_str) + 2;
+		int length = wcslen(SCHEME_SCRIPT) + wcslen(value.m_str) + 2;
 		wchar_t* string = new wchar_t[length];
 		ZeroMemory(string, length * sizeof(wchar_t));
-		wcscat_s(string, length, SCHEME_JSCRIPT);
+		wcscat_s(string, length, SCHEME_SCRIPT);
 		wcscat_s(string, length, value.m_str);
 		wcscat_s(string, length, L"/");
 		url.setString(string);

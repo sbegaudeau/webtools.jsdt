@@ -27,32 +27,44 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_14B5CCF2B9F0435D86C7329CFBC224B3"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_14B5CCF2B9F0435D86C7329CFBC224B3"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_95865189E786418BB687E36D639FCC3E"
+        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
         "OwnerKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_95865189E786418BB687E36D639FCC3E"
+        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
         "OwnerKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_95865189E786418BB687E36D639FCC3E"
+        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
         "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_95865189E786418BB687E36D639FCC3E"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -65,18 +77,6 @@
         {
         "MsmKey" = "8:_C3E67FD0862F4535B94CCB13D4B57844"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D3A03D18E59D4182AA06050CD174CB83"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D3A03D18E59D4182AA06050CD174CB83"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -301,7 +301,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:IE Crossfire Server"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{86D437BD-6123-43C0-8019-D7668A0937CB}"
+        "PackageCode" = "8:{FB589663-211C-49ED-82D6-9443F7A7914B}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -489,7 +489,7 @@
                                                             "Condition" = "8:"
                                                             "Transitive" = "11:FALSE"
                                                             "ValueTypes" = "3:1"
-                                                            "Value" = "8:\"[TARGETDIR]IECrossfireServerGray.ico\""
+                                                            "Value" = "8:\"[TARGETDIR]IECrossfireServer.ico\""
                                                             }
                                                             "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8CE8ADBA6DB64E569C66886024E48551"
                                                             {
@@ -3815,11 +3815,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_95865189E786418BB687E36D639FCC3E"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_14B5CCF2B9F0435D86C7329CFBC224B3"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
                 "Properties"
                 {
                 }
@@ -3829,11 +3829,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_D3A03D18E59D4182AA06050CD174CB83"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_72E7452B2DD146BEA055EA633209D940"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_ATL_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -3848,7 +3848,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0F2BD160D0CD47E9ACD9EB10FEED1697"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\ReleasePS\\IECrossfireServerPS.dll"
+            "SourcePath" = "8:..\\IECrossfireServer\\DebugPS\\IECrossfireServerPS.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3904,7 +3904,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_68B2C602B4B448ADBFC58961A342D06B"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\Release\\IECrossfireServer.exe"
+            "SourcePath" = "8:..\\IECrossfireServer\\Debug\\IECrossfireServer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3932,7 +3932,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A558BCE26AC6426C9ABA48959A6EB3C6"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\Debug\\IECrossfireExtension.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3988,7 +3988,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\ReleasePS\\IECrossfireExtensionPS.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\DebugPS\\IECrossfireExtensionPS.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"

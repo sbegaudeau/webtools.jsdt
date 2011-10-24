@@ -13,8 +13,6 @@
 #pragma once
 
 #include "activdbg.h"
-#include <msdbg.h>
-#include <psapi.h>
 #include <vector>
 
 #include "CrossfireEvent.h"
@@ -23,6 +21,7 @@
 #include "CrossfireResponse.h"
 #include "IBreakpointTarget.h"
 #include "IECrossfireServer.h"
+#include "InitDebugApplication.h"
 #include "JSEvalCallback.h"
 #include "Value.h"
 #include "Logger.h"
@@ -225,7 +224,7 @@ private:
 	static const wchar_t* NUMBER_NaN;
 	static const wchar_t* NUMBER_NEGATIVEINFINITY;
 	static const wchar_t* PDM_DLL;
-	static const wchar_t* SCHEME_JSCRIPT;
+	static const wchar_t* SCHEME_SCRIPT;
 	static const wchar_t* VALUE_INFINITY;
 	static const wchar_t* VALUE_NaN;
 	static const wchar_t* VALUE_NEGATIVEINFINITY;

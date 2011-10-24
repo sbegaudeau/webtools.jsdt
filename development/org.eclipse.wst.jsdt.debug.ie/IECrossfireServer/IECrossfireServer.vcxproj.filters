@@ -85,6 +85,9 @@
     <ClCompile Include="URL.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="InitDebugApplication.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Midl Include="IECrossfireServer.idl">
@@ -162,6 +165,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="URL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InitDebugApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

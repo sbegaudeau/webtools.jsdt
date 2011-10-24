@@ -28,12 +28,12 @@ bool Util::VerifyDebugPreference() {
 		hr = RegQueryValueEx(key, PREFERENCE_DISABLEIEDEBUG, NULL, NULL, (LPBYTE)value, &size);
 		RegCloseKey(key);
 		if (SUCCEEDED(hr) && wcscmp(value, L"no") != 0) {
-			MessageBox(NULL, L"Internet Explorer Option \"Disable Script Debugging (Internet Explorer)\" must be unchecked for remote debugging to work.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
+			MessageBox(NULL, L"Internet Explorer Option \"Disable Script Debugging (Internet Explorer)\" must be unchecked to enable remote debugging via Crossfire.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
 			return false;
 		}
 	}
 	if (FAILED(hr)) {
-		Logger::error("Util.verifyPDM(): Failed to access the DisableScriptDebuggerIE registry setting", hr);
+		Logger::error("Util.VerifyDebugPreference(): Failed to access the DisableScriptDebuggerIE registry setting", hr);
 		/* allow this case to proceed, the preference could be set properly */
 	}
 	return true;
