@@ -24,23 +24,23 @@ class CrossfireBPManager : IBreakpointTarget {
 
 public:
 	CrossfireBPManager();
-	~CrossfireBPManager();
+	virtual ~CrossfireBPManager();
 
-	virtual int commandChangeBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
-	virtual int commandDeleteBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
-	virtual int commandGetBreakpoints(Value* arguments, IBreakpointTarget* target, Value** _responseBody, wchar_t** _message);
-	virtual int commandSetBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
-	virtual void setBreakpointsForScript(URL* url, IBreakpointTarget* target);
+	int commandChangeBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
+	int commandDeleteBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
+	int commandGetBreakpoints(Value* arguments, IBreakpointTarget* target, Value** _responseBody, wchar_t** _message);
+	int commandSetBreakpoints(Value* arguments, IBreakpointTarget** targets, Value** _responseBody, wchar_t** _message);
+	void setBreakpointsForScript(URL* url, IBreakpointTarget* target);
 
 	/* IBreakpointTarget methods */
-	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
-	virtual bool deleteBreakpoint(unsigned int handle);
-	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
-	virtual void getBreakpoints(CrossfireBreakpoint*** ___values);
-	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint);
+	bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
+	bool deleteBreakpoint(unsigned int handle);
+	CrossfireBreakpoint* getBreakpoint(unsigned int handle);
+	void getBreakpoints(CrossfireBreakpoint*** ___values);
+	bool setBreakpoint(CrossfireBreakpoint* breakpoint);
 
 private:
-	virtual int createBreakpoint(Value* arguments, CrossfireBreakpoint** _result, wchar_t** _message);
+	int createBreakpoint(Value* arguments, CrossfireBreakpoint** _result, wchar_t** _message);
 
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
 

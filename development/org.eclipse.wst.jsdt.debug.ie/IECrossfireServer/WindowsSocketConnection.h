@@ -26,16 +26,16 @@ class WindowsSocketConnection {
 public:
 	WindowsSocketConnection(CrossfireServer* server);
 	~WindowsSocketConnection();
-	virtual bool acceptConnection();
-	virtual bool close();
-	virtual bool init(unsigned int port);
-	virtual bool isConnected();
-	virtual bool send(const wchar_t* msg);
+	bool acceptConnection();
+	bool close();
+	bool init(unsigned int port);
+	bool isConnected();
+	bool send(const wchar_t* msg);
 
 private:
-	virtual void handleSocketAccept();
-	virtual void handleSocketClose();
-	virtual void handleSocketRead();
+	void handleSocketAccept();
+	void handleSocketClose();
+	void handleSocketRead();
 
 	SOCKET m_clientSocket;
 	CrossfireServer* m_server;

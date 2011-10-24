@@ -51,38 +51,38 @@ public:
 
 public:
 	CrossfireServer();
-	~CrossfireServer();
+	virtual ~CrossfireServer();
 
 	/* ICrossfireServer */
-	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, DWORD threadId, OLECHAR* url);
-	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
-	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
-	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
-	virtual HRESULT STDMETHODCALLTYPE getState(int* value);
-	virtual HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* browser);
-	virtual HRESULT STDMETHODCALLTYPE removeBrowser(DWORD processId);
-	virtual HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
-	virtual HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
-	virtual HRESULT STDMETHODCALLTYPE stop();
+	HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, DWORD threadId, OLECHAR* url);
+	HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
+	HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
+	HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);
+	HRESULT STDMETHODCALLTYPE getState(int* value);
+	HRESULT STDMETHODCALLTYPE registerBrowser(DWORD processId, IBrowserContext* browser);
+	HRESULT STDMETHODCALLTYPE removeBrowser(DWORD processId);
+	HRESULT STDMETHODCALLTYPE setCurrentContext(DWORD processId);
+	HRESULT STDMETHODCALLTYPE start(unsigned int port, unsigned int debugPort);
+	HRESULT STDMETHODCALLTYPE stop();
 
 	/* CrossfireServer */
-	virtual void connected();
-	virtual void disconnected();
-	virtual CrossfireBPManager* getBreakpointManager();
-	virtual bool isConnected();
-	virtual void received(wchar_t* msg);
-	virtual void sendEvent(CrossfireEvent* eventObj);
-	virtual void sendResponse(CrossfireResponse* response);
-	virtual void setWindowHandle(unsigned long value);
+	void connected();
+	void disconnected();
+	CrossfireBPManager* getBreakpointManager();
+	bool isConnected();
+	void received(wchar_t* msg);
+	void sendEvent(CrossfireEvent* eventObj);
+	void sendResponse(CrossfireResponse* response);
+	void setWindowHandle(unsigned long value);
 
 private:
-	virtual CrossfireContext* getContext(wchar_t* contextId);
-	virtual void getContextsArray(CrossfireContext*** _value);
-	virtual CrossfireContext* getRequestContext(CrossfireRequest* request);
-	virtual bool performRequest(CrossfireRequest* request);
-	virtual bool processHandshake(wchar_t* msg);
-	virtual void reset();
-	virtual void sendPendingEvents();
+	CrossfireContext* getContext(wchar_t* contextId);
+	void getContextsArray(CrossfireContext*** _value);
+	CrossfireContext* getRequestContext(CrossfireRequest* request);
+	bool performRequest(CrossfireRequest* request);
+	bool processHandshake(wchar_t* msg);
+	void reset();
+	void sendPendingEvents();
 
 	CrossfireBPManager* m_bpManager;
 	std::map<DWORD, IBrowserContext*>* m_browsers;
@@ -110,53 +110,53 @@ private:
 
 	/* command: createContext */
 	static const wchar_t* COMMAND_CREATECONTEXT;
-	virtual int commandCreateContext(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandCreateContext(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: disableTools */
 	static const wchar_t* COMMAND_DISABLETOOLS;
-	virtual int commandDisableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandDisableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: enableTools */
 	static const wchar_t* COMMAND_ENABLETOOLS;
-	virtual int commandEnableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandEnableTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: getTools */
 	static const wchar_t* COMMAND_GETTOOLS;
-	virtual int commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandGetTools(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: listContexts */
 	static const wchar_t* COMMAND_LISTCONTEXTS;
 	static const wchar_t* KEY_CONTEXTS;
 	static const wchar_t* KEY_CURRENT;
-	virtual int commandListContexts(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandListContexts(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: version */
 	static const wchar_t* COMMAND_VERSION;
 	static const wchar_t* KEY_VERSION;
 	static const wchar_t* VERSION_STRING;
-	virtual int commandVersion(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandVersion(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* event: closed */
 	static const wchar_t* EVENT_CLOSED;
-	virtual void eventClosed();
+	void eventClosed();
 
 	/* event: onContextCreated */
 	static const wchar_t* EVENT_CONTEXTCREATED;
-	virtual void eventContextCreated(CrossfireContext* context);
+	void eventContextCreated(CrossfireContext* context);
 
 	/* event: onContextDestroyed */
 	static const wchar_t* EVENT_CONTEXTDESTROYED;
-	virtual void eventContextDestroyed(CrossfireContext* context);
+	void eventContextDestroyed(CrossfireContext* context);
 
 	/* event: onContextLoaded */
 	static const wchar_t* EVENT_CONTEXTLOADED;
-	virtual void eventContextLoaded(CrossfireContext* context);
+	void eventContextLoaded(CrossfireContext* context);
 
 	/* event: onContextSelected */
 	static const wchar_t* EVENT_CONTEXTSELECTED;
 	static const wchar_t* KEY_OLDCONTEXTID;
 	static const wchar_t* KEY_OLDURL;
-	virtual void eventContextSelected(CrossfireContext* context, CrossfireContext* oldContext);
+	void eventContextSelected(CrossfireContext* context, CrossfireContext* oldContext);
 
 	/* shared */
 	static const wchar_t* KEY_CONTEXTID;

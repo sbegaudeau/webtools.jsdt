@@ -30,20 +30,19 @@ class CrossfireResponse : public CrossfirePacket {
 
 public:
 	CrossfireResponse();
-	~CrossfireResponse();
-	virtual void clone(CrossfirePacket** _value);
-	virtual Value* getBody();
-	virtual int getCode();
-	virtual wchar_t* getMessage();
-	virtual unsigned int getRequestSeq();
-	virtual bool getRunning();
-	virtual int getType();
-	virtual bool setBody(Value* value);
-	virtual void setCode(int code);
-	virtual void setMessage(wchar_t* value);
-	virtual void setRequestSeq(unsigned int value);
-	virtual void setRunning(bool value);
-	
+	virtual ~CrossfireResponse();
+	void clone(CrossfirePacket** _value);
+	Value* getBody();
+	int getCode();
+	wchar_t* getMessage();
+	unsigned int getRequestSeq();
+	bool getRunning();
+	int getType();
+	bool setBody(Value* value);
+	void setCode(int code);
+	void setMessage(wchar_t* value);
+	void setRequestSeq(unsigned int value);
+	void setRunning(bool value);
 
 private:
 	Value* m_body;

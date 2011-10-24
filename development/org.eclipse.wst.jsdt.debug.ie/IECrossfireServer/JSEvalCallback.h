@@ -40,13 +40,13 @@ public:
 
 public:
 	JSEvalCallback();
-	~JSEvalCallback();
+	virtual ~JSEvalCallback();
 
 	/* IDebugExpressionCallBack */
-	virtual HRESULT STDMETHODCALLTYPE onComplete();
+	HRESULT STDMETHODCALLTYPE onComplete();
 
 	/* JSEvalCallback */
-	virtual bool start(IDebugExpression* expression, IJSEvalHandler* handler, void* data);
+	bool start(IDebugExpression* expression, IJSEvalHandler* handler, void* data);
 
 private:
 	IDebugExpression* m_expression;

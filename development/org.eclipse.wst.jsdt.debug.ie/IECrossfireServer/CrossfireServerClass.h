@@ -44,16 +44,16 @@ public:
 
 public:
 	/* IClassFactory */
-	virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
-	virtual HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock);
+	HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
+	HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock);
 
 	/* ICrossfireServerClass */
-	virtual HRESULT STDMETHODCALLTYPE GetServer(/*unsigned long windowHandle,*/ ICrossfireServer** _value);
-	virtual HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
+	HRESULT STDMETHODCALLTYPE GetServer(/*unsigned long windowHandle,*/ ICrossfireServer** _value);
+	HRESULT STDMETHODCALLTYPE RemoveServer(unsigned long windowHandle);
 
 protected:
 	CrossfireServerClass();
-	~CrossfireServerClass();
+	virtual ~CrossfireServerClass();
 
 	int lockCount;
 

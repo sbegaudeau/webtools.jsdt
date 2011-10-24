@@ -55,7 +55,7 @@ public:
 
 public:
 	IECrossfireBHO();
-	~IECrossfireBHO();
+	virtual ~IECrossfireBHO();
 
 	/* DWebBrowserEvents2 */
 	BEGIN_SINK_MAP(IECrossfireBHO)
@@ -70,17 +70,17 @@ public:
 	void STDMETHODCALLTYPE OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask);
 
 	/* IBrowserContext */
-	virtual HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
+	HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
 
 	/* IObjectWithSite */
-	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
-	virtual HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
+	HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
+	HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
 
 private:
-	virtual bool displayHTML(wchar_t* htmlText);
-//	virtual int getServerState();
-	virtual bool initServer(bool startIfNeeded);
-	virtual void onServerStateChanged(WPARAM wParam, LPARAM lParam);
+	bool displayHTML(wchar_t* htmlText);
+//	int getServerState();
+	bool initServer(bool startIfNeeded);
+	void onServerStateChanged(WPARAM wParam, LPARAM lParam);
 	bool startDebugging(unsigned int port);
 
 	bool m_contextCreated;

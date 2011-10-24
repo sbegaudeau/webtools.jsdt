@@ -42,30 +42,30 @@ public:
 
 public:
 	PendingScriptLoad();
-	~PendingScriptLoad();
+	virtual ~PendingScriptLoad();
 
-	virtual IDebugApplicationNode* getApplicationNode();
+	IDebugApplicationNode* getApplicationNode();
 
 	/* IDebugDocumentTextEvents */
-	virtual HRESULT STDMETHODCALLTYPE onDestroy();
-	virtual HRESULT STDMETHODCALLTYPE onInsertText(
+	HRESULT STDMETHODCALLTYPE onDestroy();
+	HRESULT STDMETHODCALLTYPE onInsertText(
 		/* [in] */ ULONG cCharacterPosition,
 		/* [in] */ ULONG cNumToInsert);
-	virtual HRESULT STDMETHODCALLTYPE onRemoveText(
+	HRESULT STDMETHODCALLTYPE onRemoveText(
 		/* [in] */ ULONG cCharacterPosition,
 		/* [in] */ ULONG cNumToRemove);
-	virtual HRESULT STDMETHODCALLTYPE onReplaceText(
+	HRESULT STDMETHODCALLTYPE onReplaceText(
 		/* [in] */ ULONG cCharacterPosition,
 		/* [in] */ ULONG cNumToReplace);
-	virtual HRESULT STDMETHODCALLTYPE onUpdateTextAttributes(
+	HRESULT STDMETHODCALLTYPE onUpdateTextAttributes(
 		/* [in] */ ULONG cCharacterPosition,
 		/* [in] */ ULONG cNumToUpdate);
-	virtual HRESULT STDMETHODCALLTYPE onUpdateDocumentAttributes(
+	HRESULT STDMETHODCALLTYPE onUpdateDocumentAttributes(
 		/* [in] */ TEXT_DOC_ATTR textdocattr);
 
 	/* PendingScriptLoad */
-	virtual bool attach(IDebugApplicationNode* applicationNode, CrossfireContext* context);
-	virtual bool detach();
+	bool attach(IDebugApplicationNode* applicationNode, CrossfireContext* context);
+	bool detach();
 
 private:
 	IDebugApplicationNode* m_applicationNode;

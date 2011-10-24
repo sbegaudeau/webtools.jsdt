@@ -22,16 +22,16 @@ class JSONParser {
 public:
 	JSONParser();
 	~JSONParser();
-	virtual void parse(std::wstring* jsonString, Value** _value);
-	virtual void stringify(Value* value, std::wstring** _jsonString);
+	void parse(std::wstring* jsonString, Value** _value);
+	void stringify(Value* value, std::wstring** _jsonString);
 
 private:
-	virtual void parse(std::wstringstream* jsonStream, Value** _value);
-	virtual void parseArray(std::wstringstream* jsonStream, Value** _value);
-	virtual double parseNumber(std::wstringstream* jsonStream);
-	virtual void parseObject(std::wstringstream* jsonStream, Value** _value);
-	virtual void parseString(std::wstringstream* jsonStream, std::wstring** _value);
-	virtual void skipWhitespace(std::wstringstream* jsonStream);
+	void parse(std::wstringstream* jsonStream, Value** _value);
+	void parseArray(std::wstringstream* jsonStream, Value** _value);
+	double parseNumber(std::wstringstream* jsonStream);
+	void parseObject(std::wstringstream* jsonStream, Value** _value);
+	void parseString(std::wstringstream* jsonStream, std::wstring** _value);
+	void skipWhitespace(std::wstringstream* jsonStream);
 
 	/* constants */
 	static const wchar_t* VALUE_NULL;

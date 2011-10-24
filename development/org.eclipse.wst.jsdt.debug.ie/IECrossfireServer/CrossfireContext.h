@@ -34,27 +34,27 @@ class CrossfireContext : IBreakpointTarget, IJSEvalHandler {
 
 public:
 	CrossfireContext(DWORD processId, DWORD threadId, wchar_t* url, CrossfireServer* server);
-	~CrossfireContext();
-	virtual void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
-	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
-	virtual IDebugApplicationNode* getLastInitializedScriptNode();
-	virtual wchar_t* getName();
-	virtual DWORD getProcessId();
-	virtual wchar_t* getUrl();
-	virtual void installBreakpoints(std::vector<Value*>* breakpoints);
-	virtual bool performRequest(CrossfireRequest* request);
-	virtual bool scriptInitialized(IDebugApplicationNode *applicationNode, bool isFromAnotherContext);
-	virtual void scriptLoaded(IDebugApplicationNode *applicationNode, bool sendScriptLoadEvent);
+	virtual ~CrossfireContext();
+	void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
+	bool getDebugApplication(IRemoteDebugApplication** _value);
+	IDebugApplicationNode* getLastInitializedScriptNode();
+	wchar_t* getName();
+	DWORD getProcessId();
+	wchar_t* getUrl();
+	void installBreakpoints(std::vector<Value*>* breakpoints);
+	bool performRequest(CrossfireRequest* request);
+	bool scriptInitialized(IDebugApplicationNode *applicationNode, bool isFromAnotherContext);
+	void scriptLoaded(IDebugApplicationNode *applicationNode, bool sendScriptLoadEvent);
 
 	/* IBreakpointTarget methods */
-	virtual bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
-	virtual bool deleteBreakpoint(unsigned int handle);
-	virtual CrossfireBreakpoint* getBreakpoint(unsigned int handle);
-	virtual void getBreakpoints(CrossfireBreakpoint*** ___values);
-	virtual bool setBreakpoint(CrossfireBreakpoint* breakpoint);
+	bool breakpointAttributeChanged(unsigned int handle, wchar_t* name, Value* value);
+	bool deleteBreakpoint(unsigned int handle);
+	CrossfireBreakpoint* getBreakpoint(unsigned int handle);
+	void getBreakpoints(CrossfireBreakpoint*** ___values);
+	bool setBreakpoint(CrossfireBreakpoint* breakpoint);
 
 	/* IJSEvalHandler methods */
-	virtual void evalComplete(IDebugProperty* value, void* data);
+	void evalComplete(IDebugProperty* value, void* data);
 
 private:
 	struct JSObject {
@@ -64,21 +64,21 @@ private:
 		IDebugStackFrame* stackFrame;
 	};
 
-	virtual void clearObjects();
-	virtual bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
-	virtual bool createValueForObject(JSObject* object, bool resolveChildObjects, Value** _value);
-	virtual bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
-	virtual bool evaluate(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IDebugProperty** _result);
-	virtual bool evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data);
-	virtual bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
-	virtual bool getScriptUrl(IDebugApplicationNode* node, URL** _value);
-	virtual IDebugApplicationNode* getScriptNode(URL* url);
-	virtual bool hookDebugger();
-	virtual bool registerScript(IDebugApplicationNode* applicationNode, bool recurse);
-	virtual bool resumeFromBreak(BREAKRESUMEACTION action);
-	virtual void sendEvent(CrossfireEvent* eventObj);
-	virtual bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
-	virtual bool unhookDebugger();
+	void clearObjects();
+	bool createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value);
+	bool createValueForObject(JSObject* object, bool resolveChildObjects, Value** _value);
+	bool createValueForScript(IDebugApplicationNode* node, bool includeSource, bool failIfEmpty, Value** _value);
+	bool evaluate(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IDebugProperty** _result);
+	bool evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expression, int flags, IJSEvalHandler* handler, void* data);
+	bool getDebugApplicationThread(IRemoteDebugApplicationThread** _value);
+	bool getScriptUrl(IDebugApplicationNode* node, URL** _value);
+	IDebugApplicationNode* getScriptNode(URL* url);
+	bool hookDebugger();
+	bool registerScript(IDebugApplicationNode* applicationNode, bool recurse);
+	bool resumeFromBreak(BREAKRESUMEACTION action);
+	void sendEvent(CrossfireEvent* eventObj);
+	bool setBreakpointEnabled(CrossfireBreakpoint* breakpoint, bool enabled);
+	bool unhookDebugger();
 
 	std::vector<JSEvalCallback*>* m_asyncEvals;
 	std::map<unsigned int, CrossfireBreakpoint*>* m_breakpoints;
@@ -105,23 +105,23 @@ private:
 	static const wchar_t* KEY_FROMFRAME;
 	static const wchar_t* KEY_TOFRAME;
 	static const wchar_t* KEY_TOTALFRAMES;
-	virtual int commandBacktrace(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandBacktrace(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: continue */
 	static const wchar_t* COMMAND_CONTINUE;
-	virtual int commandContinue(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandContinue(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: evaluate */
 	static const wchar_t* COMMAND_EVALUATE;
 	static const wchar_t* KEY_EXPRESSION;
 	static const wchar_t* KEY_RESULT;
-	virtual int commandEvaluate(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandEvaluate(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: frame */
 	static const wchar_t* COMMAND_FRAME;
 	static const wchar_t* KEY_FRAME;
 	static const wchar_t* KEY_INDEX;
-	virtual int commandFrame(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandFrame(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: inspect */
 	static const wchar_t* COMMAND_INSPECT;
@@ -130,7 +130,7 @@ private:
 	static const wchar_t* COMMAND_LOOKUP;
 	static const wchar_t* KEY_HANDLES;
 	static const wchar_t* KEY_VALUES;
-	virtual int commandLookup(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandLookup(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scopes */
 	static const wchar_t* COMMAND_SCOPES;
@@ -138,13 +138,13 @@ private:
 	static const wchar_t* KEY_SCOPES;
 	static const wchar_t* KEY_TOSCOPE;
 	static const wchar_t* KEY_TOTALSCOPECOUNT;
-	virtual int commandScopes(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandScopes(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: scripts */
 	static const wchar_t* COMMAND_SCRIPTS;
 	static const wchar_t* KEY_SCRIPTS;
 	static const wchar_t* KEY_URLS;
-	virtual int commandScripts(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandScripts(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* command: suspend */
 	static const wchar_t* COMMAND_SUSPEND;
@@ -152,7 +152,7 @@ private:
 	static const wchar_t* VALUE_IN;
 	static const wchar_t* VALUE_NEXT;
 	static const wchar_t* VALUE_OUT;
-	virtual int commandSuspend(Value* arguments, Value** _responseBody, wchar_t** _message);
+	int commandSuspend(Value* arguments, Value** _responseBody, wchar_t** _message);
 
 	/* event: onBreak */
 	static const wchar_t* EVENT_ONBREAK;

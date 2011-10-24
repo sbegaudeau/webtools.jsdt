@@ -18,15 +18,15 @@ class CrossfirePacket {
 
 public:
 	CrossfirePacket();
-	~CrossfirePacket();
+	virtual ~CrossfirePacket();
 	virtual void clone(CrossfirePacket** _value) = 0;
-	virtual std::wstring* getContextId();
-	virtual wchar_t* getName();
-	virtual unsigned int getSeq();
+	std::wstring* getContextId();
+	wchar_t* getName();
+	unsigned int getSeq();
 	virtual int getType() = 0;
-	virtual void setContextId(std::wstring* value);
-	virtual void setName(const wchar_t* value);
-	virtual void setSeq(unsigned int);
+	void setContextId(std::wstring* value);
+	void setName(const wchar_t* value);
+	void setSeq(unsigned int);
 
 	enum {
 		TYPE_REQUEST,

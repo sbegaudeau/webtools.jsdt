@@ -22,24 +22,24 @@ class CrossfireLineBreakpoint : public CrossfireBreakpoint {
 public:
 	CrossfireLineBreakpoint();
 	virtual ~CrossfireLineBreakpoint();
-	virtual bool appliesToUrl(URL* url);
-	virtual void breakpointHit();
-	virtual void clone(CrossfireBreakpoint** _value);
-	virtual const std::wstring* getCondition();
-	virtual unsigned int getHitCount();
-	virtual unsigned int getLine();
-	virtual int getType();
-	virtual const wchar_t* getTypeString();
-	virtual const URL* getUrl();
-	virtual bool isEnabled();
-	virtual bool matchesHitCount();
-	virtual bool matchesLocation(CrossfireBreakpoint* breakpoint);
-	virtual void setCondition(std::wstring* value);
-	virtual void setEnabled(bool value);
-	virtual void setHitCount(unsigned int value);
-	virtual void setLine(unsigned int value);
-	virtual bool setLocationFromValue(Value* value);
-	virtual bool setUrl(URL* value);
+	bool appliesToUrl(URL* url);
+	void breakpointHit();
+	void clone(CrossfireBreakpoint** _value);
+	const std::wstring* getCondition();
+	unsigned int getHitCount();
+	unsigned int getLine();
+	int getType();
+	const wchar_t* getTypeString();
+	const URL* getUrl();
+	bool isEnabled();
+	bool matchesHitCount();
+	bool matchesLocation(CrossfireBreakpoint* breakpoint);
+	void setCondition(std::wstring* value);
+	void setEnabled(bool value);
+	void setHitCount(unsigned int value);
+	void setLine(unsigned int value);
+	bool setLocationFromValue(Value* value);
+	bool setUrl(URL* value);
 
 	/* static methods */
 	static bool CanHandleBPType(wchar_t* type);
@@ -50,8 +50,8 @@ public:
 
 protected:
 	CrossfireLineBreakpoint(unsigned int handle);
-	virtual bool attributeIsValid(wchar_t* name, Value* value);
-	virtual bool getLocationAsValue(Value** _value);
+	bool attributeIsValid(wchar_t* name, Value* value);
+	bool getLocationAsValue(Value** _value);
 
 private:
 	unsigned int m_hitCounter;

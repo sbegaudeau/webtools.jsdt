@@ -19,11 +19,11 @@ class CrossfireEvent : public CrossfirePacket {
 
 public:
 	CrossfireEvent();
-	~CrossfireEvent();
-	virtual void clone(CrossfirePacket** _value);
-	virtual Value* getBody();
-	virtual int getType();
-	virtual bool setBody(Value* value);
+	virtual ~CrossfireEvent();
+	void clone(CrossfirePacket** _value);
+	Value* getBody();
+	int getType();
+	bool setBody(Value* value);
 
 private:
 	Value* m_body;

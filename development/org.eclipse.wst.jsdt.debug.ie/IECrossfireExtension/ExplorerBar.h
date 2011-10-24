@@ -58,35 +58,35 @@ public:
 
 public:
 	ExplorerBar();
-	~ExplorerBar();
+	virtual ~ExplorerBar();
 
 	/* IClassFactory */
-	virtual HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
-    virtual HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock);
+	HRESULT STDMETHODCALLTYPE CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObject);
+    HRESULT STDMETHODCALLTYPE LockServer(BOOL fLock);
 
 	/* IObjectWithSite */
-	virtual HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
-	virtual HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
+	HRESULT STDMETHODCALLTYPE GetSite(REFIID riid, LPVOID *ppvReturn);
+	HRESULT STDMETHODCALLTYPE SetSite(IUnknown *pUnkSite);
 
 	/* IPersistStream */
-	virtual HRESULT STDMETHODCALLTYPE GetClassID(CLSID *pClassID);
-	virtual HRESULT STDMETHODCALLTYPE IsDirty();
-	virtual HRESULT STDMETHODCALLTYPE Load(IStream *pStm);
-	virtual HRESULT STDMETHODCALLTYPE Save(IStream *pStm, BOOL fClearDirty);
-	virtual HRESULT STDMETHODCALLTYPE GetSizeMax(ULARGE_INTEGER *pcbSize);
+	HRESULT STDMETHODCALLTYPE GetClassID(CLSID *pClassID);
+	HRESULT STDMETHODCALLTYPE IsDirty();
+	HRESULT STDMETHODCALLTYPE Load(IStream *pStm);
+	HRESULT STDMETHODCALLTYPE Save(IStream *pStm, BOOL fClearDirty);
+	HRESULT STDMETHODCALLTYPE GetSizeMax(ULARGE_INTEGER *pcbSize);
 
 	/* IDeskBand */
-	virtual HRESULT STDMETHODCALLTYPE GetWindow(HWND *phwnd);
-	virtual HRESULT STDMETHODCALLTYPE ContextSensitiveHelp(BOOL fEnterMode);
-	virtual HRESULT STDMETHODCALLTYPE ShowDW(BOOL fShow);
-	virtual HRESULT STDMETHODCALLTYPE CloseDW(DWORD dwReserved);        
-	virtual HRESULT STDMETHODCALLTYPE ResizeBorderDW(LPCRECT prcBorder, IUnknown *punkToolbarSite, BOOL fReserved);    
-	virtual HRESULT STDMETHODCALLTYPE GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBANDINFO *pdbi);
+	HRESULT STDMETHODCALLTYPE GetWindow(HWND *phwnd);
+	HRESULT STDMETHODCALLTYPE ContextSensitiveHelp(BOOL fEnterMode);
+	HRESULT STDMETHODCALLTYPE ShowDW(BOOL fShow);
+	HRESULT STDMETHODCALLTYPE CloseDW(DWORD dwReserved);        
+	HRESULT STDMETHODCALLTYPE ResizeBorderDW(LPCRECT prcBorder, IUnknown *punkToolbarSite, BOOL fReserved);    
+	HRESULT STDMETHODCALLTYPE GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBANDINFO *pdbi);
 
 	/* IInputObject */
-    virtual HRESULT STDMETHODCALLTYPE UIActivateIO(BOOL fActivate, LPMSG lpMsg);
-    virtual HRESULT STDMETHODCALLTYPE HasFocusIO();
-    virtual HRESULT STDMETHODCALLTYPE TranslateAcceleratorIO(LPMSG lpMsg);
+    HRESULT STDMETHODCALLTYPE UIActivateIO(BOOL fActivate, LPMSG lpMsg);
+    HRESULT STDMETHODCALLTYPE HasFocusIO();
+    HRESULT STDMETHODCALLTYPE TranslateAcceleratorIO(LPMSG lpMsg);
 
 private:
 	bool createWindow();

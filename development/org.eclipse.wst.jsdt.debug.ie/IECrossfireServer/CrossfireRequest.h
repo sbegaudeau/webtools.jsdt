@@ -19,11 +19,11 @@ class CrossfireRequest : public CrossfirePacket {
 
 public:
 	CrossfireRequest();
-	~CrossfireRequest();
-	virtual void clone(CrossfirePacket** _value);
-	virtual Value* getArguments();
-	virtual int getType();
-	virtual bool setArguments(Value* value);
+	virtual ~CrossfireRequest();
+	void clone(CrossfirePacket** _value);
+	Value* getArguments();
+	int getType();
+	bool setArguments(Value* value);
 
 private:
 	Value* m_arguments;
