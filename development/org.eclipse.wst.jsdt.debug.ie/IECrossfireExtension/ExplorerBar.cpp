@@ -429,10 +429,7 @@ bool ExplorerBar::initServer(bool startIfNeeded) {
 		return false;
 	}
 
-	if (!Util::VerifyPDM()) {
-		return false;
-	}
-	if (!Util::VerifyDebugPreference()) {
+	if (!Util::VerifyActiveScriptDebugger() || !Util::VerifyDebugPreference()) {
 		return false;
 	}
 

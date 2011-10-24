@@ -12,17 +12,17 @@
 
 #pragma once
 
+#include "activdbg.h"
 #include "Logger.h"
 
 class Util {
 public:
 	/* statics */
+	static bool VerifyActiveScriptDebugger();
 	static bool VerifyDebugPreference();
-	static bool VerifyPDM();
 
 private:
 	/* constants */
-	static const wchar_t* PDM_DLL;
 	static const wchar_t* PREFERENCE_DISABLEIEDEBUG;
 };
 

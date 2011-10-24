@@ -138,9 +138,10 @@ const wchar_t* CrossfireContext::VALUE_EVALLEVEL = L"eval-level";
 const wchar_t* CrossfireContext::VALUE_TOPLEVEL = L"top-level";
 
 
-CrossfireContext::CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server) {
+CrossfireContext::CrossfireContext(DWORD processId, DWORD threadId, wchar_t* url, CrossfireServer* server) {
 	static int s_counter = 0;
 	m_processId = processId;
+	m_threadId = threadId;
 	std::wstringstream stream;
 	stream << ID_PREAMBLE;
 	stream << m_processId;
@@ -1247,107 +1248,65 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		return true;
 	}
 
-	static HINSTANCE s_module = NULL;
+	CComPtr<IMachineDebugManager> mdm;
+	HRESULT hr = mdm.CoCreateInstance(CLSID_MachineDebugManager, NULL, CLSCTX_ALL);
+ 	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): CoCreateInstance(CLSID_MachineDebugManager) failed", hr);
+ 		return false;
+ 	}
 
-	if (!s_module) {
-		HKEY key;
-		LONG result = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE", 0, KEY_QUERY_VALUE, &key);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): RegOpenKeyEx() failed", result);
-			return false;
+	CComPtr<IEnumRemoteDebugApplications> applications;
+	hr = mdm->EnumApplications(&applications);
+ 	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.getDebugApplicationThread(): EnumApplications() failed", hr);
+ 		return false;
+ 	}
+
+	int failCounter = 0;
+//Logger::log("CrossfireContext.getDebugApplicationThread(): starting loop, looking for", (int)m_threadId);
+	ULONG fetchedApps = 0;
+	do {
+		CComPtr<IRemoteDebugApplication> currentApplication;
+		hr = applications->Next(1, &currentApplication, &fetchedApps);
+		if (FAILED(hr)) {
+			fetchedApps = 1; /* continue to try to enum more applications */
+			failCounter++;
+			Logger::log("CrossfireContext.getDebugApplicationThread(): Next()[1] failed, keep trying", hr);
+		} else if (fetchedApps) {
+			CComPtr<IEnumRemoteDebugApplicationThreads> threads;
+			hr = currentApplication->EnumThreads(&threads);
+//if (FAILED(hr)) {
+//	Logger::log("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed, keep trying");
+//}
+			if (SUCCEEDED(hr)) {
+				ULONG fetchedThreads = 0;
+				do {
+					CComPtr<IRemoteDebugApplicationThread> currentThread;
+					hr = threads->Next(1, &currentThread, &fetchedThreads);
+					if (FAILED(hr)) {
+						fetchedThreads = 1; /* continue to try to enum more threads */
+//Logger::log("CrossfireContext.getDebugApplicationThread(): Next()[2] failed, keep trying");
+					} else if (fetchedThreads) {
+						DWORD currentThreadId;
+						hr = currentThread->GetSystemThreadId(&currentThreadId);
+						if (FAILED(hr)) {
+							Logger::error("CrossfireContext.getDebugApplicationThread(): GetSystemThreadId() failed", hr);
+						} else if (m_threadId == currentThreadId) {
+							m_debugApplicationThread = currentThread;
+							m_debugApplicationThread->AddRef();
+							break;
+						}
+//else {
+//	Logger::log("CrossfireContext.getDebugApplicationThread(): they didn't match, got", (int)currentThreadId);
+//}
+					}
+				} while (fetchedThreads);
+			}
 		}
+	} while (!m_debugApplicationThread && fetchedApps && failCounter < 20);
 
-		DWORD type = 0;
-		DWORD size = MAX_PATH;
-		wchar_t chars[MAX_PATH];
-		result = RegQueryValueEx(key, NULL, NULL, &type, (LPBYTE)chars, &size);
-		RegCloseKey(key);
-		if (result != ERROR_SUCCESS) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): RegQueryValueEx() failed", result);
-			return false;
-		}
-		if (type != REG_SZ) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): RegQueryValueEx() returned unexpected registry value type", type);
-			return false;
-		}
-
-		wchar_t* separator = wcsrchr(chars, wchar_t('\\'));
-		if (!separator) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): Registry value HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\IEXPLORE.EXE does not contain a '\\'");
-			return false;
-		}
-
-		size_t dirLength = separator - chars + 1;
-		size_t totalLength = dirLength + wcslen(PDM_DLL) + 1;
-		wchar_t* path = new wchar_t[totalLength];
-		wcsncpy_s(path, totalLength, chars, dirLength);
-		wcscpy_s(path + dirLength, totalLength - dirLength, PDM_DLL);
-		path[totalLength - 1] = wchar_t('\0');
-		s_module = LoadLibrary(path);
-		if (!s_module) {
-			Logger::error("CrossfireContext.getDebugApplicationThread(): LoadLibrary() failed", GetLastError());
-		}
-		delete[] path;
-	}
-
-	if (!s_module) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): Module not loaded for pdm.dll, cannot proceed");
-		return false;
-	}
-
-	FARPROC proc = GetProcAddress(s_module, "DllGetClassObject");
-	if (!proc) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): GetProcAddress() failed", GetLastError());
-		return false;
-	}
-
-	/* Create IID for MSProgramProvider (IID is made public in MS Visual Studio IDE) */
-	IID iid;
-	HRESULT hr = IIDFromString(L"{170ec3fc-4e80-40ab-a85a-55900c7c70de}", &iid);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed[1]", hr);
-		return false;
-	}
-
-	CComPtr<IClassFactory> factory = NULL;
-	hr = ((HRESULT (CALLBACK*)(REFCLSID, REFIID, LPVOID*))proc)(iid, IID_IClassFactory, (void**)&factory);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): DllGetClassObject() failed", hr);
-		return false;
-	}
-
-	/* Create IID for IDebugProgramProvider2 (IID is made public in MS Visual Studio IDE) */
-	hr = IIDFromString(L"{1959530a-8e53-4e09-ad11-1b7334811cad}", &iid);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): IIDFromString() failed[2]", hr);
-		return false;
-	}
-
-	IUnknown* programProvider = NULL;
-	hr = factory->CreateInstance(NULL, iid, (void**)&programProvider);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): CreateInstance() failed", hr);
-		return false;
-	}
-
-	CComPtr<IRemoteDebugApplication> debugApplication = NULL;
-	hr = findDebugApplication(programProvider, m_processId, &debugApplication);
-	if (FAILED(hr)) {
-		Logger::error("findDebugApplication() failed", hr);
-		return false;
-	}
-
-	CComPtr<IEnumRemoteDebugApplicationThreads> debugApplicationThreads;
-	hr = debugApplication->EnumThreads(&debugApplicationThreads);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): EnumThreads() failed", hr);
-		return false;
-	}
-
-	ULONG fetchedThreads = 0;
-	hr = debugApplicationThreads->Next(1, &m_debugApplicationThread, &fetchedThreads);
-	if (FAILED(hr) || fetchedThreads == 0) {
-		Logger::error("CrossfireContext.getDebugApplicationThread(): Next() failed", hr);
+	if (!m_debugApplicationThread) {
+		Logger::log("CrossfireContext.getDebugApplicationThread() did not find the thread");
 		return false;
 	}
 

@@ -161,7 +161,7 @@ CrossfireServer::~CrossfireServer() {
 
 /* ICrossfireServer */
 
-HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECHAR* url) {
+HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, DWORD threadId, OLECHAR* url) {
 	if (!isConnected()) {
 		return S_FALSE;
 	}
@@ -186,7 +186,7 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, OLECH
 		contextDestroyed(processId);
 	}
 
-	CrossfireContext* context = new CrossfireContext(processId, url, this);
+	CrossfireContext* context = new CrossfireContext(processId, threadId, url, this);
 	m_contexts->insert(std::pair<DWORD,CrossfireContext*> (processId, context));
 	if (scriptNode) {
 		context->scriptInitialized(scriptNode, true);

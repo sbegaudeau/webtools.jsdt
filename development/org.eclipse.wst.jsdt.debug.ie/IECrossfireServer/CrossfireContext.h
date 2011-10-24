@@ -21,7 +21,6 @@
 #include "CrossfireResponse.h"
 #include "IBreakpointTarget.h"
 #include "IECrossfireServer.h"
-#include "InitDebugApplication.h"
 #include "JSEvalCallback.h"
 #include "Value.h"
 #include "Logger.h"
@@ -34,7 +33,7 @@ class CrossfireContext; // forward declaration
 class CrossfireContext : IBreakpointTarget, IJSEvalHandler {
 
 public:
-	CrossfireContext(DWORD processId, wchar_t* url, CrossfireServer* server);
+	CrossfireContext(DWORD processId, DWORD threadId, wchar_t* url, CrossfireServer* server);
 	~CrossfireContext();
 	virtual void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
 	virtual bool getDebugApplication(IRemoteDebugApplication** _value);
@@ -97,6 +96,7 @@ private:
 	bool m_running;
 	std::map<std::wstring, IDebugApplicationNode*>* m_scriptNodes;
 	CrossfireServer* m_server;
+	DWORD m_threadId;
 	wchar_t* m_url;
 
 	/* command: backtrace */

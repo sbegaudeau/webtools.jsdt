@@ -217,7 +217,8 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnNavigateComplete2(IDispatch *pDisp, VAR
 				wchar_t* hash = wcschr(url, wchar_t('#'));
 				if (!hash || !m_lastUrl || wcsncmp(url, m_lastUrl, hash - url) != 0) {
 					DWORD processId = GetCurrentProcessId();
-					HRESULT hr = m_server->contextCreated(processId, url);
+					DWORD threadId = GetCurrentThreadId();
+					HRESULT hr = m_server->contextCreated(processId, threadId, url);
 					if (FAILED(hr)) {
 						Logger::error("IECrossfireBHO.OnNavigateComplete2(): contextCreated() failed", hr);
 					} else {
@@ -431,7 +432,8 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 	}
 
 	DWORD processId = GetCurrentProcessId();
-	hr = m_server->contextCreated(processId, url);
+	DWORD threadId = GetCurrentThreadId();
+	hr = m_server->contextCreated(processId, threadId, url);
 	if (FAILED(hr)) {
 		Logger::error("IECrossfireBHO.onServerStateChanged(): contextCreated() failed", hr);
 		return;
@@ -461,10 +463,7 @@ void IECrossfireBHO::onServerStateChanged(WPARAM wParam, LPARAM lParam) {
 }
 
 bool IECrossfireBHO::startDebugging(unsigned int port) {
-	if (!Util::VerifyPDM()) {
-		return false;
-	}
-	if (!Util::VerifyDebugPreference()) {
+	if (!Util::VerifyActiveScriptDebugger() || !Util::VerifyDebugPreference()) {
 		return false;
 	}
 

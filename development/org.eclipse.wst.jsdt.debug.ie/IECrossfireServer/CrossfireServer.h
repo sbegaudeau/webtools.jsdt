@@ -54,7 +54,7 @@ public:
 	~CrossfireServer();
 
 	/* ICrossfireServer */
-	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, OLECHAR* url);
+	virtual HRESULT STDMETHODCALLTYPE contextCreated(DWORD processId, DWORD threadId, OLECHAR* url);
 	virtual HRESULT STDMETHODCALLTYPE contextDestroyed(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE contextLoaded(DWORD processId);
 	virtual HRESULT STDMETHODCALLTYPE getPort(unsigned int* value);

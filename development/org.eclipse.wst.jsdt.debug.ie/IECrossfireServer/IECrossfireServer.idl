@@ -51,7 +51,7 @@ interface IBrowserContext : IUnknown {
 	pointer_default(unique)
 ]
 interface ICrossfireServer : IDispatch {
-	HRESULT contextCreated([in] DWORD processId, [in, string] OLECHAR* url);
+	HRESULT contextCreated([in] DWORD processId, [in] DWORD threadId, [in, string] OLECHAR* url);
 	HRESULT contextDestroyed([in] DWORD processId);
 	HRESULT contextLoaded([in] DWORD processId);
 	HRESULT getPort([out] unsigned int* value);
