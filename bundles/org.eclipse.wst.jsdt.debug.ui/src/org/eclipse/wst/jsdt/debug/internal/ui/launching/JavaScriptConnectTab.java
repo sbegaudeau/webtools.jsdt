@@ -283,6 +283,27 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 					return false;
 				}		
 			}
+			else if (editor instanceof BooleanFieldEditor) {
+		        boolean value = ((BooleanFieldEditor)editor).getBooleanValue();
+		        if (!arg.isValid(String.valueOf(value))) {
+		          setErrorMessage(NLS.bind(Messages.the_argument_0_is_not_valid, new String[] {arg.name()})); 
+		          return false;
+		        }   
+		    }
+			else if (editor instanceof IntegerFieldEditor) {
+		        int value = ((IntegerFieldEditor)editor).getIntValue();
+		        if (!arg.isValid(String.valueOf(value))) {
+		          setErrorMessage(NLS.bind(Messages.the_argument_0_is_not_valid, new String[] {arg.name()})); 
+		          return false;
+		        }   
+		    }
+			else if(editor instanceof ComboFieldEditor) {
+				editor.store();
+				if (!arg.isValid(editor.getPreferenceStore().getString(key))) {
+		          setErrorMessage(NLS.bind(Messages.the_argument_0_is_not_valid, new String[] {arg.name()})); 
+		          return false;
+		        }  
+			}
 		}		
 		return true;
 	}
