@@ -21,49 +21,31 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_14B5CCF2B9F0435D86C7329CFBC224B3"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_14B5CCF2B9F0435D86C7329CFBC224B3"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
-        "OwnerKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
+        "MsmKey" = "8:_9131B96E73024154B17B2943D96A1C11"
         "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
-        "OwnerKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
+        "MsmKey" = "8:_9131B96E73024154B17B2943D96A1C11"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_72E7452B2DD146BEA055EA633209D940"
+        "MsmKey" = "8:_9351FCFC61B7427EAE1BF6FD7718D731"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9351FCFC61B7427EAE1BF6FD7718D731"
         "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -76,24 +58,6 @@
         "Entry"
         {
         "MsmKey" = "8:_C3E67FD0862F4535B94CCB13D4B57844"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
-        "OwnerKey" = "8:_0F2BD160D0CD47E9ACD9EB10FEED1697"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_DA5949DF914B536D3A767BD24027BD81"
-        "OwnerKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -224,26 +188,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DA5949DF914B536D3A767BD24027BD81"
-            {
-            "SourcePath" = "8:RPCRT4.dll"
-            "TargetName" = "8:RPCRT4.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
         }
         "FileType"
         {
@@ -299,9 +243,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:IE Crossfire Server"
+        "ProductName" = "8:Crossfire Server for Internet Explorer"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{FB589663-211C-49ED-82D6-9443F7A7914B}"
+        "PackageCode" = "8:{2AF3D08A-DF3D-4814-9B9F-2D20B89B28CF}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -309,15 +253,15 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:IBM"
+        "Manufacturer" = "8:Eclipse Foundation"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:IECrossfireInstaller"
+        "Title" = "8:Installer for Crossfire Server for Internet Explorer"
         "Subject" = "8:"
         "ARPCONTACT" = "8:"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPCOMMENTS" = "8:Crossfire Server for Internet Explorer"
+        "ARPURLINFOABOUT" = "8:http://www.eclipse.org"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -3532,8 +3476,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2011.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3545,8 +3489,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install Crossfire Server for Internet Explorer on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3633,8 +3577,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2011.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3646,8 +3590,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install Crossfire Server for Internet Explorer on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3815,7 +3759,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_14B5CCF2B9F0435D86C7329CFBC224B3"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9131B96E73024154B17B2943D96A1C11"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3829,11 +3773,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_72E7452B2DD146BEA055EA633209D940"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9351FCFC61B7427EAE1BF6FD7718D731"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -3846,35 +3790,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0F2BD160D0CD47E9ACD9EB10FEED1697"
-            {
-            "SourcePath" = "8:..\\IECrossfireServer\\DebugPS\\IECrossfireServerPS.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_15F66E823EB84B5497A9F369FE54E6DA"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_412B15096C53489CA4D4ACC47BD807BA"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -3894,7 +3810,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
+            "OutputConfiguration" = "8:Debug|Win32"
             "OutputGroupCanonicalName" = "8:Symbols"
             "OutputProjectGuid" = "8:{2B73B89A-A1B4-479B-8751-A25B9036A9AF}"
             "ShowKeyOutput" = "11:TRUE"
@@ -3958,7 +3874,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_AA4375A840F54EC4A247CB698ADBA7FC"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_EDE02DEFF7064CC08AC8455DBC8C9745"
             {
             "SourcePath" = "8:"
             "TargetName" = "8:"
@@ -3978,37 +3894,9 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
+            "OutputConfiguration" = "8:Debug|Win32"
             "OutputGroupCanonicalName" = "8:Symbols"
             "OutputProjectGuid" = "8:{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_F5BF6CB0B9984A0F91602DCB4DF8EC1C"
-            {
-            "SourcePath" = "8:..\\IECrossfireExtension\\DebugPS\\IECrossfireExtensionPS.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
                 {
