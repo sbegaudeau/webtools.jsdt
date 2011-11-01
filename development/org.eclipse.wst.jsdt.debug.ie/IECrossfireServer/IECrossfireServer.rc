@@ -86,7 +86,7 @@ BEGIN
             VALUE "CompanyName", "Eclipse Foundation"
             VALUE "FileDescription", "Crossfire Server for Internet Explorer"
             VALUE "FileVersion", "1.0.0.0"
-            VALUE "LegalCopyright", "Copyright (c) 2011 IBM Corp.  All Rights Reserved."
+            VALUE "LegalCopyright", "(c) Copyright Eclipse contributors and others, 2011.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
             VALUE "InternalName", "IECrossfireServer"
             VALUE "OriginalFilename", "IECrossfireServer.exe"
             VALUE "ProductName", "Crossfire Server for Internet Explorer"
