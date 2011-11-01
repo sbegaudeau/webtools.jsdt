@@ -1163,7 +1163,7 @@ bool CrossfireContext::evaluate(IDebugStackFrame* stackFrame, wchar_t* expressio
 	}
 
 	int ms = 0;
-	while (ms < 2000) {
+	while (ms < 3000) {
 		if (parsedExpression->QueryIsComplete() == S_OK) {
 			break;
 		}
@@ -1171,6 +1171,7 @@ bool CrossfireContext::evaluate(IDebugStackFrame* stackFrame, wchar_t* expressio
 		::Sleep(10);
 	}
 	if (2000 <= ms) {
+		parsedExpression->Abort();
 		Logger::error("CrossfireContext.evaluate(): Evaluation took too long");
 		return false;
 	}
