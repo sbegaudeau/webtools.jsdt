@@ -2,11 +2,9 @@
 <feature
       id="org.eclipse.wst.jsdt.feature"
       label="%featureName"
-      version="1.3.1.qualifier"
+      version="1.3.2.qualifier"
       provider-name="%providerName"
-      plugin="org.eclipse.wst.jsdt.ui"
-      license-feature="org.eclipse.license"
-      license-feature-version="1.0.0.qualifier">
+      plugin="org.eclipse.wst.jsdt.ui">
 
    <description>
       %description
