@@ -14,6 +14,7 @@
 #include "CrossfireServer.h"
 
 /* initialize constants */
+const wchar_t* CrossfireServer::ABOUT_BLANK = L"about:blank";
 const UINT CrossfireServer::ServerStateChangeMsg = RegisterWindowMessage(L"IECrossfireServerStateChanged");
 const wchar_t* CrossfireServer::WindowClass = L"_IECrossfireServer";
 
@@ -195,7 +196,13 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, DWORD
 	}
 	eventContextCreated(context);
 
-	if (!m_connectionWarningShown) {
+	/*
+	 * Attempt to detect the case of the user not launching IE as the Administrator user, and
+	 * display an error message if appropriate.  Do not show the error more than once, and do
+	 * not show it for the about:blank page, because IE's initial about:blank page fails to
+	 * provide a remote debug thread even when IE is launched as the Administrator user.
+	 */
+	if (!m_connectionWarningShown && wcscmp(url, ABOUT_BLANK) != 0) {
 		CComPtr<IRemoteDebugApplication> application = NULL;
 		if (!context->getDebugApplication(&application)) {
 			DWORD processId = context->getProcessId();

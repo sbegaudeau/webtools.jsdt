@@ -165,6 +165,7 @@ private:
 	static const wchar_t* KEY_URL;
 
 	/* constants */
+	static const wchar_t* ABOUT_BLANK;
 	static const wchar_t* CONTEXTID_PREAMBLE;
 	static const wchar_t* HANDSHAKE;
 	static const wchar_t* HEADER_CONTENTLENGTH;
