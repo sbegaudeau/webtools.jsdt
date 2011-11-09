@@ -192,11 +192,10 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 				IExpression leftHandSide = assignment.getLeftHandSide();
 				
 				char[] selector = Util.getTypeName(leftHandSide);
-				if(selector != null) {
-					notifySourceElementRequestor(((IFunctionExpression) righHandSide).getMethodDeclaration(),
-							selector);
+				MethodDeclaration methodDecl = ((IFunctionExpression) righHandSide).getMethodDeclaration();
+				if (selector != null && methodDecl.isConstructor()) {
+					notifySourceElementRequestor(methodDecl, selector);
 				}
-				
 			}
 			return keepVisiting;
 		}
