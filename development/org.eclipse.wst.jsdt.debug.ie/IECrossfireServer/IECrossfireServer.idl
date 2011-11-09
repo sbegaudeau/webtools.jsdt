@@ -39,6 +39,7 @@ interface IIEDebugger : IUnknown {
 	pointer_default(unique)
 ]
 interface IBrowserContext : IUnknown {
+	HRESULT displayMessage([in, string] OLECHAR* message);
 	HRESULT navigate([in, string] OLECHAR* url, [in] boolean openNewTab);
 };
 [

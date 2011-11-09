@@ -49,7 +49,7 @@ bool Util::VerifyActiveScriptDebugger() {
 	CComPtr<IMachineDebugManager> mdm;
 	HRESULT hr = mdm.CoCreateInstance(CLSID_MachineDebugManager, NULL, CLSCTX_ALL);
 	if (FAILED(hr)) {
-		MessageBox(NULL, L"Crossfire Server for Internet Explorer requires the MS Active Script Debugger to be installed.  It can be downloaded from http://www.microsoft.com/download/en/confirmation.aspx?id=22185.", L"Crossfire Server Startup Error", 0);
+		MessageBox(NULL, L"Crossfire Server for Internet Explorer requires the Microsoft Script Debugger to be installed.  It can be downloaded from http://www.microsoft.com/download/en/confirmation.aspx?id=22185.", L"Crossfire Server Startup Error", 0);
 		return false;
 	}
 

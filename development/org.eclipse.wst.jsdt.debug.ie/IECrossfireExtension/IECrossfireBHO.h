@@ -70,6 +70,7 @@ public:
 	void STDMETHODCALLTYPE OnWindowStateChanged(LONG dwFlags, LONG dwValidFlagMask);
 
 	/* IBrowserContext */
+	HRESULT STDMETHODCALLTYPE displayMessage(OLECHAR* url);
 	HRESULT STDMETHODCALLTYPE navigate(OLECHAR* url, boolean openNewTab);
 
 	/* IObjectWithSite */

@@ -1272,7 +1272,7 @@ bool CrossfireContext::getDebugApplicationThread(IRemoteDebugApplicationThread**
 		if (FAILED(hr)) {
 			fetchedApps = 1; /* continue to try to enum more applications */
 			failCounter++;
-			Logger::log("CrossfireContext.getDebugApplicationThread(): Next()[1] failed, keep trying", hr);
+//			Logger::log("CrossfireContext.getDebugApplicationThread(): Next()[1] failed, keep trying", hr);
 		} else if (fetchedApps) {
 			CComPtr<IEnumRemoteDebugApplicationThreads> threads;
 			hr = currentApplication->EnumThreads(&threads);

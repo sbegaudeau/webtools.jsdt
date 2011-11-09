@@ -250,6 +250,11 @@ void STDMETHODCALLTYPE IECrossfireBHO::OnWindowStateChanged(LONG dwFlags, LONG d
 
 /* IBrowserContext */
 
+STDMETHODIMP IECrossfireBHO::displayMessage(OLECHAR* message) {
+	MessageBox(NULL, message, L"Crossfire Server Error", 0);
+	return S_OK;
+}
+
 STDMETHODIMP IECrossfireBHO::navigate(OLECHAR* url, boolean openNewTab) {
 	VARIANT variant_null;
 	variant_null.vt = VT_NULL;

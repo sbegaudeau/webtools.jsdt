@@ -207,7 +207,7 @@ STDMETHODIMP ExplorerBar::GetBandInfo(DWORD dwBandID, DWORD dwViewMode, DESKBAND
 		}
 
 		if (pdbi->dwMask & DBIM_TITLE) {
-			wchar_t* title = L"Crossfire Server Panel";
+			wchar_t* title = L"Crossfire";
 			wcsncpy_s(pdbi->wszTitle, 256, title, wcslen(title));
         }
 

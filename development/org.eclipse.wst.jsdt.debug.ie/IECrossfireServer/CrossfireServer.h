@@ -87,6 +87,7 @@ private:
 	CrossfireBPManager* m_bpManager;
 	std::map<DWORD, IBrowserContext*>* m_browsers;
 	WindowsSocketConnection* m_connection;
+	bool m_connectionWarningShown;
 	std::map<DWORD, CrossfireContext*>* m_contexts;
 	DWORD m_currentContextPID;
 	bool m_handshakeReceived;

@@ -75,6 +75,7 @@ const wchar_t* CrossfireServer::KEY_URL = L"url";
 CrossfireServer::CrossfireServer() {
 	m_bpManager = new CrossfireBPManager();
 	m_connection = NULL;
+	m_connectionWarningShown = false;
 	m_contexts = new std::map<DWORD, CrossfireContext*>;
 	m_currentContextPID = 0;
 	m_handshakeReceived = false;
@@ -193,6 +194,22 @@ HRESULT STDMETHODCALLTYPE CrossfireServer::contextCreated(DWORD processId, DWORD
 		scriptNode->Release();
 	}
 	eventContextCreated(context);
+
+	if (!m_connectionWarningShown) {
+		CComPtr<IRemoteDebugApplication> application = NULL;
+		if (!context->getDebugApplication(&application)) {
+			DWORD processId = context->getProcessId();
+			IBrowserContext* listener = m_browsers->at(processId);
+			if (!listener) {
+				Logger::error("CrossfireServer.contextCreated(): the specified processId is not listening to the server");
+			} else {
+				if (SUCCEEDED(listener->displayMessage(L"Crossfire Server for Internet Explorer failed to connect to the loaded page, so this page and possibly subsequent ones will not be debuggable.  A common cause of this problem is launching Internet Explorer as a user other than the Administrator."))) {
+					m_connectionWarningShown = true;
+				}
+			}
+		}
+	}
+
 	return S_OK;
 }
 
@@ -736,7 +753,7 @@ int CrossfireServer::commandCreateContext(Value* arguments, Value** _responseBod
 		DWORD processId = context->getProcessId();
 		IBrowserContext* listener = m_browsers->at(processId);
 		if (!listener) {
-			Logger::error("commandCreateContext(): the specified contextId is not listening to the server");
+			Logger::error("commandCreateContext(): the specified processId is not listening to the server");
 			return CODE_UNEXPECTED_EXCEPTION;
 		}
 		if (FAILED(listener->navigate((OLECHAR*)url->c_str(), false))) {
