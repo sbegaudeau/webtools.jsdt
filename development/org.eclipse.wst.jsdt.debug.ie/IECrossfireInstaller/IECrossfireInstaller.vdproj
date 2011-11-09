@@ -21,32 +21,20 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_51F435B15A084730A21C845EA1866852"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_51F435B15A084730A21C845EA1866852"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9131B96E73024154B17B2943D96A1C11"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9131B96E73024154B17B2943D96A1C11"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9351FCFC61B7427EAE1BF6FD7718D731"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_9351FCFC61B7427EAE1BF6FD7718D731"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -59,6 +47,18 @@
         {
         "MsmKey" = "8:_C3E67FD0862F4535B94CCB13D4B57844"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FCD7D598C7F54A5A920F8AEFEF2D5AEB"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FCD7D598C7F54A5A920F8AEFEF2D5AEB"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -245,7 +245,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Crossfire Server for Internet Explorer"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{2AF3D08A-DF3D-4814-9B9F-2D20B89B28CF}"
+        "PackageCode" = "8:{B5EC9961-1175-473E-97F7-31CA24F52450}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -3759,7 +3759,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9131B96E73024154B17B2943D96A1C11"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_51F435B15A084730A21C845EA1866852"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3773,11 +3773,11 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9351FCFC61B7427EAE1BF6FD7718D731"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_FCD7D598C7F54A5A920F8AEFEF2D5AEB"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
                 "Properties"
                 {
                 }
@@ -3820,7 +3820,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_68B2C602B4B448ADBFC58961A342D06B"
             {
-            "SourcePath" = "8:..\\IECrossfireServer\\Debug\\IECrossfireServer.exe"
+            "SourcePath" = "8:..\\IECrossfireServer\\Release\\IECrossfireServer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
@@ -3848,7 +3848,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A558BCE26AC6426C9ABA48959A6EB3C6"
             {
-            "SourcePath" = "8:..\\IECrossfireExtension\\Debug\\IECrossfireExtension.dll"
+            "SourcePath" = "8:..\\IECrossfireExtension\\Release\\IECrossfireExtension.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F79B3187A2A440AF924ED0481F6F9DA5"
