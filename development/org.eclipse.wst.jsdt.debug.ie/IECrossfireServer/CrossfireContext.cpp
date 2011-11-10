@@ -922,13 +922,31 @@ bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigne
 		locals->addObjectValue(KEY_THIS, &value_this2);
 	}
 
+	URL url;
 	CComBSTR bstrUrl = NULL;
-	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
-		return false;
+	hr = document->GetName(DOCUMENTNAMETYPE_URL, &bstrUrl);
+	if (SUCCEEDED(hr)) {
+		url.setString(bstrUrl);
+	} else {
+		/*
+		 * Failure to get the URL indicates that the node represents something like a JScript
+		 * block or eval code.  For these cases get the node's title instead and prepend a
+		 * scheme to make it url-like.
+		 */
+		hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
+		if (FAILED(hr)) {
+			Logger::error("CrossfireContext.createValueForFrame(): GetName() failed", hr);
+			return false;
+		}
+
+		int length = wcslen(SCHEME_SCRIPT) + wcslen(bstrUrl.m_str) + 1;
+		wchar_t* string = new wchar_t[length];
+		ZeroMemory(string, length * sizeof(wchar_t));
+		wcscat_s(string, length, SCHEME_SCRIPT);
+		wcscat_s(string, length, bstrUrl.m_str);
+		url.setString(string);
+		delete[] string;
 	}
-	URL url(bstrUrl);
 
 	if (!locals) {
 		locals = new Value();
@@ -1017,6 +1035,14 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 					Logger::error("CrossfireContext.createValueForObject(): EnumMembers() failed", hr);
 					return false;
 				}
+
+				/*
+				 * Bug in IE9.  For some reason the enumPropertyInfo->Next() invocation below fails
+				 * when it is the first invocation on a debug property info enum from a stack frame.
+				 * The workaround is to warm up the enumeration by first getting its count.
+				 */
+				ULONG count = 0;
+				enumPropertyInfo->GetCount(&count);
 
 				Value children;
 				children.setType(TYPE_OBJECT);
