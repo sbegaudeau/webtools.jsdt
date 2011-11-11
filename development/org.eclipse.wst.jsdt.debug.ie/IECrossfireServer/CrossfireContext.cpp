@@ -343,6 +343,15 @@ bool CrossfireContext::setBreakpointEnabled(CrossfireBreakpoint* breakpoint, boo
 		return false;
 	}
 
+	/*
+	 * Feature of JScript9.  A distinct breakpoint is created for each breakpoint that
+	 * is set at a given location.  As a result, setting multiple breakpoints at a location
+	 * can cause multiple breaks to occur when the location is hit.  To ensure that a
+	 * location never has more than one breakpoint, delete the breakpoint (if any) at the
+	 * location before setting the new breakpoint.
+	 */
+	codeContext->SetBreakPoint(BREAKPOINT_DELETED);
+
 	hr = codeContext->SetBreakPoint(enabled ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.setBreakpointEnabled(): SetBreakPoint() failed", hr);
@@ -534,6 +543,15 @@ bool CrossfireContext::setBreakpoint(CrossfireBreakpoint *breakpoint) {
 		Logger::error("CrossfireContext.setBreakpoint(): Next() failed", hr);
 		return false;
 	}
+
+	/*
+	 * Feature of JScript9.  A distinct breakpoint is created for each breakpoint that
+	 * is set at a given location.  As a result, setting multiple breakpoints at a location
+	 * causes multiple breaks to occur when the location is hit.  To ensure that a
+	 * location never has more than one breakpoint, delete the breakpoint (if any) at the
+	 * location before setting the new breakpoint.
+	 */
+	codeContext->SetBreakPoint(BREAKPOINT_DELETED);
 
 	hr = codeContext->SetBreakPoint(lineBp->isEnabled() ? BREAKPOINT_ENABLED : BREAKPOINT_DISABLED);
 	if (FAILED(hr)) {
@@ -1037,7 +1055,7 @@ bool CrossfireContext::createValueForObject(JSObject* object, bool resolveChildO
 				}
 
 				/*
-				 * Bug in IE9.  For some reason the enumPropertyInfo->Next() invocation below fails
+				 * Bug in JScript9.  For some reason the enumPropertyInfo->Next() invocation below fails
 				 * when it is the first invocation on a debug property info enum from a stack frame.
 				 * The workaround is to warm up the enumeration by first getting its count.
 				 */

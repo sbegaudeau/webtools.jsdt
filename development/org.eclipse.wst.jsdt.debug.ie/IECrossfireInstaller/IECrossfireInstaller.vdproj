@@ -21,13 +21,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_4275B31F88A8439F8CD34C85D3A1D2F6"
+        "MsmKey" = "8:_0C04D36F65A14D88BE7C0F4AD05A2393"
         "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_4275B31F88A8439F8CD34C85D3A1D2F6"
+        "MsmKey" = "8:_0C04D36F65A14D88BE7C0F4AD05A2393"
         "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -245,7 +245,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Crossfire Server for Internet Explorer"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{79D31176-022B-42A2-9F4B-4D9C50AE015A}"
+        "PackageCode" = "8:{A314CFEF-5F02-42F0-99B7-3FAFE478148F}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -3759,11 +3759,11 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_4275B31F88A8439F8CD34C85D3A1D2F6"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_0C04D36F65A14D88BE7C0F4AD05A2393"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:Microsoft_VC100_DebugCRT_x86.msm"
+            "SourcePath" = "8:Microsoft_VC100_CRT_x86.msm"
                 "Properties"
                 {
                 }
