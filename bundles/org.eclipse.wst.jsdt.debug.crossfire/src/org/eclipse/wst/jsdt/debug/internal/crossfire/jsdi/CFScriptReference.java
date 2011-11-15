@@ -199,13 +199,13 @@ public class CFScriptReference extends CFMirror implements ScriptReference {
 	 */
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("ScriptReference: [context_id - ").append(context_id).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
+		buffer.append("Crossfire ScriptReference: [context_id - ").append(context_id).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [url - ").append(url).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [srclength - ").append(srclength).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [linecount - ").append(linecount).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [lineoffset - ").append(lineoffset).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append(" [coloffset - ").append(coloffset).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		buffer.append("\nSource: \n").append(source); //$NON-NLS-1$
-		return super.toString();
+		return buffer.toString();
 	}
 }
