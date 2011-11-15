@@ -102,7 +102,7 @@ public class CFThreadReference extends CFMirror implements ThreadReference {
 			CFResponsePacket response = crossfire().sendRequest(request);
 			if(response.isSuccess()) {
 				frames = new ArrayList();
-				ArrayList frms = (ArrayList) response.getBody().get(Attributes.FRAMES);
+				List frms = (List) response.getBody().get(Attributes.FRAMES);
 				if(frms != null) {
 					Map fmap = null;
 					for (int i = 0; i < frms.size(); i++) {
