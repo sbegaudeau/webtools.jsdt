@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class RhinoDebugPreferencePage extends FieldEditorPreferencePage implemen
 	public RhinoDebugPreferencePage() {
 		super(GRID);
 		setDescription(Messages.rhino_pref_page_desc);
-		setPreferenceStore(RhinoUIPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(RhinoUIPlugin.getCorePreferenceStore());
 	}
 
 	/* (non-Javadoc)
