@@ -37,6 +37,7 @@ public class Messages extends NLS {
 	public static String evald_script;
 	public static String exception_occurred_setting_bp_properties;
 	public static String hit_count_must_be_positive;
+	public static String JavaScriptModelPresentation_stackframe_name_with_fname;
 	public static String no_description_provided;
 	public static String opening_source__0;
 	public static String running_state;

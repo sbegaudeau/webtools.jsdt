@@ -102,7 +102,7 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 	 * @see org.eclipse.debug.core.model.IStackFrame#getName()
 	 */
 	public String getName() throws DebugException {
-		return this.stackFrame.location().scriptReference().sourceURI().toString();
+		return this.stackFrame.location().functionName();
 	}
 
 	/*

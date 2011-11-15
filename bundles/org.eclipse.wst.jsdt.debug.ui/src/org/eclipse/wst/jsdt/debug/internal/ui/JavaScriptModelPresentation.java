@@ -296,15 +296,16 @@ public class JavaScriptModelPresentation extends LabelProvider implements IDebug
 	 * @throws DebugException
 	 */
 	String getStackframeText(IJavaScriptStackFrame frame) throws DebugException {
-		try {
-			return TextUtils.shortenText(NLS.bind(Messages.stackframe_name, new String[] {
-					URLDecoder.decode(frame.getName(), Constants.UTF_8),
-					Integer.toString(frame.getLineNumber())}), 100);
+		String fname = frame.getName();
+		if(fname == null || fname.trim().length() < 1) {
+			return NLS.bind(Messages.stackframe_name, new String[] {
+					frame.getSourceName(),
+					Integer.toString(frame.getLineNumber())});
 		}
-		catch (UnsupportedEncodingException uee) {
-			//ignore
-		}
-		return Messages.unknown;
+		return NLS.bind(Messages.JavaScriptModelPresentation_stackframe_name_with_fname, new String[] {
+				frame.getSourceName(),
+				fname,
+				Integer.toString(frame.getLineNumber())});
 	}
 	
 	/**
