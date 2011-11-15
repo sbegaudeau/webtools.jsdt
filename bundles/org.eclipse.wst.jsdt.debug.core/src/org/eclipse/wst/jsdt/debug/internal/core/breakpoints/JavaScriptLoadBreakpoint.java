@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpointParticipant;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLoadBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
+import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.Event;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventSet;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.ScriptLoadEvent;
@@ -100,7 +102,7 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 			ScriptReference script = sevent.script();
 			JavaScriptThread thread = target.findThread((sevent).thread());
 			if (thread != null) {
-				if(isGlobalLoadSuspend()) {
+				if(isGlobalLoadSuspend(target.getVM())) {
 					JavaScriptPreferencesManager.setGlobalSuspendOn(script.sourceURI().toString());
 					thread.addBreakpoint(this);
 					return false;
@@ -140,9 +142,19 @@ public class JavaScriptLoadBreakpoint extends JavaScriptLineBreakpoint implement
 	 * 
 	 * @return <code>true</code> if we should suspend on all script loads <code>false</code> otherwise
 	 */
-	private boolean isGlobalLoadSuspend() {
+	private boolean isGlobalLoadSuspend(VirtualMachine vm) {
+		boolean supports = true;
 		try {
-			return ensureMarker().getAttribute(GLOBAL_SUSPEND, false);
+			//TODO consider supportsSuspendOnScriptLoads for future VirtualMachine extensions
+			Method m = vm.getClass().getMethod("supportsSuspendOnScriptLoads", new Class[0]); //$NON-NLS-1$
+			Boolean b = (Boolean) m.invoke(vm, null);
+			supports = b.booleanValue();
+		} catch (Exception e) {
+			//assume the method is not there / problematic
+			supports = true;
+		}
+		try {
+			return supports && ensureMarker().getAttribute(GLOBAL_SUSPEND, false);
 		}
 		catch(CoreException ce) {
 			JavaScriptDebugPlugin.log(ce);

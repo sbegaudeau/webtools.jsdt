@@ -91,6 +91,14 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	}
 
 	/**
+	 * Called via reflection to determine if the vm supports suspend on script loads
+	 * @return <code>true</code> if this VM can suspend when a script loads <code>false</code> otherwise
+	 */
+	public boolean supportsSuspendOnScriptLoads() {
+		return true;
+	}
+	
+	/**
 	 * Creates a new {@link ScriptReferenceImpl} for the given ID
 	 * @param scriptId
 	 * @return the new {@link ScriptReferenceImpl} or <code>null</code>

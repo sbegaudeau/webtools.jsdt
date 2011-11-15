@@ -202,6 +202,14 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 	}
 	
 	/**
+	 * Called via reflection to determine if the VM supports suspend on script loads
+	 * @return <code>true</code> if this VM can suspend when a script loads <code>false</code> otherwise
+	 */
+	public boolean supportsSuspendOnScriptLoads() {
+		return false;
+	}
+	
+	/**
 	 * Add the breakpoint described by the given JSON to the handles list
 	 * @param json
 	 */
