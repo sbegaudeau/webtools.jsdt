@@ -239,7 +239,7 @@ public class JavaElementProperties implements IPropertySource {
 				return getSourceRangeString(((IMember) element).getNameRange());
 			}
 		});
-		addProperty(new Property(IMember.class, "javadocRange") {
+		addProperty(new Property(IMember.class, "jsdocRange") {
 			@Override public Object compute(IJavaScriptElement element) throws JavaScriptModelException {
 				return getSourceRangeString(((IMember) element).getJSdocRange());
 			}
@@ -559,7 +559,7 @@ public class JavaElementProperties implements IPropertySource {
 		String name;
 		switch (elementType) {
 			case IJavaScriptElement.JAVASCRIPT_MODEL :
-				name= "IJavaModel";
+				name= "IJavaScriptModel";
 				break;
 			case IJavaScriptElement.JAVASCRIPT_PROJECT :
 				name= "IJavaScriptProject";

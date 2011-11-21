@@ -158,7 +158,7 @@ public class ClasspathEntryProperties implements IPropertySource {
 				return property.compute(fEntry);
 			} catch (JavaScriptModelException e) {
 				if (e.isDoesNotExist()) {
-					return "JavaModelException: " + e.getLocalizedMessage();
+					return "JavaScriptModelException: " + e.getLocalizedMessage();
 				} else {
 					JEViewPlugin.log("error calculating property '" + property.getType().getSimpleName() + '#' + property.getName() + '\'', e);
 					return "Error: " + e.getLocalizedMessage();

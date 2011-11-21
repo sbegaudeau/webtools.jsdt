@@ -187,8 +187,8 @@ public class JavaElement extends JEAttribute {
 	private void addJavaElementChildren(ArrayList<JEAttribute> result, final IJavaScriptElement javaElement) {
 		result.add(new JavaElement(this, "PARENT", javaElement.getParent()));
 		result.add(new JavaElement(this, "PRIMARY ELEMENT", javaElement.getPrimaryElement()));
-		result.add(new JavaElement(this, "JAVA MODEL", javaElement.getJavaScriptModel()));
-		result.add(new JavaElement(this, "JAVA PROJECT", javaElement.getJavaScriptProject()));
+		result.add(new JavaElement(this, "JAVASCRIPT MODEL", javaElement.getJavaScriptModel()));
+		result.add(new JavaElement(this, "JAVASCRIPT PROJECT", javaElement.getJavaScriptProject()));
 		result.add(JEResource.create(this, "RESOURCE", javaElement.getResource()));
 		result.add(JEResource.compute(this, "CORRESPONDING RESOURCE", new Callable<IResource>() {
 			public IResource call() throws JavaScriptModelException {
@@ -203,13 +203,13 @@ public class JavaElement extends JEAttribute {
 	}
 
 	private void addJavaModelChildren(ArrayList<JEAttribute> result, final IJavaScriptModel javaModel) {
-		result.add(new JavaElementChildrenProperty(this, "JAVA PROJECTS") {
+		result.add(new JavaElementChildrenProperty(this, "JAVASCRIPT PROJECTS") {
 			@Override
 			public JEAttribute[] computeChildren() throws JavaScriptModelException {
 				return createJavaElements(this, javaModel.getJavaScriptProjects());
 			}
 		});
-		result.add(new JavaElementChildrenProperty(this, "NON JAVA RESOURCES") {
+		result.add(new JavaElementChildrenProperty(this, "NON JAVASCRIPT RESOURCES") {
 			@Override
 			public JEAttribute[] computeChildren() throws JavaScriptModelException {
 				return createResources(this, javaModel.getNonJavaScriptResources());
@@ -236,7 +236,7 @@ public class JavaElement extends JEAttribute {
 				return createJavaElements(this, project.getPackageFragments());
 			}
 		});
-		result.add(new JavaElementChildrenProperty(this, "NON JAVA RESOURCES") {
+		result.add(new JavaElementChildrenProperty(this, "NON JAVASCRIPT RESOURCES") {
 			@Override
 			protected JEAttribute[] computeChildren() throws JavaScriptModelException {
 				return createResources(this, project.getNonJavaScriptResources());
@@ -278,7 +278,7 @@ public class JavaElement extends JEAttribute {
 	}
 	
 	private void addPackageFragmentRootChildren(ArrayList<JEAttribute> result, final IPackageFragmentRoot packageFragmentRoot) {
-		result.add(new JavaElementChildrenProperty(this, "NON JAVA RESOURCES") {
+		result.add(new JavaElementChildrenProperty(this, "NON JAVASCRIPT RESOURCES") {
 			@Override
 			protected JEAttribute[] computeChildren() throws JavaScriptModelException {
 				return createResources(this, packageFragmentRoot.getNonJavaScriptResources());
@@ -304,7 +304,7 @@ public class JavaElement extends JEAttribute {
 				return createJavaElements(this, packageFragment.getClassFiles());
 			}
 		});
-		result.add(new JavaElementChildrenProperty(this, "NON JAVA RESOURCES") {
+		result.add(new JavaElementChildrenProperty(this, "NON JAVASCRIPT RESOURCES") {
 			@Override
 			protected JEAttribute[] computeChildren() throws JavaScriptModelException {
 				return createResources(this, packageFragment.getNonJavaScriptResources());

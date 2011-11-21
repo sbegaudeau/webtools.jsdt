@@ -184,7 +184,7 @@ public class MarkerProperties implements IPropertySource {
 				buf.append("Syntax + ");
 			}
 			if ((id & IProblem.Javadoc) != 0) {
-				buf.append("Javadoc + ");
+				buf.append("JSDoc + ");
 			}
 			buf.append(id & IProblem.IgnoreCategoriesMask);
 			

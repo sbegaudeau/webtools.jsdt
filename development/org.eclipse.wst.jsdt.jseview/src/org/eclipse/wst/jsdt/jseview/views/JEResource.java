@@ -94,7 +94,7 @@ public class JEResource extends JEAttribute {
 		else
 			result.add(new JavaElementProperty(this, "PARENT", parent));
 		
-		result.add(new JavaElement(this, "JavaCore.create(..)", JavaScriptCore.create(fResource)));
+		result.add(new JavaElement(this, "JavaScriptCore.create(..)", JavaScriptCore.create(fResource)));
 		
 		if (fResource instanceof IContainer) {
 			final IContainer container= (IContainer) fResource;

@@ -498,7 +498,7 @@ public class JavaElementView extends ViewPart implements IShowInSource, IShowInT
 		
 		fCreateFromHandleAction= new Action("Create From &Handle...") {
 			@Override public void run() {
-				InputDialog dialog= new InputDialog(getSite().getShell(), "Create Java Element From Handle Identifier", "&Handle identifier:", "", null);
+				InputDialog dialog= new InputDialog(getSite().getShell(), "Create JavaScript Element From Handle Identifier", "&Handle identifier:", "", null);
 				if (dialog.open() != Window.OK)
 					return;
 				String handleIdentifier= dialog.getValue();
@@ -620,7 +620,7 @@ public class JavaElementView extends ViewPart implements IShowInSource, IShowInT
 				reset();
 			}
 		};
-		fResetAction.setToolTipText("Reset View to JavaModel");
+		fResetAction.setToolTipText("Reset View to JavaScriptModel");
 		
 		fRefreshAction= new Action("Re&fresh", JEPluginImages.IMG_REFRESH) {
 			@Override public void run() {
@@ -824,13 +824,13 @@ public class JavaElementView extends ViewPart implements IShowInSource, IShowInT
 	
 	void showAndLogError(String message, CoreException e) {
 		JEViewPlugin.log(message, e);
-		ErrorDialog.openError(getSite().getShell(), "JavaElement View", message, e.getStatus()); //$NON-NLS-1$
+		ErrorDialog.openError(getSite().getShell(), "JavaScriptElement View", message, e.getStatus()); //$NON-NLS-1$
 	}
 	
 	void showAndLogError(String message, Exception e) {
 		IStatus status= new Status(IStatus.ERROR, JEViewPlugin.getPluginId(), 0, message, e);
 		JEViewPlugin.log(status);
-		ErrorDialog.openError(getSite().getShell(), "JavaElement View", null, status); //$NON-NLS-1$
+		ErrorDialog.openError(getSite().getShell(), "JavaScriptElement View", null, status); //$NON-NLS-1$
 	}
 	
 	void showMessage(String message) {
