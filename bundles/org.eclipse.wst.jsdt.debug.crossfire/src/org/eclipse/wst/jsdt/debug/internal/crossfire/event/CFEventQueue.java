@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.internal.crossfire.event;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -212,7 +213,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					}
 				}
 				else if(CFEventPacket.ON_CONSOLE_DEBUG.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.DATA);
+					Map info = (Map) event.getBody().get(Attributes.VALUE);
 					if(info != null) {
 						log(IStatus.INFO, info);
 					}
@@ -222,17 +223,14 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_ERROR.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.VALUE);
-					if(info != null) {
-						log(IStatus.ERROR, info);
-					}
+					logError(event.getBody());
 					if(TRACE) {
 						Tracing.writeString("QUEUE [event - "+CFEventPacket.ON_CONSOLE_ERROR+"] "+JSON.serialize(event)); //$NON-NLS-1$ //$NON-NLS-2$
 					}
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_INFO.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.DATA);
+					Map info = (Map) event.getBody().get(Attributes.VALUE);
 					if(info != null) {
 						log(IStatus.INFO, info);
 					}
@@ -242,7 +240,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_LOG.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.DATA);
+					Map info = (Map) event.getBody().get(Attributes.VALUE);
 					if(info != null) {
 						log(IStatus.INFO, info);
 					}
@@ -252,7 +250,7 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_CONSOLE_WARN.equals(name)) {
-					List info = (List) event.getBody().get(Attributes.DATA);
+					Map info = (Map) event.getBody().get(Attributes.VALUE);
 					if(info != null) {
 						log(IStatus.WARNING, info);
 					}
@@ -262,9 +260,6 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 					return null;
 				}
 				else if(CFEventPacket.ON_ERROR.equals(name)) {
-					//	"QueryInterface":{"type":"function","handle":30},
-					//	"pc":{"type":"number","value":26},
-					//	"eval":{"type":"function","handle":33},
 					Map body = event.getBody();
 					if(body != null) {
 						Throwable thro = new CFThrowable(body);
@@ -310,23 +305,46 @@ public class CFEventQueue extends CFMirror implements EventQueue {
 		return null;
 	}
 	
+	void logError(Map info) {
+		if(info != null) {
+			MultiStatus mstatus = new MultiStatus(CrossFirePlugin.PLUGIN_ID, IStatus.ERROR, "Error message logged in Firebug console", null); //$NON-NLS-1$
+			String message = (String) info.get(Attributes.MESSAGE);
+			CFThrowable thrw = new CFThrowable((Map) info.get(Attributes.STACKTRACE));
+			if(message != null) {
+				IStatus status = new Status(IStatus.ERROR, CrossFirePlugin.PLUGIN_ID, message, thrw);
+				mstatus.add(status);
+			}
+			if(mstatus.getChildren().length > 0) {
+				CrossFirePlugin.log(mstatus);
+			}
+		}
+	}
+	
 	/**
 	 * Logs the entry from the queue
 	 * 
 	 * @param kind
 	 * @param objects
 	 */
-	void log(int kind, List objects) {
+	void log(int kind, Map objects) {
 		IStatus status = null;
 		if(objects.size() > 1) {
-			MultiStatus mstatus = new MultiStatus(CrossFirePlugin.PLUGIN_ID, kind, "Messages logged from Crossfire", null); //$NON-NLS-1$
-			for (Iterator i = objects.iterator(); i.hasNext();) {
-				mstatus.add(new Status(kind, CrossFirePlugin.PLUGIN_ID, i.next().toString()));
+			MultiStatus mstatus = new MultiStatus(CrossFirePlugin.PLUGIN_ID, kind, "Messages logged from Firebug console", null); //$NON-NLS-1$
+			Entry entry = null;
+			for (Iterator i = objects.entrySet().iterator(); i.hasNext();) {
+				entry = (Entry) i.next();
+				Object value = entry.getValue();
+				if(value instanceof Map) {
+					Map map = (Map) entry.getValue();
+					if(!map.containsKey(Attributes.HANDLE)) {
+						Object val = map.get(Attributes.VALUE);
+						if(val != null) {
+							mstatus.add(new Status(kind, CrossFirePlugin.PLUGIN_ID, val.toString()));
+						}
+					}
+				}
 			}
 			status = mstatus;
-		}
-		else if(objects.size() == 1) {
-			status = new Status(kind, CrossFirePlugin.PLUGIN_ID, objects.iterator().next().toString());
 		}
 		if(status != null) {
 			CrossFirePlugin.log(status);

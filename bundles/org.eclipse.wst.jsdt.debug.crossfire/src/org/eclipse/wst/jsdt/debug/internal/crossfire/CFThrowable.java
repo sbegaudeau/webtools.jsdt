@@ -34,7 +34,22 @@ public class CFThrowable extends Throwable {
 	 */
 	public CFThrowable(Map json) {
 		super();
-		frame = (Map) json.get(Attributes.FRAME);
+		if(json != null) {
+			frame = (Map) json.get(Attributes.FRAME);
+			if(frame != null) {
+				processFrame();
+			}
+			else {
+				Map map = (Map) json.get(Attributes.STACKTRACE);
+				if(map != null) {
+					//TODO process any frame infos we get
+				}
+			}
+			error = (Map) json.get(Attributes.ERROR);
+		}
+	}
+
+	void processFrame() {
 		if(frame != null) {
 			objects = new HashMap(frame.size());
 			Map vals = (Map) frame.remove(Attributes.VALUE);
@@ -63,9 +78,8 @@ public class CFThrowable extends Throwable {
 				objects.put(Attributes.THIS_VALUE, new CFObject(Attributes.THIS_VALUE, (String)vals.get(Attributes.TYPE), (Number) vals.get(Attributes.HANDLE)));
 			}
 		}
-		error = (Map) json.get(Attributes.ERROR);
 	}
-
+	
 	/**
 	 * Returns if the error was caused by the debugger or not
 	 * 
