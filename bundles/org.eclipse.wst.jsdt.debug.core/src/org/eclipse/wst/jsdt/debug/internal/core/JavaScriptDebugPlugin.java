@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.ConnectorsManager;
 import org.eclipse.wst.jsdt.debug.internal.core.model.BreakpointParticipantManager;
+import org.eclipse.wst.jsdt.debug.internal.core.model.ScriptResolutionManager;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -64,6 +65,10 @@ public class JavaScriptDebugPlugin extends Plugin {
 	 */
 	private static JavaScriptPreferencesManager prefmanager = null;
 	/**
+	 * Singleton {@link ScriptResolutionManager}
+	 */
+	private static ScriptResolutionManager resolutionmanager = null;
+	/**
 	 * Handle to the 'External JavaScript Source' project
 	 */
 	private static IProject extSrcProject = null;
@@ -91,6 +96,18 @@ public class JavaScriptDebugPlugin extends Plugin {
 			participantmanager = new BreakpointParticipantManager();
 		}
 		return participantmanager;
+	}
+	
+	/**
+	 * Returns the singleton {@link ScriptResolutionManager}
+	 * @return the {@link ScriptResolutionManager}
+	 * @since 3.4
+	 */
+	public static synchronized ScriptResolutionManager getResolutionManager() {
+		if(resolutionmanager == null) {
+			resolutionmanager = new ScriptResolutionManager();
+		}
+		return resolutionmanager;
 	}
 	
 	/**

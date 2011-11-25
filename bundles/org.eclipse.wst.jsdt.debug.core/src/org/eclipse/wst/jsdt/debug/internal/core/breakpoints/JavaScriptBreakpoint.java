@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +19,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -43,7 +41,6 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.ScriptLoadRequest;
 import org.eclipse.wst.jsdt.debug.core.model.JavaScriptDebugModel;
 import org.eclipse.wst.jsdt.debug.internal.core.Constants;
 import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
-import org.eclipse.wst.jsdt.debug.internal.core.Messages;
 import org.eclipse.wst.jsdt.debug.internal.core.launching.SourceLookup;
 import org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener;
 import org.eclipse.wst.jsdt.debug.internal.core.model.JavaScriptDebugTarget;
@@ -61,7 +58,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	 * The total count of all of the targets this breakpoint is installed in
 	 */
 	public static final String INSTALL_COUNT = JavaScriptDebugPlugin.PLUGIN_ID + ".install_count"; //$NON-NLS-1$
-
+	
 	private HashSet targets = null;
 	private HashMap requestspertarget = new HashMap(4);
 
@@ -165,8 +162,9 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			boolean success = true;
 			for (Iterator iter = scripts.iterator(); iter.hasNext();) {
 				ScriptReference script = (ScriptReference) iter.next();
-				if (scriptPathMatches(script))
+				if (JavaScriptDebugPlugin.getResolutionManager().matches(script, new Path(getScriptPath()))) {
 					success &= createRequest(target, script);
+				}
 			}
 			if (success) {
 				if (this.targets == null) {
@@ -437,33 +435,14 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 			ScriptReference script = sevent.script();
 			
 			try {
-				if (scriptPathMatches(script)) 
+				if (JavaScriptDebugPlugin.getResolutionManager().matches(script, new Path(getScriptPath()))) {
 					createRequest(target, script);
+				}
 			} catch (CoreException ce) {
 				JavaScriptDebugPlugin.log(ce);
 			}
 		}
 		return true;
-	}
-
-	protected boolean scriptPathMatches(ScriptReference script) throws CoreException {
-		URI sourceURI = script.sourceURI();
-		if ("file".equals(sourceURI.getScheme())) {//$NON-NLS-1$			
-			IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-			URI workspaceURI = workspaceRoot.getRawLocationURI();			
-			sourceURI = workspaceURI.relativize(sourceURI);
-		}
-		String path = getScriptPath();
-		IPath spath = new Path(path);
-		if(spath.segment(0).equals(Messages.external_javascript_source)) {
-			spath = spath.removeFirstSegments(1).makeAbsolute();
-		}
-		//XXX use the same algorithm we use to save the source to 'encode' the source URI for comparison
-		IPath uripath = SourceLookup.getSourcePath(sourceURI);
-		if(uripath != null) {
-			uripath = uripath.makeAbsolute();
-		}
-		return spath.equals(uripath);
 	}
 
 	/**

@@ -40,7 +40,7 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 public final class SourceLookup {
 
 	public static final QualifiedName SCRIPT_URL = new QualifiedName(JavaScriptCore.PLUGIN_ID, "scriptURL"); //$NON-NLS-1$
-	
+	public static final IPath TOP_LEVEL_PATH = new Path("/"); //$NON-NLS-1$
 	/**
 	 * Returns the name of the source object to lookup or <code>null</code>
 	 * if the object is not a {@link IJavaScriptStackFrame} or an {@link IScript}
@@ -50,12 +50,15 @@ public final class SourceLookup {
 	 * @since 1.1
 	 */
 	public static String getSourceName(Object object) {
+		String name = null;
 		if (object instanceof IJavaScriptStackFrame) {
-			return ((IJavaScriptStackFrame) object).getSourceName();
+			name = ((IJavaScriptStackFrame) object).getSourceName();
 		}
 		if(object instanceof IScript) {
-			String name = URIUtil.lastSegment(((IScript)object).sourceURI());
-			if(!JavaScriptCore.isJavaScriptLikeFileName(name)) {
+			name = URIUtil.lastSegment(((IScript)object).sourceURI());
+		}
+		if(name != null) {
+			if(new Path(name).getFileExtension() == null) {
 				//append .js, there is no case where we would look up a file with no extension from a script node
 				StringBuffer buf = new StringBuffer(name.length()+3);
 				buf.append(name).append('.').append(Constants.JS_EXTENSION);
@@ -165,7 +168,7 @@ public final class SourceLookup {
 			return null;
 		}
 		if(uripath.trim().equals("/")) { //$NON-NLS-1$
-			uripath = "page.js"; //$NON-NLS-1$
+			uripath = "index.htm"; //$NON-NLS-1$
 		}
 		String host = sourceuri.getHost();
 		IPath path = null;
@@ -244,7 +247,7 @@ public final class SourceLookup {
 			newpath = newpath.append((String) segments.get(i));
 		}
 		String ext = newpath.getFileExtension(); 
-		if(ext == null || !Constants.JS_EXTENSION.equals(ext)) {
+		if(ext == null && !Constants.JS_EXTENSION.equals(ext)) {
 			newpath = newpath.addFileExtension(Constants.JS_EXTENSION);
 		}
 		return newpath; 

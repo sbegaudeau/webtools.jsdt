@@ -89,6 +89,16 @@
                type="org.eclipse.debug.internal.ui.viewers.model.provisional.IElementContentProvider">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.eclipse.wst.sse.ui.StructuredTextEditor"
+            class="org.eclipse.wst.jsdt.debug.internal.ui.adapters.JavaScriptAdapterFactory">
+         <adapter
+               type="org.eclipse.debug.ui.actions.IToggleBreakpointsTarget">
+         </adapter>
+         <adapter
+               type="org.eclipse.debug.ui.actions.IRunToLineTarget">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.editorActions">
@@ -283,6 +293,26 @@
                   name="jsdebug">
             </separator>
          </menu>
+      </viewerContribution>
+      <viewerContribution
+            id="org.eclipse.wst.jsdt.debug.ui.html.ruler.popup.actions"
+            targetID="org.eclipse.wst.html.core.htmlsource.source">
+         <action
+               class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.ToggleBreakpointEnablementEditorDelegate"
+               helpContextId="toggle_breakpoint_anablement_ruler_context"
+               id="org.eclipse.wst.jsdt.debug.ui.html.toggle.breakpoint.enablement"
+               label="%togglebreakpointenablementRulerAction.name"
+               menubarPath="debug"
+               tooltip="%togglebreakpointenablementRulerAction.tooltip">
+         </action>
+         <action
+               class="org.eclipse.debug.ui.actions.RulerToggleBreakpointActionDelegate"
+               helpContextId="editor_toggle_breakpoint_action_context"
+               icon="$nl$/icons/elcl16/brkp_obj.gif"
+               id="org.eclipse.wst.jsdt.debug.ui.html.toggle.breakpoint.ruler.delegate"
+               label="%togglebreakpointRulerAction.name"
+               menubarPath="debug">
+         </action>
       </viewerContribution>
    </extension>
    <extension
@@ -569,6 +599,17 @@
             id="org.eclipse.wst.jsdt.debug.ui.breakpoint.updater"
             markerType="org.eclipse.wst.jsdt.debug.core.breakpoint.marker">
       </updater>
+   </extension>
+   <extension
+         point="org.eclipse.wst.sse.ui.breakpoint">
+      <breakpointContribution
+            id="org.eclipse.wst.jsdt.html.breakpointContribution">
+         <provider
+               class="org.eclipse.wst.jsdt.debug.internal.ui.breakpoints.JavaScriptHtmlBreakpointProvider"
+               contentTypes="org.eclipse.wst.html.core.htmlsource"
+               id="org.eclipse.wst.jsdt.html.breakpoint.provider">
+         </provider>
+      </breakpointContribution>
    </extension>
 
 </plugin>

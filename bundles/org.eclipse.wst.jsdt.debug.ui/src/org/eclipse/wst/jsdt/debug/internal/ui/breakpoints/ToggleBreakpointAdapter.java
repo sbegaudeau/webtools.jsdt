@@ -29,6 +29,7 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -48,6 +49,8 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptFunctionBreakpoint;
@@ -134,6 +137,32 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	}
 	
 	/**
+	 * Callback from {@link JavaScriptHtmlBreakpointProvider}
+	 * @param resource
+	 * @param document
+	 * @param linenumber
+	 * @throws CoreException
+	 */
+	void addBreakpoint(IResource resource, IDocument document, int linenumber) throws CoreException {
+		IBreakpoint bp = lineBreakpointExists(resource, linenumber);
+		if(bp != null) {
+			DebugPlugin.getDefault().getBreakpointManager().removeBreakpoint(bp, true);
+		}
+		int charstart = -1, charend = -1;
+		try {
+			IRegion line = document.getLineInformation(linenumber - 1);
+			charstart = line.getOffset();
+			charend = charstart + line.getLength();
+		}
+		catch (BadLocationException ble) {}
+		HashMap attributes = new HashMap();
+		attributes.put(IJavaScriptBreakpoint.TYPE_NAME, null);
+		attributes.put(IJavaScriptBreakpoint.SCRIPT_PATH, resource.getFullPath().makeAbsolute().toString());
+		attributes.put(IJavaScriptBreakpoint.ELEMENT_HANDLE, null);
+		JavaScriptDebugModel.createLineBreakpoint(resource, linenumber, charstart, charend, attributes, true);
+	}
+	
+	/**
 	 * Returns the path to the script in the workspace or the name of the script in the event it is
 	 * and external or virtual script
 	 * @param element
@@ -202,6 +231,30 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 					return ((ITypeRoot)element).findPrimaryType();
 				}
 			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Resolves the region from the given document and tries to parse the text of the region. Returns the {@link JavaScriptUnit}
+	 * representing the region or <code>null</code> if it could not be computed
+	 * 
+	 * @param doc
+	 * @param offset
+	 * @return the {@link JavaScriptUnit} for the region from the document or <code>null</code>
+	 */
+	JavaScriptUnit parse(IDocument doc, int offset) {
+		try {
+			ITypedRegion region = doc.getPartition(offset);
+			if(region != null) {
+				ASTParser parser = ASTParser.newParser(AST.JLS3);
+				//parser.setKind(ASTParser.K_STATEMENTS);
+				parser.setSource(doc.get(offset, region.getLength()).toCharArray());
+				return (JavaScriptUnit)parser.createAST(null);
+			}
+		}
+		catch(BadLocationException ble) {
+			//do nothing, return null
 		}
 		return null;
 	}

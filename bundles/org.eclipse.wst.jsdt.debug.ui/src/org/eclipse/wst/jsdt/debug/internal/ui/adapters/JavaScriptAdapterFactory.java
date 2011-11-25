@@ -160,7 +160,7 @@ public class JavaScriptAdapterFactory implements IAdapterFactory {
 	/**
 	 * @return the singleton {@link ToggleBreakpointAdapter}
 	 */
-	synchronized ToggleBreakpointAdapter getToggleBreakpointAdapter() {
+	public static synchronized ToggleBreakpointAdapter getToggleBreakpointAdapter() {
 		if(tbadapter == null) {
 			tbadapter = new ToggleBreakpointAdapter();
 		}

@@ -73,6 +73,11 @@ public interface Constants {
 	 * The name of the launching connectors extension point
 	 */
 	static final String LAUNCHING_CONNECTORS = "launchingConnectors"; //$NON-NLS-1$
+	/**
+	 * The name of the script resolvers extension point
+	 * @since 3.4
+	 */
+	static final String SCRIPT_RESOLVERS = "scriptResolvers"; //$NON-NLS-1$
 	
 //#########  PREFERENCES  ############
 	/**
