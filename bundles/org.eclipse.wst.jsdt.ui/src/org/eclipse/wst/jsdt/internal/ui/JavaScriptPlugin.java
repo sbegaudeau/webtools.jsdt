@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Martin Oberhuber (Wind River) - [357930] Fix Thread timeout on start
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui;
 
@@ -337,8 +338,6 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 		// Initialize AST provider
 		getASTProvider();
 		
-		new InitializeAfterLoadJob().schedule();
-		
 		// make sure is loaded too for org.eclipse.wst.jsdt.core.manipulation
 		// can be removed if JavaElementPropertyTester is moved down to jdt.core (bug 127085)
 		JavaScriptManipulation.class.toString();
@@ -350,7 +349,8 @@ public class JavaScriptPlugin extends AbstractUIPlugin {
 			}
 		};
 		PlatformUI.getWorkbench().getThemeManager().addPropertyChangeListener(fThemeListener);
-		
+
+		new InitializeAfterLoadJob().schedule(); // last call in start, see bug 357930
 	}
 
 	/* package */ static void initializeAfterLoad(IProgressMonitor monitor) {
