@@ -143,7 +143,7 @@ public final class ScriptResolutionManager {
 		file = null;
 		IPath p = SourceLookup.getSourcePath(script.sourceURI());
 		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(p);
-		if(res.getType() == IResource.FILE) {
+		if(res != null && res.getType() == IResource.FILE) {
 			file = (IFile) res;
 		}
 		if(files.size() > 0) {
