@@ -55,7 +55,9 @@ public class CFThrowable extends Throwable {
 			Map vals = (Map) frame.remove(Attributes.VALUE);
 			if(vals != null) {
 				vals = (Map) vals.remove(Attributes.SCRIPT);
-				objects.put(Attributes.SCRIPT, new CFObject(Attributes.SCRIPT, (String)vals.get(Attributes.TYPE), (Number)vals.get(Attributes.HANDLE)));
+				if(vals != null) {
+					objects.put(Attributes.SCRIPT, new CFObject(Attributes.SCRIPT, (String)vals.get(Attributes.TYPE), (Number)vals.get(Attributes.HANDLE)));
+				}
 			}
 			vals = (Map) frame.remove(Attributes.SCOPE);
 			if(vals != null) {

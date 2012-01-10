@@ -120,13 +120,16 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			entry = (Entry) iter.next();
 			if(entry.getValue() instanceof Map) {
 				Map info  = (Map) entry.getValue();
-				varcollector.add(
-						new CFVariable(
-								crossfire(), 
-								this, 
-								(String) entry.getKey(), 
-								(Number) info.get(Attributes.HANDLE), 
-								info));
+				Object obj = info.get(Attributes.HANDLE);
+				if(obj instanceof Number) {
+					varcollector.add(
+							new CFVariable(
+									crossfire(), 
+									this, 
+									(String) entry.getKey(), 
+									(Number) obj, 
+									info));
+				}
 			}
 			else {
 				varcollector.add(

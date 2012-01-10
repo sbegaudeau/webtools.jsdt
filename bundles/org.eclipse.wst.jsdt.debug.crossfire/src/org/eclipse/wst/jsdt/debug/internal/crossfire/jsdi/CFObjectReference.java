@@ -78,16 +78,20 @@ public class CFObjectReference extends CFMirror implements ObjectReference {
 				name = (String)entry.getKey();
 				if(entry.getValue() instanceof Map) {
 					json = (Map) entry.getValue();
-					ref = (Number) json.get(Attributes.HANDLE);
-					//don't add constructor and proto to the properties heap
-					//they are requested specially
-					if(Attributes.CONSTRUCTOR.equals(name)) {
-						constref = ref;
-						continue;
-					}
-					else if(Attributes.PROTO.equals(name)) {
-						protoref = ref;
-						continue;
+					Object o = json.get(Attributes.HANDLE);
+					//prevent http://code.google.com/p/fbug/issues/detail?id=4635
+					if(o instanceof Number) {
+						ref = (Number) o;
+						//don't add constructor and proto to the properties heap
+						//they are requested specially
+						if(Attributes.CONSTRUCTOR.equals(name)) {
+							constref = ref;
+							continue;
+						}
+						else if(Attributes.PROTO.equals(name)) {
+							protoref = ref;
+							continue;
+						}
 					}
 				}
 				properties.add(new CFVariable(crossfire(), frame, name, ref, json));
