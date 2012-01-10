@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -77,15 +77,15 @@ public class ScriptRequestTests extends RequestTest {
 		Map result = (Map) response.getBody().get(JSONConstants.SCRIPT);
 		assertEquals(script, result.get(JSONConstants.SOURCE));
 		List lineNumbers = (List) result.get(JSONConstants.LINES);
-		assertEquals(7, lineNumbers.size());
-		assertTrue("The line number [1] should be returned", lineNumbers.contains(new BigDecimal(1))); //$NON-NLS-1$
-		assertTrue("The line number [2] should be returned", lineNumbers.contains(new BigDecimal(2))); //$NON-NLS-1$
-		assertTrue("The line number [5] should be returned", lineNumbers.contains(new BigDecimal(5))); //$NON-NLS-1$
-		assertTrue("The line number [6] should be returned", lineNumbers.contains(new BigDecimal(6))); //$NON-NLS-1$
-		assertTrue("The line number [9] should be returned", lineNumbers.contains(new BigDecimal(9))); //$NON-NLS-1$
+		assertEquals(8, lineNumbers.size());
+		assertTrue("The line number [10] should be returned", lineNumbers.contains(new BigDecimal(10))); //$NON-NLS-1$
+		assertTrue("The line number [11] should be returned", lineNumbers.contains(new BigDecimal(11))); //$NON-NLS-1$
 		assertTrue("The line number [12] should be returned", lineNumbers.contains(new BigDecimal(12))); //$NON-NLS-1$
-		assertTrue("The line number [13] should be returned", lineNumbers.contains(new BigDecimal(13))); //$NON-NLS-1$
-		//assertTrue("The line number [14] should be returned", lineNumbers.contains(new BigDecimal(14)));
+		assertTrue("The line number [15] should be returned", lineNumbers.contains(new BigDecimal(15))); //$NON-NLS-1$
+		assertTrue("The line number [16] should be returned", lineNumbers.contains(new BigDecimal(16))); //$NON-NLS-1$
+		assertTrue("The line number [19] should be returned", lineNumbers.contains(new BigDecimal(19))); //$NON-NLS-1$
+		assertTrue("The line number [22] should be returned", lineNumbers.contains(new BigDecimal(22))); //$NON-NLS-1$
+		assertTrue("The line number [23] should be returned", lineNumbers.contains(new BigDecimal(23))); //$NON-NLS-1$
 
 		List functionNames = (List) result.get(JSONConstants.FUNCTIONS);
 		assertEquals(2, functionNames.size());

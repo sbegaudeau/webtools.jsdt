@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class FrameRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testFramesAndFrameLookup() throws Exception {
-		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {6}));
+		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {16}));
 		eventHandler.addSubhandler(new FrameCheckHandler());
 		
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
@@ -48,7 +48,7 @@ public class FrameRequestTests extends RequestTest {
 	 * @throws Exception
 	 */
 	public void testFramesAndFrameLookupAndEvaluate() throws Exception {
-		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {6}));
+		eventHandler.addSubhandler(new SetBreakpointHandler(new int[] {16}));
 		Subhandler frameCheckHandler = new Subhandler() {
 			/* (non-Javadoc)
 			 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#testName()

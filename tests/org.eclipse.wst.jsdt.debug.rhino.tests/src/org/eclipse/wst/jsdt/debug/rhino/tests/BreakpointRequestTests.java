@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ public class BreakpointRequestTests extends RequestTest {
 		assertTrue(response.isSuccess());
 		breakpoints = (Collection) response.getBody().get(JSONConstants.BREAKPOINTS);
 		assertNotNull(breakpoints);
-		assertEquals(7, breakpoints.size());
+		assertEquals(8, breakpoints.size());
 
 		for (Iterator iterator = breakpoints.iterator(); iterator.hasNext();) {
 			Number breakpointId = (Number) iterator.next();
@@ -131,7 +131,7 @@ public class BreakpointRequestTests extends RequestTest {
 
 		String script = Util.getTestSource(Util.SRC_SCRIPTS_CONTAINER, "script1.js"); //$NON-NLS-1$
 		assertNotNull("The test source for [script1.js] must exist", script); //$NON-NLS-1$
-		evalScript(script, 6);
+		evalScript(script, 7);
 		
 		request = new RhinoRequest(JSONConstants.BREAKPOINTS);
 		debugSession.send(request);
