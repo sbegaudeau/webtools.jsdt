@@ -27,7 +27,7 @@ bool Util::VerifyDebugPreference() {
 		hr = RegQueryValueEx(key, PREFERENCE_DISABLEIEDEBUG, NULL, NULL, (LPBYTE)value, &size);
 		RegCloseKey(key);
 		if (SUCCEEDED(hr) && wcscmp(value, L"no") != 0) {
-			MessageBox(NULL, L"Internet Explorer Option \"Disable Script Debugging (Internet Explorer)\" must be unchecked to enable remote debugging via Crossfire.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
+			MessageBox(NULL, L"Internet Explorer option \"Disable Script Debugging (Internet Explorer)\" must be unchecked to enable remote debugging via Crossfire.  Crossfire server has not been started.", L"Crossfire Server Startup Error", 0);
 			return false;
 		}
 	}
