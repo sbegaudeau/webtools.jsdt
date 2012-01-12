@@ -14,9 +14,10 @@
 #include "JSONParser.h"
 
 /* initialize constants */
+const wchar_t* JSONParser::VALUE_FALSE = L"false";
 const wchar_t* JSONParser::VALUE_NULL = L"null";
 const wchar_t* JSONParser::VALUE_TRUE = L"true";
-const wchar_t* JSONParser::VALUE_FALSE = L"false";
+const wchar_t* JSONParser::VALUE_UNDEFINED = L"\"undefined\"";
 
 JSONParser::JSONParser(void) {
 }
@@ -494,7 +495,10 @@ void JSONParser::stringify(Value* value, std::wstring** _jsonString) {
 			break;
 		}
 		default: {
-			*_jsonString = NULL;
+			/* TYPE_UNDEFINED */
+			std::wstring* result = new std::wstring;
+			result->assign(VALUE_UNDEFINED);
+			*_jsonString = result;
 			break;
 		}
 	}

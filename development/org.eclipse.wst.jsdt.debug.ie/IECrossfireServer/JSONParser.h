@@ -34,7 +34,8 @@ private:
 	void skipWhitespace(std::wstringstream* jsonStream);
 
 	/* constants */
+	static const wchar_t* VALUE_FALSE;
 	static const wchar_t* VALUE_NULL;
 	static const wchar_t* VALUE_TRUE;
-	static const wchar_t* VALUE_FALSE;
+	static const wchar_t* VALUE_UNDEFINED;
 };

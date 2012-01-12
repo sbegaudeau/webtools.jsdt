@@ -127,12 +127,12 @@ void Value::clone(Value** _value) {
 
 			*_value = result;
 			break;
-
 		}
-		// TYPE_UNDEFINED
 		default: {
-			*_value = NULL;
-			break;
+			/* TYPE_UNDEFINED */
+			Value* result = new Value();
+			result->setType(TYPE_UNDEFINED);
+			*_value = result;
 		}
 	}
 }

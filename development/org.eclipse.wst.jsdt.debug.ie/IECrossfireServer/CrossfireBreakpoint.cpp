@@ -158,13 +158,16 @@ void CrossfireBreakpoint::setTarget(IBreakpointTarget* value) {
 }
 
 bool CrossfireBreakpoint::toValueObject(Value** _value) {
-	Value value_null;
-	value_null.setType(TYPE_NULL);
-
 	Value* result = new Value();
 	result->addObjectValue(KEY_HANDLE, &Value((double)m_handle));
 	result->addObjectValue(KEY_TYPE, &Value(getTypeString()));
-	result->addObjectValue(KEY_CONTEXTID, m_contextId ? &Value(m_contextId) : &value_null);
+	if (!m_contextId) {
+		Value value_null;
+		value_null.setType(TYPE_NULL);
+		result->addObjectValue(KEY_CONTEXTID, &value_null);
+	} else {
+		result->addObjectValue(KEY_CONTEXTID, &Value(m_contextId));
+	}
 
 	Value value_attributes;
 	value_attributes.setType(TYPE_OBJECT);
