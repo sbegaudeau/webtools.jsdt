@@ -94,7 +94,7 @@ private:
 	std::map<IDebugApplicationNode*, PendingScriptLoad*>* m_pendingScriptLoads;
 	DWORD m_processId;
 	bool m_running;
-	std::map<std::wstring, IDebugApplicationNode*>* m_scriptNodes;
+	std::multimap<std::wstring, IDebugApplicationNode*>* m_scriptNodes;
 	CrossfireServer* m_server;
 	DWORD m_threadId;
 	wchar_t* m_url;

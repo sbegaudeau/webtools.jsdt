@@ -207,7 +207,7 @@ CrossfireContext::~CrossfireContext() {
 	}
 
 	if (m_scriptNodes) {
-		std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+		std::multimap<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
 		while (iterator != m_scriptNodes->end()) {
 			iterator->second->Release();
 			iterator++;
@@ -1379,7 +1379,7 @@ bool CrossfireContext::getScriptUrl(IDebugApplicationNode* node, URL** _value) {
 		return false;
 	}
 
-	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+	std::multimap<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
 	while (iterator != m_scriptNodes->end()) {
 		if (iterator->second == node) {
 			*_value = new URL((wchar_t*)iterator->first.c_str());
@@ -1396,7 +1396,7 @@ IDebugApplicationNode* CrossfireContext::getScriptNode(URL* url) {
 	}
 
 	std::wstring string(url->getString());
-	std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(string);
+	std::multimap<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->find(string);
 	if (iterator == m_scriptNodes->end()) {
 		return NULL;
 	}
@@ -1523,24 +1523,27 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 		}
 		url.setString(value.m_str);
 	} else {
-		/*
-		 * Failure to get the URL indicates that the node represents something like a JScript
-		 * block or eval code.  For these cases get the node's title instead and prepend a
-		 * scheme to make it url-like.
-		 */
-		hr = applicationNode->GetName(DOCUMENTNAMETYPE_TITLE, &value);
-		if (FAILED(hr)) {
-			Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
-			return false;
-		}
-		int length = wcslen(SCHEME_SCRIPT) + wcslen(value.m_str) + 2;
-		wchar_t* string = new wchar_t[length];
-		ZeroMemory(string, length * sizeof(wchar_t));
-		wcscat_s(string, length, SCHEME_SCRIPT);
-		wcscat_s(string, length, value.m_str);
-		wcscat_s(string, length, L"/");
-		url.setString(string);
-		delete[] string;
+		// the following is intentionally commented
+		///*
+		// * Failure to get the URL indicates that the node represents something like a JScript
+		// * block or eval code.  For these cases get the node's title instead and prepend a
+		// * scheme to make it url-like.
+		// */
+		//hr = applicationNode->GetName(DOCUMENTNAMETYPE_TITLE, &value);
+		//if (FAILED(hr)) {
+		//	Logger::error("CrossfireContext.registerScript(): GetName() failed", hr);
+		//	return false;
+		//}
+		//int length = wcslen(SCHEME_SCRIPT) + wcslen(value.m_str) + 2;
+		//wchar_t* string = new wchar_t[length];
+		//ZeroMemory(string, length * sizeof(wchar_t));
+		//wcscat_s(string, length, SCHEME_SCRIPT);
+		//wcscat_s(string, length, value.m_str);
+		//wcscat_s(string, length, L"/");
+		//url.setString(string);
+		//delete[] string;
+
+		return false;
 	}
 
 	if (!url.isValid()) {
@@ -1548,27 +1551,31 @@ bool CrossfireContext::registerScript(IDebugApplicationNode* applicationNode, bo
 	}
 
 	if (!m_scriptNodes) {
-		m_scriptNodes = new std::map<std::wstring, IDebugApplicationNode*>;
+		m_scriptNodes = new std::multimap<std::wstring, IDebugApplicationNode*>;
 	}
 
-	/*
-	 * There could be another script with the same id already registered for id's that
-	 * are not urls.  In this case append a qualifier to the id to make it unique.
-	 */
-	int qualifierIndex = 1;
-	std::wstring key(url.getString());
+	// the following is intentionally commented
+	///*
+	// * There could be another script with the same id already registered for id's that
+	// * are not urls.  In this case append a qualifier to the id to make it unique.
+	//*/
+	//int qualifierIndex = 1;
+	//std::wstring key(url.getString());
+	//applicationNode->AddRef();
+	//while (true) {
+	//	if (m_scriptNodes->insert(std::pair<std::wstring, IDebugApplicationNode*>(key, applicationNode)).second) {
+	//		/* script was successfully inserted */
+	//		break;
+	//	}
+	//	key.assign(url.getString());
+	//	wchar_t qualifierString[4];
+	//	_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
+	//	key += qualifierString;
+	//}
+
 	applicationNode->AddRef();
-	while (true) {
-		if (m_scriptNodes->insert(std::pair<std::wstring, IDebugApplicationNode*>(key, applicationNode)).second) {
-			/* script was successfully inserted */
-			break;
-		}
-		key.assign(url.getString());
-		wchar_t qualifierString[4];
-		_ltow_s(qualifierIndex++, qualifierString, 4, 10); /* trailing linebreak */
-		key += qualifierString;
-	}
-	
+	m_scriptNodes->insert(std::pair<std::wstring, IDebugApplicationNode*>(url.getString(), applicationNode));
+
 	if (recurse) {
 		CComPtr<IEnumDebugApplicationNodes> nodes = NULL;
 		hr = applicationNode->EnumChildren(&nodes);
@@ -1630,7 +1637,9 @@ bool CrossfireContext::scriptInitialized(IDebugApplicationNode *applicationNode,
 		m_lastInitializedScriptNode->AddRef();
 	}
 
-	registerScript(applicationNode, false);
+	if (!registerScript(applicationNode, false)) {
+		return false;
+	}
 	scriptLoaded(applicationNode, true);
 
 	/*
@@ -2184,10 +2193,21 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 	Value scriptsArray;
 	scriptsArray.setType(TYPE_ARRAY);
 	if (m_scriptNodes) {
-		std::map<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
+		/*
+		 * m_scriptNodes can contain multiple values with the same key (url), so
+		 * start by creating a map containing only one entry per url key.
+		 */
+		std::map<std::wstring, IDebugApplicationNode*> distinctUrls;
+		std::multimap<std::wstring, IDebugApplicationNode*>::iterator iterator = m_scriptNodes->begin();
 		while (iterator != m_scriptNodes->end()) {
+			distinctUrls.insert(std::pair<std::wstring, IDebugApplicationNode*>(iterator->first, iterator->second));
+			iterator++;
+		}
+
+		std::map<std::wstring, IDebugApplicationNode*>::iterator distinctIterator = distinctUrls.begin();
+		while (distinctIterator != distinctUrls.end()) {
 			Value* value = NULL;
-			IDebugApplicationNode* node = iterator->second;
+			IDebugApplicationNode* node = distinctIterator->second;
 			bool include = false;
 			if (!ids) {
 				include = true;
@@ -2211,7 +2231,7 @@ int CrossfireContext::commandScripts(Value* arguments, Value** _responseBody, wc
 				scriptsArray.addArrayValue(value);
 				delete value;
 			}
-			iterator++;
+			distinctIterator++;
 		}
 	}
 
