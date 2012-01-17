@@ -15,38 +15,38 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_0769F9DE137E47D1BC8C88CEC122862E"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0769F9DE137E47D1BC8C88CEC122862E"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_08B68589E44940F8B6D40CA08C892114"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_0C04D36F65A14D88BE7C0F4AD05A2393"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_0C04D36F65A14D88BE7C0F4AD05A2393"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6802CADBA51445E0826BEBAEA44DA6C0"
-        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6802CADBA51445E0826BEBAEA44DA6C0"
-        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_770C3B8BDBA340C7BBE1104846E1F2DE"
+        "OwnerKey" = "8:_68B2C602B4B448ADBFC58961A342D06B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_770C3B8BDBA340C7BBE1104846E1F2DE"
+        "OwnerKey" = "8:_A558BCE26AC6426C9ABA48959A6EB3C6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -245,7 +245,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Crossfire Server for Internet Explorer"
         "ProductCode" = "8:{8454AEA7-EC58-4709-BFED-85CCB406E206}"
-        "PackageCode" = "8:{A314CFEF-5F02-42F0-99B7-3FAFE478148F}"
+        "PackageCode" = "8:{D3550310-41A2-49E1-B9A2-6D49A2F67F6F}"
         "UpgradeCode" = "8:{DC2603D4-1885-4F24-B9B6-5EB74FF9D579}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -3477,7 +3477,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2011.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
+                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2012.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3578,7 +3578,7 @@
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
                             "Setting" = "3:2"
-                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2011.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
+                            "Value" = "8:(c) Copyright Eclipse contributors and others, 2012.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -3759,7 +3759,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_0C04D36F65A14D88BE7C0F4AD05A2393"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_0769F9DE137E47D1BC8C88CEC122862E"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -3773,7 +3773,7 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_6802CADBA51445E0826BEBAEA44DA6C0"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_770C3B8BDBA340C7BBE1104846E1F2DE"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
