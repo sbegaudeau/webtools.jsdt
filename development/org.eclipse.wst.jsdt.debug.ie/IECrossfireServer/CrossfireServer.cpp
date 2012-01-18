@@ -48,7 +48,7 @@ const wchar_t* CrossfireServer::KEY_CURRENT = L"current";
 /* command: version */
 const wchar_t* CrossfireServer::COMMAND_VERSION = L"version";
 const wchar_t* CrossfireServer::KEY_VERSION = L"version";
-const wchar_t* CrossfireServer::VERSION_STRING = L"0.3";
+const wchar_t* CrossfireServer::VERSION_STRING = L"0.3a10";
 
 /* event: closed */
 const wchar_t* CrossfireServer::EVENT_CLOSED = L"closed";
@@ -669,21 +669,40 @@ void CrossfireServer::received(wchar_t* msg) {
 }
 
 void CrossfireServer::reset() {
+	delete m_bpManager;
+	m_bpManager = new CrossfireBPManager();
+
+	std::map<DWORD, IBrowserContext*>::iterator iterator = m_browsers->begin();
+	while (iterator != m_browsers->end()) {
+		iterator->second->Release();
+		iterator++;
+	}
+	m_browsers->clear();
+
 	m_connection->close();
 	delete m_connection;
 	m_connection = NULL;
 
-	std::map<DWORD,CrossfireContext*>::iterator iterator = m_contexts->begin();
-	while (iterator != m_contexts->end()) {
-		delete iterator->second;
-		iterator++;
+	std::map<DWORD, CrossfireContext*>::iterator iterator2 = m_contexts->begin();
+	while (iterator2 != m_contexts->end()) {
+		delete iterator2->second;
+		iterator2++;
 	}
 	m_contexts->clear();
+
+	std::vector<CrossfireEvent*>::iterator iterator3 = m_pendingEvents->begin();
+	while (iterator3 != m_pendingEvents->end()) {
+		delete *iterator3;
+		iterator3++;
+	}
+	m_pendingEvents->clear();
+
 	m_currentContextPID = 0;
 	m_handshakeReceived = false;
 	m_inProgressPacket->clear();
 	m_lastRequestSeq = -1;
 	m_port = -1;
+	m_processingRequest = false;
 }
 
 void CrossfireServer::sendEvent(CrossfireEvent* eventObj) {

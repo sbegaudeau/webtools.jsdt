@@ -80,6 +80,15 @@ const wchar_t* CrossfireContext::KEY_CAUSE = L"cause";
 const wchar_t* CrossfireContext::KEY_MESSAGE = L"message";
 const wchar_t* CrossfireContext::KEY_TITLE = L"title";
 
+/* event: onError */
+const wchar_t* CrossfireContext::EVENT_ONERROR = L"onError";
+const wchar_t* CrossfireContext::KEY_CATEGORY = L"category";
+const wchar_t* CrossfireContext::KEY_COLUMNNUMBER = L"columnNumber";
+const wchar_t* CrossfireContext::KEY_ERROR = L"error";
+const wchar_t* CrossfireContext::KEY_FILENAME = L"fileName";
+const wchar_t* CrossfireContext::KEY_LINENUMBER = L"lineNumber";
+const wchar_t* CrossfireContext::VALUE_JS = L"js";
+
 /* event: onResume */
 const wchar_t* CrossfireContext::EVENT_ONRESUME = L"onResume";
 
@@ -672,165 +681,6 @@ void CrossfireContext::evalComplete(IDebugProperty* value, void* data) {
 
 /* CrossfireContext */
 
-void CrossfireContext::breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
-	m_running = false;
-
-	/*
-	 * IE has just entered a suspended state.  If any of the steps preceeding the
-	 * sending of the onBreak event fail then a resume (step out) must be done so
-	 * that the server is not left in a suspended state without the client's knowledge.
-	 */
-	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
-	HRESULT hr = pDebugAppThread->EnumStackFrames(&stackFrames);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	DebugStackFrameDescriptor stackFrameDescriptor;
-	ULONG numFetched = 0;
-	hr = stackFrames->Next(1, &stackFrameDescriptor, &numFetched);
-	if (FAILED(hr) || numFetched != 1) {
-		Logger::error("CrossfireContext.breakpointHit(): EnumStackFrames->Next() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	IDebugStackFrame* frame = stackFrameDescriptor.pdsf;
-	CComPtr<IDebugCodeContext> codeContext = NULL;
-	hr = frame->GetCodeContext(&codeContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetCodeContext() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	CComPtr<IDebugDocumentContext> documentContext = NULL;
-	hr = codeContext->GetDocumentContext(&documentContext);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetDocumentContext() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	CComPtr<IDebugDocument> document = NULL;
-	hr = documentContext->GetDocument(&document);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetDocument() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	CComPtr<IDebugDocumentText> documentText = NULL;
-	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): QueryInterface() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	ULONG position, numChars;
-	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetPositionOfContext() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-
-	ULONG lineNumber, column;
-	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetLineOfContext() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-	lineNumber++;
-
-	CComBSTR bstrUrl;
-	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
-	if (FAILED(hr)) {
-		Logger::error("CrossfireContext.breakpointHit(): GetName() failed", hr);
-		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
-		return;
-	}
-	URL url(bstrUrl);
-
-	/*
-	 * If the cause of the break is a breakpoint then locate the breakpoint and
-	 * determine whether the onBreak event should be sent (eg.- does the breakpoint
-	 * have a hit count to respect, a condition to evaluate, etc.).
-	 */
-	if (br == BREAKREASON_BREAKPOINT) {
-		CrossfireBreakpoint* breakpoint = NULL;
-		std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
-		while (iterator != m_breakpoints->end()) {
-			CrossfireBreakpoint* current = iterator->second;
-			if (current->getType() == CrossfireLineBreakpoint::BPTYPE_LINE) {
-				CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)current;
-				if (lineBp->getLine() == lineNumber && ((URL*)lineBp->getUrl())->isEqual(&url)) {
-					lineBp->breakpointHit();
-					if (!lineBp->matchesHitCount() && resumeFromBreak(BREAKRESUMEACTION_CONTINUE)) {
-						return;
-					}
-					const std::wstring* conditionString = lineBp->getCondition();
-					if (conditionString) {
-						wchar_t* condition = (wchar_t*)conditionString->c_str();
-						if (evaluateAsync(frame, condition, DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_NOSIDEEFFECTS, this, lineBp)) {
-							return;
-						}
-					}
-					break;
-				}
-			}
-			iterator++;
-		}
-	}
-
-	CrossfireEvent onBreakEvent;
-	onBreakEvent.setName(EVENT_ONBREAK);
-	Value body;
-	Value location;
-	location.addObjectValue(KEY_LINE, &Value((double)lineNumber));
-	location.addObjectValue(KEY_URL, &Value(url.getString()));
-	body.addObjectValue(KEY_LOCATION, &location);
-	Value cause;
-	switch (br) {
-		case BREAKREASON_ERROR: {
-			cause.addObjectValue(KEY_TITLE, &Value(L"error"));
-			EXCEPINFO excepInfo;
-			HRESULT hr = pScriptErrorDebug->GetExceptionInfo(&excepInfo);
-			if (FAILED(hr)) {
-				Logger::error("IEDebugger::onHandleBreakPoint(): GetExceptionInfo() failed", hr);
-			} else {
-				if (excepInfo.bstrDescription) {
-					cause.addObjectValue(KEY_MESSAGE, &Value(excepInfo.bstrDescription));
-				}
-			}
-			break;
-		}
-		case BREAKREASON_DEBUGGER_HALT: {
-			cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
-			break;
-		}
-		case BREAKREASON_STEP: {
-			cause.addObjectValue(KEY_TITLE, &Value(L"step"));
-			break;
-		}
-		case BREAKREASON_BREAKPOINT: {
-			cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
-			break;
-		}
-		default: {
-			cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
-			break;
-		}
-	}
-	body.addObjectValue(KEY_CAUSE, &cause);
-	onBreakEvent.setBody(&body);
-	sendEvent(&onBreakEvent);
-}
-
 bool CrossfireContext::createValueForFrame(IDebugStackFrame* stackFrame, unsigned int frameIndex, bool includeScopes, Value** _value) {
 	*_value = NULL;
 
@@ -1267,6 +1117,181 @@ bool CrossfireContext::evaluateAsync(IDebugStackFrame* stackFrame, wchar_t* expr
 	return true;
 }
 
+void CrossfireContext::executionBreak(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
+	m_running = false;
+
+	/*
+	 * IE has just entered a suspended state.  If any of the steps preceeding the
+	 * sending of the break event fail then a resume (step out) must be done so
+	 * that the server is not left in a suspended state without the client's knowledge.
+	 */
+	CComPtr<IEnumDebugStackFrames> stackFrames = NULL;
+	HRESULT hr = pDebugAppThread->EnumStackFrames(&stackFrames);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): EnumStackFrames() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	DebugStackFrameDescriptor stackFrameDescriptor;
+	ULONG numFetched = 0;
+	hr = stackFrames->Next(1, &stackFrameDescriptor, &numFetched);
+	if (FAILED(hr) || numFetched != 1) {
+		Logger::error("CrossfireContext.executionBreak(): EnumStackFrames->Next() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	IDebugStackFrame* frame = stackFrameDescriptor.pdsf;
+	CComPtr<IDebugCodeContext> codeContext = NULL;
+	hr = frame->GetCodeContext(&codeContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetCodeContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	CComPtr<IDebugDocumentContext> documentContext = NULL;
+	hr = codeContext->GetDocumentContext(&documentContext);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetDocumentContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	CComPtr<IDebugDocument> document = NULL;
+	hr = documentContext->GetDocument(&document);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetDocument() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	CComPtr<IDebugDocumentText> documentText = NULL;
+	hr = document->QueryInterface(IID_IDebugDocumentText, (void**)&documentText);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): QueryInterface() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	ULONG position, numChars;
+	hr = documentText->GetPositionOfContext(documentContext, &position, &numChars);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetPositionOfContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+
+	ULONG lineNumber, column;
+	hr = documentText->GetLineOfPosition(position, &lineNumber, &column);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetLineOfContext() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+	lineNumber++;
+
+	CComBSTR bstrUrl;
+	hr = document->GetName(DOCUMENTNAMETYPE_TITLE, &bstrUrl);
+	if (FAILED(hr)) {
+		Logger::error("CrossfireContext.executionBreak(): GetName() failed", hr);
+		resumeFromBreak(BREAKRESUMEACTION_STEP_OUT);
+		return;
+	}
+	URL url(bstrUrl);
+
+	/*
+	 * If the cause of the break is a breakpoint then locate the breakpoint and
+	 * determine whether the onBreak event should be sent (eg.- does the breakpoint
+	 * have a hit count to respect, a condition to evaluate, etc.).
+	 */
+	if (br == BREAKREASON_BREAKPOINT) {
+		CrossfireBreakpoint* breakpoint = NULL;
+		std::map<unsigned int, CrossfireBreakpoint*>::iterator iterator = m_breakpoints->begin();
+		while (iterator != m_breakpoints->end()) {
+			CrossfireBreakpoint* current = iterator->second;
+			if (current->getType() == CrossfireLineBreakpoint::BPTYPE_LINE) {
+				CrossfireLineBreakpoint* lineBp = (CrossfireLineBreakpoint*)current;
+				if (lineBp->getLine() == lineNumber && ((URL*)lineBp->getUrl())->isEqual(&url)) {
+					lineBp->breakpointHit();
+					if (!lineBp->matchesHitCount() && resumeFromBreak(BREAKRESUMEACTION_CONTINUE)) {
+						return;
+					}
+					const std::wstring* conditionString = lineBp->getCondition();
+					if (conditionString) {
+						wchar_t* condition = (wchar_t*)conditionString->c_str();
+						if (evaluateAsync(frame, condition, DEBUG_TEXT_RETURNVALUE | DEBUG_TEXT_NOSIDEEFFECTS, this, lineBp)) {
+							return;
+						}
+					}
+					break;
+				}
+			}
+			iterator++;
+		}
+	}
+
+	CrossfireEvent breakEvent;
+	if (br == BREAKREASON_ERROR) {
+		/* broken out separately because this event object differs from the others */
+		breakEvent.setName(EVENT_ONERROR);
+		Value body;
+		Value error;
+		EXCEPINFO excepInfo;
+		HRESULT hr = pScriptErrorDebug->GetExceptionInfo(&excepInfo);
+		if (FAILED(hr)) {
+			Logger::error("IEDebugger::executionBreak(): GetExceptionInfo() failed", hr);
+		} else {
+			if (excepInfo.bstrDescription) {
+				error.addObjectValue(KEY_MESSAGE, &Value(excepInfo.bstrDescription));
+			}
+		}
+		error.addObjectValue(KEY_LINENUMBER, &Value((double)lineNumber));
+		error.addObjectValue(KEY_COLUMNNUMBER, &Value((double)column));
+		error.addObjectValue(KEY_FILENAME, &Value(url.getString()));
+		error.addObjectValue(KEY_CATEGORY, &Value(VALUE_JS));
+		body.addObjectValue(KEY_ERROR, &error);
+		breakEvent.setBody(&body);
+
+		/*
+		 * The Crossfire spec does not specify that the server should be left in a
+		 * suspended state when a JS error occurs, so it must be resumed here,
+		 * otherwise it will appear hung to the client.
+		 */
+		resumeFromBreak(BREAKRESUMEACTION_CONTINUE);
+	} else {
+		breakEvent.setName(EVENT_ONBREAK);
+		Value body;
+		Value location;
+		location.addObjectValue(KEY_LINE, &Value((double)lineNumber));
+		location.addObjectValue(KEY_URL, &Value(url.getString()));
+		body.addObjectValue(KEY_LOCATION, &location);
+		Value cause;
+		switch (br) {
+			case BREAKREASON_DEBUGGER_HALT: {
+				cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
+				break;
+			}
+			case BREAKREASON_STEP: {
+				cause.addObjectValue(KEY_TITLE, &Value(L"step"));
+				break;
+			}
+			case BREAKREASON_BREAKPOINT: {
+				cause.addObjectValue(KEY_TITLE, &Value(L"breakpoint"));
+				break;
+			}
+			default: {
+				cause.addObjectValue(KEY_TITLE, &Value(L"suspend"));
+				break;
+			}
+		}
+		body.addObjectValue(KEY_CAUSE, &cause);
+		breakEvent.setBody(&body);
+	}
+	sendEvent(&breakEvent);
+}
+
 bool CrossfireContext::getDebugApplication(IRemoteDebugApplication** _value) {
 	*_value = NULL;
 
@@ -1609,7 +1634,7 @@ bool CrossfireContext::resumeFromBreak(BREAKRESUMEACTION action) {
 		Logger::error("CrossfireContext.resumeFromBreak(): GetApplication() failed", hr);
 		return false;
 	}
-	hr = application->ResumeFromBreakPoint(thread, action, ERRORRESUMEACTION_SkipErrorStatement);
+	hr = application->ResumeFromBreakPoint(thread, action, ERRORRESUMEACTION_AbortCallAndReturnErrorToCaller);
 	if (FAILED(hr)) {
 		Logger::error("CrossfireContext.resumeFromBreak(): ResumeFromBreakPoint() failed", hr);
 		return false;

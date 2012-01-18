@@ -35,7 +35,7 @@ class CrossfireContext : IBreakpointTarget, IJSEvalHandler {
 public:
 	CrossfireContext(DWORD processId, DWORD threadId, wchar_t* url, CrossfireServer* server);
 	virtual ~CrossfireContext();
-	void breakpointHit(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
+	void executionBreak(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug);
 	bool getDebugApplication(IRemoteDebugApplication** _value);
 	IDebugApplicationNode* getLastInitializedScriptNode();
 	wchar_t* getName();
@@ -159,6 +159,15 @@ private:
 	static const wchar_t* KEY_CAUSE;
 	static const wchar_t* KEY_MESSAGE;
 	static const wchar_t* KEY_TITLE;
+
+	/* event: onError */
+	static const wchar_t* EVENT_ONERROR;
+	static const wchar_t* KEY_CATEGORY;
+	static const wchar_t* KEY_COLUMNNUMBER;
+	static const wchar_t* KEY_ERROR;
+	static const wchar_t* KEY_FILENAME;
+	static const wchar_t* KEY_LINENUMBER;
+	static const wchar_t* VALUE_JS;
 
 	/* event: onResume */
 	static const wchar_t* EVENT_ONRESUME;

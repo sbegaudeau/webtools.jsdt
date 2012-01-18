@@ -45,7 +45,7 @@ STDMETHODIMP IEDebugger::onDebugOutput(LPCOLESTR pstr) {
 
 STDMETHODIMP IEDebugger::onHandleBreakPoint(IRemoteDebugApplicationThread *pDebugAppThread, BREAKREASON br, IActiveScriptErrorDebug *pScriptErrorDebug) {
 	if (m_context) {
-		m_context->breakpointHit(pDebugAppThread, br, pScriptErrorDebug);
+		m_context->executionBreak(pDebugAppThread, br, pScriptErrorDebug);
 	} else {
 		// TODO should probably resume in this case?
 	}
