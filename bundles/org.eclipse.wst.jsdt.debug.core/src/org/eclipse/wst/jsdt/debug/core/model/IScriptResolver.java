@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
  * @see ScriptResolver
  * @noextend This interface is not intended to be extended by clients.
  * @noimplement This interface is not intended to be implemented by clients.
- * @since 3.4
+ * @since 2.1
  */
 public interface IScriptResolver {
 
