@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.ScriptReference;
  * <br><br>
  * Clients must extend this class and not directly implement the interface {@link IScriptResolver}
  * 
- * @since 3.4
+ * @since 2.1
  */
 public abstract class ScriptResolver implements IScriptResolver {
 
