@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -72,44 +72,47 @@ public class JavaScriptBreakpointUpdater implements IMarkerUpdater {
 		if(breakpoint == null) {
 			return false;
 		}
-		IJavaScriptUnit unit = JavaScriptCore.createCompilationUnitFrom((IFile) marker.getResource());
-		if(unit == null) {
-			return false;
-		}
-		JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(unit, ASTProvider.WAIT_YES, null);
-		try {
-			BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, document.getLineOfOffset(position.getOffset())+1, true);
-			jsunit.accept(finder);
-			if(finder.getLocation() == BreakpointLocationFinder.UNKNOWN) {
+		IFile file = (IFile) marker.getResource();
+		if(JavaScriptCore.isJavaScriptLikeFileName(file.getName())) {
+			IJavaScriptUnit unit = JavaScriptCore.createCompilationUnitFrom(file);
+			if(unit == null) {
 				return false;
 			}
-			int line = finder.getLineNumber();
-			if(MarkerUtilities.getLineNumber(marker) == line) {
-				//if there exists a breakpoint on the line remove this one
+			JavaScriptUnit jsunit = JavaScriptPlugin.getDefault().getASTProvider().getAST(unit, ASTProvider.WAIT_YES, null);
+			try {
+				BreakpointLocationFinder finder = new BreakpointLocationFinder(jsunit, document.getLineOfOffset(position.getOffset())+1, true);
+				jsunit.accept(finder);
+				if(finder.getLocation() == BreakpointLocationFinder.UNKNOWN) {
+					return false;
+				}
+				int line = finder.getLineNumber();
+				if(MarkerUtilities.getLineNumber(marker) == line) {
+					//if there exists a breakpoint on the line remove this one
+					if(isLineBreakpoint(marker)) {
+						ensureRanges(document, marker, line);
+						return lineBreakpointExists(marker.getResource(), ((IJavaScriptLineBreakpoint)breakpoint).getScriptPath(), line, marker, true) == null;
+					}
+					return true;
+				}
+				if(isLineBreakpoint(marker) & line == -1) {
+					return false;
+				}
+				if(lineBreakpointExists(marker.getResource(), ((IJavaScriptLineBreakpoint)breakpoint).getScriptPath(), line, marker, false) != null) {
+					return false;
+				}
+				MarkerUtilities.setLineNumber(marker, line);
 				if(isLineBreakpoint(marker)) {
 					ensureRanges(document, marker, line);
-					return lineBreakpointExists(marker.getResource(), ((IJavaScriptLineBreakpoint)breakpoint).getScriptPath(), line, marker, true) == null;
 				}
 				return true;
 			}
-			if(isLineBreakpoint(marker) & line == -1) {
-				return false;
+			catch(BadLocationException ble) {
+				JavaScriptDebugUIPlugin.log(ble);
+			} catch (CoreException e) {
+				JavaScriptDebugUIPlugin.log(e);
 			}
-			if(lineBreakpointExists(marker.getResource(), ((IJavaScriptLineBreakpoint)breakpoint).getScriptPath(), line, marker, false) != null) {
-				return false;
-			}
-			MarkerUtilities.setLineNumber(marker, line);
-			if(isLineBreakpoint(marker)) {
-				ensureRanges(document, marker, line);
-			}
-			return true;
 		}
-		catch(BadLocationException ble) {
-			JavaScriptDebugUIPlugin.log(ble);
-		} catch (CoreException e) {
-			JavaScriptDebugUIPlugin.log(e);
-		}
-		return false;
+		return true;
 	}
 	
 	/**
