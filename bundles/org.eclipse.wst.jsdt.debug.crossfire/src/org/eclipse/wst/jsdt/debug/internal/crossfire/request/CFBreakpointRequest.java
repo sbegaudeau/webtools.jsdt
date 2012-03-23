@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.Location;
 import org.eclipse.wst.jsdt.debug.core.jsdi.ThreadReference;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.BreakpointRequest;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.BreakpointTracker;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
@@ -128,10 +129,8 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 					if (bp != null) {
 						Number handle = (Number) bp.get(Attributes.HANDLE);
 						bpHandle = new Long(handle.longValue());
+						BreakpointTracker.addBreakpoint((CFVirtualMachine) virtualMachine(), bp);
 					}
-				}
-				else {
-					//TODO create a dummy breakpoint whose details can be filled in when an onToggleBreakpoint event is received
 				}
 			}
 		}
@@ -141,6 +140,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			request.getArguments().put(Attributes.HANDLES, Arrays.asList(new Number[] {bpHandle}));
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
+				BreakpointTracker.removeBreakpoint(bpHandle);
 				bpHandle = null;
 			}
 		}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -142,7 +143,11 @@ public final class ScriptResolutionManager {
 		}
 		file = null;
 		IPath p = SourceLookup.getSourcePath(script.sourceURI());
-		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(p);
+		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(p.makeAbsolute());
+		if(res == null) {
+			IProject pj =JavaScriptDebugPlugin.getExternalSourceProject(false);
+			res = pj.findMember(p);
+		}
 		if(res != null && res.getType() == IResource.FILE) {
 			file = (IFile) res;
 		}

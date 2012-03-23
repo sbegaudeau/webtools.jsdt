@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ public class RemoteBreakpoint implements Comparable {
 	
 	CFVirtualMachine vm = null;
 	Number handle = null;
-	String kind = null;
+	String type = null;
 	Map location = null;
 	Map attributes = null;
 	
@@ -44,14 +44,14 @@ public class RemoteBreakpoint implements Comparable {
 	 * @param handle
 	 * @param location
 	 * @param attributes
-	 * @param kind
+	 * @param type
 	 */
-	public RemoteBreakpoint(CFVirtualMachine vm, Number handle, Map location, Map attributes, String kind) {
+	public RemoteBreakpoint(CFVirtualMachine vm, Number handle, Map location, Map attributes, String type) {
 		this.vm = vm;
 		this.handle = handle;
 		this.location = location;
 		this.attributes = attributes;
-		this.kind = kind;
+		this.type = type;
 	}
 	
 	/**
@@ -62,7 +62,7 @@ public class RemoteBreakpoint implements Comparable {
 	}
 	
 	/**
-	 * @return the url
+	 * @return the URL
 	 */
 	public String getUrl() {
 		if(this.location != null) {
@@ -133,10 +133,20 @@ public class RemoteBreakpoint implements Comparable {
 	}
 	
 	/**
-	 * @return the kind
+	 * Returns the type of the breakpoint
+	 * @return the type
+	 * @see RemoteBreakpoint for type names
 	 */
-	public String getKind() {
-		return kind;
+	public String getType() {
+		return type;
+	}
+	
+	/**
+	 * Returns if this breakpoint is a line breakpoint
+	 * @return <code>true</code> if the type of the breakpoint is <code>line</code>
+	 */
+	public boolean isLineBreakpoint() {
+		return TYPE_LINE.equals(this.type);
 	}
 	
 	/* (non-Javadoc)
@@ -145,7 +155,7 @@ public class RemoteBreakpoint implements Comparable {
 	public boolean equals(Object o) {
 		if(o instanceof RemoteBreakpoint) {
 			RemoteBreakpoint bp = (RemoteBreakpoint) o;
-			return handle.equals(bp.handle) && mapsEqual(location, bp.location) && mapsEqual(attributes, bp.attributes) && kind.equals(bp.kind);
+			return handle.equals(bp.handle) && mapsEqual(location, bp.location) && mapsEqual(attributes, bp.attributes) && type.equals(bp.type);
 		}
 		return false;
 	}
@@ -191,7 +201,7 @@ public class RemoteBreakpoint implements Comparable {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return handle.hashCode() + mapHashCode(location) + mapHashCode(attributes) + kind.hashCode();
+		return handle.hashCode() + mapHashCode(location) + mapHashCode(attributes) + type.hashCode();
 	}
 	
 	/**
@@ -213,7 +223,7 @@ public class RemoteBreakpoint implements Comparable {
 	public int compareTo(Object o) {
 		if(o instanceof RemoteBreakpoint) {
 			RemoteBreakpoint bp = (RemoteBreakpoint) o;
-			return this.kind.compareTo(bp.kind);
+			return this.type.compareTo(bp.type);
 		}
 		return 0;
 	}
