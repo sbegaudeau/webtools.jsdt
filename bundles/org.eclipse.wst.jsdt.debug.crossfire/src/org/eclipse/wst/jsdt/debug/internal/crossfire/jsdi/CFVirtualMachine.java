@@ -30,7 +30,6 @@ import org.eclipse.debug.core.IBreakpointListener;
 import org.eclipse.debug.core.IBreakpointManager;
 import org.eclipse.debug.core.model.IBreakpoint;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptLineBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
@@ -810,8 +809,6 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine, IBreak
 		if (JavaScriptDebugModel.MODEL_ID.equals(breakpoint.getModelIdentifier())) {
 			if (breakpoint instanceof IJavaScriptLineBreakpoint) {
 				//TODO check handle map send request as needed
-				IJavaScriptBreakpoint jsbp = (IJavaScriptBreakpoint) breakpoint;
-				updateBreakpoint(jsbp);
 			}
 		}
 	}

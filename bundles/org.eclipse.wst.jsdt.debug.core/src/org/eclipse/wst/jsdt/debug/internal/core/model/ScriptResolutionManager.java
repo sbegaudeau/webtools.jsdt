@@ -145,7 +145,7 @@ public final class ScriptResolutionManager {
 		IPath p = SourceLookup.getSourcePath(script.sourceURI());
 		IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(p.makeAbsolute());
 		if(res == null) {
-			IProject pj =JavaScriptDebugPlugin.getExternalSourceProject(false);
+			IProject pj =JavaScriptDebugPlugin.getExternalSourceProject(true);
 			res = pj.findMember(p);
 		}
 		if(res != null && res.getType() == IResource.FILE) {
