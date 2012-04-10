@@ -5283,7 +5283,7 @@
 					</and>
 					<and>
 						<instanceof value="org.eclipse.core.resources.IFile" />
-      					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
+      					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" args="useFilenameOnly"/>
 					</and>
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5302,7 +5302,7 @@
 					</and>
 					<and>
 						<instanceof value="org.eclipse.core.resources.IFile" />
-          				<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
+          				<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" args="useFilenameOnly"/>
 					</and>
 					<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 					<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5323,7 +5323,7 @@
 						</and>
 						<and>
 							<instanceof value="org.eclipse.core.resources.IFile" />
-          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
+          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" args="useFilenameOnly"/>
 						</and>
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
@@ -5345,7 +5345,7 @@
 						</and>
 						<and>
 							<instanceof value="org.eclipse.core.resources.IFile" />
-          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" />
+          					<test property="org.eclipse.core.resources.contentTypeId" value="org.eclipse.wst.jsdt.core.jsSource" args="useFilenameOnly"/>
 						</and>
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
