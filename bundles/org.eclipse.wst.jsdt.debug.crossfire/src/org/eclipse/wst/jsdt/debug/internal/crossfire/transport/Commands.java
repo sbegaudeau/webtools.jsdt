@@ -24,7 +24,7 @@ public interface Commands {
 	/**
 	 * The "changebreakpoint" command
 	 */
-	public static final String CHANGE_BREAKPOINTS = "changeBreakpoints"; //$NON-NLS-1$
+	public static final String CHANGE_BREAKPOINT = "changeBreakpoint"; //$NON-NLS-1$
 	/**
 	 * The "deletebreakpoint" command
 	 */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.debug.core.jsdi;
 
 import java.util.List;
 
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
 
@@ -153,4 +154,20 @@ public interface VirtualMachine {
 	 * @return the {@link EventQueue} for this {@link VirtualMachine} or <code>null</code>
 	 */
 	public EventQueue eventQueue();
+	
+	/**
+	 * Returns if the {@link VirtualMachine} supports updating existing breakpoints or not
+	 * 
+	 * @return <code>true</code> if this {@link VirtualMachine} can update existing breakpoints <code>false</code> otherwise
+	 * @since 3.1
+	 */
+	public boolean canUpdateBreakpoints();
+	
+	/**
+	 * Update the given {@link IJavaScriptBreakpoint}
+	 * 
+	 * @param breakpoint the breakpoint to update, cannot be <code>null</code>
+	 * @since 3.1
+	 */
+	public void updateBreakpoint(IJavaScriptBreakpoint breakpoint);
 }

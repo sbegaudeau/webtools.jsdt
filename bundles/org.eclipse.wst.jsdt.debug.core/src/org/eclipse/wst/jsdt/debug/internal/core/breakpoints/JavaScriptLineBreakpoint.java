@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -152,7 +152,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	public void setConditionSuspendOnTrue(boolean suspendontrue) throws CoreException {
 		if (suspendontrue != isConditionSuspendOnTrue()) {
 			setAttribute(CONDITION_SUSPEND_ON_TRUE, suspendontrue);
-			recreateBreakpoint();
+			handleBreakpointChange();
 		}
 	}
 	
@@ -166,7 +166,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 		else {
 			setAttribute(CONDITION, condition);
 		}
-		recreateBreakpoint();
+		handleBreakpointChange();
 	}
 
 	/* (non-Javadoc)
@@ -182,7 +182,7 @@ public class JavaScriptLineBreakpoint extends JavaScriptBreakpoint implements IJ
 	public void setConditionEnabled(boolean enabled) throws CoreException {
 		if(isConditionEnabled() != enabled) {
 			setAttribute(CONDITION_ENABLED, enabled);
-			recreateBreakpoint();
+			handleBreakpointChange();
 		}
 	}
 }

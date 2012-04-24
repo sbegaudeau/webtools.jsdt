@@ -19,6 +19,11 @@ public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.messages"; //$NON-NLS-1$
 	public static String BreakpointTracker_0;
 	public static String BreakpointTracker_1;
+	public static String BreakpointTracker_10;
+	public static String BreakpointTracker_11;
+	public static String BreakpointTracker_12;
+	public static String BreakpointTracker_13;
+	public static String BreakpointTracker_14;
 	public static String BreakpointTracker_2;
 	public static String BreakpointTracker_3;
 	public static String BreakpointTracker_4;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1025,6 +1025,26 @@ public class JavaScriptDebugTarget extends JavaScriptDebugElement implements IJa
 			this.disconnected = true;
 			this.terminated = true;
 			fireTerminateEvent();
+		}
+	}
+	
+	/**
+	 * @return if the backing {@link VirtualMachine} can update breakpoints
+	 */
+	public boolean canUpdateBreakpoints() {
+		return this.vm.canUpdateBreakpoints();
+	}
+	
+	/**
+	 * Update the given breakpoint
+	 * 
+	 * @param breakpoint
+	 */
+	public void updateBreakpoint(IJavaScriptBreakpoint breakpoint) {
+		if(this.breakpoints.contains(breakpoint)) {
+			if(this.vm.canUpdateBreakpoints()) {
+				this.vm.updateBreakpoint(breakpoint);
+			}
 		}
 	}
 }

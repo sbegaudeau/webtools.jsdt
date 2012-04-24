@@ -265,7 +265,10 @@ public class RemoteBreakpoint implements Comparable {
 		Object val = json.get(Attributes.ATTRIBUTES);
 		if(val instanceof Map) {
 			Map map = (Map) val;
-			return (String)map.get(Attributes.CONDITION);
+			String condition = (String)map.get(Attributes.CONDITION);
+			if(condition != null && condition.trim().length() > 0) {
+				return condition;
+			}
 		}
 		return null;
 	}

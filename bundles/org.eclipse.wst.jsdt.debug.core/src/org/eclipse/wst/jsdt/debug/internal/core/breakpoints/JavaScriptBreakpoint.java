@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -230,17 +230,26 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	}
 
 	/**
-	 * Recreate this breakpoint in all targets
+	 * Handles the fact that the breakpoint has had its attributes changed.
+	 * This method checks to see if the backing {@link JavaScriptDebugTarget} can
+	 * update breakpoints, and if so issues an update request, otherwise
+	 * the breakpoint is deleted and recreated in affected debug targets
 	 * 
 	 * @throws CoreException
 	 */
-	protected void recreateBreakpoint() throws CoreException {
+	protected void handleBreakpointChange() throws CoreException {
 		DebugPlugin plugin = DebugPlugin.getDefault();
 		if (plugin != null) {
 			IDebugTarget[] targets = plugin.getLaunchManager().getDebugTargets();
 			for (int i = 0; i < targets.length; i++) {
 				if (targets[i].getModelIdentifier().equals(JavaScriptDebugModel.MODEL_ID)) {
-					recreateBreakpointFor((JavaScriptDebugTarget) targets[i]);
+					JavaScriptDebugTarget target = (JavaScriptDebugTarget) targets[i];
+					if(target.canUpdateBreakpoints()) {
+						target.updateBreakpoint(this);
+					}
+					else {
+						recreateBreakpointFor((JavaScriptDebugTarget) targets[i]);
+					}
 				}
 			}
 		}
@@ -267,7 +276,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	public void setEnabled(boolean enabled) throws CoreException {
 		if(isEnabled() != enabled) {
 			setAttribute(ENABLED, enabled);
-			recreateBreakpoint();
+			handleBreakpointChange();
 		}
 	}
 	
@@ -277,7 +286,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	public void setSuspendPolicy(int policy) throws CoreException {
 		if(getSuspendPolicy() != policy) {
 			setAttribute(SUSPEND_POLICY, policy);
-			recreateBreakpoint();
+			handleBreakpointChange();
 		}
 	}
 
@@ -329,7 +338,7 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 	public void setHitCount(int count) throws CoreException, IllegalArgumentException {
 		if (count != getHitCount()) {
 			setAttribute(HIT_COUNT, count);
-			recreateBreakpoint();
+			handleBreakpointChange();
 		}
 	}
 

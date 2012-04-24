@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.request.BreakpointRequest;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.BreakpointTracker;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFScriptReference;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.CFVirtualMachine;
+import org.eclipse.wst.jsdt.debug.internal.crossfire.jsdi.RemoteBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.Attributes;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFRequestPacket;
 import org.eclipse.wst.jsdt.debug.internal.crossfire.transport.CFResponsePacket;
@@ -129,7 +130,10 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 					if (bp != null) {
 						Number handle = (Number) bp.get(Attributes.HANDLE);
 						bpHandle = new Long(handle.longValue());
-						BreakpointTracker.addBreakpoint((CFVirtualMachine) virtualMachine(), bp);
+						RemoteBreakpoint rb = BreakpointTracker.addBreakpoint((CFVirtualMachine) virtualMachine(), bp);
+						if(rb != null) {
+							BreakpointTracker.findLocalBreakpoint(rb);
+						}
 					}
 				}
 			}
@@ -140,7 +144,7 @@ public class CFBreakpointRequest extends CFThreadEventRequest implements Breakpo
 			request.getArguments().put(Attributes.HANDLES, Arrays.asList(new Number[] {bpHandle}));
 			CFResponsePacket response = ((CFVirtualMachine)virtualMachine()).sendRequest(request);
 			if(response.isSuccess()) {
-				BreakpointTracker.removeBreakpoint(bpHandle);
+				BreakpointTracker.removeBreakpoint((CFVirtualMachine) virtualMachine(), bpHandle);
 				bpHandle = null;
 			}
 		}
