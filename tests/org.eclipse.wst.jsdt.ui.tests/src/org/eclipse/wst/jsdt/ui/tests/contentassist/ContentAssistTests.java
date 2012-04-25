@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -381,7 +381,7 @@ public class ContentAssistTests extends TestCase {
 				if(editorPart instanceof JavaEditor) {
 					editor = (JavaEditor)editorPart;
 				} else {
-					fail("Unable to open structured text editor");
+					fail("Unable to open structured text editor: " + editorPart.getClass().getName());
 				}
 				
 				if(editor != null) {
