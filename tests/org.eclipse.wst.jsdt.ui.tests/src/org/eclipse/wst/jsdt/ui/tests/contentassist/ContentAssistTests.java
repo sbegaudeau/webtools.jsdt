@@ -377,11 +377,11 @@ public class ContentAssistTests extends TestCase {
 			try {
 				IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 				IWorkbenchPage page = workbenchWindow.getActivePage();
-				IEditorPart editorPart = IDE.openEditor(page, file, true, true);
+				IEditorPart editorPart = IDE.openEditor(page, file, "org.eclipse.wst.jsdt.ui.CompilationUnitEditor", true);
 				if(editorPart instanceof JavaEditor) {
 					editor = (JavaEditor)editorPart;
 				} else {
-					fail("Unable to open structured text editor: " + editorPart.getClass().getName());
+					fail("Unable to open intended editor: " + editorPart.getClass().getName());
 				}
 				
 				if(editor != null) {
