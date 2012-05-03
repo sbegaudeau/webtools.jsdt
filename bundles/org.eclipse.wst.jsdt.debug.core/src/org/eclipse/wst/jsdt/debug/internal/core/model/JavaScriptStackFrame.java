@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -330,7 +330,11 @@ public final class JavaScriptStackFrame extends JavaScriptDebugElement implement
 		if(loc != null) {
 			ScriptReference script = loc.scriptReference();
 			if(script != null) {
-				return URIUtil.lastSegment(script.sourceURI());
+				String segment = URIUtil.lastSegment(script.sourceURI());
+				if (segment == null) {
+					return script.sourceURI().toString();
+				}
+				return segment;
 			}
 		}
 		return null;

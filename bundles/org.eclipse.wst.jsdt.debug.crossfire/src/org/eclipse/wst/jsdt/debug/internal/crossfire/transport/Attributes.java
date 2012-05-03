@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -78,10 +78,6 @@ public interface Attributes {
 	 */
 	public static final String CONSTRUCTOR = "constructor"; //$NON-NLS-1$
 	/**
-	 * the "context_href" attribute
-	 */
-	public static final String CONTEXT_HREF = "context_href"; //$NON-NLS-1$
-	/**
 	 * The "contextId" attribute
 	 */
 	public static final String CONTEXT_ID = "contextId"; //$NON-NLS-1$
@@ -93,10 +89,6 @@ public interface Attributes {
 	 * the "current" attribute
 	 */
 	public static final String CURRENT = "current"; //$NON-NLS-1$
-	/**
-	 * The "data" attribute
-	 */
-	public static final String DATA = "data"; //$NON-NLS-1$
 	/**
 	 * The "enabled" argument
 	 */
@@ -134,10 +126,6 @@ public interface Attributes {
 	 */
 	public static final String FRAME_INDEX = "frameIndex"; //$NON-NLS-1$
 	/**
-	 * The "frameNumber" argument
-	 */
-	public static final String FRAME_NUMBER = "frameNumber"; //$NON-NLS-1$
-	/**
 	 * The "frames" attribute
 	 */
 	public static final String FRAMES = "frames"; //$NON-NLS-1$
@@ -170,10 +158,6 @@ public interface Attributes {
 	 */
 	public static final String HIT_COUNT = "hitCount"; //$NON-NLS-1$
 	/**
-	 * The "href" attribute
-	 */
-	public static final String HREF = "href"; //$NON-NLS-1$
-	/**
 	 * The "includeScopes" attribute
 	 */
 	public static final String INCLUDE_SCOPES = "includeScopes"; //$NON-NLS-1$
@@ -185,10 +169,6 @@ public interface Attributes {
 	 * The "index" attribute
 	 */
 	public static final String INDEX = "index"; //$NON-NLS-1$
-	/**
-	 * The "isConstructing" attribute
-	 */
-	public static final String IS_CONSTRUCTING = "isConstructing"; //$NON-NLS-1$
 	/**
 	 * the "isDebugger" attribute
 	 */
@@ -230,17 +210,13 @@ public interface Attributes {
 	 */
 	public static final String MESSAGE = "message"; //$NON-NLS-1$
 	/**
-	 * The "newContextId" attribute
+	 * The "name" attribute
 	 */
-	public static final String NEW_CONTEXT_ID = "newContextId"; //$NON-NLS-1$
+	public static final String NAME = "name"; //$NON-NLS-1$
 	/**
 	 * The type "number"
 	 */
 	public static final String NUMBER = "number"; //$NON-NLS-1$
-	/**
-	 * The type "object"
-	 */
-	public static final String OBJECT = "object"; //$NON-NLS-1$
 	/**
 	 * The type "proto"
 	 */
@@ -325,10 +301,6 @@ public interface Attributes {
 	 * The thisValue" attribute
 	 */
 	public static final String THIS_VALUE = "thisValue"; //$NON-NLS-1$
-	/**
-	 * the "toFrame" attribute
-	 */
-	public static final String TO_FRAME = "toFrame"; //$NON-NLS-1$
 	/**
 	 * The "tools" attribute
 	 */

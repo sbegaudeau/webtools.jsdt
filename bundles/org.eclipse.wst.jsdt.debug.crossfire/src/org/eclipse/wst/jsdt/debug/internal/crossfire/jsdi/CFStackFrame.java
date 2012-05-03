@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,9 +83,13 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 			}
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				Map map = (Map) i.next();
+				String name = (String) map.get(Attributes.NAME);
+				if(name == null) {
+					name = Messages.CFStackFrame_0;
+				}
 				Map scope = (Map)map.get(Attributes.SCOPE);
 				if(scope != null) {
-					vars.add(0, new CFVariable(crossfire(), this, "Enclosing Scope", (Number) scope.get(Attributes.HANDLE), scope)); //$NON-NLS-1$
+					vars.add(0, new CFVariable(crossfire(), this, name, (Number) scope.get(Attributes.HANDLE), scope));
 				}
 			}
 		}
@@ -129,6 +133,13 @@ public class CFStackFrame extends CFMirror implements StackFrame {
 									(String) entry.getKey(), 
 									(Number) obj, 
 									info));
+				}
+				//not an initialized object, try to see if the map has a type (or not null)
+				obj = info.get(Attributes.TYPE);
+				if(obj instanceof String) {
+					if("undefined".equals(obj)) { //$NON-NLS-1$
+						varcollector.add(new CFVariable(crossfire(), this, (String) entry.getKey(), null, info));
+					}
 				}
 			}
 			else {

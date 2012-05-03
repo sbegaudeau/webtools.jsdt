@@ -32,6 +32,7 @@ public class Messages extends NLS {
 	public static String BreakpointTracker_7;
 	public static String BreakpointTracker_8;
 	public static String BreakpointTracker_9;
+	public static String CFStackFrame_0;
 	public static String crossfire_vm;
 	public static String thread_name;
 	public static String vm_name;
