@@ -162,7 +162,8 @@ public class CFVirtualMachine extends CFMirror implements VirtualMachine {
 			Map bp = null;
 			for (Iterator i = list.iterator(); i.hasNext();) {
 				bp = (Map) i.next();
-				BreakpointTracker.addBreakpoint(this, bp);
+				BreakpointTracker.createLocalBreakpoint(this, bp);
+				//BreakpointTracker.addBreakpoint(this, bp);
 			}
 		}
 		else if(TRACE) {

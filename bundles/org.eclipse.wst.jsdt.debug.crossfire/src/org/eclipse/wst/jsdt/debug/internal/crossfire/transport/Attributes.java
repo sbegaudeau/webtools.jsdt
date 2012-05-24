@@ -30,10 +30,6 @@ public interface Attributes {
 	 */
 	public static final String BODY = "body"; //$NON-NLS-1$
 	/**
-	 * The type "boolean"
-	 */
-	public static final String BOOLEAN = "boolean"; //$NON-NLS-1$
- 	/**
 	 * The "breakpoint" attribute
 	 */
 	public static final String BREAKPOINT = "breakpoint"; //$NON-NLS-1$
@@ -42,10 +38,6 @@ public interface Attributes {
 	 */
 	public static final String BREAKPOINTS = "breakpoints"; //$NON-NLS-1$
 	/**
-	 * The "category" attribute
-	 */
-	public static final String CATEGORY = "category"; //$NON-NLS-1$
-	/**
 	 * The "callee attribute"
 	 */
 	public static final String CALLEE = "callee"; //$NON-NLS-1$
@@ -53,6 +45,10 @@ public interface Attributes {
 	 * The "callingFrame" attribute
 	 */
 	public static final String CALLING_FRAME = "callingFrame"; //$NON-NLS-1$
+	/**
+	 * The "category" attribute
+	 */
+	public static final String CATEGORY = "category"; //$NON-NLS-1$
 	/**
 	 * The code attribute for this packet
 	 */
@@ -134,13 +130,13 @@ public interface Attributes {
 	 */
 	public static final String FROM_FRAME = "fromFrame"; //$NON-NLS-1$
 	/**
-	 * The "functionName" attribute
-	 */
-	public static final String FUNCTION_NAME = "functionName"; //$NON-NLS-1$
-	/**
 	 * The type "function"
 	 */
 	public static final String FUNCTION = "function"; //$NON-NLS-1$
+	/**
+	 * The "functionName" attribute
+	 */
+	public static final String FUNCTION_NAME = "functionName"; //$NON-NLS-1$
 	/**
 	 * The "handle" attribute
 	 */
@@ -186,13 +182,13 @@ public interface Attributes {
 	 */
 	public static final String LINE_COUNT = "lineCount"; //$NON-NLS-1$
 	/**
-	 * The "lineNumber" attribute
-	 */
-	public static final String LINE_NUMBER = "lineNumber"; //$NON-NLS-1$
-	/**
 	 * The "lineNo" attribute
 	 */
 	public static final String LINE_NO = "lineNo"; //$NON-NLS-1$
+	/**
+	 * The "lineNumber" attribute
+	 */
+	public static final String LINE_NUMBER = "lineNumber"; //$NON-NLS-1$
 	/**
 	 * The "lineOffset" attribute
 	 */
@@ -213,10 +209,6 @@ public interface Attributes {
 	 * The "name" attribute
 	 */
 	public static final String NAME = "name"; //$NON-NLS-1$
-	/**
-	 * The type "number"
-	 */
-	public static final String NUMBER = "number"; //$NON-NLS-1$
 	/**
 	 * The type "proto"
 	 */
@@ -242,13 +234,13 @@ public interface Attributes {
 	 */
 	public static final String SCOPE = "scope"; //$NON-NLS-1$
 	/**
-	 * The "scopes" attribute
-	 */
-	public static final String SCOPES = "scopes"; //$NON-NLS-1$
-	/**
 	 * The "scopeIndexes" attribute
 	 */
 	public static final String SCOPE_INDEXES = "scopeIndexes"; //$NON-NLS-1$
+	/**
+	 * The "scopes" attribute
+	 */
+	public static final String SCOPES = "scopes"; //$NON-NLS-1$
 	/**
 	 * The "script" attribute
 	 */
@@ -289,14 +281,6 @@ public interface Attributes {
 	 * The "stepaction" attribute
 	 */
 	public static final String STEPACTION = "stepAction"; //$NON-NLS-1$
-	/**
-	 * The type "string"
-	 */
-	public static final String STRING = "string"; //$NON-NLS-1$
-	/**
-	 * The "this" attribute
-	 */
-	public static final String THIS = "this"; //$NON-NLS-1$
 	/**
 	 * The thisValue" attribute
 	 */

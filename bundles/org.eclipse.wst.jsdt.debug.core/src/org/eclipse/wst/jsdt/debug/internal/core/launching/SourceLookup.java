@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -238,6 +238,11 @@ public final class SourceLookup {
 				}
 				if(i < path.segments().length-1) {
 					segment = segment.replaceAll("\\.js", "\\_js"); //$NON-NLS-1$ //$NON-NLS-2$
+					segment = segment.replaceAll("\\.html", "\\_html"); //$NON-NLS-1$ //$NON-NLS-2$
+					//segments can never end in '.' it is reserved on all platforms
+					if(segment.endsWith(".")) { //$NON-NLS-1$
+						segment = segment.substring(0, segment.length()-1) + '_';
+					}
 				}
 			}
 			segments.add(segment);

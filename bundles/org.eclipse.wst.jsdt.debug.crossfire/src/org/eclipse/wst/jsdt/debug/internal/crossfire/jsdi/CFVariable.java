@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,29 +39,34 @@ public class CFVariable extends CFProperty implements Variable {
 		try {
 			if(values != null) {
 				String kind = (String) values.get(Attributes.TYPE);
-				//if we have a primitive type create it value now
-				if(kind != null) {
-					if(kind.equals(Attributes.STRING)) {
-						value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
+				if(CFStringValue.STRING.equals(kind)) {
+					value = new CFStringValue(vm, (String) values.get(Attributes.VALUE));
+				}
+				else if(CFNumberValue.NUMBER.equals(kind)) {
+					Object o = values.get(Attributes.VALUE);
+					if(o instanceof Number) {
+						value = new CFNumberValue(vm, (Number)o);
 					}
-					else if(kind.equals(Attributes.NUMBER)) {
-						Object o = values.get(Attributes.VALUE);
-						if(o instanceof Number) {
-							value = new CFNumberValue(vm, (Number)o);
-						}
-						else if(o instanceof String) {
-							value = new CFNumberValue(vm, (String)o);
-						}
+					else if(o instanceof String) {
+						value = new CFNumberValue(vm, (String)o);
 					}
-					else if(kind.equals(Attributes.BOOLEAN)) {
-						value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
-					}
-					if(Attributes.THIS.equals(name)) {
+				}
+				else if(CFBooleanValue.BOOLEAN.equals(kind)) {
+					value = new CFBooleanValue(vm, ((Boolean)values.get(Attributes.VALUE)).booleanValue());
+				}
+				if(CFUndefinedValue.UNDEFINED.equals(kind)) {
+					value = crossfire().mirrorOfUndefined();
+				}
+				else if(CFObjectReference.OBJECT.equals(kind)) {
+					if(CFObjectReference.THIS.equals(name)) {
 						//special object that has no lookup so we have to pre-populate the properties
 						value = new CFObjectReference(crossfire(), frame, values);
 					}
-					if(CFUndefinedValue.UNDEFINED.equals(kind)) {
-						value = crossfire().mirrorOfUndefined();
+					else if(ref == null) {
+						Object o = values.get(Attributes.VALUE);
+						if(CFNullValue.NULL.equals(o)) {
+							value = crossfire().mirrorOfNull();
+						}
 					}
 				}
 			}
