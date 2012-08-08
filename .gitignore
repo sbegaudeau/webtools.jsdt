@@ -30,3 +30,9 @@ temp.folder
 src.zip
 .fbwarnings
 javaCompiler...args
+
+/tests/org.eclipse.wst.jsdt.core.tests.compiler/bin/
+/tests/org.eclipse.wst.jsdt.core.tests.model/bin/
+/tests/org.eclipse.wst.jsdt.debug.core.tests/bin/
+/tests/org.eclipse.wst.jsdt.debug.rhino.tests/bin/
+/tests/org.eclipse.wst.jsdt.ui.tests/bin/
