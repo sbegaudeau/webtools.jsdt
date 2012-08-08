@@ -30,3 +30,11 @@ temp.folder
 src.zip
 .fbwarnings
 javaCompiler...args
+/bundles/org.eclipse.wst.jsdt.core/bin
+/bundles/org.eclipse.wst.jsdt.manipulation/bin
+/bundles/org.eclipse.wst.jsdt.support.firefox/bin
+/bundles/org.eclipse.wst.jsdt.support.ie/bin
+/bundles/org.eclipse.wst.jsdt.ui/bin
+/development/org.eclipse.wst.jsdt.astview/bin
+/development/org.eclipse.wst.jsdt.jseview/bin
+/development/org.eclipse.wst.jsdt.unittests/bin
