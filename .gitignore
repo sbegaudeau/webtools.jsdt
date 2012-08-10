@@ -1,11 +1,11 @@
 # copied from eclipse.platform.debug/.gitignore
-/*/bin/ 
-*~ 
-*.rej 
-*.bak 
-javacore.* 
-heapdump.* 
-core.* 
+bin/
+*~
+*.rej
+*.bak
+javacore.*
+heapdump.*
+core.*
 Snap.*
 
 # suggested by github
@@ -30,12 +30,3 @@ temp.folder
 src.zip
 .fbwarnings
 javaCompiler...args
-/bundles/org.eclipse.wst.jsdt.debug.core/bin/
-/bundles/org.eclipse.wst.jsdt.debug.crossfire/bin/
-/bundles/org.eclipse.wst.jsdt.debug.rhino.debugger/bin/
-/bundles/org.eclipse.wst.jsdt.debug.rhino.ui/bin/
-/bundles/org.eclipse.wst.jsdt.debug.rhino/bin/
-/bundles/org.eclipse.wst.jsdt.debug.transport/bin/
-/bundles/org.eclipse.wst.jsdt.debug.ui/bin/
-/development/org.eclipse.wst.jsdt.debug.chrome/bin/
-/development/org.eclipse.wst.jsdt.debug.node/bin/
