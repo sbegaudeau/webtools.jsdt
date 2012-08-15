@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -202,7 +202,23 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleLineBreakpoints(final IWorkbenchPart part, final ISelection selection) throws CoreException {
-		//do nothing
+		if (!(part instanceof IEditorPart) || !(selection instanceof ITextSelection))
+			return;
+
+		ITextEditor textEditor = (ITextEditor) part.getAdapter(ITextEditor.class);
+		if (textEditor != null) {
+			IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+			if (document != null) {
+				int lineNumber;
+				try {
+					lineNumber = document.getLineOfOffset(((ITextSelection) selection).getOffset());
+					addBreakpoint(getResource((IEditorPart) part), document, lineNumber + 1);
+				}
+				catch (BadLocationException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	/**
