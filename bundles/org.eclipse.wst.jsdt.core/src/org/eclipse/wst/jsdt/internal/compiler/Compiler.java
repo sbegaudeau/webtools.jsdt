@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -335,14 +335,13 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	 */
 	public void compile(ICompilationUnit[] sourceUnits) {
 		CompilationUnitDeclaration unit = null;
-		int i = 0;
 		try {
 			// build and record parsed units
 
 			beginToCompile(sourceUnits);
 
 			// process all units (some more could be injected in the loop by the lookup environment)
-			for (; i < this.totalUnits; i++) {
+			for (int i = 0; i < this.totalUnits; i++) {
 				unit = unitsToProcess[i];
 				try {
 					if (options.verbose)
@@ -355,10 +354,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 							}));
 					process(unit, i);
 				} finally {
-					// cleanup compilation unit result
-					unit.cleanUp();
 				}
-				unitsToProcess[i] = null; // release reference to processed unit declaration
 				requestor.acceptResult(unit.compilationResult.tagAsAccepted());
 				if (options.verbose)
 					this.out.println(
@@ -368,6 +364,13 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 							String.valueOf(this.totalUnits),
 							new String(unit.getFileName())
 						}));
+			}
+			
+			//clean up all units
+			for(int i = 0; i < this.totalUnits; i++) {
+				// cleanup compilation unit result
+				unitsToProcess[i].cleanUp();
+				unitsToProcess[i] = null; // release reference to processed unit declaration
 			}
 		} catch (AbortCompilation e) {
 			this.handleInternalException(e, unit);

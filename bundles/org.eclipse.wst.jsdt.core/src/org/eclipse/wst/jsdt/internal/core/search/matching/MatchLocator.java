@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1118,10 +1118,15 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 							String.valueOf(this.numberOfMatches),
 							new String(possibleMatch.parsedUnit.getFileName())
 						}));
-			// cleanup compilation unit result
-			possibleMatch.cleanUp();
 		}
 	}
+	for (int i = 0; i < this.numberOfMatches; i++) {
+		// cleanup compilation unit result
+		this.matchesToProcess[i].cleanUp();
+		this.matchesToProcess[i] = null; // release reference to processed possible match
+	}
+	if (this.progressMonitor != null && this.progressMonitor.isCanceled())
+		throw new OperationCanceledException();
 }
 private void processMetadata(MetadataFile metadataFile) throws CoreException{
 	

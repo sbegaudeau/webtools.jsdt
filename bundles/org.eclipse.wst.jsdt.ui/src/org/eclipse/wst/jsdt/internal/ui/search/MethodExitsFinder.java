@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -175,8 +175,7 @@ public class MethodExitsFinder extends ASTVisitor {
 	}
 	
 	public boolean visit(ThrowStatement node) {
-		ITypeBinding exception= node.getExpression().resolveTypeBinding();
-		if (isExitPoint(exception)) {
+		if (isExitPoint()) {
 			SimpleName name= fAST.newSimpleName("xxxxx"); //$NON-NLS-1$
 			name.setSourceRange(node.getStartPosition(), 5);
 			fResult.add(name);
@@ -224,31 +223,15 @@ public class MethodExitsFinder extends ASTVisitor {
 		return true;
 	}
 	
-	private boolean isExitPoint(ITypeBinding binding) {
-		if (binding == null)
-			return false;
-		return !isCatched(binding);
+	private boolean isExitPoint() {
+		return !isCatched();
 	}
 	
 	private boolean isExitPoint(IFunctionBinding binding) {
 		return false;
 	}
 	
-	private boolean isCatched(ITypeBinding binding) {
-		for (Iterator iter= fCatchedExceptions.iterator(); iter.hasNext();) {
-			ITypeBinding catchException= (ITypeBinding)iter.next();
-			if (catches(catchException, binding))
-				return true;
-		}
-		return false;
+	private boolean isCatched() {
+		return (fCatchedExceptions.size() != 0);
 	}
-	
-	private boolean catches(ITypeBinding catchTypeBinding, ITypeBinding throwTypeBinding) {
-		while(throwTypeBinding != null) {
-			if (throwTypeBinding == catchTypeBinding)
-				return true;
-			throwTypeBinding= throwTypeBinding.getSuperclass();	
-		}
-		return false;
-	}	
 }
