@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name
 Bundle-Vendor: %providerName
 Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.rhino.debugger
-Bundle-Version: 1.0.301.qualifier
+Bundle-Version: 1.0.400.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Export-Package: org.eclipse.wst.jsdt.debug.internal.rhino.debugger;x-internal:=true,
  org.eclipse.wst.jsdt.debug.internal.rhino.transport;x-friends:="org.eclipse.wst.jsdt.debug.rhino",
