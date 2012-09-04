@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2010, 2012 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -410,13 +410,18 @@ public class StackFrame implements DebugFrame {
 		for (int i = 0; i < ids.length; i++) {
 			Object id = ids[i];
 			Object value = null;
-			if (id instanceof String) {
-				value = ScriptableObject.getProperty(scriptable, (String) id);
-			} else if (id instanceof Number) {
-				value = ScriptableObject.getProperty(scriptable, ((Number) id).intValue());
-			} else
-				continue;
-
+			try {
+				if (id instanceof String) {
+					value = ScriptableObject.getProperty(scriptable, (String) id);
+				} else if (id instanceof Number) {
+					value = ScriptableObject.getProperty(scriptable, ((Number) id).intValue());
+				} else {
+					continue;
+				}
+			}
+			catch(Exception e) {
+				value = e.getLocalizedMessage();
+			}
 			Map property = createProperty(id, value);
 			properties.add(property);
 		}
