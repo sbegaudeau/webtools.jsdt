@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2010, 2012 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -365,8 +365,8 @@ public final class JSONUtil {
 			buffer.append(value.toString());
 		else if (value instanceof Number)
 			writeNumber((Number) value, buffer);
-		else if (value instanceof String)
-			writeString((String) value, buffer);
+		else if (value instanceof CharSequence)
+			writeCharSequence((CharSequence) value, buffer);
 		else if (value instanceof Collection)
 			writeArray((Collection) value, buffer);
 		else if (value instanceof Map)
@@ -399,7 +399,7 @@ public final class JSONUtil {
 			Object key = iterator.next();
 			if (!(key instanceof String))
 				throw error("Map keys must be an instance of String but was '" + key.getClass().getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$););
-			writeString((String) key, buffer);
+			writeCharSequence((CharSequence) key, buffer);
 			buffer.append(':');
 			writeValue(map.get(key), buffer);
 			buffer.append(',');
@@ -422,7 +422,7 @@ public final class JSONUtil {
 			buffer.append(']');
 	}
 
-	private static void writeString(String string, StringBuffer buffer) {
+	private static void writeCharSequence(CharSequence string, StringBuffer buffer) {
 		buffer.append('"');
 		int length = string.length();
 		for (int i = 0; i < length; i++) {
