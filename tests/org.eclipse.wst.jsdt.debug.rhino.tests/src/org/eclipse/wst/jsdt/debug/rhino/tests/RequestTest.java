@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2010 IBM Corporation and others.
+ * Copyright (c) 2009, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -445,5 +445,41 @@ public abstract class RequestTest extends TestCase {
 	 */
 	synchronized void waitForEvents(EventPacket[] events) {
 		eventHandler.waitForEvents(events);
+	}
+	
+	/**
+	 * @param props
+	 * @param varname
+	 * @return the variable map or <code>null</code>
+	 */
+	protected Map findVar(List props, String varname) {
+		if(props != null && varname != null) {
+			Map prop = null;
+			for (Iterator i = props.iterator(); i.hasNext();) {
+				prop = (Map) i.next();
+				if(varname.equals(prop.get(JSONConstants.NAME))) {
+					return prop;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @param session
+	 * @param threadid
+	 * @param contextid
+	 * @param frameid
+	 * @param refid
+	 * @return the response, never <code>null</code>
+	 */
+	protected Response doLookup(DebugSession session, Number threadid, Number contextid, Number frameid, Number refid) throws Exception {
+		RhinoRequest request = new RhinoRequest(JSONConstants.LOOKUP);
+		request.getArguments().put(JSONConstants.THREAD_ID, threadid);
+		request.getArguments().put(JSONConstants.CONTEXT_ID, contextid);
+		request.getArguments().put(JSONConstants.FRAME_ID, frameid);
+		request.getArguments().put(JSONConstants.REF, refid);
+		debugSession.send(request);
+		return debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 	}
 }
