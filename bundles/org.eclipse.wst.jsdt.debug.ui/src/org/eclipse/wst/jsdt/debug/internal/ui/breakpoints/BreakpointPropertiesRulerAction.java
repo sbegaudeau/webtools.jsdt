@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Peter Rybin - Bug 389133 - Allow enablement and properties ruler actions for third-party breakpoints in JavaScript Editor
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;
 
@@ -25,7 +26,7 @@ import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
  */
 public class BreakpointPropertiesRulerAction extends RulerBreakpointAction implements IUpdate {
 
-	private IJavaScriptBreakpoint breakpoint = null;
+	private IBreakpoint breakpoint = null;
 	
 	/**
 	 * Constructor
@@ -42,10 +43,14 @@ public class BreakpointPropertiesRulerAction extends RulerBreakpointAction imple
 	 */
 	public void run() {
 		if(this.breakpoint != null) {
+			String pageId = null;
+			if (this.breakpoint instanceof IJavaScriptBreakpoint) {
+				pageId = JavaScriptBreakpointPropertyPage.PAGE_ID;
+			}
 			PreferencesUtil.createPropertyDialogOn(
 					getEditor().getSite().getShell(), 
 					this.breakpoint, 
-					JavaScriptBreakpointPropertyPage.PAGE_ID, 
+					pageId, 
 					null, 
 					null, 
 					0).open();
@@ -56,11 +61,7 @@ public class BreakpointPropertiesRulerAction extends RulerBreakpointAction imple
 	 * @see org.eclipse.ui.texteditor.IUpdate#update()
 	 */
 	public void update() {
-		this.breakpoint = null;
-		IBreakpoint bp = getBreakpoint();
-		if (bp != null && (bp instanceof IJavaScriptBreakpoint)) {
-			this.breakpoint = (IJavaScriptBreakpoint) bp;
-		}
+		this.breakpoint = getBreakpoint();
 		setEnabled(this.breakpoint != null);
 	}
 

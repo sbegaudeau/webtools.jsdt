@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Peter Rybin - Bug 389133 - Allow enablement and properties ruler actions for third-party breakpoints in JavaScript Editor
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.ui.breakpoints;
 
@@ -16,7 +17,6 @@ import org.eclipse.debug.ui.actions.RulerBreakpointAction;
 import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
 
 /**
@@ -27,7 +27,7 @@ import org.eclipse.wst.jsdt.debug.internal.ui.JavaScriptDebugUIPlugin;
  */
 public class ToggleBreakpointEnablementRulerAction extends RulerBreakpointAction implements IUpdate {
 
-	private IJavaScriptBreakpoint breakpoint = null;
+	private IBreakpoint breakpoint = null;
 	
 	/**
 	 * Constructor
@@ -71,8 +71,8 @@ public class ToggleBreakpointEnablementRulerAction extends RulerBreakpointAction
 	public void update() {
 		this.breakpoint = null;
 		IBreakpoint bp = getBreakpoint();
-		if (bp != null && (bp instanceof IJavaScriptBreakpoint)) {
-			this.breakpoint = (IJavaScriptBreakpoint) bp;
+		if (bp != null) {
+			this.breakpoint = bp;
 			try {
 				if(this.breakpoint.isEnabled()) {
 					setText(Messages.disable_breakpoint);
