@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2011 IBM Corporation and others.
+ * Copyright (c) 2010, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.accessibility.AccessibleAdapter;
+import org.eclipse.swt.accessibility.AccessibleEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -151,7 +153,18 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 			this.connectorcombo.add(connector.name());
 			this.connectorcombo.setData(connector.name(), connector);
 		}
-		
+		this.connectorcombo.getAccessible().addAccessibleListener(new AccessibleAdapter() {
+			public void getDescription(AccessibleEvent e) {
+				int idx = connectorcombo.getSelectionIndex();
+				if(idx > -1) {
+					String name = connectorcombo.getItem(idx);
+					Connector conn = (Connector) connectorcombo.getData(name);
+					if(conn != null) {
+						e.result = conn.description();
+					}
+				}
+			}
+		});
 		this.argumentsgroup = SWTFactory.createGroup(comp, Messages.connector_properties, 2, 1, GridData.FILL_HORIZONTAL);
 		this.argumentsgroup.setVisible(false);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(comp, IHelpContextIds.CONNECT_TAB);
