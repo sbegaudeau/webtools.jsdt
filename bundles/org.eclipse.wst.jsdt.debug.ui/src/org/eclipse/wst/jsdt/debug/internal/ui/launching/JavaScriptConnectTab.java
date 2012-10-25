@@ -164,6 +164,9 @@ public class JavaScriptConnectTab extends AbstractLaunchConfigurationTab impleme
 					}
 				}
 			}
+			public void getName(AccessibleEvent e) {
+				e.result = Messages.connector;
+			}
 		});
 		this.argumentsgroup = SWTFactory.createGroup(comp, Messages.connector_properties, 2, 1, GridData.FILL_HORIZONTAL);
 		this.argumentsgroup.setVisible(false);
