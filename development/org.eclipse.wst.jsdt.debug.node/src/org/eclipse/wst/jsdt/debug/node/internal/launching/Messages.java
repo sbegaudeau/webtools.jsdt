@@ -21,7 +21,6 @@ public class Messages extends NLS {
 	public static String NodeAttachConnector_1;
 	public static String NodeLaunchConnector_0;
 	public static String NodeLaunchConnector_1;
-	public static String NodeListenConnector_0;
 	public static String NodeListenConnector_1;
 	public static String NodeListenConnector_2;
 	static {

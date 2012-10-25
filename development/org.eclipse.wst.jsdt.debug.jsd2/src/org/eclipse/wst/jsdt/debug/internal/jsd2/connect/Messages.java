@@ -17,8 +17,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.crossfire.connect.messages"; //$NON-NLS-1$
-	public static String cannot_launch_browser_not_localhost;
-	public static String failed_to_attach_to_auto_browser;
 	public static String host_arg_desc;
 	public static String host_arg_name;
 	public static String JSD2AttachingConnector_description;
