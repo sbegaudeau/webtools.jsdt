@@ -16,7 +16,7 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.crossfire.connect.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.wst.jsdt.debug.internal.jsd2.connect.messages"; //$NON-NLS-1$
 	public static String host_arg_desc;
 	public static String host_arg_name;
 	public static String JSD2AttachingConnector_description;
