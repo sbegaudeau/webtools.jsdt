@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.debug.node.internal.launching;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -33,7 +34,9 @@ public class NodeListenConnector implements ListeningConnector {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.connect.Connector#defaultArguments()
 	 */
 	public Map defaultArguments() {
-		return null;
+		HashMap args = new HashMap();
+		//TODO add args
+		return args;
 	}
 
 	/* (non-Javadoc)
