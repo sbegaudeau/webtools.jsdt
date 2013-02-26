@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.Map.Entry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -40,8 +42,8 @@ import org.eclipse.core.runtime.URIUtil;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.model.ILaunchConfigurationDelegate2;
 import org.eclipse.debug.core.model.IProcess;
+import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 import org.eclipse.jdt.internal.launching.StandardVMType;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -68,7 +70,7 @@ import org.osgi.framework.Bundle;
  * 
  * @since 1.0
  */
-public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
+public class RhinoLocalLaunchDelegate extends LaunchConfigurationDelegate {
 
 	/**
 	 * Polls for connecting to the Rhino interpreter
@@ -152,6 +154,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	public static final String[] REQUIRED_BUNDLES = {MOZILLA_JAVASCRIPT_BUNDLE, DEBUG_TRANSPORT_BUNDLE, RHINO_DEBUGGER_BUNDLE};
 	
 	private ArrayList scope = null;
+	private HashSet projects = new HashSet();
 	private ITypeRoot script = null;
 	
 	synchronized ITypeRoot getScript(ILaunchConfiguration configuration) throws CoreException {
@@ -272,6 +275,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 				scope.clear();
 				scope = null;
 			}
+			projects.clear();
 			script = null;
 		}
 		launch.terminate();
@@ -518,6 +522,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 							String value = entry.substring(1);
 							IFile ifile = (IFile) ResourcesPlugin.getWorkspace().getRoot().findMember(value);
 							if(ifile != null && ifile.exists()) {
+								projects.add(ifile.getProject());
 								File file = URIUtil.toFile(ifile.getLocationURI());
 								value = escapePath(file, true);
 								if(!scope.contains(value)) {
@@ -550,6 +555,7 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 	 */
 	void addScriptAttribute(ILaunchConfiguration configuration, ArrayList args) throws CoreException {
 		ITypeRoot root = getScript(configuration);
+		projects.add(root.getResource().getProject());
 		File file = URIUtil.toFile(root.getResource().getLocationURI());
 		String value = escapePath(file, true);
 		args.remove(value);
@@ -588,7 +594,14 @@ public class RhinoLocalLaunchDelegate implements ILaunchConfigurationDelegate2 {
 			this.scope = null;
 			throw new CoreException(new Status(IStatus.ERROR, RhinoUIPlugin.PLUGIN_ID, Messages.failed_to_compute_scope));
 		}
-		return true;
+		return super.preLaunchCheck(configuration, mode, monitor);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.core.model.LaunchConfigurationDelegate#getBuildOrder(org.eclipse.debug.core.ILaunchConfiguration, java.lang.String)
+	 */
+	protected IProject[] getBuildOrder(ILaunchConfiguration configuration, String mode) throws CoreException {
+		return (IProject[]) projects.toArray(new IProject[projects.size()]);
 	}
 	
 	/**
