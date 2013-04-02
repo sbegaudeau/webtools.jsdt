@@ -175,7 +175,7 @@
                id="org.eclipse.wst.jsdt.debug.ui.breakpoint.suspend.policy.action"
                label="%suspendPolicy.label"
                menubarPath="emptyBreakpointGroup"
-               tooltip="%suspendpolicy.tooltip">
+               tooltip="%suspendPolicy.tooltip">
          </action>
       </objectContribution>
       <objectContribution

@@ -4,21 +4,21 @@
    <extension
          point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
       <connector
-            class="org.eclipse.wst.jsdt.debug.node.internal.launching.NodeLaunchConnector"
+            class="org.eclipse.wst.jsdt.debug.internal.node.launching.NodeLaunchConnector"
             id="org.eclipse.wst.jsdt.debug.node.launching.connector">
       </connector>
    </extension>
    <extension
          point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
       <connector
-            class="org.eclipse.wst.jsdt.debug.node.internal.launching.NodeAttachConnector"
+            class="org.eclipse.wst.jsdt.debug.internal.node.launching.NodeAttachConnector"
             id="org.eclipse.wst.jsdt.debug.node.attaching.connector">
       </connector>
    </extension>
    <extension
          point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
       <connector
-            class="org.eclipse.wst.jsdt.debug.node.internal.launching.NodeListenConnector"
+            class="org.eclipse.wst.jsdt.debug.internal.node.launching.NodeListenConnector"
             id="org.eclipse.wst.jsdt.debug.node.listening.connector">
       </connector>
    </extension>
