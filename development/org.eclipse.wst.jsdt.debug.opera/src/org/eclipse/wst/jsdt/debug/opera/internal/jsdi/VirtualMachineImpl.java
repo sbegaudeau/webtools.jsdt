@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.debug.opera.internal.jsdi;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.wst.jsdt.debug.core.breakpoints.IJavaScriptBreakpoint;
 import org.eclipse.wst.jsdt.debug.core.jsdi.BooleanValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NullValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.NumberValue;
@@ -21,15 +22,6 @@ import org.eclipse.wst.jsdt.debug.core.jsdi.UndefinedValue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
 import org.eclipse.wst.jsdt.debug.core.jsdi.event.EventQueue;
 import org.eclipse.wst.jsdt.debug.core.jsdi.request.EventRequestManager;
-
-import com.google.protobuf.ByteString;
-import com.opera.core.scope.ESDebuggerCommand;
-import com.opera.core.scope.MessageCallback;
-import com.opera.core.scope.ProtocolFormat;
-import com.opera.core.scope.ScopeClient;
-import com.opera.core.scope.ScopeErrorException;
-import com.opera.core.systems.scope.protos.ScopeProtos;
-import com.opera.core.systems.scope.protos.UmsProtos.Command;
 
 /**
  * {@link VirtualMachine} for Opera support
@@ -43,7 +35,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	private static Object rmilock = new Object();
 	private static Object eqlock = new Object();
 	
-	private ScopeClient client = null;
+//	private ScopeClient client = null;
 	private String name = null;
 	private RequestManagerImpl rmi = null;
 	private EventQueueImpl eqi = null;
@@ -52,10 +44,10 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * Constructor
 	 * @param client
 	 */
-	public VirtualMachineImpl(ScopeClient client) {
-		super();
-		this.client = client;
-	}
+//	public VirtualMachineImpl(ScopeClient client) {
+//		super();
+//		this.client = client;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#resume()
@@ -73,8 +65,8 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#terminate()
 	 */
 	public void terminate() {
-		client.getClientLock().release();
-		client.close();
+//		client.getClientLock().release();
+//		client.close();
 	}
 
 	/* (non-Javadoc)
@@ -99,12 +91,12 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 */
 	public String version() {
 		StringBuffer buff = new StringBuffer("stp: "); //$NON-NLS-1$
-		ScopeProtos.HostInfo.Builder b = ScopeProtos.HostInfo.newBuilder(); 
-		buff.append(Integer.toString(b.getStpVersion())).append(" "); //$NON-NLS-1$
-		buff.append("core: ").append(b.getCoreVersion()); //$NON-NLS-1$
-		buff.append("agent: ").append(b.getUserAgent()); //$NON-NLS-1$
-		buff.append("plat: ").append(b.getPlatform()); //$NON-NLS-1$
-		buff.append("os: ").append(b.getOperatingSystem()); //$NON-NLS-1$
+//		ScopeProtos.HostInfo.Builder b = ScopeProtos.HostInfo.newBuilder(); 
+//		buff.append(Integer.toString(b.getStpVersion())).append(" "); //$NON-NLS-1$
+//		buff.append("core: ").append(b.getCoreVersion()); //$NON-NLS-1$
+//		buff.append("agent: ").append(b.getUserAgent()); //$NON-NLS-1$
+//		buff.append("plat: ").append(b.getPlatform()); //$NON-NLS-1$
+//		buff.append("os: ").append(b.getOperatingSystem()); //$NON-NLS-1$
 		return buff.toString();
 	}
 
@@ -120,23 +112,23 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#allScripts()
 	 */
 	public List allScripts() {
-		MessageCallback callback = new MessageCallback() {
-			public void onMessageReceived(Object t) {
-				System.out.println("got runtimes"); //$NON-NLS-1$
-			}
-
-			public void onError(ScopeErrorException ex) {
-				System.err.println("got exception"); //$NON-NLS-1$
-			}
-		};
-		Command.Builder command = Command.newBuilder();
-		command.setCommandID(ESDebuggerCommand.LIST_RUNTIMES.getId());
-		command.setFormat(ProtocolFormat.JSON.getValue().intValue());
-		
-		command.setPayload(ByteString.EMPTY);
-		command.setService(ESDebuggerCommand.LIST_RUNTIMES.getName());
-        command.setTag(client.getNextTag());
-		client.sendCommand(command.build(), callback);
+//		MessageCallback callback = new MessageCallback() {
+//			public void onMessageReceived(Object t) {
+//				System.out.println("got runtimes"); //$NON-NLS-1$
+//			}
+//
+//			public void onError(ScopeErrorException ex) {
+//				System.err.println("got exception"); //$NON-NLS-1$
+//			}
+//		};
+//		Command.Builder command = Command.newBuilder();
+//		command.setCommandID(ESDebuggerCommand.LIST_RUNTIMES.getId());
+//		command.setFormat(ProtocolFormat.JSON.getValue().intValue());
+//		
+//		command.setPayload(ByteString.EMPTY);
+//		command.setService(ESDebuggerCommand.LIST_RUNTIMES.getName());
+//        command.setTag(client.getNextTag());
+//		client.sendCommand(command.build(), callback);
 		return Collections.EMPTY_LIST;
 	}
 
@@ -144,7 +136,7 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 	 * @see org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine#dispose()
 	 */
 	public void dispose() {
-		client.close();
+//		client.close();
 	}
 
 	/* (non-Javadoc)
@@ -210,5 +202,17 @@ public class VirtualMachineImpl extends MirrorImpl implements VirtualMachine {
 			}
 		}
 		return eqi;
+	}
+
+	@Override
+	public boolean canUpdateBreakpoints() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void updateBreakpoint(IJavaScriptBreakpoint breakpoint) {
+		// TODO Auto-generated method stub
+		
 	}
 }
