@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2012 IBM Corporation and others.
+ * Copyright (c) 2009, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.eclipse.wst.jsdt.debug.core.jsdi.VirtualMachine;
@@ -49,7 +48,7 @@ public abstract class RequestTest extends TestCase {
 		private String testname = null;
 		
 		public SubHandler(String testname) {
-			Assert.assertNotNull("The test name cannot be null", testname); //$NON-NLS-1$
+			assertNotNull("The test name cannot be null", testname); //$NON-NLS-1$
 			this.testname = testname;
 		}
 		
