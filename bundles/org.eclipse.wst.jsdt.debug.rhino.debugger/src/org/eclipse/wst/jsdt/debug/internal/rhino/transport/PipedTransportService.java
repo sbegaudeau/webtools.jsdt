@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others All rights reserved. This
+ * Copyright (c) 2010, 2013 IBM Corporation and others All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -103,35 +103,41 @@ public class PipedTransportService implements TransportService {
 
 			if (listeners.get(key) != null)
 				throw new IllegalStateException("PipedTransport only accepts one accept at a time"); //$NON-NLS-1$
-
+			
 			PipedInputStream serveris = new PipedInputStream();
 			PipedOutputStream clientos = new PipedOutputStream();
-			serveris.connect(clientos);
-
 			PipedOutputStream serveros = new PipedOutputStream();
 			PipedInputStream clientis = new PipedInputStream();
-			serveros.connect(clientis);
-
-			listeners.put(key, new PipedConnection(clientis, clientos));
-			listeners.notifyAll();
-			long startTime = System.currentTimeMillis();
-			while (true) {
-				try {
-					listeners.wait(timeout);
-				} catch (InterruptedException e) {
-					throw new IOException("accept failed: interrupted"); //$NON-NLS-1$
-				}
-				if (!listeners.containsKey(key))
-					throw new IOException("accept failed: stopped listening"); //$NON-NLS-1$
-
-				if (listeners.get(key) != null) {
-					if (System.currentTimeMillis() - startTime > timeout) {
-						listeners.put(key, null);
-						throw new IOException("accept failed: timed out"); //$NON-NLS-1$
+			
+			try {
+				serveris.connect(clientos);
+				serveros.connect(clientis);
+	
+				listeners.put(key, new PipedConnection(clientis, clientos));
+				listeners.notifyAll();
+				long startTime = System.currentTimeMillis();
+				while (true) {
+					try {
+						listeners.wait(timeout);
+					} catch (InterruptedException e) {
+						throw new IOException("accept failed: interrupted"); //$NON-NLS-1$
 					}
-					continue;
+					if (!listeners.containsKey(key))
+						throw new IOException("accept failed: stopped listening"); //$NON-NLS-1$
+	
+					if (listeners.get(key) != null) {
+						if (System.currentTimeMillis() - startTime > timeout) {
+							listeners.put(key, null);
+							throw new IOException("accept failed: timed out"); //$NON-NLS-1$
+						}
+						continue;
+					}
+					return new PipedConnection(serveris, serveros);
 				}
-				return new PipedConnection(serveris, serveros);
+			}
+			finally {
+				serveris.close();
+				serveros.close();
 			}
 		}
 	}
