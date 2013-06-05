@@ -48,14 +48,14 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Eclipse Foundation"
-            VALUE "FileDescription", "Crossfire Server for Internet Explorer BHO"
-            VALUE "FileVersion", "1.0.0.0"
-            VALUE "LegalCopyright", "(c) Copyright Eclipse contributors and others, 2012.  All rights reserved.  Eclipse is a trademark of the Eclipse Foundation, Inc.  Internet Explorer is a registered trademark of Microsoft Corporation."
-            VALUE "InternalName", "IECrossfireExtension"
-            VALUE "OriginalFilename", "IECrossfireExtension.dll"
-            VALUE "ProductName", "Crossfire Server for Internet Explorer"
-            VALUE "ProductVersion", "0,0,0,0"
+            VALUE "CompanyName", "Eclipse Foundation\0"
+            VALUE "FileDescription", "Crossfire Server for Internet Explorer BHO\0"
+            VALUE "FileVersion", "0.9\0"
+            VALUE "LegalCopyright", "Copyright (c) 2012 IBM Corp.  All Rights Reserved.\0"
+            VALUE "InternalName", "IECrossfireExtension\0"
+            VALUE "OriginalFilename", "IECrossfireExtension.dll\0"
+            VALUE "ProductName", "Crossfire Server for Internet Explorer\0"
+            VALUE "ProductVersion", "0,0,0,0\0"
         END
     END
     BLOCK "VarFileInfo"
