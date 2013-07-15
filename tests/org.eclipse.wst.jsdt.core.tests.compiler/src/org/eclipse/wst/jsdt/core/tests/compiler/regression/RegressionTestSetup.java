@@ -34,7 +34,4 @@ public class RegressionTestSetup extends CompilerTestSetup {
 		}
 		super.setUp();
 	}
-	protected void tearDown() {
-		this.verifier.shutDown();
-	}
 }

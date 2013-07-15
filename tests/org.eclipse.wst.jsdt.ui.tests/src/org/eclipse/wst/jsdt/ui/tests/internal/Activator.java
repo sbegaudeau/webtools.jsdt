@@ -15,13 +15,13 @@ import org.eclipse.core.runtime.Plugin;
 
 /**
  * @author nitin
- *
+ * 
  */
 public class Activator extends Plugin {
 
 	/** The shared instance. */
 	private static Activator plugin;
-	
+
 	/**
 	 * 
 	 */
@@ -29,7 +29,7 @@ public class Activator extends Plugin {
 		super();
 		plugin = this;
 	}
-	
+
 	/**
 	 * Returns the shared instance.
 	 */

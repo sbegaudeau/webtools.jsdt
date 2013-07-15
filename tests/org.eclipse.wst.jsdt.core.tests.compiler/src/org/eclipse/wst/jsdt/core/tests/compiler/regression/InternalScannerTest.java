@@ -20,9 +20,6 @@ public class InternalScannerTest extends AbstractRegressionTest {
 	public InternalScannerTest(String name) {
 		super(name);
 	}
-	public static Test suite() {
-		return buildAllCompliancesTestSuite(testClass());
-	}
 
 	public static Class testClass() {
 		return InternalScannerTest.class;

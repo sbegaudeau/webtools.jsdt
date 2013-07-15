@@ -37,11 +37,8 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 	 * Ensures that the known JavaScript-like extensions are correct.
 	 */
 	public void testGetJavaScriptLikeExtensions01() {
-		// this test plug-in now contributes two for another test
 		assertSortedStringsEqual(
 			"Unexpected file extensions",
-			"bar\n"+
-			"foo\n"+
 			"js\n",
 			JavaScriptCore.getJavaScriptLikeExtensions()
 		);
@@ -57,9 +54,7 @@ public class JavaScriptLikeExtensionsTests extends ModifyingResourceTests {
 				javaContentType.addFileSpec("abc", IContentType.FILE_EXTENSION_SPEC);
 			assertSortedStringsEqual(
 				"Unexpected file extensions",
-				"abc\n"+
-				"bar\n"+
-				"foo\n"+
+				"abc\n" + 
 				"js\n",
 				JavaScriptCore.getJavaScriptLikeExtensions()
 			);

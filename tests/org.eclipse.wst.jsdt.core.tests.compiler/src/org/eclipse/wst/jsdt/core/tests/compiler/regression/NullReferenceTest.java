@@ -35,10 +35,6 @@ public NullReferenceTest(String name) {
 //  	TESTS_RANGE = new int[] { 449, 451 }; 
 //    	TESTS_RANGE = new int[] { 900, 999 }; 
   	}
-
-public static Test suite() {
-    return buildAllCompliancesTestSuite(testClass());
-}
   
 public static Class testClass() {
     return NullReferenceTest.class;
@@ -555,7 +551,7 @@ public void test0026_suppress_warnings() {
 				"    o.toString();\n" + 
 				"  }\n" + 
 				"}\n"},
-		    "", null, true, null, compilerOptions, null);
+		    "", null, compilerOptions, null);
 	}
 }
 

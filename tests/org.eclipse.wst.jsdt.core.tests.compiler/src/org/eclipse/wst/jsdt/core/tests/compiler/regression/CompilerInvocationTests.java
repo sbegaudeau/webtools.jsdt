@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2008 IBM Corporation and others.
+ * Copyright (c) 2006, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,23 +33,6 @@ public class CompilerInvocationTests extends AbstractRegressionTest {
 
 public CompilerInvocationTests(String name) {
     super(name);
-}
-
-	// Static initializer to specify tests subset using TESTS_* static variables
-  	// All specified tests which does not belong to the class are skipped...
-  	// Only the highest compliance level is run; add the VM argument
-  	// -Dcompliance=1.4 (for example) to lower it if needed
-  	static {
-//    	TESTS_NAMES = new String[] { "test001" };
-//    	TESTS_NUMBERS = new int[] { 1 };   
-//    	TESTS_RANGE = new int[] { 1, -1 }; 
-//  	TESTS_RANGE = new int[] { 1, 2049 }; 
-//  	TESTS_RANGE = new int[] { 449, 451 }; 
-//    	TESTS_RANGE = new int[] { 900, 999 }; 
-  	}
-
-public static Test suite() {
-    return buildAllCompliancesTestSuite(testClass());
 }
   
 public static Class testClass() {
@@ -667,8 +650,6 @@ public void runTaskTagsOptionsTest(
 		testFiles,
 		"",
 		null /* no extra class libraries */, 
-		true /* flush output directory */,
-		null, /* no VM args */
 		options,
 		reader, 
 		true /* skip javac */);
@@ -687,71 +668,13 @@ public void test003_task_tags_options() {
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
+			"function foo(x) {\n" + 
+			"  // FIXME TODO XXX message contents\n" + 
 			"}\n"},
 		null,
 		"[FIXME,message contents,HIGH]\n" +
 		"[TODO,message contents,NORMAL]\n" +
 		"[XXX,message contents,NORMAL]\n");
-} 
-// effect of cancelling priorities
-// reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
-public void _test004_task_tags_options() {
-	Map customOptions = new HashMap();
-	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "");
-	this.runTaskTagsOptionsTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
-			"}\n"},
-		customOptions,
-		"[FIXME,message contents,NORMAL]\n" +
-		"[TODO,message contents,NORMAL]\n" +
-		"[XXX,message contents,NORMAL]\n");
-} 
-// effect of cancelling priorities
-// reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
-public void _test005_task_tags_options() {
-	Map customOptions = new HashMap();
-	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, ",,");
-	this.runTaskTagsOptionsTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
-			"}\n"},
-		customOptions,
-		"[FIXME,message contents,NORMAL]\n" +
-		"[TODO,message contents,NORMAL]\n" +
-		"[XXX,message contents,NORMAL]\n");
-	// would expect an exception of some sort
-} 
-// effect of changing priorities
-// reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
-public void _test006_task_tags_options() {
-	Map customOptions = new HashMap();
-	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "A,B,C,D,E");
-	this.runTaskTagsOptionsTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
-			"}\n"},
-		customOptions,
-		"[FIXME,message contents,NORMAL]\n" +
-		"[TODO,message contents,NORMAL]\n" +
-		"[XXX,message contents,NORMAL]\n");
-	// would expect an exception of some sort	
 } 
 // effect of changing priorities
 public void test007_task_tags_options() {
@@ -760,28 +683,8 @@ public void test007_task_tags_options() {
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
-			"}\n"},
-		customOptions,
-		"[FIXME,message contents,NORMAL]\n" +
-		"[TODO,message contents,NORMAL]\n" +
-		"[XXX,message contents,NORMAL]\n");
-} 
-// effect of changing priorities
-// reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
-public void _test008_task_tags_options() {
-	Map customOptions = new HashMap();
-	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "NORMAL,NORMAL"); // one less than the number of tags
-	this.runTaskTagsOptionsTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"  void foo(X x) {\n" + 
-			"    // FIXME TODO XXX message contents\n" + 
-			"  }\n" + 
+			"function foo(x) {\n" + 
+			"  // FIXME TODO XXX message contents\n" + 
 			"}\n"},
 		customOptions,
 		"[FIXME,message contents,NORMAL]\n" +

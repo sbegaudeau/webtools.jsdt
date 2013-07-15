@@ -27,8 +27,6 @@ public class SourceMethod implements ISourceMethod {
 	private String explicitConstructorCall;
 	private int numberOfMemberMethods;
 	private SourceMethod[] memberMethods;
-	char[][] typeParameterNames;
-	char[][][] typeParameterBounds;
 	SourceMethod parent;
 	
 public SourceMethod(
@@ -129,12 +127,6 @@ public char[] getReturnTypeName() {
 }
 public char[] getSelector() {
 	return selector;
-}
-public char[][][] getTypeParameterBounds() {
-	return typeParameterBounds;
-}
-public char[][] getTypeParameterNames() {
-	return typeParameterNames;	
 }
 public boolean isConstructor() {
 	return returnTypeName == null;

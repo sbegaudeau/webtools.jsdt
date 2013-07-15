@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.util;
 
-import org.eclipse.wst.jsdt.core.tests.runtime.*;
 import java.io.*;
 import java.net.*;
 /**
@@ -22,7 +21,6 @@ public class TestVerifier {
 	
 	boolean reuseVM = true;
 	String[] classpathCache;
-	LocalVirtualMachine vm;
 	StringBuffer outputBuffer;
 	StringBuffer errorBuffer;
 	Socket socket;
@@ -89,11 +87,8 @@ private void compileVerifyTests(String verifierDir) {
 public void execute(String className, String[] classpaths) {
 	this.outputBuffer = new StringBuffer();
 	this.errorBuffer = new StringBuffer();
-	
-	launchAndRun(className, classpaths, null, null);
 }
 protected void finalize() throws Throwable {
-	this.shutDown();
 }
 public String getExecutionOutput(){
 	return outputBuffer.toString();
@@ -331,176 +326,6 @@ private String getVerifyTestsCode() {
 		"}\n" + 
 		"}\n";
 }
-private void launchAndRun(String className, String[] classpaths, String[] programArguments, String[] vmArguments) {
-	// we won't reuse the vm, shut the existing one if running
-	if (this.vm != null) {
-		try {
-			vm.shutDown();
-		} catch (TargetException e) {
-		}
-	}
-	this.classpathCache = null;
-
-	// launch a new one
-	LocalVMLauncher launcher = LocalVMLauncher.getLauncher();
-	launcher.setClassPath(classpaths);
-	launcher.setVMPath(Util.getJREDirectory());
-	if (vmArguments != null) {
-		String[] completeVmArguments = new String[vmArguments.length + 1];
-		System.arraycopy(vmArguments, 0, completeVmArguments, 1, vmArguments.length);
-		completeVmArguments[0] = "-verify";
-		launcher.setVMArguments(completeVmArguments);
-	} else {
-		launcher.setVMArguments(new String[] {"-verify"});
-	}
-	launcher.setProgramClass(className);
-	launcher.setProgramArguments(programArguments);
-	Thread outputThread;
-	Thread errorThread;
-	try {
-		this.vm = launcher.launch();
-		final InputStream input = this.vm.getInputStream();
-		outputThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					int c = input.read();
-					while (c != -1) {
-						outputBuffer.append((char) c);
-						c = input.read();
-					}
-				} catch(IOException ioEx) {
-				}
-			}
-		});
-		final InputStream errorStream = this.vm.getErrorStream();
-		errorThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					int c = errorStream.read();
-					while (c != -1) {
-						errorBuffer.append((char) c);
-						c = errorStream.read();
-					}
-				} catch(IOException ioEx) {
-				}
-			}
-		});
-		outputThread.start();
-		errorThread.start();
-	} catch(TargetException e) {
-		throw new Error(e.getMessage());
-	}
-
-	// wait for vm to shut down by itself
-	try {
-		outputThread.join(5000);
-		errorThread.join(5000);
-	} catch (InterruptedException e) {
-	}
-}
-private void launchVerifyTestsIfNeeded(String[] classpaths, String[] vmArguments) {
-	// determine if we can reuse the vm
-	if (this.vm != null && this.vm.isRunning() && this.classpathCache != null) {
-		if (classpaths.length == classpathCache.length) {
-			boolean sameClasspaths = true;
-			for (int i = 0; i < classpaths.length; i++) {
-				if (!this.classpathCache[i].equals(classpaths[i])) {
-					sameClasspaths = false;
-					break;
-				}
-			}
-			if (sameClasspaths) {
-				return;
-			}
-		}
-	}
-
-	// we could not reuse the vm, shut the existing one if running
-	if (this.vm != null) {
-		try {
-			vm.shutDown();
-		} catch (TargetException e) {
-		}
-	}
-
-	this.classpathCache = classpaths;
-
-	// launch a new one
-	LocalVMLauncher launcher = LocalVMLauncher.getLauncher();
-	int length = classpaths.length;
-	String[] cp = new String[length + 1];
-	System.arraycopy(classpaths, 0, cp, 0, length);
-	String verifierDir = Util.getOutputDirectory() + File.separator + "verifier";
-	this.compileVerifyTests(verifierDir);
-	cp[length] = verifierDir;
-	launcher.setClassPath(cp);
-	launcher.setVMPath(Util.getJREDirectory());
-	if (vmArguments != null) {
-		String[] completeVmArguments = new String[vmArguments.length + 1];
-		System.arraycopy(vmArguments, 0, completeVmArguments, 1, vmArguments.length);
-		completeVmArguments[0] = "-verify";
-		launcher.setVMArguments(completeVmArguments);
-	} else {
-		launcher.setVMArguments(new String[] {"-verify"});
-	}
-	launcher.setProgramClass(VerifyTests.class.getName());
-	int portNumber = Util.getFreePort();
-	launcher.setProgramArguments(new String[] {Integer.toString(portNumber)});
-	try {
-		this.vm = launcher.launch();
-		final InputStream input = this.vm.getInputStream();
-		Thread outputThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					int c = input.read();
-					while (c != -1) {
-						outputBuffer.append((char) c);
-						c = input.read();
-					}
-				} catch(IOException ioEx) {
-				}
-			}
-		});
-		final InputStream errorStream = this.vm.getErrorStream();
-		Thread errorThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					int c = errorStream.read();
-					while (c != -1) {
-						errorBuffer.append((char) c);
-						c = errorStream.read();
-					}
-				} catch(IOException ioEx) {
-				}
-			}
-		});
-		outputThread.start();
-		errorThread.start();
-	} catch(TargetException e) {
-		throw new Error(e.getMessage());
-	}
-
-	// connect to the vm
-	this.socket = null;
-	boolean isVMRunning = false;
-	do {
-		try {
-			this.socket = new Socket("localhost", portNumber);
-			this.socket.setTcpNoDelay(true);
-			break;
-		} catch (UnknownHostException e) {
-		} catch (IOException e) {
-		}
-		if (this.socket == null) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-			}
-			isVMRunning = vm.isRunning();
-		}
-	} while (this.socket == null && isVMRunning);
-	
-}
 /**
  * Loads and runs the given class.
  * Return whether no exception was thrown while running the class.
@@ -525,33 +350,6 @@ private boolean loadAndRun(String className) {
 	}
 	return true;
 }
-public void shutDown() {
-	// Close the socket first so that the OS resource has a chance to be freed.
-	if (this.socket != null) {
-		try {
-			this.socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	// Wait for the vm to shut down by itself for 2 seconds. If not succesfull, force the shut down.
-	if (this.vm != null) {
-		try {
-			int retry = 0;
-			while (this.vm.isRunning() && (++retry < 20)) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-				}
-			}
-			if (this.vm.isRunning()) {
-				this.vm.shutDown();
-			}
-		} catch (TargetException e) {
-			e.printStackTrace();
-		}
-	}
-}
 /**
  * Verify that the class files created for the given test file can be loaded by
  * a virtual machine.
@@ -567,10 +365,7 @@ public boolean verifyClassFiles(String sourceFilePath, String className, String 
 	this.outputBuffer = new StringBuffer();
 	this.errorBuffer = new StringBuffer();
 	if (this.reuseVM && programArguments == null) {
-		this.launchVerifyTestsIfNeeded(classpaths, vmArguments);
 		this.loadAndRun(className);
-	} else {
-		this.launchAndRun(className, classpaths, programArguments, vmArguments);
 	}
 	
 	this.failureReason = null;
@@ -585,10 +380,7 @@ public boolean verifyClassFilesThrowingError(String sourceFilePath, String class
 	this.outputBuffer = new StringBuffer();
 	this.errorBuffer = new StringBuffer();
 	if (this.reuseVM && programArguments == null) {
-		this.launchVerifyTestsIfNeeded(classpaths, vmArguments);
 		this.loadAndRun(className);
-	} else {
-		this.launchAndRun(className, classpaths, programArguments, vmArguments);
 	}
 	
 	this.failureReason = null;

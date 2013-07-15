@@ -23,15 +23,11 @@ public RunAllTests(String name) {
 }
 public static Class[] getAllTestClasses() {
 	return new Class[] {
-		//org.eclipse.wst.jsdt.core.tests.dom.RunConverterTests.class,
+		org.eclipse.wst.jsdt.core.tests.dom.RunConverterTests.class,
 		org.eclipse.wst.jsdt.core.tests.dom.ASTTest.class,
 		org.eclipse.wst.jsdt.core.tests.dom.ASTVisitorTest.class,
-		//org.eclipse.wst.jsdt.core.tests.dom.ASTMatcherTest.class,
-		//org.eclipse.wst.jsdt.core.tests.dom.ASTStructuralPropertyTest.class,
+		org.eclipse.wst.jsdt.core.tests.dom.ASTMatcherTest.class,
 		org.eclipse.wst.jsdt.core.tests.dom.ASTParserTest.class,
-		//org.eclipse.wst.jsdt.core.tests.dom.ASTModelBridgeTests.class,
-		// org.eclipse.wst.jsdt.core.tests.dom.BatchASTCreationTests.class,
-		//org.eclipse.wst.jsdt.core.tests.dom.CompatibilityRulesTests.class,
 		org.eclipse.wst.jsdt.core.tests.rewrite.describing.ASTRewritingTest.class,
 		org.eclipse.wst.jsdt.core.tests.rewrite.modifying.ASTRewritingModifyingTest.class,
 		org.eclipse.wst.jsdt.core.tests.dom.ASTPositionsTest.class,

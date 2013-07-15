@@ -42,28 +42,9 @@ public class JavadocCompletionParserTest extends AbstractCompletionTest implemen
 	}
 
 	CompletionJavadoc javadoc;
-	String sourceLevel;
 
 public JavadocCompletionParserTest(String testName) {
 	super(testName);
-}
-
-static {
-	// org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine.DEBUG = true;
-//	TESTS_NUMBERS = new int[] { 8 };
-//	TESTS_RANGE = new int[] { 20, -1 };
-}
-
-public static Test suite() {
-	return buildAllCompliancesTestSuite(JavadocCompletionParserTest.class);
-}
-
-/* (non-Javadoc)
- * @see org.eclipse.test.performance.PerformanceTestCase#setUp()
- */
-protected void setUp() throws Exception {
-	super.setUp();
-	this.sourceLevel = null;
 }
 
 protected void assertCompletionNodeResult(String source, String expected) {
@@ -84,14 +65,6 @@ protected void assertCompletionNodeResult(String source, String expected) {
 		expected,
 		actual
 	);
-}
-protected Map getCompilerOptions() {
-	Map options = super.getCompilerOptions();
-	if (this.sourceLevel == null) {
-		return options;
-	}
-	options.put(CompilerOptions.OPTION_Source, this.sourceLevel);
-	return options;
 }
 protected void verifyCompletionInJavadoc(String source, String after) {
 	CompilerOptions options = new CompilerOptions(getCompilerOptions());
@@ -168,82 +141,73 @@ protected void verifyAllTagsCompletion() {
 /**
  * @tests Test completions for javadoc tag names
  */
-public void test001() {
-	String source = "package javadoc;\n" +
+public void Xtest001() {
+	String source = 
 		"/**\n" +
 		" * Completion on empty tag name:\n" +
 		" * 	@\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@");
 	verifyAllTagsCompletion();
 }
 
 public void test002() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" +
 		" * Completion on impossible tag name:\n" +
 		" * 	@none\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@none");
 	verifyCompletionOnJavadocTag("none".toCharArray(), null, false);
 }
 
 public void test003() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" +
 		" * Completion on one letter:\n" +
 		" * 	@v\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@v");
-	char[][] allTags = this.complianceLevel.equals(COMPLIANCE_1_3) 
-		? new char[][] { TAG_VERSION }
-		: new char[][] { TAG_VERSION };
-	verifyCompletionOnJavadocTag(new char[] { 'v' }, allTags, false);
+	verifyCompletionOnJavadocTag(new char[] { 'v' }, new char[][] { TAG_VERSION }, false);
 }
 
 public void test004() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" +
 		" * Completion with several letters:\n" +
 		" * 	@deprec\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@deprec");
 	verifyCompletionOnJavadocTag("deprec".toCharArray(), new char[][] { TAG_DEPRECATED }, false);
 }
 
 public void test005() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" +
 		" * Completion on full tag name:\n" +
 		" * 	@link\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@link");
-	char[][] allTags = this.complianceLevel.equals(COMPLIANCE_1_3) 
-		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK };
-	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("link".toCharArray(), new char[][] { TAG_LINK }, false);
 }
 
-public void test006() {
-	String source = "package javadoc;\n" +
+public void Xtest006() {
+	String source = 
 		"/**\n" +
 		" * Completion on empty tag name @ but inside text\n" +
 		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@");
-	char[][] allTags = {
-		TAG_LINK
-	};
-	verifyCompletionOnJavadocTag(null, allTags, false);
+	verifyCompletionOnJavadocTag(null, new char[][] { TAG_LINK }, false);
 }
 
-public void test007() {
-	String source = "package javadoc;\n" +
+public void Xtest007() {
+	String source = 
 		"/**\n" + 
 		" * Completion on :\n" + 
 		" * 	@\n" + 
@@ -252,22 +216,7 @@ public void test007() {
 		" * 			+ \"@ {@linkplain }\"\n" + 
 		" * 			+ \"@ {@literal }\"\n" + 
 		" */\n" + 
-		"public class Test {}\n";
-	verifyCompletionInJavadoc(source, "@");
-	verifyAllTagsCompletion();
-}
-/**
- * @bug [javadoc][assist] @linkplain no longer proposed when 1.4 compliance is used
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=123096"
- */
-public void test008() {
-	this.sourceLevel = CompilerOptions.VERSION_1_3;
-	String source = "package javadoc;\n" +
-		"/**\n" +
-		" * Completion on empty tag name:\n" +
-		" * 	@\n" +
-		" */\n" +
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@");
 	verifyAllTagsCompletion();
 }
@@ -278,11 +227,11 @@ public void test008() {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=113506"
  */
 public void test010() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" + 
 		" * @see \n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@see ");
 	assertCompletionNodeResult(source,
 		"<CompletionOnJavadocSingleTypeReference:\n" + 
@@ -292,11 +241,11 @@ public void test010() {
 }
 
 public void test011() {
-	String source = "package javadoc;\n" +
+	String source = 
 		"/**\n" + 
 		" * {@link }\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@link ");
 	assertCompletionNodeResult(source,
 		"<CompletionOnJavadocSingleTypeReference:\n" + 
@@ -304,8 +253,8 @@ public void test011() {
 		">"
 	);
 }
-public void test012() {
-	String source = "package javadoc;\n" +
+public void Xtest012() {
+	String source =
 		"/**\n" + 
 		" * @see Str\n" + 
 		" */\n" + 
@@ -319,11 +268,11 @@ public void test012() {
 }
 
 public void test013() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@link Str}\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "Str");
 	assertCompletionNodeResult(source,
 		"<CompletionOnJavadocSingleTypeReference:Str\n" + 
@@ -332,11 +281,11 @@ public void test013() {
 	);
 }
 public void test014() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * @see String Subclass of Obj\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "Obj");
 	assertCompletionNodeResult(source,
 		"<CompletionOnJavadocSingleTypeReference:Obj\n" + 
@@ -346,11 +295,11 @@ public void test014() {
 }
 
 public void test015() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@link String Subclass of Obj}\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "Obj");
 	assertCompletionNodeResult(source,
 		"<CompletionOnJavadocSingleTypeReference:Obj\n" + 
@@ -359,73 +308,30 @@ public void test015() {
 	);
 }
 
-/**
- * @test Bug 113469: CompletionOnJavadocTag token is not correct
- * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=113649"
- */
-public void test020() {
-	String source = "package javadoc;\n" +
-		"/**\n" + 
-		" * @see\n" + 
-		" */\n" + 
-		"public class Test {}\n";
-	verifyCompletionInJavadoc(source, "@s");
-	verifyCompletionOnJavadocTag("s".toCharArray(), new char[][] { TAG_SEE, TAG_SINCE/*, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD*/ }, false);
-	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
-	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
-	assertEquals("Invalid tag end position", 28, completionTag.tagSourceEnd+1);
-}
-
 public void test021() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * @see\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@se");
 	verifyCompletionOnJavadocTag("se".toCharArray(), new char[][] { TAG_SEE/*, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD */}, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
-	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
-	assertEquals("Invalid tag end position", 28, completionTag.tagSourceEnd+1);
+	assertEquals("Invalid tag start position", 7, completionTag.tagSourceStart);
+	assertEquals("Invalid tag end position", 11, completionTag.tagSourceEnd+1);
 }
 
 public void test022() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * @see\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "@see");
 	verifyCompletionOnJavadocTag("see".toCharArray(), new char[][] { TAG_SEE }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
-	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
-	assertEquals("Invalid tag end position", 28, completionTag.tagSourceEnd+1);
-}
-
-public void test023() {
-	String source = "package javadoc;\n" +
-		"/**\n" + 
-		" * @ebj-tag\n" + 
-		" */\n" + 
-		"public class Test {}\n";
-	verifyCompletionInJavadoc(source, "ebj");
-	verifyCompletionOnJavadocTag("ebj".toCharArray(), null, false);
-	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
-	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
-	assertEquals("Invalid tag end position", 32, completionTag.tagSourceEnd+1);
-}
-
-public void test024() {
-	String source = "package javadoc;\n" +
-		"/**\n" + 
-		" * @ebj-tag\n" + 
-		" */\n" + 
-		"public class Test {}\n";
-	verifyCompletionInJavadoc(source, "tag");
-	verifyCompletionOnJavadocTag("ebj-tag".toCharArray(), null, false);
-	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
-	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
-	assertEquals("Invalid tag end position", 32, completionTag.tagSourceEnd+1);
+	assertEquals("Invalid tag start position", 7, completionTag.tagSourceStart);
+	assertEquals("Invalid tag end position", 11, completionTag.tagSourceEnd+1);
 }
 
 /**
@@ -433,11 +339,11 @@ public void test024() {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=114091"
  */
 public void test025() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@</code>\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@");
 	char[][] allTags = {
 		TAG_LINK
@@ -451,18 +357,13 @@ public void test025() {
 }
 
 public void test026() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@li</code>\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@li");
-	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
-		? new char[][] { TAG_LINK }
-		: (complianceLevel.equals(COMPLIANCE_1_4)
-				? new char[][] { TAG_LINK}
-				: new char[][] { TAG_LINK });
-	verifyCompletionOnJavadocTag("li".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("li".toCharArray(), new char[][] { TAG_LINK}, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
 	assertEquals("Invalid tag start position", start, completionTag.tagSourceStart);
@@ -471,16 +372,13 @@ public void test026() {
 }
 
 public void test027() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@link</code>\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@link");
-	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
-		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK  };
-	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("link".toCharArray(), new char[][] { TAG_LINK }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
 	assertEquals("Invalid tag start position", start, completionTag.tagSourceStart);
@@ -488,16 +386,13 @@ public void test027() {
 	assertEquals("Invalid tag end position", end, completionTag.tagSourceEnd);
 }
 public void test028() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@|\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@");
-	char[][] allTags = {
-		TAG_LINK
-	};
-	verifyCompletionOnJavadocTag("".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("".toCharArray(), new char[][] { TAG_LINK }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
 	assertEquals("Invalid tag start position", start, completionTag.tagSourceStart);
@@ -506,18 +401,13 @@ public void test028() {
 }
 
 public void test029() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@li/\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@li");
-	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
-		? new char[][] { TAG_LINK }
-		: (complianceLevel.equals(COMPLIANCE_1_4)
-				? new char[][] { TAG_LINK }
-				: new char[][] { TAG_LINK });
-	verifyCompletionOnJavadocTag("li".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("li".toCharArray(), new char[][] { TAG_LINK }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
 	assertEquals("Invalid tag start position", start, completionTag.tagSourceStart);
@@ -526,16 +416,13 @@ public void test029() {
 }
 
 public void test030() {
-	String source = "package javadoc;\n" +
+	String source =
 		"/**\n" + 
 		" * {@link+\n" + 
 		" */\n" + 
-		"public class Test {}\n";
+		"function Test() {}\n";
 	verifyCompletionInJavadoc(source, "{@link");
-	char[][] allTags = complianceLevel.equals(COMPLIANCE_1_3)
-		? new char[][] { TAG_LINK }
-		: new char[][] { TAG_LINK  };
-	verifyCompletionOnJavadocTag("link".toCharArray(), allTags, false);
+	verifyCompletionOnJavadocTag("link".toCharArray(), new char[][] { TAG_LINK }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	int start = source.indexOf("{@");
 	assertEquals("Invalid tag start position", start, completionTag.tagSourceStart);

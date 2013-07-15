@@ -39,48 +39,38 @@ public class JsStorageEditorInput implements IStorageEditorInput {
 			fPath = path;
 		}
 
-		/*
-		 * (non-Javadoc)
+		/* (non-Javadoc)
 		 * 
 		 * @see
-		 * org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-		 */
+		 * org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class) */
 		public Object getAdapter(Class adapter) {
 			return Platform.getAdapterManager().getAdapter(this, adapter);
 		}
 
-		/*
-		 * (non-Javadoc)
+		/* (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IStorage#getContents()
-		 */
+		 * @see org.eclipse.core.resources.IStorage#getContents() */
 		public InputStream getContents() throws CoreException {
 			return new ByteArrayInputStream(fContents.getBytes());
 		}
 
-		/*
-		 * (non-Javadoc)
+		/* (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IStorage#getFullPath()
-		 */
+		 * @see org.eclipse.core.resources.IStorage#getFullPath() */
 		public IPath getFullPath() {
 			return fPath;
 		}
 
-		/*
-		 * (non-Javadoc)
+		/* (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IStorage#getName()
-		 */
+		 * @see org.eclipse.core.resources.IStorage#getName() */
 		public String getName() {
 			return fPath.lastSegment();
 		}
 
-		/*
-		 * (non-Javadoc)
+		/* (non-Javadoc)
 		 * 
-		 * @see org.eclipse.core.resources.IStorage#isReadOnly()
-		 */
+		 * @see org.eclipse.core.resources.IStorage#isReadOnly() */
 		public boolean isReadOnly() {
 			return true;
 		}
@@ -99,65 +89,51 @@ public class JsStorageEditorInput implements IStorageEditorInput {
 		this(new JSStorage(contents, path));
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorInput#exists()
-	 */
+	 * @see org.eclipse.ui.IEditorInput#exists() */
 	public boolean exists() {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class) */
 	public Object getAdapter(Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
-	 */
+	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor() */
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorInput#getName()
-	 */
+	 * @see org.eclipse.ui.IEditorInput#getName() */
 	public String getName() {
 		return fStorage.getName();
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorInput#getPersistable()
-	 */
+	 * @see org.eclipse.ui.IEditorInput#getPersistable() */
 	public IPersistableElement getPersistable() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IStorageEditorInput#getStorage()
-	 */
+	 * @see org.eclipse.ui.IStorageEditorInput#getStorage() */
 	public IStorage getStorage() throws CoreException {
 		return fStorage;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/* (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
-	 */
+	 * @see org.eclipse.ui.IEditorInput#getToolTipText() */
 	public String getToolTipText() {
 		return fStorage.getFullPath().toString();
 	}

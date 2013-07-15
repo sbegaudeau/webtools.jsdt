@@ -55,9 +55,7 @@ public abstract class ASTRewritingModifyingTest extends AbstractJavaModelTests {
 		suite.addTest(ASTRewritingModifyingOtherTest.suite());
 		suite.addTest(ASTRewritingModifyingInsertTest.suite());
 		suite.addTest(ASTRewritingModifyingReplaceTest.suite());
-		//suite.addTest(ASTRewritingModifyingRemoveTest.suite());
-		//suite.addTest(ASTRewritingModifyingMoveTest.suite());
-		//suite.addTest(ASTRewritingModifyingCopyTest.suite());
+		suite.addTest(ASTRewritingModifyingRemoveTest.suite());
 		return suite;
 	}
 	

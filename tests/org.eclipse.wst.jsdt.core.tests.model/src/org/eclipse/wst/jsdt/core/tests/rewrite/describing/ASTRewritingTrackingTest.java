@@ -50,7 +50,6 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
 		buf.append("public class C {\n");
 		buf.append("\n");
 		buf.append("    public int x1;\n");
@@ -88,7 +87,6 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
 		buf.append("public class C {\n");
 		buf.append("\n");
 		buf.append("    public void foo(String s, int i) {\n");

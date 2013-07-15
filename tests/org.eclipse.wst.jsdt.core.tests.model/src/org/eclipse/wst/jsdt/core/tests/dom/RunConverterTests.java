@@ -26,12 +26,7 @@ public RunConverterTests(String name) {
 public static Class[] getAllTestClasses() {
 	return new Class[] {
 		ASTConverterTest.class,		
-		ASTConverterTest2.class,
-		ASTConverterJavadocTest.class,
 		ASTConverterAST3Test.class,
-		ASTConverterTestAST3_2.class,
-		ASTConverterBindingsTest.class,
-		ASTConverterRecoveryTest.class
 	};
 }
 public static Test suite() {

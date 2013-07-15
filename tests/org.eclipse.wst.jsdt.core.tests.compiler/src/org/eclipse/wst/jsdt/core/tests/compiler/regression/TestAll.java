@@ -15,9 +15,6 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.ArrayTest;
-import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.BooleanTest;
-import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.Compliance_1_4;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 
@@ -33,38 +30,16 @@ public static Test suite() {
 	
 	// Common test suites
 	ArrayList standardTests = new ArrayList();
-	standardTests.add(ArrayTest.class);
 	standardTests.add(AssignmentTest.class);
-	standardTests.add(BooleanTest.class);
 //	standardTests.add(ClassFileComparatorTest.class);
 //	standardTests.add(CollisionCase.class);
 //	standardTests.add(ConstantTest.class);
-	standardTests.add(DeprecatedTest.class);
-	standardTests.add(LocalVariableTest.class);
-	standardTests.add(LookupTest.class);
-	standardTests.add(NumericTest.class);
-	standardTests.add(ProblemConstructorTest.class);
-	standardTests.add(ProblemTypeAndMethodTest.class);
 	standardTests.add(ScannerTest.class);
-	standardTests.add(SwitchTest.class);
-	standardTests.add(TryStatementTest.class);
 	standardTests.add(UtilTest.class);
-	standardTests.add(XLargeTest.class);
 	standardTests.add(InternalScannerTest.class);
-//	standardTests.add(ConditionalExpressionTest.class);
-	standardTests.add(ExternalizeStringLiteralsTest.class);
-	standardTests.add(NonFatalErrorTest.class);
-	standardTests.add(FlowAnalysisTest.class);
 	standardTests.add(CharOperationTest.class);
-	standardTests.add(RuntimeTests.class);
-//	standardTests.add(DebugAttributeTest.class);
 	standardTests.add(NullReferenceTest.class);
 	standardTests.add(CompilerInvocationTests.class);
-	standardTests.add(InnerEmulationTest.class);
-	standardTests.add(SuperTypeTest.class);
-	standardTests.add(ForStatementTest.class);
-	standardTests.add(FieldAccessTest.class);
-	standardTests.add(SerialVersionUIDTests.class);
 //	standardTests.add(LineNumberAttributeTest.class);
 	
 	// add all javadoc tests
@@ -78,12 +53,7 @@ public static Test suite() {
 
 	// Tests to run when compliance is greater than 1.4
 	ArrayList since_1_5 = new ArrayList();
-	since_1_5.addAll(RunComparableTests.ALL_CLASSES);
-//	since_1_5.add(ClassFileReaderTest_1_5.class);
-	since_1_5.add(InternalHexFloatTest.class);
-	since_1_5.add(JavadocTest_1_5.class);
 //	since_1_5.add(BatchCompilerTest.class);
-	since_1_5.add(ExternalizeStringLiterals15Test.class);
 //	since_1_5.add(Deprecated15Test.class);
 
 	// Tests to run when compliance is greater than 1.5
@@ -95,8 +65,6 @@ public static Test suite() {
 	int possibleComplianceLevels = AbstractCompilerTest.getPossibleComplianceLevels();
 	if ((possibleComplianceLevels & AbstractCompilerTest.F_1_3) != 0) {
 		ArrayList tests_1_3 = (ArrayList)standardTests.clone();
-		tests_1_3.add(Compliance_1_3.class);
-		tests_1_3.add(JavadocTest_1_3.class);
 		// Reset forgotten subsets tests
 		TestCase.TESTS_PREFIX = null;
 		TestCase.TESTS_NAMES = null;
@@ -108,9 +76,6 @@ public static Test suite() {
 	if ((possibleComplianceLevels & AbstractCompilerTest.F_1_4) != 0) {
 		ArrayList tests_1_4 = (ArrayList)standardTests.clone();
 		tests_1_4.addAll(since_1_4);
-		tests_1_4.add(Compliance_1_4.class);
-//		tests_1_4.add(ClassFileReaderTest_1_4.class);
-		tests_1_4.add(JavadocTest_1_4.class);
 		// Reset forgotten subsets tests
 		TestCase.TESTS_PREFIX = null;
 		TestCase.TESTS_NAMES = null;

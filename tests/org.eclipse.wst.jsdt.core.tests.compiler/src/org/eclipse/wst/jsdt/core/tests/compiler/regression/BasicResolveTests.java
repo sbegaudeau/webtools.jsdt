@@ -10,13 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-
 
 
 
@@ -739,7 +732,12 @@ public class BasicResolveTests extends AbstractRegressionTest {
 						"var o=arr.pop();\n" +
 						"" 
 				},
-				""
+				"----------\n" + 
+				"1. WARNING in X.js (at line 1)\n" + 
+				"	var arr=[];\n" + 
+				"	        ^^\n" + 
+				"Type mismatch: cannot convert from any[] to ___anonymous_arr\n" + 
+				"----------\n"
 		);
 	}
 
@@ -1317,7 +1315,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		});
 	}
 	
-	public void Xtestbug196377_1() {
+	public void testbug196377_1() {
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
@@ -1330,7 +1328,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			);
 	}
 	
-	public void Xtestbug196377_2() {
+	public void testbug196377_2() {
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
@@ -1767,6 +1765,33 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			);
 	}
 	
+	public void testbug324241() {
+		this.runNegativeTest(
+					new String[] {
+							"Z.js",
+							"var com = {};\n" +
+							"com.MyType = function() {};\n" +
+							"com.MyType.prototype.reload = function() {};\n" +
+							"var c = new com.MyType();\n" +
+							"var y = c.reload();\n" +
+							"var x = c.reload;\n" +
+							"c.reload2();\n" +
+							"c.reload2;"
+					},""
+//					"----------\n" + 
+//					"1. ERROR in Z.js (at line 7)\n" + 
+//					"	c.reload2();\n" + 
+//					"	  ^^^^^^^\n" + 
+//					"The function reload2() is undefined for the type com.MyType\n" + 
+//					"----------\n" + 
+//					"2. WARNING in Z.js (at line 8)\n" + 
+//					"	c.reload2;\n" + 
+//					"	  ^^^^^^^\n" + 
+//					"reload2 cannot be resolved or is not a field\n" + 
+//					"----------\n"
+			);
+	}
+	
 	public void testbug333781() {
 		this.runNegativeTest(
 					new String[] {
@@ -1785,48 +1810,63 @@ public class BasicResolveTests extends AbstractRegressionTest {
 			);
 	}
 	
-	public void Xtestbug324241() {
+	public void testBug397568() {
+		this.runNegativeTest(
+			new String[] {
+				"Z.js",
+				"switch (0) {\n"+
+				"	case 0 :\n"+
+				"		var x=123;\n"+
+				"}\n"
+			},
+			""
+		);
+	}
+	
+	public void testWI90999() {
 		this.runNegativeTest(
 					new String[] {
 							"Z.js",
-							"var com = {};\n" +
-							"com.MyType = function() {};\n" +
-							"com.MyType.prototype.reload = function() {};\n" +
-							"var c = new com.MyType();\n" +
-							"var y = c.reload();\n" +
-							"var x = c.reload;\n" +
-							"c.reload2();\n" +
-							"c.reload2;"
+							"function abc() {\n" +
+								"var createCookiePersister = function() {\n" +
+								"switch (gadgetEnvironment) {\n" +
+								"default:\n" +
+								"break;\n" +
+								"}" +
+								"};" +
+								"};"
 					},
 					"----------\n" + 
-					"1. ERROR in Z.js (at line 7)\n" + 
-					"	c.reload2();\n" + 
-					"	  ^^^^^^^\n" + 
-					"The function reload2() is undefined for the type com.MyType\n" + 
-					"----------\n" + 
-					"2. WARNING in Z.js (at line 8)\n" + 
-					"	c.reload2;\n" + 
-					"	  ^^^^^^^\n" + 
-					"reload2 cannot be resolved or is not a field\n" + 
+					"1. WARNING in Z.js (at line 2)\n" + 
+					"	var createCookiePersister = function() {\n" + 
+					"	    ^^^^^^^^^^^^^^^^^^^^^\n" + 
+					"The local variable createCookiePersister is never read\n" + 
 					"----------\n"
 			);
 	}
-	public void test326901() {
-		Map options = new HashMap();
-		options.put(CompilerOptions.OPTION_SemanticValidation, CompilerOptions.ENABLED);
-		Util.compile(
+	
+	public void testWI98930() {
+		this.runNegativeTest(
 					new String[] {
-								"Z.js",
-								"function Windget(){\n"+
-									"  this.a=5;\n"+
-									"};\n"+
-									"windget = new Windget();\n"+
-									"(function(a2){\n"+
-										"  // operations on a2\n"+
-										" a2.a();\n"+
-										"})(windget);"
+							"Z.js",
+							"function outter() {\n" +
+							"var path = { hmmm : function() {\n" +
+							"switch (d) {\n" +
+							"case \".\":\n" +
+							";\n" +
+							"break;\n" +
+							"default:\n" +
+							";\n" +
+							"break;\n" +
+							"}}};\n" +
+							"var to = path.someFunc();\n" +
+							"function testDupDefaultClass() {}\n" +
+							"var testDupDefaultClassInit = new testDupDefaultClass();\n" +
+							"testDupDefaultClassInit.myField = to;\n" +
+							"}"
 					},
-					options,
-					File.separator);
+					""
+			);
 	}
+	
 }

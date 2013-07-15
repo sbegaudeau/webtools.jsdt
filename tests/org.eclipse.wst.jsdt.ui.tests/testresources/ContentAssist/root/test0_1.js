@@ -1,0 +1,7 @@
+f
+
+fun
+
+funcT
+
+g

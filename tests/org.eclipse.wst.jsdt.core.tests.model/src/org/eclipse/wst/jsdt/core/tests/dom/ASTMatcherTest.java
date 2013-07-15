@@ -106,7 +106,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		Method[] methods = c.getMethods();
 		for (int i = 0, max = methods.length; i < max; i++) {
 			if (methods[i].getName().startsWith("test")) { //$NON-NLS-1$
-				suite.addTest(new ASTMatcherTest(methods[i].getName(), AST.JLS2));
 				suite.addTest(new ASTMatcherTest(methods[i].getName(), AST.JLS3));
 			}
 		}
@@ -741,15 +740,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			x1.setType(T1);
 		}
 		x1.setAnonymousClassDeclaration(ACD1);
-		basicMatch(x1);
-	}
-	public void testCompilationUnit() {
-		JavaScriptUnit x1 = ast.newJavaScriptUnit();
-		x1.setPackage(PD1);
-		x1.imports().add(ID1);
-		x1.imports().add(ID2);
-		x1.types().add(TD1);
-		x1.types().add(TD2);
 		basicMatch(x1);
 	}
 	public void testConditionalExpression() {

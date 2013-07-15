@@ -17,7 +17,18 @@ import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteral;
+import org.eclipse.wst.jsdt.core.dom.ObjectLiteralField;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.TagElement;
+import org.eclipse.wst.jsdt.core.dom.TextElement;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 
 public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 	private static final Class THIS = ASTRewritingModifyingInsertTest.class;
@@ -200,7 +211,7 @@ public class ASTRewritingModifyingInsertTest extends ASTRewritingModifyingTest {
 		buf.append("}\n");
 		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		JavaScriptUnit astRoot= createCU(cu, false);;
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		

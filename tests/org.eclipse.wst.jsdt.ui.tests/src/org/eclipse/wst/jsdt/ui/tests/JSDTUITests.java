@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2011 IBM Corporation and others.
+ * Copyright (c) 2009, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -18,12 +18,14 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
-import org.eclipse.wst.jsdt.ui.tests.contentassist.ContentAssistTests;
+import org.eclipse.wst.jsdt.ui.tests.contentassist.AllContentAssistTests;
+import org.eclipse.wst.jsdt.ui.tests.documentation.DocumentationTest;
 import org.eclipse.wst.jsdt.ui.tests.format.FormattingTests;
+import org.eclipse.wst.jsdt.ui.tests.hyperlink.HyperLinkTest;
 
 /**
  * @author nitin
- *
+ * 
  */
 public class JSDTUITests extends TestSuite {
 
@@ -45,23 +47,22 @@ public class JSDTUITests extends TestSuite {
 
 	public static Test suite() {
 		ArrayList standardTests = new ArrayList();
-		
+
 		// $JUnit-BEGIN$
 		standardTests.add(EditorTests.class);
 		// $JUnit-END$
 
 		TestSuite all = new TestSuite("JSDT UI Tests");
-		for (Iterator iter = standardTests.iterator(); iter.hasNext();) {
+		for(Iterator iter = standardTests.iterator(); iter.hasNext();) {
 			Class test = (Class) iter.next();
-			all.addTestSuite(test); 
+			all.addTestSuite(test);
 		}
-		
-		all.addTest(ContentAssistTests.suite());
-		
-		// $JUnit-BEGIN$
+
+		all.addTest(AllContentAssistTests.suite());
 		all.addTest(FormattingTests.suite());
-		// $JUnit-END$
-		
+		all.addTest(HyperLinkTest.suite());
+		all.addTest(DocumentationTest.suite());
+
 		return all;
-	} 
 	}
+}

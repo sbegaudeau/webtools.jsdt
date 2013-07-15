@@ -39,7 +39,7 @@ public void acceptLineSeparatorPositions(int[] positions) {}
 /**
  * acceptMethodReference method comment.
  */
-public void acceptMethodReference(char[] methodName, int argCount, int sourcePosition) {}
+public void acceptMethodReference(char[] methodName, int sourcePosition) {}
 /**
  * acceptPackage method comment.
  */

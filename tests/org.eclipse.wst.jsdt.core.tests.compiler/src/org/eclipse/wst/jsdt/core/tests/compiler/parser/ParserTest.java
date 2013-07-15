@@ -25,12 +25,12 @@ static {
 public ParserTest(String name) {
 	super(name);
 }
-public void test001() {
+public void Xtest001() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
-			"	function foo(){\n" +
-			"		throws\n" +
+			"function foo(){\n" +
+			"	throws\n" +
 			"}\n"
 		},
 		"----------\n" + 
@@ -41,7 +41,7 @@ public void test001() {
 		"----------\n"
 	);
 }
-public void test002() {
+public void Xtest002() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -52,12 +52,12 @@ public void test002() {
 		"----------\n" + 
 		"1. ERROR in X.js (at line 2)\n" + 
 		"	throws new\n" + 
-		"	^^^^^^^^^^\n" + 
+		"	       ^^^\n" + 
 		"Syntax error on tokens, delete these tokens\n" + 
 		"----------\n"
 	);
 }
-public void test003() {
+public void Xtest003() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -70,11 +70,6 @@ public void test003() {
 		"	throws new X\n" + 
 		"	^^^^^^\n" + 
 		"Syntax error on token \"throws\", throw expected\n" + 
-		"----------\n" + 
-		"2. ERROR in X.js (at line 2)\n" + 
-		"	throws new X\n" + 
-		"	           ^\n" + 
-		"Syntax error, unexpected end of method\n" + 
 		"----------\n"
 	);
 }
@@ -114,7 +109,7 @@ public void test003() {
 //		"----------\n"
 //	);
 //}
-public void test006() {
+public void Xtest006() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -184,7 +179,7 @@ public void test006() {
 //		"----------\n"
 //	);
 //}
-public void test009() {
+public void Xtest009() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -358,8 +353,8 @@ public void test016() {
 		"----------\n" + 
 		"1. ERROR in X.js (at line 2)\n" + 
 		"	var s = \"\n" + 
-		"	           ^\n" + 
-		"String literal is not properly closed by a double-quote\n" + 
+		"	        ^\n" + 
+		"String literal is not properly closed by a matching quote\n" + 
 		"----------\n"
 	);
 }
@@ -376,8 +371,8 @@ public void test017() {
 		"----------\n" + 
 		"1. ERROR in X.js (at line 2)\n" + 
 		"	var c = \'\n" + 
-		"	         ^\n" + 
-		"Invalid character constant\n" + 
+		"	        ^\n" + 
+		"String literal is not properly closed by a matching quote\n" + 
 		"----------\n"
 	);
 }
@@ -394,7 +389,7 @@ public void test018() {
 		"----------\n" + 
 		"1. ERROR in X.js (at line 2)\n" + 
 		"	var c = \'\\u0\n" + 
-		"	          ^^^\n" + 
+		"	         ^^^\n" + 
 		"Invalid unicode\n" + 
 		"----------\n"
 	);
@@ -402,7 +397,7 @@ public void test018() {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=12287
  */
-public void test019() {
+public void Xtest019() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -427,7 +422,7 @@ public void test019() {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=38895
  */
-public void test020() {
+public void Xtest020() {
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
@@ -462,19 +457,17 @@ public void test020() {
 		"----------\n"
 	);
 }
-public void test021() {
+public void Xtest021() {
 	StringBuffer buffer = new StringBuffer();
-//	buffer.append("public class X {\n");
 	for (int i = 0; i < 1000; i++) {
-		buffer.append("\tvar field_" + i + " = 0; \n");
+		buffer.append("var field_" + i + " = 0; \n");
 	}
 	for (int i = 0; i < 1000; i++) {
 		if (i == 0)
-			buffer.append("\tfunction method_" + i + "() { /* default */ } \n");
+			buffer.append("function method_" + i + "() { /* default */ } \n");
 		else
-			buffer.append("\tfunction method_" + i + "() { method_" + (i - 1) + "() \n");
+			buffer.append("function method_" + i + "() { method_" + (i - 1) + "() \n");
 	}
-//	buffer.append("}\n");
 	
 	Hashtable options = new Hashtable();
 	options.put(CompilerOptions.OPTION_MaxProblemPerUnit, "10");
@@ -542,148 +535,19 @@ public void test021() {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=156119
  */
-public void test022() {
-	Map options = getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
-	this.runNegativeTest(
-		new String[] {
-			"X.js",
-			"interface X {\n" + 
-			"    int f= 1;;\n" + 
-			"}"
-		},
-		"----------\n" + 
-		"1. ERROR in X.js (at line 2)\n" + 
-		"	int f= 1;;\n" + 
-		"	         ^\n" + 
-		"Unnecessary semicolon\n" + 
-		"----------\n",
-		null, // custom classpath
-		true, // flush previous output dir content
-		options // custom options
-	);
-}
-/*
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=156119
- */
 public void test023() {
 	Map options = getCompilerOptions();
 	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
 			"X.js",
-			"class X {\n" + 
-			"    int f= 1;;\n" + 
-			"}"
+			"var f= 1;;\n"
 		},
 		"----------\n" + 
-		"1. ERROR in X.js (at line 2)\n" + 
-		"	int f= 1;;\n" + 
+		"1. ERROR in X.js (at line 1)\n" + 
+		"	var f= 1;;\n" + 
 		"	         ^\n" + 
 		"Unnecessary semicolon\n" + 
-		"----------\n",
-		null, // custom classpath
-		true, // flush previous output dir content
-		options // custom options
-	);
-}
-/*
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=156119
- */
-public void test024() {
-	Map options = getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportEmptyStatement, CompilerOptions.ERROR);
-	this.runNegativeTest(
-		new String[] {
-			"X.js",
-			"interface X {\n" + 
-			"    int f= 1;\\u003B\n" + 
-			"}"
-		},
-		"----------\n" + 
-		"1. ERROR in X.js (at line 2)\n" + 
-		"	int f= 1;\\u003B\n" + 
-		"	         ^^^^^^\n" + 
-		"Unnecessary semicolon\n" + 
-		"----------\n",
-		null, // custom classpath
-		true, // flush previous output dir content
-		options // custom options
-	);
-}
-/*
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=160337
- */
-public void test025() {
-	Map options = getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportUndocumentedEmptyBlock, CompilerOptions.ERROR);
-	this.runNegativeTest(
-		new String[] {
-			"X.js",
-			"public class X {\n" + 
-			"        static class Y {\n" + 
-			"                public void foo(int i) {}\n" + 
-			"        }\n" + 
-			"        static Y FakeInvocationSite = new Y(){\n" + 
-			"                public void foo(int i) {}\n" + 
-			"        };\n" + 
-			"}"
-		},
-		"----------\n" + 
-		"1. ERROR in X.js (at line 3)\n" + 
-		"	public void foo(int i) {}\n" + 
-		"	                       ^^\n" + 
-		"Empty block should be documented\n" + 
-		"----------\n" + 
-		"2. ERROR in X.js (at line 6)\n" + 
-		"	public void foo(int i) {}\n" + 
-		"	                       ^^\n" + 
-		"Empty block should be documented\n" + 
-		"----------\n",
-		null, // custom classpath
-		true, // flush previous output dir content
-		options // custom options
-	);
-}
-/*
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=160337
- */
-public void test026() {
-	Map options = getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportUndocumentedEmptyBlock, CompilerOptions.ERROR);
-	this.runNegativeTest(
-		new String[] {
-			"X.js",
-			"public class X {\n" + 
-			"        static class Y {\n" + 
-			"                public void foo(int i) {}\n" + 
-			"        }\n" + 
-			"        static Y FakeInvocationSite = new Y(){\n" + 
-			"                public void foo(int i) {\n" +
-			"					class A {\n" +
-			"						A() {}\n" +
-			"						public void bar() {}\n" +
-			"					}\n" +
-			"					new A().bar();\n" +
-			"				 }\n" + 
-			"        };\n" + 
-			"}"
-		},
-		"----------\n" + 
-		"1. ERROR in X.js (at line 3)\n" + 
-		"	public void foo(int i) {}\n" + 
-		"	                       ^^\n" + 
-		"Empty block should be documented\n" + 
-		"----------\n" + 
-		"2. ERROR in X.js (at line 8)\n" + 
-		"	A() {}\n" + 
-		"	    ^^\n" + 
-		"Empty block should be documented\n" + 
-		"----------\n" + 
-		"3. ERROR in X.js (at line 9)\n" + 
-		"	public void bar() {}\n" + 
-		"	                  ^^\n" + 
-		"Empty block should be documented\n" + 
 		"----------\n",
 		null, // custom classpath
 		true, // flush previous output dir content

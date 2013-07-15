@@ -42,21 +42,6 @@ public class ASTImplTests extends AbstractRegressionTest {
 public ASTImplTests(String name) { 
     super(name);
 }
-
-	// Static initializer to specify tests subset using TESTS_* static variables
-  	// All specified tests which does not belong to the class are skipped...
-  	// Only the highest compliance level is run; add the VM argument
-  	// -Dcompliance=1.4 (for example) to lower it if needed
-  	static {
-//    	TESTS_NAMES = new String[] { "test2050" };
-//    	TESTS_NUMBERS = new int[] { 3 };   
-//    	TESTS_NUMBERS = new int[] { 2999 };   
-//    	TESTS_RANGE = new int[] { 2050, -1 }; 
-  	}
-
-public static Test suite() {
-    return buildAllCompliancesTestSuite(testClass());
-}
   
 public static Class testClass() {
     return ASTImplTests.class;
@@ -509,68 +494,6 @@ public void test0009_combined_binary_expression() {
 			"        );\n" + 
 			"}\n" + 
 			""},
-		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-}
-
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
-// check if the generated code is OK when leveraging CombinedBinaryExpression
-// variant involving constant binary expressions deep in the tree
-public void test0010_combined_binary_expression() {
-	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
-	this.runConformTest(
-		new String[] {
-			"X.js",
-			"public class X {\n" + 
-			"  function main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
-			"        s[i] = \"a\";\n" + 
-			"    }\n" + 
-			"    foo(s);\n" + 
-			"}\n" + 
-			" function foo (s) {\n" +
-			"    var c = \"a\";" + 
-			"    println(\n" + 
-			"        c + c + c + c + s[4] + s[5] + s[6] + s[7] + s[8] + \n" +
-			"        s[9] + s[10] + s[11] + s[12] + s[13] + s[14] + \n" +
-			"        s[15] + s[16] + s[17] + s[18] + s[19] + s[20] + \n" +
-			"        s[21] + s[22] + s[23] + s[24] + s[25] + s[26] + \n" +
-			"        s[27] + s[28] + s[29]\n" + 
-			"        );\n" + 
-			"}\n" + 
-			"}"
-		},
-		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-}
-
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
-// check if the generated code is OK when leveraging CombinedBinaryExpression
-// variant involving a constant combined binary expression
-public void test0011_combined_binary_expression() {
-	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
-	this.runConformTest(
-		new String[] {
-			"X.js",
-			"  function main(String args[]) {\n" + 
-			"    var max = 30; \n" + 
-			"    var s = new Array();\n" + 
-			"    for (var i = 0; i < max; i++) {\n" + 
-			"        s[i] = \"a\";\n" + 
-			"    }\n" + 
-			"    foo(s);\n" + 
-			"}\n" + 
-			" function foo (s) {\n" +
-			"    var c = \"a\";" + 
-			"    println(\n" + 
-			"        c + c + c + c + c + c + c + c + c + c + \n" + 
-			"        c + c + c + c + c + c + c + c + c + c + \n" + 
-			"        c + c + s[22] + s[23] + s[24] + s[25] + s[26] + \n" +
-			"        s[27] + s[28] + s[29]\n" + 
-			"        );\n" + 
-			"}\n" + 
-			""
-		},
 		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 

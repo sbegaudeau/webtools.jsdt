@@ -17,15 +17,10 @@ public final class SourceType {
 	private int declarationStart;
 	private int declarationEnd;
 	private char[] fileName;
-	private SourcePackage packageName;
-	private SourceImport[] imports;
-	private char[] enclosingTypeName;
 	private char[] name;
 	private int nameSourceStart;
 	private int nameSourceEnd;
 	private char[] superclassName;
-	private SourceType[] memberTypes;
-	private int numberOfMemberTypes;
 	private SourceMethod[] methods;
 	private int numberOfMethods;
 	private SourceField[] fields;
@@ -37,7 +32,6 @@ public final class SourceType {
 	private char[] qualifiedName;
 	private String defaultConstructor;
 public SourceType(
-	char[] enclosingTypeName,
 	int declarationStart,
 	int modifiers,
 	char[] name,
@@ -46,7 +40,6 @@ public SourceType(
 	char[] superclassName,
 	char[] source) {
 
-	this.enclosingTypeName = enclosingTypeName;
 	this.declarationStart = declarationStart;
 
 	this.modifiers = modifiers;
@@ -70,16 +63,6 @@ protected void addField(SourceField sourceField) {
 			numberOfFields); 
 	}
 	fields[numberOfFields++] = sourceField;
-}
-protected void addMemberType(SourceType sourceMemberType) {
-	if(memberTypes == null) {
-		memberTypes = new SourceType[4];
-	}
-
-	if(numberOfMemberTypes == memberTypes.length) {
-		System.arraycopy(memberTypes, 0, memberTypes = new SourceType[numberOfMemberTypes * 2], 0, numberOfMemberTypes);
-	}
-	memberTypes[numberOfMemberTypes++] = sourceMemberType;
 }
 protected void addMethod(SourceMethod sourceMethod) {
 	if (methods == null) {
@@ -128,9 +111,6 @@ public int getDeclarationSourceEnd() {
 public int getDeclarationSourceStart() {
 	return declarationStart;
 }
-public char[] getEnclosingTypeName() {
-	return enclosingTypeName;
-}
 public SourceField[] getFields() {
 	if (fields != null && fields.length != numberOfFields) {
 		System.arraycopy(fields, 0, fields = new SourceField[numberOfFields], 0, numberOfFields);
@@ -139,26 +119,6 @@ public SourceField[] getFields() {
 }
 public char[] getFileName() {
 	return fileName;
-}
-public char[][] getImports() {
-	if (imports == null) return null;
-	int importLength = imports.length;
-	char[][] importNames = new char[importLength][];
-	for (int i = 0, max = importLength; i < max; i++) {
-		importNames[i] = imports[i].name;
-	}
-	return importNames;
-}
-public SourceType[] getMemberTypes() {
-	if (memberTypes != null && memberTypes.length != numberOfMemberTypes) {
-		System.arraycopy(
-			memberTypes, 
-			0, 
-			memberTypes = new SourceType[numberOfMemberTypes], 
-			0, 
-			numberOfMemberTypes); 
-	}
-	return memberTypes;
 }
 public SourceMethod[] getMethods() {
 	if (methods != null && methods.length != numberOfMethods) {
@@ -178,14 +138,9 @@ public int getNameSourceEnd() {
 public int getNameSourceStart() {
 	return nameSourceStart;
 }
-public char[] getPackageName() {
-	return packageName.name;
-}
 public char[] getQualifiedName() {
 	if (qualifiedName == null) {
 		StringBuffer temp = new StringBuffer();
-		temp.append(packageName);
-		temp.append('.');
 		temp.append(name);
 		qualifiedName = temp.toString().toCharArray();
 	}
@@ -206,12 +161,6 @@ public void setDeclarationSourceEnd(int position) {
 public void setDefaultConstructor(String s) {
 	this.defaultConstructor = s;
 }
-public void setImports(SourceImport[] imports) {
-	this.imports = imports;
-}
-public void setPackage(SourcePackage sourcePackage) {
-	packageName = sourcePackage;
-}
 public void setSuperclass(char[] superclassName) {
 	this.superclassName = superclassName;
 }
@@ -229,14 +178,6 @@ public String toString() {
 public String toString(int tab) {
 
 	StringBuffer buffer = new StringBuffer();
-	if (packageName != null) {
-		buffer.append(tabString(tab)).append(packageName);
-	}
-	if (imports != null) {
-		for (int i = 0, max = imports.length; i < max; i++) {
-			buffer.append(tabString(tab)).append(imports[i]);
-		}
-	}
 	buffer.append(tabString(tab));
 	String displayModifiers = displayModifiers();
 	if (displayModifiers != null) {
@@ -247,11 +188,6 @@ public String toString(int tab) {
 		buffer.append("extends ").append(superclassName).append(" ");
 	}
 	buffer.append("{\n");
-	if (memberTypes != null) {
-		for (int i = 0, max = numberOfMemberTypes; i < max; i++) {
-			buffer.append(memberTypes[i].toString(tab + 1)).append("\n");
-		}
-	}
 	if (fields != null) {
 		for (int i = 0, max = numberOfFields; i < max; i++) {
 			buffer.append(fields[i].toString(tab + 1)).append("\n");

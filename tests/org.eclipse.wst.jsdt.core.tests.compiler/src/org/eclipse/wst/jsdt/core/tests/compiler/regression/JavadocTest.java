@@ -37,13 +37,11 @@ public abstract class JavadocTest extends AbstractRegressionTest {
 	
 	static {
 		ALL_CLASSES = new ArrayList();
-		ALL_CLASSES.add(JavadocBugsTest.class);
 		ALL_CLASSES.add(JavadocTestForMethod.class);
 		ALL_CLASSES.add(JavadocTestMixed.class);
 		ALL_CLASSES.add(JavadocTestForClass.class);
 		ALL_CLASSES.add(JavadocTestForConstructor.class);
 		ALL_CLASSES.add(JavadocTestForField.class);
-		ALL_CLASSES.add(JavadocTestForInterface.class);
 		ALL_CLASSES.add(JavadocTestOptions.class);
 	}
 	
@@ -67,16 +65,6 @@ public abstract class JavadocTest extends AbstractRegressionTest {
 			Class testClass = (Class) ALL_CLASSES.get(i);
 			Test suite = buildAllCompliancesTestSuite(testClass);
 			testSuite.addTest(suite);
-		}
-		int complianceLevels = AbstractCompilerTest.getPossibleComplianceLevels();
-		if ((complianceLevels & AbstractCompilerTest.F_1_3) != 0) {
-			testSuite.addTest(buildUniqueComplianceTestSuite(JavadocTest_1_3.class, COMPLIANCE_1_3));
-		}
-		if ((complianceLevels & AbstractCompilerTest.F_1_4) != 0) {
-			testSuite.addTest(buildUniqueComplianceTestSuite(JavadocTest_1_4.class, COMPLIANCE_1_4));
-		}
-		if ((complianceLevels & AbstractCompilerTest.F_1_5) != 0) {
-			testSuite.addTest(buildUniqueComplianceTestSuite(JavadocTest_1_5.class, COMPLIANCE_1_5));
 		}
 		return testSuite;
 	}

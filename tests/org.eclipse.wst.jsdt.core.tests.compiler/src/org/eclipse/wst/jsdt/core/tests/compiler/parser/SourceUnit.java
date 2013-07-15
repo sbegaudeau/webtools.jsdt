@@ -17,16 +17,10 @@ public final class SourceUnit {
 	private int declarationStart;
 	private int declarationEnd;
 	private char[] fileName;
-	private SourcePackage packageName;
-	private SourceImport[] imports;
-	private char[] enclosingTypeName;
 	private char[] name;
 	private int nameSourceStart;
 	private int nameSourceEnd;
 	private char[] superclassName;
-	private char[][] interfaceNames;
-	private SourceType[] memberTypes;
-	private int numberOfMemberTypes;
 	private SourceMethod[] methods;
 	private int numberOfMethods;
 	private SourceField[] fields;
@@ -55,16 +49,6 @@ protected void addField(SourceField sourceField) {
 			numberOfFields); 
 	}
 	fields[numberOfFields++] = sourceField;
-}
-protected void addMemberType(SourceType sourceMemberType) {
-	if(memberTypes == null) {
-		memberTypes = new SourceType[4];
-	}
-
-	if(numberOfMemberTypes == memberTypes.length) {
-		System.arraycopy(memberTypes, 0, memberTypes = new SourceType[numberOfMemberTypes * 2], 0, numberOfMemberTypes);
-	}
-	memberTypes[numberOfMemberTypes++] = sourceMemberType;
 }
 protected void addMethod(SourceMethod sourceMethod) {
 	if (methods == null) {
@@ -113,9 +97,6 @@ public int getDeclarationSourceEnd() {
 public int getDeclarationSourceStart() {
 	return declarationStart;
 }
-public char[] getEnclosingTypeName() {
-	return enclosingTypeName;
-}
 public SourceField[] getFields() {
 	if (fields != null && fields.length != numberOfFields) {
 		System.arraycopy(fields, 0, fields = new SourceField[numberOfFields], 0, numberOfFields);
@@ -124,29 +105,6 @@ public SourceField[] getFields() {
 }
 public char[] getFileName() {
 	return fileName;
-}
-public char[][] getImports() {
-	if (imports == null) return null;
-	int importLength = imports.length;
-	char[][] importNames = new char[importLength][];
-	for (int i = 0, max = importLength; i < max; i++) {
-		importNames[i] = imports[i].name;
-	}
-	return importNames;
-}
-public char[][] getInterfaceNames() {
-	return interfaceNames;
-}
-public SourceType[] getMemberTypes() {
-	if (memberTypes != null && memberTypes.length != numberOfMemberTypes) {
-		System.arraycopy(
-			memberTypes, 
-			0, 
-			memberTypes = new SourceType[numberOfMemberTypes], 
-			0, 
-			numberOfMemberTypes); 
-	}
-	return memberTypes;
 }
 public SourceMethod[] getMethods() {
 	if (methods != null && methods.length != numberOfMethods) {
@@ -166,14 +124,9 @@ public int getNameSourceEnd() {
 public int getNameSourceStart() {
 	return nameSourceStart;
 }
-public char[] getPackageName() {
-	return packageName.name;
-}
 public char[] getQualifiedName() {
 	if (qualifiedName == null) {
 		StringBuffer temp = new StringBuffer();
-		temp.append(packageName);
-		temp.append('.');
 		temp.append(name);
 		qualifiedName = temp.toString().toCharArray();
 	}
@@ -194,17 +147,8 @@ public void setDeclarationSourceEnd(int position) {
 public void setDefaultConstructor(String s) {
 	this.defaultConstructor = s;
 }
-public void setImports(SourceImport[] imports) {
-	this.imports = imports;
-}
-public void setPackage(SourcePackage sourcePackage) {
-	packageName = sourcePackage;
-}
 public void setSuperclass(char[] superclassName) {
 	this.superclassName = superclassName;
-}
-public void setSuperinterfaces(char[][] superinterfacesNames) {
-	this.interfaceNames = superinterfacesNames;
 }
 public String tabString(int tab) {
 	/*slow code*/

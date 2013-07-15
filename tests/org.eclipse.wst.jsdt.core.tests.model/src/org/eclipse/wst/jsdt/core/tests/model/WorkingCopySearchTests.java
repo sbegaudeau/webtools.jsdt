@@ -113,7 +113,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			resultCollector,
 			null);
 		assertSearchResults(
-			"src/wc/X.java wc.NewType [NewType]", 
+			"src/wc/X.js wc.NewType [NewType]", 
 			resultCollector);
 	}
 	

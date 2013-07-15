@@ -19,31 +19,22 @@ public class FieldAccessCompletionTest extends AbstractCompletionTest {
 public FieldAccessCompletionTest(String testName) {
 	super(testName);
 }
-public static Test suite() {
-	return buildAllCompliancesTestSuite(FieldAccessCompletionTest.class);
-}
 /*
  * AdditiveExpression ::= AdditiveExpression '-' <MultiplicativeExpression>  
  */
 public void testAdditiveExpressionMinus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return 1 - fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return 1 - fred().xyz;						\n" +
+		"}												\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (1 - <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 - <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -59,22 +50,16 @@ public void testAdditiveExpressionMinus() {
 public void testAdditiveExpressionPlus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return 1 + fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return 1 + fred().xyz;						\n" +
+		"}												\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (1 + <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 + <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -90,22 +75,16 @@ public void testAdditiveExpressionPlus() {
 public void testAndExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue & fred().xyz;					\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue & fred().xyz;					\n" +
+		"}												\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue & <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue & <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -121,22 +100,16 @@ public void testAndExpression() {
 public void testArgumentList() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		bizz(1, \"2\", fred().xyz);				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	bizz(1, \"2\", fred().xyz);				\n" +
+		"}											\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    bizz(1, \"2\", <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  bizz(1, \"2\", <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -152,22 +125,16 @@ public void testArgumentList() {
 public void testArrayAccess() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {									\n" +
-		"	int foo() {									\n" +
-		"		return v[fred().xyz];						\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {									\n" +
+		"	return v[fred().xyz];						\n" +
+		"}											\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    v[<CompleteOnMemberAccess:fred().x>];\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return v[<CompleteOnMemberAccess:fred().x>];\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -178,58 +145,21 @@ public void testArrayAccess() {
 	);
 }
 /*
- * ArrayAccess ::= PrimaryNoNewArray '[' <Expression> ']' 
- */
-public void testArrayAccessPrimaryNoNewArray() {
-	this.runTestCheckMethodParse(
-		// compilationUnit:
-		"class Bar {									\n" +
-		"	int foo() {									\n" +
-		"		return buzz()[fred().xyz];				\n" +
-		"	}											\n" +
-		"}												\n",
-			// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    buzz()[<CompleteOnMemberAccess:fred().x>];\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on array access primary no new array>"
-	);
-}
-/*
  * ArrayInitializer ::= '{' <VariableInitializers> '}' 
  */
 public void testArrayInitializer() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		int[] i = new int[] {fred().xyz}				\n" +
-		"	}													\n" +
-		"}														\n",
+		"function foo() {										\n" +
+		"	var i = [fred().xyz];				\n" +
+		"}													\n",
 			// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int[] i = new int[]{<CompleteOnMemberAccess:fred().x>};\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = [<CompleteOnMemberAccess:fred().x>];\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -244,23 +174,17 @@ public void testArrayInitializer() {
  */
 public void testArrayInitializerComma() {
 	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		int[] i = new int[] {fred().xyz,}					\n" +
-		"	}													\n" +
-		"}														\n",
-		// completeBehind:
+			// compilationUnit:
+			"function foo() {										\n" +
+			"	var i = [fred().xyz];				\n" +
+			"}													\n",
+				// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int[] i = new int[]{<CompleteOnMemberAccess:fred().x>};\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = [<CompleteOnMemberAccess:fred().x>];\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -276,22 +200,16 @@ public void testArrayInitializerComma() {
 public void testAssignment() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		i = fred().xyz;									\n" +
-		"	}													\n" +
-		"}														\n",
+		"function foo() {										\n" +
+		"	i = fred().xyz;									\n" +
+		"}													\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    i = <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  i = <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -307,26 +225,23 @@ public void testAssignment() {
 public void testBlock() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		try {									\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"		} catch (Exception e) {}				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	try {									\n" +
+		"		fred().xyz = new Foo();				\n" +
+		"	} catch (e) {}				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
+		"function foo() {\n" + 
+		"  try \n" +
 		"    {\n" + 
-		"      <CompleteOnMemberAccess:fred().x>;\n" + 
+		"      <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"    }\n" + 
-		"  }\n" + 
+		"  catch (e)     {\n" +
+		"    }\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -342,24 +257,18 @@ public void testBlock() {
 public void testBlockStatements() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		int i = 0;								\n" +
-		"		fred().xyz = new Foo();					\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	var i = 0;								\n" +
+		"	fred().xyz = new Foo();					\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = 0;\n" + 
+		"  <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -370,37 +279,6 @@ public void testBlockStatements() {
 	);
 }
 /*
- * ConstructorBody ::= NestedMethod '{' ExplicitConstructorInvocation <BlockStatements> '}'   
- */
-public void testBlockStatementsInConstructorBody() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	Bar() {										\n" +
-		"		super();									\n" +
-		"		fred().xyz = new Foo();		\n" +
-		"	}													\n" +
-		"}													\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" +
-		"    super();\n" +
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on block statements in constructor body>"
-	);
-}
-/*
  * BlockStatements ::= BlockStatements <BlockStatement>
  *
  * in a non static initializer.
@@ -408,9 +286,9 @@ public void testBlockStatementsInConstructorBody() {
 public void testBlockStatementsInInitializer() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
+		"function Bar() {									\n" +
 		"	{											\n" +
-		"		int i = 0;								\n" +
+		"		var i = 0;								\n" +
 		"		fred().xyz = new Foo();					\n" +
 		"	}											\n" +
 		"}												\n",
@@ -419,12 +297,10 @@ public void testBlockStatementsInInitializer() {
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
+		"function Bar() {\n" + 
 		"  {\n" + 
-		"    int i;\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"  Bar() {\n" + 
+		"    var i = 0;\n" + 
+		"    <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"  }\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
@@ -436,132 +312,21 @@ public void testBlockStatementsInInitializer() {
 	);
 }
 /*
- * BlockStatements ::= BlockStatements <BlockStatement>
- *
- * in a static initializer.
- */
-public void testBlockStatementsInStaticInitializer() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	static {									\n" +
-		"		int i = 0;								\n" +
-		"		fred().xyz = new Foo();					\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  static {\n" + 
-		"    int i;\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" +
-		"  <clinit>() {\n" +
-		"  }\n" +
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on block statements in static initializer>"
-	);
-}
-/*
- * CastExpression ::= PushLPAREN <Expression> PushRPAREN UnaryExpressionNotPlusMinus
- *
- * NB: Valid syntaxically but not semantically
- */
-public void testCastExpression() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	Bar foo() {									\n" +
-		"		return (fred().xyz)buzz();				\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  Bar foo() {\n" + 
-		"    return <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on cast expression>"
-	);
-}
-/*
- * CastExpression ::= PushLPAREN PrimitiveType Dimsopt PushRPAREN <UnaryExpression>
- * or
- * CastExpression ::= PushLPAREN Name Dims PushRPAREN <UnaryExpressionNotPlusMinus>
- * or
- * CastExpression ::= PushLPAREN Expression PushRPAREN <UnaryExpressionNotPlusMinus> 
- */
-public void testCastExpressionUnaryExpression() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	Bar foo() {									\n" +
-		"		return (Bar)(fred().xyz);				\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  Bar foo() {\n" + 
-		"    (Bar) <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on cast expression unary expression>"
-	);
-}
-/*
  * ClassInstanceCreationExpression ::= 'new' ClassType '(' <ArgumentListopt> ')' ClassBodyopt 
  */
 public void testClassInstanceCreationExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		new Bar(fred().xyz);						\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	new Bar(fred().xyz);						\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    new Bar(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  new   Bar(<CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -572,89 +337,21 @@ public void testClassInstanceCreationExpression() {
 	);
 }
 /*
- * ClassInstanceCreationExpression ::= ClassInstanceCreationExpressionName 'new' SimpleName '(' ArgumentListopt ')' ClassBodyopt  
- */
-public void testClassInstanceCreationExpressionName() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		Bar.new Bar(fred().xyz);					\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    Bar.new Bar(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on class instance creation expression name>"
-	);
-}
-/*
- * ClassInstanceCreationExpression ::= Primary '.' 'new' SimpleName '(' <ArgumentListopt> ')' ClassBodyopt 
- */
-public void testClassInstanceCreationExpressionPrimary() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		bizz().new Bar(fred().xyz);				\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    bizz().new Bar(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on class instance creation expression primary>"
-	);
-}
-/*
  * ConditionalAndExpression ::= ConditionalAndExpression '&&' <InclusiveOrExpression> 
  */
 public void testConditionalAndExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue && fred().xyz;					\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue && fred().xyz;					\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue && <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue && <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -670,22 +367,16 @@ public void testConditionalAndExpression() {
 public void testConditionalExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	Bar foo() {										\n" +
-		"		return fred().xyz == null ? null : new Bar();	\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return fred().xyz == null ? null : new Bar();	\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  Bar foo() {\n" + 
-		"    return <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return ((<CompleteOnMemberAccess:fred().x> == null) ? null : new Bar());\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -701,22 +392,16 @@ public void testConditionalExpression() {
 public void testConditionalExpressionConditionalExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue ? true : fred().xyz;			\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue ? true : fred().xyz;			\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue ? true : <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue ? true : <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -732,22 +417,16 @@ public void testConditionalExpressionConditionalExpression() {
 public void testConditionalOrExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue || fred().xyz;					\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue || fred().xyz;					\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue || <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue || <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -758,90 +437,25 @@ public void testConditionalOrExpression() {
 	);
 }
 /*
- * ConstructorBody ::= NestedMethod '{' <BlockStatementsopt> '}' 
- */
-public void testConstructorBody() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	Bar() {										\n" +
-		"		fred().xyz = new Foo();					\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" +
-		"    super();\n" +
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on constructor body>"
-	);
-}
-/*
- * DimWithOrWithOutExpr ::= '[' <Expression> ']' 
- */
-public void testDimWithOrWithOutExpr() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		int[] v = new int[fred().xyz];			\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int[] v = new int[<CompleteOnMemberAccess:fred().x>];\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on dim with or without expr>"
-	);
-}
-/*
  * DoStatement ::= 'do' Statement 'while' '(' <Expression> ')' ';'  
  */
 public void testDoExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		do										\n" +
-		"			System.out.println();				\n" +
-		"		while (fred().xyz);						\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	do										\n" +
+		"		System.out.println();				\n" +
+		"	while (fred().xyz);						\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  do\n" +
+		"    System.out.println();\n" +
+		"while (<CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -857,24 +471,20 @@ public void testDoExpression() {
 public void testDoStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		do										\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"		while (true);							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	do										\n" +
+		"		fred().xyz = new Foo();				\n" +
+		"	while (true);							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  do\n" +
+		"    <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
+		"while (true);\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -890,22 +500,16 @@ public void testDoStatement() {
 public void testEqualityExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 == fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 == fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 == <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 == <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -921,22 +525,16 @@ public void testEqualityExpression() {
 public void testEqualityExpressionNot() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 != fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 != fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 != <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 != <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -952,22 +550,16 @@ public void testEqualityExpressionNot() {
 public void testExclusiveOrExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue ^ fred().xyz;					\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue ^ fred().xyz;					\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue ^ <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue ^ <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -978,54 +570,6 @@ public void testExclusiveOrExpression() {
 	);
 }
 /*
- * ConstructorBody ::= NestedMethod '{' <ExplicitConstructorInvocation> '}'
- * or
- * ConstructorBody ::= NestedMethod '{' <ExplicitConstructorInvocation> BlockStatements '}'  
- */
-public void testExplicitConstructorInvocationInConstructorBody() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	static Bar x;								\n" +
-		"	public class InnerBar {						\n" +
-		"	}											\n" +
-		"	public class SubInnerBar extends InnerBar {	\n" +
-		"		SubInnerBar() {							\n" +
-		"			Bar.x.x.super();					\n" +
-		"		}										\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"Bar.x.x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnName:Bar.x.x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" +
-		"  public class InnerBar {\n" +
-		"    public InnerBar() {\n" + 
-		"    }\n" + 
-		"  }\n" +
-		"  public class SubInnerBar extends InnerBar {\n" +
-		"    SubInnerBar() {\n" +
-		"      super();\n" +
-		"      <CompleteOnName:Bar.x.x>;\n" + 
-		"    }\n" +
-		"  }\n" +
-		"  static Bar x;\n" + 
-		"  <clinit>() {\n" + 
-		"  }\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"Bar.x.x",
-		// test name
-		"<complete on explicit constructor invocation in constructor body>"
-	);
-}
-/*
  * ForStatement ::= 'for' '(' <ForInitopt> ';' Expressionopt ';' ForUpdateopt ')' Statement
  * or
  * ForStatementNoShortIf ::= 'for' '(' <ForInitopt> ';' Expressionopt ';' ForUpdateopt ')' StatementNoShortIf 
@@ -1033,23 +577,18 @@ public void testExplicitConstructorInvocationInConstructorBody() {
 public void testForInit() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		for (int i = fred().xyz; i < 2; i++)		\n" +
-		"			System.out.println();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	for (var i = fred().xyz; i < 2; i++)		\n" +
+		"		System.out.println();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i = <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  for (var i = <CompleteOnMemberAccess:fred().x>;; (i < 2); i ++) \n" + 
+		"    System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1067,24 +606,18 @@ public void testForInit() {
 public void testForStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		for (int i = 0; i < 2; i++)				\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	for (var i = 0; i < 2; i++)				\n" +
+		"		fred().xyz = new Foo();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  for (var i = 0;; (i < 2); i ++) \n" +
+		"    <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1102,24 +635,18 @@ public void testForStatement() {
 public void testForStatementExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		for (int i = 0; fred().xyz > i; i++)		\n" +
-		"			Systemout.println();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	for(var i = 0; fred().xyz > i; i++)		\n" +
+		"		System.out.println();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  for (var i = 0;; (<CompleteOnMemberAccess:fred().x> > i); i ++) \n" + 
+		"    System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1137,24 +664,18 @@ public void testForStatementExpression() {
 public void testForUpdate() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		for (int i = 0; i < 2; i+= fred().xyz)	\n" +
-		"			System.out.println();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	for (var i = 0; i < 2; i+= fred().xyz)	\n" +
+		"		System.out.println();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    i += <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  for (var i = 0;; (i < 2); i += <CompleteOnMemberAccess:fred().x>) \n" + 
+		"    System.out.println();\n" +  
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1170,23 +691,18 @@ public void testForUpdate() {
 public void testIfExpresionThen() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		if (fred().xyz)							\n" +
-		"			System.out.println();				\n"	+
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	if (fred().xyz)							\n" +
+		"		System.out.println();				\n"	+
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  if (<CompleteOnMemberAccess:fred().x>)\n" + 
+		"      System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1204,25 +720,22 @@ public void testIfExpresionThen() {
 public void testIfExpresionThenElse() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		if (fred().xyz)							\n" +
-		"			System.out.println();				\n"	+
-		"		else									\n" +
-		"			System.out.println();				\n" +
-		"	}											\n" +
+		"function foo() {								\n" +
+		"	if (fred().xyz)							\n" +
+		"		System.out.println();				\n"	+
+		"	else									\n" +
+		"		System.out.println();				\n" +
 		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  if (<CompleteOnMemberAccess:fred().x>)\n" + 
+		"      System.out.println();\n" +
+		"  else\n" +
+		"      System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1240,25 +753,22 @@ public void testIfExpresionThenElse() {
 public void testIfThenElseStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		if (false)								\n" +
-		"			System.out.println();				\n"	+
-		"		else									\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"	}											\n" +
+		"function foo() {								\n" +
+		"	if (false)								\n" +
+		"		 System.out.println();				\n"	+
+		"	else									\n" +
+		"		fred().xyz = new Foo();				\n" +
 		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  if (false)\n" +
+		"      System.out.println();\n" +
+		"  else\n" +
+		"      <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1274,23 +784,18 @@ public void testIfThenElseStatement() {
 public void testIfThenStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		if (true)								\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	if (true)								\n" +
+		"		fred().xyz = new Foo();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  if (true)\n" +
+		"      <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1308,25 +813,22 @@ public void testIfThenStatement() {
 public void testIfThenStatementElse() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		if (true)								\n" +
-		"			fred().xyz = new Foo();				\n"	+
-		"		else									\n" +
-		"			System.out.println();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	if (true)								\n" +
+		"		fred().xyz = new Foo();				\n"	+
+		"	else									\n" +
+		"		System.out.println();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  if (true)\n" +
+		"      <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
+		"  else\n" +
+		"      System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1342,22 +844,16 @@ public void testIfThenStatementElse() {
 public void testInclusiveOrExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return isTrue | fred().xyz;					\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return isTrue | fred().xyz;					\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (isTrue | <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (isTrue | <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1375,22 +871,16 @@ public void testInclusiveOrExpression() {
 public void testLabeledStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		fredCall: fred().xyz = new Foo();			\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	fredCall: fred().xyz = new Foo();			\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  fredCall: <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1408,22 +898,16 @@ public void testLabeledStatement() {
 public void testMethodBody() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		fred().xyz = new Foo();					\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	fred().xyz = new Foo();					\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1439,22 +923,16 @@ public void testMethodBody() {
 public void testMethodInvocation() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		bizz(fred().xyz);							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	bizz(fred().xyz);							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    bizz(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  bizz(<CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1470,22 +948,16 @@ public void testMethodInvocation() {
 public void testMethodInvocationPrimary() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		buzz().bizz(fred().xyz);					\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	buzz().bizz(fred().xyz);					\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    buzz().bizz(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  buzz().bizz(<CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1496,58 +968,21 @@ public void testMethodInvocationPrimary() {
 	);
 }
 /*
- * FunctionInvocation ::= 'super' '.' 'Identifier' '(' <ArgumentListopt> ')' 
+ * MultiplicativeExpression ::= MultiplicativeExpression '/' <UnaryExpression>
  */
-public void testMethodInvocationSuper() {
+public void testMultiplicativeExpressiondDivision() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		super.bizz(fred().xyz);					\n" +
-		"	}											\n" +
+		"function foo() {									\n" +
+		"	return 2 / fred().xyz;						\n" +
 		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    super.bizz(<CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on method invocation super>"
-	);
-}
-/*
- * MultiplicativeExpression ::= MultiplicativeExpression '/' <UnaryExpression>
- */
-public void testMultiplicativeExpressiondDivision() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {										\n" +
-		"	double foo() {									\n" +
-		"		return 2 / fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  double foo() {\n" + 
-		"    (2 / <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (2 / <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1563,22 +998,16 @@ public void testMultiplicativeExpressiondDivision() {
 public void testMultiplicativeExpressionMultiplication() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return 2 * fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return 2 * fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (2 * <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (2 * <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1594,22 +1023,16 @@ public void testMultiplicativeExpressionMultiplication() {
 public void testMultiplicativeExpressionRemainder() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return 2 % fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return 2 % fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (2 % <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (2 % <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1625,22 +1048,16 @@ public void testMultiplicativeExpressionRemainder() {
 public void testPreIncrementExpressionMinusMinus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		-- fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	-- fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    -- <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  -- <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1656,22 +1073,16 @@ public void testPreIncrementExpressionMinusMinus() {
 public void testPreIncrementExpressionPlusPlus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		++ fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	++ fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    ++ <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  ++ <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1687,27 +1098,21 @@ public void testPreIncrementExpressionPlusPlus() {
 public void testPrimaryNoNewArray() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		(fred().xyz).zzz();						\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	(fred().xyz).zzz();						\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMemberAccess:fred().x>.zzz();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
 		// expectedReplacedSource:
-		"xyz",
+		"(fred().xyz)",
 		// test name
 		"<complete on primary no new array>"
 	);
@@ -1718,22 +1123,16 @@ public void testPrimaryNoNewArray() {
 public void testRelationalExpressionGreaterThan() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 > fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 > fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 > <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 > <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1749,22 +1148,16 @@ public void testRelationalExpressionGreaterThan() {
 public void testRelationalExpressionGreaterThanOrEquals() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 >= fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 >= fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 >= <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 >= <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1780,22 +1173,16 @@ public void testRelationalExpressionGreaterThanOrEquals() {
 public void testRelationalExpressionLessThan() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 < fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 < fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 < <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 < <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1811,22 +1198,16 @@ public void testRelationalExpressionLessThan() {
 public void testRelationalExpressionLessThanOrEqual() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	boolean foo() {									\n" +
-		"		return 1 <= fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	return 1 <= fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  boolean foo() {\n" + 
-		"    (1 <= <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (1 <= <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1842,22 +1223,16 @@ public void testRelationalExpressionLessThanOrEqual() {
 public void testReturnStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	int foo() {									\n" +
-		"		return fred().xyz;						\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {									\n" +
+		"	return fred().xyz;						\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    return <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1873,22 +1248,16 @@ public void testReturnStatement() {
 public void testShiftExpressionLeft() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return i << fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return i << fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (i << <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (i << <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1904,22 +1273,16 @@ public void testShiftExpressionLeft() {
 public void testShiftExpressionRight() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return i >> fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return i >> fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (i >> <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (i >> <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1935,22 +1298,16 @@ public void testShiftExpressionRight() {
 public void testShiftExpressionRightUnSigned() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	int foo() {										\n" +
-		"		return i >>> fred().xyz;						\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {										\n" +
+		"	return i >>> fred().xyz;						\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    (i >>> <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  return (i >>> <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1966,24 +1323,18 @@ public void testShiftExpressionRightUnSigned() {
 public void testStatementExpressionList() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		for (int i = 0, length = fred().xyz; i < 2; i++)	\n" +
-		"			System.out.println();						\n" +
-		"	}													\n" +
-		"}														\n",
+		"function foo() {										\n" +
+		"	for (var i = 0, length = fred().xyz; i < 2; i++)	\n" +
+		"		System.out.println();						\n" +
+		"}													\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" +
-		"    int length = <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  for (var i = 0;, var length = <CompleteOnMemberAccess:fred().x>;; (i < 2); i ++) \n" + 
+		"    System.out.println();\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -1999,28 +1350,23 @@ public void testStatementExpressionList() {
 public void testSwitchBlockStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		int i =  0;								\n" +
-		"		switch (i) {							\n" +
-		"			case 0: fred().xyz = new Foo();		\n" +
-		"		}										\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	var i =  0;								\n" +
+		"	switch (i) {							\n" +
+		"		case 0: fred().xyz = new Foo();		\n" +
+		"	}										\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" +
-		"    {\n" +
-		"      <CompleteOnMemberAccess:fred().x>;\n" +
-		"    }\n" +
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = 0;\n" +
+		"  switch (i) {\n" +
+		"  case 0 : ;\n" +
+		"      <CompleteOnMemberAccess:fred().x> = new Foo();\n" +
+		"  }\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2036,24 +1382,21 @@ public void testSwitchBlockStatement() {
 public void testSwitchExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		switch (fred().xyz) {						\n" +
-		"			case 0: System.out.println();		\n" +
-		"		}										\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	switch (fred().xyz) {						\n" +
+		"		case 0: System.out.println();		\n" +
+		"	}										\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  switch (<CompleteOnMemberAccess:fred().x>) {\n" +
+		"  case 0 : ;\n" +
+		"      System.out.println();\n" + 
+		"  }\n" +
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2069,29 +1412,22 @@ public void testSwitchExpression() {
 public void testSwitchLabel() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {										\n" +
-		"	void foo() {									\n" +
-		"		int i =  0;									\n" +
-		"		switch (i) {								\n" +
-		"			case fred().xyz: System.out.println();	\n" +
-		"		}											\n" +
-		"	}												\n" +
-		"}													\n",
+		"function foo() {									\n" +
+		"	var i =  0;									\n" +
+		"	switch (i) {								\n" +
+		"		case fred().xyz: System.out.println();	\n" +
+		"	}											\n" +
+		"}												\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" + 
-		"    {\n" + 
-		"      switch (i) {\n" + 
-		"      case <CompleteOnMemberAccess:fred().x> : ;\n" + 
-		"      }\n" + 
-		"    }\n" + 
+		"function foo() {\n" + 
+		"  var i = 0;\n" + 
+		"  switch (i) {\n" + 
+		"  case <CompleteOnMemberAccess:fred().x> : ;\n" +
+		"      System.out.println();\n" + 
 		"  }\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
@@ -2103,60 +1439,21 @@ public void testSwitchLabel() {
 	);
 }
 /*
- * SynchronizedStatement ::= OnlySynchronized '(' <Expression> ')' Block
- */
-public void testSynchronizedStatement() {
-	this.runTestCheckMethodParse(
-		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		synchronized (fred().xyz) {				\n" +
-		"			 System.out.println();				\n" +
-		"		} 										\n" +
-		"	}											\n" +
-		"}												\n",
-		// completeBehind:
-		"x",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMemberAccess:fred().x>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"x",
-		// expectedReplacedSource:
-		"xyz",
-		// test name
-		"<complete on synchronized expression>"
-	);
-}
-/*
  * ThrowStatement ::= 'throw' <Expression> ';' 
  */
 public void testThrowExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		throw fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	throw fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  throw <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2172,22 +1469,16 @@ public void testThrowExpression() {
 public void testUnaryExpressionBitwiseComplement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		i = ~ fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	i = ~ fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (~ <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  i = (~ <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2203,22 +1494,16 @@ public void testUnaryExpressionBitwiseComplement() {
 public void testUnaryExpressionLogicalComplement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		i = ! fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	i = ! fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (! <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  i = (! <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2234,22 +1519,16 @@ public void testUnaryExpressionLogicalComplement() {
 public void testUnaryExpressionMinus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		i = - fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	i = - fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (- <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  i = (- <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2265,22 +1544,16 @@ public void testUnaryExpressionMinus() {
 public void testUnaryExpressionPlus() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		i = + fred().xyz;							\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	i = + fred().xyz;							\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (+ <CompleteOnMemberAccess:fred().x>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  i = (+ <CompleteOnMemberAccess:fred().x>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2296,22 +1569,16 @@ public void testUnaryExpressionPlus() {
 public void testVariableDeclarator() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		int i = fred().xyz;								\n" +
-		"	}													\n" +
-		"}														\n",
+		"function foo() {										\n" +
+		"	var i = fred().xyz;								\n" +
+		"}													\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i = <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2327,23 +1594,16 @@ public void testVariableDeclarator() {
 public void testVariableInitializers() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {											\n" +
-		"	void foo() {										\n" +
-		"		int i = 0, j = fred().xyz;						\n" +
-		"	}													\n" +
-		"}														\n",
+		"function foo() {										\n" +
+		"	var i = 0, j = fred().xyz;						\n" +
+		"}													\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    int i;\n" +
-		"    int j = <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  var i = 0, j = <CompleteOnMemberAccess:fred().x>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2361,23 +1621,18 @@ public void testVariableInitializers() {
 public void testWhileExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		while (fred().xyz)						\n" +
-		"			System.out.println();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	while (fred().xyz)						\n" +
+		"		System.out.println();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  while (<CompleteOnMemberAccess:fred().x>)" +
+		"    System.out.println();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",
@@ -2395,23 +1650,18 @@ public void testWhileExpression() {
 public void testWhileStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit: 
-		"class Bar {									\n" +
-		"	void foo() {								\n" +
-		"		while (true)							\n" +
-		"			fred().xyz = new Foo();				\n" +
-		"	}											\n" +
-		"}												\n",
+		"function foo() {								\n" +
+		"	while (true)							\n" +
+		"		fred().xyz = new Foo();				\n" +
+		"}											\n",
 		// completeBehind:
 		"x",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMemberAccess:fred().x>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMemberAccess:fred().x>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  while (true)" +
+		"    <CompleteOnMemberAccess:fred().x> = new Foo();\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"x",

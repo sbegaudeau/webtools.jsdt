@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -28,9 +31,11 @@ import junit.framework.AssertionFailedError;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
+import org.eclipse.wst.jsdt.core.infer.IInferEngineExtension;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
@@ -58,8 +63,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
@@ -560,25 +563,6 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 
 	}
 
-	protected void runConformTest(String[] testFiles) {
-		runConformTest(testFiles, null /* no expected output string */,
-				null /* no extra class libraries */, true /*
-														 * flush output
-														 * directory
-														 */, null /*
-																 * no vm
-																 * arguments
-																 */, null /*
-																		 * no
-																		 * custom
-																		 * options
-																		 */,
-				null /* no custom requestor */, false /*
-													 * do not skip javac for
-													 * this peculiar test
-													 */);
-	}
-
 	protected void runConformTest(String[] testFiles,
 			String expectedSuccessOutputString) {
 		runConformTest(testFiles, expectedSuccessOutputString, null /*
@@ -586,43 +570,23 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 																	 * class
 																	 * libraries
 																	 */,
-				true /* flush output directory */, null /* no vm arguments */,
 				null /* no custom options */, null /* no custom requestor */,
 				false /* do not skip javac for this peculiar test */);
 	}
 
 	protected void runConformTest(String[] testFiles,
-			String expectedSuccessOutputString, String[] vmArguments) {
-		runConformTest(testFiles, expectedSuccessOutputString, null /*
-																	 * no extra
-																	 * class
-																	 * libraries
-																	 */,
-				true /* flush output directory */, vmArguments, null /*
-																	 * no custom
-																	 * options
-																	 */,
-				null /* no custom requestor */, false /*
-													 * do not skip javac for
-													 * this peculiar test
-													 */);
-	}
-
-	protected void runConformTest(String[] testFiles,
 			String expectedSuccessOutputString, String[] classLib,
-			boolean shouldFlushOutputDirectory, String[] vmArguments) {
+			boolean shouldFlushOutputDirectory) {
 		runConformTest(testFiles, expectedSuccessOutputString, classLib,
-				shouldFlushOutputDirectory, vmArguments,
 				null /* no custom options */, null /* no custom requestor */,
 				false /* do not skip javac for this peculiar test */);
 	}
 
 	protected void runConformTest(String[] testFiles,
 			String expectedSuccessOutputString, String[] classLib,
-			boolean shouldFlushOutputDirectory, String[] vmArguments,
 			Map customOptions, ICompilerRequestor clientRequestor) {
 		runConformTest(testFiles, expectedSuccessOutputString, classLib,
-				shouldFlushOutputDirectory, vmArguments, customOptions,
+				customOptions,
 				clientRequestor, false /*
 										 * do not skip javac for this peculiar
 										 * test
@@ -631,14 +595,10 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 
 	protected void runConformTest(String[] testFiles,
 			String expectedSuccessOutputString, String[] classLib,
-			boolean shouldFlushOutputDirectory, String[] vmArguments,
 			Map customOptions, ICompilerRequestor clientRequestor,
-			boolean skipJavac) {
+			boolean skipRhino) {
 		// Non-javac part
 		try {
-			if (shouldFlushOutputDirectory)
-				Util.flushDirectoryContent(new File(OUTPUT_DIR));
-
 			IProblemFactory problemFactory = getProblemFactory();
 			Requestor requestor = new Requestor(problemFactory, OUTPUT_DIR
 					.endsWith(File.separator) ? OUTPUT_DIR : OUTPUT_DIR
@@ -678,21 +638,14 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 			if (!requestor.hasErrors) {
 				String sourceFile = testFiles[0];
 
-				// Compute class name by removing ".java" and replacing slashes
+				// Compute class name by removing ".js" and replacing slashes
 				// with dots
 				String className = sourceFile.substring(0,
-						sourceFile.length() - 5).replace('/', '.').replace(
+						sourceFile.length() - 1).replace('/', '.').replace(
 						'\\', '.');
 				if (className.endsWith(PACKAGE_INFO_NAME))
 					return;
 
-//				if (vmArguments != null) {
-//					if (this.verifier != null) {
-//						this.verifier.shutDown();
-//					}
-//					this.verifier = new TestVerifier(false);
-//					this.createdVerifier = true;
-//				}
 //				boolean passed = this.verifier.verifyClassFiles(sourceFile,
 //						className, expectedSuccessOutputString,
 //						this.classpaths, null, vmArguments);
@@ -709,13 +662,6 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 //														// verifyClassFiles(...)
 //														// action
 //						passed);
-				if (vmArguments != null) {
-//					if (this.verifier != null) {
-//						this.verifier.shutDown();
-//					}
-//					this.verifier = new TestVerifier(false);
-//					this.createdVerifier = true;
-				}
 			} else {
 				System.out.println(getClass().getName() + '#' + getName());
 				System.out.println(Util.displayString(requestor.problemLog,
@@ -733,9 +679,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		} catch (AssertionFailedError e) {
 			throw e;
 		} finally {
-			if (RUN_JAVAC && !skipJavac)
-				runJavac(testFiles, null, expectedSuccessOutputString,
-						shouldFlushOutputDirectory);
+			if (RUN_JAVAC && !skipRhino)
+				runWithRhino(testFiles, "", expectedSuccessOutputString);
 			// PREMATURE for now, skipping javac implies skipping the compile
 			// and execution steps; yet, only cases for which the
 			// execution step was a problem have been discovered so
@@ -743,12 +688,9 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		}
 	}
 
-	protected void runConformTest(String[] testFiles, String[] vmArguments) {
+	protected void runConformTest(String[] testFiles) {
 		runConformTest(testFiles, null /* no expected output string */,
-				null /* no extra class libraries */, true /*
-														 * flush output
-														 * directory
-														 */, vmArguments,
+				null /* no extra class libraries */,
 				null /* no custom options */, null /* no custom requestor */,
 				false /* do not skip javac for this peculiar test */);
 	}
@@ -1060,11 +1002,117 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 		}
 	}
 
+	protected void runWithRhino(String[] testFiles, final String expectedProblemLog, final String expectedSuccessOutputString) {
+		String testName = null;
+		Process compileProcess = null;
+		Process execProcess = null;
+		try {
+			// Init test name
+			testName = testName();
+
+			// Write files in dir
+			writeFiles(testFiles);
+
+			// Prepare command line
+			StringBuffer cmdLine = new StringBuffer(javaCommandLineHeader);
+			// compute extra classpath
+			String[] classpath = Util.concatWithClassLibs(JAVAC_OUTPUT_DIR, false);
+			List cptemp = new ArrayList(Arrays.asList(classpath));
+			cptemp.add(Platform.getBundle("org.mozilla.javascript").getLocation().replaceAll("reference:", "").replaceAll("file:/", ""));
+//			cptemp.add(Platform.getBundle("org.eclipse.wst.jsdt.core.tests.compiler").getLocation().replaceAll("reference:", "").replaceAll("file:/", ""));
+//			cptemp.add(Platform.getBundle("org.eclipse.wst.jsdt.core.tests.compiler").getLocation().replaceAll("reference:", "").replaceAll("file:/", "")+"/bin/");
+			classpath = (String[]) cptemp.toArray(new String[cptemp.size()]);
+			StringBuffer cp = new StringBuffer(" -classpath ");
+			int length = classpath.length;
+			for (int i = 0; i < length; i++) {
+				if (i > 0)
+					cp.append(File.pathSeparatorChar);
+				if (classpath[i].indexOf(" ") != -1) {
+					cp.append("\"" + classpath[i] + "\"");
+				}
+				else {
+					cp.append(classpath[i]);
+				}
+			}
+			cmdLine.append(cp);
+			cmdLine.append(' ');
+//			cmdLine.append(RhinoParser.class.getName());
+//			cmdLine.append(" ");
+			cmdLine.append("org.mozilla.javascript.tools.shell.Main -w -f ");
+
+			// add source files
+			for (int i = 0; i < testFiles.length; i += 2) {
+				// *.java is not enough (p1/X.js, p2/Y.js)
+				cmdLine.append(' ');
+				cmdLine.append(testFiles[i]);
+			}
+
+
+			// Launch process
+			compileProcess = Runtime.getRuntime().exec(cmdLine.toString(), null, this.outputTestDirectory);
+
+			// Log errors
+			Logger errorLogger = new Logger(compileProcess.getErrorStream(), "ERROR");
+
+			// Log output
+			Logger outputLogger = new Logger(compileProcess.getInputStream(), "OUTPUT");
+
+			// start the threads to run outputs (standard/error)
+			errorLogger.start();
+			outputLogger.start();
+
+			// Wait for end of process
+			int exitValue = compileProcess.waitFor();
+			errorLogger.join(); // make sure we get the whole output
+			outputLogger.join();
+			if (errorLogger.buffer.length() > 0 || outputLogger.buffer.length() > 0) {
+				javacFullLog.println(errorLogger.buffer.toString());
+				printFiles(testFiles);
+			}
+			assertEquals(expectedProblemLog != null ? expectedProblemLog : "", errorLogger.buffer.toString());
+			assertEquals(expectedSuccessOutputString != null ? expectedSuccessOutputString : "", outputLogger.buffer.toString());
+		}
+		catch (InterruptedException e1) {
+			if (compileProcess != null)
+				compileProcess.destroy();
+			if (execProcess != null)
+				execProcess.destroy();
+			System.out.println(testName + ": Rhino parser was aborted!");
+		}
+		catch (IOException e) {
+			System.out.println(testName + ": could not launch Rhino!");
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Log contains all problems (warnings+errors)
 	 */
 	protected void runNegativeTest(String[] testFiles, String expectedProblemLog) {
 		runNegativeTest(testFiles, expectedProblemLog, null, true);
+		/*runNegativeTest(testFiles, expectedProblemLog, null 
+															 * no extra class
+															 * libraries
+															 , true 
+																	 * flush
+																	 * output
+																	 * directory
+																	 ,
+				null  no custom options ,
+				false  do not generate output ,
+				false  do not show category ,
+				false  do not show warning token , false 
+															 * do not skip javac
+															 * for this peculiar
+															 * test
+															 , false 
+																		 * do
+																		 * not
+																		 * perform
+																		 * statements
+																		 * recovery
+																		 ,
+				null);*/
 	}
 
 	/**
@@ -1402,7 +1450,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 					System.out
 							.println("***************************************************************************");
 					System.out
-							.println("* Sun Javac compiler output archived into file:");
+							.println("* Rhino output archived into file:");
 					System.out.println("* " + javacFullLogFileName);
 					System.out
 							.println("***************************************************************************");
@@ -1411,7 +1459,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				CURRENT_CLASS_NAME = getClass().getName();
 				dualPrintln("***************************************************************************");
 				System.out
-						.print("* Comparison with Sun Javac compiler for class ");
+						.print("* Comparison with Rhino compiler for class ");
 				dualPrintln(CURRENT_CLASS_NAME.substring(CURRENT_CLASS_NAME
 						.lastIndexOf('.') + 1)
 						+ " ("
@@ -1707,7 +1755,10 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				InferEngine inferEngine = (InferEngine)inferrenceProviders[i].getInferEngine();
 
 				inferEngine.initialize();
-				inferEngine.setCompilationUnit(compUnit);
+				if (inferEngine instanceof IInferEngineExtension)
+					((IInferEngineExtension) inferEngine).setCompilationUnit(compUnit, parser.scanner.getSource());
+				else
+					inferEngine.setCompilationUnit(compUnit);
 				inferEngine.doInfer();
 			}
 			
@@ -1732,15 +1783,18 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 	 * @param expectedInfference expected inferred type after inferring and building
 	 * @param inferOptions {@link InferOptions} to use when inferring and building
 	 * @param inferrenceProvider {@link InferrenceProvider} to use when inferring
+	 * @return 
 	 */
-	protected void runInferAndBuildBindingsTest(String source, String expectedInfference, InferOptions inferOptions,
+	protected CompilationUnitDeclaration[] runInferAndBuildBindingsTest(String source, String expectedInfference, InferOptions inferOptions,
 			InferrenceProvider inferrenceProvider) {
 		
-		this.runInferAndBuildBindingsTest(
+		CompilationUnitDeclaration[] compUnits = this.runInferAndBuildBindingsTest(
 				new String[] {source},
 				new String[] {expectedInfference},
 				inferOptions,
 				new InferrenceProvider[] {inferrenceProvider});
+		
+		return compUnits;
 	}
 	
 	/**
@@ -1752,8 +1806,9 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 	 * @param expectedInfferences expected inferred types after inferring and building
 	 * @param inferOptions {@link InferOptions} to use when inferring and building
 	 * @param inferrenceProviders {@link InferrenceProvider}s to use when inferring
+	 * @return 
 	 */
-	protected void runInferAndBuildBindingsTest(String[] sources, String[] expectedInfferences, InferOptions inferOptions,
+	protected CompilationUnitDeclaration[] runInferAndBuildBindingsTest(String[] sources, String[] expectedInfferences, InferOptions inferOptions,
 			InferrenceProvider[] inferrenceProviders) {
 
 		IProblemFactory problemFactory = new DefaultProblemFactory(Locale.getDefault());
@@ -1778,11 +1833,13 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				InferEngine inferEngine = (InferEngine)inferrenceProviders[j].getInferEngine();
 
 				inferEngine.initialize();
-				inferEngine.setCompilationUnit(compUnits[i]);
+				if (inferEngine instanceof IInferEngineExtension)
+					((IInferEngineExtension) inferEngine).setCompilationUnit(compUnits[i], parser.scanner.getSource());
+				else
+					inferEngine.setCompilationUnit(compUnits[i]);
 				inferEngine.doInfer();
 			}
 			
-			compUnits[i].scope = new CompilationUnitScope(compUnits[i], env);
 			env.buildTypeBindings(compUnits[i], null);
 		}
 		
@@ -1794,9 +1851,11 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest
 				StringBuffer sb = new StringBuffer();
 				compUnits[i].printInferredTypes(sb);
 				String result = sb.toString();
+				
 				assertEquals(expectedInfferences[i], result);
 			}
 		}
+		return compUnits;
 	}
 	
 	private class DoNothingProblemReporter extends ProblemReporter {

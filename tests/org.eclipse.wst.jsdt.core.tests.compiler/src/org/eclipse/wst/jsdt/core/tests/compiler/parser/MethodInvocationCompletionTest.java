@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.parser;
 
-import junit.framework.Test;
-
 /**
  * Completion is expected to be a FunctionInvocation.
  */
@@ -19,33 +17,24 @@ public class MethodInvocationCompletionTest extends AbstractCompletionTest {
 public MethodInvocationCompletionTest(String testName) {
 	super(testName);
 }
-public static Test suite() {
-	return buildAllCompliancesTestSuite(MethodInvocationCompletionTest.class);
-}
 /*
  * Completion with no receiver inside a for statement.
  */
 public void test1FVVWS8_1() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"		for (int i = 10; i > 0; --i)		\n" +
-		"			fred(							\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	for (var i = 10; i > 0; --i)		\n" +
+		"		fred(							\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:fred()>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    int i;\n" +
-		"    <CompleteOnMessageSend:fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  var i;\n" +
+		"  <CompleteOnMessageSend:fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -61,23 +50,17 @@ public void test1FVVWS8_1() {
 public void test1FVVWS8_2() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"		if (true)							\n" +
-		"			fred(							\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	if (true)							\n" +
+		"		fred(							\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:fred()>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  <CompleteOnMessageSend:fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -94,26 +77,20 @@ public void test1FVVWS8_2() {
 public void test1FW2ZTB_1() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {											\n" +
-		"	int[] array;									\n" +
-		"	void foo() {									\n" +
-		"		for (int i = this.array.length; i > 0; --i)	\n" +
-		"			fred(									\n" +
-		"	}												\n" +
-		"}													\n",
+		"var array = [];									\n" +
+		"function foo() {									\n" +
+		"	for (var i = this.array.length; i > 0; --i)	\n" +
+		"		fred(									\n" +
+		"}												\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:fred()>",
 		// expectedUnitDisplayString:
-		"class X {\n" +
-		"  int[] array;\n" +
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    int i;\n" +
-		"    <CompleteOnMessageSend:fred()>;\n" + 
-		"  }\n" + 
+		"var array = [];\n" +
+		"void foo() {\n" +
+		"  var i;\n" +
+		"  <CompleteOnMessageSend:fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -124,62 +101,22 @@ public void test1FW2ZTB_1() {
 	);
 }
 /*
- * Completion with no receiver inside another message send
- * and after a field access in a previous argument.
- */
-public void test1FW2ZTB_2() {
-	this.runTestCheckMethodParse(
-		// compilationUnit:
-		"class X {											\n" +
-		"	int[] array;									\n" +
-		"	void foo() {									\n" +
-		"		bar(this.array.length, 10, fred(			\n" +
-		"	}												\n" +
-		"}													\n",
-		// completeBehind:
-		"fred(",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMessageSend:fred()>",
-		// expectedUnitDisplayString:
-		"class X {\n" +
-		"  int[] array;\n" +
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:fred()>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"",
-		// expectedReplacedSource:
-		"fred(",
-		// test name
-		"<1FW2ZTB_2"
-	);
-}
-/*
  * Complete on method invocation with expression receiver
  * inside another invocation with no receiver.
  */
 public void test1FW35YZ_1() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		bar(primary().fred(					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	bar(primary().fred(					\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:primary().fred()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:primary().fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:primary().fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -190,59 +127,21 @@ public void test1FW35YZ_1() {
 	);
 }
 /*
- * Complete on qualified allocation expression
- * inside an invocation with no receiver.
- */
-public void test1FW35YZ_2() {
-	this.runTestCheckMethodParse(
-		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		bar(primary().new X(				\n" +
-		"	}										\n" +
-		"}											\n",
-		// completeBehind:
-		"X(",
-		// expectedCompletionNodeToString:
-		"<CompleteOnQualifiedAllocationExpression:primary().new X()>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnQualifiedAllocationExpression:primary().new X()>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"",
-		// expectedReplacedSource:
-		"",
-		// test name
-		"<1FW35YZ_2>"
-	);
-}
-/*
  * Completion with primary receiver.
  */
 public void test1FWYBKF() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"			this.x.bar(						\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"		this.x.bar(						\n" +
+		"}										\n",
 		// completeBehind:
 		"bar(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.x.bar()>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:this.x.bar()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  <CompleteOnMessageSend:this.x.bar()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -258,22 +157,16 @@ public void test1FWYBKF() {
 public void test1GAJBUQ() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		x.y.Z.fred(buzz());					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	x.y.Z.fred(buzz());					\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(buzz()",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:x.y.Z.fred(buzz())>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:x.y.Z.fred(buzz())>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:x.y.Z.fred(buzz())>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -284,60 +177,21 @@ public void test1GAJBUQ() {
 	);
 }
 /*
- * Completion just before the second parameter, the first parameter being an empty
- * anonymous class.
- */
-public void testAfterEmptyAnonymous() {
-	this.runTestCheckMethodParse(
-		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(new Runnable() {}, 2, i);	\n" +
-		"	}										\n" +
-		"}											\n",
-		// completeBehind:
-		"fred(new Runnable() {}, ",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMessageSend:this.fred(new Runnable() {\n})>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred(new Runnable() {\n" + 
-		"})>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"",
-		// expectedReplacedSource:
-		"fred(new Runnable() {}, ",
-		// test name
-		"<completion just before second parameter, the first parameter being an empty anonymous class>"
-	);
-}
-/*
  * Completion just after the first parameter.
  */
 public void testAfterFirstParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(\"abc\" , 2, i);		\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(\"abc\" , 2, i);		\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(\"abc\" ",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.fred(\"abc\")>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred(\"abc\")>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:this.fred(\"abc\")>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -353,22 +207,16 @@ public void testAfterFirstParameter() {
 public void testBeforeFirstParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(1, 2, i);					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(1, 2, i);					\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.fred()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:this.fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -384,22 +232,16 @@ public void testBeforeFirstParameter() {
 public void testBeforeLastParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(1, 2, i);					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(1, 2, i);					\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(1, 2,",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.fred(1, 2)>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred(1, 2)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:this.fred(1, 2)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -415,22 +257,16 @@ public void testBeforeLastParameter() {
 public void testBeforeSecondParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(1, 2, i);					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(1, 2, i);					\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(1, ",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.fred(1)>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred(1)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:this.fred(1)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -446,22 +282,16 @@ public void testBeforeSecondParameter() {
 public void testEmptyInFirstParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(\"abc\" + , 2, i);		\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(\"abc\" + , 2, i);		\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(\"abc\" +",
 		// expectedCompletionNodeToString:
 		"<CompleteOnName:>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (\"abc\" + <CompleteOnName:>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  (\"abc\" + <CompleteOnName:>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -477,22 +307,16 @@ public void testEmptyInFirstParameter() {
 public void testInFirstParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred(\"abc\" + bizz, 2, i);	\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred(\"abc\" + bizz, 2, i);	\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(\"abc\" + bi",
 		// expectedCompletionNodeToString:
 		"<CompleteOnName:bi>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    (\"abc\" + <CompleteOnName:bi>);\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  (\"abc\" + <CompleteOnName:bi>);\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"bi",
@@ -508,25 +332,19 @@ public void testInFirstParameter() {
 public void testInIfStatement() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"		if (true) {							\n" +
-		"			bar.fred();						\n" +
-		"		}									\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	if (true) {							\n" +
+		"		bar.fred();						\n" +
+		"	}									\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:bar.fred()>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    {\n" + 
-		"      <CompleteOnMessageSend:bar.fred()>;\n" + 
-		"    }\n" + 
+		"function foo() {\n" + 
+		"  {\n" + 
+		"    <CompleteOnMessageSend:bar.fred()>;\n" + 
 		"  }\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
@@ -543,22 +361,16 @@ public void testInIfStatement() {
 public void testLabeledWithExpressionReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"		label1: bar().fred(1, 2, o);		\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	label1: bar().fred(1, 2, o);		\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(1, 2,",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:bar().fred(1, 2)>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:bar().fred(1, 2)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  <CompleteOnMessageSend:bar().fred(1, 2)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -576,22 +388,16 @@ public void testLabeledWithExpressionReceiver() {
 public void testLabeledWithoutReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		label1: fred(1, 2, o);				\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	label1: fred(1, 2, o);				\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(1, 2,",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:fred(1, 2)>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:fred(1, 2)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  <CompleteOnMessageSend:fred(1, 2)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -609,22 +415,16 @@ public void testLabeledWithoutReceiver() {
 public void testNoReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		fred();								\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	fred();								\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:fred()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -640,22 +440,16 @@ public void testNoReceiver() {
 public void testSpaceThenFirstParameter() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		this.fred( 1, 2, i);				\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	this.fred( 1, 2, i);				\n" +
+		"}										\n",
 		// completeBehind:
 		"fred( ",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:this.fred()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:this.fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:this.fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -666,58 +460,21 @@ public void testSpaceThenFirstParameter() {
 	);
 }
 /*
- * FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
- */
-public void testSuper() {
-	this.runTestCheckMethodParse(
-		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		super.fred(1, 2, i);				\n" +
-		"	}										\n" +
-		"}											\n",
-		// completeBehind:
-		"fred(",
-		// expectedCompletionNodeToString:
-		"<CompleteOnMessageSend:super.fred()>",
-		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:super.fred()>;\n" + 
-		"  }\n" + 
-		"}\n",
-		// expectedCompletionIdentifier:
-		"",
-		// expectedReplacedSource:
-		"fred(",
-		// test name
-		"<completion on super method invocation>"
-	);
-}
-/*
  * Complete on method invocation with expression receiver.
  */
 public void testWithExpressionReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		bar().fred();						\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	bar().fred();						\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:bar().fred()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" + 
-		"    <CompleteOnMessageSend:bar().fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" + 
+		"  <CompleteOnMessageSend:bar().fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -733,24 +490,18 @@ public void testWithExpressionReceiver() {
 public void testWithNameReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		Vector v = new Vector();			\n" +
-		"		v.addElement(\"1\");				\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	var v = new Vector();			\n" +
+		"	v.addElement(\"1\");				\n" +
+		"}										\n",
 		// completeBehind:
 		"addElement(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:v.addElement()>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    Vector v;\n" +
-		"    <CompleteOnMessageSend:v.addElement()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  var v = new Vector();\n" +
+		"  <CompleteOnMessageSend:v.addElement()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -766,23 +517,17 @@ public void testWithNameReceiver() {
 public void testWithNameReceiverAfterConditionalExpression() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class X {									\n" +
-		"	void foo() {							\n" +
-		"		buzz.test(cond ? max : min);		\n" +
-		"		bar.fred();							\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	buzz.test(cond ? max : min);		\n" +
+		"	bar.fred();							\n" +
+		"}										\n",
 		// completeBehind:
 		"fred(",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:bar.fred()>",
 		// expectedUnitDisplayString:
-		"class X {\n" + 
-		"  X() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    <CompleteOnMessageSend:bar.fred()>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  <CompleteOnMessageSend:bar.fred()>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -800,24 +545,18 @@ public void testWithNameReceiverAfterConditionalExpression() {
 public void testWithNameReceiverAndTwoArgs() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		X x = new X();						\n" +
-		"		x.fred(1, 2, o);					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	var x = new X();						\n" +
+		"	x.fred(1, 2, o);					\n" +
+		"}										\n",
 		// completeBehind:
 		"x.fred(1, 2,",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:x.fred(1, 2)>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    X x;\n" +
-		"    <CompleteOnMessageSend:x.fred(1, 2)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  var x = new X();\n" +
+		"  <CompleteOnMessageSend:x.fred(1, 2)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",
@@ -833,24 +572,18 @@ public void testWithNameReceiverAndTwoArgs() {
 public void testWithQualifiedNameReceiver() {
 	this.runTestCheckMethodParse(
 		// compilationUnit:
-		"class Bar {								\n" +
-		"	void foo() {							\n" +
-		"		X x = new X();						\n" +
-		"		y.x.fred(1, 2, o);					\n" +
-		"	}										\n" +
-		"}											\n",
+		"function foo() {							\n" +
+		"	var x = new X();						\n" +
+		"	y.x.fred(1, 2, o);					\n" +
+		"}										\n",
 		// completeBehind:
 		"x.fred(1, 2,",
 		// expectedCompletionNodeToString:
 		"<CompleteOnMessageSend:y.x.fred(1, 2)>",
 		// expectedUnitDisplayString:
-		"class Bar {\n" + 
-		"  Bar() {\n" + 
-		"  }\n" + 
-		"  void foo() {\n" +
-		"    X x;\n" +
-		"    <CompleteOnMessageSend:y.x.fred(1, 2)>;\n" + 
-		"  }\n" + 
+		"function foo() {\n" +
+		"  var x = new X();\n" +
+		"  <CompleteOnMessageSend:y.x.fred(1, 2)>;\n" + 
 		"}\n",
 		// expectedCompletionIdentifier:
 		"",

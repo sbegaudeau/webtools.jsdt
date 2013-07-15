@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 
 public class SyntaxErrorTest extends AbstractCompilerTest {
 	public static boolean optimizeStringLiterals = false;
-	public static long sourceLevel = ClassFileConstants.JDK1_3; //$NON-NLS-1$
 	
 public SyntaxErrorTest(String testName){
 	super(testName);
@@ -86,13 +85,13 @@ public void checkParse(
  * Should diagnose parenthesis mismatch
  */
 //TODO - fix bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=279009
-public void Xtest01() {
+public void test01() {
 
 	String s = 
 		"function X() {									\n"+
 		" function solve(){								\n"+
 		"												\n"+
-		"  var results = new X[10];						\n"+
+		"  var results = new Array(10);					\n"+
 		"  for(var i = 0; i < 10; i++){					\n"+
 		"   var result = results[i];					\n"+
 		"   var found = false;							\n"+
@@ -113,7 +112,12 @@ public void Xtest01() {
 		"	if (this == (result.documentName){			\n" + 
 		"	                                ^\n" + 
 		"Syntax error, insert \") BlockStatement\" to complete BlockStatements\n" + 
-		"----------\n";
+		"----------\n" +
+		"2. ERROR in <parenthesis mismatch> (at line 1)\n" + 
+		"	if (this == (result.documentName){			\n" + 
+		"	                                ^\n" + 
+		"Syntax error, insert \") BlockStatement\" to complete BlockStatements\n" + 
+		"----------\n";;
 
 	String testName = "<parenthesis mismatch>";
 	checkParse(
@@ -317,6 +321,24 @@ public void test05h() {
 		"	          ^^^^^\n"+
 		"String literal is not properly closed by a matching quote\n"+
 		"----------\n";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+
+public void testWI106610() {
+	String s = "\n<!-- Begin"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+				"----------\n" +
+				"1. ERROR in <test> (at line 2)\n" +
+				"	<!-- Begin\n" +
+				"	^\n" +
+				"Syntax error on token \"<\", delete this token\n" +
+				"----------\n";
 
 	String testName = "<test>";
 	checkParse(

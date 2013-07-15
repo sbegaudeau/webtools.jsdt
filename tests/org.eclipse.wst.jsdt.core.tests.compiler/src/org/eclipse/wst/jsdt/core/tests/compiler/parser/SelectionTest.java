@@ -10,15 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.parser;
 
-import junit.framework.Test;
-
 public class SelectionTest extends AbstractSelectionTest {
-static {
-//		TESTS_NUMBERS = new int[] { 53 };	
-}
-public static Test suite() {
-	return buildAllCompliancesTestSuite(SelectionTest.class);
-}
 	
 public SelectionTest(String testName) {
 	super(testName);
@@ -74,7 +66,7 @@ public void test01() {
 		"var i = <SelectOnMessageSend:bb.foo()>;\n" + 
 		"" + 
 		"";
-	String expectedReplacedSource = "bb.foo()";
+	String expectedReplacedSource = "foo()";
 	String testName = "<select message send>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -247,8 +239,9 @@ public void test01() {
 public void test05() {
 
 	String str = 
-		"	function foo(){									\n" +
-		"		System.out.println(\"hello\");			\n";
+		"function foo(){									\n" +
+		"	System.out.println(\"hello\");			\n" +
+		"}";
 
 	String selectionStartBehind = "System.out.";
 	String selectionEndBehind = "println";
@@ -260,7 +253,7 @@ public void test05() {
 		"  <SelectOnMessageSend:System.out.println(\"hello\")>;\n" + 
 		"}\n" + 
 		"";
-	String expectedReplacedSource = "System.out.println(\"hello\")";
+	String expectedReplacedSource = "println(\"hello\")";
 	String testName = "<select message send>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -290,7 +283,7 @@ public void test05b() {
 	String expectedUnitDisplayString =
 		"<SelectOnMessageSend:System.out.println(\"hello\")>;\n" + 
 		"";
-	String expectedReplacedSource = "System.out.println(\"hello\")";
+	String expectedReplacedSource = "println(\"hello\")";
 	String testName = "<select message send>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -324,9 +317,10 @@ public void test06() {
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
 		"  <SelectOnMessageSend:System.out.println(\"hello\")>;\n" + 
+		"  ;\n" +
 		"}\n" + 
 		"";
-	String expectedReplacedSource = "System.out.println(\"hello\")";
+	String expectedReplacedSource = "println(\"hello\")";
 	String testName = "<select message send with recovery before>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -350,6 +344,7 @@ public void test07() {
 	String str = 
 		"	function foo(){									\n" +
 		"		this.bar(\"hello\");					\n" +
+		"   }\n" +
 		"	function bar( s){							\n" +
 		"		return s.length();						\n"	+
 		"	}											\n" +
@@ -365,6 +360,7 @@ public void test07() {
 		"  <SelectOnMessageSend:this.bar(\"hello\")>;\n" + 
 		"}\n" + 
 		"function bar(s) {\n" + 
+		"  return s.length();\n" +
 		"}\n" + 
 		"";
 	String expectedReplacedSource = "this.bar(\"hello\")";
@@ -392,7 +388,7 @@ public void test08() {
 		"	var num = 0;								\n" +
 		"	function foo(){									\n" +
 		"		var j = this.num;						\n" +
-		"";
+		"   }";
 
 	String selectionStartBehind = "this.";
 	String selectionEndBehind = "this.num";
@@ -400,7 +396,7 @@ public void test08() {
 	String expectedCompletionNodeToString = "<SelectionOnFieldReference:this.num>";
 	String completionIdentifier = "num";
 	String expectedUnitDisplayString =
-		"var num;\n" + 
+		"var num = 0;\n" + 
 		"function foo() {\n" + 
 		"  var j = <SelectionOnFieldReference:this.num>;\n" + 
 		"}\n" + 
@@ -510,16 +506,16 @@ public void test11() {
 	String selectionStartBehind = "new ";
 	String selectionEndBehind = "new X";
 	
-	String expectedCompletionNodeToString = "<SelectOnAllocationExpression:new X(j)>";
+	String expectedCompletionNodeToString = "<SelectOnAllocationExpression:new <SelectOnName:X>(j)>";
 	String completionIdentifier = "X";
 	String expectedUnitDisplayString =
 		"function X(i) {\n" + 
-		"  }\n" + 
+		"}\n" + 
 		"function foo() {\n" + 
-		"  var j;\n" + 
-		"  var x = <SelectOnAllocationExpression:new X(j)>;\n" + 
+		"  var j = 0;\n" + 
+		"  var x = <SelectOnAllocationExpression:new <SelectOnName:X>(j)>;\n" + 
 		"}\n";
-	String expectedReplacedSource = "new X(j)";
+	String expectedReplacedSource = NONE;
 	String testName = "<select allocation>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -601,13 +597,13 @@ public void test13() {
 	String selectionStartBehind = "java.lang.";
 	String selectionEndBehind = "java.lang.System";
 	
-	String expectedCompletionNodeToString = "<SelectOnName:java.lang.System>";
+	String expectedCompletionNodeToString = "<SelectionOnFieldReference:java.lang.System>";
 	String completionIdentifier = "System";
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
-		"    <SelectOnName:java.lang.System>;\n" + 
+		"  <SelectionOnFieldReference:java.lang.System>.out.println();\n" + 
 		"}\n";
-	String expectedReplacedSource = "java.lang.System.out";
+	String expectedReplacedSource = "System";
 	String testName = "<select qualified name receiver>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -629,20 +625,20 @@ public void test13() {
 public void test14() {
 
 	String str = 
-		"	int foo(){								\n" +
+		"	function foo(){								\n" +
 		"		var sys = java.lang.System;		\n" +
 		"}											\n";
 		
 	String selectionStartBehind = "java.lang.";
 	String selectionEndBehind = "java.lang.System";
 	
-	String expectedCompletionNodeToString = "<SelectOnName:java.lang.System>";
+	String expectedCompletionNodeToString = "<SelectionOnFieldReference:java.lang.System>";
 	String completionIdentifier = "System";
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
-		"  var sys = <SelectOnName:java.lang.System>;\n" + 
+		"  var sys = <SelectionOnFieldReference:java.lang.System>;\n" + 
 		"}\n";
-	String expectedReplacedSource = "java.lang.System";
+	String expectedReplacedSource = "System";
 	String testName = "<select qualified name>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -776,424 +772,6 @@ public void test17() {
 		expectedReplacedSource,
 		testName); 
 }
-/*
- * Select anonymous type
- */
-//public void test18() {
-//
-//	String str = 
-//		"public class X {		 					\n" +
-//		"	int foo(){								\n" +
-//		"		new Object(){						\n" +
-//		"			int bar(){}						\n" +
-//		"		}									\n" +
-//		"	}										\n" +
-//		"}											\n";
-//		
-//	String selectionStartBehind = "new ";
-//	String selectionEndBehind = "new Object";
-//	
-//	String expectedCompletionNodeToString = 
-//		"<SelectOnAllocationExpression:new Object() {\n" +
-//		"  () {\n" +
-//		"    super();\n" +
-//		"  }\n" + 
-//		"}>";
-//	String completionIdentifier = "Object";
-//	String expectedUnitDisplayString =
-//		"public class X {\n" + 
-//		"  public X() {\n" + 
-//		"  }\n" + 
-//		"  int foo() {\n" + 
-//		"    <SelectOnAllocationExpression:new Object() {\n" +
-//		"      () {\n" +
-//		"        super();\n" +
-//		"      }\n" + 
-//		"    }>;\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "new Object()";
-//	String testName = "<select anonymous type>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkMethodParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-/*
- * Select cast type
- */
-//public void test19() {
-//
-//	String str = 
-//		"public class X {		 					\n" +
-//		"	Object foo(){							\n" +
-//		"		return (Object) this;				\n" +
-//		"		}									\n" +
-//		"	}										\n" +
-//		"}											\n";
-//		
-//	String selectionStartBehind = "return (";
-//	String selectionEndBehind = "return (Object";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnName:Object>";
-//	String completionIdentifier = "Object";
-//	String expectedUnitDisplayString =
-//		"public class X {\n" + 
-//		"  public X() {\n" + 
-//		"  }\n" + 
-//		"  Object foo() {\n" + 
-//		"    <SelectOnName:Object>;\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "Object";
-//	String testName = "<select cast type>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkMethodParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-/*
- * Select package
- */
-//public void test20() {
-//
-//	String str =
-//		"package x.y.other;					\n" +
-//		"public class X {		 					\n" +
-//		"	int foo(){								\n" +
-//		"		}									\n" +
-//		"	}										\n" +
-//		"}											\n";
-//		
-//	String selectionStartBehind = "x.";
-//	String selectionEndBehind = "x.y";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnPackage:x.y>";
-//	String completionIdentifier = "y";
-//	String expectedUnitDisplayString =
-//		"package <SelectOnPackage:x.y>;\n" + 
-//		"public class X {\n" + 
-//		"  public X() {\n" + 
-//		"  }\n" + 
-//		"  int foo() {\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "x.y.other";
-//	String testName = "<select package>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkDietParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-///*
-// * Select import
-// */
-//public void test21() {
-//
-//	String str =
-//		"import x.y.Other;					\n" +
-//		"public class X {		 					\n" +
-//		"	int foo(){								\n" +
-//		"		}									\n" +
-//		"	}										\n" +
-//		"}											\n";
-//		
-//	String selectionStartBehind = "y.";
-//	String selectionEndBehind = "y.Other";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnImport:x.y.Other>";
-//	String completionIdentifier = "Other";
-//	String expectedUnitDisplayString =
-//		"import <SelectOnImport:x.y.Other>;\n" + 
-//		"public class X {\n" + 
-//		"  public X() {\n" + 
-//		"  }\n" + 
-//		"  int foo() {\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "x.y.Other";
-//	String testName = "<select import>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkDietParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-///*
-// * Select import on demand
-// */
-//public void test22() {
-//
-//	String str =
-//		"import x.y.other.*;					\n" +
-//		"public class X {		 					\n" +
-//		"	int foo(){								\n" +
-//		"		}									\n" +
-//		"	}										\n" +
-//		"}											\n";
-//		
-//	String selectionStartBehind = "y.";
-//	String selectionEndBehind = "y.other";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnImport:x.y.other>";
-//	String completionIdentifier = "other";
-//	String expectedUnitDisplayString =
-//		"import <SelectOnImport:x.y.other>;\n" + 
-//		"public class X {\n" + 
-//		"  public X() {\n" + 
-//		"  }\n" + 
-//		"  int foo() {\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "x.y.other";
-//	String testName = "<select import on demand>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkDietParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-/*
- * Select array initializer type
- */
-public void test23() {
-
-	String str =
-		"public class X {		 					\n" +
-		"	int foo(){								\n" +
-		"		String[] p = new String[]{\"Left\"};\n" +
-//		"		}									\n" +
-		"	}										\n" +
-		"}											\n";
-		
-	String selectionStartBehind = "new ";
-	String selectionEndBehind = "new String";
-	String expectedCompletionNodeToString = "<SelectOnType:String>";
-	String completionIdentifier = "String";
-	String expectedUnitDisplayString =
-		"public class X {\n" + 
-		"  public X() {\n" + 
-		"  }\n" + 
-		"  int foo() {\n" + 
-		"    String[] p = <SelectOnType:String>;\n" + 
-		"  }\n" + 
-		"}\n";
-		
-	String expectedReplacedSource = "String";
-	String testName = "<select array initializer type>";
-
-	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-		
-	this.checkMethodParse(
-		str.toCharArray(), 
-		selectionStart,
-		selectionEnd,
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
-///*
-// * Select nested type superclass with syntax error behind
-// */
-//public void test24() {
-//
-//	String str =
-//		"public class G {					\n" +
-//		"	void foo() {					\n" +
-//		"		class X {					\n" +
-//		"			class Y extends G {		\n" +
-//		"				int foo()			\n" +
-//		"			}						\n" +
-//		"		}							\n" +
-//		"	}								\n" +
-//		"}									\n";
-//		
-//	String selectionStartBehind = "extends ";
-//	String selectionEndBehind = "extends G";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnType:G>";
-//	
-//	String completionIdentifier = "G";
-//	String expectedUnitDisplayString =
-//		"public class G {\n" + 
-//		"  public G() {\n" + 
-//		"  }\n" + 
-//		"  void foo() {\n" + 
-//		"    class X {\n" + 
-//		"      class Y extends <SelectOnType:G> {\n" + 
-//		"        Y() {\n" + 
-//		"        }\n" + 
-//		"        int foo() {\n" + 
-//		"        }\n" + 
-//		"      }\n" + 
-//		"      X() {\n" + 
-//		"      }\n" + 
-//		"    }\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "G";
-//	String testName = "<select nested type superclass>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkMethodParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-/*
- * Select super
- */
-//public void test25() {
-//
-//	String str =
-//		"public class G {					\n" +
-//		"	Object foo() {					\n" +
-//		"		return super.foo();			\n" +
-//		"	}								\n" +
-//		"}									\n";
-//		
-//	String selectionStartBehind = "return ";
-//	String selectionEndBehind = "return super";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnSuper:super>";
-//	
-//	String completionIdentifier = "super";
-//	String expectedUnitDisplayString =
-//		"public class G {\n" + 
-//		"  public G() {\n" + 
-//		"  }\n" + 
-//		"  Object foo() {\n" + 
-//		"    <SelectOnSuper:super>;\n" + 
-//		"  }\n" + 
-//		"}\n";
-//		
-//	String expectedReplacedSource = "super";
-//	String testName = "<select super>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkMethodParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
-/*
- * Select qualified super
- */
-//public void test26() {
-//
-//	String str =
-//		"public class G {						\n" +
-//		"	Object foo() {						\n" +
-//		"		new X(){						\n" +
-//		"			Object bar(){				\n" +
-//		"				return G.super.foo();	\n" +
-//		"			}							\n" +
-//		"		}								\n" +
-//		"	}									\n" +
-//		"}										\n";
-//		
-//	String selectionStartBehind = "G.";
-//	String selectionEndBehind = "G.super";
-//	
-//	String expectedCompletionNodeToString = "<SelectOnQualifiedSuper:G.super>";
-//	
-//	String completionIdentifier = "super";
-//	String expectedUnitDisplayString =
-//		"public class G {\n" + 
-//		"  public G() {\n" + 
-//		"  }\n" + 
-//		"  Object foo() {\n" + 
-//		"    new X() {\n" + 
-//		"      () {\n" + 
-//		"      }\n" + 
-//		"      Object bar() {\n" + 
-//		"        <SelectOnQualifiedSuper:G.super>;\n" + 
-//		"      }\n" + 
-//		"    };\n" + 
-//		"  }\n" + 
-//		"}\n";	
-//	String expectedReplacedSource = "G.super";
-//	String testName = "<select qualified super>";
-//
-//	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
-//	int selectionEnd = str.indexOf(selectionEndBehind) + selectionEndBehind.length() - 1;
-//		
-//	this.checkMethodParse(
-//		str.toCharArray(), 
-//		selectionStart,
-//		selectionEnd,
-//		expectedCompletionNodeToString,
-//		expectedUnitDisplayString,
-//		completionIdentifier,
-//		expectedReplacedSource,
-//		testName); 
-//}
 /*
  * Select super constructor call
  */
@@ -1452,7 +1030,7 @@ public void test32() {
 		"  var currentChar = <SelectOnMessageSend:\"hello\".toLowerCase()>;\n" + 
 		"}\n";
 		
-	String expectedReplacedSource = "\"hello\".toLowerCase()";
+	String expectedReplacedSource = "toLowerCase()";
 	String testName = "<1FWT4AJ: ITPCOM:WIN98 - SelectionParser produces duplicate type declaration>";
 
 	int selectionStart = str.indexOf(selectionStartBehind) + selectionStartBehind.length();
@@ -1534,7 +1112,7 @@ public void test34() {
 	String completionIdentifier = NONE;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
-		"  var array;\n" + 
+		"  var array = new   Object();\n" + 
 		"  return array.length;\n" + 
 		"}\n";
 		
@@ -2156,14 +1734,13 @@ public void test49() {
 		
 	String selection = "X";
 	
-	String expectedCompletionNodeToString = "<SelectOnAllocationExpression:new X()>" 
+	String expectedCompletionNodeToString = "<SelectOnAllocationExpression:new <SelectOnName:X>()>" 
 											 ;
 	
 	String completionIdentifier = "X";
 	String expectedUnitDisplayString =
-		"var x = <SelectOnAllocationExpression:new X()>\n" +
-		"\n";
-	String expectedReplacedSource = "new X()";
+		"var x = <SelectOnAllocationExpression:new <SelectOnName:X>()>;\n";
+	String expectedReplacedSource = NONE;
 	String testName = "<select anonymous type>";
 
 	int selectionStart = str.lastIndexOf(selection);
@@ -2451,14 +2028,14 @@ public void test55() {
 		
 	String selection = "Sub";
 	
-	String expectedCompletionNodeToString = "<SelectOnAllocationExpression:new Test.Sub()>";
+	String expectedCompletionNodeToString = "<SelectionOnFieldReference:Test.Sub>";
 	
 	String completionIdentifier = "Sub";
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
-		"    <SelectOnAllocationExpression:new Test.Sub()>;\n" + 
+		"  new   <SelectionOnFieldReference:Test.Sub>();\n" + 
 		"}\n";
-	String expectedReplacedSource = "new Test.Sub()";
+	String expectedReplacedSource = "Sub";
 	String testName = "<select>";
 
 	int selectionStart = str.indexOf(selection);
@@ -2505,16 +2082,21 @@ public void test56() {
 	String completionIdentifier = "var1";
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
-		"  var var1;\n" + 
-		"  var var2;\n" + 
-		"  <SelectOnName:var1>;\n" + 
-		"  {\n" + 
-		"    var var3;\n" + 
-		"  }\n" + 
-		"  {\n" + 
-		"    var var3;\n" + 
-		"  }\n" + 
-		"  var var4;\n" + 
+		"  var var1 = new   Object();\n" + 
+		"  var var2 = 1;\n" + 
+		"  <SelectOnName:var1>.toString();\n" + 
+		"  var2 ++;\n" + 
+		"  if ((var2 == 3))\n" + 
+		"      {\n" +
+		"        var var3 = var1;\n" + 
+		"        var3.hashCode();\n" +
+		"      }\n" + 
+		"  else\n" +
+		"      {\n" +
+		"        var var3 = new         Object();\n" + 
+		"        var3.toString();\n" +
+		"      }\n" + 
+		"  var var4 = 1;\n" +
 		"}\n";
 	
 	String expectedReplacedSource = "var1";

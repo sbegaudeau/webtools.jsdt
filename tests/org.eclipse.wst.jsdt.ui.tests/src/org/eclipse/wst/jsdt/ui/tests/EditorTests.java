@@ -48,7 +48,8 @@ public class EditorTests extends TestCase {
 	public void testOpenEditorWithStorageEditorInput() throws PartInitException {
 		IEditorInput input = new JsStorageEditorInput("var a = {};", new Path("/" + getName() + "/testfile.js"));
 
-		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), input, JavaScriptUI.ID_CU_EDITOR, true);
+		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
+				input, JavaScriptUI.ID_CU_EDITOR, true);
 		// Now add the problems we found
 		assertTrue("unexpected editor opened", editor instanceof JavaEditor && editor instanceof ITextEditor);
 		IAnnotationModel annotationModel = ((ITextEditor) editor).getDocumentProvider().getAnnotationModel(input);
@@ -56,17 +57,18 @@ public class EditorTests extends TestCase {
 		IDocument document = ((ITextEditor) editor).getDocumentProvider().getDocument(input);
 		assertNotNull("no text document present", document);
 		assertTrue("text document is empty", document.getLength() > 0);
-		
+
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().layout(true, true);
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().redraw();
 
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().closeEditor(editor, false);
 	}
-	
+
 	public void testOpenEditorWithEmptyStorageEditorInput() throws PartInitException {
 		IEditorInput input = new JsStorageEditorInput("", new Path("/" + getName() + "/testfile.js"));
 
-		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(), input, JavaScriptUI.ID_CU_EDITOR, true);
+		IEditorPart editor = IDE.openEditor(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(),
+				input, JavaScriptUI.ID_CU_EDITOR, true);
 		// Now add the problems we found
 		assertTrue("unexpected editor opened", editor instanceof JavaEditor && editor instanceof ITextEditor);
 		IAnnotationModel annotationModel = ((ITextEditor) editor).getDocumentProvider().getAnnotationModel(input);

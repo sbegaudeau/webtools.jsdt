@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,13 @@ import junit.framework.TestSuite;
 
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.dom.*;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.internal.core.dom.rewrite.LineCommentEndOffsets;
@@ -218,47 +224,15 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		assertEquals(4, count);
 	}
 	
-	public void testBug103340() throws Exception {
-		
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E //implements List\n");
-		buf.append("{\n");
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E //implements List\n");
-		buf.append("<X>\n");
-		buf.append("{\n");
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-	}
-	
 	public void testBug95839() throws Exception {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    object.method(\n");
-		buf.append("      param1, // text about param1\n");
-		buf.append("      param2  // text about param2\n");
-		buf.append("    );\n");
-		buf.append("  }\n");	
+		buf.append("function foo() {\n");
+		buf.append("  object.method(\n");
+		buf.append("    param1, // text about param1\n");
+		buf.append("    param2  // text about param2\n");
+		buf.append("  );\n");	
 		buf.append("}\n");	
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
@@ -268,8 +242,8 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		ExpressionStatement statement= (ExpressionStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		FunctionDeclaration function= findMethodDeclaration(astRoot, "foo");
+		ExpressionStatement statement= (ExpressionStatement) function.getBody().statements().get(0);
 		FunctionInvocation inv= (FunctionInvocation) statement.getExpression();
 		
 		ListRewrite listRewrite= rewrite.getListRewrite(inv, FunctionInvocation.ARGUMENTS_PROPERTY);
@@ -278,65 +252,12 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    object.method(\n");
-		buf.append("      param1, // text about param1\n");
-		buf.append("      param2  // text about param2\n");
+		buf.append("function foo() {\n");
+		buf.append("  object.method(\n");
+		buf.append("    param1, // text about param1\n");
+		buf.append("    param2  // text about param2\n");
 		buf.append(", param3\n");
-		buf.append("    );\n");
-		buf.append("  }\n");	
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-	}
-	
-	public void testBug114418() throws Exception {
-		
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    try {\n");
-		buf.append("    } catch (IOException e) {\n");
-		buf.append("    }\n");
-		buf.append("    // comment\n");	
-		buf.append("  }\n");	
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		TryStatement statement= (TryStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
-		
-		ListRewrite listRewrite= rewrite.getListRewrite(statement, TryStatement.CATCH_CLAUSES_PROPERTY);
-		CatchClause clause= ast.newCatchClause();
-		SingleVariableDeclaration newSingleVariableDeclaration= ast.newSingleVariableDeclaration();
-		newSingleVariableDeclaration.setName(ast.newSimpleName("e"));
-		newSingleVariableDeclaration.setType(ast.newSimpleType(ast.newSimpleName("MyException")));
-		clause.setException(newSingleVariableDeclaration);
-		
-		listRewrite.insertLast(clause, null);
-			
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    try {\n");
-		buf.append("    } catch (IOException e) {\n");
-		buf.append("    }\n");
-		buf.append("    // comment\n");
-		buf.append(" catch (MyException e) {\n");
-		buf.append("    }\n");
-		buf.append("  }\n");	
+		buf.append("  );\n");	
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 	}
@@ -345,14 +266,11 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    if (true) {\n");
-		buf.append("    } // comment\n");
-		buf.append("    else\n");
-		buf.append("      return;\n");
-		buf.append("  }\n");	
+		buf.append("function foo() {\n");
+		buf.append("  if (true) {\n");
+		buf.append("  } // comment\n");
+		buf.append("  else\n");
+		buf.append("    return;\n");
 		buf.append("}\n");	
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
@@ -362,76 +280,28 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		IfStatement statement= (IfStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		FunctionDeclaration function= findMethodDeclaration(astRoot, "foo");
+		IfStatement statement= (IfStatement) function.getBody().statements().get(0);
 		
 		rewrite.set(statement, IfStatement.ELSE_STATEMENT_PROPERTY, ast.newBlock(), null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    if (true) {\n");
-		buf.append("    } // comment\n");
+		buf.append("function foo() {\n");
+		buf.append("  if (true) {\n");
+		buf.append("  } // comment\n");
 		buf.append(" else {\n");
-		buf.append("    }\n");
-		buf.append("  }\n");	
+		buf.append("}\n");	
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 	}
-	
-	/* not yet working
-	public void testBug128422() throws Exception {
-		
-		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
-		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    if (i != 0 //I don't like 0\n");
-		buf.append("                 && i != 10) {\n");
-		buf.append("    }\n");
-		buf.append("  }\n");	
-		buf.append("}\n");	
-		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
-		
-		JavaScriptUnit astRoot= createAST3(cu);
-		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		
-		AST ast= astRoot.getAST();
-		
-		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		IfStatement statement= (IfStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
-		Expression expression= ((InfixExpression) statement.getExpression()).getLeftOperand();
-		
-		ParenthesizedExpression parenthesizedExpression= ast.newParenthesizedExpression();
-		parenthesizedExpression.setExpression( (Expression) rewrite.createCopyTarget(expression));
-		rewrite.replace(expression, parenthesizedExpression, null);
-			
-		String preview= evaluateRewrite(cu, rewrite);
-		
-		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("  void foo() {\n");
-		buf.append("    if ((i != 0 //I don't like 0\n");
-		buf.append(")\n");
-		buf.append("                 && i != 10) {\n");
-		buf.append("    }\n");
-		buf.append("  }\n");	
-		buf.append("}\n");	
-		assertEqualString(preview, buf.toString());
-	}*/
 	
 	public void testCommentAtEnd() throws Exception {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E \n");
+		buf.append("function E() \n");
 		buf.append("{\n");
 		buf.append("}//comment");	
 		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
@@ -443,20 +313,19 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.TYPES_PROPERTY);
-		TypeDeclaration newType= ast.newTypeDeclaration();
-		newType.setName(ast.newSimpleName("B"));
-		listRewrite.insertLast(newType, null);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
+		FunctionDeclaration newFunction= ast.newFunctionDeclaration();
+		newFunction.setName(ast.newSimpleName("B"));
+		listRewrite.insertLast(newFunction, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E \n");
+		buf.append("function E() \n");
 		buf.append("{\n");
 		buf.append("}//comment\n");
 		buf.append("\n");
-		buf.append("class B {\n");
+		buf.append("function B() {\n");
 		buf.append("}");
 		assertEqualString(preview, buf.toString());
 	}

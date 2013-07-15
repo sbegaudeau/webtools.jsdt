@@ -24,7 +24,7 @@ public class StringUtils {
 	 * Replace matching literal portions of a string with another string
 	 */
 	public static String replace(String aString, String source, String target) {
-		if (aString == null)
+		if(aString == null)
 			return null;
 		String normalString = ""; //$NON-NLS-1$
 		int length = aString.length();
@@ -32,7 +32,7 @@ public class StringUtils {
 		int previous = 0;
 		int spacer = source.length();
 		StringBuffer sb = new StringBuffer(normalString);
-		while (position + spacer - 1 < length && aString.indexOf(source, position) > -1) {
+		while(position + spacer - 1 < length && aString.indexOf(source, position) > -1) {
 			position = aString.indexOf(source, previous);
 			sb.append(normalString);
 			sb.append(aString.substring(previous, position));
@@ -45,12 +45,12 @@ public class StringUtils {
 
 		return normalString;
 	}
-	
+
 	public static boolean equalsIgnoreLineSeperator(String string1, String string2) {
 
-		if (string1 == null)
+		if(string1 == null)
 			return false;
-		if (string2 == null)
+		if(string2 == null)
 			return false;
 
 		StringReader s1Reader = new StringReader(string1);
@@ -66,18 +66,18 @@ public class StringUtils {
 
 			s2Char = getNextChar(s2Reader);
 
-			if (s1Char != s2Char) {
+			if(s1Char != s2Char) {
 				result = false;
 				break;
 			}
-		}
-		while (s1Char != -1 && s2Char != -1);
+		} while(s1Char != -1 && s2Char != -1);
 
 		return result;
 	}
 
 	/**
 	 * Method getNextChar.
+	 * 
 	 * @param s1Reader
 	 * @return char
 	 */
@@ -85,11 +85,10 @@ public class StringUtils {
 		int nextChar = -1;
 		try {
 			nextChar = reader.read();
-			while (isEOL(nextChar)) {
+			while(isEOL(nextChar)) {
 				nextChar = reader.read();
 			}
-		}
-		catch (IOException e) {
+		} catch(IOException e) {
 			e.printStackTrace();
 		}
 		return nextChar;
