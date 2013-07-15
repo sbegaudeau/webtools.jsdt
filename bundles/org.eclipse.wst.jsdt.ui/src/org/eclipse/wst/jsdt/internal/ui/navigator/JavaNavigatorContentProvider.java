@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2010 IBM Corporation and others.
+ * Copyright (c) 2003, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -105,13 +105,19 @@ public class JavaNavigatorContentProvider extends
 	}
 	
 	public Object getParent(Object element) {
-		Object parent= super.getParent(element);
-		if (parent instanceof IJavaScriptModel) {
-			return parent.equals(getViewerInput()) ? fRealInput : parent;
+		Object parent = null;
+		
+		// can't handle IResources
+		if (!(element instanceof IResource)) {
+			parent= super.getParent(element);
+			if (parent instanceof IJavaScriptModel) {
+				return parent.equals(getViewerInput()) ? fRealInput : parent;
+			}
+			if (parent instanceof IJavaScriptProject) {
+				return ((IJavaScriptProject)parent).getProject();
+			}
 		}
-		if (parent instanceof IJavaScriptProject) {
-			return ((IJavaScriptProject)parent).getProject();
-		}
+		
 		return parent;
 	}
 

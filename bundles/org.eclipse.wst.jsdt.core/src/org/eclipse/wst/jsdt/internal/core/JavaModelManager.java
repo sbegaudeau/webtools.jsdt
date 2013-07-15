@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,7 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
+import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.codeassist.SelectionEngine;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
@@ -269,6 +270,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	private static final String SELECTION_DEBUG = JavaScriptCore.PLUGIN_ID + "/debug/selection" ; //$NON-NLS-1$
 	private static final String SEARCH_DEBUG = JavaScriptCore.PLUGIN_ID + "/debug/search" ; //$NON-NLS-1$
 	private static final String SOURCE_MAPPER_DEBUG_VERBOSE = JavaScriptCore.PLUGIN_ID + "/debug/sourcemapper" ; //$NON-NLS-1$
+	private static final String INFER_DEBUG = JavaScriptCore.PLUGIN_ID + "/debug/inferEngine" ; //$NON-NLS-1$
 
 	public static final String COMPLETION_PERF = JavaScriptCore.PLUGIN_ID + "/perf/completion" ; //$NON-NLS-1$
 	public static final String SELECTION_PERF = JavaScriptCore.PLUGIN_ID + "/perf/selection" ; //$NON-NLS-1$
@@ -1417,6 +1419,9 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 
 			option = Platform.getDebugOption(SOURCE_MAPPER_DEBUG_VERBOSE);
 			if(option != null) SourceMapper.VERBOSE = option.equalsIgnoreCase(TRUE) ;
+			
+			option = Platform.getDebugOption(INFER_DEBUG);
+			if(option != null) InferEngine.DEBUG = option.equalsIgnoreCase(TRUE);
 		}
 
 		// configure performance options
@@ -3825,7 +3830,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 
 		final Hashtable secondaryTypes = new Hashtable(3);
 		IRestrictedAccessTypeRequestor nameRequestor = new IRestrictedAccessTypeRequestor() {
-			public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
+			public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] superTypeNames, char[][] enclosingTypeNames, String path, AccessRestriction access) {
 				String key = packageName==null ? "" : new String(packageName); //$NON-NLS-1$
 				HashMap types = (HashMap) secondaryTypes.get(key);
 				if (types == null) types = new HashMap(3);

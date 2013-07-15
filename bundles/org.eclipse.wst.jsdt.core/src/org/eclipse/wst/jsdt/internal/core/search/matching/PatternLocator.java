@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -341,6 +341,25 @@ protected int matchNameValue(char[] pattern, char[] name) {
 	}
 	return IMPOSSIBLE_MATCH;
 }
+
+protected boolean isAccurateNameMatch(char[] pattern, char[] sourceName) {
+	if ((this.matchMode & SearchPattern.R_PREFIX_MATCH) != 0) {
+		if (CharOperation.prefixEquals(pattern, sourceName, this.isCaseSensitive)) {
+			return true;
+		}
+	}
+	if (this.isCamelCase) {
+		if (!this.isCaseSensitive || (pattern.length>0 && sourceName.length>0 && pattern[0] == sourceName[0])) {
+			if (CharOperation.camelCaseMatch(pattern, sourceName)) {
+				return true;
+			}
+		}
+		if (this.matchMode == SearchPattern.R_EXACT_MATCH) {
+			return CharOperation.prefixEquals(pattern, sourceName, this.isCaseSensitive);
+		}
+	}
+	return CharOperation.match(pattern, sourceName, this.isCaseSensitive);
+}
 /**
  * Returns whether the given type reference matches the given pattern.
  */
@@ -437,7 +456,7 @@ public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement ele
 	int offset=(reference!=null  )?reference.sourceStart : 0;
 	if (reference instanceof AbstractMethodDeclaration) {
 		AbstractMethodDeclaration method = (AbstractMethodDeclaration) reference;
-		if (method.selector==null && method.inferredMethod!=null)
+		if (method.getName()==null && method.inferredMethod!=null)
 		{
 			offset=method.inferredMethod.nameStart;
 			if (length>=0)
@@ -589,27 +608,10 @@ protected int resolveLevelForType(char[] simpleNamePattern, char[] qualification
 		sourceName =  getQualifiedSourceName(binding);
 	}
 	if (sourceName == null) return IMPOSSIBLE_MATCH;
-	if ((this.matchMode & SearchPattern.R_PREFIX_MATCH) != 0) {
-		if (CharOperation.prefixEquals(qualifiedPattern, sourceName, this.isCaseSensitive)) {
-			return ACCURATE_MATCH;
-		}
-	}
-	if (this.isCamelCase) {
-		if (!this.isCaseSensitive || (qualifiedPattern.length>0 && sourceName.length>0 && qualifiedPattern[0] == sourceName[0])) {
-			if (CharOperation.camelCaseMatch(qualifiedPattern, sourceName)) {
-				return ACCURATE_MATCH;
-			}
-		}
-		if (this.matchMode == SearchPattern.R_EXACT_MATCH) {
-			boolean matchPattern = CharOperation.prefixEquals(qualifiedPattern, sourceName, this.isCaseSensitive);
-			return matchPattern ? ACCURATE_MATCH : IMPOSSIBLE_MATCH;
-		}
-	}
-	boolean matchPattern = CharOperation.match(qualifiedPattern, sourceName, this.isCaseSensitive);
+	boolean matchPattern = isAccurateNameMatch(qualifiedPattern, sourceName);
 	return matchPattern ? ACCURATE_MATCH : IMPOSSIBLE_MATCH;
 
 }
-
 /**
  * Returns whether the given type binding matches the given qualified pattern.
  * Returns ACCURATE_MATCH if it does.
@@ -668,6 +670,23 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 	// cannot match pattern with type parameters or arguments
 	return (patternTypeArguments[depth]==null || patternTypeArguments[depth].length==0) ? level : IMPOSSIBLE_MATCH;
 	
+}
+
+protected int resolveLevelUsingSearchPrefix(char[] searchPrefix, TypeBinding binding) {
+	if (binding == TypeBinding.ANY || binding == TypeBinding.UNKNOWN)
+		return ACCURATE_MATCH;
+
+	char[] sourceName = qualifiedSourceName(binding);
+	if (sourceName == null) return IMPOSSIBLE_MATCH;
+	
+	if (isAccurateNameMatch(searchPrefix, sourceName))
+		return ACCURATE_MATCH;
+	
+	int index = CharOperation.lastIndexOf('.', sourceName);
+	if (index>=0 && isAccurateNameMatch(searchPrefix, CharOperation.subarray(sourceName, index+1,sourceName.length)))
+		return ACCURATE_MATCH;
+	
+	return IMPOSSIBLE_MATCH;
 }
 public String toString(){
 	return "SearchPattern"; //$NON-NLS-1$

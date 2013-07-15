@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -68,10 +68,7 @@ public class ProposalInfo {
 	private String computeInfo(IProgressMonitor monitor) {
 		try {
 			final IJavaScriptElement javaElement= getJavaElement();
-			if (javaElement instanceof IMember) {
-				IMember member= (IMember) javaElement;
-				return extractJavadoc(member, monitor);
-			}
+			return extractJavadoc(javaElement, monitor);
 		} catch (JavaScriptModelException e) {
 			JavaScriptPlugin.log(e);
 		} catch (IOException e) {
@@ -84,33 +81,35 @@ public class ProposalInfo {
 	 * Extracts the javadoc for the given <code>IMember</code> and returns it
 	 * as HTML.
 	 *
-	 * @param member the member to get the documentation for
+	 * @param element the member to get the documentation for
 	 * @param monitor a progress monitor
 	 * @return the javadoc for <code>member</code> or <code>null</code> if
 	 *         it is not available
 	 * @throws JavaScriptModelException if accessing the javadoc fails
 	 * @throws IOException if reading the javadoc fails
 	 */
-	private String extractJavadoc(IMember member, IProgressMonitor monitor) throws JavaScriptModelException, IOException {
-		if (member != null) {
-			Reader reader=  getHTMLContentReader(member, monitor);
+	private String extractJavadoc(IJavaScriptElement element, IProgressMonitor monitor) throws JavaScriptModelException, IOException {
+		if (element != null) {
+			Reader reader =  getHTMLContentReader(element, monitor);
 			if (reader != null)
 				return getString(reader);
 		}
 		return null;
 	}
 
-	private Reader getHTMLContentReader(IMember member, IProgressMonitor monitor) throws JavaScriptModelException {
-	    Reader contentReader= JSdocContentAccess.getHTMLContentReader(member, true, true);
-        if (contentReader != null)
+	private Reader getHTMLContentReader(IJavaScriptElement element, IProgressMonitor monitor) throws JavaScriptModelException {
+		Reader contentReader= JSdocContentAccess.getHTMLContentReader(element, true, true);
+        if (contentReader != null) {
         	return contentReader;
+        }
 
-        contentReader= JSdocContentAccess.getContentReader(member, true);
-        if (contentReader != null)
+        contentReader= JSdocContentAccess.getContentReader(element, true);
+        if (contentReader != null) {
         	return new JavaDoc2HTMLTextReader(contentReader);
-        
-        if (member.getOpenable().getBuffer() == null) { // only if no source available
-        	String s= member.getAttachedJavadoc(monitor);
+        }
+	        
+        if (element.getOpenable().getBuffer() == null) { // only if no source available
+        	String s= element.getAttachedJavadoc(monitor);
         	if (s != null)
         		return new StringReader(s);
         }

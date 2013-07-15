@@ -61,15 +61,16 @@ public final boolean canBeSeenBy(PackageBinding invocationPackage) {
 */
 
 public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invocationSite, Scope scope) {
-	if (isPublic() || !JavaScriptCore.IS_ECMASCRIPT4) return true;
+	if (isPublic() || !JavaScriptCore.IS_ECMASCRIPT4) {
+		return true;
+	}
 
 	SourceTypeBinding invocationType = scope.enclosingSourceType();
-	if (invocationType == declaringClass && invocationType == receiverType) return true;
-
-	if( (receiverType instanceof SourceTypeBinding) && ((SourceTypeBinding)receiverType).nextType!=null) {
-		SourceTypeBinding combinedBinding = (SourceTypeBinding) receiverType;
-		if (combinedBinding.contains(declaringClass)  && combinedBinding.contains(invocationType)) return true;
-
+	if(receiverType instanceof SourceTypeBinding) {
+		SourceTypeBinding receiverSourceType = (SourceTypeBinding)receiverType;
+		if (receiverSourceType.isLinkedType(declaringClass)  && receiverSourceType.isLinkedType(invocationType)) {
+			return true;
+		}
 	}
 
 	if (invocationType == null) // static import call
@@ -152,7 +153,7 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 		PackageBinding currentPackage = currentType.fPackage;
 		// package could be null for wildcards/intersection types, ignore and recurse in superclass
 		if (currentPackage != null && currentPackage != declaringPackage) return false;
-	} while ((currentType = currentType.superclass()) != null);
+	} while ((currentType = currentType.getSuperBinding()) != null);
 	return false;
 }
 /*

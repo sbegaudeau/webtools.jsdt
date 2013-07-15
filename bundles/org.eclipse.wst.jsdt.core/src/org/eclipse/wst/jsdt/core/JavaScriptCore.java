@@ -2921,7 +2921,8 @@ public final class JavaScriptCore extends Plugin {
 	 * {@link #newContainerEntry(IPath, IAccessRule[], IIncludePathAttribute[], boolean)
 	 * newContainerEntry(containerPath, new IAccessRule[0], new IIncludePathAttribute[0], false)}.
 	 * <p>
-	 * @param containerPath the path identifying the container
+	 * @param containerPath the path identifying the container, it must be formed of at least two
+	 * 	segments
 	 * @return a new container includepath entry
 	 *
 	 * @see JavaScriptCore#getJsGlobalScopeContainer(IPath, IJavaScriptProject)
@@ -3196,7 +3197,7 @@ public final class JavaScriptCore extends Plugin {
 			boolean isExported) {
 
 		if (path == null) Assert.isTrue(false, "Library path cannot be null"); //$NON-NLS-1$
-		if (!path.isAbsolute()) Assert.isTrue(false, "Path for IIncludePathEntry must be absolute " + path.toString()); //$NON-NLS-1$
+		if (!path.isAbsolute()) Assert.isTrue(false, "Path for IIncludePathEntry must be absolute: " + path.toString()); //$NON-NLS-1$
 		if (sourceAttachmentPath != null) {
 			if (sourceAttachmentPath.isEmpty()) {
 				sourceAttachmentPath = null; // treat empty path as none

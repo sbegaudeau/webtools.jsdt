@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2008 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -41,9 +41,8 @@ public class InternalCompletionProposal {
 
 	protected char[] declarationPackageName;
 	protected char[] declarationTypeName;
-	protected char[] packageName;
-	protected char[] typeName;
-	protected char[][] parameterPackageNames;
+	protected char[] returnQualification;
+	protected char[] returnSimpleName;
 	protected char[][] parameterTypeNames;
 
 	protected char[] originalSignature;
@@ -143,18 +142,13 @@ public class InternalCompletionProposal {
 		return this.declarationTypeName;
 	}
 
-	protected char[] getPackageName() {
-		return this.packageName;
+	protected char[] getReturnQualification() {
+		return this.returnQualification;
 	}
 
-	protected char[] getTypeName() {
-		return this.typeName;
+	protected char[] getReturnSimpleName() {
+		return this.returnSimpleName;
 	}
-
-	protected char[][] getParameterPackageNames() {
-		return this.parameterPackageNames;
-	}
-
 
 	protected char[][] getParameterTypeNames() {
 		return this.parameterTypeNames;
@@ -168,16 +162,12 @@ public class InternalCompletionProposal {
 		this.declarationTypeName = declarationTypeName;
 	}
 
-	protected void setPackageName(char[] packageName) {
-		this.packageName = packageName;
+	protected void setReturnQualification(char[] packageName) {
+		this.returnQualification = packageName;
 	}
 
-	protected void setTypeName(char[] typeName) {
-		this.typeName = typeName;
-	}
-
-	protected void setParameterPackageNames(char[][] parameterPackageNames) {
-		this.parameterPackageNames = parameterPackageNames;
+	protected void setReturnSimpleName(char[] typeName) {
+		this.returnSimpleName = typeName;
 	}
 
 	protected void setParameterTypeNames(char[][] parameterTypeNames) {

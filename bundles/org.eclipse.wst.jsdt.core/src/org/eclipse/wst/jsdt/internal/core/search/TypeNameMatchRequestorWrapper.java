@@ -79,10 +79,11 @@ public TypeNameMatchRequestorWrapper(TypeNameMatchRequestor requestor, IJavaScri
 /* (non-Javadoc)
  * @see org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor#acceptType(int, char[], char[], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
  */
-public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
+public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] superTypeNames, char[][] enclosingTypeNames, String path, AccessRestriction access) {
 	try {
 		IType type = null;
-		if (packageName!=null && packageName.length>0)
+		
+		if (packageName!=null && packageName.length>0 && (CharOperation.indexOf('.',simpleTypeName) == -1))
 		{
 			simpleTypeName=CharOperation.concat(packageName, simpleTypeName, '.');
 		}
@@ -113,7 +114,7 @@ public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName,
 				: createTypeFromJar(path, separatorIndex);
 		}
 		if (type != null) {
-			this.requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, modifiers));
+			this.requestor.acceptTypeNameMatch(new JavaSearchTypeNameMatch(type, superTypeNames, modifiers));
 		}
 	} catch (JavaScriptModelException e) {
 		// skip

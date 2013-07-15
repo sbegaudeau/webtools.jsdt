@@ -82,7 +82,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 			return true;
 
 		if (focusEntriesForPolymorphicSearch != null) {
-			// look for referring project
+			// look for refering project
 			IPath projectPath = javaProject.getProject().getFullPath();
 			for (int i = 0, length = focusEntriesForPolymorphicSearch.length; i < length; i++) {
 				IIncludePathEntry entry = focusEntriesForPolymorphicSearch[i];
@@ -91,7 +91,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 			}
 		}
 		if (focus instanceof LibraryFragmentRoot || focus instanceof PackageFragmentRoot) {
-			// focus is part of a library or a non-project folder in the workspace
+			// focus is part of a jar
 			IPath focusPath = focus.getPath();
 			IIncludePathEntry[] entries = javaProject.getExpandedClasspath();
 			for (int i = 0, length = entries.length; i < length; i++) {
@@ -99,7 +99,7 @@ public static boolean canSeeFocus(IJavaScriptElement focus, JavaProject javaProj
 				if ((entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY || entry.getEntryKind() == IIncludePathEntry.CPE_SOURCE) && entry.getPath().equals(focusPath))
 					return true;
 			}
-			if (focus instanceof LibraryFragmentRoot)
+			if(focus instanceof LibraryFragmentRoot)
 				return false;
 		}
 		// look for dependent projects

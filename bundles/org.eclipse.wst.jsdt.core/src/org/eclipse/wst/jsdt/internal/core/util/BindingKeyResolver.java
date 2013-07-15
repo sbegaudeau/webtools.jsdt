@@ -118,7 +118,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 
 	public void consumeLocalVar(char[] varName) {
 		if (this.scope == null) {
-			this.scope = this.methodBinding.sourceMethod().scope;
+			this.scope = this.methodBinding.sourceMethod().getScope();
 		}
 	 	for (int i = 0; i < this.scope.localIndex; i++) {
 			LocalVariableBinding local = this.scope.locals[i];
@@ -161,7 +161,7 @@ public class BindingKeyResolver extends BindingKeyParser {
 
 	public void consumeScope(int scopeNumber) {
 		if (this.scope == null) {
-			this.scope = this.methodBinding.sourceMethod().scope;
+			this.scope = this.methodBinding.sourceMethod().getScope();
 		}
 		if (scopeNumber >= this.scope.subscopeCount)
 			return; // malformed key

@@ -32,7 +32,7 @@ public MissingBinaryTypeBinding(PackageBinding packageBinding, char[][] compound
 	this.fileName = CharOperation.concatWith(compoundName, '/');
 	this.sourceName = compoundName[compoundName.length - 1]; // [java][util][Map$Entry]
 	this.modifiers = ClassFileConstants.AccPublic;
-	this.superclass = null; // will be fixed up using #setMissingSuperclass(...)
+	this.setSuperBinding(null); // will be fixed up using #setMissingSuperclass(...)
 	this.memberTypes = Binding.NO_MEMBER_TYPES;
 	this.fields = Binding.NO_FIELDS;
 	this.methods = Binding.NO_METHODS;
@@ -52,6 +52,6 @@ public int problemId() {
  * @see LookupEnvironment#cacheMissingBinaryType(char[][], org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration)
  */
 void setMissingSuperclass(ReferenceBinding missingSuperclass) {
-	this.superclass = missingSuperclass;
+	this.setSuperBinding(missingSuperclass);
 }
 }

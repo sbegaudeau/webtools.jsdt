@@ -294,22 +294,21 @@ public void parseBodies(CompilationUnitDeclaration unit) {
 	ProgramElement[] statements = unit.statements;
 	if (statements != null)
  	  for (int i = 0; i < statements.length; i++) {
-		if (statements[i] instanceof LocalDeclaration)
-		{
+		if (statements[i] instanceof LocalDeclaration){
 			((LocalDeclaration)statements[i]).traverse(localDeclarationVisitor, null);
-			if (patternLocator instanceof FieldLocator)
+			if (patternLocator instanceof FieldLocator) {
 				((FieldLocator)patternLocator).matchLocalDeclaration((LocalDeclaration)statements[i], this.nodeSet);
+			}
 		}
-		else if (statements[i] instanceof AbstractMethodDeclaration)
-		{
-			AbstractMethodDeclaration methodDeclaration=(AbstractMethodDeclaration)statements[i];
-//			this.parse(methodDeclaration, unit);
+		
+		//check if the statement contains a method declaration
+		AbstractMethodDeclaration methodDeclaration = AbstractMethodDeclaration.findMethodDeclaration(statements[i]);
+		if (methodDeclaration != null && methodDeclaration instanceof MethodDeclaration) {
 			methodDeclaration.traverse(localDeclarationVisitor, (Scope) null);
-			if (this.patternLocator instanceof MethodLocator)
-				((MethodLocator)this.patternLocator).match((MethodDeclaration)statements[i], this.nodeSet);
-
+			if (this.patternLocator instanceof MethodLocator) {
+				((MethodLocator)this.patternLocator).match((MethodDeclaration)methodDeclaration, this.nodeSet);
+			}
 		}
-
 	}
 
 	unit.traverseInferredTypes(localDeclarationVisitor,  null);

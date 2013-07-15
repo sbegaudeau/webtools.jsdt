@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
@@ -32,6 +31,7 @@ import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryField;
 import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryMethod;
 import org.eclipse.wst.jsdt.internal.core.ResolvedBinaryType;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 public class ClassFileMatchLocator implements IIndexConstants {
 
@@ -60,6 +60,14 @@ private boolean checkTypeName(char[] simpleName, char[] qualification, char[] fu
 	char[] wildcardPattern = PatternLocator.qualifiedPattern(simpleName, qualification);
 	if (wildcardPattern == null) return true;
 	return CharOperation.match(wildcardPattern, fullyQualifiedTypeName, isCaseSensitive);
+}
+
+private boolean checkTypeName(char[] typeName1, char[] typeName2, boolean isCaseSensitive, boolean isCamelCase) {
+	char[][] typeNameSeperated = QualificationHelpers.seperateFullyQualifedName(typeName1);
+	
+	char[] wildcardPattern = PatternLocator.qualifiedPattern(typeNameSeperated[QualificationHelpers.SIMPLE_NAMES_INDEX], typeNameSeperated[QualificationHelpers.QULIFIERS_INDEX]);
+	if (wildcardPattern == null) return true;
+	return CharOperation.match(wildcardPattern, typeName2, isCaseSensitive);
 }
 /**
  * Locate declaration in the current class file. This class file is always in a jar.
@@ -192,7 +200,7 @@ boolean matchField(FieldPattern pattern, Object binaryInfo, IBinaryType enclosin
 
 	IBinaryField field = (IBinaryField) binaryInfo;
 	if (!pattern.matchesName(pattern.name, field.getName())) return false;
-	if (!checkDeclaringType(enclosingBinaryType, pattern.declaringSimpleName, pattern.declaringQualification, pattern.isCaseSensitive(), pattern.isCamelCase()))
+	if (!checkDeclaringType(enclosingBinaryType, pattern.getDeclaringSimpleName(), pattern.getDeclaringQualification(), pattern.isCaseSensitive(), pattern.isCamelCase()))
 		return false;
 
 	char[] fieldTypeSignature = Signature.toCharArray(convertClassFileFormat(field.getTypeName()));
@@ -204,11 +212,11 @@ boolean matchMethod(MethodPattern pattern, Object binaryInfo, IBinaryType enclos
 
 	IBinaryMethod method = (IBinaryMethod) binaryInfo;
 	if (!pattern.matchesName(pattern.selector, method.getSelector())) return false;
-	if (!checkDeclaringType(enclosingBinaryType, pattern.declaringSimpleName, pattern.declaringQualification, pattern.isCaseSensitive(), pattern.isCamelCase()))
+	if (!checkDeclaringType(enclosingBinaryType, pattern.getDeclaringSimpleName(), pattern.getDeclaringQualification(), pattern.isCaseSensitive(), pattern.isCamelCase()))
 		return false;
 
 	// look at return type only if declaring type is not specified
-	boolean checkReturnType = pattern.declaringSimpleName == null && (pattern.returnSimpleName != null || pattern.returnQualification != null);
+	boolean checkReturnType = pattern.getDeclaringSimpleName() == null && (pattern.returnSimpleName != null || pattern.returnQualification != null);
 	boolean checkParameters = pattern.parameterSimpleNames != null;
 	if (checkReturnType || checkParameters) {
 		char[] methodDescriptor = convertClassFileFormat(method.getMethodDescriptor());
@@ -230,7 +238,7 @@ boolean matchSuperTypeReference(SuperTypeReferencePattern pattern, Object binary
 	char[] vmName = type.getSuperclassName();
 	if (vmName != null) {
 		char[] superclassName = convertClassFileFormat(vmName);
-		if (checkTypeName(pattern.superSimpleName, pattern.superQualification, superclassName, pattern.isCaseSensitive(), pattern.isCamelCase()))
+		if (checkTypeName(pattern.typeName, superclassName, pattern.isCaseSensitive(), pattern.isCamelCase()))
 				return true;
 	}
 	return false;
@@ -240,27 +248,20 @@ boolean matchTypeDeclaration(TypeDeclarationPattern pattern, Object binaryInfo, 
 
 	IBinaryType type = (IBinaryType) binaryInfo;
 	char[] fullyQualifiedTypeName = convertClassFileFormat(type.getName());
-	boolean qualifiedPattern = pattern instanceof QualifiedTypeDeclarationPattern;
-	if (pattern.enclosingTypeNames == null || qualifiedPattern) {
+	if (pattern.enclosingTypeNames == null) {
 		char[] simpleName = (pattern.getMatchMode() == SearchPattern.R_PREFIX_MATCH)
 			? CharOperation.concat(pattern.simpleName, IIndexConstants.ONE_STAR)
 			: pattern.simpleName;
-		char[] pkg = qualifiedPattern ? ((QualifiedTypeDeclarationPattern)pattern).qualification : pattern.pkg;
+		char[] pkg = pattern.qualification;
 		if (!checkTypeName(simpleName, pkg, fullyQualifiedTypeName, pattern.isCaseSensitive(), pattern.isCamelCase())) return false;
 	} else {
 		char[] enclosingTypeName = CharOperation.concatWith(pattern.enclosingTypeNames, '.');
-		char[] patternString = pattern.pkg == null
+		char[] patternString = pattern.qualification == null
 			? enclosingTypeName
-			: CharOperation.concat(pattern.pkg, enclosingTypeName, '.');
+			: CharOperation.concat(pattern.qualification, enclosingTypeName, '.');
 		if (!checkTypeName(pattern.simpleName, patternString, fullyQualifiedTypeName, pattern.isCaseSensitive(), pattern.isCamelCase())) return false;
 	}
 
-	int kind  = TypeDeclaration.kind(type.getModifiers());
-	switch (pattern.typeSuffix) {
-		case CLASS_SUFFIX:
-			return kind == TypeDeclaration.CLASS_DECL;
-		case TYPE_SUFFIX: // nothing
-	}
 	return true;
 }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -391,14 +391,17 @@ public void indexLibrary(IIncludePathEntry entry, IProject requestingProject) {
 	if (JavaScriptCore.getPlugin() == null) return;
 	IndexRequest request = null;
 	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), entry.getPath(), true);
+	char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
+	char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
+	
 	if(target instanceof IFolder
 			|| target instanceof IProject){
-		char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
-		char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
-
 		request = new AddLibraryFolderToIndex(entry.getPath(), requestingProject, inclusionPatterns, exclusionPatterns, this);
-	}else
-		request = new AddLibraryFileToIndex(entry.getPath(), this);
+	}
+	else if (target instanceof IFile)
+		request = new AddLibraryFileToIndex((IFile) target, this);
+	else
+		request = new AddLibraryFileToIndex(entry.getPath(), inclusionPatterns, exclusionPatterns, this);
 
 	if (!isJobWaiting(request))
 		this.request(request);
@@ -494,11 +497,13 @@ private void rebuildIndex(IPath indexLocation, IPath containerPath) {
 			request = new IndexAllProject(p, this);
 	} else if (target instanceof IFolder) {
 		request = new IndexBinaryFolder((IFolder) target, this);
-//	} else if (target instanceof IFile) {
-//		request = new AddJarFileToIndex((IFile) target, this);
+	} else if (target instanceof IFile && org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(((IFile)target).getName())) {
+		request = new AddJarFileToIndex((IFile) target, this);
 	} else if (target instanceof File) {
-		request = new AddLibraryFileToIndex(containerPath, this);
-//		request = new AddJarFileToIndex(containerPath, this);
+		if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(((File) target).getName()))
+			request = new AddJarFileToIndex(containerPath, this);
+		else
+			request = new AddLibraryFileToIndex(containerPath, this);
 	}
 	if (request != null)
 		request(request);
@@ -636,6 +641,35 @@ public synchronized void reset() {
 	}
 	this.indexLocations = new SimpleLookupTable();
 	this.javaPluginLocation = null;
+}
+/**
+ * Resets the index for a given path.
+ * Returns true if the index was reset, false otherwise.
+ */
+public synchronized boolean resetIndex(IPath containerPath) {
+	// only called to over write an existing cached index...
+	String containerPathString = containerPath.getDevice() == null ? containerPath.toString() : containerPath.toOSString();
+	try {
+		// Path is already canonical
+		IPath indexLocation = computeIndexLocation(containerPath);
+		Index index = getIndex(indexLocation);
+		if (VERBOSE) {
+			Util.verbose("-> reseting index: "+indexLocation+" for path: "+containerPathString); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+		if (index == null) {
+			// the index does not exist, try to recreate it
+			return recreateIndex(containerPath) != null;
+		}
+		index.reset();
+		return true;
+	} catch (IOException e) {
+		// The file could not be created. Possible reason: the project has been deleted.
+		if (VERBOSE) {
+			Util.verbose("-> failed to reset index for path: "+containerPathString); //$NON-NLS-1$
+			e.printStackTrace();
+		}
+		return false;
+	}
 }
 public void saveIndex(Index index) throws IOException {
 	// must have permission to write from the write monitor

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.InternalCompletionProposal;
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 /**
  * Completion proposal.
@@ -838,7 +839,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	CompletionProposal(int kind, int completionLocation) {
 		if ((kind < CompletionProposal.FIRST_KIND)
 				|| (kind > CompletionProposal.LAST_KIND)) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(toString());
 		}
 		if (this.completion == null || completionLocation < 0) {
 			// Work around for bug 132558 (https://bugs.eclipse.org/bugs/show_bug.cgi?id=132558).
@@ -1110,7 +1111,7 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 */
 	public void setReplaceRange(int startIndex, int endIndex) {
 		if (startIndex < 0 || endIndex < startIndex) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(toString());
 		}
 		this.replaceStart = startIndex;
 		this.replaceEnd = endIndex;
@@ -1370,204 +1371,40 @@ public final class CompletionProposal extends InternalCompletionProposal {
 		return this.key;
 	}
 
-//	/**
-//	 * Returns the package name of the relevant
-//	 * declaration in the context, or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - the dot-based package name
-//	 * of the type that is being subclassed or implemented</li>
-//	 * 	<li><code>FIELD_REF</code> - the dot-based package name
-//	 * of the type that declares the field that is referenced</li>
-//	 * 	<li><code>FUNCTION_REF</code> - the dot-based package name
-//	 * of the type that declares the method that is referenced</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based package name
-//	 * of the type that declares the method that is being
-//	 * implemented or overridden</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the dot-based package name, or
-//	 * <code>null</code> if none
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
-//	public char[] getDeclarationPackageName() {
-//		return this.declarationPackageName;
-//	}
-//
-//	/**
-//	 * Returns the type name of the relevant
-//	 * declaration in the context without the package fragment,
-//	 * or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - the dot-based type name
-//	 * of the type that is being subclassed or implemented</li>
-//	 * 	<li><code>FIELD_REF</code> - the dot-based type name
-//	 * of the type that declares the field that is referenced
-//	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
-//	 * 	<li><code>FUNCTION_REF</code> - the dot-based type name
-//	 * of the type that declares the method that is referenced
-//	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based type name
-//	 * of the type that declares the method that is being
-//	 * implemented or overridden</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the dot-based package name, or
-//	 * <code>null</code> if none
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
+	/**
+	 * Returns the type name of the relevant
+	 * declaration in the context without the package fragment,
+	 * or <code>null</code> if none.
+	 * <p>
+	 * This field is available for the following kinds of
+	 * completion proposals:
+	 * <ul>
+	 * <li><code>ANONYMOUS_CLASS_DECLARATION</code> - the dot-based type name
+	 * of the type that is being subclassed or implemented</li>
+	 * 	<li><code>FIELD_REF</code> - the dot-based type name
+	 * of the type that declares the field that is referenced
+	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
+	 * 	<li><code>FUNCTION_REF</code> - the dot-based type name
+	 * of the type that declares the method that is referenced
+	 * or an anonymous type instantiation ("new X(){}") if it is an anonymous type</li>
+	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based type name
+	 * of the type that declares the method that is being
+	 * implemented or overridden</li>
+	 * </ul>
+	 * For kinds of completion proposals, this method returns
+	 * <code>null</code>. Clients must not modify the array
+	 * returned.
+	 * </p>
+	 *
+	 * @return the dot-based package name, or
+	 * <code>null</code> if none
+	 * @see #getDeclarationSignature()
+	 * @see #getSignature()
+	 *
+	 */
 	public char[] getDeclarationTypeName() {
 		return this.declarationTypeName;
 	}
-//
-//	/**
-//	 * Returns the package name of the method or type
-//	 * relevant in the context, or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * 	<li><code>FIELD_REF</code> - the dot-based package name
-//	 * of the referenced field's type</li>
-//	 * 	<li><code>LOCAL_VARIABLE_REF</code> - the dot-based package name
-//	 * of the referenced local variable's type</li>
-//	 * 	<li><code>FUNCTION_REF</code> -  the dot-based package name
-//	 * of the return type of the method that is referenced</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based package name
-//	 * of the return type of the method that is being implemented
-//	 * or overridden</li>
-//	 * 	<li><code>PACKAGE_REF</code> - the dot-based package name
-//	 * of the package that is referenced</li>
-//	 * 	<li><code>TYPE_REF</code> - the dot-based package name
-//	 * of the type that is referenced</li>
-//	 * 	<li><code>VARIABLE_DECLARATION</code> - the dot-based package name
-//	 * of the type of the variable being declared</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the package name, or <code>null</code> if none
-//	 *
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
-//	public char[] getPackageName() {
-//		return this.packageName;
-//	}
-//
-//	/**
-//	 * Returns the type name without the package fragment of the method or type
-//	 * relevant in the context, or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * 	<li><code>FIELD_REF</code> - the dot-based type name
-//	 * of the referenced field's type</li>
-//	 * 	<li><code>LOCAL_VARIABLE_REF</code> - the dot-based type name
-//	 * of the referenced local variable's type</li>
-//	 * 	<li><code>FUNCTION_REF</code> -  the dot-based type name
-//	 * of the return type of the method that is referenced</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - the dot-based type name
-//	 * of the return type of the method that is being implemented
-//	 * or overridden</li>
-//	 * 	<li><code>TYPE_REF</code> - the dot-based type name
-//	 * of the type that is referenced</li>
-//	 * 	<li><code>VARIABLE_DECLARATION</code> - the dot-based package name
-//	 * of the type of the variable being declared</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the package name, or <code>null</code> if none
-//	 *
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
-//	public char[] getTypeName() {
-//		return this.typeName;
-//	}
-//
-//	/**
-//	 * Returns the parameter package names of the method
-//	 * relevant in the context, or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * 	<li><code>ANONYMOUS_CLASS_DECLARATION</code> - parameter package names
-//	 * of the constructor that is being invoked</li>
-//	 * 	<li><code>FUNCTION_REF</code> - parameter package names
-//	 * of the method that is referenced</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - parameter package names
-//	 * of the method that is being implemented or overridden</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the package name, or <code>null</code> if none
-//	 *
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
-//	public char[][] getParameterPackageNames() {
-//		return this.parameterPackageNames;
-//	}
-//
-//	/**
-//	 * Returns the parameter type names without the package fragment of
-//	 * the method relevant in the context, or <code>null</code> if none.
-//	 * <p>
-//	 * This field is available for the following kinds of
-//	 * completion proposals:
-//	 * <ul>
-//	 * 	<li><code>ANONYMOUS_CLASS_DECLARATION</code> - parameter type names
-//	 * of the constructor that is being invoked</li>
-//	 * 	<li><code>FUNCTION_REF</code> - parameter type names
-//	 * of the method that is referenced</li>
-//	 * 	<li><code>FUNCTION_DECLARATION</code> - parameter type names
-//	 * of the method that is being implemented or overridden</li>
-//	 * </ul>
-//	 * For kinds of completion proposals, this method returns
-//	 * <code>null</code>. Clients must not modify the array
-//	 * returned.
-//	 * </p>
-//	 *
-//	 * @return the package name, or <code>null</code> if none
-//	 *
-//	 * @see #getDeclarationSignature()
-//	 * @see #getSignature()
-//	 *
-//	 */
-//	public char[][] getParameterTypeNames() {
-//		return this.parameterTypeNames;
-//	}
 
 	/**
 	 * Sets the signature of the function, method, field type, member type,
@@ -1860,6 +1697,14 @@ public final class CompletionProposal extends InternalCompletionProposal {
 	 */
 	public char[][] getParameterTypeNames() {
 		return this.parameterTypeNames;
+	}
+	
+	/**
+	 * @return The fully qualified type name returned by the proposed function or
+	 * the declared type of the proposed variable or field
+	 */
+	public char[] getReturnType() {
+		return QualificationHelpers.createFullyQualifiedName(this.getReturnQualification(), this.getReturnSimpleName());
 	}
 
 	/**

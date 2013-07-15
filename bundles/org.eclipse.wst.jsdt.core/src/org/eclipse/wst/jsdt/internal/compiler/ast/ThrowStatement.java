@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IThrowStatement;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -46,7 +47,7 @@ public StringBuffer printStatement(int indent, StringBuffer output) {
 public void resolve(BlockScope scope) {
 	this.exceptionType = this.exception.resolveType(scope);
 	if (this.exceptionType == null || !this.exceptionType.isValidBinding()) {
-		this.exceptionType = new ProblemReferenceBinding(new char[0][0],null,0);
+		this.exceptionType = new ProblemReferenceBinding(CharOperation.NO_CHAR_CHAR,null,0);
 	}
 }
 

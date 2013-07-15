@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -43,8 +43,6 @@ abstract public class ReferenceBinding extends TypeBinding implements IDependent
 
 	private SimpleLookupTable compatibleCache;
 
-	public static ReferenceBinding LUB_GENERIC = new ReferenceBinding() { /* used for lub computation */};
-
 	private static final Comparator FIELD_COMPARATOR = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			char[] n1 = ((FieldBinding) o1).name;
@@ -58,7 +56,7 @@ abstract public class ReferenceBinding extends TypeBinding implements IDependent
 			MethodBinding m2 = (MethodBinding) o2;
 			char[] s1 = m1.selector;
 			char[] s2 = m2.selector;
-			int c = ReferenceBinding.compare(s1, s2, s1.length, s2.length);
+			int c = ReferenceBinding.compare(s1, s2, s1 == null ? 0 : s1.length, s2 == null ? 0 : s2.length);
 			return c == 0 ? m1.parameters.length - m2.parameters.length : c;
 		}
 	};
@@ -96,7 +94,7 @@ public static FieldBinding binarySearch(char[] name, FieldBinding[] sortedFields
  * @return (start + (end<<32)) or -1 if no method found
  */
 public static long binarySearch(char[] selector, MethodBinding[] sortedMethods) {
-	if (sortedMethods == null)
+	if (sortedMethods == null || selector == null || selector.length == 0)
 		return -1;
 	int max = sortedMethods.length;
 	if (max == 0)
@@ -227,7 +225,7 @@ public final boolean canBeSeenBy(ReferenceBinding receiverType, ReferenceBinding
 		PackageBinding currentPackage = currentType.fPackage;
 		// package could be null for wildcards/intersection types, ignore and recurse in superclass
 		if (currentPackage != null && currentPackage != this.fPackage) return false;
-	} while ((currentType = currentType.superclass()) != null);
+	} while ((currentType = currentType.getSuperBinding()) != null);
 	return false;
 }
 /*
@@ -515,7 +513,7 @@ public boolean hasIncompatibleSuperType(ReferenceBinding otherType) {
 		match = otherType.findSuperTypeWithSameErasure(currentType);
 		if (match != null && !match.isIntersectingWith(currentType))
 			return true;
-	} while ((currentType = currentType.superclass()) != null);
+	} while ((currentType = currentType.getSuperBinding()) != null);
 
 //	for (int i = 0; i < nextPosition; i++) {
 //		currentType = interfacesToVisit[i];
@@ -547,7 +545,7 @@ boolean implementsMethod(MethodBinding method) {
 					return true;
 			}
 		}
-		type = type.superclass();
+		type = type.getSuperBinding();
 	}
 	return false;
 }
@@ -581,9 +579,17 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 			return result == Boolean.TRUE;
 		}
 	}
-	this.compatibleCache.put(otherType, Boolean.FALSE); // protect from recursive call
+	boolean cacheThisBinding = true;
+	if(this instanceof ProblemReferenceBinding) {
+		cacheThisBinding = false;
+	}
+	if(cacheThisBinding) {
+		this.compatibleCache.put(otherType, Boolean.FALSE); // protect from recursive call
+	}
 	if (isCompatibleWith0(otherType)) {
-		this.compatibleCache.put(otherType, Boolean.TRUE);
+		if(cacheThisBinding) {
+			this.compatibleCache.put(otherType, Boolean.TRUE);
+		}
 		return true;
 	}
 	return false;
@@ -672,7 +678,7 @@ public final boolean isStrictfp() {
  * NOTE: Object.isSuperclassOf(Object) -> false
  */
 public boolean isSuperclassOf(ReferenceBinding otherType) {
-	while ((otherType = otherType.superclass()) != null) {
+	while ((otherType = otherType.getSuperBinding()) != null) {
 		if (otherType.isEquivalentTo(this)) return true;
 	}
 	return false;
@@ -690,7 +696,7 @@ public boolean isThrowable() {
 			case TypeIds.T_JavaLangException :
 				return true;
 		}
-	} while ((current = current.superclass()) != null);
+	} while ((current = current.getSuperBinding()) != null);
 	return false;
 }
 /**
@@ -713,7 +719,7 @@ public boolean isUncheckedException(boolean includeSupertype) {
 				return includeSupertype;
 	}
 	ReferenceBinding current = this;
-	while ((current = current.superclass()) != null) {
+	while ((current = current.getSuperBinding()) != null) {
 		switch (current.id) {
 			case TypeIds.T_JavaLangError :
 			case TypeIds.T_JavaLangRuntimeException :
@@ -761,8 +767,8 @@ public final ReferenceBinding outermostEnclosingType() {
 */
 
 public char[] qualifiedSourceName() {
-	if (isMemberType())
-		return CharOperation.concat(enclosingType().qualifiedSourceName(), sourceName(), '.');
+//	if (isMemberType())
+//		return CharOperation.concat(enclosingType().qualifiedSourceName(), sourceName(), '.');
 	return sourceName();
 }
 
@@ -800,7 +806,7 @@ public char[] sourceName() {
 	return this.sourceName;
 }
 
-public ReferenceBinding superclass() {
+public ReferenceBinding getSuperBinding() {
 	return null;
 }
 public InferredType getInferredType() {

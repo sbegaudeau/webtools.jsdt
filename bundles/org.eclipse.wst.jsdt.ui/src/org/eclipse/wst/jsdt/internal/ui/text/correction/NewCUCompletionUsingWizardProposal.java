@@ -12,14 +12,8 @@
 package org.eclipse.wst.jsdt.internal.ui.text.correction;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
@@ -30,15 +24,10 @@ import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewClassCreationWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewElementWizard;
@@ -162,51 +151,51 @@ public class NewCUCompletionUsingWizardProposal extends ChangeCorrectionProposal
 	
 
 	public void apply(IDocument document) {
-		NewElementWizard wizard= null;
-		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(fCompilationUnit));
-
-		IType createdType= null;
-		
-		if (fShowDialog) {
-			Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
-			WizardDialog dialog= new WizardDialog(shell, wizard);
-			PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
-			dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
-			dialog.create();
-			dialog.getShell().setText(CorrectionMessages.NewCUCompletionUsingWizardProposal_dialogtitle);
-
-			configureWizardPage(wizard);
-			if (dialog.open() == Window.OK) {
-				createdType= (IType) wizard.getCreatedElement();
-			}
-		} else {
-			wizard.addPages();
-			try {
-				NewTypeWizardPage page= configureWizardPage(wizard);
-				page.createType(null);
-				createdType= page.getCreatedType();
-			} catch (CoreException e) {
-				JavaScriptPlugin.log(e);
-			} catch (InterruptedException e) {
-			}
-		}
-		
-		if (createdType != null) {
-			IJavaScriptElement container= createdType.getParent();
-			if (container instanceof IJavaScriptUnit) {
-				container= container.getParent();
-			}
-			if (!container.equals(fTypeContainer)) {
-				// add import
-				try {
-					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
-					rewrite.addImport(createdType.getFullyQualifiedName('.'));
-					JavaModelUtil.applyEdit(fCompilationUnit, rewrite.rewriteImports(null), false, null);
-				} catch (CoreException e) {
-				}
-			}
-			fCreatedType= createdType;
-		}
+//		NewElementWizard wizard= null;
+//		wizard.init(JavaScriptPlugin.getDefault().getWorkbench(), new StructuredSelection(fCompilationUnit));
+//
+//		IType createdType= null;
+//		
+//		if (fShowDialog) {
+//			Shell shell= JavaScriptPlugin.getActiveWorkbenchShell();
+//			WizardDialog dialog= new WizardDialog(shell, wizard);
+//			PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
+//			dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));
+//			dialog.create();
+//			dialog.getShell().setText(CorrectionMessages.NewCUCompletionUsingWizardProposal_dialogtitle);
+//
+//			configureWizardPage(wizard);
+//			if (dialog.open() == Window.OK) {
+//				createdType= (IType) wizard.getCreatedElement();
+//			}
+//		} else {
+//			wizard.addPages();
+//			try {
+//				NewTypeWizardPage page= configureWizardPage(wizard);
+//				page.createType(null);
+//				createdType= page.getCreatedType();
+//			} catch (CoreException e) {
+//				JavaScriptPlugin.log(e);
+//			} catch (InterruptedException e) {
+//			}
+//		}
+//		
+//		if (createdType != null) {
+//			IJavaScriptElement container= createdType.getParent();
+//			if (container instanceof IJavaScriptUnit) {
+//				container= container.getParent();
+//			}
+//			if (!container.equals(fTypeContainer)) {
+//				// add import
+//				try {
+//					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
+//					rewrite.addImport(createdType.getFullyQualifiedName('.'));
+//					JavaModelUtil.applyEdit(fCompilationUnit, rewrite.rewriteImports(null), false, null);
+//				} catch (CoreException e) {
+//				}
+//			}
+//			fCreatedType= createdType;
+//		}
 		
 	}
 

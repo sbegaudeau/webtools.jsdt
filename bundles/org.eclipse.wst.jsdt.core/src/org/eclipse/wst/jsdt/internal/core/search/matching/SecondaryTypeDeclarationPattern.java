@@ -15,14 +15,16 @@ import java.io.IOException;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
+/**
+ * @deprecated this will be removed at some point because it does not apply to JavaScript
+ */
 public class SecondaryTypeDeclarationPattern extends TypeDeclarationPattern {
 
 	private final static char[] SECONDARY_PATTERN_KEY = "*/S".toCharArray(); //$NON-NLS-1$
 
 public SecondaryTypeDeclarationPattern() {
-	super(null, null, null, IIndexConstants.SECONDARY_SUFFIX, R_EXACT_MATCH | R_CASE_SENSITIVE);
+	super(R_EXACT_MATCH | R_CASE_SENSITIVE);
 }
 
 public SecondaryTypeDeclarationPattern(int matchRule) {
@@ -41,7 +43,7 @@ protected StringBuffer print(StringBuffer output) {
  * @see org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern#queryIn(org.eclipse.wst.jsdt.internal.core.index.Index)
  */
 EntryResult[] queryIn(Index index) throws IOException {
-	return index.query(CATEGORIES, SECONDARY_PATTERN_KEY, R_PATTERN_MATCH | R_CASE_SENSITIVE);
+	return index.query(this.getIndexCategories(), SECONDARY_PATTERN_KEY, R_PATTERN_MATCH | R_CASE_SENSITIVE);
 }
 
 }

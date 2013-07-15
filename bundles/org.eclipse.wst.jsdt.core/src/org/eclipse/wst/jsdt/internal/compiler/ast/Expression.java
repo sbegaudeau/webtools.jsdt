@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ public abstract class Expression extends Statement implements IExpression {
 	//of wrappers around expression in order to tune them as expression
 	//Expression is a subclass of Statement. See the message isValidJavaStatement()
 
-	public int implicitConversion;
 	public TypeBinding resolvedType = TypeBinding.UNKNOWN;
 
 public static final boolean isConstantValueRepresentable(Constant constant, int constantTypeID, int targetTypeID) {
@@ -215,12 +214,6 @@ public final boolean checkCastTypesCompatibility(Scope scope, TypeBinding castTy
 			boolean necessary = false;
 			if (expressionType.isCompatibleWith(castType)
 					|| (necessary = BaseTypeBinding.isNarrowing(castType.id, expressionType.id))) {
-				if (expression != null) {
-					expression.implicitConversion = (castType.id << 4) + expressionType.id;
-					if (expression.constant != Constant.NotAConstant) {
-						this.constant = expression.constant.castTo(expression.implicitConversion);
-					}
-				}
 				if (!necessary) tagAsUnnecessaryCast(scope, castType);
 				return true;
 
@@ -420,46 +413,7 @@ public void markAsNonNull() {
 			return this.constant;
 		return Constant.NotAConstant;
 	}
-
-	/**
-	 * Returns the type of the expression after required implicit conversions. When expression type gets promoted
-	 * or inserted a generic cast, the converted type will differ from the resolved type (surface side-effects from
-	 * #computeConversion(...)).
-	 * @return the type after implicit conversion
-	 */
-	public TypeBinding postConversionType(Scope scope) {
-		TypeBinding convertedType = this.resolvedType;
-		int runtimeType = (this.implicitConversion & TypeIds.IMPLICIT_CONVERSION_MASK) >> 4;
-		switch (runtimeType) {
-			case T_boolean :
-				convertedType = TypeBinding.BOOLEAN;
-				break;
-			case T_short :
-				convertedType = TypeBinding.SHORT;
-				break;
-			case T_char :
-				convertedType = TypeBinding.CHAR;
-				break;
-			case T_int :
-				convertedType = TypeBinding.INT;
-				break;
-			case T_float :
-				convertedType = TypeBinding.FLOAT;
-				break;
-			case T_long :
-				convertedType = TypeBinding.LONG;
-				break;
-			case T_double :
-				convertedType = TypeBinding.DOUBLE;
-				break;
-			default :
-		}
-		if ((this.implicitConversion & TypeIds.BOXING) != 0) {
-			convertedType = scope.environment().computeBoxingType(convertedType);
-		}
-		return convertedType;
-	}
-
+	
 	public StringBuffer print(int indent, StringBuffer output) {
 		printIndent(indent, output);
 		return printExpression(indent, output);

@@ -142,7 +142,7 @@ public final class Signature {
 	 */
 	public static final int ARRAY_TYPE_SIGNATURE = 4;
 
-	private static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
+	public static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
 	public static final char[] ANY = "any".toCharArray(); //$NON-NLS-1$
 
 private Signature() {

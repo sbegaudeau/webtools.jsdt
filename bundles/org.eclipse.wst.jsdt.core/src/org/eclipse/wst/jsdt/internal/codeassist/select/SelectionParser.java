@@ -34,6 +34,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
+import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Statement;
@@ -378,6 +379,81 @@ protected void consumeLocalVariableDeclarationStatement() {
 				&&  (this.selectionEnd <= localDeclaration.sourceEnd)) {
 			this.restartRecovery	= AssistParser.STOP_AT_CURSOR;
 			this.lastIgnoredToken = -1;
+		}
+	}
+}
+
+protected void consumeMethodHeaderName(boolean isAnonymous) {
+	MethodDeclaration md = null;
+	if (this.indexOfAssistIdentifier() < 0) {
+		md = new MethodDeclaration(this.compilationUnit.compilationResult);
+	}
+	else { 
+		md = new SelectionOnMethodName(this.compilationUnit.compilationResult);
+	}
+
+	md.exprStackPtr=this.expressionPtr;
+	//name
+	long selectorSource =-1;
+	if (!isAnonymous)
+	{
+		md.setSelector(this.identifierStack[this.identifierPtr]);
+		selectorSource = this.identifierPositionStack[this.identifierPtr--];
+		this.identifierLengthPtr--;
+	}
+
+
+	if (this.nestedType>0)
+		markEnclosingMemberWithLocalType();
+
+	//type
+	//		md.returnType = getTypeReference(this.intStack[this.intPtr--]);
+	//modifiers
+	int functionPos = this.intStack[this.intPtr--];
+	int modifierPos = this.intStack[this.intPtr--];
+	md.declarationSourceStart = (functionPos>modifierPos)? modifierPos:functionPos;
+	md.modifiers = this.intStack[this.intPtr--];
+	// consume annotations
+	//		int length;
+	//		if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
+	//			System.arraycopy(
+	//				this.expressionStack,
+	//				(this.expressionPtr -= length) + 1,
+	//				md.annotations = new Annotation[length],
+	//				0,
+	//				length);
+	//		}
+	// javadoc
+	md.javadoc = this.javadoc;
+	this.javadoc = null;
+
+	//highlight starts at selector start
+	if (selectorSource>=0)
+		md.sourceStart = (int) (selectorSource >>> 32);
+	else
+		md.sourceStart=md.declarationSourceStart;
+	pushOnAstStack(md);
+	md.sourceEnd = this.lParenPos;
+	md.bodyStart = this.lParenPos+1;
+	this.listLength = 0; // initialize this.listLength before reading parameters/throws
+
+
+
+
+	incrementNestedType();
+
+	// recovery
+	if (this.currentElement != null){
+		if (this.currentElement instanceof RecoveredType
+					//|| md.modifiers != 0
+					|| true/* (this.scanner.getLineNumber(md.returnType.sourceStart)
+						== this.scanner.getLineNumber(md.sourceStart))*/){
+			this.lastCheckPoint = md.bodyStart;
+			this.currentElement = this.currentElement.add(md, 0);
+			this.lastIgnoredToken = -1;
+		} else {
+			this.lastCheckPoint = md.sourceStart;
+			this.restartRecovery = true;
 		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,4 +39,13 @@ public interface RelevanceConstants {
 	int R_NO_PROBLEMS = 1;
 	int R_RESOLVED = 1;
 	int R_TARGET = 5;
+	
+	/** Relevance for any name that does not start with an underscore */
+	int R_NOT_UNDERSCORE = 20;
+	
+	/** Relevance for functions */
+	int R_FUNCTION = 60;
+	
+	/** Relevance for fields */
+	int R_FIELD = 30;
 }

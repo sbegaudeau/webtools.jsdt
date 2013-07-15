@@ -11,18 +11,31 @@
 package org.eclipse.wst.jsdt.internal.ui.text.java;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.IFunction;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
+import org.eclipse.wst.jsdt.core.search.SearchEngine;
+import org.eclipse.wst.jsdt.core.search.SearchMatch;
+import org.eclipse.wst.jsdt.core.search.SearchParticipant;
+import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.core.search.SearchRequestor;
+import org.eclipse.wst.jsdt.internal.core.DefaultWorkingCopyOwner;
+import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
+import org.eclipse.wst.jsdt.internal.ui.Logger;
 
 
 /**
@@ -56,47 +69,92 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 	 * @throws JavaScriptModelException if accessing the java model fails
 	 */
 	protected IMember resolveMember() throws JavaScriptModelException {
-		char[] declarationSignature= fProposal.getDeclarationSignature();
+		//get the type name
+		char[] typeNameChars = fProposal.getDeclarationTypeName();
+		String declaringTypeName = null;
+		if(typeNameChars != null) {
+			declaringTypeName = String.valueOf(typeNameChars);
+		}
+		
+		/* try using the signature if type name not set
+		 * NOTE: old way of doing things, should be removed at some point
+		 */
+		if(declaringTypeName == null) {
+			char[] declarationSignature= fProposal.getDeclarationSignature();
+			if(declarationSignature != null) {
+				declaringTypeName = SignatureUtil.stripSignatureToFQN(String.valueOf(declarationSignature));
+			}
+		}
+		
 		IFunction func = null;
-		if (declarationSignature!=null) {
-			String typeName = SignatureUtil.stripSignatureToFQN(String
-					.valueOf(declarationSignature));
-			String name = String.valueOf(fProposal.getName());
+		if (declaringTypeName!=null) {
+			String functionName = String.valueOf(fProposal.getName());
 			
 			//get the parameter type names
-			String[] paramTypeNameStrings;
-			char[] signature = fProposal.getSignature();
-			if(signature != null && signature.length > 0) {
-				paramTypeNameStrings = Signature.getParameterTypes(String.valueOf(fProposal.getSignature()));
-			} else {
-				char[][] paramTypeNameChars = this.fProposal.getParameterTypeNames();
+			String[] paramTypeNameStrings = null;
+			char[][] paramTypeNameChars = this.fProposal.getParameterTypeNames();
+			if(paramTypeNameChars != null) {
 				paramTypeNameStrings = new String[paramTypeNameChars.length];
 				for(int i = 0; i < paramTypeNameChars.length; ++i) {
-					paramTypeNameStrings[i] = String.valueOf(paramTypeNameChars[i]);
+					paramTypeNameStrings[i] = paramTypeNameChars[i] != null ? String.valueOf(paramTypeNameChars[i]) : null;
+				}
+			} else {
+				char[] signature = fProposal.getSignature();
+				if(signature != null && signature.length > 0) {
+					paramTypeNameStrings = Signature.getParameterTypes(String.valueOf(fProposal.getSignature()));
+				} else {
+					paramTypeNameStrings = new String[0];
 				}
 			}
 			
 			//search all the possible types until a match is found
-			IType[] types = fJavaProject.findTypes(typeName);
+			IType[] types = fJavaProject.findTypes(declaringTypeName);
 			if(types != null && types.length >0) {
 				for(int i = 0; i < types.length && func == null; ++i) {
 					IType type = types[i];
 					if (type != null) {
 						boolean isConstructor = fProposal.isConstructor();
 						try {
-							func = findMethod(name, paramTypeNameStrings, isConstructor, type);
+							func = findMethod(functionName, paramTypeNameStrings, isConstructor, type);
 						} catch(JavaScriptModelException e) {
 							//ignore, could not find method
 						}
 					}
 				}
 			} else {
-				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
-				if(typeRoot != null) {
-					func = typeRoot.getFunction(name, paramTypeNameStrings);
+				//search the index for a match
+				MethodPattern methodPattern = new MethodPattern(true, false,
+							functionName.toCharArray(),
+							new char[][] {declaringTypeName.toCharArray()},
+							SearchPattern.R_EXACT_MATCH);
+				
+				SearchEngine searchEngine = new SearchEngine(DefaultWorkingCopyOwner.PRIMARY);
+				IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {this.fJavaProject});
+				final List matches = new ArrayList();
+				try {
+					searchEngine.search(methodPattern,
+							new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
+							scope,
+							new SearchRequestor() {
+								public void acceptSearchMatch(SearchMatch match) throws CoreException {
+									if(match.getElement() instanceof IFunction) {
+										matches.add(match.getElement());
+									}
+								}
+							},
+							new NullProgressMonitor());  //using a NPM here maybe a bad idea, but nothing better to do right now
+				}
+				catch (CoreException e) {
+					Logger.logException("Failed index search for function: " + functionName, e); //$NON-NLS-1$
+				}
+				
+				// just use the first match found
+				if(!matches.isEmpty()) {
+					func = (IFunction)matches.get(0);
 				}
 			}
-		}		
+		}
+		
 		return func;
 	}
 

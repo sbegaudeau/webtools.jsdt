@@ -30,6 +30,7 @@ final class JavaTextMessages extends NLS {
 
 	public static String ResultCollector_anonymous_type;
 	public static String ResultCollector_overridingmethod;
+	public static String Global;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, JavaTextMessages.class);

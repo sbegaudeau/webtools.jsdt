@@ -59,13 +59,13 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 
 	checkUnused: {
 		MethodBinding constructorBinding;
-		if ((constructorBinding = this.binding) == null) break checkUnused;
+		if ((constructorBinding = this.getBinding()) == null) break checkUnused;
 		if (this.isDefaultConstructor) break checkUnused;
 		if (constructorBinding.isUsed()) break checkUnused;
 		if (constructorBinding.isPrivate()) {
-			if ((this.binding.declaringClass.tagBits & TagBits.HasNonPrivateConstructor) == 0)
+			if ((this.getBinding().declaringClass.tagBits & TagBits.HasNonPrivateConstructor) == 0)
 				break checkUnused; // tolerate as known pattern to block instantiation
-		} else if ((this.binding.declaringClass.tagBits & (TagBits.IsAnonymousType|TagBits.IsLocalType)) != TagBits.IsLocalType) {
+		} else if ((this.getBinding().declaringClass.tagBits & (TagBits.IsAnonymousType|TagBits.IsLocalType)) != TagBits.IsLocalType) {
 			break checkUnused;
 		}
 	}
@@ -76,15 +76,15 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 				initializerFlowContext.parent,
 				this,
 				null,
-				this.scope,
+				this.getScope(),
 				FlowInfo.DEAD_END);
 		initializerFlowContext.checkInitializerExceptions(
-			this.scope,
+			this.getScope(),
 			constructorContext,
 			flowInfo);
 
 		// anonymous constructor can gain extra thrown exceptions from unhandled ones
-		if (this.binding.declaringClass.isAnonymousType()) {
+		if (this.getBinding().declaringClass.isAnonymousType()) {
 			ArrayList computedExceptions = constructorContext.extendedExceptions;
 			if (computedExceptions != null){
 				int size;
@@ -107,7 +107,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 			// if calling 'this(...)', then flag all non-static fields as definitely
 			// set since they are supposed to be set inside other local constructor
 			if (this.constructorCall.accessMode == ExplicitConstructorCall.This) {
-				FieldBinding[] fields = this.binding.declaringClass.fields();
+				FieldBinding[] fields = this.getBinding().declaringClass.fields();
 				for (int i = 0, count = fields.length; i < count; i++) {
 					FieldBinding field;
 					if (!(field = fields[i]).isStatic()) {
@@ -115,7 +115,7 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 					}
 				}
 			}
-			flowInfo = this.constructorCall.analyseCode(this.scope, constructorContext, flowInfo);
+			flowInfo = this.constructorCall.analyseCode(this.getScope(), constructorContext, flowInfo);
 		}
 
 		// reuse the reachMode from non static field info
@@ -126,8 +126,8 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 			boolean didAlreadyComplain = false;
 			for (int i = 0, count = this.statements.length; i < count; i++) {
 				Statement stat = this.statements[i];
-				if (!stat.complainIfUnreachable(flowInfo, this.scope, didAlreadyComplain)) {
-					flowInfo = stat.analyseCode(this.scope, constructorContext, flowInfo);
+				if (!stat.complainIfUnreachable(flowInfo, this.getScope(), didAlreadyComplain)) {
+					flowInfo = stat.analyseCode(this.getScope(), constructorContext, flowInfo);
 				} else {
 					didAlreadyComplain = true;
 				}
@@ -169,7 +169,7 @@ public boolean isInitializationMethod() {
  * lazily.
  */
 public boolean isRecursive(ArrayList visited) {
-	if (this.binding == null
+	if (this.getBinding() == null
 			|| this.constructorCall == null
 			|| this.constructorCall.binding == null
 			|| this.constructorCall.isSuperAccess()
@@ -178,7 +178,7 @@ public boolean isRecursive(ArrayList visited) {
 	}
 
 	ConstructorDeclaration targetConstructor =
-		((ConstructorDeclaration)this.scope.referenceType().declarationOf(this.constructorCall.binding.original()));
+		((ConstructorDeclaration)this.getScope().referenceType().declarationOf(this.constructorCall.binding.original()));
 	if (this == targetConstructor) return true; // direct case
 
 	if (visited == null) { // lazy allocation
@@ -224,10 +224,10 @@ public StringBuffer printBody(int indent, StringBuffer output) {
 }
 
 public void resolveJavadoc() {
-	if (this.binding == null || this.javadoc != null) {
+	if (this.getBinding() == null || this.javadoc != null) {
 		super.resolveJavadoc();
 	} else if (!this.isDefaultConstructor) {
-		this.scope.problemReporter().javadocMissing(this.sourceStart, this.sourceEnd, this.binding.modifiers);
+		this.getScope().problemReporter().javadocMissing(this.sourceStart, this.sourceEnd, this.getBinding().modifiers);
 	}
 }
 
@@ -236,11 +236,11 @@ public void resolveJavadoc() {
  * for recursive constructor invocations.
  */
 public void resolveStatements() {
-	SourceTypeBinding sourceType = this.scope.enclosingSourceType();
+	SourceTypeBinding sourceType = this.getScope().enclosingSourceType();
 	if (!CharOperation.equals(sourceType.sourceName, this.selector)){
-		this.scope.problemReporter().missingReturnType(this);
+		this.getScope().problemReporter().missingReturnType(this);
 	}
-	if (this.binding != null && !this.binding.isPrivate()) {
+	if (this.getBinding() != null && !this.getBinding().isPrivate()) {
 		sourceType.tagBits |= TagBits.HasNonPrivateConstructor;
 	}
 	// if null ==> an error has occurs at parsing time ....
@@ -249,7 +249,7 @@ public void resolveStatements() {
 				&& this.constructorCall.accessMode != ExplicitConstructorCall.This) {
 			this.constructorCall = null;
 		} else {
-			this.constructorCall.resolve(this.scope);
+			this.constructorCall.resolve(this.getScope());
 		}
 	}
 	super.resolveStatements();
@@ -258,19 +258,19 @@ public void resolveStatements() {
 public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 	if (visitor.visit(this, classScope)) {
 		if (this.javadoc != null) {
-			this.javadoc.traverse(visitor, this.scope);
+			this.javadoc.traverse(visitor, this.getScope());
 		}
 		if (this.arguments != null) {
 			int argumentLength = this.arguments.length;
 			for (int i = 0; i < argumentLength; i++)
-				this.arguments[i].traverse(visitor, this.scope);
+				this.arguments[i].traverse(visitor, this.getScope());
 		}
 		if (this.constructorCall != null)
-			this.constructorCall.traverse(visitor, this.scope);
+			this.constructorCall.traverse(visitor, this.getScope());
 		if (this.statements != null) {
 			int statementsLength = this.statements.length;
 			for (int i = 0; i < statementsLength; i++)
-				this.statements[i].traverse(visitor, this.scope);
+				this.statements[i].traverse(visitor, this.getScope());
 		}
 	}
 	visitor.endVisit(this, classScope);

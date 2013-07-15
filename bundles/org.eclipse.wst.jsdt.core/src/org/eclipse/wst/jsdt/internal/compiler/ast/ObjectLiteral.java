@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -75,12 +75,23 @@ public class ObjectLiteral extends Expression implements IObjectLiteral {
 
 	public TypeBinding resolveType(BlockScope scope) {
 		this.constant=Constant.NotAConstant;
-		if (this.fields!=null)
+		if (this.fields!=null) {
 			for (int i = 0; i < this.fields.length; i++) {
 				this.fields[i].resolveType(scope);
 			}
-		if(inferredType != null && inferredType.binding != null)
-			return inferredType.binding;
+		}
+		
+		if(inferredType != null) {
+			//build the type if it is not yet built
+			if(inferredType.binding == null) {
+				inferredType.resolveType(scope, this);
+			}
+			
+			if(inferredType.binding != null) {
+				return inferredType.binding;
+			}
+		}
+
 		return TypeBinding.ANY;
 	}
 

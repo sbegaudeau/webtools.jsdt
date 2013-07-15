@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLPrinter;
-import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.BadLocationException;
@@ -68,8 +66,9 @@ import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -78,8 +77,10 @@ import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocLocations;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
-import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLPrinter;
+import org.eclipse.wst.jsdt.internal.ui.text.html.HTMLTextPresenter;
 import org.eclipse.wst.jsdt.ui.JSdocContentAccess;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.IJavaScriptPartitions;
 import org.osgi.framework.Bundle;
@@ -592,6 +593,21 @@ public class JavadocView extends AbstractInfoView {
 				}
 				if (reader != null) {
 					HTMLPrinter.addParagraph(buffer, reader);
+				}
+			} else if (curr != null && curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE) {
+				Reader reader = null;
+				try {
+					reader= JSdocContentAccess.getHTMLContentReader((ILocalVariable)curr, false, true);
+				}
+				catch (JavaScriptModelException e) {
+					reader= new StringReader(InfoViewMessages.JavadocView_error_gettingJavadoc);
+					JavaScriptPlugin.log(e.getStatus());
+				}
+				if (reader != null) {
+					HTMLPrinter.addParagraph(buffer, reader);
+				}
+				else {
+					HTMLPrinter.addSmallHeader(buffer, InfoViewMessages.JavadocView_noInformation);
 				}
 			}
 		}

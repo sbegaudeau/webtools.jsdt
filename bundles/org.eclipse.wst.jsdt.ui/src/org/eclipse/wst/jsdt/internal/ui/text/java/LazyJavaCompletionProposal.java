@@ -331,7 +331,7 @@ public class LazyJavaCompletionProposal extends AbstractJavaCompletionProposal {
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.AbstractJavaCompletionProposal#isValidPrefix(java.lang.String)
 	 */
-	protected boolean isValidPrefix(String prefix) {
+	public boolean isValidPrefix(String prefix) {
 		if (super.isValidPrefix(prefix))
 			return true;
 		

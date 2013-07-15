@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2008 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,16 +13,12 @@ package org.eclipse.wst.jsdt.core.ast;
 
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 /**
- *  Abstract representation of a var.
  * <p>
- * This interface is not intended to be implemented by clients.
+ * Abstract representation of a var.
  * </p>
- * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
- * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
- * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
- * (repeatedly) as the API evolves.
+ * 
+ * @noimplement This interface is not intended to be implemented by clients.
  */
-
 public interface IAbstractVariableDeclaration extends IStatement{
 	/**
 	 * Set the inferred type of the var
@@ -49,5 +45,21 @@ public interface IAbstractVariableDeclaration extends IStatement{
 	 * @return jsdoc
 	 */
 	public IJsDoc getJsDoc();
+	
+	/**
+	 * @param isType
+	 *            <code>true</code> if this variable declaration is actually a
+	 *            reference to a type, rather then the instance of a type.
+	 *            <code>false</code> if this variable is a reference to an
+	 *            instance of a type rather then the type itself.
+	 */
+	public void setIsType(boolean isType);
 
+	/**
+	 * @return <code>true</code> if this variable declaration is actually a
+	 *         reference to a type, rather then the instance of a type.
+	 *         <code>false</code> if this variable is a reference to an
+	 *         instance of a type rather then the type itself.
+	 */
+	public boolean isType();
 }

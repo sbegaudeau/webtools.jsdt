@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -643,20 +643,26 @@ public class JavaProject
 
 					if (target instanceof IResource){
 						// internal target
-						root = getPackageFragmentRoot((IResource) target);
+						if (((IResource) target).getType() == IResource.FILE && org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(entryPath.lastSegment())) {
+							root = new JarPackageFragmentRoot((IResource) target, this);
+						}
+						else {
+							root = getPackageFragmentRoot((IResource) target);
+						}
 					} else {
-						// external target - only JARs allowed
+						// external target - JARs, *.js, or directory allowed
 						if (JavaModel.isFile(target))
 						{
-							 if (true) {//org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
-								 root = new LibraryFragmentRoot(entryPath, this);
-
-							 }
-							 else
-							 {
-//								 root = new JarPackageFragmentRoot(entryPath, this);
-
-							 }
+							if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(entryPath.lastSegment()))
+							{
+								root = new JarPackageFragmentRoot(entryPath, this);
+							} 
+							else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isJavaFileName(entryPath.lastSegment())) {
+								root = new LibraryFragmentRoot(entryPath, this);
+							}							 
+						}
+						else {
+							root = new LibraryFragmentRoot(entryPath, this);
 						}
 					}
 				} else {
@@ -716,7 +722,7 @@ public class JavaProject
 			accumulatedRoots,
 			new HashSet(5), // rootIDs
 			null, // inside original project
-			true, // check existency
+			true, // check existence
 			retrieveExportedRoots,
 			rootToResolvedEntries);
 		IPackageFragmentRoot[] rootArray = new IPackageFragmentRoot[accumulatedRoots.size()];
@@ -1852,7 +1858,7 @@ public class JavaProject
 		switch (resource.getType()) {
 			case IResource.FILE:
 				if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resource.getName())) {
-//					return new JarPackageFragmentRoot(resource, this);
+					return new JarPackageFragmentRoot(resource, this);
 				} else {
 					return null;
 				}
@@ -1877,7 +1883,8 @@ public class JavaProject
 	 * no path canonicalization
 	 */
 	public IPackageFragmentRoot getPackageFragmentRoot0(IPath jarPath) {
-
+		if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(jarPath.lastSegment()))
+			return new JarPackageFragmentRoot(jarPath, this);
 		return new LibraryFragmentRoot(jarPath, this);
 	}
 

@@ -139,7 +139,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 	}
 
 
-	public boolean contains(ReferenceBinding binding)
+	public boolean isLinkedType(ReferenceBinding binding)
 	{
 		for (int i = 0; i < this.sourceTypes.length ; i++)
 			if (this.sourceTypes[i]==binding)
@@ -158,22 +158,22 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 	private void setSuperclass(SourceTypeBinding from)
 	{
-		if (this.superclass==null || (from.superclass!=null && from.superclass.id!=TypeIds.T_JavaLangObject))
-			this.superclass=from.superclass;
+		if (this.getSuperBinding0()==null || (from.getSuperBinding0()!=null && from.getSuperBinding0().id!=TypeIds.T_JavaLangObject))
+			this.setSuperBinding(from.getSuperBinding0());
 	}
 
 
-	public ReferenceBinding superclass() {
+	public ReferenceBinding getSuperBinding() {
 		ReferenceBinding supercls = null;
 		for (int i = 0; i < this.sourceTypes.length ; i++)
 		{
-			supercls = this.sourceTypes[i].superclass;
+			supercls = this.sourceTypes[i].getSuperBinding0();
 			if (supercls!=null && supercls.id!=TypeIds.T_JavaLangObject)
 				return supercls;
 		}
-		if (supercls!=null && this.superclass==null)
+		if (supercls!=null && this.getSuperBinding0()==null)
 			return supercls;
-		return this.superclass;
+		return this.getSuperBinding0();
 	}
 	
 	

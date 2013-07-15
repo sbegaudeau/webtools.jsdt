@@ -39,37 +39,25 @@ public class Argument extends LocalDeclaration implements IArgument {
 	}
 	
 	public void bind(MethodScope scope, TypeBinding typeBinding, boolean used) {
-
 		// record the resolved type into the type reference
-
 		Binding existingVariable = scope.getLocalBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
-		if (existingVariable != null && existingVariable.isValidBinding() && existingVariable instanceof LocalVariableBinding ){
+		
+		if (existingVariable != this.binding && existingVariable != null && existingVariable.isValidBinding() && existingVariable instanceof LocalVariableBinding ){
 			LocalVariableBinding localVariableBinding=(LocalVariableBinding)existingVariable;
-//			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
-//				scope.problemReporter().redefineArgument(this);
-//			} else {
-//				boolean isSpecialArgument = false;
-//				if (existingVariable instanceof FieldBinding) {
-//					if (scope.isInsideConstructor()) {
-//						isSpecialArgument = true; // constructor argument
-//					} else {
-//						AbstractMethodDeclaration methodDecl = scope.referenceMethod();
-//						if (methodDecl != null && CharOperation.prefixEquals(SET, methodDecl.selector)) {
-//							isSpecialArgument = true; // setter argument
-//						}
-//					}
-//				}
-				if (localVariableBinding.declaringScope.compilationUnitScope()==scope.compilationUnitScope())
+				if (localVariableBinding.declaringScope.compilationUnitScope()==scope.compilationUnitScope()) {
 					scope.problemReporter().localVariableHiding(this, existingVariable, false);
-//			}
+				}
 		}
 
 		if (this.binding == null) {
 			this.binding = new LocalVariableBinding(this, typeBinding, this.modifiers, true);
 		}
-		scope.addLocalVariable(	this.binding );
-//		if (JavaScriptCore.IS_ECMASCRIPT4)
-//			resolveAnnotations(scope, this.annotations, this.binding);
+		
+		//only add as local binding if the existing local binding is not the binding for this arg
+		if(existingVariable != this.binding) {
+			scope.addLocalVariable(	this.binding );
+		}
+
 		//true stand for argument instead of just local
 		this.binding.declaration = this;
 		this.binding.useFlag = used ? LocalVariableBinding.USED : LocalVariableBinding.UNUSED;

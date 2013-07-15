@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,15 @@ public class InferredAttribute extends InferredMember{
 	public InferredType type;
 	public ASTNode node;
 	public int modifiers;
+	
+	/**
+	 * <p>
+	 * <code>true</code> if this attribute is actually a type,
+	 * rather then the instance of a type. <code>false</code> if this attribute is
+	 * an instance of a type rather then the type itself.
+	 * </p>
+	 */
+	private boolean fIsType;
 
 	/**
 	 * Creates an attribute with this name in the given inferred type. This
@@ -72,5 +81,24 @@ public class InferredAttribute extends InferredMember{
 	   output.append(" ").append(name); //$NON-NLS-1$
 	   return output;
 	}
+	
+	/**
+	 * @param isType
+	 *            <code>true</code> if this attribute is actually a type,
+	 *            rather then the instance of a type. <code>false</code> if
+	 *            this attribute is an instance of a type rather then the type
+	 *            itself.
+	 */
+	public void setIsType(boolean isType) {
+		this.fIsType = isType;
+	}
 
+	/**
+	 * @return <code>true</code> if this attribute is actually a type, rather
+	 *         then the instance of a type. <code>false</code> if this
+	 *         attribute is an instance of a type rather then the type itself.
+	 */
+	public boolean isType() {
+		return this.fIsType;
+	}
 }

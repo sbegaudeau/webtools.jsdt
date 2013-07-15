@@ -106,7 +106,7 @@ public class JavaTypeCompletionProposal extends JavaCompletionProposal {
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.AbstractJavaCompletionProposal#isValidPrefix(java.lang.String)
 	 */
-	protected boolean isValidPrefix(String prefix) {
+	public boolean isValidPrefix(String prefix) {
 		return super.isValidPrefix(prefix) || isPrefix(prefix, fUnqualifiedTypeName) || isPrefix(prefix, fFullyQualifiedTypeName);
 	}
 

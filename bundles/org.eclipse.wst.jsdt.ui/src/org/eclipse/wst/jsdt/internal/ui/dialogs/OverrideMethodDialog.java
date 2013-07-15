@@ -191,16 +191,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 	}
 
 	private static class OverrideMethodComparator extends ViewerComparator {
-
-		private ITypeBinding[] fAllTypes= new ITypeBinding[0];
-
-		public OverrideMethodComparator(ITypeBinding curr) {
-			if (curr != null) {
-				ITypeBinding[] superTypes= Bindings.getAllSuperTypes(curr);
-				fAllTypes= new ITypeBinding[superTypes.length + 1];
-				fAllTypes[0]= curr;
-				System.arraycopy(superTypes, 0, fAllTypes, 1, superTypes.length);
-			}
+		public OverrideMethodComparator() {
 		}
 
 		/*
@@ -245,23 +236,6 @@ public class OverrideMethodDialog extends SourceActionDialog {
 				return new StatusInfo(IStatus.ERROR, ""); //$NON-NLS-1$
 			return new StatusInfo(IStatus.INFO, Messages.format(JavaUIMessages.OverrideMethodDialog_selectioninfo_more, new String[] { String.valueOf(count), String.valueOf(fNumMethods)})); 
 		}
-	}
-
-	private static ITypeBinding getSuperType(final ITypeBinding binding, final String name) {
-
-		if (binding.isArray() || binding.isPrimitive())
-			return null;
-
-		if (binding.getQualifiedName().startsWith(name))
-			return binding;
-
-		final ITypeBinding type= binding.getSuperclass();
-		if (type != null) {
-			final ITypeBinding result= getSuperType(type, name);
-			if (result != null)
-				return result;
-		}
-		return null;
 	}
 
 	private JavaScriptUnit fUnit= null;
@@ -310,19 +284,19 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		}
 
 		IFunction[] typesArrays= (IFunction[]) types.toArray(new IFunction[types.size()]);
-//		OverrideMethodComparator comparator= null;//new OverrideMethodComparator(binding);
-//		if (expanded.isEmpty() && typesArrays.length > 0) {
-//			comparator.sort(null, typesArrays);
-//			expanded.add(typesArrays[0]);
-//		}
-		setExpandedElements(typesArrays);
+		ViewerComparator comparator= new OverrideMethodComparator();
+		if (expanded.isEmpty() && typesArrays.length > 0) {
+			comparator.sort(null, typesArrays);
+			expanded.add(typesArrays[0]);
+		}
+		setExpandedElements(expanded.toArray());
 
 		((OverrideMethodContentProvider) getContentProvider()).init(parentMethods);
 
 		setTitle(JavaUIMessages.OverrideMethodDialog_dialog_title);
 		setMessage(null);
 		setValidator(new OverrideMethodValidator(parentMethods.length));
-//		setComparator(comparator);
+		setComparator(comparator);
 		setContainerMode(true);
 		setSize(60, 18);
 		setInput(new Object());

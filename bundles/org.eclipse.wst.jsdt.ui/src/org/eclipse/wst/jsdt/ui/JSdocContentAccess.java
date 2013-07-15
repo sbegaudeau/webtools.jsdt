@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.internal.core.MetadataFile;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
+import org.eclipse.wst.jsdt.internal.ui.Logger;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.OAADocReader;
 
@@ -63,6 +64,33 @@ public class JSdocContentAccess {
 	
 	private JSdocContentAccess() {
 		// do not instantiate
+	}
+	
+	/**
+	 * <p>Gets the content reader for either an {@link IMember} or {@link ILocalVariable}.</p>
+	 * 
+	 * @param element {@link IJavaScriptElement} to get the content reader for
+	 * @param allowInherited For methods with no (Javadoc) comment, the comment of the overridden class
+	 * is returned if <code>allowInherited</code> is <code>true</code>.
+	 * 
+	 * @return a reader for the Javadoc comment content or <code>null</code> if the element
+	 * does not contain a Javadoc comment or if no source is available
+	 * 
+	 * @throws JavaScriptModelException is thrown when the elements javadoc can not be accessed
+	 * 
+	 * @see #getContentReader(ILocalVariable, boolean)
+	 * @see #getContentReader(IMember, boolean)
+	 */
+	public static Reader getContentReader(IJavaScriptElement element, boolean allowInherited) throws JavaScriptModelException {
+		Reader reader = null;
+		
+		if(element instanceof IMember) {
+			reader = getContentReader((IMember)element, allowInherited);
+		} else if(element instanceof ILocalVariable) {
+			reader = getContentReader((ILocalVariable)element, allowInherited);
+		}
+		
+		return reader;
 	}
 	
 	/**
@@ -117,7 +145,7 @@ public class JSdocContentAccess {
 				}
 			}
 			catch (JavaScriptModelException e) {
-				// doesn't exist
+				Logger.logException(Logger.ERROR_DEBUG, e);
 			}
 		}
 		
@@ -127,6 +155,49 @@ public class JSdocContentAccess {
 			return new SequenceReader((Reader[]) readers.toArray(new Reader[readers.size()]));
 		}
 		return null;
+	}
+	
+	/**
+	 * Gets a reader for an ILocalDeclaration's doc comment content from the
+	 * source attachment. Returns <code>null</code> if the declaration does
+	 * not have a doc comment or if no source is available.
+	 * 
+	 * @param declaration
+	 *            The declaration to get the doc of.
+	 * @param allowInherited
+	 *            For methods with no doc comment, the comment of the
+	 *            overridden class is returned if <code>allowInherited</code>
+	 *            is <code>true</code> and this is an argument.
+	 * @return Returns a reader for the doc comment content or
+	 *         <code>null</code> if the declaration does not contain a doc
+	 *         comment or if no source is available
+	 * @throws JavaScriptModelException
+	 *             is thrown when the declaration's doc can not be accessed
+	 */
+	public static Reader getContentReader(ILocalVariable declaration, boolean allowInherited) throws JavaScriptModelException {
+		List readers = new ArrayList(2);
+		IDocumentationReader[] docReaders = getDocReaders(declaration);
+		for (int i = 0; i < docReaders.length; i++) {
+			Reader contentReader = docReaders[i].getContentReader(declaration, allowInherited);
+			if (contentReader != null) {
+				readers.add(contentReader);
+			}
+		}
+
+		if (!readers.isEmpty()) {
+			if (readers.size() == 1)
+				return (Reader) readers.get(0);
+			return new SequenceReader((Reader[]) readers.toArray(new Reader[readers.size()]));
+		}
+		IOpenable openable = declaration.getOpenable();
+		if (!(openable instanceof MetadataFile)) {
+			IBuffer buf = openable.getBuffer();
+			JavaDocCommentReader r = new JavaDocCommentReader(buf, declaration.getNameRange().getOffset() - 1);
+			if(r.getOffset() != declaration.getNameRange().getOffset() - 1) {
+				return r;
+			}
+		}
+ 		return null;
 	}
 
 	/**
@@ -147,6 +218,35 @@ public class JSdocContentAccess {
 		}
 		return new String(content).trim().equals("{@inheritDoc}"); //$NON-NLS-1$
 		
+	}
+	
+	/**
+	 * <p>Gets the HTML content reader for either an {@link IMember} or {@link ILocalVariable}.</p>
+	 * 
+	 * @param element {@link IJavaScriptElement} to get the Javadoc of
+	 * @param allowInherited for methods with no (Javadoc) comment, the comment of the overridden
+	 * class is returned if <code>allowInherited</code> is <code>true</code>
+	 * @param useAttachedJavadoc if <code>true</code> Javadoc will be extracted from attached Javadoc
+	 * if there's no source
+	 * 
+	 * @return a reader for the Javadoc comment content in HTML or <code>null</code> if the element
+	 * does not contain a Javadoc comment or if no source is available
+	 * 
+	 * @throws JavaScriptModelException is thrown when the elements Javadoc can not be accessed
+	 * 
+	 * @see #getHTMLContentReader(ILocalVariable, boolean, boolean)
+	 * @see #getHTMLContentReader(IMember, boolean, boolean)
+	 */
+	public static Reader getHTMLContentReader(IJavaScriptElement element, boolean allowInherited, boolean useAttachedJavadoc) throws JavaScriptModelException {
+		Reader reader = null;
+		
+		if(element instanceof IMember) {
+			reader = getHTMLContentReader((IMember)element, allowInherited, useAttachedJavadoc);
+		} else if(element instanceof ILocalVariable) {
+			reader = getHTMLContentReader((ILocalVariable)element, allowInherited, useAttachedJavadoc);
+		}
+		
+		return reader;
 	}
 
 	/**
@@ -211,9 +311,8 @@ public class JSdocContentAccess {
 	 */
 	public static Reader getHTMLContentReader(ILocalVariable variable, boolean allowInherited, boolean useAttachedDoc) throws JavaScriptModelException {
 		Reader contentReader= getContentReader(variable, allowInherited);
-		if (contentReader != null)
-		{
-			IDocumentationReader[] docReaders = new IDocumentationReader[0];//getDocReaders(declaration);
+		if (contentReader != null) {
+			IDocumentationReader[] docReaders = getDocReaders(variable);
 			if (docReaders.length > 0) {
 				List htmlReaders = new ArrayList(docReaders.length);
 				for (int i = 0; i < docReaders.length; i++) {
@@ -230,43 +329,6 @@ public class JSdocContentAccess {
 			return new JavaDoc2HTMLTextReader(contentReader);
 		}
 		
-		return null;
-	}
-
-
-
-	/**
-	 * Gets a reader for an ILocalDeclaration's doc comment content from the
-	 * source attachment. Returns <code>null</code> if the declaration does
-	 * not have a doc comment or if no source is available.
-	 * 
-	 * @param declaration
-	 *            The declaration to get the doc of.
-	 * @param allowInherited
-	 *            For methods with no doc comment, the comment of the
-	 *            overridden class is returned if <code>allowInherited</code>
-	 *            is <code>true</code> and this is an argument.
-	 * @return Returns a reader for the doc comment content or
-	 *         <code>null</code> if the declaration does not contain a doc
-	 *         comment or if no source is available
-	 * @throws JavaScriptModelException
-	 *             is thrown when the declaration's doc can not be accessed
-	 */
-	public static Reader getContentReader(ILocalVariable declaration, boolean allowInherited) throws JavaScriptModelException {
-		List readers = new ArrayList(2);
-		IDocumentationReader[] docReaders = getDocReaders(declaration);
-		for (int i = 0; i < docReaders.length; i++) {
-			Reader contentReader = docReaders[i].getContentReader(declaration, allowInherited);
-			if (contentReader != null) {
-				readers.add(contentReader);
-			}
-		}
-
-		if (!readers.isEmpty()) {
-			if (readers.size() == 1)
-				return (Reader) readers.get(0);
-			return new SequenceReader((Reader[]) readers.toArray(new Reader[readers.size()]));
-		}
 		return null;
 	}
 

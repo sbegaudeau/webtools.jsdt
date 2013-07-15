@@ -945,8 +945,13 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					primitiveToken = token;
 					consumeToken();
 					break nextToken;
-
-				default:
+				case TerminalTokens.TokenNameLESS:
+					//if '<' token is found after dot (example: identifier.<type>)
+					if ((iToken & 1) == 0 && parserKind == COMPLETION_PARSER) {
+						break nextToken;
+					}
+					//$FALL-THROUGH$
+					default:
 					if (iToken == 0) {
 						if (this.identifierPtr >= 0) {
 							this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];

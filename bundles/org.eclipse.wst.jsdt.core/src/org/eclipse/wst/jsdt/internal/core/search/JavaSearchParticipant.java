@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 
@@ -80,9 +81,9 @@ public class JavaSearchParticipant extends SearchParticipant {
 		else if (org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(documentPath)) {
 			new SourceIndexer(document).indexMetadata();
 		} 
-//		else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(documentPath)) {
-//			new BinaryIndexer(document).indexDocument();
-//		}
+		else if (Util.isArchiveFileName(documentPath)) {
+			new SourceIndexer(document).indexArchive();
+		}
 	}
 
 	/* (non-Javadoc)

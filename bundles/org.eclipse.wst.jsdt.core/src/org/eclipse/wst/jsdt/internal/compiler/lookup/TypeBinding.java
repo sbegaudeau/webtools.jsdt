@@ -164,7 +164,7 @@ abstract public class TypeBinding extends Binding {
 		// iterate superclass to avoid recording interfaces if searched
 		// supertype is class
 		if (erasureIsClass) {
-			while ((currentType = currentType.superclass()) != null) {
+			while ((currentType = currentType.getSuperBinding()) != null) {
 				if (currentType.id == wellKnownErasureID
 						|| (currentType.id == wellKnownErasureID))
 					return currentType;
@@ -223,10 +223,12 @@ abstract public class TypeBinding extends Binding {
 				return this;
 
 			ReferenceBinding currentType = (ReferenceBinding) this;
+			ReferenceBinding firstSuper = null;
 
-			while ((currentType = currentType.superclass()) != null) {
+			while ( ((currentType = currentType.getSuperBinding()) != null) && (currentType != firstSuper)) {
 				if (currentType == otherType || (currentType == otherType))
 					return currentType;
+				if ( firstSuper == null ) firstSuper = currentType;
 			}
 			return null;
 		}

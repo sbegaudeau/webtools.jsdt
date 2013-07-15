@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -238,7 +238,7 @@ public char[][][] collect() throws JavaScriptModelException {
  * Collects the names of all the supertypes of the given type.
  */
 protected void collectSuperTypeNames(ReferenceBinding binding) {
-	ReferenceBinding superclass = binding.superclass();
+	ReferenceBinding superclass = binding.getSuperBinding();
 	if (superclass != null) {
 		this.addToResult(superclass.compoundName);
 		this.collectSuperTypeNames(superclass);
@@ -251,10 +251,8 @@ protected String[] getPathsOfDeclaringType() {
 	IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 	IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 	SearchPattern searchPattern = new TypeDeclarationPattern(
-		this.typeSimpleName != null ? null : this.typeQualification, // use the qualification only if no simple name
-		null, // do find member types
+		this.typeQualification,
 		this.typeSimpleName,
-		IIndexConstants.TYPE_SUFFIX,
 		this.pattern.getMatchRule());
 	IndexQueryRequestor searchRequestor = new IndexQueryRequestor(){
 		public boolean acceptIndexMatch(String documentPath, SearchPattern indexRecord, SearchParticipant participant, AccessRuleSet access) {
@@ -288,15 +286,7 @@ protected boolean matches(char[][] compoundName) {
 		return this.pattern.matchesName(this.typeQualification, CharOperation.concatWith(qualification, '.'));
 	}
 
-	if (!CharOperation.endsWith(simpleName, this.typeSimpleName)) return false;
-
-	// member type -> transform A.B.C$D into A.B.C.D
-	System.arraycopy(compoundName, 0, compoundName = new char[length+1][], 0, last);
-	int dollar = CharOperation.indexOf('$', simpleName);
-	if (dollar == -1) return false;
-	compoundName[last] = CharOperation.subarray(simpleName, 0, dollar);
-	compoundName[length] = CharOperation.subarray(simpleName, dollar+1, simpleName.length);
-	return this.matches(compoundName);
+	return false;
 }
 protected boolean matches(ReferenceBinding binding) {
 	return binding != null && binding.compoundName != null && this.matches(binding.compoundName);

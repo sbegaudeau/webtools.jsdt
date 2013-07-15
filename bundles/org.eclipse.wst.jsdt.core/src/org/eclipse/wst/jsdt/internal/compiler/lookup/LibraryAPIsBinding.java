@@ -56,7 +56,7 @@ public class LibraryAPIsBinding  extends SourceTypeBinding {
 			}
 		}
 		shortName=fileName;
-		this.path=new char[0];
+		this.path=CharOperation.NO_CHAR;
 	}
 
 	public int kind() {

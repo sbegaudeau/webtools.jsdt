@@ -78,6 +78,23 @@ public TypeBinding resolveType(BlockScope scope) {
 	throw new SelectionNodeFound(binding);
 }
 
+/**
+ * <p>Overrides parent so that {@link #resolveType(BlockScope)} will be called and the {@link SelectionNodeFound} exception
+ * will be thrown.  But calls parent implementation first so that if part of an assignment any possible defining will take
+ * place before trying to get the binding.</p>
+ * 
+ * @see org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference#resolveType(org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope, boolean, org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding)
+ */
+public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding useType) {
+	/* resolve the single name reference
+	 * this is needed for the case where the selection is the LHS of an assignment
+	 */
+	super.resolveType(scope, define, useType);
+	
+	//run the selection resolve type so that the SelectionNodeFound exception will be thrown
+	return this.resolveType(scope);
+}
+
 public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {
 	TypeBinding typeBinding=null;
 	this.binding=	

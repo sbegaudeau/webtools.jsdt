@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2010 IBM Corporation and others.
+ * Copyright (c) 2006, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -26,85 +26,42 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Link;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.eclipse.wst.jsdt.core.IBuffer;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.preferences.CodeTemplatePreferencePage;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.ui.CodeGeneration;
 
 class NewJSFileWizardPage extends WizardNewFileCreationPage {
 	
 	private IContentType	fContentType;
 	private List			fValidExtensions = null;
-	private Button 			commentsButton;
 	
 	public NewJSFileWizardPage(String pageName, IStructuredSelection selection) {
         super(pageName, selection);
     }
 	
-	private void typePageLinkActivated() {
-		IProject project = getProjectFromPath(getContainerFullPath());
-		if (project != null && isWebProject(project)) {
-			PreferenceDialog dialog = PreferencesUtil.createPropertyDialogOn(getShell(), project.getProject(),
-					CodeTemplatePreferencePage.PROP_ID, null, null);
-			dialog.open();
-		} else {
-			String title = NewWizardMessages.NewTypeWizardPage_configure_templates_title;
-			String message = NewWizardMessages.NewTypeWizardPage_configure_templates_message;
-			MessageDialog.openInformation(getShell(), title, message);
-		}
-	}
-	
-	protected void createAdvancedControls(Composite parent) {
-		Link link = new Link(parent, SWT.NONE);
-    	link.setText(NewWizardMessages.NewTypeWizardPage_addcomment_description);
-    	link.addSelectionListener(new SelectionListener() {
-			
-			public void widgetSelected(SelectionEvent arg0) {
-				typePageLinkActivated();
-			}
-			
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				typePageLinkActivated();
-			}
-		});
-		DialogField.createEmptySpace(parent);
-		commentsButton = new Button(parent, SWT.CHECK);
-		commentsButton.setFont(parent.getFont());
-		commentsButton.setText(NewWizardMessages.NewTypeWizardPage_addcomment_label);
-		DialogField.createEmptySpace(parent);
-		super.createAdvancedControls(parent);
-	}
-	
 	/**
-	 * This method is overriden to set the selected folder to web contents 
-	 * folder if the current selection is outside the web contents folder. 
+	 * This method is overridden to set the selected folder to source 
+	 * folder if the current selection is outside the source folder. 
 	 */
 	protected void initialPopulateContainerNameField() {
-		
 		super.initialPopulateContainerNameField();
 		
 		IPath fullPath = getContainerFullPath();
 		if (fullPath != null && fullPath.segmentCount() > 0) {
 			IProject project = getProjectFromPath(fullPath);
-			IPath webContentPath = getWebContentPath(project);
+			IPath sourcePath = getSourcePath(project);
 			IPath projectPath = project.getFullPath();
 			if (projectPath.equals(fullPath))
-				setContainerFullPath(webContentPath);
+				setContainerFullPath(sourcePath);
 			else
 				setContainerFullPath(fullPath);
 		}
@@ -159,10 +116,10 @@ class NewJSFileWizardPage extends WizardNewFileCreationPage {
 			// get the IProject for the selection path
 			IProject project = getProjectFromPath(fullPath);
 			// if inside web project, check if inside webContent folder
-			if (project != null && isWebProject(project)) {
+			if (project != null && isJSProject(project)) {
 				// check that the path is inside the webContent folder
-				IPath webContentPath = getWebContentPath(project);
-				if (!webContentPath.isPrefixOf(fullPath)) {
+				IPath sourcePath = getSourcePath(project);
+				if (!sourcePath.isPrefixOf(fullPath)) {
 					setMessage(NewWizardMessages.Javascript_Warning_Folder_Must_Be_Inside_Web_Content, WARNING);
 				}
 			}
@@ -268,56 +225,57 @@ newFileName.append("js"); //$NON-NLS-1$
 	 * @param project project to be checked
 	 * @return true if the project is web project, otherwise false
 	 */
-	private boolean isWebProject(IProject project) {
-/*
-		IFacetedProject faceted = null;
+	private boolean isJSProject(IProject project) {
 		try {
-			faceted = ProjectFacetsManager.create(project);
-		} catch (CoreException e) {
-			Logger.log(Logger.WARNING_DEBUG, e.getMessage(), e);
+			return project.hasNature(JavaScriptCore.NATURE_ID);
 		}
-		
-		if (faceted != null && 
-			(faceted.hasProjectFacet(ProjectFacetsManager.getProjectFacet(IModuleConstants.WST_WEB_MODULE)) || 
-			 faceted.hasProjectFacet(ProjectFacetsManager.getProjectFacet(IModuleConstants.JST_WEB_MODULE)))) {
-			return true;
+		catch (CoreException e) {
+			return false;
 		}
-		
-		return false;
-*/
-return true;
 	}
 	
 	/**
-	 * Returns the web contents folder of the specified project
+	 * Returns the source folder of the specified project
 	 * 
-	 * @param project the project which web contents path is needed
-	 * @return IPath of the web contents folder
+	 * @param project the project which source path is needed
+	 * @return IPath of the source folder
 	 */
-	private IPath getWebContentPath(IProject project) {
+	private IPath getSourcePath(IProject project) {
 		IPath path = null;
-		
-		if (project != null && isWebProject(project)) {	
-			path = project.getFullPath();
-//			IVirtualComponent component = ComponentCore.createComponent(project);
-//			path = component.getRootFolder().getWorkspaceRelativePath();
-path.append("/"); //$NON-NLS-1$
+
+		if (project != null && isJSProject(project)) {
+			IJavaScriptProject p = JavaScriptCore.create(project);
+			try {
+				IIncludePathEntry[] includepath = p.getResolvedIncludepath(true);
+				for (int i = 0; i < includepath.length; i++) {
+					if (includepath[i].getEntryKind() == IIncludePathEntry.CPE_SOURCE)
+						return includepath[i].getPath();
+				}
+			}
+			catch (JavaScriptModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
+
 		return path;
 	}
 
 	public void addFileComment(IFile file) {
-		if (commentsButton.getSelection()) {
-			IJavaScriptUnit cu= JavaScriptCore.createCompilationUnitFrom(file);
-			try {
-				cu.becomeWorkingCopy(new NullProgressMonitor());
-				cu.getBuffer().setContents(CodeGeneration.getFileComment(cu, StubUtility.getLineDelimiterUsed(cu)));
+		addFileComment(file, true);
+	}	
+	public void addFileComment(IFile file, boolean overwrite) {
+		IJavaScriptUnit cu= JavaScriptCore.createCompilationUnitFrom(file);
+		try {
+			cu.becomeWorkingCopy(new NullProgressMonitor());
+			IBuffer buffer = cu.getBuffer();
+			if (overwrite || buffer.getLength() == 0) {
+				buffer.setContents(CodeGeneration.getFileComment(cu, StubUtility.getLineDelimiterUsed(cu)));
 				cu.commitWorkingCopy(true, new NullProgressMonitor());
-				cu.discardWorkingCopy();
-			} catch (CoreException e) {
-				JavaScriptPlugin.log(e);
 			}
+			cu.discardWorkingCopy();
+		} catch (CoreException e) {
+			JavaScriptPlugin.log(e);
 		}
 	}	
 }

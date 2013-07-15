@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.io.UTFDataFormatException;
 
+import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfIntValues;
@@ -24,6 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
+import org.eclipse.wst.jsdt.internal.core.Logger;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.SimpleWordSet;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -40,10 +42,12 @@ private int documentReferenceSize; // 1, 2 or more bytes... depends on # of docu
 private int startOfCategoryTables;
 private HashtableOfIntValues categoryOffsets, categoryEnds;
 
-private int cacheUserCount;
+private volatile int cacheUserCount;
 private String[][] cachedChunks; // decompressed chunks of document names
 private HashtableOfObject categoryTables; // category name -> HashtableOfObject(words -> int[] of document #'s) or offset if not read yet
 private char[] cachedCategoryName;
+
+private Object fStopQueryAction;
 
 private static final int DEFAULT_BUFFER_SIZE = 2048;
 private static int BUFFER_READ_SIZE = DEFAULT_BUFFER_SIZE;
@@ -52,7 +56,7 @@ private byte[] streamBuffer;
 private int bufferIndex, bufferEnd; // used when reading from the file into the streamBuffer
 private int streamEnd; // used when writing data from the streamBuffer to the file
 
-public static final String SIGNATURE= "INDEX VERSION 1.122"; //$NON-NLS-1$
+public static final String SIGNATURE= "INDEX VERSION 1.3"; //$NON-NLS-1$
 private static final char[] SIGNATURE_CHARS = SIGNATURE.toCharArray();
 public static boolean DEBUG = false;
 
@@ -221,7 +225,7 @@ HashtableOfObject addQueryResults(char[][] categories, char[] key, int matchRule
 	if (results == null) return null;
 	return results;
 }
-private void cacheDocumentNames() throws IOException {
+private synchronized void cacheDocumentNames() throws IOException {
 	// will need all document names so get them now
 	this.cachedChunks = new String[this.numberOfChunks][];
 	FileInputStream stream = new FileInputStream(this.indexFile);
@@ -790,23 +794,51 @@ private void readHeaderInfo(RandomAccessFile file) throws IOException {
 	}
 	this.categoryTables = new HashtableOfObject(3);
 }
-synchronized void startQuery() {
+void startQuery() {
 	this.cacheUserCount++;
-}
-synchronized void stopQuery() {
-	if (--this.cacheUserCount < 0) {
-		// clear cached items
-		this.cacheUserCount = -1;
-		this.cachedChunks = null;
-		if (this.categoryTables != null) {
-			if (this.cachedCategoryName == null) {
-				this.categoryTables = null;
-			} else if (this.categoryTables.elementSize > 1) {
-				HashtableOfObject newTables = new HashtableOfObject(3);
-				newTables.put(this.cachedCategoryName, this.categoryTables.get(this.cachedCategoryName));
-				this.categoryTables = newTables;
-			}
+	synchronized (DiskIndex.this) {
+		//if there is currently a scheduled stop action, cancel it so caches don't get cleared
+		if (this.fStopQueryAction != null) {
+			PostponedRunnablesManager.cancelPostponedRunnable(this.fStopQueryAction);
+			this.fStopQueryAction = null;
 		}
+	}
+}
+void stopQuery() {
+	if (--this.cacheUserCount < 0) {
+		//schedule cache clearing for later so if another query comes in cache will not be cleared		
+		this.fStopQueryAction = PostponedRunnablesManager.addPostponedRunnable(new ISafeRunnable() {		
+			/**
+			 * <p>Clears category table caches</p>
+			 * 
+			 * @see org.eclipse.core.runtime.ISafeRunnable#run()
+			 */
+			public void run() throws Exception {
+				synchronized (DiskIndex.this) {
+					if (DiskIndex.this.cacheUserCount >= 0)
+						return;
+					// clear cached items
+					DiskIndex.this.cachedChunks = null;
+					if (DiskIndex.this.categoryTables != null) {
+						if (DiskIndex.this.cachedCategoryName == null) {
+							DiskIndex.this.categoryTables = null;
+						}
+						else if (DiskIndex.this.categoryTables.elementSize > 1) {
+							HashtableOfObject newTables = new HashtableOfObject(3);
+							newTables.put(DiskIndex.this.cachedCategoryName, DiskIndex.this.categoryTables.get(DiskIndex.this.cachedCategoryName));
+							DiskIndex.this.categoryTables = newTables;
+						}
+					}
+				}
+			}
+			
+			/**
+			 * @see org.eclipse.core.runtime.ISafeRunnable#handleException(java.lang.Throwable)
+			 */
+			public void handleException(Throwable e) {
+				Logger.logException("Error while trying to clear disk index cache", e);
+			}
+		}, 2000);
 	}
 }
 private void readStreamBuffer(FileInputStream stream) throws IOException {

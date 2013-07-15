@@ -274,15 +274,15 @@ void checkPackagePrivateAbstractMethod(MethodBinding abstractMethod) {
 	PackageBinding necessaryPackage = abstractMethod.declaringClass.fPackage;
 	if (necessaryPackage == this.type.fPackage) return; // not a problem
 
-	ReferenceBinding superType = this.type.superclass();
+	ReferenceBinding superType = this.type.getSuperBinding();
 	do {
 		if (!superType.isValidBinding()) return;
 		return; // closer non abstract super type will be flagged instead
 
-	} while ((superType = superType.superclass()) != abstractMethod.declaringClass);
+	} while ((superType = superType.getSuperBinding()) != abstractMethod.declaringClass);
 }
 void computeInheritedMethods() {
-	ReferenceBinding superclass = this.type.superclass(); // class or enum
+	ReferenceBinding superclass = this.type.getSuperBinding(); // class or enum
 	computeInheritedMethods(superclass, null);
 }
 /*
@@ -365,7 +365,7 @@ void computeInheritedMethods(ReferenceBinding superclass, ReferenceBinding[] sup
 				}
 			}
 		}
-		superType = superType.superclass();
+		superType = superType.getSuperBinding();
 	}
 	if (nextPosition == 0) return;
 
@@ -455,7 +455,7 @@ boolean isAsVisible(MethodBinding newMethod, MethodBinding inheritedMethod) {
 boolean isSameClassOrSubclassOf(ReferenceBinding testClass, ReferenceBinding superclass) {
 	do {
 		if (testClass == superclass) return true;
-	} while ((testClass = testClass.superclass()) != null);
+	} while ((testClass = testClass.getSuperBinding()) != null);
 	return false;
 }
 ProblemReporter problemReporter() {

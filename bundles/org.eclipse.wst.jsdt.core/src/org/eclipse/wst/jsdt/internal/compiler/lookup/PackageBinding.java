@@ -197,15 +197,15 @@ Binding getBinding0(char[] name, int mask) {
 		if (binding!=null)
 			return binding;
 	}
-	if ( (mask&(Binding.TYPE))!=0)
-	{
-		binding=getBinding1(name,Binding.TYPE);
-		if (binding!=null)
-			return binding;
-	}
 	if ( (mask&(Binding.METHOD))!=0)
 	{
 		binding=getBinding1(name,Binding.METHOD);
+		if (binding!=null)
+			return binding;
+	}
+	if ( (mask&(Binding.TYPE))!=0)
+	{
+		binding=getBinding1(name,Binding.TYPE);
 		if (binding!=null)
 			return binding;
 	}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.internal.ui.packageview.NamespaceGroup;
+import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
  
 /**
  * A base content provider for JavaScriptelements. It provides access to the
@@ -280,6 +282,10 @@ public class StandardJavaScriptElementContentProvider implements ITreeContentPro
 			} catch(JavaScriptModelException e) {
 				return true;
 			}
+		}
+		
+		if(element instanceof NamespaceGroup || element instanceof PackageFragmentRootContainer) {
+			return true;
 		}
 		Object[] children= getChildren(element);
 		return (children != null) && children.length > 0;

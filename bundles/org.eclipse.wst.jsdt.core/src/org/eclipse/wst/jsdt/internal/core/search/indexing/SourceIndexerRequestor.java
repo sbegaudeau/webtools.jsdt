@@ -65,8 +65,8 @@ public void acceptLineSeparatorPositions(int[] positions) {
 /**
  * @see ISourceElementRequestor#acceptMethodReference(char[], int, int)
  */
-public void acceptMethodReference(char[] methodName, int argCount, int sourcePosition) {
-	this.indexer.addMethodReference(methodName, argCount);
+public void acceptMethodReference(char[] methodName, int sourcePosition) {
+	this.indexer.addMethodReference(methodName);
 }
 /**
  * @see ISourceElementRequestor#acceptPackage(int, int, char[])
@@ -126,7 +126,14 @@ public char[][] enclosingTypeNames(){
 }
 
 private void enterClass(TypeInfo typeInfo) {
-	if(typeInfo.anonymousMember) {
+	/* do not enter the "fake" GLOBAL type, otherwise
+	 * would have to build every file when doing global searches
+	 */
+	if(typeInfo.name == IIndexConstants.GLOBAL_SYMBOL) {
+		return;
+	}
+	
+	if(typeInfo.anonymousMember && !typeInfo.isIndexed) {
 		this.pushTypeName(typeInfo.name);
 		return;
 	}
@@ -147,12 +154,11 @@ private void enterClass(TypeInfo typeInfo) {
 	char [] typeName=typeInfo.name;
 	char [] pkgName=this.packageName;
 	int index;
-	if ( (index=CharOperation.lastIndexOf('.',typeName)) >0)
-	{
+	if ( (index=CharOperation.lastIndexOf('.',typeName)) >0) {
 		pkgName=CharOperation.subarray(typeName, 0, index);
 		typeName=CharOperation.subarray(typeName, index+1, typeName.length);
 	}
-	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeInfo.secondary);
+	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeInfo.secondary, typeInfo.synonyms);
 	this.pushTypeName(typeInfo.name);
 }
 /**
@@ -172,11 +178,10 @@ public void enterConstructor(MethodInfo methodInfo) {
  * @see ISourceElementRequestor#enterField(FieldInfo)
  */
 public void enterField(FieldInfo fieldInfo) {
-	if (depth>0 || this.methodDepth==0)
-	{
-		boolean isVar=depth==0;
-		this.indexer.addFieldDeclaration(fieldInfo.type, fieldInfo.name,isVar);
-	}
+	boolean isVar=depth==0;
+	this.indexer.addFieldDeclaration(fieldInfo.type, fieldInfo.name, fieldInfo.declaringType, fieldInfo.modifiers, 
+				isVar);
+
 	this.methodDepth++;
 }
 /**
@@ -190,7 +195,9 @@ public void enterInitializer(int declarationSourceStart, int modifiers) {
  */
 public void enterMethod(MethodInfo methodInfo) {
 	boolean isFunction=this.depth==0;
-	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes, methodInfo.returnType,isFunction);
+	this.indexer.addMethodDeclaration(methodInfo.name, methodInfo.parameterTypes,
+			methodInfo.parameterNames, methodInfo.returnType, methodInfo.declaringType,
+			isFunction, methodInfo.modifiers);
 	this.methodDepth++;
 }
 /**

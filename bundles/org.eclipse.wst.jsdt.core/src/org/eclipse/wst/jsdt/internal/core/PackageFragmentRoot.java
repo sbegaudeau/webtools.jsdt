@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -187,7 +187,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	// check whether this pkg fragment root can be opened
 	IStatus status = validateOnClasspath();
 	if (!status.isOK()) throw newJavaModelException(status);
-	if (!resourceExists()) throw newNotPresentException();
+	if (!isExternal() && !resourceExists()) throw newNotPresentException();
 
 	((PackageFragmentRootInfo) info).setRootKind(determineKind(underlyingResource));
 	return computeChildren(info, newElements);
@@ -319,7 +319,7 @@ public void copy(
 }
 
 /**
- * Returns a new element info for this element.
+ * Returns a new element info for this element.  Subclasses MUST return a subclass of PackageFragmentRootInfo
  */
 protected Object createElementInfo() {
 	return new PackageFragmentRootInfo();
@@ -346,7 +346,7 @@ protected int determineKind(IResource underlyingResource) throws JavaScriptModel
 	if (entry != null) {
 		return entry.getContentKind();
 	}
-	return IPackageFragmentRoot.K_SOURCE;
+	return org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(underlyingResource.getName()) ? IPackageFragmentRoot.K_BINARY : IPackageFragmentRoot.K_SOURCE;
 }
 
 /**

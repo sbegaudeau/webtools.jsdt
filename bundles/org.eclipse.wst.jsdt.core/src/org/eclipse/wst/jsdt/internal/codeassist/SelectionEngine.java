@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -294,14 +294,35 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 	
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptConstructor(
-	 * 		int, char[], int, char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+	 * 		int, char[], char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
 	 */
 	public void acceptConstructor(int modifiers, char[] typeName,
-			int parameterCount, char[][] parameterTypes,
+			char[][] parameterTypes,
 			char[][] parameterNames, String path,
 			AccessRestriction access) {
 		
 		// do nothing
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptFunction(char[], char[][], char[][], char[], char[], char[], char[], int, java.lang.String)
+	 */
+	public void acceptFunction(char[] signature, char[][] parameterFullyQualifedTypeNames,
+				char[][] parameterNames, char[] returnQualification, char[] returnSimpleName,
+				char[] declaringQualification, char[] declaringSimpleName, int modifiers, String path) {
+		
+		//do nothing
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptVariable(char[], char[], char[], char[], char[], int, java.lang.String)
+	 */
+	public void acceptVariable(char[] signature,
+			char[] typeQualification, char[] typeSimpleName,
+			char[] declaringQualification, char[] declaringSimpleName,
+			int modifiers, String path) {
+		
+		//do nothing
 	}
 
 	private void acceptQualifiedTypes() {
@@ -667,9 +688,9 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 				// check for inferred types declared with their names in the selection
 				this.parser.inferTypes(parsedUnit, this.compilerOptions);
-				for (int i = 0; i < parsedUnit.inferredTypes.length; i++) {
-					if (parsedUnit.inferredTypes[i] != null && parsedUnit.inferredTypes[i].isDefinition && parsedUnit.inferredTypes[i].getNameStart() <= selectionSourceEnd && selectionSourceStart <= parsedUnit.inferredTypes[i].getNameStart() +  parsedUnit.inferredTypes[i].getName().length) {
-						this.requestor.acceptType(CharOperation.NO_CHAR, sourceUnit.getFileName(), parsedUnit.inferredTypes[i].getName(), 0, parsedUnit.inferredTypes[i].isDefinition, CharOperation.NO_CHAR, parsedUnit.inferredTypes[i].sourceStart, parsedUnit.inferredTypes[i].sourceEnd);
+				for (int i = 0; i < parsedUnit.numberInferredTypes; i++) {
+					if (parsedUnit.inferredTypes[i] != null && parsedUnit.inferredTypes[i].isDefinition() && parsedUnit.inferredTypes[i].getNameStart() <= selectionSourceEnd && selectionSourceStart <= parsedUnit.inferredTypes[i].getNameStart() +  parsedUnit.inferredTypes[i].getName().length) {
+						this.requestor.acceptType(CharOperation.NO_CHAR, sourceUnit.getFileName(), parsedUnit.inferredTypes[i].getName(), 0, parsedUnit.inferredTypes[i].isDefinition(), CharOperation.NO_CHAR, parsedUnit.inferredTypes[i].sourceStart, parsedUnit.inferredTypes[i].sourceEnd);
 					}
 				}
 				// scan the package & import statements first
@@ -726,9 +747,12 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				if (parsedUnit.statements != null || parsedUnit.isPackageInfo()) {
 					if(selectDeclaration(parsedUnit))
 						return;
-					this.lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
-					if ((this.unitScope = parsedUnit.scope)  != null) {
-						try {
+					try {
+						/* We must build bindings to be able to resolve a reference (might not
+						 * require completing), however this may itself cause SelectionNodeFound
+						 * to be thrown */
+						this.lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/, true);
+						if ((this.unitScope = parsedUnit.scope)  != null) {
 							this.lookupEnvironment.completeTypeBindings(parsedUnit, true);
 							parsedUnit.scope.faultInTypes();
 							ASTNode node = null;
@@ -742,15 +766,15 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 							if (node != null) {
 								selectLocalDeclaration(node);
 							}
-						} catch (SelectionNodeFound e) {
-							if (e.binding != null) {
-								if(DEBUG) {
-									System.out.println("SELECTION - Selection binding:"); //$NON-NLS-1$
-									System.out.println(e.binding.toString());
-								}
-								// if null then we found a problem in the selection node
-								selectFrom(e.binding, parsedUnit, e.isDeclaration);
+						}
+					} catch (SelectionNodeFound e) {
+						if (e.binding != null) {
+							if(DEBUG) {
+								System.out.println("SELECTION - Selection binding:"); //$NON-NLS-1$
+								System.out.println(e.binding.toString());
 							}
+							// if null then we found a problem in the selection node
+							selectFrom(e.binding, parsedUnit, e.isDeclaration);
 						}
 					}
 				}
@@ -852,7 +876,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						((SelectionRequestor)this.requestor).acceptLocalMethod(methodBinding);
 					} else {
 						this.requestor.acceptMethod(
-							/*declaringClass.qualifiedPackageName()*/ new char[0],
+							/*declaringClass.qualifiedPackageName()*/ CharOperation.NO_CHAR,
 							declaringClass.getFileName(),
 							declaringClass.qualifiedSourceName(),
 							declaringClass.enclosingType() == null ? null : new String(getSignature(declaringClass.enclosingType())),
@@ -930,12 +954,12 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 		class Visitor extends ASTVisitor {
 			public boolean visit(ConstructorDeclaration constructorDeclaration, ClassScope scope) {
-				if (constructorDeclaration.selector == assistIdentifier){
-					if (constructorDeclaration.binding != null) {
-						throw new SelectionNodeFound(constructorDeclaration.binding);
+				if (constructorDeclaration.getName() == assistIdentifier){
+					if (constructorDeclaration.getBinding() != null) {
+						throw new SelectionNodeFound(constructorDeclaration.getBinding());
 					} else {
-						if (constructorDeclaration.scope != null) {
-							throw new SelectionNodeFound(new MethodBinding(constructorDeclaration.modifiers, constructorDeclaration.selector, null, null, constructorDeclaration.scope.referenceType().binding));
+						if (constructorDeclaration.getScope() != null) {
+							throw new SelectionNodeFound(new MethodBinding(constructorDeclaration.modifiers, constructorDeclaration.getName(), null, null, constructorDeclaration.getScope().referenceType().binding));
 						}
 					}
 				}
@@ -960,12 +984,12 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				return true;
 			}
 			public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
-				if (methodDeclaration.selector == assistIdentifier){
-					if (methodDeclaration.binding != null) {
-						throw new SelectionNodeFound(methodDeclaration.binding);
+				if (methodDeclaration.getName() == assistIdentifier){
+					if (methodDeclaration.getBinding() != null) {
+						throw new SelectionNodeFound(methodDeclaration.getBinding());
 					} else {
-						if (methodDeclaration.scope != null) {
-							throw new SelectionNodeFound(new MethodBinding(methodDeclaration.modifiers, methodDeclaration.selector, null, null, methodDeclaration.scope.referenceType().binding));
+						if (methodDeclaration.getScope() != null) {
+							throw new SelectionNodeFound(new MethodBinding(methodDeclaration.modifiers, methodDeclaration.getName(), null, null, methodDeclaration.getScope().referenceType().binding));
 						}
 					}
 				}
@@ -1154,7 +1178,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			{
 			   AbstractMethodDeclaration  method  = (AbstractMethodDeclaration)statements[i];
 
-				if (method.selector == assistIdentifier){
+				if (method.getName() == assistIdentifier){
 					char[] qualifiedSourceName = compilationUnit.getFileName();
 
 					this.requestor.acceptMethod(
@@ -1162,14 +1186,14 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						compilationUnit.getFileName(),
 						qualifiedSourceName,
 						null, // SelectionRequestor does not need of declaring type signature for method declaration
-						method.selector,
+						method.getName(),
 						null, // SelectionRequestor does not need of parameters type for method declaration
 						null, // SelectionRequestor does not need of parameters type for method declaration
 						null, // SelectionRequestor does not need of parameters type for method declaration
 						null,null,
 						method.isConstructor(),
 						true,
-						method.binding != null ? method.binding.computeUniqueKey() : null,
+						method.hasBinding() ? method.getBinding().computeUniqueKey() : null,
 						this.actualSelectionStart,
 						this.actualSelectionEnd);
 
@@ -1243,7 +1267,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		for (int i = 0, length = methods == null ? 0 : methods.length; i < length; i++){
 			AbstractMethodDeclaration method = methods[i];
 
-			if (method.selector == assistIdentifier){
+			if (method.getName() == assistIdentifier){
 				char[] qualifiedSourceName = null;
 
 				TypeDeclaration enclosingType = typeDeclaration;
@@ -1257,7 +1281,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					null,
 					qualifiedSourceName,
 					null, // SelectionRequestor does not need of declaring type signature for method declaration
-					method.selector,
+					method.getName(),
 					null, // SelectionRequestor does not need of parameters type for method declaration
 					null, // SelectionRequestor does not need of parameters type for method declaration
 					null, // SelectionRequestor does not need of parameters type for method declaration
@@ -1265,7 +1289,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					null, // SelectionRequestor does not need of type parameters bounds for method declaration
 					method.isConstructor(),
 					true,
-					method.binding != null ? method.binding.computeUniqueKey() : null,
+					method.hasBinding() ? method.getBinding().computeUniqueKey() : null,
 					this.actualSelectionStart,
 					this.actualSelectionEnd);
 
@@ -1287,15 +1311,8 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			localParser.inferTypes(parsedUnit,this.compilerOptions);
 			return parsedUnit;
 		} catch (AbortCompilationUnit e) {
-//			// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
-//			// one requested further along to resolve sourceUnit.
-//			if (unitResult.compilationUnit == sourceUnit) { // only report once
-//				requestor.acceptResult(unitResult.tagAsAccepted());
-//			} else {
-				throw e; // want to abort enclosing request to compile
-//			}
+			throw e; // want to abort enclosing request to compile
 		}
 
 	}
-
 }

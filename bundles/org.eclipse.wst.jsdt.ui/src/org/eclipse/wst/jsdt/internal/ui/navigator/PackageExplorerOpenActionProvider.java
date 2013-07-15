@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2007 IBM Corporation and others.
+ * Copyright (c) 2003, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -35,10 +35,10 @@ public class PackageExplorerOpenActionProvider extends CommonActionProvider {
 	public void fillActionBars(IActionBars actionBars) {
 		if (fInViewPart) {
 			fOpenGroup.fillActionBars(actionBars);
-
-			if (fOpenAndExpand == null && fOpenGroup.getOpenAction().isEnabled()) // TODO: is not updated!
+			
+			if (fOpenAndExpand == null) // TODO: is not updated!
 				actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, fOpenGroup.getOpenAction());
-			else if (fOpenAndExpand != null && fOpenAndExpand.isEnabled())
+			else if (fOpenAndExpand != null)
 				actionBars.setGlobalActionHandler(ICommonActionConstants.OPEN, fOpenAndExpand);
 		}
 
@@ -66,7 +66,10 @@ public class PackageExplorerOpenActionProvider extends CommonActionProvider {
 				fOpenGroup = new OpenEditorActionGroup(viewPart);
 
 				if (site.getStructuredViewer() instanceof TreeViewer)
+				{
 					fOpenAndExpand = new OpenAndExpand(workbenchSite.getSite(), (OpenAction) fOpenGroup.getOpenAction(), (TreeViewer) site.getStructuredViewer());
+					fOpenAndExpand.setActionDefinitionId( "org.eclipse.wst.jsdt.ui.edit.text.java.openandexpand" ); // Make this different from F3 file open handler to avoid handler conflicts
+				}
 				fInViewPart = true;
 			}
 		}

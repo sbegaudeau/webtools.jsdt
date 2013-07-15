@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,10 +27,16 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.PerformanceStats;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ast.IDoStatement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.infer.IInferEngine;
+import org.eclipse.wst.jsdt.core.infer.IInferEngineExtension;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -133,6 +139,9 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class Parser implements  ParserBasicInformation, TerminalTokens, OperatorIds, TypeIds {
+
+	private static final String PERFORMANCE__INFER_TYPES = "org.eclipse.wst.jsdt.core/perf/Parser/inferTypes"; //$NON-NLS-1$
+	private static final boolean REPORT_PERFORMANCE__INFER_TYPES = Boolean.valueOf(Platform.getDebugOption("org.eclipse.wst.jsdt.core/perfReport/Parser/inferTypes")).booleanValue(); //$NON-NLS-1$
 
 	public static final boolean DO_DIET_PARSE=false;
 
@@ -1163,7 +1172,7 @@ public RecoveredElement recoverAST(RecoveredElement element) {
 		ASTNode node = this.astStack[i];
 		if (node instanceof AbstractMethodDeclaration){
 			AbstractMethodDeclaration method = (AbstractMethodDeclaration) node;
-			if (method.selector!=null)
+			if (method.getName()!=null)
 			{
 				if (method.declarationSourceEnd == 0){
 					element = element.add(method, 0);
@@ -1909,7 +1918,7 @@ protected void consumeEmptyStatement() {
 	int sourceStart = this.endStatementPosition;
 	
 	if (source[this.endStatementPosition] != ';') {
-		if(source.length > 5) {
+		if(source.length > 5 && this.endStatementPosition >= 4) {
 			int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
 			int pos = this.endStatementPosition - 4;
 			while (source[pos] == 'u') {
@@ -2237,12 +2246,12 @@ protected void consumeGetSetPropertyAssignment(boolean isSetter) {
 		if (isSetter) {
 			if (!CharOperation.equals(reference.token, "set".toCharArray())) {
 				// report error
-				this.problemReporter.invalidValueForGetterSetter(expression, true);
+				//this.problemReporter().invalidValueForGetterSetter(expression, true);
 			}
 		} else {
 			if (!CharOperation.equals(reference.token, "get".toCharArray())) {
 				// report error
-				this.problemReporter.invalidValueForGetterSetter(expression, false);
+				//this.problemReporter().invalidValueForGetterSetter(expression, false);
 			}
 		}
 	}
@@ -2458,7 +2467,7 @@ protected void consumeMethodHeaderName(boolean isAnonymous) {
 		 long selectorSource =-1;
 	if (!isAnonymous)
 	{
-	  md.selector = this.identifierStack[this.identifierPtr];
+	  md.setSelector(this.identifierStack[this.identifierPtr]);
 	   selectorSource = this.identifierPositionStack[this.identifierPtr--];
 	  this.identifierLengthPtr--;
 	}
@@ -4549,7 +4558,7 @@ public MethodDeclaration convertToMethodDeclaration(ConstructorDeclaration c, Co
 	m.bodyEnd = c.bodyEnd;
 	m.declarationSourceEnd = c.declarationSourceEnd;
 	m.declarationSourceStart = c.declarationSourceStart;
-	m.selector = c.selector;
+	m.setSelector(c.getName());
 	m.statements = c.statements;
 	m.modifiers = c.modifiers;
 	m.arguments = c.arguments;
@@ -7086,13 +7095,27 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 //	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
 	for (int i=0;i<this.inferenceEngines.length;i++)
 	{
+		IInferEngine engine=this.inferenceEngines[i];
+		PerformanceStats stats= PerformanceStats.getStats(PERFORMANCE__INFER_TYPES, engine);
 		try {
-			IInferEngine engine=this.inferenceEngines[i];
+			stats.startRun(new String(parsedUnit.getFileName()));
+
 			engine.initialize();
-			engine.setCompilationUnit(parsedUnit);
+			if (engine instanceof IInferEngineExtension)
+				((IInferEngineExtension) engine).setCompilationUnit(parsedUnit, this.scanner.getSource());
+			else
+				engine.setCompilationUnit(parsedUnit);
+
 			engine.doInfer();
 		} catch (RuntimeException e) {
-			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error during type inferencing");
+			org.eclipse.wst.jsdt.internal.core.util.Util.log(e, "error during type inferencing"); //$NON-NLS-1$
+		}
+		finally {
+			stats.endRun();
+			if (REPORT_PERFORMANCE__INFER_TYPES && stats.isFailure()) {
+				IStatus status = new Status(IStatus.WARNING, JavaScriptCore.PLUGIN_ID, IStatus.OK, "Inference Engine took too long: " + engine, null); //$NON-NLS-1$
+				Platform.getLog(Platform.getBundle(JavaScriptCore.PLUGIN_ID)).log(status);
+			}
 		}
 	}
 	parsedUnit.typesHaveBeenInferred=true;

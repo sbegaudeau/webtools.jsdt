@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2010 IBM Corporation and others.
+ * Copyright (c) 2007, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,10 @@ package org.eclipse.wst.jsdt.internal.core.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -35,28 +36,19 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class ConvertUtility {
 	private static final String NATURE_IDS[] = {JavaScriptCore.NATURE_ID};
 
 	private static final String SYSTEM_LIBRARY = org.eclipse.wst.jsdt.launching.JavaRuntime.JRE_CONTAINER; //$NON-NLS-1$
-	private static final String SYSTEM_SUPER_TYPE_NAME = "Global"; //$NON-NLS-1$
+	private static final String SYSTEM_SUPER_TYPE_NAME = new String(IIndexConstants.GLOBAL);
 
 	private static final String BROWSER_LIBRARY = org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB; //$NON-NLS-1$
 	public static final IPath BROWSER_LIBRARY_PATH = new Path(BROWSER_LIBRARY);
-	private static final String BROWSER_SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
+	private static final String BROWSER_SUPER_TYPE_NAME = new String(IIndexConstants.WINDOW);
 
-	/**
-	 * @deprecated - moved into
-	 *             org.eclipse.wst.jsdt.web.core.internal.project.
-	 *             ModuleSourcePathProvider
-	 */
 	public static final String VIRTUAL_CONTAINER = "org.eclipse.wst.jsdt.launching.WebProject"; //$NON-NLS-1$
-	/**
-	 * @deprecated - moved into
-	 *             org.eclipse.wst.jsdt.web.core.internal.project.
-	 *             ModuleSourcePathProvider
-	 */
 	public static final IIncludePathEntry VIRTUAL_SCOPE_ENTRY = JavaScriptCore.newContainerEntry(new Path(VIRTUAL_CONTAINER), new IAccessRule[0], new IIncludePathAttribute[]{IIncludePathAttribute.HIDE}, false);
 
 
@@ -150,6 +142,7 @@ public class ConvertUtility {
 		fJavaProject.setProject(fCurrProject);
 
 		IIncludePathEntry[] includePath = getRawClassPath();
+		includePath = addEntry(includePath, VIRTUAL_SCOPE_ENTRY, false);
 		includePath = addEntry(includePath, JavaScriptCore.newContainerEntry(BROWSER_LIBRARY_PATH), false);
 
 		try {
@@ -291,15 +284,42 @@ public class ConvertUtility {
 		IIncludePathEntry[] defaults = new IIncludePathEntry[]{JavaScriptCore.newSourceEntry(p.getFullPath())};
 		try {
 			IConfigurationElement[] configurationElements = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.wst.jsdt.core.sourcePathProvider");
-			Set paths = new HashSet();
+			Map paths = new HashMap();
 			for (int i = 0; i < configurationElements.length; i++) {
 				DefaultSourcePathProvider provider = (DefaultSourcePathProvider) configurationElements[i].createExecutableExtension("class");
 				if (provider != null) {
-					paths.addAll(Arrays.asList(provider.getDefaultSourcePaths(p)));
+					IIncludePathEntry[] defaultSourcePaths = provider.getDefaultSourcePaths(p);
+					for (int j = 0; j < defaultSourcePaths.length; j++) {
+						paths.put(defaultSourcePaths[j].getPath(), defaultSourcePaths[j]);
+					}
 				}
 			}
 			if (!paths.isEmpty()) {
-				defaults = (IIncludePathEntry[]) paths.toArray(new IIncludePathEntry[paths.size()]);
+				IPath[] pathsArray = (IPath[]) paths.keySet().toArray(new IPath[paths.size()]);
+				// keep only the most specific paths
+				for (int i = 0; i < pathsArray.length; i++) {
+					for (int j = 0; j < pathsArray.length; j++) {
+						if (i != j && pathsArray[i] != null && pathsArray[j] != null && pathsArray[j].isPrefixOf(pathsArray[i])) {
+							// only remove if same kind of entry
+							if ((((IIncludePathEntry) paths.get(pathsArray[i]))).getEntryKind() == (((IIncludePathEntry) paths.get(pathsArray[j]))).getEntryKind()) {
+								paths.remove(pathsArray[j]);
+								pathsArray[j] = null;
+							}
+						}
+					}
+				}
+				defaults = (IIncludePathEntry[]) paths.values().toArray(new IIncludePathEntry[paths.size()]);
+				Arrays.sort(defaults, new Comparator() {
+					public int compare(Object o1, Object o2) {
+						IIncludePathEntry entry1 = (IIncludePathEntry) o1;
+						IIncludePathEntry entry2 = (IIncludePathEntry) o2;
+						if (entry1.getEntryKind() == IIncludePathEntry.CPE_SOURCE && entry2.getEntryKind() != IIncludePathEntry.CPE_SOURCE)
+							return -1;
+						if (entry1.getEntryKind() != IIncludePathEntry.CPE_SOURCE && entry2.getEntryKind() == IIncludePathEntry.CPE_SOURCE)
+							return 1;
+						return entry1.getPath().toString().compareTo(entry2.getPath().toString());
+					}
+				});
 			}
 		}
 		catch (Exception e) {
@@ -316,24 +336,24 @@ public class ConvertUtility {
 		return proj.readRawIncludepath();
 	}
 
-//	private boolean hasAValidSourcePath() {
-//		if (hasProjectClassPathFile()) {
-//			try {
-//				IIncludePathEntry[] entries = getRawClassPath();
-//				for (int i = 0; i < entries.length; i++) {
-//					if (entries[i].getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
-//						return true;
-//					}
-//				}
-//			}
-//			catch (Exception e) {
-//				if (DEBUG) {
-//					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
-//				}
-//			}
-//		}
-//		return false;
-//	}
+	private boolean hasAValidSourcePath() {
+		if (hasProjectClassPathFile()) {
+			try {
+				IIncludePathEntry[] entries = getRawClassPath();
+				for (int i = 0; i < entries.length; i++) {
+					if (entries[i].getEntryKind() == IIncludePathEntry.CPE_SOURCE) {
+						return true;
+					}
+				}
+			}
+			catch (Exception e) {
+				if (DEBUG) {
+					System.out.println("Error checking sourcepath:" + e); //$NON-NLS-1$
+				}
+			}
+		}
+		return false;
+	}
 
 	private boolean hasProjectClassPathFile() {
 		if (fCurrProject == null) {

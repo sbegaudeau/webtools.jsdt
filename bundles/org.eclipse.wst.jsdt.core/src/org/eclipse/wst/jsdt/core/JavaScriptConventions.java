@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -359,9 +359,6 @@ public final class JavaScriptConventions {
 			IStatus status = ResourcesPlugin.getWorkspace().validateName(new String(scannedID), IResource.FILE);
 			if (!status.isOK()) {
 				return status;
-			}
-			if (CharOperation.contains('$', scannedID)) {
-				return new Status(IStatus.WARNING, JavaScriptCore.PLUGIN_ID, -1, Messages.convention_type_dollarName, null);
 			}
 			if ((scannedID.length > 0 && ScannerHelper.isLowerCase(scannedID[0]))) {
 				return new Status(IStatus.WARNING, JavaScriptCore.PLUGIN_ID, -1, Messages.convention_type_lowercaseName, null);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -387,7 +387,7 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
 
 		parent=resolveCompilationUnit(packageName, fileName);
 		if(parent==null) {
-			parent=resolveCompilationUnit(new char[0], fileName);
+			parent=resolveCompilationUnit(CharOperation.NO_CHAR, fileName);
 		}
 	} else
 	 parent = findLocalElement(local.sourceStart); // findLocalElement() cannot find local variable
@@ -822,7 +822,7 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 			if (this.openable != null && this.openable.getParent().getElementName().equals(pName)) {
 				// look inside the type in which we are resolving in
 				String tName= new String(typeName);
-				tName = tName.replace('.','$');
+//				tName = tName.replace('.','$');
 				IType[] allTypes= null;
 				try {
 					ArrayList list = this.openable.getChildrenOfType(IJavaScriptElement.TYPE);
@@ -983,7 +983,7 @@ protected IType resolveTypeByLocation(char[] packageName, char[] typeName, int a
 			if (this.openable != null && this.openable.getParent().getElementName().equals(pName)) {
 				// look inside the type in which we are resolving in
 				String tName= new String(typeName);
-				tName = tName.replace('.','$');
+//				tName = tName.replace('.','$');
 				IType[] allTypes= null;
 				try {
 					ArrayList list = this.openable.getChildrenOfType(IJavaScriptElement.TYPE);

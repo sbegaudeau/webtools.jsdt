@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -350,7 +350,8 @@ public class JavaElementImageProvider {
 		if (Flags.isPrivate(flags))
 			return JavaPluginImages.DESC_MISC_PRIVATE;
 		
-		return JavaPluginImages.DESC_MISC_DEFAULT;
+		// by default return public method image
+		return JavaPluginImages.DESC_MISC_PUBLIC;
 	}
 		
 	public static ImageDescriptor getFieldImageDescriptor(boolean isInInterfaceOrAnnotation, int flags) {
@@ -361,7 +362,8 @@ public class JavaElementImageProvider {
 		if (Flags.isPrivate(flags))
 			return JavaPluginImages.DESC_FIELD_PRIVATE;
 
-		return JavaPluginImages.DESC_FIELD_DEFAULT;
+		// by default return public field image
+		return JavaPluginImages.DESC_FIELD_PUBLIC;
 	}		
 	
 	public static ImageDescriptor getTypeImageDescriptor(boolean isInner, boolean isInInterfaceOrAnnotation, int flags, boolean useLightIcons) {

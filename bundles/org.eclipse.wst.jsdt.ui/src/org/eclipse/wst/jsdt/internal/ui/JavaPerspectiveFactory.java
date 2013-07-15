@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -34,23 +34,22 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		
 		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
 		
-		folder.addView(JavaScriptUI.ID_PACKAGES);
-		folder.addPlaceholder(IPageLayout.ID_PROJECT_EXPLORER);
-		
 		String explorerViewID = ProductProperties.getProperty(IProductConstants.PERSPECTIVE_EXPLORER_VIEW);
 		// make sure the specified view ID is known
-		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null) {
-			folder.addPlaceholder(explorerViewID);
-			layout.addShowViewShortcut(explorerViewID);
-		}
+		if (PlatformUI.getWorkbench().getViewRegistry().find(explorerViewID) != null)
+			folder.addView(explorerViewID);
+		else
+			folder.addView(ProductProperties.ID_PERSPECTIVE_EXPLORER_VIEW);
 		
 		folder.addPlaceholder(JavaScriptUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
+		folder.addPlaceholder(JavaScriptUI.ID_PACKAGES);
 		
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
+		
 		outputfolder.addView(JavaScriptUI.ID_JAVADOC_VIEW);
-		outputfolder.addPlaceholder(JavaScriptUI.ID_SOURCE_VIEW);
+		outputfolder.addView(JavaScriptUI.ID_SOURCE_VIEW);
 		outputfolder.addPlaceholder(TemplatesView.ID);
 		outputfolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		outputfolder.addPlaceholder(IConsoleConstants.ID_CONSOLE_VIEW);
@@ -84,18 +83,17 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
-		layout.addShowViewShortcut(IPageLayout.ID_PROJECT_EXPLORER);
-
-		// new actions - JavaScript project creation wizard
+				
+		// new actions - Java project creation wizard
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.JavaProjectWizard"); //$NON-NLS-1$
-//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewClassCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.NewJSWizard"); //$NON-NLS-1$
-//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
-//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
-//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewEnumCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewAnnotationCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSourceFolderCreationWizard");	 //$NON-NLS-1$
-//		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.wst.jsdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$

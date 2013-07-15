@@ -131,7 +131,7 @@ public boolean isMember() {
 public void recordSuperType(char[] superTypeName, char[] superQualification){
 
 	// index encoding of p.A$B was B/p.A$, rebuild the proper name
-	if (superQualification != null){
+	if (superQualification != null && superQualification.length > 0){
 		int length = superQualification.length;
 		if (superQualification[length-1] == '$'){
 			char[] enclosingSuperName = CharOperation.lastSegment(superQualification, '.');

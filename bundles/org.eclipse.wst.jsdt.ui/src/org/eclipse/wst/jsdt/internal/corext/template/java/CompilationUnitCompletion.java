@@ -85,8 +85,12 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 		 *         <code>false</code> if not
 		 */
 		public boolean isArray() {
-			if (fType == UNKNOWN && (fChecked & ARRAY) == 0 && Signature.getTypeSignatureKind(signature) == Signature.ARRAY_TYPE_SIGNATURE)
-				fType= ARRAY;
+			
+			try
+			{
+				if (fType == UNKNOWN && (fChecked & ARRAY) == 0 && Signature.getTypeSignatureKind(signature) == Signature.ARRAY_TYPE_SIGNATURE)
+					fType= ARRAY;
+			} catch(IllegalArgumentException iae) {/* Ignore bad signature: assume not array */}
 			fChecked |= ARRAY;
 			return fType == ARRAY;
 		}
@@ -551,7 +555,7 @@ final class CompilationUnitCompletion extends CompletionRequestor {
 	public void accept(CompletionProposal proposal) {
 		
 		String name= String.valueOf(proposal.getCompletion());
-		String signature= String.valueOf(proposal.getSignature());
+		String signature = ( proposal.getSignature() != null ? String.valueOf( proposal.getSignature() ) : "" ); 
 		
 		switch (proposal.getKind()) {
 			

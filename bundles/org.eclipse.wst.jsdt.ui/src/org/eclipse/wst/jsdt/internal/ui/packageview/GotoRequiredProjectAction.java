@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,10 @@ class GotoRequiredProjectAction extends Action {
 	public void run() { 
 		IStructuredSelection selection= (IStructuredSelection)fPackageExplorer.getSite().getSelectionProvider().getSelection();
 		Object element= selection.getFirstElement();
-		if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) {
-			JsGlobalScopeContainer.RequiredProjectWrapper wrapper= (JsGlobalScopeContainer.RequiredProjectWrapper) element;
-			fPackageExplorer.tryToReveal(wrapper.getProject());
-		}
+		fPackageExplorer.tryToReveal(element);
+//		if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) {
+//			JsGlobalScopeContainer.RequiredProjectWrapper wrapper= (JsGlobalScopeContainer.RequiredProjectWrapper) element;
+//			fPackageExplorer.tryToReveal(wrapper.project);
+//		}
 	}
 }

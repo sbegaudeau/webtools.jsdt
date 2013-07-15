@@ -769,16 +769,16 @@ public void duplicateFieldInType(SourceTypeBinding type, InferredAttribute field
 		fieldDecl.sourceEnd);
 }
 public void duplicateMethodInType( Binding type, AbstractMethodDeclaration methodDecl) {
-    MethodBinding method = methodDecl.binding;
+    MethodBinding method = methodDecl.getBinding();
     
 	this.handle(
 		IProblem.DuplicateMethod,
 		new String[] {
-	        new String(methodDecl.getSafeName()),
+	        new String(methodDecl.getName()),
 			new String(method.declaringClass.readableName()),
 			typesAsString(method.isVarargs(), method.parameters, false)},
 		new String[] {
-			new String(methodDecl.getSafeName()),
+			new String(methodDecl.getName()),
 			new String(method.declaringClass.shortReadableName()),
 			typesAsString(method.isVarargs(), method.parameters, true)},
 			ProblemSeverities.Ignore,
@@ -2430,10 +2430,11 @@ public void nonStaticAccessToStaticField(ASTNode location, FieldBinding field) {
 		nodeSourceEnd(field, location));
 }
 public void nonStaticAccessToStaticMethod(ASTNode location, MethodBinding method) {
+	String methodSelector = method.selector != null ? new String(method.selector) : ""; //$NON-NLS-1$
 	this.handle(
 		IProblem.NonStaticAccessToStaticMethod,
-		new String[] {new String(method.declaringClass.readableName()), new String(method.selector), typesAsString(method.isVarargs(), method.parameters, false)},
-		new String[] {new String(method.declaringClass.shortReadableName()), new String(method.selector), typesAsString(method.isVarargs(), method.parameters, true)},
+		new String[] {new String(method.declaringClass.readableName()), methodSelector, typesAsString(method.isVarargs(), method.parameters, false)},
+		new String[] {new String(method.declaringClass.shortReadableName()), methodSelector, typesAsString(method.isVarargs(), method.parameters, true)},
 		ProblemSeverities.Ignore,
 		location.sourceStart,
 		location.sourceEnd);
@@ -3239,10 +3240,10 @@ public void unusedPrivateMethod(AbstractMethodDeclaration methodDecl) {
 	int severity = computeSeverity(IProblem.UnusedPrivateMethod);
 	if (severity == ProblemSeverities.Ignore) return;
 
-	MethodBinding method = methodDecl.binding;
+	MethodBinding method = methodDecl.getBinding();
 	char[] methodSelector = method.selector;
 	if(methodSelector == null)
-		methodSelector = methodDecl.getSafeName();
+		methodSelector = methodDecl.getName();
 
 	// no report for serialization support 'Object readResolve()'
 	if (!method.isStatic()

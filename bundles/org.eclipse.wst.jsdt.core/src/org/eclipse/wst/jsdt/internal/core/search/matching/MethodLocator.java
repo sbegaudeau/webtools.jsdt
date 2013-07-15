@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.search.MethodDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
-import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
@@ -43,6 +42,8 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 public class MethodLocator extends PatternLocator {
 
@@ -76,10 +77,10 @@ public void initializePolymorphicSearch(MatchLocator locator) {
 		this.allSuperDeclaringTypeNames =
 			new SuperTypeNamesCollector(
 				this.pattern,
-				this.pattern.declaringSimpleName,
-				this.pattern.declaringQualification,
+				this.pattern.getDeclaringSimpleName(),
+				this.pattern.getDeclaringQualification(),
 				locator,
-				this.pattern.declaringType,
+				null,
 				locator.progressMonitor).collect();
 	} catch (JavaScriptModelException e) {
 		// inaccurate matches will be found
@@ -117,9 +118,10 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) {
 //public int match(FieldDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 	if (!this.pattern.findDeclarations) return IMPOSSIBLE_MATCH;
-
+	// Matches are already attempted on InferredMethods
+	if (node.isInferred()) return IMPOSSIBLE_MATCH;
 	// Verify method name
-	if (!matchesName(this.pattern.selector, node.getSafeName())) return IMPOSSIBLE_MATCH;
+	if (!matchesName(this.pattern.selector, node.getName())) return IMPOSSIBLE_MATCH;
 
 	// Verify parameters types
 	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
@@ -146,11 +148,6 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 		}
 	}
 
-	// Verify type arguments (do not reject if pattern has no argument as it can be an erasure match)
-	if (this.pattern.hasMethodArguments()) {
-		return IMPOSSIBLE_MATCH;
-	}
-
 	// Method declaration may match pattern
 	return nodeSet.addMatch(node, resolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 }
@@ -158,7 +155,7 @@ public int match(MessageSend node, MatchingNodeSet nodeSet) {
 	if (!this.pattern.findReferences) return IMPOSSIBLE_MATCH;
 
 	if (!matchesName(this.pattern.selector, node.selector)) return IMPOSSIBLE_MATCH;
-	if (this.pattern.parameterSimpleNames != null && (!this.pattern.varargs || ((node.bits & ASTNode.InsideJavadoc) != 0))) {
+	if (this.pattern.parameterSimpleNames != null && ((node.bits & ASTNode.InsideJavadoc) != 0)) {
 		int length = this.pattern.parameterSimpleNames.length;
 		ASTNode[] args = node.arguments;
 		int argsLength = args == null ? 0 : args.length;
@@ -187,8 +184,9 @@ protected int matchMethod(MethodBinding method, boolean skipImpossibleArg) {
 	if (!matchesName(this.pattern.selector, method.selector)) return IMPOSSIBLE_MATCH;
 
 	int level = ACCURATE_MATCH;
+	
 	// look at return type only if declaring type is not specified
-	if (this.pattern.declaringSimpleName == null) {
+	if (this.pattern.getDeclaringSimpleName() == null) {
 		// TODO (frederic) use this call to refine accuracy on return type
 		// int newLevel = resolveLevelForType(this.pattern.returnSimpleName, this.pattern.returnQualification, this.pattern.returnTypeArguments, 0, method.returnType);
 		int newLevel = resolveLevelForType(this.pattern.returnSimpleName, this.pattern.returnQualification, method.returnType);
@@ -196,46 +194,8 @@ protected int matchMethod(MethodBinding method, boolean skipImpossibleArg) {
 			if (newLevel == IMPOSSIBLE_MATCH) return IMPOSSIBLE_MATCH;
 			level = newLevel; // can only be downgraded
 		}
-	}
-
-	// parameter types
-	int parameterCount = this.pattern.parameterSimpleNames == null ? -1 : this.pattern.parameterSimpleNames.length;
-	if (parameterCount > -1) {
-		// global verification
-//		if (method.parameters == null) return INACCURATE_MATCH;
-//		if (parameterCount != method.parameters.length) return IMPOSSIBLE_MATCH;
-//		if (!method.isValidBinding() && ((ProblemMethodBinding)method).problemId() == ProblemReasons.Ambiguous) {
-//			// return inaccurate match for ambiguous call (bug 80890)
-//			return INACCURATE_MATCH;
-//		}
-//
-//		// verify each parameter
-//		for (int i = 0; i < parameterCount; i++) {
-//			TypeBinding argType = method.parameters[i];
-//			int newLevel = IMPOSSIBLE_MATCH;
-//			if (argType.isMemberType()) {
-//				// only compare source name for member type (bug 41018)
-//				newLevel = CharOperation.match(this.pattern.parameterSimpleNames[i], argType.sourceName(), this.isCaseSensitive)
-//					? ACCURATE_MATCH
-//					: IMPOSSIBLE_MATCH;
-//			} else {
-//				// TODO (frederic) use this call to refine accuracy on parameter types
-////				 newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], this.pattern.parametersTypeArguments[i], 0, argType);
-//				newLevel = resolveLevelForType(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i], argType);
-//			}
-//			if (level > newLevel) {
-//				if (newLevel == IMPOSSIBLE_MATCH) {
-//					if (skipImpossibleArg) {
-//						// Do not consider match as impossible while finding declarations and source level >= 1.5
-//					 	// (see  bugs https://bugs.eclipse.org/bugs/show_bug.cgi?id=79990, 96761, 96763)
-//						newLevel = level;
-//					} else {
-//						return IMPOSSIBLE_MATCH;
-//					}
-//				}
-//				level = newLevel; // can only be downgraded
-//			}
-//		}
+	} else if (!CharOperation.equals(this.pattern.getDeclaringSimpleName(), IIndexConstants.GLOBAL_SYMBOL, false)) {
+		level = resolveLevelForType(this.pattern.getDeclaringSimpleName(), this.pattern.getDeclaringQualification(), method.declaringClass);
 	}
 
 	return level;
@@ -245,7 +205,7 @@ private boolean matchOverriddenMethod(ReferenceBinding type, MethodBinding metho
 
 	// matches superclass
 	if (!CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
-		ReferenceBinding superClass = type.superclass();
+		ReferenceBinding superClass = type.getSuperBinding();
 		if (matchOverriddenMethod(superClass, method, matchMethod)) {
 			return true;
 		}
@@ -295,11 +255,6 @@ protected void matchReportReference(ASTNode reference, IJavaScriptElement elemen
 	}
 }
 void matchReportReference(MessageSend messageSend, MatchLocator locator, MethodBinding methodBinding) throws CoreException {
-
-	if (this.pattern.hasMethodArguments()) { // binding has no type params, compatible erasure if pattern does
-		match.setRule(SearchPattern.R_ERASURE_MATCH);
-	}
-
 	// See whether it is necessary to report or not
 	if (match.getRule() == 0) return; // impossible match
 	boolean report = (this.isErasureMatch && match.isErasure()) || (this.isEquivalentMatch && match.isEquivalent()) || match.isExact();
@@ -311,23 +266,7 @@ void matchReportReference(MessageSend messageSend, MatchLocator locator, MethodB
 	match.setLength(messageSend.sourceEnd - offset + 1);
 	locator.report(match);
 }
-/*
- * Return whether method parameters are equals to pattern ones.
- */
-private boolean methodParametersEqualsPattern(MethodBinding method) {
-	TypeBinding[] methodParameters = method.parameters;
 
-	int length = methodParameters.length;
-	if (length != this.pattern.parameterSimpleNames.length) return false;
-
-	for (int i = 0; i < length; i++) {
-		char[] paramQualifiedName = qualifiedPattern(this.pattern.parameterSimpleNames[i], this.pattern.parameterQualifications[i]);
-		if (!CharOperation.match(paramQualifiedName, methodParameters[i].readableName(), this.isCaseSensitive)) {
-			return false;
-		}
-	}
-	return true;
-}
 public SearchMatch newDeclarationMatch(ASTNode reference, IJavaScriptElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
 	if (elementBinding != null) {
 		MethodBinding methodBinding = (MethodBinding) elementBinding;
@@ -412,14 +351,14 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 			AbstractMethodDeclaration methodDecl = null;
 			AbstractMethodDeclaration[] methodDecls = typeDecl.methods;
 			for (int i = 0, length = methodDecls.length; i < length; i++) {
-				if (CharOperation.equals(bindingSelector, methodDecls[i].selector)) {
+				if (CharOperation.equals(bindingSelector, methodDecls[i].getName())) {
 					methodDecl = methodDecls[i];
 					break;
 				}
 			}
 			if (methodDecl != null) {
 				int offset = methodDecl.sourceStart;
-				Binding binding = methodDecl.binding;
+				Binding binding = methodDecl.getBinding();
 				if (binding != null)
 					method = (IFunction) ((JavaElement) method).resolved(binding);
 				match = new MethodDeclarationMatch(method, SearchMatch.A_ACCURATE, offset, methodDecl.sourceEnd-offset+1, locator.getParticipant(), resource);
@@ -436,7 +375,7 @@ public int resolveLevel(ASTNode possibleMatchingNode) {
 	}
 	if (this.pattern.findDeclarations) {
 		if (possibleMatchingNode instanceof MethodDeclaration) {
-			return resolveLevel(((MethodDeclaration) possibleMatchingNode).binding);
+			return resolveLevel(((MethodDeclaration) possibleMatchingNode).getBinding());
 		}
 		else if (possibleMatchingNode instanceof InferredMethod)
 			return resolveLevel(((InferredMethod) possibleMatchingNode).methodBinding);
@@ -460,12 +399,12 @@ public int resolveLevel(Binding binding) {
 	}
 
 	// declaring type
-	char[] qualifiedPattern = qualifiedPattern(this.pattern.declaringSimpleName, this.pattern.declaringQualification);
+	char[] qualifiedPattern = qualifiedPattern(this.pattern.getDeclaringSimpleName(), this.pattern.getDeclaringQualification());
 	if (qualifiedPattern == null) return methodLevel; // since any declaring class will do
 
 	boolean subType = !method.isStatic() && !method.isPrivate();
-	if (subType && this.pattern.declaringQualification != null && method.declaringClass != null && method.declaringClass.fPackage != null) {
-		subType = CharOperation.compareWith(this.pattern.declaringQualification, method.declaringClass.fPackage.shortReadableName()) == 0;
+	if (subType && this.pattern.getDeclaringQualification() != null && method.declaringClass != null && method.declaringClass.fPackage != null) {
+		subType = CharOperation.compareWith(this.pattern.getDeclaringQualification(), method.declaringClass.fPackage.shortReadableName()) == 0;
 	}
 	int declaringLevel = subType
 		? resolveLevelAsSubtype(qualifiedPattern, method.declaringClass, null)
@@ -496,7 +435,7 @@ protected int resolveLevel(MessageSend messageSend) {
 	}
 
 	// receiver type
-	char[] qualifiedPattern = qualifiedPattern(this.pattern.declaringSimpleName, this.pattern.declaringQualification);
+	char[] qualifiedPattern = qualifiedPattern(this.pattern.getDeclaringSimpleName(), this.pattern.getDeclaringQualification());
 	if (qualifiedPattern == null) return methodLevel; // since any declaring class will do
 
 	int declaringLevel;
@@ -552,7 +491,7 @@ protected int resolveLevelAsSubtype(char[] qualifiedPattern, ReferenceBinding ty
 
 	// matches superclass
 	if (!CharOperation.equals(type.compoundName, TypeConstants.JAVA_LANG_OBJECT)) {
-		level = resolveLevelAsSubtype(qualifiedPattern, type.superclass(), argumentTypes);
+		level = resolveLevelAsSubtype(qualifiedPattern, type.getSuperBinding(), argumentTypes);
 		if (level != IMPOSSIBLE_MATCH) {
 			if (argumentTypes != null) {
 				// need to verify if method may be overridden
@@ -597,9 +536,13 @@ public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
 
 	// Verify method name
 	if (!matchesName(this.pattern.selector, inferredMethod.name)) return IMPOSSIBLE_MATCH;
+	
+	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
+	
+	// Verify type name
+	if(!resolve && inferredMethod.inType != null && !matchesName(QualificationHelpers.createFullyQualifiedName(this.pattern.getDeclaringQualification(), this.pattern.getDeclaringSimpleName()), inferredMethod.inType.getName())) return IMPOSSIBLE_MATCH;
 
 	// Verify parameters types
-	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
 	if (this.pattern.parameterSimpleNames != null) {
 		int length = this.pattern.parameterSimpleNames.length;
 		ASTNode[] args = ((AbstractMethodDeclaration)inferredMethod.getFunctionDeclaration()).arguments;
@@ -615,18 +558,13 @@ public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
 						nodeSet.mustResolve = true;
 						resolve = true;
 					}
-					this.methodDeclarationsWithInvalidParam.put((AbstractMethodDeclaration)inferredMethod.getFunctionDeclaration(), null);
+					this.methodDeclarationsWithInvalidParam.put(inferredMethod.getFunctionDeclaration(), null);
 				} else {
 					return IMPOSSIBLE_MATCH;
 				}
 			}
 		}
 	}
-
-	// Verify type arguments (do not reject if pattern has no argument as it can be an erasure match)
-//	if (this.pattern.hasMethodArguments()) {
-//		if (node.typeParameters == null || node.typeParameters.length != this.pattern.methodArguments.length) return IMPOSSIBLE_MATCH;
-//	}
 
 	// Method declaration may match pattern
 	return nodeSet.addMatch(inferredMethod , resolve ? POSSIBLE_MATCH : ACCURATE_MATCH);

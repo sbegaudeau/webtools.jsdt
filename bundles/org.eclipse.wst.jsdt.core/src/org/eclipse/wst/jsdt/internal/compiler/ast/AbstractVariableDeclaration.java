@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -39,12 +39,30 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 	public TypeReference type;
 	
 	public AbstractVariableDeclaration nextLocal;
+	
+	/**
+	 * <p>
+	 * <code>true</code> if this variable declaration is actually a reference to a type,
+	 * rather then the instance of a type. <code>false</code> if this variable is
+	 * a reference to an instance of a type rather then the type itself.
+	 * </p>
+	 */
+	private boolean fIsType;
 
+	/**
+	 * <p>
+	 * Default constructor.
+	 * </p>
+	 */
+	public AbstractVariableDeclaration() {
+		this.fIsType = false;
+	}
+	
 	public InferredType getInferredType() {
 		return this.inferredType;
 	}
 	
-	public void setInferredType(InferredType type) {
+	public void setInferredType(InferredType type) {		
 		this.inferredType = type;
 	}
 	
@@ -158,5 +176,19 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 	public IExpression getInitialization()
 	{
 		return this.initialization;
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.core.ast.IAssignment#setIsType(boolean)
+	 */
+	public void setIsType(boolean isType) {
+		this.fIsType = isType;
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.core.ast.IAssignment#isType()
+	 */
+	public boolean isType() {
+		return this.fIsType;
 	}
 }

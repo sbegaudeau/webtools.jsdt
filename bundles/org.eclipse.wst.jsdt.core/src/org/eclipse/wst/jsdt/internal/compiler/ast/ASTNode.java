@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -199,9 +199,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	public static final int IsVarArgs = Bit15;
 	public static final int IgnoreRawTypeCheck = Bit31;
 
-	// for array initializer
-	public static final int IsAnnotationDefaultValue = Bit1;
-
 	// for null reference analysis
 	public static final int IsNonNull = Bit18;
 
@@ -229,7 +226,6 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	// constants used when checking invocation arguments
 	public static final int INVOCATION_ARGUMENT_OK = 0;
 	public static final int INVOCATION_ARGUMENT_UNCHECKED = 1;
-	public static final int INVOCATION_ARGUMENT_WILDCARD = 2;
 
 	public ASTNode() {
 

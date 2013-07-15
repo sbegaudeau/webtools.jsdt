@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class CompilationUnit implements ICompilationUnit {
 	public char[] contents;
@@ -96,11 +97,8 @@ public String toString() {
  * @see org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit#getCommonSuperType()
  */
 public LibrarySuperType getCommonSuperType() {
-	// TODO Auto-generated method stub
-//	System.out.println("Unimplemented method:JavaScriptUnit.getCommonSuperType"); //$NON-NLS-1$
 	// need to set the name of the super type or else we can't resolve global variables
-	return new LibrarySuperType("batch", (IJavaScriptProject) null, "Global");
-	//return null;
+	return new LibrarySuperType("batch", (IJavaScriptProject) null, new String(IIndexConstants.GLOBAL));
 }
 public String getInferenceID() {
 	return null;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
@@ -185,12 +184,12 @@ public boolean exists() {
 }
 /**
  * @see IPackageFragment#getClassFile(String)
- * @exception IllegalArgumentException if the name does not end with ".js"
+ * @exception IllegalArgumentException if the name does not end with ".class"
  */
 public IClassFile getClassFile(String classFileName) {
 	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)
 			&& !Util.isMetadataFileName(classFileName)) {
-		throw new IllegalArgumentException(NLS.bind(Messages.element_invalidClassFileName, classFileName));
+		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
 	}
 	// don't hold on the .class file extension to save memory
 	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
@@ -198,7 +197,7 @@ public IClassFile getClassFile(String classFileName) {
 //	char[] nameWithoutExtension = new char[length];
 //	classFileName.getChars(0, length, nameWithoutExtension, 0);
 	String filename= "";
-	if (this.getResource()!=null)
+	if (this.getResource()!=null && this.getResource().getLocation() != null)
 	  filename= this.getResource().getLocation().toOSString()+File.separator+classFileName;
 	else 
 		filename=classFileName;

@@ -60,7 +60,7 @@ public class SuperReference extends ThisReference implements ISuperReference {
 		if (enclosingReceiverType.id == T_JavaLangObject) {
 			return null;
 		}
-		return this.resolvedType = enclosingReceiverType.superclass();
+		return this.resolvedType = enclosingReceiverType.getSuperBinding();
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope blockScope) {

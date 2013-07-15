@@ -742,8 +742,6 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private boolean parseExtends() throws InvalidInputException {
 		this.extendsType=(TypeReference)parseQualifiedName(true);
-		if (extendsType != null)
-			this.isConstructor = true;
 		return this.extendsType!=null;
 	}
 

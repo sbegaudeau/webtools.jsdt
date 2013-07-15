@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,298 +12,597 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.io.IOException;
 
-import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IFunction;
-import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
+import org.eclipse.wst.jsdt.internal.core.Logger;
 import org.eclipse.wst.jsdt.internal.core.index.EntryResult;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
-
-public class ConstructorPattern extends JavaSearchPattern {
-
-protected boolean findDeclarations;
-protected boolean findReferences;
-
-public char[] declaringQualification;
-public char[] declaringSimpleName;
-
-public char[][] parameterQualifications;
-public char[][] parameterSimpleNames;
-public int parameterCount;
-public boolean varargs = false;
-
-// Signatures and arguments for generic search
-char[][][] parametersTypeSignatures;
-char[][][][] parametersTypeArguments;
-boolean constructorParameters = false;
-char[][] constructorArguments;
-
-protected static char[][] REF_CATEGORIES = { CONSTRUCTOR_REF };
-protected static char[][] REF_AND_DECL_CATEGORIES = { CONSTRUCTOR_REF, CONSTRUCTOR_DECL };
-protected static char[][] DECL_CATEGORIES = { CONSTRUCTOR_DECL };
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 /**
- * Constructor entries are encoded as TypeName '/' Arity:
- * e.g. 'X/0'
+ * <p>Pattern used to find and store constructor declarations.</p>
  */
-public static char[] createIndexKey(char[] typeName, int argCount) {
-	char[] countChars = argCount < 10
-		? COUNTS[argCount]
-		: ("/" + String.valueOf(argCount)).toCharArray(); //$NON-NLS-1$
-	return CharOperation.concat(typeName, countChars);
-}
-
-ConstructorPattern(int matchRule) {
-	super(CONSTRUCTOR_PATTERN, matchRule);
-}
-public ConstructorPattern(
-	boolean findDeclarations,
-	boolean findReferences,
-	char[] declaringSimpleName,
-	char[] declaringQualification,
-	char[][] parameterQualifications,
-	char[][] parameterSimpleNames,
-	int matchRule) {
-
-	this(matchRule);
-
-	this.findDeclarations = findDeclarations;
-	this.findReferences = findReferences;
-
-	this.declaringQualification = isCaseSensitive() ? declaringQualification : CharOperation.toLowerCase(declaringQualification);
-	this.declaringSimpleName = (isCaseSensitive() || isCamelCase()) ? declaringSimpleName : CharOperation.toLowerCase(declaringSimpleName);
-	if (parameterSimpleNames != null) {
-		this.parameterCount = parameterSimpleNames.length;
-		boolean synthetic = this.parameterCount>0 && declaringQualification != null && CharOperation.equals(CharOperation.concat(parameterQualifications[0], parameterSimpleNames[0], '.'), declaringQualification);
-		int offset = 0;
-		if (synthetic) {
-			// skip first synthetic parameter
-			this.parameterCount--;
-			offset++;
-		}
-		this.parameterQualifications = new char[this.parameterCount][];
-		this.parameterSimpleNames = new char[this.parameterCount][];
-		for (int i = 0; i < this.parameterCount; i++) {
-			this.parameterQualifications[i] = isCaseSensitive() ? parameterQualifications[i+offset] : CharOperation.toLowerCase(parameterQualifications[i+offset]);
-			this.parameterSimpleNames[i] = isCaseSensitive() ? parameterSimpleNames[i+offset] : CharOperation.toLowerCase(parameterSimpleNames[i+offset]);
-		}
-	} else {
-		this.parameterCount = -1;
-	}
-	((InternalSearchPattern)this).mustResolve = mustResolve();
-}
-/*
- * Instanciate a method pattern with signatures for generics search
- */
-public ConstructorPattern(
-	boolean findDeclarations,
-	boolean findReferences,
-	char[] declaringSimpleName,
-	char[] declaringQualification,
-	char[][] parameterQualifications,
-	char[][] parameterSimpleNames,
-	String[] parameterSignatures,
-	IFunction method,
-//	boolean varargs,
-	int matchRule) {
-
-	this(findDeclarations,
-		findReferences,
-		declaringSimpleName,
-		declaringQualification,
-		parameterQualifications,
-		parameterSimpleNames,
-		matchRule);
-
-	// Set flags
-	try {
-		this.varargs = (method.getFlags() & Flags.AccVarargs) != 0;
-	} catch (JavaScriptModelException e) {
-		// do nothing
-	}
-
-	constructorParameters = true;
+public class ConstructorPattern extends JavaSearchPattern {
+	private final static char[][] REF_CATEGORIES = { CONSTRUCTOR_REF };
+	private final static char[][] REF_AND_DECL_CATEGORIES = { CONSTRUCTOR_REF, CONSTRUCTOR_DECL };
+	private final static char[][] DECL_CATEGORIES = { CONSTRUCTOR_DECL };
 	
-	// Store type signature and arguments for declaring type
-	storeTypeSignaturesAndArguments(method.getDeclaringType());
+	/**
+	 * <p><code>true</code> if this pattern should match on constructor declarations, <code>false</code> otherwise.</p>
+	 */
+	protected boolean findDeclarations;
 	
+	/**
+	 * <p><code>true</code> if this pattern should match on constructor references, <code>false</code> otherwise.</p>
+	 */
+	protected boolean findReferences;
 
-	// store type signatures and arguments for method parameters type
-	if (parameterSignatures != null) {
-		int length = parameterSignatures.length;
-		if (length > 0) {
-			parametersTypeSignatures = new char[length][][];
-			parametersTypeArguments = new char[length][][][];
-			for (int i=0; i<length; i++) {
-				parametersTypeSignatures[i] = Util.splitTypeLevelsSignature(parameterSignatures[i]);
-				parametersTypeArguments[i] = Util.getAllTypeArguments(parametersTypeSignatures[i]);
+	/**
+	 * <p><b>Optional</b></p>
+	 * 
+	 * <p>Qualification of the declaring type for this constructor.</p>
+	 */
+	public char[] declaringQualification;
+	
+	/**
+	 * <p>Simple name of the declaring type for this constructor.</p>
+	 */
+	public char[] declaringSimpleName;
+	
+	/**
+	 * <p><b>Optional</b></p>
+	 * 
+	 * <p>Qualifications of the parameter types for this function.</p>
+	 * 
+	 * <p><b>Note:</b> If this field is defined then the {@link #parameterSimpleNames} must
+	 * also be defined.</p>
+	 * 
+	 * @see #parameterSimpleNames
+	 */
+	public char[][] parameterQualifications;
+	
+	/**
+	 * <p><b>Optional</b></p>
+	 * 
+	 * <p>Simple names of the parameter types for this constructor.</p>
+	 * 
+	 * <p><b>Note:</b> If this field is defined then the {@link #parameterQualifications}
+	 * filed can be defined, but does not have to be.</p>
+	 * 
+	 * @see #parameterQualifications
+	 */
+	public char[][] parameterSimpleNames;
+	
+	/** <p>names of the parameters</p> */
+	public char[][] parameterNames;
+	
+	/** <p> Modifiers for the constructor</p> */
+	public int modifiers;
+	
+	/**
+	 * <p>Used when searing for constructors using a given prefix.
+	 * This prefix will be used to match on either the {@link ConstructorPattern#declaringQualification}
+	 * or the {@link ConstructorPattern#declaringSimpleName}.</p>
+	 * 
+	 * @see #ConstructorDeclarationPattern(char[], int)
+	 * 
+	 * @see ConstructorPattern#declaringQualification
+	 * @see ConstructorPattern#declaringSimpleName
+	 */
+	private char[] fSearchPrefix;
+
+	/**
+	 * 
+	 * @param matchRule
+	 */
+	private ConstructorPattern(int matchRule) {
+		super(CONSTRUCTOR_PATTERN, matchRule);
+		
+		this.findDeclarations = true;
+		this.findReferences = false;
+	}
+	
+	/**
+	 * <p>Constructor to use when the constructor declarations qualification and simple name
+	 * are both known.</p>
+	 *
+	 * @param declaringQualification
+	 * @param declaringSimpleName
+	 * @param matchRule
+	 */
+	public ConstructorPattern(char[] declaringQualification, char[] declaringSimpleName, int matchRule) {
+		this(matchRule);
+		
+		this.declaringQualification = (this.isCaseSensitive() || this.isCamelCase()) ?
+				declaringQualification : CharOperation.toLowerCase(declaringQualification);
+		this.declaringSimpleName = (this.isCaseSensitive() || this.isCamelCase()) ?
+				declaringSimpleName : CharOperation.toLowerCase(declaringSimpleName);
+	}
+	
+	/**
+	 * <p>Constructor to use when searching for a constructor declaration based on a given prefix.</p>
+	 *
+	 * @param searchPrefix to match against either the fully qualified name or simple name of
+	 * constructor declarations
+	 * 
+	 * @param matchRule
+	 * @deprecated
+	 */
+	public ConstructorPattern(char[] searchPrefix, int matchRule) {
+		this(matchRule);
+		
+		this.fSearchPrefix = searchPrefix;
+	}
+
+	/**
+	 * <p>Constructor to use when searching for a constructor declaration based on a given prefix.</p>
+	 *
+	 * @param searchPrefix to match against either the fully qualified name or simple name of
+	 * constructor declarations
+	 * @param findDeclarations return matches for declarations
+	 * @param findReferences return matches for references
+	 * @param matchRule one or more of the rule constants found in org.eclipse.wst.jsdt.core.search.SearchPattern 
+	 */
+	public ConstructorPattern(char[] searchPrefix, int matchRule, boolean findDeclarations, boolean findReferences) {
+		this(matchRule);
+		
+		this.fSearchPrefix = (isCaseSensitive() || isCamelCase()) ? searchPrefix : CharOperation.toLowerCase(searchPrefix);
+		this.findDeclarations = findDeclarations;
+		this.findReferences = findReferences;
+	}
+	
+	/**
+	 * <p>Constructor to create a pattern that accepts all possible information about a constructor.</p>
+	 *
+	 * @param findDeclarations
+	 * @param findReferences
+	 * @param declaringQualification
+	 * @param declaringSimpleName
+	 * @param parameterQualifications
+	 * @param parameterSimpleNames
+	 * @param matchRule
+	 */
+	public ConstructorPattern(
+		boolean findDeclarations,
+		boolean findReferences,
+		char[][] parameterQualifications,
+		char[][] parameterSimpleNames,
+		char[] declaringQualification,
+		char[] declaringSimpleName,
+		int matchRule) {
+
+		this(matchRule);
+
+		this.findDeclarations = findDeclarations;
+		this.findReferences = findReferences;
+
+		this.declaringQualification = isCaseSensitive() ? declaringQualification : CharOperation.toLowerCase(declaringQualification);
+		this.declaringSimpleName =isCaseSensitive() ? declaringSimpleName : CharOperation.toLowerCase(declaringSimpleName);
+		
+		if (parameterSimpleNames != null) {
+			this.parameterQualifications = new char[parameterSimpleNames.length][];
+			this.parameterSimpleNames = new char[parameterSimpleNames.length][];
+			for (int i = 0; i < this.parameterSimpleNames.length; i++) {
+				this.parameterQualifications[i] = isCaseSensitive() ? parameterQualifications[i] : CharOperation.toLowerCase(parameterQualifications[i]);
+				this.parameterSimpleNames[i] = isCaseSensitive() ? parameterSimpleNames[i] : CharOperation.toLowerCase(parameterSimpleNames[i]);
 			}
 		}
+		
+		((InternalSearchPattern)this).mustResolve = false;
 	}
-
-	// Store type signatures and arguments for method
-	constructorArguments = extractMethodArguments(method);
-	if (hasConstructorArguments())  ((InternalSearchPattern)this).mustResolve = true;
-}
-/*
- * Instanciate a method pattern with signatures for generics search
- */
-public ConstructorPattern(
-	boolean findDeclarations,
-	boolean findReferences,
-	char[] declaringSimpleName,
-	char[] declaringQualification,
-	String declaringSignature,
-	char[][] parameterQualifications,
-	char[][] parameterSimpleNames,
-	String[] parameterSignatures,
-	char[][] arguments,
-	int matchRule) {
-
-	this(findDeclarations,
-		findReferences,
-		declaringSimpleName,
-		declaringQualification,
-		parameterQualifications,
-		parameterSimpleNames,
-		matchRule);
-
-	// Store type signature and arguments for declaring type
-	if (declaringSignature != null) {
-		typeSignatures = Util.splitTypeLevelsSignature(declaringSignature);
-		setTypeArguments(Util.getAllTypeArguments(typeSignatures));
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.core.search.matching.JavaSearchPattern#getBlankPattern()
+	 */
+	public SearchPattern getBlankPattern() {
+		return new ConstructorPattern(R_EXACT_MATCH | R_CASE_SENSITIVE);
 	}
-
-	// Store type signatures and arguments for method parameters type
-	if (parameterSignatures != null) {
-		int length = parameterSignatures.length;
-		if (length > 0) {
-			parametersTypeSignatures = new char[length][][];
-			parametersTypeArguments = new char[length][][][];
-			for (int i=0; i<length; i++) {
-				parametersTypeSignatures[i] = Util.splitTypeLevelsSignature(parameterSignatures[i]);
-				parametersTypeArguments[i] = Util.getAllTypeArguments(parametersTypeSignatures[i]);
-			}
-		}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.core.search.SearchPattern#getIndexCategories()
+	 */
+	public char[][] getIndexCategories() {
+		if (this.findReferences)
+			return this.findDeclarations ? REF_AND_DECL_CATEGORIES : REF_CATEGORIES;
+		if (this.findDeclarations)
+			return DECL_CATEGORIES;
+		return CharOperation.NO_CHAR_CHAR;
 	}
-
-	// Store type signatures and arguments for method
-	constructorArguments = arguments;
-	if (arguments  == null || arguments.length == 0) {
-		if (getTypeArguments() != null && getTypeArguments().length > 0) {
-			constructorArguments = getTypeArguments()[0];
-		}
+	
+	/**
+	 * <p>Matches this pattern against another pattern using the following logic:<ul>
+	 * 	<li>OR<ul>
+	 * 		<li>AND<ul>
+	 * 			<li>this pattern has a defined search prefix</li>
+	 * 			<li>OR<ul>
+	 * 				<li>this pattern's prefix matches the other patterns qualified name</li>
+	 * 				<li>this pattern's prefix matches the other patterns simple name</li>
+	 * 				<li>AND if after separating this pattern's prefix into a qualifier and simple name<ul>
+	 * 					<li>this pattern's prefix qualifier matches the other patterns qualified name</li>
+	 * 					<li>this pattern's prefix simple name matches the other patterns simple name</li></ul></li></ul></li></ul></li>
+	 * 		<li>AND<ul>
+	 * 			<li>this pattern does not have a defined search prefix</li>
+	 * 			<li>this pattern's qualified name equals the other patterns qualified name</li>
+	 * 			<li>this pattern's simple name equals the other patterns simple name</li></ul></li></ul></li></ul></li></ul></p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern#matchesDecodedKey(org.eclipse.wst.jsdt.core.search.SearchPattern)
+	 */
+	public boolean matchesDecodedKey(SearchPattern decodedPattern) {
+		ConstructorPattern pattern = (ConstructorPattern) decodedPattern;
+		char[][] seperatedSearchPrefix = QualificationHelpers.seperateFullyQualifedName(this.fSearchPrefix);
+		
+		return 
+			(
+				this.fSearchPrefix != null &&
+				(
+					matchesName(this.fSearchPrefix, pattern.declaringQualification) ||
+					matchesName(this.fSearchPrefix, pattern.declaringSimpleName) ||
+					(
+						(
+							CharOperation.equals(seperatedSearchPrefix[QualificationHelpers.QULIFIERS_INDEX], pattern.declaringQualification, isCaseSensitive) ||
+							matchesQualificationPattern(seperatedSearchPrefix[QualificationHelpers.QULIFIERS_INDEX], pattern.declaringQualification, isCaseSensitive)
+						) &&	
+						matchesName(seperatedSearchPrefix[QualificationHelpers.SIMPLE_NAMES_INDEX], pattern.declaringSimpleName)
+					)
+				)
+			) ||
+			(
+				this.fSearchPrefix == null &&
+				matchesName(this.declaringQualification, pattern.declaringQualification) &&
+				matchesName(this.declaringSimpleName, pattern.declaringSimpleName)
+			);
 	}
-	if (hasConstructorArguments())  ((InternalSearchPattern)this).mustResolve = true;
-}
-public void decodeIndexKey(char[] key) {
-	int last = key.length - 1;
-	this.parameterCount = 0;
-	this.declaringSimpleName = null;
-	int power = 1;
-	for (int i=last; i>=0; i--) {
-		if (key[i] == SEPARATOR) {
-			System.arraycopy(key, 0, this.declaringSimpleName = new char[i], 0, i);
-			break;
-		}
-		if (i == last) {
-			this.parameterCount = key[i] - '0';
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern#queryIn(org.eclipse.wst.jsdt.internal.core.index.Index)
+	 */
+	EntryResult[] queryIn(Index index) throws IOException {
+		EntryResult[] results = null;
+		
+		//determine the qualification and simple name patterns to use
+		char[] qualificationPattern;
+		char[] simpleNamePattern;
+		if(this.fSearchPrefix != null) {
+			char[][] seperatedSearchPrefix = QualificationHelpers.seperateFullyQualifedName(this.fSearchPrefix);
+			qualificationPattern = seperatedSearchPrefix[QualificationHelpers.QULIFIERS_INDEX];
+			simpleNamePattern = seperatedSearchPrefix[QualificationHelpers.SIMPLE_NAMES_INDEX];
 		} else {
-			power *= 10;
-			this.parameterCount += power * (key[i] - '0');
+			qualificationPattern = this.declaringQualification;
+			simpleNamePattern = this.declaringSimpleName;
 		}
-	}
-}
-public SearchPattern getBlankPattern() {
-	return new ConstructorPattern(R_EXACT_MATCH | R_CASE_SENSITIVE);
-}
-public char[][] getIndexCategories() {
-	if (this.findReferences)
-		return this.findDeclarations ? REF_AND_DECL_CATEGORIES : REF_CATEGORIES;
-	if (this.findDeclarations)
-		return DECL_CATEGORIES;
-	return CharOperation.NO_CHAR_CHAR;
-}
-boolean hasConstructorArguments() {
-	return constructorArguments != null && constructorArguments.length > 0;
-}
-boolean hasConstructorParameters() {
-	return constructorParameters;
-}
-public boolean matchesDecodedKey(SearchPattern decodedPattern) {
-	ConstructorPattern pattern = (ConstructorPattern) decodedPattern;
+		
+		//might have to do multiple searches
+		char[][] keys = null;
+		int[] matchRules = null;
 
-	return (this.parameterCount == pattern.parameterCount || this.parameterCount == -1 || this.varargs)
-		&& matchesName(this.declaringSimpleName, pattern.declaringSimpleName);
-}
-protected boolean mustResolve() {
-	if (this.declaringQualification != null) return true;
+		switch(getMatchMode()) {
+			case R_EXACT_MATCH :
+			
+				/* doing an exact match on the type, but really doing a prefix match in the index for
+				 * 		simpleName// or simpleName/qualification/
+				 */
+				keys = new char[1][];
+				matchRules = new int[1];
+				//can not do an exact match with camel case
+				if (this.isCamelCase) break;
+				
+				if(qualificationPattern == null || qualificationPattern.length == 0) {
+					keys[0] = CharOperation.append(simpleNamePattern, SEPARATOR);
+				} else {
+					keys[0] = CharOperation.concat(simpleNamePattern, qualificationPattern, SEPARATOR);
+				}
+				
+				keys[0] = CharOperation.append(keys[0], SEPARATOR);
+				matchRules[0] = this.getMatchRule();
+				matchRules[0] &= ~R_EXACT_MATCH;
+				matchRules[0] |= R_PREFIX_MATCH;
+				break;
+			case R_PREFIX_MATCH :
+				if(qualificationPattern != null && qualificationPattern.length > 0) {
+					if(simpleNamePattern == null || simpleNamePattern.length == 0) {
+						keys = new char[1][];
+						matchRules = new int[1];
+					} else {
+						keys = new char[2][];
+						matchRules = new int[2];
+						
+						/* search just simple name because can not search camel case simple name with qualification:
+						 * 		simpleNamePattern
+						 */
+						keys[1] = simpleNamePattern;
+						matchRules[1] = this.getMatchRule();
+					}
+					
+					/* do a pattern search using the entire pattern as the qualification:
+					 * 		* /fSearchPrefix*
+					 */
+					char[] trimmedPrefix = this.fSearchPrefix;
+					if(this.fSearchPrefix != null && this.fSearchPrefix[this.fSearchPrefix.length - 1] == DOT) {
+						trimmedPrefix = CharOperation.subarray(this.fSearchPrefix, 0, this.fSearchPrefix.length - 1);
+					}
+					keys[0] = CharOperation.concat(ONE_STAR, trimmedPrefix, SEPARATOR);
+					keys[0] = CharOperation.concat(keys[0], ONE_STAR);
+					matchRules[0] = this.getMatchRule();
+					matchRules[0] &= ~R_PREFIX_MATCH;
+					matchRules[0] |= R_PATTERN_MATCH;
+				} else {
+					if(simpleNamePattern == null || simpleNamePattern.length == 0) {
+						keys = new char[1][];
+						matchRules = new int[1];
+					} else {
+						keys = new char[2][];
+						matchRules = new int[2];
+						
+						/* first key to search for is using the simple name as the simple name using prefix match:
+						 * 		simpleNamePattern
+						 */
+						keys[1] = simpleNamePattern;
+						matchRules[1] = this.getMatchRule();
+					}
+					
+					/* second key to search for is using the simple name as the qualifier using a pattern match
+					 * 		* /simpleNamePattern*
+					 */
+					keys[0] = CharOperation.concat(ONE_STAR, simpleNamePattern, SEPARATOR);
+					keys[0] = CharOperation.concat(keys[0], ONE_STAR);
+					matchRules[0] = this.getMatchRule();
+					matchRules[0] &= ~R_PREFIX_MATCH;
+					matchRules[0] |= R_PATTERN_MATCH;
+				}
+				
+				break;
+			case R_PATTERN_MATCH :
+				/* create the pattern:
+				 * 		simpleNamePattern/qualificationPattern/*
+				 */
+				if (this.fSearchPrefix != null) {
+					keys = new char[2][];
+					matchRules = new int[2];
+					
+					/* Key to search for is using the entire pattern as the qualification:
+					 * 		* /fSearchPrefix/*
+					 */
+					keys[1] = CharOperation.concat(ONE_STAR, this.fSearchPrefix, SEPARATOR);
+					keys[1] = CharOperation.concat(keys[1], ONE_STAR, SEPARATOR);
+					matchRules[1] = this.getMatchRule();
+				} else {
+					keys = new char[1][];
+					matchRules = new int[1];
+				}
 
-	// parameter types
-	if (this.parameterSimpleNames != null)
-		for (int i = 0, max = this.parameterSimpleNames.length; i < max; i++)
-			if (this.parameterQualifications[i] != null) return true;
-	return this.findReferences; // need to check resolved default constructors and explicit constructor calls
-}
-EntryResult[] queryIn(Index index) throws IOException {
-	char[] key = this.declaringSimpleName; // can be null
-	int matchRule = getMatchRule();
+				//if no simple name use *
+				if (simpleNamePattern == null || simpleNamePattern.length == 0) {
+					simpleNamePattern = ONE_STAR;
+				}
 
-	switch(getMatchMode()) {
-		case R_EXACT_MATCH :
-			if (this.isCamelCase) break;
-			if (this.declaringSimpleName != null && this.parameterCount >= 0 && !this.varargs)
-				key = createIndexKey(this.declaringSimpleName, this.parameterCount);
-			else { // do a prefix query with the declaringSimpleName
-				matchRule &= ~R_EXACT_MATCH;
-				matchRule |= R_PREFIX_MATCH;
+				//if no qualification use *
+				if (qualificationPattern == null || qualificationPattern.length == 0) {
+					qualificationPattern = ONE_STAR;
+				}
+
+				/* Key to search for is using the simple name of the pattern as the simple name
+				 * 		simpleNamePattern/qualificationPattern/*
+				 */
+				keys[0] = CharOperation.concat(simpleNamePattern, qualificationPattern, SEPARATOR);
+				keys[0] = CharOperation.concat(keys[0], ONE_STAR, SEPARATOR);
+				matchRules[0] = this.getMatchRule();
+				
+				break;
+			case R_REGEXP_MATCH :
+				Logger.log(Logger.WARNING, "Regular expression matching is not implimented by ConstructorPattern");
+				break;
+		}
+		
+		//run a search for each search key
+		for(int i = 0; i < keys.length; ++i) {
+			//run search
+			EntryResult[] additionalResults = index.query(getIndexCategories(), keys[i], matchRules[i]);
+			
+			//collect results
+			if(additionalResults != null && additionalResults.length > 0) {
+				if(results == null) {
+					results = additionalResults;
+				} else {
+					EntryResult[] existingResults = results;
+					
+					results = new EntryResult[existingResults.length + additionalResults.length];
+					
+					System.arraycopy(existingResults, 0, results, 0, existingResults.length);
+					System.arraycopy(additionalResults, 0, results, existingResults.length, additionalResults.length);
+				}
 			}
-			break;
-		case R_PREFIX_MATCH :
-			// do a prefix query with the declaringSimpleName
-			break;
-		case R_PATTERN_MATCH :
-			if (this.parameterCount >= 0 && !this.varargs)
-				key = createIndexKey(this.declaringSimpleName == null ? ONE_STAR : this.declaringSimpleName, this.parameterCount);
-			else if (this.declaringSimpleName != null && this.declaringSimpleName[this.declaringSimpleName.length - 1] != '*')
-				key = CharOperation.concat(this.declaringSimpleName, ONE_STAR, SEPARATOR);
-			// else do a pattern query with just the declaringSimpleName
-			break;
-		case R_REGEXP_MATCH :
-			// TODO (frederic) implement regular expression match
-			break;
-	}
-
-	return index.query(getIndexCategories(), key, matchRule); // match rule is irrelevant when the key is null
-}
-protected StringBuffer print(StringBuffer output) {
-	if (this.findDeclarations) {
-		output.append(this.findReferences
-			? "ConstructorCombinedPattern: " //$NON-NLS-1$
-			: "ConstructorDeclarationPattern: "); //$NON-NLS-1$
-	} else {
-		output.append("ConstructorReferencePattern: "); //$NON-NLS-1$
-	}
-	if (declaringQualification != null)
-		output.append(declaringQualification).append('.');
-	if (declaringSimpleName != null)
-		output.append(declaringSimpleName);
-	else if (declaringQualification != null)
-		output.append("*"); //$NON-NLS-1$
-
-	output.append('(');
-	if (parameterSimpleNames == null) {
-		output.append("..."); //$NON-NLS-1$
-	} else {
-		for (int i = 0, max = parameterSimpleNames.length; i < max; i++) {
-			if (i > 0) output.append(", "); //$NON-NLS-1$
-			if (parameterQualifications[i] != null) output.append(parameterQualifications[i]).append('.');
-			if (parameterSimpleNames[i] == null) output.append('*'); else output.append(parameterSimpleNames[i]);
 		}
+		
+		// remove duplicates
+		int duplicateCount = 0;
+		for(int i = 0; results != null && i < results.length - 1; i++) {
+			for(int j = i + 1; j < results.length; j++) {
+				if(results [i] != null && results[j] != null && CharOperation.equals(results[i].getWord(), results[j].getWord())) {
+					results[j] = null;
+					duplicateCount++;
+				}
+			}
+		}
+		
+		EntryResult[] uniqueResults = null;
+		if(duplicateCount > 0) {
+			uniqueResults = new EntryResult[results.length - duplicateCount];
+			int uniqueIndex = 0;
+			for(int i = 0; i < results.length; i++) {
+				if(results [i] != null) {
+					uniqueResults[uniqueIndex] = results[i];
+					uniqueIndex++;
+				}
+			}	
+			results = uniqueResults;
+		}
+		
+		return results;
 	}
-	output.append(')');
-	return super.print(output);
-}
+	
+	/**
+	 * <p>Decodes an index key made with {@link #createDeclarationIndexKey(char[], int, char[][], char[][], int)} into the
+	 * parameters of this pattern.</p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.core.search.matching.ConstructorPattern#decodeIndexKey(char[])
+	 * 
+	 * @see #createDeclarationIndexKey(char[], int, char[][], char[][], int)
+	 */
+	public void decodeIndexKey(char[] key) {
+		char[][] seperated = CharOperation.splitOn(SEPARATOR, key);
+		
+		//decode type name
+		this.declaringSimpleName = seperated[0];
+		this.declaringQualification = seperated[1];
+		
+		//get parameter names
+		this.parameterNames  = CharOperation.splitOn(PARAMETER_SEPARATOR, seperated[3]);
+		
+		// decode parameter types
+		char[][][] seperatedParamTypeNames = QualificationHelpers.seperateFullyQualifiedNames(seperated[2], parameterNames.length);
+		this.parameterQualifications = seperatedParamTypeNames[QualificationHelpers.QULIFIERS_INDEX];
+		this.parameterSimpleNames = seperatedParamTypeNames[QualificationHelpers.SIMPLE_NAMES_INDEX];
+		
+		// decode function modifiers
+		this.modifiers = seperated[4][0] + seperated[4][1];
+	}
+	
+	/**
+	 * @return the selector for the constructor
+	 */
+	public char[] getSelector() {
+		return QualificationHelpers.createFullyQualifiedName(this.declaringQualification, this.declaringSimpleName);
+	}
+	
+	/**
+	 * @return the fully qualified type names for the parameters
+	 */
+	public char[][] getFullyQualifiedParameterTypeNames() {
+		return QualificationHelpers.createFullyQualifiedNames(this.parameterQualifications, this.parameterSimpleNames);
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.core.search.matching.JavaSearchPattern#print(java.lang.StringBuffer)
+	 */
+	protected StringBuffer print(StringBuffer output) {
+		if (this.findDeclarations) {
+			output.append(this.findReferences
+				? "ConstructorCombinedPattern: " //$NON-NLS-1$
+				: "ConstructorDeclarationPattern: "); //$NON-NLS-1$
+		} else {
+			output.append("ConstructorReferencePattern: "); //$NON-NLS-1$
+		}
+		if (declaringQualification != null)
+			output.append(declaringQualification).append('.');
+		if (declaringSimpleName != null)
+			output.append(declaringSimpleName);
+		else if (declaringQualification != null)
+			output.append("*"); //$NON-NLS-1$
+
+		output.append('(');
+		char[][] parameterTypeNames = this.getFullyQualifiedParameterTypeNames();
+		if (parameterTypeNames == null) {
+			output.append("..."); //$NON-NLS-1$
+		} else {
+			for (int i = 0, max = parameterTypeNames.length; i < max; i++) {
+				if (i > 0) output.append(", "); //$NON-NLS-1$
+				if (parameterTypeNames[i] != null) output.append(parameterTypeNames[i]).append('.');
+			}
+		}
+		output.append(')');
+		return super.print(output);
+	}
+	
+	/**
+	 * <p>Creates a constructor index key based on the given information to be placed in the index.</p>
+	 * 
+	 * <p><b>Key Syntax</b>:
+	 * <code>typeSimpleName/typeQualification/parameterFullTypeNames/paramaterNames/modifiers</code></p>
+	 * 
+	 * @param typeName Name of the type the constructor is for
+	 * @param parameterTypes Type names of the parameters, should be same length as <code>parameterCount</code>
+	 * @param parameterNames Names of the parameters, should be same length as <code>parameterCount</code>
+	 * @param modifiers Modifiers to the constructor such as public/private
+	 * 
+	 * @return Constructor index key based on the given information to be used in an index
+	 */
+	public static char[] createIndexKey(
+			char[] typeName,
+			char[][] parameterTypes,
+			char[][] parameterNames,
+			int modifiers) {
+		
+		char[] parameterTypesChars = null;
+		char[] parameterNamesChars = null;
+		
+		//separate type name
+		char[][] seperatedTypeName = QualificationHelpers.seperateFullyQualifedName(typeName);
+		char[] qualification = seperatedTypeName[QualificationHelpers.QULIFIERS_INDEX];
+		char[] simpleName = seperatedTypeName[QualificationHelpers.SIMPLE_NAMES_INDEX];
+		
+		//get param types
+		if (parameterTypes != null) {
+			parameterTypesChars = CharOperation.concatWith(parameterTypes, PARAMETER_SEPARATOR, false);
+		}
+		
+		//get param names
+		if (parameterNames != null) {
+			parameterNamesChars = CharOperation.concatWith(parameterNames, PARAMETER_SEPARATOR);
+		}
+		
+		//get lengths
+		int simpleNameLength = simpleName == null ? 0 : simpleName.length;
+		int qualificationLength = qualification == null ? 0 : qualification.length;
+		int parameterTypesLength = (parameterTypesChars == null ? 0 : parameterTypesChars.length);
+		int parameterNamesLength = (parameterNamesChars == null ? 0 : parameterNamesChars.length);
+		
+		int resultLength = simpleNameLength
+				+ 1 + qualificationLength
+				+ 1 + parameterTypesLength
+				+ 1 + parameterNamesLength
+				+ 3; //modifiers
+		
+		//create result char array
+		char[] result = new char[resultLength];
+		
+		//add simple type name to result
+		int pos = 0;
+		if (simpleNameLength > 0) {
+			System.arraycopy(simpleName, 0, result, pos, simpleNameLength);
+			pos += simpleNameLength;
+		}
+		
+		//add qualification to result
+		result[pos++] = SEPARATOR;
+		if (qualificationLength > 0) {
+			System.arraycopy(qualification, 0, result, pos, qualificationLength);
+			pos += qualificationLength;
+		}
+		
+		//add param types
+		result[pos++] = SEPARATOR;
+		if (parameterTypesLength > 0) {
+			System.arraycopy(parameterTypesChars, 0, result, pos, parameterTypesLength);
+			
+			pos += parameterTypesLength;
+		}
+		
+		//add param names
+		result[pos++] = SEPARATOR;
+		if (parameterNamesLength > 0) {
+			System.arraycopy(parameterNamesChars, 0, result, pos, parameterNamesLength);
+			pos += parameterNamesLength;
+		}
+		
+		//add modifiers
+		result[pos++] = SEPARATOR;
+		result[pos++] = (char) modifiers;
+		result[pos++] = (char) (modifiers>>16);
+		
+		return result;
+	}
+
+	public char[] getSearchPrefix() {
+		return fSearchPrefix;
+	}
 }

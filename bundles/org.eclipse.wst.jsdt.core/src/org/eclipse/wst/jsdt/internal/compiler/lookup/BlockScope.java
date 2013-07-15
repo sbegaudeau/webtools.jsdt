@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -41,11 +40,6 @@ public class BlockScope extends Scope {
 	public int subscopeCount = 0; // need access from code assist
 	// record the current case statement being processed (for entire switch case block).
 	public CaseStatement enclosingCase; // from 1.4 on, local types should not be accessed across switch case blocks (52221)
-
-	public final static VariableBinding[] EmulationPathToImplicitThis = {};
-	public final static VariableBinding[] NoEnclosingInstanceInConstructorCall = {};
-
-	public final static VariableBinding[] NoEnclosingInstanceInStaticContext = {};
 
 public BlockScope(BlockScope parent) {
 	this(parent, true);
@@ -94,7 +88,6 @@ public final void addLocalType(TypeDeclaration localType) {
  * and checking there are not too many locals or arguments allocated.
  */
 public  void addLocalVariable(LocalVariableBinding binding) {
-	checkAndSetModifiersForVariable(binding);
 	// insert local in scope
 	if (this.localIndex == this.locals.length)
 		System.arraycopy(
@@ -108,32 +101,30 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 	// update local variable binding
 	binding.declaringScope = this;
 
+	// share the outermost method scope analysisIndex
 	MethodScope outerMostMethodScope = this.outerMostMethodScope();
 	binding.id = (outerMostMethodScope!=null)? outerMostMethodScope.analysisIndex++ : this.compilationUnitScope().analysisIndex++;
-	// share the outermost method scope analysisIndex
-
-	// added second checked for inferredType to fix
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=268991
-	if ((binding.declaration!=null && binding.declaration.initialization instanceof FunctionExpression) || 
-			(binding.declaration.inferredType != null && binding.declaration.inferredType.isFunction())) {
-
-		MethodBinding methodBinding=
-			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null,this.enclosingTypeBinding());
-		methodBinding.createFunctionTypeBinding(this);
-		addLocalMethod(methodBinding);
-
-	}
 }
 
 public void addLocalMethod(MethodBinding methodBinding) {
-	if (this.numberMethods == this.methods.length)
-		System.arraycopy(
-			this.methods,
-			0,
-			(this.methods = new MethodBinding[this.numberMethods * 2]),
-			0,
-			this.numberMethods);
-	this.methods[this.numberMethods++] = methodBinding;
+	/* prevent duplicate bindings
+	 * NOTE: this has no noticeable affect on performance */
+	boolean isDuplicate = false;
+	for(int i = 0; i < this.numberMethods && !isDuplicate; ++i) {
+		isDuplicate = methodBinding == this.methods[i];
+	}
+	
+	if(!isDuplicate) {
+		if (this.numberMethods == this.methods.length) {
+			System.arraycopy(
+				this.methods,
+				0,
+				(this.methods = new MethodBinding[this.numberMethods * 2]),
+				0,
+				this.numberMethods);
+		}
+		this.methods[this.numberMethods++] = methodBinding;
+	}
 }
 
 
@@ -174,13 +165,6 @@ String basicToString(int tab) {
 		s += newLine + "\t" + this.locals[i].toString(); //$NON-NLS-1$
 	s += newLine + "startIndex = " + this.startIndex; //$NON-NLS-1$
 	return s;
-}
-
-private void checkAndSetModifiersForVariable(LocalVariableBinding varBinding) {
-	int modifiers = varBinding.modifiers;
-	int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
-
-	varBinding.modifiers = modifiers;
 }
 
 public void reportUnusedDeclarations()
@@ -269,8 +253,9 @@ public MethodBinding findMethod(char[] methodName,TypeBinding[]argumentTypes, bo
 	for (int i = this.numberMethods-1; i >= 0; i--) {
 		MethodBinding method;
 		char[] name;
-		if ((name = (method = this.methods[i]).selector).length == methodLength && CharOperation.equals(name, methodName))
+		if ((name = (method = this.methods[i]).selector) != null && name.length == methodLength && CharOperation.equals(name, methodName)) {
 			return method;
+		}
 	}
 	if (checkVars)
 	{
@@ -650,87 +635,6 @@ public VariableBinding[] getEmulationPath(LocalVariableBinding outerLocalVariabl
 	if (variableScope == null /*val$this$0*/ || currentMethodScope == variableScope.methodScope()) {
 		return new VariableBinding[] { outerLocalVariable };
 		// implicit this is good enough
-	}
-	return null;
-}
-
-/*
- * This retrieves the argument that maps to an enclosing instance of the suitable type,
- * 	if not found then answers nil -- do not create one
- *
- *		#implicitThis		  	 											:  the implicit this will be ok
- *		#((arg) this$n)													: available as a constructor arg
- * 	#((arg) this$n access$m... access$p) 		: available as as a constructor arg + a sequence of synthetic accessors to synthetic fields
- * 	#((fieldDescr) this$n access#m... access$p)	: available as a first synthetic field + a sequence of synthetic accessors to synthetic fields
- * 	null 		 															: not found
- *	jls 15.9.2 + http://www.ergnosis.com/java-spec-report/java-language/jls-8.8.5.1-d.html
- */
-public Object[] getEmulationPath(ReferenceBinding targetEnclosingType, boolean onlyExactMatch, boolean denyEnclosingArgInConstructorCall) {
-	MethodScope currentMethodScope = this.methodScope();
-	SourceTypeBinding sourceType = currentMethodScope.enclosingSourceType();
-
-	// use 'this' if possible
-	if (!currentMethodScope.isStatic && !currentMethodScope.isConstructorCall) {
-		if (sourceType == targetEnclosingType || (!onlyExactMatch && sourceType.findSuperTypeWithSameErasure(targetEnclosingType) != null)) {
-			return BlockScope.EmulationPathToImplicitThis; // implicit this is good enough
-		}
-	}
-	if (!sourceType.isNestedType() || sourceType.isStatic()) { // no emulation from within non-inner types
-		if (currentMethodScope.isConstructorCall) {
-			return BlockScope.NoEnclosingInstanceInConstructorCall;
-		} else if (currentMethodScope.isStatic){
-			return BlockScope.NoEnclosingInstanceInStaticContext;
-		}
-		return null;
-	}
-	boolean insideConstructor = currentMethodScope.isInsideInitializerOrConstructor();
-
-	// use a direct synthetic field then
-	if (currentMethodScope.isStatic) {
-		return BlockScope.NoEnclosingInstanceInStaticContext;
-	}
-	if (sourceType.isAnonymousType()) {
-		ReferenceBinding enclosingType = sourceType.enclosingType();
-		if (enclosingType.isNestedType()) {
-			NestedTypeBinding nestedEnclosingType = (NestedTypeBinding) enclosingType;
-		}
-	}
-
-	// could be reached through a sequence of enclosing instance link (nested members)
-	Object[] path = new Object[2]; // probably at least 2 of them
-	ReferenceBinding currentType = sourceType.enclosingType();
-	if (insideConstructor) {
-	} else {
-		if (currentMethodScope.isConstructorCall){
-			return BlockScope.NoEnclosingInstanceInConstructorCall;
-		}
-	}
-	if (path[0] != null) { // keep accumulating
-
-		int count = 1;
-		ReferenceBinding currentEnclosingType;
-		while ((currentEnclosingType = currentType.enclosingType()) != null) {
-
-			//done?
-			if (currentType == targetEnclosingType
-				|| (!onlyExactMatch && currentType.findSuperTypeWithSameErasure(targetEnclosingType) != null))	break;
-
-			if (currentMethodScope != null) {
-				currentMethodScope = currentMethodScope.enclosingMethodScope();
-				if (currentMethodScope != null && currentMethodScope.isConstructorCall){
-					return BlockScope.NoEnclosingInstanceInConstructorCall;
-				}
-				if (currentMethodScope != null && currentMethodScope.isStatic){
-					return BlockScope.NoEnclosingInstanceInStaticContext;
-				}
-			}
-
-			break;
-		}
-		if (currentType == targetEnclosingType
-			|| (!onlyExactMatch && currentType.findSuperTypeWithSameErasure(targetEnclosingType) != null)) {
-			return path;
-		}
 	}
 	return null;
 }

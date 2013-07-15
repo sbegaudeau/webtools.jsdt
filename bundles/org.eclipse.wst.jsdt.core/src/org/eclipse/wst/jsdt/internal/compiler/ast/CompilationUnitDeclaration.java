@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -35,7 +36,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.NLSTag;
@@ -244,20 +244,88 @@ public class CompilationUnitDeclaration
 	}
 
 
+	/**
+	 * <p>Find the {@link AbstractMethodDeclaration} for a given {@link MethodBinding} by searching
+	 * all of the statements of this {@link CompilationUnitDeclaration} including inside of {@link MethodDeclaration}
+	 * contained in this {@link CompilationUnitDeclaration}.</p>
+	 * 
+	 * @param methodBinding
+	 * @return
+	 */
 	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
-		if (methodBinding != null && this.statements != null) {
-			for (int i = 0, max = this.statements.length; i < max; i++) {
-				if (this.statements[i] instanceof AbstractMethodDeclaration)
-				{
-					AbstractMethodDeclaration methodDecl = (AbstractMethodDeclaration)this.statements[i];
-					if (methodDecl.binding == methodBinding)
-						return methodDecl;
+		return declarationOf(methodBinding, this.statements);
+	}
+	
+	/**
+	 * <p>
+	 * Internal helper method to find the {@link AbstractMethodDeclaration}
+	 * for a given {@link MethodBinding} by searching a given set of
+	 * statements.
+	 * </p>
+	 * 
+	 * @param methodBinding
+	 *            {@link MethodBinding} to find the
+	 *            {@link AbstractMethodDeclaration} for
+	 * @param originalStatements
+	 *            statements to search for the
+	 *            {@link AbstractMethodDeclaration} in
+	 * 
+	 * @return {@link AbstractMethodDeclaration} for the given
+	 *         {@link MethodBinding} found in the given {@link ProgramElement}s,
+	 *         or <code>null</code> if it could not be found
+	 */
+	private static AbstractMethodDeclaration declarationOf(MethodBinding methodBinding, ProgramElement[] originalStatements) {
+		if (methodBinding != null && originalStatements != null) {
+			List statements = new ArrayList(originalStatements.length);
+			statements.addAll(Arrays.asList(originalStatements));
+			
+			for (int i = 0; i < statements.size(); i++) {
+				IProgramElement statement = (IProgramElement)statements.get(i);
+				if (statement instanceof MessageSend) {
+					MessageSend msgSend = (MessageSend) statement;
+					
+					//search arguments of message send
+					if (msgSend.arguments != null) {
+						statements.addAll(Arrays.asList(msgSend.arguments));
+					}
+					
+					/* add anonymous function message send
+					 * 
+					 * function() { foo = "test" }(); */
+					if(msgSend.receiver instanceof IFunctionExpression) {
+						statements.add(msgSend.receiver);
+					}
+					
+					continue;
+				} else if(statement instanceof ObjectLiteral) {
+					ObjectLiteral objLit = (ObjectLiteral) statement;
+					if(objLit.fields != null) {
+						statements.addAll(Arrays.asList(objLit.fields));
+					}
+					continue;
+				} else if(statement instanceof ObjectLiteralField) {
+					ObjectLiteralField objLitField = (ObjectLiteralField) statement;
+					if(objLitField.initializer != null && (objLitField.initializer instanceof ObjectLiteral || objLitField.initializer instanceof FunctionExpression)) {
+						statements.add(objLitField.initializer);
+						continue;
+					}
+				}
+				
+				AbstractMethodDeclaration methodDecl = AbstractMethodDeclaration.findMethodDeclaration(statement);
+				
+				//check statements inside of method declarations as well
+				if(methodDecl != null && methodDecl.statements != null) {
+					statements.addAll(Arrays.asList(methodDecl.statements));
+				}
+				
+				//check if the found method declaration is the one that is being searched for
+				if (methodDecl != null && (methodDecl.getBinding() == methodBinding || methodDecl.getBinding() == methodBinding.original())) {
+					return methodDecl;
 				}
 			}
 		}
 		return null;
 	}
-
 
 	public char[] getFileName() {
 
@@ -553,31 +621,6 @@ public class CompilationUnitDeclaration
 			return;
 		try {
 			if (visitor.visit(this, this.scope)) {
-				if (this.types != null && isPackageInfo()) {
-		            // resolve synthetic type declaration
-					final TypeDeclaration syntheticTypeDeclaration = types[0];
-					// resolve javadoc package if any
-					final MethodScope methodScope = syntheticTypeDeclaration.staticInitializerScope;
-					if (this.javadoc != null) {
-						this.javadoc.traverse(visitor, methodScope);
-					}
-				}
-
-//				if (currentPackage != null) {
-//					currentPackage.traverse(visitor, this.scope);
-//				}
-//				if (imports != null) {
-//					int importLength = imports.length;
-//					for (int i = 0; i < importLength; i++) {
-//						imports[i].traverse(visitor, this.scope);
-//					}
-//				}
-//				if (types != null) {
-//					int typesLength = types.length;
-//					for (int i = 0; i < typesLength; i++) {
-//						types[i].traverse(visitor, this.scope);
-//					}
-//				}
 				if (statements != null) {
 					int statementsLength = statements.length;
 					for (int i = 0; i < statementsLength; i++) {
@@ -610,15 +653,8 @@ public class CompilationUnitDeclaration
 		}
 	}
 
-	public InferredType findInferredType(char [] name)
-	{
+	public InferredType findInferredType(char [] name) {
 		return (InferredType)inferredTypesHash.get(name);
-//		for (int i=0;i<this.numberInferredTypes;i++) {
-//			InferredType inferredType = this.inferredTypes[i];
-//			if (CharOperation.equals(name,inferredType.getName()))
-//					return inferredType;
-//		}
-//		return null;
 	}
 
 
@@ -627,7 +663,7 @@ public class CompilationUnitDeclaration
 	{
 		for (int i=0;i<this.numberInferredTypes;i++) {
 			InferredType inferredType = this.inferredTypes[i];
-				if (inferredType.isDefinition)
+				if (inferredType.isDefinition())
 				{
 					inferredType.print(0,sb);
 					sb.append("\n"); //$NON-NLS-1$
@@ -690,7 +726,7 @@ public class CompilationUnitDeclaration
 			inferredTypesHash.put(className,type);
 		}
 		if (isDefinition && type != null)
-			type.isDefinition=isDefinition;
+			type.setIsDefinition(isDefinition);
 		return type;
 	}
 }

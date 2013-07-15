@@ -140,7 +140,7 @@ public MethodDeclaration addMissingAbstractMethodFor(MethodBinding methodBinding
 	int argumentsLength = argumentTypes.length;
 	//the constructor
 	MethodDeclaration methodDeclaration = new MethodDeclaration(this.compilationResult);
-	methodDeclaration.selector = methodBinding.selector;
+	methodDeclaration.setSelector(methodBinding.selector);
 	methodDeclaration.sourceStart = this.sourceStart;
 	methodDeclaration.sourceEnd = this.sourceEnd;
 	methodDeclaration.modifiers = methodBinding.getAccessFlags() & ~ClassFileConstants.AccAbstract;
@@ -169,30 +169,16 @@ public MethodDeclaration addMissingAbstractMethodFor(MethodBinding methodBinding
 	}
 
 	//============BINDING UPDATE==========================
-	methodDeclaration.binding = new MethodBinding(
-			methodDeclaration.modifiers, //methodDeclaration
-			methodBinding.selector,
-			methodBinding.returnType,
-			argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
-			this.binding); //declaringClass
+	if(!methodDeclaration.hasBinding()) {
+		methodDeclaration.setBinding(new MethodBinding(
+				methodDeclaration.modifiers, //methodDeclaration
+				methodBinding.selector,
+				methodBinding.returnType,
+				argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
+				this.binding)); //declaringClass
+	}
 
-	methodDeclaration.scope = new MethodScope(this.scope, methodDeclaration, true);
-	methodDeclaration.bindArguments();
-
-/*		if (binding.methods == null) {
-			binding.methods = new FunctionBinding[] { methodDeclaration.binding };
-		} else {
-			FunctionBinding[] newMethods;
-			System.arraycopy(
-				binding.methods,
-				0,
-				newMethods = new FunctionBinding[binding.methods.length + 1],
-				1,
-				binding.methods.length);
-			newMethods[0] = methodDeclaration.binding;
-			binding.methods = newMethods;
-		}*/
-	//===================================================
+	methodDeclaration.setScope(new MethodScope(this.scope, methodDeclaration, true));
 
 	return methodDeclaration;
 }
@@ -280,7 +266,7 @@ public boolean checkConstructors(Parser parser) {
 		for (int i = this.methods.length; --i >= 0;) {
 			AbstractMethodDeclaration am;
 			if ((am = this.methods[i]).isConstructor()) {
-				if (!CharOperation.equals(am.selector, this.name)) {
+				if (!CharOperation.equals(am.getName(), this.name)) {
 					// the constructor was in fact a method with no return type
 					// unless an explicit constructor call was supplied
 					ConstructorDeclaration c = (ConstructorDeclaration) am;
@@ -310,7 +296,7 @@ public ConstructorDeclaration createDefaultConstructor(	boolean needExplicitCons
 	//the constructor
 	ConstructorDeclaration constructor = new ConstructorDeclaration(this.compilationResult);
 	constructor.bits |= ASTNode.IsDefaultConstructor;
-	constructor.selector = this.name;
+	constructor.setSelector(this.name);
 	constructor.modifiers = this.modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
 
 	//if you change this setting, please update the
@@ -354,7 +340,7 @@ public MethodBinding createDefaultConstructorWithBinding(MethodBinding inherited
 	int argumentsLength = argumentTypes.length;
 	//the constructor
 	ConstructorDeclaration constructor = new ConstructorDeclaration(this.compilationResult);
-	constructor.selector = new char[] { 'x' }; //no maining
+	constructor.setSelector(new char[] { 'x' }); //no maining
 	constructor.sourceStart = this.sourceStart;
 	constructor.sourceEnd = this.sourceEnd;
 	int newModifiers = this.modifiers & ExtraCompilerModifiers.AccVisibilityMASK;
@@ -395,27 +381,28 @@ public MethodBinding createDefaultConstructorWithBinding(MethodBinding inherited
 
 	//============BINDING UPDATE==========================
 	SourceTypeBinding sourceType = this.binding;
-	constructor.binding = new MethodBinding(
-			constructor.modifiers, //methodDeclaration
-			argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
-			sourceType); //declaringClass
+	if(!constructor.hasBinding()) {
+		constructor.setBinding(new MethodBinding(
+				constructor.modifiers, //methodDeclaration
+				argumentsLength == 0 ? Binding.NO_PARAMETERS : argumentTypes, //arguments bindings
+						sourceType)); //declaringClass
+	}
 
-	constructor.binding.modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
+	constructor.getBinding().modifiers |= ExtraCompilerModifiers.AccIsDefaultConstructor;
 
-	constructor.scope = new MethodScope(this.scope, constructor, true);
-	constructor.bindArguments();
-	constructor.constructorCall.resolve(constructor.scope);
+	constructor.setScope(new MethodScope(this.scope, constructor, true));
+	constructor.constructorCall.resolve(constructor.getScope());
 
 	MethodBinding[] methodBindings = sourceType.methods(); // trigger sorting
 	int length;
 	System.arraycopy(methodBindings, 0, methodBindings = new MethodBinding[(length = methodBindings.length) + 1], 1, length);
-	methodBindings[0] = constructor.binding;
+	methodBindings[0] = constructor.getBinding();
 	if (++length > 1)
 		ReferenceBinding.sortMethods(methodBindings, 0, length);	// need to resort, since could be valid methods ahead (140643) - DOM needs eager sorting
 	sourceType.setMethods(methodBindings);
 	//===================================================
 
-	return constructor.binding;
+	return constructor.getBinding();
 }
 
 /**
@@ -454,7 +441,7 @@ public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
 		for (int i = 0, max = this.methods.length; i < max; i++) {
 			AbstractMethodDeclaration methodDecl;
 
-			if ((methodDecl = this.methods[i]).binding == methodBinding)
+			if ((methodDecl = this.methods[i]).getBinding() == methodBinding)
 				return methodDecl;
 		}
 	}

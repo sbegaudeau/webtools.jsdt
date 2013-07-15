@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.corext.javadoc;
 
-import org.eclipse.wst.jsdt.internal.ui.text.html.SingleCharReader;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.formatter.IndentManipulation;
+import org.eclipse.wst.jsdt.internal.ui.text.html.SingleCharReader;
 
 
 /**
@@ -35,6 +35,17 @@ public class JavaDocCommentReader extends SingleCharReader {
 		fEndPos= end - 2;
 		
 		reset();
+	}
+		
+	public JavaDocCommentReader(IBuffer buf, int end) {
+		fBuffer= buf;
+		fStartPos = fEndPos = end;
+		
+		fStartPos = rewind();
+		if (fStartPos >= 0)
+			reset();
+		else
+			fCurrPos = fEndPos;
 	}
 		
 	/**
@@ -81,7 +92,49 @@ public class JavaDocCommentReader extends SingleCharReader {
 		fWasNewLine= true;
 	}
 	
-	
+	private int rewind() {
+		if (fEndPos > 4) {
+			char ch;
+			// skip whitespace before the name
+			do {
+				ch = fBuffer.getChar(fStartPos--);
+			}
+			while (fStartPos > 4 && Character.isWhitespace(ch));
+
+			// skip keyword if present
+			if (ch != 'r' && ch != '/')
+				return -1;
+			ch = fBuffer.getChar(fStartPos--);
+			if (ch != 'a' && ch != '*')
+				return -1;
+			if (ch == '*')
+				fStartPos += 2;
+			else {
+				ch = fBuffer.getChar(fStartPos--);
+				if (ch != 'v')
+					return -1;
+			}
+			// skip before any trailing whitespace
+			do {
+				ch = fBuffer.getChar(fStartPos--);
+			}
+			while (fStartPos > 4 && Character.isWhitespace(ch));
+			// found a possible block comment end
+			if (fStartPos > 4) {
+				if (ch == '/' && fBuffer.getChar(fStartPos) == '*') {
+					fEndPos = fStartPos - 1;
+					while (fStartPos > 2 && (fBuffer.getChar(fStartPos - 1) != '/' || fBuffer.getChar(fStartPos) != '*')) {
+						fStartPos--;
+					}
+					if (fBuffer.getChar(fStartPos - 1) == '/' || fBuffer.getChar(fStartPos) == '*') {
+						return fStartPos;
+					}
+				}
+			}
+		}
+		return -1;
+	}
+			
 	/**
 	 * Returns the offset of the last read character in the passed buffer.
 	 */

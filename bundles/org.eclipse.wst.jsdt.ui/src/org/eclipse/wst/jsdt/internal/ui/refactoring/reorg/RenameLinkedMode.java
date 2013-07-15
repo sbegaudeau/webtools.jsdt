@@ -274,6 +274,42 @@ public class RenameLinkedMode {
 //		anim.schedule();
 //	}
 
+	/**
+	 * @param offset
+	 * @param length
+	 */
+	public void start(int offset, int length) {
+		ISourceViewer viewer = fEditor.getViewer();
+		IDocument document = viewer.getDocument();
+		int cursorPosition = viewer.getSelectedRange().x;
+		viewer.setSelectedRange(offset, length);
+
+		try {
+			JavaScriptUnit root = JavaScriptPlugin.getDefault().getASTProvider().getAST(getCompilationUnit(), ASTProvider.WAIT_YES, null);
+
+			fLinkedPositionGroup = new LinkedPositionGroup();
+			ASTNode selectedNode = NodeFinder.perform(root, offset, length);
+			if (! (selectedNode instanceof SimpleName))
+				return;
+			SimpleName nameNode = (SimpleName) selectedNode;
+			LinkedPosition linkedPosition = new LinkedPosition(document, nameNode.getStartPosition(), nameNode.getLength());
+			fLinkedPositionGroup.addPosition(linkedPosition);
+
+			fLinkedModeModel = new LinkedModeModel();
+			fLinkedModeModel.addGroup(fLinkedPositionGroup);
+			fLinkedModeModel.forceInstall();
+			fLinkedModeModel.addLinkingListener(new EditorHighlightingSynchronizer(fEditor));
+
+			LinkedModeUI ui = new EditorLinkedModeUI(fLinkedModeModel, viewer);
+			ui.setExitPosition(viewer, cursorPosition, 0, Integer.MAX_VALUE);
+			ui.setExitPolicy(new ExitPolicy(document));
+			ui.enter();
+
+		} catch (BadLocationException e) {
+			JavaScriptPlugin.log(e);
+		}
+	}
+
 	void doRename(boolean showPreview) {
 		cancel();
 		

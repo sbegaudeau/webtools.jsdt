@@ -118,7 +118,7 @@ public void checkExceptionHandlers(TypeBinding raisedException, ASTNode location
 				// clause will be fixed up later as per JLS 8.6).
 				if (exceptionContext.associatedNode instanceof AbstractMethodDeclaration){
 					AbstractMethodDeclaration method = (AbstractMethodDeclaration)exceptionContext.associatedNode;
-					if (method.isConstructor() && method.binding.declaringClass.isAnonymousType()){
+					if (method.isConstructor() && method.getBinding().declaringClass.isAnonymousType()){
 
 						exceptionContext.mergeUnhandledException(raisedException);
 						return; // no need to complain, will fix up constructor exceptions
@@ -237,7 +237,7 @@ public void checkExceptionHandlers(TypeBinding[] raisedExceptions, ASTNode locat
 				// clause will be fixed up later as per JLS 8.6).
 				if (exceptionContext.associatedNode instanceof AbstractMethodDeclaration){
 					AbstractMethodDeclaration method = (AbstractMethodDeclaration)exceptionContext.associatedNode;
-					if (method.isConstructor() && method.binding.declaringClass.isAnonymousType()){
+					if (method.isConstructor() && method.getBinding().declaringClass.isAnonymousType()){
 
 						for (int i = 0; i < raisedCount; i++) {
 							TypeBinding raisedException;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -354,6 +354,8 @@ public class JavaScriptElementLabels {
 	
 	private final static long QUALIFIER_FLAGS= P_COMPRESSED | USE_RESOLVED;
 	
+	private static final IPath LIBCACHE_LOCATION = new Path(JavaScriptCore.getJavaScriptCore().getStateLocation().append(new String(SystemLibraryLocation.LIBRARY_RUNTIME_DIRECTORY)).toOSString());
+
 	/*
 	 * Package name compression
 	 */
@@ -362,8 +364,6 @@ public class JavaScriptElementLabels {
 	private static String fgPkgNamePostfix;
 	private static int fgPkgNameChars;
 	private static int fgPkgNameLength= -1;
-
-	private static final IPath LIBCACHE_LOCATION = new Path(JavaScriptCore.getJavaScriptCore().getStateLocation().append(new String(SystemLibraryLocation.LIBRARY_RUNTIME_DIRECTORY)).toOSString());
 
 	private JavaScriptElementLabels() {
 	}
@@ -989,7 +989,7 @@ public class JavaScriptElementLabels {
 				}
 				buf.append(name.substring(start));
 		} else {
-//			buf.append(pack.getDisplayName());
+			buf.append(pack.getDisplayName());
 		}
 		if (getFlag(flags, P_POST_QUALIFIED)) {
 			buf.append(CONCAT_STRING);
@@ -1094,6 +1094,8 @@ public class JavaScriptElementLabels {
 		boolean rootQualified= getFlag(flags, ROOT_QUALIFIED);
 		boolean referencedQualified= getFlag(flags, REFERENCED_ROOT_POST_QUALIFIED) && isReferenced(root);
 		if (rootQualified) {
+//			buf.append(root.getPath().makeRelative().toString());
+			// for libraries stored in our metadata area, just show the filename
 			if (LIBCACHE_LOCATION.isPrefixOf(root.getPath())) {
 				buf.append(root.getPath().lastSegment().toString());
 			}

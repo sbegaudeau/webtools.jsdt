@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
 
 
 /**
@@ -76,7 +77,10 @@ public class InternalClassFileEditorInput implements IClassFileEditorInput, IPer
 	 * @see IEditorInput#getToolTipText()
 	 */
 	public String getToolTipText() {
-		return fClassFile.getType().getFullyQualifiedName();
+//		return fClassFile.getType().getFullyQualifiedName();
+		StringBuffer s = new StringBuffer();
+		JavaScriptElementLabels.getElementLabel(fClassFile, JavaScriptElementLabels.ALL_POST_QUALIFIED | JavaScriptElementLabels.APPEND_ROOT_PATH, s);
+		return s.toString();
 	}
 
 	/*

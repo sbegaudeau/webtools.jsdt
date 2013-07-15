@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IThisReference;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -24,6 +25,13 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ThisReference extends Reference implements IThisReference {
 
+	/**
+	 * <p>
+	 * {@link InferredType} referred to by "this"
+	 * </p>
+	 */
+	private InferredType fInferredType;
+	
 	public static ThisReference implicitThis(){
 
 		ThisReference implicitThis = new ThisReference(0, 0);
@@ -106,5 +114,20 @@ public class ThisReference extends Reference implements IThisReference {
 	public int getASTType() {
 		return IASTNode.THIS_REFERENCE;
 	
+	}
+	
+	/**
+	 * @param type {@link InferredType} referred to by "this"
+	 */
+	public void setInferredType(InferredType type) {
+		this.fInferredType = type;
+	}
+	
+	/**
+	 * @return {@link InferredType} referred to by "this", or
+	 * <code>null</code> if none is set
+	 */
+	public InferredType getInferredType() {
+		return this.fInferredType;
 	}
 }

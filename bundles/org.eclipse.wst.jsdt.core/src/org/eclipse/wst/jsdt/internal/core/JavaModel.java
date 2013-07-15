@@ -358,10 +358,11 @@ private synchronized static Object getTargetAsExternalFile(IPath path, boolean c
 }
 
 /**
- * Helper method - returns whether an object is afile (ie. which returns true to {@link java.io.File#isFile()}.
+ * Helper method - returns whether an object is a file (ie. which returns true to {@link java.io.File#isFile()}.
  */
 public static boolean isFile(Object target) {
-	return getFile(target) != null;
+	File f = getFile(target);
+	return f != null && f.isFile();
 }
 
 /**

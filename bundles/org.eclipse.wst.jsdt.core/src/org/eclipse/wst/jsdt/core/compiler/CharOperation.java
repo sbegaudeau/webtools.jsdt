@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1089,20 +1089,21 @@ public static final char[] concatWith(char[][] array, char separator, boolean ig
 	int size = length - 1;
 	int index = length;
 	while (--index >= 0) {
-		if (array[index].length == 0 && ignoreEmptyElements)
+		if ((array[index] == null || array[index].length == 0) && ignoreEmptyElements) {
 			size--;
-		else
-			size += array[index].length;
+		} else {
+			size += array[index] != null ? array[index].length : 0;
+		}
 	}
 	if (size <= 0)
 		return CharOperation.NO_CHAR;
 	char[] result = new char[size];
 	index = length;
 	while (--index >= 0) {
-		length = array[index].length;
+		length = array[index] != null ? array[index].length : 0;
 		if (length > 0 || (length == 0 && !ignoreEmptyElements)) {
 			System.arraycopy(
-				array[index],
+				array[index] != null ? array[index] : NO_CHAR,
 				0,
 				result,
 				(size -= length),
@@ -1149,6 +1150,33 @@ public static final boolean contains(char character, char[][] array) {
 	}
 	return false;
 }
+
+	/**
+	 * <p>
+	 * Determines if a list of character arrays contains the given character
+	 * array
+	 * </p>
+	 * 
+	 * @param needle
+	 *            search for this character array in the given list of
+	 *            character arrays
+	 * @param list
+	 *            search for the given character array in this list of
+	 *            character arrays
+	 * 
+	 * @return <code>true</code> if the given list of character arrays
+	 *         contains the given character array, <code>false</code>
+	 *         otherwise
+	 */
+	public static final boolean contains(char[] needle, char[][] list) {
+		boolean contains = false;
+		
+		for (int i = 0; list != null && i < list.length && !contains; ++i) {
+			contains = CharOperation.equals(list[i], needle);
+		}
+		
+		return contains;
+	}
 
 /**
  * Answers true if the array contains an occurrence of character, false otherwise.
@@ -2346,7 +2374,7 @@ public static final boolean match(
 		}
 		/* check current name character */
 		if ((isCaseSensitive ? name[iName] : ScannerHelper.toLowerCase(name[iName]))
-					!= patternChar
+					!= (isCaseSensitive ? patternChar : ScannerHelper.toLowerCase(patternChar))
 				&& patternChar != '?') {
 			iPattern = segmentStart; // mismatch - restart current segment
 			iName = ++prefixStart;

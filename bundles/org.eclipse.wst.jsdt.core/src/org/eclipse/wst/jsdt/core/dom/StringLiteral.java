@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -223,7 +223,9 @@ public class StringLiteral extends Expression {
 	public String getLiteralValue() {
 		String s = getEscapedValue();
 		int len = s.length();
-		if (len < 2 || s.charAt(0) != '\"' || s.charAt(len-1) != '\"' ) {
+		char zeroth = s.charAt(0);
+		char last = s.charAt(len - 1);
+		if (len < 2 || (zeroth != '\"' && zeroth != '\'') || (last != '\"' && last != '\'')) {
 			throw new IllegalArgumentException();
 		}
 
@@ -235,6 +237,7 @@ public class StringLiteral extends Expression {
 			int tokenType = scanner.getNextToken();
 			switch(tokenType) {
 				case TerminalTokens.TokenNameStringLiteral:
+				case TerminalTokens.TokenNameCharacterLiteral:
 					return scanner.getCurrentStringLiteral();
 				default:
 					throw new IllegalArgumentException();

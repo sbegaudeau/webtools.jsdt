@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -210,7 +211,21 @@ public class JavadocHover extends AbstractJavaEditorTextHover implements IInform
 				}
 				hasContents= true;
 			} else if (curr != null && curr.getElementType() == IJavaScriptElement.LOCAL_VARIABLE) {
-				HTMLPrinter.addSmallHeader(buffer, getInfoText(curr));
+				Reader reader = null;
+				try {
+					reader= JSdocContentAccess.getHTMLContentReader((ILocalVariable)curr, false, true);
+				}
+				catch (JavaScriptModelException e) {
+					reader= new StringReader(JavaHoverMessages.JavadocHover_error_gettingJavadoc);
+					JavaScriptPlugin.log(e.getStatus());
+				}
+				if (reader != null) {
+					HTMLPrinter.addParagraph(buffer, reader);
+				}
+				else {
+					HTMLPrinter.addSmallHeader(buffer, getInfoText(curr));
+				}
+				
 				hasContents= true;
 			}
 		}

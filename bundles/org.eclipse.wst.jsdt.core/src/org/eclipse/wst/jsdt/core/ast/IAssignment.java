@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,16 +14,12 @@ package org.eclipse.wst.jsdt.core.ast;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 
 /**
- *  Representation of an assignment expression
-  * <p>
- * This interface is not intended to be implemented by clients.
+ * <p>
+ * Representation of an assignment expression
  * </p>
-* Provisional API: This class/interface is part of an interim API that is still under development and expected to 
- * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
- * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
- * (repeatedly) as the API evolves.
+ *  
+ *@noimplement This interface is not intended to be implemented by clients.
  */
-
 public interface IAssignment extends IExpression {
 
 	/**
@@ -50,5 +46,21 @@ public interface IAssignment extends IExpression {
 	 * @return inferred type
 	 */
 	public InferredType getInferredType();
+	
+	/**
+	 * @param isType
+	 *            <code>true</code> if this assignment is actually a assigning
+	 *            a type, rather then the instance of a type.
+	 *            <code>false</code> if this assignment is a assigning an
+	 *            instance of a type rather then the type itself.
+	 */
+	public void setIsType(boolean isType);
 
+	/**
+	 * @return <code>true</code> if this assignment is actually a assigning a
+	 *         type, rather then the instance of a type. <code>false</code> if
+	 *         this assignment is a assigning an instance of a type rather
+	 *         then the type itself.
+	 */
+	public boolean isType();
 }

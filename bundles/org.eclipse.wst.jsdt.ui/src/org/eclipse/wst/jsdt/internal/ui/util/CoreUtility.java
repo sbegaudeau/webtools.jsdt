@@ -152,12 +152,11 @@ public class CoreUtility {
 				} else {
 					IJavaScriptProject[] projects = JavaScriptCore.create(JavaScriptPlugin.getWorkspace().getRoot()).getJavaScriptProjects();
 					if(projects.length > 0) { 
-						monitor.beginTask(JavaUIMessages.CoreUtility_buildall_taskname, 2*projects.length);
+						monitor.beginTask(JavaUIMessages.CoreUtility_buildall_taskname, projects.length);
 						for (int i = 0; i < projects.length; i++) {
 							IProject project = projects[i].getProject();
-							if (project.isAccessible()) {
-								project.build(IncrementalProjectBuilder.FULL_BUILD, JavaScriptCore.BUILDER_ID, null, new SubProgressMonitor(monitor, 2));
-							}
+							if(project.isAccessible())
+								projects[i].getProject().build(IncrementalProjectBuilder.FULL_BUILD, JavaScriptCore.BUILDER_ID, null, new SubProgressMonitor(monitor, 1));
 						}
 					}
 				}

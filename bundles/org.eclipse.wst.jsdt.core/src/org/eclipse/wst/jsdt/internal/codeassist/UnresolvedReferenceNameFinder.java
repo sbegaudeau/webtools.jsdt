@@ -95,8 +95,8 @@ public class UnresolvedReferenceNameFinder extends ASTVisitor {
 			char[][] discouragedNames,
 			UnresolvedReferenceNameRequestor nameRequestor) {
 		MethodDeclaration fakeMethod =
-			this.findAfter(startWith, methodDeclaration.scope, from, methodDeclaration.bodyEnd, MAX_LINE_COUNT, false, discouragedNames, nameRequestor);
-		if (fakeMethod != null) fakeMethod.traverse(this, methodDeclaration.scope.classScope());
+			this.findAfter(startWith, methodDeclaration.getScope(), from, methodDeclaration.bodyEnd, MAX_LINE_COUNT, false, discouragedNames, nameRequestor);
+		if (fakeMethod != null) fakeMethod.traverse(this, methodDeclaration.getScope().classScope());
 	}
 
 	public void findAfter(

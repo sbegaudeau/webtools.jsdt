@@ -74,7 +74,7 @@ public class CompletionOnExplicitConstructorCall extends ExplicitConstructorCall
 		if (this.accessMode != This && receiverType != null) {
 			if (receiverType.isHierarchyInconsistent())
 				throw new CompletionNodeFound();
-			receiverType = receiverType.superclass();
+			receiverType = receiverType.getSuperBinding();
 		}
 		if (receiverType == null)
 			throw new CompletionNodeFound();

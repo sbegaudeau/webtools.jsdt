@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2642,21 +2642,12 @@ public class Util {
 					// all done
 					return p;
 				case Signature.C_DOT :
+				case Signature.C_DOLLAR :
 					buffer.append('.');
 					break;
 				 case '/' :
 					buffer.append('/');
 					break;
-				 case Signature.C_DOLLAR :
-					// once we hit "$" there are no more package prefixes
-					/**
-					 * Convert '$' in resolved type signatures into '.'.
-					 * NOTE: This assumes that the type signature is an inner type
-					 * signature. This is true in most cases, but someone can define a
-					 * non-inner type name containing a '$'.
-					 */
-					buffer.append('.');
-				 	break;
 				 default :
 					buffer.append(c);
 			}
@@ -2669,7 +2660,7 @@ public class Util {
 	 *
 	 * marker and label
 	 */
-	public static final String ANONYMOUS_MARKER = new String( CharOperation.concat(IInferEngine.ANONYMOUS_PREFIX, IInferEngine.ANONYMOUS_CLASS_ID) );
+	public static final String ANONYMOUS_MARKER = new String(IInferEngine.ANONYMOUS_PREFIX);
 	public static final String ANONYMOUS_LABEL = "{}"; //$NON-NLS-1$
 
 	/*

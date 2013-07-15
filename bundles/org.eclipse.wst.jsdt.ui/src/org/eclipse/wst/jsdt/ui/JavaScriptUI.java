@@ -182,7 +182,7 @@ public final class JavaScriptUI {
 	public static final String ID_SOURCE_VIEW=	"org.eclipse.wst.jsdt.ui.SourceView"; //$NON-NLS-1$
 	
 	/** 
-	 * The view part id of the JavaScript Documentation view
+	 * The view part id of the Javadoc view
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavadocView"</code>).
 	 *
 	 * @see org.eclipse.ui.IWorkbenchPage#findView(java.lang.String)

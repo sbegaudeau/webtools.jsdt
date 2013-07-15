@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.ui.viewsupport;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -51,9 +50,10 @@ public class SelectionListenerWithASTManager {
 			fgDefault= new SelectionListenerWithASTManager();
 		}
 		return fgDefault;
-	}	
+	}
 	
-	private final class PartListenerGroup {
+	
+	private final static class PartListenerGroup {
 		private ITextEditor fPart;
 		private ISelectionListener fPostSelectionListener;
 		private ISelectionChangedListener fSelectionListener;
@@ -112,14 +112,15 @@ public class SelectionListenerWithASTManager {
 		}
 		
 		public void fireSelectionChanged(final ITextSelection selection) {
-			//cancel any previous selection calculations, no need to finish now that selection has changed
-			SelectionListenerWithASTManager.this.cancelExistingSelectionCalculations();
+			if (fCurrentJob != null) {
+				fCurrentJob.cancel();
+			}
 		}
 		
-		public synchronized void firePostSelectionChanged(final ITextSelection selection) {
-			//cancel any previous selection calculations, no need to finish now that selection has changed
-			SelectionListenerWithASTManager.this.cancelExistingSelectionCalculations();
-			
+		public void firePostSelectionChanged(final ITextSelection selection) {
+			if (fCurrentJob != null) {
+				fCurrentJob.cancel();
+			}
 			final IJavaScriptElement input= EditorUtility.getEditorInputJavaElement(fPart, false);
 			if (input == null) {
 				return;
@@ -204,22 +205,6 @@ public class SelectionListenerWithASTManager {
 				if (partListener.isEmpty()) {
 					fListenerGroups.remove(part);
 				}
-			}
-		}
-	}
-	
-	/**
-	 * <p>This method will cancel all existing selection calculations both in the current
-	 * editor and any other open editor.  This should be done when ever the selection is changed
-	 * because there is no need to keep calculating the selection after it has changed.</p>
-	 */
-	private void cancelExistingSelectionCalculations() {
-		Iterator keysIter = this.fListenerGroups.keySet().iterator();
-		while(keysIter.hasNext()) {
-			ITextEditor key = (ITextEditor)keysIter.next();
-			PartListenerGroup group = (PartListenerGroup)this.fListenerGroups.get(key);
-			if(group.fCurrentJob != null) {
-				group.fCurrentJob.cancel();
 			}
 		}
 	}

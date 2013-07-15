@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -476,30 +476,6 @@ class DefaultBindingResolver extends BindingResolver {
 	}
 
 	/*
-	 * @see BindingResolver#resolveBoxing(Expression)
-	 */
-	boolean resolveBoxing(Expression expression) {
-		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(expression);
-		if (node != null && (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Expression)) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.Expression compilerExpression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) node;
-			return (compilerExpression.implicitConversion & TypeIds.BOXING) != 0;
-		}
-		return false;
-	}
-
-	/*
-	 * @see BindingResolver#resolveUnboxing(Expression)
-	 */
-	boolean resolveUnboxing(Expression expression) {
-		org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode node = (org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode) this.newAstToOldAst.get(expression);
-		if (node != null && (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.Expression)) {
-			org.eclipse.wst.jsdt.internal.compiler.ast.Expression compilerExpression = (org.eclipse.wst.jsdt.internal.compiler.ast.Expression) node;
-			return (compilerExpression.implicitConversion & TypeIds.UNBOXING) != 0;
-		}
-		return false;
-	}
-
-	/*
 	 * @see BindingResolver#resolveConstantExpressionValue(Expression)
 	 */
 	Object resolveConstantExpressionValue(Expression expression) {
@@ -712,7 +688,7 @@ class DefaultBindingResolver extends BindingResolver {
 		Object oldNode = this.newAstToOldAst.get(method);
 		if (oldNode instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) oldNode;
-			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.getBinding());
 			if (methodBinding == null) {
 				return null;
 			}
@@ -890,7 +866,7 @@ class DefaultBindingResolver extends BindingResolver {
 			}
 		} else if (node instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-			IFunctionBinding method = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding method = this.getMethodBinding(methodDeclaration.getBinding());
 			if (method == null) return null;
 			return method.getReturnType();
 		} else if (node instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration) {
@@ -1109,7 +1085,7 @@ class DefaultBindingResolver extends BindingResolver {
 			}
 		} else if (node instanceof AbstractMethodDeclaration) {
 			AbstractMethodDeclaration methodDeclaration = (AbstractMethodDeclaration) node;
-			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.binding);
+			IFunctionBinding methodBinding = this.getMethodBinding(methodDeclaration.getBinding());
 			if (methodBinding != null) {
 				return methodBinding;
 			}
@@ -1444,6 +1420,7 @@ class DefaultBindingResolver extends BindingResolver {
 	synchronized ITypeBinding resolveWellKnownType(String name) {
 		if (this.scope == null) return null;
 		try {
+			// possible called by flow info
 //			if (("boolean".equals(name))//$NON-NLS-1$
 //				|| ("char".equals(name))//$NON-NLS-1$
 //				|| ("byte".equals(name))//$NON-NLS-1$

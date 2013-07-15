@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,7 +47,6 @@ public interface ISearchRequestor {
 	 * 
 	 * @param modifiers Modifiers to the constructor such as public/private
 	 * @param typeName Name of the type the constructor is for
-	 * @param parameterCount Number of parameters for the constructor, or -1 for a default constructor
 	 * @param parameterTypes Type names of the parameters, should be same length as <code>parameterCount</code>
 	 * @param parameterNames Names of the parameters, should be same length as <code>parameterCount</code>
 	 * @param path to the document containing the constructor match
@@ -59,9 +58,50 @@ public interface ISearchRequestor {
 	public void acceptConstructor(
 			int modifiers,
 			char[] typeName,
-			int parameterCount,
 			char[][] parameterTypes,
 			char[][] parameterNames,
 			String path,
 			AccessRestriction access);
+	
+	/**
+	 * <p>Accept a function defined with all of the given information</p>
+	 * 
+	 * @param signature
+	 * @param parameterFullyQualifedTypeNames
+	 * @param parameterNames
+	 * @param returnQualification
+	 * @param returnSimpleName
+	 * @param declaringQualification
+	 * @param declaringSimpleName
+	 * @param modifiers
+	 * @param path
+	 */
+	public void acceptFunction(char[] signature,
+			char[][] parameterFullyQualifedTypeNames,
+			char[][] parameterNames,
+			char[] returnQualification,
+			char[] returnSimpleName,
+			char[] declaringQualification,
+			char[] declaringSimpleName,
+			int modifiers,
+			String path);
+	
+	/**
+	 * <p>Accept a variable defined with all of the given information</p>
+	 * 
+	 * @param signature
+	 * @param typeQualification
+	 * @param typeSimpleName
+	 * @param declaringQualification
+	 * @param declaringSimpleName
+	 * @param modifiers
+	 * @param path
+	 */
+	public void acceptVariable(char[] signature,
+			char[] typeQualification,
+			char[] typeSimpleName,
+			char[] declaringQualification,
+			char[] declaringSimpleName,
+			int modifiers,
+			String path);
 }

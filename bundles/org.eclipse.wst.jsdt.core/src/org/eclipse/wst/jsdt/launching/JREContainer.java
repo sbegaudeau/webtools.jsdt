@@ -138,14 +138,6 @@ public class JREContainer implements IJsGlobalScopeContainer {
 		fVMInstall = vm;
 		fPath = path;
 	}
-	
-	/**
-	 * @see IJsGlobalScopeContainer#getClasspathEntries()
-	 * @deprecated Use {@link #getIncludepathEntries()} instead
-	 */
-	public IIncludePathEntry[] getClasspathEntries() {
-		return getIncludepathEntries();
-	}
 
 	/**
 	 * @see IJsGlobalScopeContainer#getIncludepathEntries()

@@ -723,7 +723,7 @@ public class MetadataReader extends DefaultHandler implements IOAAMetaDataConsta
 	
 	private ArrayList getCollection(String tagClass) {
 		ArrayList list = null;
-		if(this.collections != null) {
+		if (this.collections != null) {
 			list = (ArrayList)this.collections.get(tagClass);
 		}
 		if (list==null)

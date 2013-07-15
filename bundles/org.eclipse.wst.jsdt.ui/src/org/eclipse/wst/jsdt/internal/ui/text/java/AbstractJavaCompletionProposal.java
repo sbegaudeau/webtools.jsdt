@@ -672,7 +672,7 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 	 * @param prefix the current prefix in the document
 	 * @return <code>true</code> if <code>prefix</code> is a valid prefix of this proposal
 	 */
-	protected boolean isValidPrefix(String prefix) {
+	public boolean isValidPrefix(String prefix) {
 		/*
 		 * See http://dev.eclipse.org/bugs/show_bug.cgi?id=17667
 		 * why we do not use the replacement string.
@@ -1014,6 +1014,24 @@ public abstract class AbstractJavaCompletionProposal implements IJavaCompletionP
 		
 		CompletionProposal proposal= ((MemberProposalInfo)fProposalInfo).fProposal;
 		return proposal != null && (proposal.getKind() == CompletionProposal.METHOD_REF || proposal.getKind() == CompletionProposal.FIELD_REF);
+	}
+	
+	/**
+	 * <p>
+	 * Two proposals are equal if their display strings are the same.
+	 * </p>
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		boolean equal = false;
+		
+		if(obj instanceof AbstractJavaCompletionProposal) {
+			AbstractJavaCompletionProposal other = (AbstractJavaCompletionProposal)obj;
+			equal = this.getDisplayString().equals(other.getDisplayString());
+		}
+		
+		return equal;
 	}
 	
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.internal.compiler.ISourceElementRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
@@ -283,9 +284,10 @@ public void enterMethod(MethodInfo methodInfo) {
 			|| parentHandle.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT
 			|| parentHandle.getElementType() == IJavaScriptElement.CLASS_FILE
 			|| parentHandle.getElementType() == IJavaScriptElement.METHOD
+			|| parentHandle.getElementType() == IJavaScriptElement.FIELD
 			) {
 
-		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.NO_CHAR;
+		char[] cs = methodInfo.name!=null ? methodInfo.name: CharOperation.concat(IInferEngine.ANONYMOUS_PREFIX, IInferEngine.ANONYMOUS_CLASS_ID);
 
 		String selector = JavaModelManager.getJavaModelManager().intern(new String(cs));
 		handle = new SourceMethod(parentHandle, selector, parameterTypeSigs);
@@ -329,28 +331,23 @@ public void enterType(TypeInfo typeInfo) {
 	JavaElementInfo parentInfo = (JavaElementInfo) this.infoStack.peek();
 	JavaElement parentHandle= (JavaElement) this.handleStack.peek();
 	String nameString= new String(typeInfo.name);
+	
+	// if the type is a global type (isIndexed) then make sure its parent is a IJavaScriptUnit
+	while(typeInfo.isIndexed && !(parentHandle instanceof IJavaScriptUnit)) {
+		parentHandle = parentHandle.parent;
+		
+		// just in case something is messed up with the parenting, it will still get a value set
+		if(parentHandle == null) {
+			parentHandle= (JavaElement) this.handleStack.peek();
+			break;
+		}
+	}
 
-	//@GINO: Anonymous setting model as anonymous
-	SourceType handle =
-//		typeInfo.anonymousMember ?
-//			new SourceType(parentHandle, nameString){
-//
-//				public boolean isAnonymous() {
-//					return true;
-//				}
-//
-//			} :
-		new SourceType(parentHandle, nameString);  //NB: occurenceCount is computed in resolveDuplicates
+	SourceType handle = new SourceType(parentHandle, nameString, typeInfo.anonymousMember);  //NB: occurenceCount is computed in resolveDuplicates
 
 	resolveDuplicates(handle);
 
-	SourceTypeElementInfo info =
-//		typeInfo.anonymousMember ?
-//				new SourceTypeElementInfo( parentHandle instanceof ClassFile ) {
-//					public boolean isAnonymousMember() {
-//						return true;
-//					}
-//				} :
+	SourceTypeElementInfo info = 
 			new SourceTypeElementInfo( parentHandle instanceof ClassFile , typeInfo.anonymousMember);
 	info.setHandle(handle);
 	info.setSourceRangeStart(typeInfo.declarationStart);

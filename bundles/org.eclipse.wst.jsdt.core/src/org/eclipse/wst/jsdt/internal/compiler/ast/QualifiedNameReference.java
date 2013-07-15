@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -390,45 +390,6 @@ public Constant optimizedBooleanConstant() {
 		}
 	}
 	return Constant.NotAConstant;
-}
-
-/**
- * @see org.eclipse.wst.jsdt.internal.compiler.ast.Expression#postConversionType(Scope)
- */
-public TypeBinding postConversionType(Scope scope) {
-	TypeBinding convertedType = this.resolvedType;
-	TypeBinding requiredGenericCast = getGenericCast(this.otherCodegenBindings == null ? 0 : this.otherCodegenBindings.length);
-	if (requiredGenericCast != null)
-		convertedType = requiredGenericCast;
-	int runtimeType = (this.implicitConversion & TypeIds.IMPLICIT_CONVERSION_MASK) >> 4;
-	switch (runtimeType) {
-		case T_boolean :
-			convertedType = TypeBinding.BOOLEAN;
-			break;
-		case T_short :
-			convertedType = TypeBinding.SHORT;
-			break;
-		case T_char :
-			convertedType = TypeBinding.CHAR;
-			break;
-		case T_int :
-			convertedType = TypeBinding.INT;
-			break;
-		case T_float :
-			convertedType = TypeBinding.FLOAT;
-			break;
-		case T_long :
-			convertedType = TypeBinding.LONG;
-			break;
-		case T_double :
-			convertedType = TypeBinding.DOUBLE;
-			break;
-		default :
-	}
-	if ((this.implicitConversion & TypeIds.BOXING) != 0) {
-		convertedType = scope.environment().computeBoxingType(convertedType);
-	}
-	return convertedType;
 }
 
 public StringBuffer printExpression(int indent, StringBuffer output) {

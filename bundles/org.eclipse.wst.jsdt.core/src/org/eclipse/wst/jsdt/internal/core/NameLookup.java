@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -307,7 +307,8 @@ public class NameLookup implements SuffixConstants {
 						String path, AccessRestriction access) {
 					if (excludePath!=null && path.equals(excludePath))
 						return false;
-					foundPaths.add(path);
+					if(!foundPaths.contains(path))
+						foundPaths.add(path);
 					return true;
 				}
 				/* (non-Javadoc)
@@ -499,10 +500,6 @@ public class NameLookup implements SuffixConstants {
 			cuName= qualifiedTypeName.substring(index + 1);
 		}
 		cuName=cuName.replace(CompilationUnitScope.FILENAME_DOT_SUBSTITUTION, '.');
-		index= cuName.indexOf('$');
-		if (index != -1) {
-			cuName= cuName.substring(0, index);
-		}
 		Object value = this.packageFragments.get(pkgName);
 		if (value != null) {
 			if (value instanceof PackageFragmentRoot) {
@@ -1463,7 +1460,6 @@ public class NameLookup implements SuffixConstants {
 			// look in model
 			switch (packageFlavor) {
 				case IPackageFragmentRoot.K_BINARY :
-					matchName= matchName.replace('.', '$');
 					seekBindingsInBinaryPackage(matchName,Binding.TYPE, pkg, partialMatch, acceptFlags, requestor);
 					break;
 				case IPackageFragmentRoot.K_SOURCE :
@@ -1511,7 +1507,6 @@ public class NameLookup implements SuffixConstants {
 					// look in model
 					switch (packageFlavor) {
 						case IPackageFragmentRoot.K_BINARY :
-//							matchName= matchName.replace('.', '$');
 							seekBindingsInBinaryPackage(matchName,  bindingType,pkg, partialMatch, acceptFlags, requestor);
 							break;
 						case IPackageFragmentRoot.K_SOURCE :
@@ -1683,13 +1678,6 @@ public class NameLookup implements SuffixConstants {
 				}
 			} else {
 				String unqualifiedName = name;
-				int index = name.lastIndexOf('$');
-				if (index != -1) {
-					//the type name of the inner type
-					unqualifiedName = Util.localTypeName(name, index, name.length());
-					// unqualifiedName is empty if the name ends with a '$' sign.
-					// See http://dev.eclipse.org/bugs/show_bug.cgi?id=14642
-				}
 				int matchLength = name.length();
 				for (int i = 0; i < length; i++) {
 					if (requestor.isCanceled())
@@ -2145,6 +2133,9 @@ public class NameLookup implements SuffixConstants {
 			Path excludePath= (exclude!=null)? new Path(exclude) : null;
 
 			MyRequestor requestor=new MyRequestor();
+			JavaElementRequestor elementRequestor = new JavaElementRequestor();
+//			seekPackageFragments(packageName, false, elementRequestor);
+//			IPackageFragment[] packages= elementRequestor.getPackageFragments();
 			seekBindingsInWorkingCopies(bindingName, bindingType, -1, partialMatch,
 					bindingName, acceptFlags, requestor);
 			if (requestor.element != null) {

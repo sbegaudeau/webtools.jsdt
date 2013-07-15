@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
-import java.util.ArrayList;
-
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
@@ -47,12 +43,11 @@ public class ClassScope extends Scope {
 		LocalTypeBinding anonymousType = buildLocalType(enclosingType, enclosingType.fPackage);
 		SourceTypeBinding sourceType = getReferenceBinding();
 		
-		sourceType.superclass = supertype;
+		sourceType.setSuperBinding(supertype);
 		
 		connectMemberTypes();
 		buildFieldsAndMethods();
 		anonymousType.faultInTypesForFieldsAndMethods();
-		sourceType.verifyMethods(environment().methodVerifier());
 	}
 
 	private void buildFields() {
@@ -198,8 +193,6 @@ public class ClassScope extends Scope {
 		connectTypeHierarchy();
 		buildFieldsAndMethods();
 		localType.faultInTypesForFieldsAndMethods();
-
-		getReferenceBinding().verifyMethods(environment().methodVerifier());
 	}
 
 	private void buildMemberTypes(AccessRestriction accessRestriction) {
@@ -257,15 +250,12 @@ public class ClassScope extends Scope {
 		MethodBinding[] methodBindings = new MethodBinding[(clinitIndex == -1 ? size : size - 1) + count];
 		// create special methods for enums
 	    SourceTypeBinding sourceType = getReferenceBinding();
-//		if (isEnum) {
-//			methodBindings[0] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUES); // add <EnumType>[] values()
-//			methodBindings[1] = sourceType.addSyntheticEnumMethod(TypeConstants.VALUEOF); // add <EnumType> valueOf()
-//		}
+	    
 		// create bindings for source methods
 		for (int i = 0; i < size; i++) {
 			if (i != clinitIndex) {
 				MethodScope scope = new MethodScope(this, methods[i], false);
-				MethodBinding methodBinding = scope.createMethod(methods[i],methods[i].selector,sourceType,false,false);
+				MethodBinding methodBinding = scope.createMethod(methods[i],methods[i].getName(),sourceType,false,false);
 				if (methodBinding != null) // is null if binding could not be created
 					methodBindings[count++] = methodBinding;
 			}
@@ -289,7 +279,7 @@ public class ClassScope extends Scope {
 		} else {
 			char[][] className = CharOperation.deepCopy(enclosingType.compoundName);
 			className[className.length - 1] =
-				CharOperation.concat(className[className.length - 1], referenceContext.name, '$');
+				CharOperation.concat(className[className.length - 1], referenceContext.name, '.');
 			ReferenceBinding existingType = packageBinding.getType0(className[className.length - 1]);
 			referenceContext.binding = new MemberTypeBinding(className, this, enclosingType);
 		}
@@ -336,7 +326,7 @@ public class ClassScope extends Scope {
 									modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 							}
 						} else {
-							MethodBinding method = ((AbstractMethodDeclaration) methodScope.referenceContext).binding;
+							MethodBinding method = ((AbstractMethodDeclaration) methodScope.referenceContext).getBinding();
 							if (method != null) {
 								if (method.isStrictfp())
 									modifiers |= ClassFileConstants.AccStrictfp;
@@ -430,13 +420,13 @@ public class ClassScope extends Scope {
 			if (currentType.hasMemberTypes()) // avoid resolving member types eagerly
 				return;
 			/* BC- Added cycle check BUG 200501 */
-		} while (currentType.superclass()!=currentType && (currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
+		} while (currentType.getSuperBinding()!=currentType && (currentType = currentType.getSuperBinding()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
 
 		// tag the sourceType and all of its superclasses, unless they have already been tagged
 		currentType = sourceType;
 		do {
 			currentType.tagBits |= TagBits.HasNoMemberTypes;
-		} while ((currentType = currentType.superclass()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
+		} while ((currentType = currentType.getSuperBinding()) != null && (currentType.tagBits & TagBits.HasNoMemberTypes) == 0);
 	}
 
 	private void connectMemberTypes() {
@@ -461,12 +451,12 @@ public class ClassScope extends Scope {
 	private boolean connectSuperclass() {
 		SourceTypeBinding sourceType = getReferenceBinding();
 		if (sourceType.id == T_JavaLangObject) { // handle the case of redefining java.lang.Object up front
-			sourceType.superclass = null;
+			sourceType.setSuperBinding(null);
 			return true; // do not propagate Object's hierarchy problems down to every subtype
 		}
-		if ( (referenceContext!=null && referenceContext.superclass == null) || (inferredType!=null && inferredType.superClass==null)) {
-			sourceType.superclass = getJavaLangObject();
-			return !detectHierarchyCycle(sourceType, sourceType.superclass, null);
+		if ( (referenceContext!=null && referenceContext.superclass == null) || (inferredType!=null && inferredType.getSuperType()==null)) {
+			sourceType.setSuperBinding(getJavaLangObject());
+			return !detectHierarchyCycle(sourceType, sourceType.getSuperBinding0(), null);
 		}
 		if (referenceContext!=null)
 		{
@@ -474,7 +464,7 @@ public class ClassScope extends Scope {
 			ReferenceBinding superclass = findSupertype(superclassRef);
 			if (superclass != null) { // is null if a cycle was detected cycle or a problem
 				// only want to reach here when no errors are reported
-				sourceType.superclass = superclass;
+				sourceType.setSuperBinding(superclass);
 				return true;
 			}
 		}
@@ -483,16 +473,16 @@ public class ClassScope extends Scope {
 			ReferenceBinding superclass = findInferredSupertype(inferredType);
 			if (superclass != null) { // is null if a cycle was detected cycle or a problem
 				// only want to reach here when no errors are reported
-				sourceType.superclass = superclass;
+				sourceType.setSuperBinding(superclass);
 				if (superclass.isValidBinding())
 					return true;
 			}
 
 		}
 		sourceType.tagBits |= TagBits.HierarchyHasProblems;
-		sourceType.superclass = getJavaLangObject();
-		if ((sourceType.superclass.tagBits & TagBits.BeginHierarchyCheck) == 0)
-			detectHierarchyCycle(sourceType, sourceType.superclass, null);
+		sourceType.setSuperBinding(getJavaLangObject());
+		if ((sourceType.getSuperBinding0().tagBits & TagBits.BeginHierarchyCheck) == 0)
+			detectHierarchyCycle(sourceType, sourceType.getSuperBinding0(), null);
 		return false; // reported some error against the source type
 	}
 
@@ -515,7 +505,7 @@ public class ClassScope extends Scope {
 		int length = this.inferredType.mixins.size();
 		nextExtends : for (int i = 0; i < length; i++) {
 			char []mixinsName=(char [])this.inferredType.mixins.get(i);
-			ReferenceBinding mixinBinding = (ReferenceBinding)this.getType(mixinsName);
+			TypeBinding mixinBinding = this.getType(mixinsName);
 			if (mixinBinding == null) { // detected cycle
 				sourceType.tagBits |= TagBits.HierarchyHasProblems;
 				noProblems = false;
@@ -523,69 +513,24 @@ public class ClassScope extends Scope {
 			}
 			
 			//loop through the nextTypes of the mixinBinding because each contains a partial inferred type
-			while(mixinBinding != null) {
-				// get the partial inferred type
-				InferredType mixinInferredType = mixinBinding.getInferredType();
-				if(mixinInferredType !=null) {
-					InferredAttribute[] attributes = mixinInferredType.attributes;
-					ArrayList methods = mixinInferredType.methods;
-					if(methods == null)
-						methods = new ArrayList(1);
-					
-					// get the full list of methods and attributes from the mix class and its super class
-					InferredType mixSuperType = mixinInferredType.superClass;
-					while(mixSuperType != null && !CharOperation.equals(mixSuperType.getName(), "Object".toCharArray())) { //$NON-NLS-1$
-						// attributes
-						InferredAttribute[] tempAttributes = new InferredAttribute[attributes.length + mixSuperType.attributes.length];
-						System.arraycopy(attributes, 0, tempAttributes, 0, attributes.length);
-						System.arraycopy(mixSuperType.attributes, 0, tempAttributes, attributes.length - 1, mixSuperType.attributes.length);
-						attributes = tempAttributes;
+			if(mixinBinding instanceof SourceTypeBinding) {
+				((SourceTypeBinding) mixinBinding).performActionOnLinkedBindings(new SourceTypeBinding.LinkedBindingAction() {
+					/**
+					 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedTypeAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+					 */
+					public boolean performAction(SourceTypeBinding linkedBinding) {
+						// get the partial inferred type
+						InferredType mixin = linkedBinding.getInferredType();
+						ClassScope.this.inferredType.mixin(mixin);
 						
-						// methods
-						if (mixSuperType.methods != null)
-							methods.addAll(mixSuperType.methods);
-						mixSuperType = mixSuperType.superClass;
+						// mixin all linked types
+						return true;
 					}
-					
-					// add attributes to the type
-					for(int a = 0; a < attributes.length; a++) {
-						if(attributes[a] != null) {
-							InferredAttribute attr = this.inferredType.findAttribute( attributes[a].name );
-							if(attr == null || attr.type == null) {
-								attr = this.inferredType.addAttribute( attributes[a].name, attributes[a].node , attributes[a].nameStart);
-								attr.type=attributes[a].type;
-								attr.isStatic = false;
-								attr.nameStart = attributes[a].nameStart;
-							}
-						}
-					}
-					
-					// add methods to the type
-					for(int m = 0; m < methods.size(); m++) {
-						if(!((InferredMethod)methods.get(m)).isConstructor) {
-							InferredMethod method = this.inferredType.findMethod(((InferredMethod)methods.get(m)).name, null);
-		
-							//ignore if the attribute exists and has a type
-							if(method == null) {
-								method = this.inferredType.addMethod(((InferredMethod)methods.get(m)).name, ((InferredMethod)methods.get(m)).getFunctionDeclaration(),((InferredMethod)methods.get(m)).nameStart);
-								method.isStatic=false;
-							}
-						}
-					}
-				}
-				
-				//get the next partial source type for this 'mixin'
-				if(mixinBinding instanceof SourceTypeBinding) {
-					mixinBinding = ((SourceTypeBinding)mixinBinding).nextType;
-				} else {
-					mixinBinding = null;
-				}
+				});
 			}
 		}
 		return noProblems;
 	}
-
-
 	
 	
 	void connectTypeHierarchy() {
@@ -681,7 +626,7 @@ public class ClassScope extends Scope {
 			//		- a binary type... this case MUST be caught & reported here
 			//		- another source type... this case is reported against the other source type
 			boolean hasCycle = false;
-			ReferenceBinding parentType = superType.superclass();
+			ReferenceBinding parentType = superType.getSuperBinding();
 			if (parentType != null) {
 				if (sourceType == parentType) {
 					problemReporter().hierarchyCircularity(sourceType, superType, reference);
@@ -721,7 +666,7 @@ public class ClassScope extends Scope {
 	private ReferenceBinding findInferredSupertype(InferredType type) {
 		try {
 //			typeReference.aboutToResolve(this); // allows us to trap completion & selection nodes
-			compilationUnitScope().recordQualifiedReference(new char[][]{type.superClass.getName()});
+			compilationUnitScope().recordQualifiedReference(new char[][]{type.getSuperType().getName()});
 //			this.superTypeReference = typeReference;
 			ReferenceBinding superType = type.resolveSuperType(this);
 			this.superTypeReference = null;
@@ -791,7 +736,7 @@ public class ClassScope extends Scope {
 			inferredType.binding = new SourceTypeBinding(className, packageBinding, this);
 
 			//@GINO: Anonymous set bits
-			if( inferredType.isAnonymous )
+			if( !inferredType.isNamed() )
 				inferredType.binding.tagBits |= TagBits.AnonymousTypeMask;
 			if( inferredType.isObjectLiteral )
 				inferredType.binding.tagBits |= TagBits.IsObjectLiteralType;

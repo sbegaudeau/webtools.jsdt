@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,18 +146,18 @@ protected int matchField(FieldBinding field, boolean matchName) {
 	if (receiverBinding == null) {
 		if (field == ArrayBinding.ArrayLength)
 			// optimized case for length field of an array
-			return fieldPattern.declaringQualification == null && fieldPattern.declaringSimpleName == null
+			return fieldPattern.getDeclaringQualification() == null && fieldPattern.getDeclaringSimpleName() == null
 				? ACCURATE_MATCH
 				: IMPOSSIBLE_MATCH;
 		return INACCURATE_MATCH;
 	}
 
 	// Note there is no dynamic lookup for field access
-	int declaringLevel = resolveLevelForType(fieldPattern.declaringSimpleName, fieldPattern.declaringQualification, receiverBinding);
+	int declaringLevel = resolveLevelForType(fieldPattern.getDeclaringSimpleName(), fieldPattern.getDeclaringQualification(), receiverBinding);
 	if (declaringLevel == IMPOSSIBLE_MATCH) return IMPOSSIBLE_MATCH;
 
 	// look at field type only if declaring type is not specified
-	if (fieldPattern.declaringSimpleName == null) return declaringLevel;
+	if (fieldPattern.getDeclaringSimpleName() == null) return declaringLevel;
 
 	// get real field binding
 	FieldBinding fieldBinding = field;
@@ -182,8 +182,8 @@ protected void matchLevelAndReportImportRef(ImportReference importRef, Binding b
 }
 protected int matchReference(Reference node, MatchingNodeSet nodeSet, boolean writeOnlyAccess) {
 	if (node instanceof FieldReference) {
-		if (matchesName(this.pattern.name, ((FieldReference) node).token))
-			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
+		if (!this.fieldPattern.isVar && matchesName(this.pattern.name, ((FieldReference) node).token))
+				return nodeSet.addMatch(node, ((InternalSearchPattern) this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 		return IMPOSSIBLE_MATCH;
 	}
 	return super.matchReference(node, nodeSet, writeOnlyAccess);
@@ -378,6 +378,9 @@ public int resolveLevel(ASTNode possiblelMatchingNode) {
 		return matchField(((FieldDeclaration) possiblelMatchingNode).binding, true);
 	else if (possiblelMatchingNode instanceof LocalDeclaration)
 		return matchLocalVariable(((LocalDeclaration) possiblelMatchingNode).binding, true);
+	else if (possiblelMatchingNode instanceof InferredAttribute)
+		return matchField(((InferredAttribute) possiblelMatchingNode).binding, true);
+
 	return IMPOSSIBLE_MATCH;
 }
 public int resolveLevel(Binding binding) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,10 +27,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptModel;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 
@@ -138,7 +138,7 @@ public final class JavaRuntime {
 	/*
 	 * Default supertype for javascript unit s
 	 */
-	public static final String DEFAULT_SUPER_TYPE ="Global"; //$NON-NLS-1$
+	public static final String DEFAULT_SUPER_TYPE = "Global"; //$NON-NLS-1$
 	
 	public static final String DEFAULT_SUPER_TYPE_LIBRARY = JRE_CONTAINER; //$NON-NLS-1$
 	/**

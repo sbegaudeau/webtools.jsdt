@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 Ben Konrath <ben@bagu.org>
+ * Copyright (c) 2004, 2008 Ben Konrath <ben@bagu.org>
  * Copyright (c) 2006 Red Hat Incorporated
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0

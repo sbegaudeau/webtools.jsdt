@@ -37,7 +37,7 @@ public class BracesTabPage extends FormatterTabPage {
 	"    var xyz = 'one';\n" + //$NON-NLS-1$
 	"    var arr1 = [ '1', '2', '3', '4' ];\n" + //$NON-NLS-1$
 	"    var arr2 = [];\n" + //$NON-NLS-1$
-	"    var car = { carMake: 'Toyota', carModel: 'Celica', carYear: 2000 };\n" + //$NON-NLS-1$
+	"    var car = { carMake: 'Amet', carModel: 'Porro', carYear: 2012 };\n" + //$NON-NLS-1$
 	"    var car2 = {};\n" + //$NON-NLS-1$
 	"\n" + //$NON-NLS-1$
 	"    switch (data) {\n" + //$NON-NLS-1$

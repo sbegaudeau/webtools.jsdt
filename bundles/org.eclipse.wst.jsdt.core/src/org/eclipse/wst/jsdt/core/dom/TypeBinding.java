@@ -597,7 +597,7 @@ class TypeBinding implements ITypeBinding {
 		}
 		ReferenceBinding superclass = null;
 		try {
-			superclass = ((ReferenceBinding)this.binding).superclass();
+			superclass = ((ReferenceBinding)this.binding).getSuperBinding();
 		} catch (RuntimeException e) {
 			/* in case a method cannot be resolvable due to missing jars on the includepath
 			 * see https://bugs.eclipse.org/bugs/show_bug.cgi?id=57871

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -132,8 +132,7 @@ public interface IJsGlobalScopeContainer {
 	 */
     IPath getPath();
 
-    /**
-     * Allows mapping between HTML imports and a toolkit's actual page imports.  Implementers
+    /* allows mapping between HTML imports and a toolkits actual page imports.  Implementers
      * should ensure the validity of the imports before returning a value.
      */
     String[] resolvedLibraryImport(String a);

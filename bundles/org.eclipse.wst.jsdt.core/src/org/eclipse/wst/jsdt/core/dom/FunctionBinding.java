@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodVerifier;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -192,40 +193,50 @@ class FunctionBinding implements IFunctionBinding {
 				else
 					return (JavaElement) declaringType.getFunction(getName(), parameters);
 			}
-			else {
-				return null;
-			}
-		} else {
-			// case of method not in the created AST, or a binary method
-			org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding original = this.binding.original();
-			String selector = original.isConstructor() ? declaringType.getElementName() : new String(original.selector);
-			boolean isBinary = declaringType.isBinary();
-			ReferenceBinding enclosingType = original.declaringClass.enclosingType();
-			boolean isInnerBinaryTypeConstructor = isBinary && original.isConstructor() && enclosingType != null;
-			TypeBinding[] parameters = original.parameters;
-			int length = parameters == null ? 0 : parameters.length;
-			int declaringIndex = isInnerBinaryTypeConstructor ? 1 : 0;
-			String[] parameterSignatures = new String[declaringIndex + length];
-			if (isInnerBinaryTypeConstructor)
-				parameterSignatures[0] = new String(enclosingType.signature()).replace('/', '.');
-			for (int i = 0;  i < length; i++) {
-				parameterSignatures[declaringIndex + i] = new String(parameters[i].signature()).replace('/', '.');
-			}
-			IFunction result = declaringType.getFunction(selector, parameterSignatures);
-			if (isBinary)
-				return (JavaElement) result;
-			IFunction[] methods = null;
-			try {
-				methods = declaringType.getFunctions();
-			} catch (JavaScriptModelException e) {
-				// declaring type doesn't exist
-				return null;
-			}
-			IFunction[] candidates = Member.findMethods(result, methods);
-			if (candidates == null || candidates.length == 0)
-				return null;
-			return (JavaElement) candidates[0];
 		}
+		else {
+			// case of method not in the created AST, or a binary method
+			MethodBinding original = this.binding.original();
+			String selector = original.isConstructor() ? declaringType.getElementName() : (original.selector != null ? new String(original.selector) : null);
+			if (selector != null) {
+				boolean isBinary = declaringType!= null && declaringType.isBinary();
+				ReferenceBinding enclosingType = original.declaringClass.enclosingType();
+				boolean isInnerBinaryTypeConstructor = isBinary && original.isConstructor() && enclosingType != null;
+				TypeBinding[] parameters = original.parameters;
+				int length = parameters == null ? 0 : parameters.length;
+				int declaringIndex = isInnerBinaryTypeConstructor ? 1 : 0;
+				String[] parameterSignatures = new String[declaringIndex + length];
+				if (isInnerBinaryTypeConstructor)
+					parameterSignatures[0] = new String(enclosingType.signature()).replace('/', '.');
+				for (int i = 0;  i < length; i++) {
+					parameterSignatures[declaringIndex + i] = new String(parameters[i].signature()).replace('/', '.');
+				}
+				IFunction result = null;
+				if (declaringType != null)
+					result = declaringType.getFunction(selector, parameterSignatures);
+				else if (typeRoot != null)
+					result = typeRoot.getFunction(selector, parameterSignatures);
+				if (isBinary)
+					return (JavaElement) result;
+				IFunction[] methods = null;
+				try {
+					if (declaringType != null)
+						methods = declaringType.getFunctions();
+					else if (typeRoot != null)
+						methods = typeRoot.getFunctions();
+				}
+				catch (JavaScriptModelException e) {
+					// declaring type doesn't exist
+					return null;
+				}
+				IFunction[] candidates = Member.findMethods(result, methods);
+				if (candidates == null || candidates.length == 0)
+					return null;
+				return (JavaElement) candidates[0];
+			}
+		}
+		
+		return null;
 	}
 	/**
 	 * @see IBinding#getKind()

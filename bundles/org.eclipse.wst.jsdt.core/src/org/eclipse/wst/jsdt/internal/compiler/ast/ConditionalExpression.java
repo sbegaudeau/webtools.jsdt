@@ -47,8 +47,8 @@ public class ConditionalExpression extends OperatorExpression implements ICondit
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		FlowInfo flowInfo) {
 		Constant cst = this.condition.optimizedBooleanConstant();
-		boolean isConditionOptimizedTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
-		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
+		boolean isConditionOptimizedTrue = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == true;
+		boolean isConditionOptimizedFalse = cst != null && cst != Constant.NotAConstant && cst.booleanValue() == false;
 
 		int mode = flowInfo.reachMode();
 		flowInfo = condition.analyseCode(currentScope, flowContext, flowInfo, cst == Constant.NotAConstant);
@@ -124,7 +124,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 
 	public Constant optimizedBooleanConstant() {
 
-		return this.optimizedBooleanConstant == null ? this.constant : this.optimizedBooleanConstant;
+		return this.optimizedBooleanConstant == null ? this.constant != null ? this.constant : Constant.NotAConstant : this.optimizedBooleanConstant;
 	}
 
 	public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {

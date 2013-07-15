@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.eclipse.wst.jsdt.ui" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.wst.jsdt.ui">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.eclipse.wst.jsdt.ui" id="JsGlobalScopeContainerPage" name="Includepath Container Entry Page"/>
@@ -12,11 +12,6 @@ edit a includepath container entry.
    </annotation>
 
    <element name="extension">
-      <annotation>
-         <appInfo>
-            <meta.element />
-         </appInfo>
-      </annotation>
       <complexType>
          <sequence>
             <element ref="JsGlobalScopeContainerPage" minOccurs="1" maxOccurs="unbounded"/>
@@ -80,13 +75,6 @@ with a public 0-argument constructor.
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="allowMulti" type="boolean">
-            <annotation>
-               <documentation>
-                  Allow multiple Include Path container entries with the associated ID to be added to a project, &apos;false&apos; if not otherwise specified.
-               </documentation>
-            </annotation>
-         </attribute>
       </complexType>
    </element>
 
@@ -111,8 +99,23 @@ with a public 0-argument constructor.
       </documentation>
    </annotation>
 
+   <annotation>
+      <appInfo>
+         <meta.section type="apiInfo"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
 
-
+   <annotation>
+      <appInfo>
+         <meta.section type="implementation"/>
+      </appInfo>
+      <documentation>
+         
+      </documentation>
+   </annotation>
 
    <annotation>
       <appInfo>

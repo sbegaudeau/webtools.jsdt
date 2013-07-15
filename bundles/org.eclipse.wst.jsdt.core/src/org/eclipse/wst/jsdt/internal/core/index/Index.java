@@ -210,4 +210,15 @@ public void stopQuery() {
 public String toString() {
 	return "Index for " + this.containerPath; //$NON-NLS-1$
 }
+/**
+ * Reset memory and disk indexes.
+ * 
+ * @throws IOException
+ */
+public void reset() throws IOException {
+	this.memoryIndex = new MemoryIndex();
+	this.diskIndex = new DiskIndex(this.diskIndex.indexFile.getAbsolutePath());
+	this.diskIndex.initialize(false/*do not reuse the index file*/);
+}
+
 }

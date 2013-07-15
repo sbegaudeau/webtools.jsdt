@@ -1487,7 +1487,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 						if (i > 0 && spaceAfterComma) {
 							this.scribe.space();
 						}
-						arguments[i].traverse(this, methodDeclaration.scope);
+						arguments[i].traverse(this, methodDeclaration.getScope());
 					}
 					ok = true;
 				} catch (AlignmentException e) {
@@ -2988,7 +2988,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				if (this.preferences.indent_statements_compare_to_body) {
 					this.scribe.indent();
 				}
-				constructorDeclaration.constructorCall.traverse(this, constructorDeclaration.scope);
+				constructorDeclaration.constructorCall.traverse(this, constructorDeclaration.getScope());
 				if (this.preferences.indent_statements_compare_to_body) {
 					this.scribe.unIndent();
 				}
@@ -2999,7 +2999,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				if (this.preferences.indent_statements_compare_to_body) {
 					this.scribe.indent();
 				}
-				formatStatements(constructorDeclaration.scope, statements, true);
+				formatStatements(constructorDeclaration.getScope(), statements, true);
 				this.scribe.printComment();
 				if (this.preferences.indent_statements_compare_to_body) {
 					this.scribe.unIndent();
@@ -3825,7 +3825,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		 */
 		this.scribe.printNextToken(TerminalTokens.TokenNamefunction);
 
-		if (methodDeclaration.selector!=null)
+		if (methodDeclaration.getName()!=null)
 			this.scribe.printNextToken(TerminalTokens.TokenNameIdentifier, true);
 
 		formatMethodArguments(
@@ -3849,7 +3849,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			 }
 		}
 
-		final MethodScope methodDeclarationScope = methodDeclaration.scope;
+		final MethodScope methodDeclarationScope = methodDeclaration.getScope();
 		
 		if (!methodDeclaration.isAbstract() && ((methodDeclaration.modifiers & ExtraCompilerModifiers.AccSemicolonBody) == 0)) {
 			/*

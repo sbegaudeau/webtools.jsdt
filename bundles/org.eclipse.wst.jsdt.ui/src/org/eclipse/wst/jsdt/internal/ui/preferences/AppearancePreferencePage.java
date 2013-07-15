@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
-public final class AppearancePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class AppearancePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
 	private static final String SHOW_CU_CHILDREN= PreferenceConstants.SHOW_CU_CHILDREN;
 	private static final String PREF_METHOD_RETURNTYPE= PreferenceConstants.APPEARANCE_METHOD_RETURNTYPE;

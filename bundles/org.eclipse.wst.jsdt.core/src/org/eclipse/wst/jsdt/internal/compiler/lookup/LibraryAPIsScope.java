@@ -46,7 +46,7 @@ public LibraryAPIsScope(LibraryAPIs apis, LookupEnvironment environment) {
 	translations.put("string".toCharArray(), "String".toCharArray());
 	translations.put("array".toCharArray(), "Array".toCharArray());
 	
-	CompilationResult result = new CompilationResult(apis.fileName,new char[][]{},0,0,0);
+	CompilationResult result = new CompilationResult(apis.fileName, new char[][]{},0,0,0);
 	CompilationUnitDeclaration unit = new CompilationUnitDeclaration(environment.problemReporter,result,0);
 	unit.scope=this;
 	this.referenceContext=unit;

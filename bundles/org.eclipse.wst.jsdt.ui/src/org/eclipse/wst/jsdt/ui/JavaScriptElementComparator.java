@@ -219,7 +219,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 		}
 		// only JavaScript elements from this point
 		
-		if (e1 instanceof IMember) {
+		if (e1 instanceof IMember && e2 instanceof IMember) {
 			if (fMemberOrderCache.isSortByVisibility()) {
 				try {
 					int flags1= JdtFlags.getVisibilityCode((IMember) e1);
@@ -236,7 +236,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 		String name1= getElementName(e1);
 		String name2= getElementName(e2);
 		
-		if (e1 instanceof IType) { // handle anonymous types
+		if (e1 instanceof IType && e2 instanceof IType) { // handle anonymous types
 			if (name1.length() == 0) {
 				if (name2.length() == 0) {
 					try {
@@ -257,7 +257,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 			return cmp;
 		}
 		
-		if (e1 instanceof IFunction) {
+		if (e1 instanceof IFunction && e2 instanceof IFunction) {
 			String[] params1= ((IFunction) e1).getParameterTypes();
 			String[] params2= ((IFunction) e2).getParameterTypes();
 			int len= Math.min(params1.length, params2.length);
@@ -269,6 +269,7 @@ public class JavaScriptElementComparator extends ViewerComparator {
 			}
 			return params1.length - params2.length;
 		}
+
 		return 0;
 	}
 	

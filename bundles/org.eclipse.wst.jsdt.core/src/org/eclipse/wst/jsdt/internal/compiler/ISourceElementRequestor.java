@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,22 @@ public interface ISourceElementRequestor {
 		public char[][] categories;
 		public boolean secondary;
 		public boolean anonymousMember;
+		public char[][] synonyms;
+		
+		/**
+		 * <p>
+		 * <code>true</code> if this type is a globally visible type,
+		 * <code>false</code> otherwise.
+		 * </p>
+		 * 
+		 * <p>
+		 * EX: The anonymous type for a global variable would be globally
+		 * visible, the anonymous type for a local would not.
+		 * </p>
+		 * 
+		 * @since 1.1
+		 */
+		public boolean isIndexed;
 	}
 
 	public static class MethodInfo {
@@ -60,6 +76,7 @@ public interface ISourceElementRequestor {
 		public int nameSourceEnd;
 		public char[][] parameterTypes;
 		public char[][] parameterNames;
+		public char[] declaringType;
 		public char[][] categories;
 	}
 
@@ -68,6 +85,7 @@ public interface ISourceElementRequestor {
 		public int modifiers;
 		public char[] type;
 		public char[] name;
+		public char[] declaringType;
 		public int nameSourceStart;
 		public int nameSourceEnd;
 		public char[][] categories;
@@ -100,7 +118,7 @@ public interface ISourceElementRequestor {
 	 */
 	void acceptLineSeparatorPositions(int[] positions);
 
-	void acceptMethodReference(char[] methodName, int argCount, int sourcePosition);
+	void acceptMethodReference(char[] methodName, int sourcePosition);
 
 	void acceptProblem(CategorizedProblem problem);
 

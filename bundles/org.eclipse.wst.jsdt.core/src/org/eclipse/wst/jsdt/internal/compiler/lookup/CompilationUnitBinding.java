@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2009 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -51,7 +51,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 		setShortName(this.fileName);
 		this.path=path;
 		/* bc - allows super type of 'Window' (and other types) for a compilation unit */
-		this.superclass = superType;
+		this.setSuperBinding(superType);
 
 	}
 
@@ -82,11 +82,11 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 	public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
 		  ProgramElement[] statements = compilationUnitScope.referenceContext.statements;
 		  for (int i = 0; i < statements.length; i++) {
-			if (statements[i] instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)statements[i]).binding==binding)
+			if (statements[i] instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)statements[i]).getBinding()==binding)
 				return (AbstractMethodDeclaration)statements[i];
 			else if (statements[i] instanceof Assignment && (((Assignment)statements[i]).expression instanceof FunctionExpression)) {
 				FunctionExpression functionExpression = (FunctionExpression) ((Assignment)statements[i]).expression;
-				if (functionExpression.methodDeclaration !=null && functionExpression.methodDeclaration.binding==binding)
+				if (functionExpression.methodDeclaration !=null && functionExpression.methodDeclaration.getBinding()==binding)
 					return functionExpression.methodDeclaration;
 			}
 		  }
@@ -99,7 +99,7 @@ public class CompilationUnitBinding  extends SourceTypeBinding {
 			  {this.binding=binding;}
 			  
 				public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
-					if (methodDeclaration.binding==this.binding)
+					if (methodDeclaration.getBinding()==this.binding)
 					{
 						method=methodDeclaration;
 						return false;

@@ -133,7 +133,7 @@ private boolean pruneDeadBranches(IType type) {
 	TypeVector subtypes = (TypeVector)this.typeToSubtypes.get(type);
 	if (subtypes == null) return true;
 	pruneDeadBranches(subtypes.copy().elements());
-	subtypes = (TypeVector)this.typeToSubtypes.get(type);
+	subtypes = (TypeVector)this.typeToSubtypes.get(type.getDisplayName());
 	return (subtypes == null || subtypes.size == 0);
 }
 private void pruneDeadBranches(IType[] types) {
@@ -150,7 +150,7 @@ private void pruneDeadBranches(IType[] types) {
  */
 protected void removeType(IType type) {
 	IType[] subtypes = this.getSubclasses(type);
-	this.typeToSubtypes.remove(type);
+	this.typeToSubtypes.remove(type.getDisplayName());
 	if (subtypes != null) {
 		for (int i= 0; i < subtypes.length; i++) {
 			this.removeType(subtypes[i]);
@@ -158,7 +158,7 @@ protected void removeType(IType type) {
 	}
 	IType superclass = (IType)this.classToSuperclass.remove(type);
 	if (superclass != null) {
-		TypeVector types = (TypeVector)this.typeToSubtypes.get(superclass);
+		TypeVector types = (TypeVector)this.typeToSubtypes.get(superclass.getDisplayName());
 		if (types != null) types.remove(type);
 	}
 }

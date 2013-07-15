@@ -10,7 +10,7 @@ var arr = [];
 function foo() {
     /* This comment may span multiple lines. */
     var var1 = new Object();
-    var obj = [ make: "Toyota", model: "Celica", year: 2000 ];
+    var obj = { carMake: 'Amet', carModel: 'Porro', carYear: 2012 };
     var s = "abc123";
     clear(var1);
 }

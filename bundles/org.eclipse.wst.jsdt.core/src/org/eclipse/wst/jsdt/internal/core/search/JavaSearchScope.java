@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -190,6 +190,16 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
  * @throws JavaScriptModelException May happen if some Java Model info are not available
  */
 public void add(IJavaScriptElement element) throws JavaScriptModelException {
+	add(element, true);
+}
+
+/**
+ * Add an element to the java search scope.
+ * @param element The element we want to add to current java search scope
+ * @param excludeSubfolders A flag indicating whether folders should exclude subfolders
+ * @throws JavaScriptModelException May happen if some Java Model info are not available
+ */
+public void add(IJavaScriptElement element, boolean excludeSubfolders) throws JavaScriptModelException {
 	IPath containerPath = null;
 	String containerPathToString = null;
 	int includeMask = SOURCES | APPLICATION_LIBRARIES | SYSTEM_LIBRARIES;
@@ -233,7 +243,7 @@ public void add(IJavaScriptElement element) throws JavaScriptModelException {
 				String relativePath = Util.concatWith(((PackageFragment) element).names, '/');
 				containerPath = root.getPath();
 				containerPathToString = containerPath.getDevice() == null ? containerPath.toString() : containerPath.toOSString();
-				add(projectPath, relativePath, containerPathToString, true/*package*/, null);
+				add(projectPath, relativePath, containerPathToString, excludeSubfolders, null);
 			} else {
 				IResource resource = element.getResource();
 				if (resource != null) {
@@ -245,7 +255,7 @@ public void add(IJavaScriptElement element) throws JavaScriptModelException {
 					}
 					containerPathToString = containerPath.getDevice() == null ? containerPath.toString() : containerPath.toOSString();
 					String relativePath = Util.relativePath(resource.getFullPath(), containerPath.segmentCount());
-					add(projectPath, relativePath, containerPathToString, true/*package*/, null);
+					add(projectPath, relativePath, containerPathToString, excludeSubfolders, null);
 				}
 			}
 			break;
@@ -374,10 +384,8 @@ public boolean encloses(String resourcePathString) {
  *   2. /P/src/pkg
  */
 private int indexOf(String fullPath) {
-	/*
-	 * cannot guess the index of the container path, fallback to
-	 * sequentially looking at all known paths
-	 */
+	// cannot guess the index of the container path
+	// fallback to sequentially looking at all known paths
 	int answer = -1;
 	String answerFullPath = null;
 	for (int i = 0, length = this.relativePaths.length; i < length; i++) {
@@ -391,7 +399,7 @@ private int indexOf(String fullPath) {
 			 * is not enclosed by the previous answer, it is either more
 			 * specific or different altogether (which is fine)
 			 */
-			if (answerFullPath == null || !encloses(currentFullPath, answerFullPath, i)) {
+			if(answerFullPath == null || !encloses(currentFullPath, answerFullPath, i)) {
 				answerFullPath = currentFullPath;
 				answer = i;
 			}
@@ -433,11 +441,8 @@ private int indexOf(String containerPath, String relativePath) {
 	return -1;
 }
 
-/**
- * @param enclosingPath
- * @param path
- * @param index
- * @return whether the enclosing path encloses the given path (or is equal to it)
+/*
+ * Returns whether the enclosing path encloses the given path (or is equal to it)
  */
 private boolean encloses(String enclosingPath, String path, int index) {
 	// normalize given path as it can come from outside
@@ -596,9 +601,10 @@ public void processDelta(IJavaScriptElementDelta delta) {
 				switch (element.getElementType()) {
 					case IJavaScriptElement.JAVASCRIPT_PROJECT:
 						path = ((IJavaScriptProject)element).getProject().getFullPath();
-						break;
 					case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT:
-						path = ((IPackageFragmentRoot)element).getPath();
+						if (path == null) {
+							path = ((IPackageFragmentRoot)element).getPath();
+						}
 						int toRemove = -1;
 						for (int i = 0; i < this.pathsCount; i++) {
 							if (this.relativePaths[i].equals(path)) { // TODO (jerome) this compares String and IPath !

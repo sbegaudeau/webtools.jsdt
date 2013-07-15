@@ -36,7 +36,7 @@ public TypeDeclarationLocator(TypeDeclarationPattern pattern) {
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(Reference node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
-	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, node.name))
+	if (matchesName(this.pattern.simpleName, node.name))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 
 	return IMPOSSIBLE_MATCH;
@@ -44,11 +44,16 @@ public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
 //public int match(TypeReference node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(InferredType node, MatchingNodeSet nodeSet) {
 	char[] typeName = node.getName();
-	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
+	char[] patternName;
+	if (this.pattern.getSearchPrefix() != null) { 
+		patternName = this.pattern.getSearchPrefix();
+	} else {
+		patternName = this.pattern.simpleName;
+	}
+	if (matchesName(patternName, typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;
-	if (pkg!=null)
-	{
+	char [] pkg = this.pattern.qualification;
+	if (this.pattern.getSearchPrefix() == null && pkg != null) {
 		if (pkg.length>0 &&
 				matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
 			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
@@ -57,7 +62,7 @@ public int match(InferredType node, MatchingNodeSet nodeSet) {
 	{
 		int index=CharOperation.lastIndexOf('.', typeName);
 		if (index>=0 &&
-			matchesName(CharOperation.subarray(typeName, index+1,typeName.length),this.pattern.simpleName))
+					matchesName(patternName, CharOperation.subarray(typeName, index+1,typeName.length)))
 			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 		
 	}
@@ -70,7 +75,7 @@ public int resolveLevel(ASTNode node) {
 	else if (node instanceof InferredType)
 	{
 		InferredType type=(InferredType) node;
-		if (!type.isDefinition || (type.isAnonymous && !type.isNamed()))
+		if (!type.isDefinition() || !type.isIndexed())
 			return IMPOSSIBLE_MATCH;
 		binding=type.binding;
 	}
@@ -85,21 +90,13 @@ public int resolveLevel(Binding binding) {
 
 	TypeBinding type = (TypeBinding) binding;
 
-	switch (this.pattern.typeSuffix) {
-		case CLASS_SUFFIX:
-			if (!type.isClass()) return IMPOSSIBLE_MATCH;
-			break;
-		case TYPE_SUFFIX : // nothing
-	}
-
-	// fully qualified name
-	if (this.pattern instanceof QualifiedTypeDeclarationPattern) {
-		QualifiedTypeDeclarationPattern qualifiedPattern = (QualifiedTypeDeclarationPattern) this.pattern;
-		return resolveLevelForType(qualifiedPattern.simpleName, qualifiedPattern.qualification, type);
+	int resolveLevel;
+	if (this.pattern.getSearchPrefix() != null) { 
+		resolveLevel = resolveLevelUsingSearchPrefix(this.pattern.getSearchPrefix(), type);
 	} else {
-		char[] enclosingTypeName = this.pattern.enclosingTypeNames == null ? null : CharOperation.concatWith(this.pattern.enclosingTypeNames, '.');
-		return resolveLevelForType(this.pattern.simpleName, this.pattern.pkg, enclosingTypeName, type);
+		resolveLevel = resolveLevelForType(this.pattern.simpleName, this.pattern.qualification, type);
 	}
+	return resolveLevel;
 }
 /**
  * Returns whether the given type binding matches the given simple name pattern
@@ -116,7 +113,7 @@ protected int resolveLevelForType(char[] simpleNamePattern, char[] qualification
 
 	// pattern was created from a Java element: qualification is the package name.
 	char[] fullQualificationPattern = CharOperation.concat(qualificationPattern, enclosingNamePattern, '.');
-	if (CharOperation.equals(this.pattern.pkg, CharOperation.concatWith(type.getPackage().compoundName, '.')))
+	if (CharOperation.equals(this.pattern.qualification, CharOperation.concatWith(type.getPackage().compoundName, '.')))
 		return resolveLevelForType(simpleNamePattern, fullQualificationPattern, type);
 	return IMPOSSIBLE_MATCH;
 }
@@ -128,7 +125,7 @@ public String toString() {
 public int matchMetadataElement(IJavaScriptElement element) {
 	String elementName = element.getElementName();
 	char[] typeName = elementName.toCharArray();
-	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;
+	char [] pkg = this.pattern.qualification;
 	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
 		return ACCURATE_MATCH;
 	if (pkg!=null && pkg.length>0 &&

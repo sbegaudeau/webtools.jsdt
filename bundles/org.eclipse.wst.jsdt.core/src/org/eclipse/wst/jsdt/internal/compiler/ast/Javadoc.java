@@ -295,7 +295,7 @@ public class Javadoc extends ASTNode implements IJsDoc {
 					if (messageSend.binding != null && messageSend.binding.isValidBinding() && messageSend.actualReceiverType instanceof ReferenceBinding) {
 						ReferenceBinding methodReceiverType = (ReferenceBinding) messageSend.actualReceiverType;
 						if ((methodReceiverType.isSuperclassOf(methDecl.binding.declaringClass)) &&
-							CharOperation.equals(messageSend.selector, methDecl.selector) &&
+							CharOperation.equals(messageSend.selector, methDecl.getName()) &&
 							(methDecl.binding.returnType.isCompatibleWith(messageSend.binding.returnType))) {
 							if (messageSend.arguments == null && methDecl.arguments == null) {
 								superRef = true;

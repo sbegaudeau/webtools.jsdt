@@ -28,7 +28,7 @@ class ReturnFlowInfo extends FlowInfo {
 	
 	private static int getReturnFlag(ReturnStatement node) {
 		Expression expression= node.getExpression();
-		if (expression == null /* we can't resolve "void" anyway || expression.resolveTypeBinding() == node.getAST().resolveWellKnownType("void")*/) //$NON-NLS-1$
+		if (expression == null /* The only binding resolver implementation can't resolve "void" anyway || expression.resolveTypeBinding() == node.getAST().resolveWellKnownType("void")*/) //$NON-NLS-1$
 			return VOID_RETURN;
 		return VALUE_RETURN;
 	}

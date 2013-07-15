@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.formatter.ProfileConfigurati
 /*
  * The page to configure the code formatter options.
  */
-public final class CodeFormatterPreferencePage extends ProfilePreferencePage {
+public class CodeFormatterPreferencePage extends ProfilePreferencePage {
 
 	public static final String PREF_ID= "org.eclipse.wst.jsdt.ui.preferences.CodeFormatterPreferencePage"; //$NON-NLS-1$
 	public static final String PROP_ID= "org.eclipse.wst.jsdt.ui.propertyPages.CodeFormatterPreferencePage"; //$NON-NLS-1$

@@ -565,7 +565,7 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 		}
 	}
 	if (foundNothing) {
-		if (superclass() != null) { // ensure superclass is resolved before checking
+		if (getSuperBinding() != null) { // ensure superclass is resolved before checking
 			if (refScope != null)
 				refScope.recordTypeReference(superclass);
 			return superclass.getExactMethod(selector, argumentTypes, refScope);
@@ -704,7 +704,7 @@ MethodBinding resolveTypesFor(MethodBinding method) {
 *
 * NOTE: superclass of a binary type is resolved when needed
 */
-public ReferenceBinding superclass() {
+public ReferenceBinding getSuperBinding() {
 	if ((this.tagBits & TagBits.HasUnresolvedSuperclass) == 0)
 		return this.superclass;
 

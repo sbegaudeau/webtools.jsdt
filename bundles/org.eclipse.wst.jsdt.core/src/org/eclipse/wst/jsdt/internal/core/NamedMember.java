@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -112,15 +112,12 @@ public abstract class NamedMember extends Member {
 		key.append(packageName.replace('.', '/'));
 		if (packageName.length() > 0)
 			key.append('/');
-		String typeQualifiedName = type.getTypeQualifiedName('$');
+		String typeQualifiedName = type.getTypeQualifiedName();
 		IJavaScriptUnit cu = (IJavaScriptUnit) type.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 		if (cu != null) {
 			String cuName = cu.getElementName();
 			String mainTypeName = cuName.substring(0, cuName.lastIndexOf('.'));
-			int end = typeQualifiedName.indexOf('$');
-			if (end == -1)
-				end = typeQualifiedName.length();
-			String topLevelTypeName = typeQualifiedName.substring(0, end);
+			String topLevelTypeName = typeQualifiedName;
 			if (!mainTypeName.equals(topLevelTypeName)) {
 				key.append(mainTypeName);
 				key.append('~');
@@ -171,14 +168,8 @@ public abstract class NamedMember extends Member {
 				return this.name;
 			case IJavaScriptElement.CLASS_FILE:
 				String classFileName = this.parent.getElementName();
-				String typeName;
-				if (classFileName.indexOf('$') == -1) {
 					// top level class file: name of type is same as name of class file
-					typeName = this.name;
-				} else {
-					// anonymous or local class file
-					typeName = classFileName.substring(0, classFileName.lastIndexOf('.')); // remove .class
-				}
+				String typeName = this.name;
 				if (showParameters) {
 					StringBuffer buffer = new StringBuffer(typeName);
 					return buffer.toString();

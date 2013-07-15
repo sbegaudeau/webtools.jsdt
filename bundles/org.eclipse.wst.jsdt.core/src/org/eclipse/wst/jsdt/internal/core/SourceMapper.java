@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1057,23 +1057,23 @@ public class SourceMapper
 	 * fully qualified so that the correct source is found.
 	 */
 	protected IJavaScriptElement[] getUnqualifiedMethodHandle(IFunction method, boolean noDollar) {
-		boolean hasDollar = false;
+//		boolean hasDollar = false;
 		String[] qualifiedParameterTypes = method.getParameterTypes();
 		String[] unqualifiedParameterTypes = new String[qualifiedParameterTypes.length];
 		for (int i = 0; i < qualifiedParameterTypes.length; i++) {
 			StringBuffer unqualifiedTypeSig = new StringBuffer();
 			getUnqualifiedTypeSignature(qualifiedParameterTypes[i], 0/*start*/, qualifiedParameterTypes[i].length(), unqualifiedTypeSig, noDollar);
 			unqualifiedParameterTypes[i] = unqualifiedTypeSig.toString();
-			hasDollar |= unqualifiedParameterTypes[i].lastIndexOf('$') != -1;
+//			hasDollar |= unqualifiedParameterTypes[i].lastIndexOf('$') != -1;
 		}
 
 		IJavaScriptElement[] result = new IJavaScriptElement[2];
 		result[0] = ((IType) method.getParent()).getFunction(
 			method.getElementName(),
 			unqualifiedParameterTypes);
-		if(hasDollar) {
-			result[1] = result[0];
-		}
+//		if(hasDollar) {
+//			result[1] = result[0];
+//		}
 		return result;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextHoverExtension;
-import org.eclipse.jface.text.ITextHoverExtension2;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
@@ -46,16 +45,19 @@ import org.osgi.framework.Bundle;
 
 /**
  * Abstract class for providing hover information for Java elements.
+ *
+ * 
  */
-public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHover, ITextHoverExtension, ITextHoverExtension2 {
+public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHover, ITextHoverExtension {
 	/**
 	 * The style sheet (css).
+	 * 
 	 */
 	private static String fgStyleSheet;
 	private IEditorPart fEditor;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.text.java.hover.IJavaEditorTextHover#setEditor(org.eclipse.ui.IEditorPart)
+	/*
+	 * @see IJavaEditorTextHover#setEditor(IEditorPart)
 	 */
 	public void setEditor(IEditorPart editor) {
 		fEditor= editor;
@@ -80,23 +82,15 @@ public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHove
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.ITextHover#getHoverRegion(org.eclipse.jface.text.ITextViewer, int)
+	/*
+	 * @see ITextHover#getHoverRegion(ITextViewer, int)
 	 */
 	public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 		return JavaWordFinder.findWord(textViewer.getDocument(), offset);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.ITextHoverExtension2#getHoverInfo2(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
-	 * @since 3.3
-	 */
-	public Object getHoverInfo2(ITextViewer textViewer, IRegion hoverRegion) {
-		return getHoverInfo(textViewer, hoverRegion);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.ITextHover#getHoverInfo(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion)
+	/*
+	 * @see ITextHover#getHoverInfo(ITextViewer, IRegion)
 	 */
 	public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
 		
@@ -139,8 +133,9 @@ public abstract class AbstractJavaEditorTextHover implements IJavaEditorTextHove
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.text.ITextHoverExtension#getHoverControlCreator()
+	/*
+	 * @see ITextHoverExtension#getHoverControlCreator()
+	 * 
 	 */
 	public IInformationControlCreator getHoverControlCreator() {
 		return new IInformationControlCreator() {

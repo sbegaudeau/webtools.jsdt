@@ -58,6 +58,7 @@ import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
+import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.Checks;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
@@ -430,9 +431,34 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 	}
 	//TODO: shouldn't scope take all ripple methods into account?
 	protected static final IJavaScriptSearchScope createRefactoringScope(IFunction method) throws CoreException {
-		return RefactoringScopeFactory.create(method);
+		JavaElement javaElement = (JavaElement) method;
+		if (javaElement instanceof IMember) {
+			IMember member= (IMember) javaElement;
+			if (member.getParent().getElementType() == IJavaScriptElement.METHOD) {
+				IJavaScriptElement toplevelFunction = getTopLevelFunction(member.getParent());
+				return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {toplevelFunction});
+			}
+			else if (JdtFlags.isPrivate(member)) {
+				if (member.getJavaScriptUnit() != null)
+					return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { member.getJavaScriptUnit()});
+				else 
+					return SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { member});
+			}
+		}
+		return RefactoringScopeFactory.create(javaElement.getJavaScriptProject());
 	}
 	
+	/**
+	 * @param parent
+	 * @return
+	 */
+	private static IJavaScriptElement getTopLevelFunction(IJavaScriptElement method) {
+		if (method.getParent().getElementType() == IJavaScriptElement.METHOD)
+			return getTopLevelFunction(method.getParent());
+		
+		return method;
+	}
+
 	SearchPattern createOccurrenceSearchPattern() {
 		HashSet methods= new HashSet(fMethodsToRename);
 		methods.add(fMethod);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.ast.IExpression;
-import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
@@ -53,6 +52,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedTypeReference;
@@ -76,6 +76,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfInt;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObjectToInt;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -159,50 +160,152 @@ public class LocalDeclarationVisitor extends ASTVisitor {
 	 * A context is defined by either the top level or a closure (function)
 	 */
 	protected ASTVisitor contextDeclarationNotifier = new ASTVisitor(){
+		
+		/**
+		 * Key: int - function depth
+		 * <br/>
+		 * Value: <code>ArrayList&ltString></code> locals defined at key depth
+		 */
+		private HashtableOfInt locals = new HashtableOfInt();
 
 		public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-			if (NOTIFY_LOCALS || nestedMethodIndex==0)
+			if (NOTIFY_LOCALS || nestedMethodIndex==1) {
 				notifySourceElementRequestor( localDeclaration, null );
+				
+				//visit method declaration on RHS of declaration if at nest level 0
+				AbstractMethodDeclaration methodDecl = AbstractMethodDeclaration.findMethodDeclaration(localDeclaration);
+				if(methodDecl != null) {
+					notifySourceElementRequestor(methodDecl);
+				}
+			}
+			
+			//store the local declaration at the current nest level
+			storeLocal(localDeclaration.name, nestedMethodIndex);
+			
 			return true;
 		}
 
-
-		/*
-		 * Stop visiting here because the method opens a new context
-		 */
 		public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
 
-			//only functions with names are notified
-			nestedMethodIndex++;
-			if( methodDeclaration.selector != null && methodDeclaration.selector.length > 0 )
+			/* only non anonymous functions are notified here
+			 * other functions will be notified from assignment and local declaration visits
+			 */
+			char[] name = methodDeclaration.getName();
+			if( !methodDeclaration.isConstructor() && !methodDeclaration.isAnonymous() && name != null && name.length > 0 && (nestedMethodIndex == 1 || NOTIFY_LOCALS)) {
 				notifySourceElementRequestor( methodDeclaration );
-			return false;
+			}
+			
+			nestedMethodIndex++;
+			return true;
+		}
+		
+		//visit closures and add them as a source method in the model
+		public boolean visit(MessageSend messageSend, BlockScope scope) {
+			if (messageSend.receiver instanceof FunctionExpression) {
+				MethodDeclaration methodDecl = ((FunctionExpression) messageSend.receiver).methodDeclaration;
+				if (methodDecl != null && nestedMethodIndex == 1) {
+					notifySourceElementRequestor(methodDecl);
+				}
+			}
+			return true;
 		}
 
 		/**
-		 * <p>Visit assignments so that if the right hand side is a function it can be indexed
-		 * with the right hand side used as the selector.</p>
-		 * 
 		 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.Assignment, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 		 */
 		public boolean visit(Assignment assignment, BlockScope scope) {
 			boolean keepVisiting = true;
-			IExpression righHandSide = assignment.getExpression();
-			if(righHandSide instanceof IFunctionExpression) {
-				IExpression leftHandSide = assignment.getLeftHandSide();
+
+			IExpression leftHandSide = assignment.getLeftHandSide();
+			
+			if(leftHandSide instanceof SingleNameReference && !containsLocal(((SingleNameReference)leftHandSide).token, nestedMethodIndex)) {
+				notifySourceElementRequestor(assignment, null);
 				
-				char[] selector = Util.getTypeName(leftHandSide);
-				MethodDeclaration methodDecl = ((IFunctionExpression) righHandSide).getMethodDeclaration();
-				if (selector != null && methodDecl.isConstructor()) {
-					notifySourceElementRequestor(methodDecl, selector);
+				//visit method declaration as long as local scope does not contain the single name reference
+				AbstractMethodDeclaration methodDecl = AbstractMethodDeclaration.findMethodDeclaration(assignment);
+				if(methodDecl != null) {
+					notifySourceElementRequestor(methodDecl);
 				}
+			} else {
+				/* this is to prevent visiting expressions like:
+				 * MyType.prototype.myFunc = ...
+				 * They will be visited when visiting the type
+				 */
+				keepVisiting = false;
 			}
+
+			return keepVisiting;
+		}
+		
+		public boolean visit(Argument argument, BlockScope scope) {
+			boolean keepVisiting = true;
+			storeLocal(argument.name, nestedMethodIndex);
 			return keepVisiting;
 		}
 
-		public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
+		/**
+		 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
+		 */
+		public boolean visit(ObjectLiteral literal, BlockScope scope) {
+			//it is considered a nest level when inside an object literal
+			nestedMethodIndex++;
+			return true;
+		}
+		
+		/**
+		 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#endVisit(org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
+		 */
+		public void endVisit(ObjectLiteral literal, BlockScope scope) {
+			//it is considered a nest level when inside an object literal
 			nestedMethodIndex--;
+		}
+		
+		public boolean visit(ObjectLiteralField field, BlockScope scope) {
+			//store the local declaration at the current nest level
+			if(field.getFieldName() instanceof SingleNameReference)
+				storeLocal(((SingleNameReference)field.getFieldName()).token, nestedMethodIndex);
+			return true;
+		}
+		
+		public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
+			clearLocals(nestedMethodIndex);
+			nestedMethodIndex--;
+		}
+		
+		private void storeLocal(char[] localName, int methodDepth) {
+			ArrayList localList = (ArrayList) locals.get(methodDepth);
+			if(localList == null) {
+				localList = new ArrayList();
+				locals.put(methodDepth, localList);
+			}
+			
+			//store as string so that contains works correctly
+			String local = new String(localName);
+			if(!localList.contains(local))
+				localList.add(local);
+		}
+		
+		private boolean containsLocal(char[] localName, int methodDepth) {
+			while(methodDepth >= 1) {
+				ArrayList localList = (ArrayList) locals.get(methodDepth);
+				if(localList == null) {
+					methodDepth--;
+					continue;
+				}
 
+				//list contains strings so that #contains call works as expected
+				if(localList.contains(new String(localName)))
+					return true;
+				methodDepth--;
+			}
+			return false;
+		}
+		
+		private void clearLocals(int methodDepth) {
+			ArrayList localList = (ArrayList) locals.get(methodDepth);
+			if(localList != null) {
+				localList.clear();
+			}
 		}
 
 	};
@@ -255,6 +358,9 @@ public SourceElementParser(
 	if (useSourceJavadocParser) {
 		this.javadocParser = new SourceJavadocParser(this);
 	}
+	
+	// must start at 1 because HashtableOfInt can not contain 0
+	this.nestedMethodIndex = 1;
 }
 
 public void setRequestor(ISourceElementRequestor requestor) {
@@ -347,7 +453,7 @@ public void checkComment() {
 				} else if (reference instanceof JavadocMessageSend) {
 					JavadocMessageSend messageSend = (JavadocMessageSend) reference;
 					int argCount = messageSend.arguments == null ? 0 : messageSend.arguments.length;
-					this.requestor.acceptMethodReference(messageSend.selector, argCount, messageSend.sourceStart);
+					this.requestor.acceptMethodReference(messageSend.selector, messageSend.sourceStart);
 					this.requestor.acceptConstructorReference(messageSend.selector, argCount, messageSend.sourceStart);
 					if (messageSend.receiver != null && !messageSend.receiver.isThis()) {
 						acceptJavadocTypeReference(messageSend.receiver);
@@ -458,7 +564,6 @@ protected void consumeCallExpressionWithArguments() {
 	if (reportReferenceInfo) {
 		requestor.acceptMethodReference(
 			messageSend.selector,
-			args == null ? 0 : args.length,
 			(int)(messageSend.nameSourcePosition >>> 32));
 	}
 }
@@ -704,21 +809,21 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 }
 
 public void notifySourceElementRequestor( InferredType type ) {
-
-	if ( !type.isDefinition || type.isEmptyGlobal())
+	//do not notify if type is not a definition or not global
+	if ( !type.isDefinition() || !type.isIndexed()) {
 		return;
-
-	if (type.isAnonymous && !type.isNamed() && !type.isObjectLiteral)
-		return;
-				// prevent possible recurrsion
-	if (notifiedTypes.containsKey(type.getName()))
-		return;
-	notifiedTypes.put(type.getName(), null);
+	}
 	
-
+	// prevent possible recursion
+	if (notifiedTypes.containsKey(type.getName())) {
+		return;
+	}
+	
+	//notify the requester of the type
+	notifiedTypes.put(type.getName(), null);
 	ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 	typeInfo.declarationStart = type.sourceStart;
-	typeInfo.modifiers = 0;
+	typeInfo.modifiers = type.getModifiers();
 
 	typeInfo.name = type.getName();
 
@@ -732,10 +837,22 @@ public void notifySourceElementRequestor( InferredType type ) {
 	typeInfo.secondary = false;
 
 	typeInfo.anonymousMember = type.isAnonymous;
-
+	typeInfo.isIndexed = type.isIndexed();
+	
+	//add synonym info
+	InferredType[] synonyms = type.getSynonyms();
+	if(synonyms != null) {
+		char[][] synonymsNames = new char[synonyms.length][];
+		for(int i = 0; i < synonyms.length; ++i) {
+			synonymsNames[i] = synonyms[i].getName();
+		}
+		typeInfo.synonyms = synonymsNames;
+	}
+	
 	requestor.enterType(typeInfo);
-
-	  for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
+	
+	//notify the requester of attributes on the type
+	for (int attributeInx=0; attributeInx<type.numberAttributes; attributeInx++) {
 		InferredAttribute field = type.attributes[attributeInx];
 		ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
 		fieldInfo.declarationStart = field.sourceStart();
@@ -748,71 +865,95 @@ public void notifySourceElementRequestor( InferredType type ) {
 		fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
 
 		fieldInfo.type = field.type!=null ? field.type.getName():null;
+		fieldInfo.declaringType = type.getName();
 		requestor.enterField(fieldInfo);
-
-		//If this field is of an anonymous type, need to notify so that it shows as a child
-		if( field.type != null && field.type.isAnonymous && !field.type.isNamed() ){
-			notifySourceElementRequestor( field.type );
-		}
 
 		int initializationStart=field.initializationStart;
 		requestor.exitField(initializationStart,field.sourceEnd(),field.sourceEnd());
 	}
 
-	if (type.methods!=null)
-	  for (Iterator iterator = type.methods.iterator(); iterator.hasNext();) {
-		InferredMethod method = (InferredMethod) iterator.next();
-
-		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
-		methodInfo.isConstructor = method.isConstructor;
-		MethodDeclaration methodDeclaration=(MethodDeclaration)method.getFunctionDeclaration();
-
-		char[][] argumentTypes = null;
-		char[][] argumentNames = null;
-		Argument[] arguments = methodDeclaration.arguments;
-		if (arguments != null) {
-			int argumentLength = arguments.length;
-			argumentTypes = new char[argumentLength][];
-			argumentNames = new char[argumentLength][];
-			for (int i = 0; i < argumentLength; i++) {
-				if (arguments[i].type!=null) {
-					argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
-				} else if(arguments[i].inferredType != null) {
-					argumentTypes[i] = arguments[i].inferredType.getName();
+	//notify the requester of functions on the type
+	if (type.methods!=null) {
+		for (Iterator iterator = type.methods.iterator(); iterator.hasNext();) {
+			InferredMethod method = (InferredMethod) iterator.next();
+	
+			ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
+			methodInfo.isConstructor = method.isConstructor;
+			MethodDeclaration methodDeclaration=(MethodDeclaration)method.getFunctionDeclaration();
+	
+			char[][] argumentTypes = null;
+			char[][] argumentNames = null;
+			Argument[] arguments = methodDeclaration.arguments;
+			if (arguments != null) {
+				int argumentLength = arguments.length;
+				argumentTypes = new char[argumentLength][];
+				argumentNames = new char[argumentLength][];
+				for (int i = 0; i < argumentLength; i++) {
+					if (arguments[i].type!=null) {
+						argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
+					} else if(arguments[i].inferredType != null) {
+						/* find first not anonymous parent type and use that for argument type name
+						 * 
+						 * This is done because if the argument is assigned to inside the function
+						 * then an anonymous child type of the original argument type is created,
+						 * but that anonymous child type is not the type that should be displayed
+						 * to the user, the original argument type is.  #isAnonymous is used rather
+						 * then #isIndexed because their are anonymous types that are indexed and the
+						 * type of the argument should never be anonymous. */
+						InferredType argumentType = arguments[i].inferredType;
+						while(argumentType != null && argumentType.isAnonymous) {
+							argumentType = argumentType.getSuperType();
+						}
+						
+						//if ended up with null type, use original
+						if(argumentType == null) {
+							argumentType = arguments[i].inferredType;
+						}
+						
+						argumentTypes[i] = argumentType.getName();
+					}
+					argumentNames[i] = arguments[i].name;
 				}
-				argumentNames[i] = arguments[i].name;
 			}
+			methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
+			methodInfo.modifiers = methodDeclaration.modifiers;
+			if (method.isStatic) {
+				methodInfo.modifiers |= ClassFileConstants.AccStatic;
+			}
+			methodInfo.returnType = methodDeclaration.inferredType == null ?
+					null : methodDeclaration.inferredType.getName();
+			methodInfo.name =method.name;
+			methodInfo.nameSourceStart = method.nameStart;
+			methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
+			methodInfo.parameterTypes = argumentTypes;
+			methodInfo.parameterNames = argumentNames;
+			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
+			InferredMethod inferredMeth = methodDeclaration.getInferredMethod();
+			if (inferredMeth != null) {
+				InferredType declaringType = inferredMeth.inType;
+				if (declaringType != null) {
+					if (declaringType.isAnonymous) {
+						methodInfo.declaringType = type.getName();
+					} else {
+						methodInfo.declaringType = declaringType.getName();
+					}
+				}
+			}
+			
+			//enter either constructor or method where appropriate
+			if(methodInfo.isConstructor) {
+				requestor.enterConstructor(methodInfo);
+			} else {
+				requestor.enterMethod(methodInfo);
+			}
+			
+			//visitIfNeeded( (MethodDeclaration)method.getFunctionDeclaration() );
+	
+			requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 		}
-		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
-		methodInfo.modifiers = methodDeclaration.modifiers;
-		if (method.isStatic) {
-			methodInfo.modifiers |= ClassFileConstants.AccStatic;
-		}
-		methodInfo.returnType = methodDeclaration.inferredType == null ?
-				null : methodDeclaration.inferredType.getName();
-		methodInfo.name =method.name;
-		methodInfo.nameSourceStart = method.nameStart;
-		methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;
-		methodInfo.parameterTypes = argumentTypes;
-		methodInfo.parameterNames = argumentNames;
-		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
-		
-		//enter either constructor or method where appropriate
-		if(methodInfo.isConstructor) {
-			requestor.enterConstructor(methodInfo);
-		} else {
-			requestor.enterMethod(methodInfo);
-		}
-		
-		visitIfNeeded( (MethodDeclaration)method.getFunctionDeclaration() );
-
-		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
-
 	}
 
-
 	requestor.exitType(type.sourceEnd);
-
 }
 
 /**
@@ -824,7 +965,7 @@ public void notifySourceElementRequestor( InferredType type ) {
  * @see #notifySourceElementRequestor(AbstractMethodDeclaration, char[])
  */
 public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclaration) {
-	this.notifySourceElementRequestor(methodDeclaration, methodDeclaration.selector);
+	this.notifySourceElementRequestor(methodDeclaration, methodDeclaration.getName());
 }
 
 /**
@@ -886,7 +1027,25 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			if (arguments[i].type!=null) {
 				argumentTypes[i] = CharOperation.concatWith(arguments[i].type.getTypeName(), '.');
 			} else if(arguments[i].inferredType != null) {
-				argumentTypes[i] = arguments[i].inferredType.getName();
+				/* find first not anonymous parent type and use that for argument type name
+				 * 
+				 * This is done because if the argument is assigned to inside the function
+				 * then an anonymous child type of the original argument type is created,
+				 * but that anonymous child type is not the type that should be displayed
+				 * to the user, the original argument type is.  #isAnonymous is used rather
+				 * then #isIndexed because their are anonymous types that are indexed and the
+				 * type of the argument should never be anonymous. */
+				InferredType argumentType = arguments[i].inferredType;
+				while(argumentType != null && argumentType.isAnonymous) {
+					argumentType = argumentType.getSuperType();
+				}
+				
+				//if ended up with null type, use original
+				if(argumentType == null) {
+					argumentType = arguments[i].inferredType;
+				}
+				
+				argumentTypes[i] = argumentType.getName();
 			}
 			argumentNames[i] = arguments[i].name;
 		}
@@ -914,6 +1073,13 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 			methodInfo.parameterTypes = argumentTypes;
 			methodInfo.parameterNames = argumentNames;
 			methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
+			InferredMethod inferredMeth = methodDeclaration.getInferredMethod();
+			if(inferredMeth != null) {
+				InferredType declaringType = inferredMeth.inType;
+				if(declaringType != null) {
+					methodInfo.declaringType = declaringType.getName();
+				}
+			}
 			requestor.enterConstructor(methodInfo);
 		}
 		/* need this check because a constructor could have been made a constructor after the
@@ -964,10 +1130,17 @@ public void notifySourceElementRequestor(AbstractMethodDeclaration methodDeclara
 		methodInfo.returnType = returnType == null ? null : returnType.getName();
 		methodInfo.name = selector;
 		methodInfo.nameSourceStart = methodDeclaration.sourceStart;
-		methodInfo.nameSourceEnd = selectorSourceEnd;
+		methodInfo.nameSourceEnd = selector != null? methodInfo.nameSourceStart + selector.length - 1 : selectorSourceEnd;
 		methodInfo.parameterTypes = argumentTypes;
 		methodInfo.parameterNames = argumentNames;
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
+		InferredMethod inferredMeth = methodDeclaration.getInferredMethod();
+		if(inferredMeth != null) {
+			InferredType declaringType = inferredMeth.inType;
+			if(declaringType != null) {
+				methodInfo.declaringType = declaringType.getName();
+			}
+		}
 		requestor.enterMethod(methodInfo);
 	}
 
@@ -997,70 +1170,50 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				// use the declaration source end by default
 				fieldEndPosition = fieldDeclaration.declarationSourceEnd;
 			}
-			MethodDeclaration methodDeclaration = null;
+			
 			if (isInRange) {
 				int currentModifiers = fieldDeclaration.modifiers;
 
 				// remember deprecation so as to not lose it below
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0;
-
-				if (fieldDeclaration.initialization instanceof FunctionExpression) {
-					methodDeclaration=((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
-				} else if (fieldDeclaration.initialization instanceof Assignment &&
-						((Assignment)fieldDeclaration.initialization).getExpression() instanceof FunctionExpression) {
-					
-					methodDeclaration=((FunctionExpression)((Assignment)fieldDeclaration.initialization).getExpression()).methodDeclaration;
-				}
 				
-				/* if the variable declaration has a method declaration on the right hand side notify of the declaration using the variable name as the method selector
-				 * else notify of a field declaration
-				 */
-				if (methodDeclaration!=null) {
-					this.notifySourceElementRequestor(methodDeclaration, fieldDeclaration.getName());
-				}
-				else
-				{
-					ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
-					fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
-					fieldInfo.name = fieldDeclaration.name;
-					fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag)
-							| ClassFileConstants.AccDeprecated
-							: currentModifiers & ExtraCompilerModifiers.AccJustFlag;
-					fieldInfo.type = fieldDeclaration.inferredType != null ? fieldDeclaration.inferredType
-							.getName()
-							: null;
-					fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
-					fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
-					fieldInfo.categories = (char[][]) this.nodesToCategories
-							.get(fieldDeclaration);
-					requestor.enterField(fieldInfo);
-					//If this field is of an anonymous type, need to notify so that it shows as a child
-					if (fieldDeclaration.inferredType != null
-							&& fieldDeclaration.inferredType.isAnonymous) {
-						notifySourceElementRequestor(fieldDeclaration.inferredType);
-					}
+				ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+				fieldInfo.declarationStart = fieldDeclaration.declarationSourceStart;
+				fieldInfo.name = fieldDeclaration.name;
+				fieldInfo.modifiers = deprecated ? (currentModifiers & ExtraCompilerModifiers.AccJustFlag)
+						| ClassFileConstants.AccDeprecated
+						: currentModifiers & ExtraCompilerModifiers.AccJustFlag;
+				fieldInfo.type = fieldDeclaration.inferredType != null ? fieldDeclaration.inferredType
+						.getName()
+						: null;
+				fieldInfo.nameSourceStart = fieldDeclaration.sourceStart;
+				fieldInfo.nameSourceEnd = fieldDeclaration.sourceEnd;
+				fieldInfo.categories = (char[][]) this.nodesToCategories
+						.get(fieldDeclaration);
+				requestor.enterField(fieldInfo);
+				//If this field is of an anonymous type, need to notify so that it shows as a child
+				if (fieldDeclaration.inferredType != null
+						&& fieldDeclaration.inferredType.isAnonymous) {
+					notifySourceElementRequestor(fieldDeclaration.inferredType);
 				}
 			}
 			this.visitIfNeeded(fieldDeclaration, declaringType);
 			if (isInRange){
-				if (methodDeclaration == null) {
-					requestor.exitField(
-							// filter out initializations that are not a constant (simple check)
-							(fieldDeclaration.initialization == null
-									|| fieldDeclaration.initialization instanceof ArrayInitializer
-									|| fieldDeclaration.initialization instanceof AllocationExpression
-									|| fieldDeclaration.initialization instanceof ArrayAllocationExpression
-									|| fieldDeclaration.initialization instanceof Assignment
-									|| fieldDeclaration.initialization instanceof ClassLiteralAccess
-									|| fieldDeclaration.initialization instanceof MessageSend
-									|| fieldDeclaration.initialization instanceof ArrayReference
-									|| fieldDeclaration.initialization instanceof ThisReference) ?
-								-1 :
-								fieldDeclaration.initialization.sourceStart,
-							fieldEndPosition,
-							fieldDeclaration.declarationSourceEnd);
-
-				}
+				requestor.exitField(
+						// filter out initializations that are not a constant (simple check)
+						(fieldDeclaration.initialization == null
+								|| fieldDeclaration.initialization instanceof ArrayInitializer
+								|| fieldDeclaration.initialization instanceof AllocationExpression
+								|| fieldDeclaration.initialization instanceof ArrayAllocationExpression
+								|| fieldDeclaration.initialization instanceof Assignment
+								|| fieldDeclaration.initialization instanceof ClassLiteralAccess
+								|| fieldDeclaration.initialization instanceof MessageSend
+								|| fieldDeclaration.initialization instanceof ArrayReference
+								|| fieldDeclaration.initialization instanceof ThisReference) ?
+							-1 :
+							fieldDeclaration.initialization.sourceStart,
+						fieldEndPosition,
+						fieldDeclaration.declarationSourceEnd);
 			}
 			break;
 		case AbstractVariableDeclaration.INITIALIZER:
@@ -1074,6 +1227,62 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				requestor.exitInitializer(fieldDeclaration.declarationSourceEnd);
 			}
 			break;
+	}
+}
+
+/*
+* Update the bodyStart of the corresponding parse node
+*/
+public void notifySourceElementRequestor(Assignment assignment, TypeDeclaration declaringType) {
+
+	// range check
+	boolean isInRange =
+				scanner.initialPosition <= assignment.sourceStart
+				&& scanner.eofPosition >= assignment.sourceEnd;
+
+	int fieldEndPosition = this.sourceEnds.get(assignment);
+	if (fieldEndPosition == -1) {
+		// use the declaration source end by default
+		fieldEndPosition = assignment.sourceEnd;
+	}
+
+	if (isInRange) {
+		if(assignment.getLeftHandSide() instanceof SingleNameReference) {
+			SingleNameReference lhs = (SingleNameReference) assignment.getLeftHandSide();
+			ISourceElementRequestor.FieldInfo fieldInfo = new ISourceElementRequestor.FieldInfo();
+			fieldInfo.declarationStart = assignment.sourceStart;
+			fieldInfo.name = lhs.getToken();
+			fieldInfo.type = assignment.inferredType != null ? assignment.inferredType
+					.getName()
+					: null;
+			fieldInfo.nameSourceStart = assignment.sourceStart;
+			fieldInfo.nameSourceEnd = assignment.sourceEnd;
+			fieldInfo.categories = (char[][]) this.nodesToCategories
+					.get(assignment);
+			requestor.enterField(fieldInfo);
+			//If this field is of an anonymous type, need to notify so that it shows as a child
+			if (assignment.inferredType != null
+					&& assignment.inferredType.isAnonymous) {
+				notifySourceElementRequestor(assignment.inferredType);
+			}
+		}
+	}
+	if (isInRange){
+		requestor.exitField(
+				// filter out initializations that are not a constant (simple check)
+				(assignment.getExpression() == null
+						|| assignment.getExpression() instanceof ArrayInitializer
+						|| assignment.getExpression() instanceof AllocationExpression
+						|| assignment.getExpression() instanceof ArrayAllocationExpression
+						|| assignment.getExpression() instanceof Assignment
+						|| assignment.getExpression() instanceof ClassLiteralAccess
+						|| assignment.getExpression() instanceof MessageSend
+						|| assignment.getExpression() instanceof ArrayReference
+						|| assignment.getExpression() instanceof ThisReference) ?
+					-1 :
+					assignment.sourceStart,
+				fieldEndPosition,
+				assignment.sourceEnd);
 	}
 }
 public void notifySourceElementRequestor(
@@ -1405,24 +1614,31 @@ private int sourceEnd(TypeDeclaration typeDeclaration) {
 		return typeDeclaration.sourceEnd;
 	}
 }
-private void visitIfNeeded(AbstractMethodDeclaration method) {
-	if (this.localDeclarationVisitor != null
-		//&& (method.bits & ASTNode.HasLocalType) != 0) {
-		){
+	private void visitIfNeeded(AbstractMethodDeclaration method) {
+		this.nestedMethodIndex++;
+		
+		if (this.localDeclarationVisitor != null){
 			if (method instanceof ConstructorDeclaration) {
 				ConstructorDeclaration constructorDeclaration = (ConstructorDeclaration) method;
 				if (constructorDeclaration.constructorCall != null) {
-					constructorDeclaration.constructorCall.traverse(this.localDeclarationVisitor, method.scope);
+					constructorDeclaration.constructorCall.traverse(this.localDeclarationVisitor, method.getScope());
 				}
+			}
+			if (method.arguments != null) {
+				int argumentLength = method.arguments.length;
+				for (int i = 0; i < argumentLength; i++)
+					method.arguments[i].traverse(contextDeclarationNotifier, method.getScope());
 			}
 			if (method.statements != null) {
 				int statementsLength = method.statements.length;
-				for (int i = 0; i < statementsLength; i++)
-					//method.statements[i].traverse(this.localDeclarationVisitor, method.scope);
-					method.statements[i].traverse( contextDeclarationNotifier, method.scope );
+				for (int i = 0; i < statementsLength; i++) {
+					method.statements[i].traverse( contextDeclarationNotifier, method.getScope() );
+				}
 			}
+		}
+		
+		this.nestedMethodIndex--;
 	}
-}
 
 private void visitIfNeeded(AbstractVariableDeclaration field, TypeDeclaration declaringType) {
 	if (this.localDeclarationVisitor != null

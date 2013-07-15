@@ -1101,6 +1101,21 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		}
 		return pos;
 	}
+	
+	/*
+	 * Next token is a left bracket '['. Returns the offset after the bracket. For incomplete code, return the start offset.
+	 */
+	private int getPosAfterLeftBracket(int pos) {
+		try {
+			int nextToken= getScanner().readNext(pos, true);
+			if (nextToken == ITerminalSymbols.TokenNameLBRACKET) {
+				return getScanner().getCurrentEndOffset();
+			}
+		} catch (CoreException e) {
+			handleException(e);
+		}
+		return pos;
+	}
 
 	final int getIndent(int offset) {
 		return this.formatter.computeIndentUnits(getIndentOfLine(offset));
@@ -1802,7 +1817,7 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			return doVisitUnchangedChildren(node);
 		}
 
-		int startPos= getPosAfterLeftBrace(node.getStartPosition());
+		int startPos= getPosAfterLeftBracket(node.getStartPosition());
 		rewriteNodeList(node, ArrayInitializer.EXPRESSIONS_PROPERTY, startPos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 		return false;
 	}

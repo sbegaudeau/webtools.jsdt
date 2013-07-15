@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -83,40 +83,40 @@ public class HandleFactory {
 	 */
 	public Openable createOpenable(String resourcePath, IJavaScriptSearchScope scope) {
 		int separatorIndex;
-//		if ((separatorIndex= resourcePath.indexOf(IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
-//			// path to a class file inside a jar
-//			// Optimization: cache package fragment root handle and package handles
-//			int rootPathLength;
-//			if (this.lastPkgFragmentRootPath == null
-//					|| (rootPathLength = this.lastPkgFragmentRootPath.length()) != resourcePath.length()
-//					|| !resourcePath.regionMatches(0, this.lastPkgFragmentRootPath, 0, rootPathLength)) {
-//				String jarPath= resourcePath.substring(0, separatorIndex);
-//				PackageFragmentRoot root= this.getJarPkgFragmentRoot(jarPath, scope);
-//				if (root == null)
-//					return null; // match is outside classpath
-//				this.lastPkgFragmentRootPath= jarPath;
-//				this.lastPkgFragmentRoot= root;
-//				this.packageHandles= new HashtableOfArrayToObject(5);
-//			}
-//			// create handle
-//			String classFilePath= resourcePath.substring(separatorIndex + 1);
-//			String[] simpleNames = new Path(classFilePath).segments();
-//			String[] pkgName;
-//			int length = simpleNames.length-1;
-//			if (length > 0) {
-//				pkgName = new String[length];
-//				System.arraycopy(simpleNames, 0, pkgName, 0, length);
-//			} else {
-//				pkgName = CharOperation.NO_STRINGS;
-//			}
-//			IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
-//			if (pkgFragment == null) {
-//				pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
-//				this.packageHandles.put(pkgName, pkgFragment);
-//			}
-//			IClassFile classFile= pkgFragment.getClassFile(simpleNames[length]);
-//			return (Openable) classFile;
-//		} else {
+		if ((separatorIndex= resourcePath.indexOf(IJavaScriptSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
+			// path to a class file inside a jar
+			// Optimization: cache package fragment root handle and package handles
+			int rootPathLength;
+			if (this.lastPkgFragmentRootPath == null
+					|| (rootPathLength = this.lastPkgFragmentRootPath.length()) != resourcePath.length()
+					|| !resourcePath.regionMatches(0, this.lastPkgFragmentRootPath, 0, rootPathLength)) {
+				String jarPath= resourcePath.substring(0, separatorIndex);
+				PackageFragmentRoot root= (PackageFragmentRoot) this.getJarPkgFragmentRoot(jarPath, scope);
+				if (root == null)
+					return null; // match is outside classpath
+				this.lastPkgFragmentRootPath= jarPath;
+				this.lastPkgFragmentRoot= root;
+				this.packageHandles= new HashtableOfArrayToObject(5);
+			}
+			// create handle
+			String classFilePath= resourcePath.substring(separatorIndex + 1);
+			String[] simpleNames = new Path(classFilePath).segments();
+			String[] pkgName;
+			int length = simpleNames.length-1;
+			if (length > 0) {
+				pkgName = new String[length];
+				System.arraycopy(simpleNames, 0, pkgName, 0, length);
+			} else {
+				pkgName = CharOperation.NO_STRINGS;
+			}
+			IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
+			if (pkgFragment == null) {
+				pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
+				this.packageHandles.put(pkgName, pkgFragment);
+			}
+			IClassFile classFile= pkgFragment.getClassFile(simpleNames[length]);
+			return (Openable) classFile;
+		} else {
 			// path to a file in a directory
 			// Optimization: cache package fragment root handle and package handles
 			int rootPathLength = -1;
@@ -167,7 +167,7 @@ public class HandleFactory {
 				IClassFile classFile= pkgFragment.getClassFile(simpleName);
 				return (Openable) classFile;
 			}
-//		}
+		}
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class HandleFactory {
 				} else {
 					// method element
 					AbstractMethodDeclaration method = methodScope.referenceMethod();
-					newElement = parentType.getFunction(new String(method.getSafeName()), Util.typeParameterSignatures(method));
+					newElement = parentType.getFunction(new String(method.getName()), Util.typeParameterSignatures(method));
 					if (newElement != null) {
 						knownScopes.put(scope, newElement);
 					}
@@ -319,8 +319,8 @@ public class HandleFactory {
 		for (int i= 0, projectCount= projects.length; i < projectCount; i++) {
 			try {
 				JavaProject javaProject= (JavaProject)projects[i];
-				IIncludePathEntry classpathEnty = javaProject.getClasspathEntryFor(jarPath);
-				if (classpathEnty != null) {
+				IIncludePathEntry classpathEntry = javaProject.getClasspathEntryFor(jarPath);
+				if (classpathEntry != null) {
 					if (target instanceof IFile) {
 						// internal jar
 						return javaProject.getPackageFragmentRoot((IFile)target);
@@ -357,7 +357,7 @@ public class HandleFactory {
 					{
 						return root;
 					}
-					if ( root.getLocation().isPrefixOf(path)
+					if (!root.isExternal() && root.getLocation().isPrefixOf(path)
 							&& !Util.isExcluded(path, root.fullInclusionPatternChars(), root.fullExclusionPatternChars(), false)) {
 						this.lastIsFullPath=true;
 						return root;

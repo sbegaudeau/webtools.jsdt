@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
@@ -134,7 +135,7 @@ public class CompilationUnitProblemFinder extends Compiler implements ITypeReque
 	 *  ->  build compilation unit declarations, their bindings and record their results.
 	 */
 	public void accept(org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
-		accept(sourceUnit, new char[0][0], accessRestriction);
+		accept(sourceUnit, CharOperation.NO_CHAR_CHAR, accessRestriction);
 	}
 	
 	public void accept(ICompilationUnit sourceUnit, char[][] typeNames,
@@ -143,19 +144,19 @@ public class CompilationUnitProblemFinder extends Compiler implements ITypeReque
 		CompilationResult unitResult =
 			new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
 		try {
+			if (parsedUnits == null)
+				parsedUnits = new HashtableOfObject();
+			CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
 			if (options.verbose) {
 				String count = String.valueOf(totalUnits + 1);
 				this.out.println(
 					Messages.bind(Messages.compilation_request,
 						new String[] {
 							count,
-							count,
+							(parsedUnit != null ? "(ITR2:not reparsed)" : count), //$NON-NLS-1$
 							new String(sourceUnit.getFileName())
 						}));
 			}
-			if (parsedUnits == null)
-				parsedUnits = new HashtableOfObject();
-			CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
 			if (parsedUnit == null) {
 				// diet parsing for large collection of unit
 				if (totalUnits < parseThreshold) {

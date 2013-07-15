@@ -88,10 +88,13 @@ public abstract class Engine implements ITypeRequestor, ITypeRequestor2 {
 		lookupEnvironment.completeTypeBindings(parsedUnit, true);
 	}
 	public void accept(ICompilationUnit unit, char[][] typeNames, AccessRestriction accessRestriction) {
-		CompilationUnitDeclaration parsedUnit =  doParse(unit,accessRestriction);
+		CompilationUnitDeclaration parsedUnit =  lookupEnvironment.getExistingCompilationUnitDeclaration(unit.getFileName());
+		if(parsedUnit == null) {
+			parsedUnit = doParse(unit,accessRestriction);
+		}
 
 		lookupEnvironment.buildTypeBindings(parsedUnit, typeNames, accessRestriction);
-		lookupEnvironment.completeTypeBindings(parsedUnit, typeNames, true);		
+		lookupEnvironment.completeTypeBindings(parsedUnit, typeNames, lookupEnvironment.shouldBuildFieldsAndMethods);	
 	}
 
 	/**

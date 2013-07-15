@@ -222,7 +222,7 @@ public class JavaContext extends CompilationUnitContext {
 	 * 
 	 */
 	private boolean isTempalteNamePart(char ch) {
-		return !Character.isWhitespace(ch) && ch != '(' && ch != ')' && ch != '{' && ch != '}' && ch != ';';
+		return !Character.isWhitespace(ch) && ch != '(' && ch != ')' && ch != '{' && ch != '}' && ch != ';' && ch != '>';
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,11 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 
 /**
- * A includepath container page allows the user to create a new or edit an 
- * existing includepath container entry.
+ * A classpath container page allows the user to create a new or edit an 
+ * existing classpath container entry.
  * <p>
  * Clients should implement this interface and include the name of their 
- * class in an extension contributed to the jdt.ui's includepath container page 
+ * class in an extension contributed to the jdt.ui's classpath container page 
  * extension point (named <code>org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage
  * </code>).
  * </p>
@@ -38,9 +38,9 @@ import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 public interface IJsGlobalScopeContainerPage extends IWizardPage {
 	
 	/**
-	 * Called when the includepath container wizard is closed by selecting 
+	 * Called when the classpath container wizard is closed by selecting 
 	 * the finish button. Implementers typically override this method to 
-	 * store the page result (new/changed includepath entry returned in 
+	 * store the page result (new/changed classpath entry returned in 
 	 * getSelection) into its model.
 	 * 
 	 * @return if the operation was successful. Only when returned
@@ -49,21 +49,21 @@ public interface IJsGlobalScopeContainerPage extends IWizardPage {
 	public boolean finish();
 	
 	/**
-	 * Returns the edited or created includepath container entry. This method
-	 * may return <code>null</code> if no includepath container entry exists.
-	 * The returned includepath entry is of kind <code>IIncludePathEntry.CPE_CONTAINER
+	 * Returns the edited or created classpath container entry. This method
+	 * may return <code>null</code> if no classpath container entry exists.
+	 * The returned classpath entry is of kind <code>IIncludePathEntry.CPE_CONTAINER
 	 * </code>.
 	 * 
-	 * @return the includepath entry edited or created on the page.
+	 * @return the classpath entry edited or created on the page.
 	 */
 	public IIncludePathEntry getSelection();
 	
 	/**
-	 * Sets the includepath container entry to be edited or <code>null</code> 
+	 * Sets the classpath container entry to be edited or <code>null</code> 
 	 * if a new entry should be created.
 	 * 
-	 * @param containerEntry the includepath entry to edit or <code>null</code>.
-	 * If not <code>null</code> then the includepath entry must be of
+	 * @param containerEntry the classpath entry to edit or <code>null</code>.
+	 * If not <code>null</code> then the classpath entry must be of
 	 * kind <code>IIncludePathEntry.CPE_CONTAINER</code>
 	 */
 	public void setSelection(IIncludePathEntry containerEntry);

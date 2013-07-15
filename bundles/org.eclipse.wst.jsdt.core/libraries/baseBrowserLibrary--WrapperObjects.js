@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1545,7 +1545,7 @@ Element.prototype.hasAttributeNS=function(namespaceURI, localName){};
   * @see   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Text(){};
-Text.prototype = new CharacterData(){};
+Text.prototype = new CharacterData();
  /**
   * function splitText(offset)     
   * @type Method
@@ -1576,7 +1576,7 @@ Text.prototype.splitText=function(offset){};
   * @see   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Comment(){};
-Comment.prototype = new CharacterData(){};
+Comment.prototype = new CharacterData();
 /**
   * Object CDATASection()
   * Comment inherits all of the methods and properties from Text.

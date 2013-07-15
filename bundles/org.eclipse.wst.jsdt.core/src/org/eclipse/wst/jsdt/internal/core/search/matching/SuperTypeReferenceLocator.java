@@ -18,6 +18,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 public class SuperTypeReferenceLocator extends PatternLocator {
 
@@ -37,7 +38,7 @@ public SuperTypeReferenceLocator(SuperTypeReferencePattern pattern) {
 //public int match(Reference node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(TypeDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(TypeReference node, MatchingNodeSet nodeSet) {
-	if (this.pattern.superSimpleName == null)
+	if (this.pattern.superTypeName == null)
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 
 	char[] typeRefSimpleName = null;
@@ -47,7 +48,7 @@ public int match(TypeReference node, MatchingNodeSet nodeSet) {
 		char[][] tokens = ((QualifiedTypeReference) node).tokens;
 		typeRefSimpleName = tokens[tokens.length-1];
 	}
-	if (matchesName(this.pattern.superSimpleName, typeRefSimpleName))
+	if (matchesName(this.pattern.superTypeName, typeRefSimpleName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 
 	return IMPOSSIBLE_MATCH;
@@ -65,7 +66,8 @@ public int resolveLevel(ASTNode node) {
 	TypeReference typeRef = (TypeReference) node;
 	TypeBinding binding = typeRef.resolvedType;
 	if (binding == null) return INACCURATE_MATCH;
-	return resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, binding);
+	char[][] superTypeName = QualificationHelpers.seperateFullyQualifedName(this.pattern.superTypeName);
+	return resolveLevelForType(superTypeName[QualificationHelpers.SIMPLE_NAMES_INDEX], superTypeName[QualificationHelpers.QULIFIERS_INDEX], binding);
 }
 public int resolveLevel(Binding binding) {
 	if (binding == null) return INACCURATE_MATCH;
@@ -73,8 +75,8 @@ public int resolveLevel(Binding binding) {
 
 	ReferenceBinding type = (ReferenceBinding) binding;
 	int level = IMPOSSIBLE_MATCH;
-	
-	level = resolveLevelForType(this.pattern.superSimpleName, this.pattern.superQualification, type.superclass());
+	char[][] superTypeName = QualificationHelpers.seperateFullyQualifedName(this.pattern.superTypeName);
+	level = resolveLevelForType(superTypeName[QualificationHelpers.SIMPLE_NAMES_INDEX], superTypeName[QualificationHelpers.QULIFIERS_INDEX], type.getSuperBinding());
 	if (level == ACCURATE_MATCH) return ACCURATE_MATCH;
 	
 	return level;

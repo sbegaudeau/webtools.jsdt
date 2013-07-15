@@ -90,6 +90,13 @@ public class CompletionProposalCollector extends CompletionRequestor {
 	/** Tells whether this class is in debug mode. */
 	private static final boolean DEBUG= "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.ui/debug/ResultCollector"));  //$NON-NLS-1$//$NON-NLS-2$
 
+	/**
+	 * <p>
+	 * <code>true</code> if this collector allows duplicates, <code>false</code> (default), if it does not.
+	 * </p>
+	 */
+	private static final boolean ALLOW_DUPLICATES = "true".equalsIgnoreCase(System.getProperty("org.eclipse.wst.jsdt.ui/ContentAssist/allowDuplicates"));  //$NON-NLS-1$//$NON-NLS-2$;
+	
 	/** Triggers for method proposals without parameters. Do not modify. */
 	protected final static char[] METHOD_TRIGGERS= new char[] { ';', ',', '.', '\t', '[', ' ' };
 	/** Triggers for method proposals. Do not modify. */
@@ -213,7 +220,10 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			} else {
 				IJavaCompletionProposal javaProposal= createJavaCompletionProposal(proposal);
 				if (javaProposal != null) {
-					fJavaProposals.add(javaProposal);
+					if(!this.fJavaProposals.contains(javaProposal) || ALLOW_DUPLICATES) {
+						fJavaProposals.add(javaProposal);
+					}
+					
 					if (proposal.getKind() == CompletionProposal.KEYWORD)
 						fKeywords.add(javaProposal);
 				}
@@ -554,12 +564,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 			case CompletionProposal.ANONYMOUS_CLASS_DECLARATION:
 			case CompletionProposal.FIELD_REF:
 			case CompletionProposal.JSDOC_FIELD_REF:
-				char[] declaration= proposal.getDeclarationSignature();
-				// special methods may not have a declaring type: methods defined on arrays etc.
-				// Currently known: class literals don't have a declaring type - use Object
-				if (declaration == null)
-					return "java.lang.Object".toCharArray(); //$NON-NLS-1$
-				return Signature.toCharArray(declaration);
+				return proposal.getDeclarationTypeName();
 			case CompletionProposal.PACKAGE_REF:
 				return proposal.getDeclarationSignature();
 			case CompletionProposal.JSDOC_TYPE_REF:
@@ -686,7 +691,7 @@ public class CompletionProposalCollector extends CompletionRequestor {
 		int start= proposal.getReplaceStart();
 		int length= getLength(proposal);
 		Image image= getImage(fLabelProvider.createLocalImageDescriptor(proposal));
-		String label= fLabelProvider.createSimpleLabelWithType(proposal);
+		String label = fLabelProvider.createLabelWithTypeAndDeclaration(proposal);
 		int relevance= computeRelevance(proposal);
 
 		final JavaCompletionProposal javaProposal= new JavaCompletionProposal(completion, start, length, image, label, relevance);

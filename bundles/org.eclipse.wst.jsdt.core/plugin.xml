@@ -184,17 +184,18 @@
 <!-- Extension: Java Content Types                                                       -->
 <!-- =================================================================================== -->
 <extension point="org.eclipse.core.contenttype.contentTypes">
+
 	<!-- Associates .jsdtscope to the XML content type -->
 	<file-association 
 		content-type="org.eclipse.core.runtime.xml" 
 		file-names=".jsdtscope"/>  
 	<!-- declares a content type for JavaScript Source files -->
-	<content-type id="org.eclipse.wst.jsdt.core.jsSource" name="%jsSourceName" 
+	<content-type id="jsSource" name="%jsSourceName" 
 		base-type="org.eclipse.core.runtime.text"
 		priority="high"				
 		file-extensions="js"/>
 	<!-- declares a content type for JSON files -->
-	<content-type id="org.eclipse.wst.jsdt.core.jsonSource" name="%jsonSourceName" 
+	<content-type id="jsonSource" name="%jsonSourceName" 
 		base-type="org.eclipse.core.runtime.text"
 		priority="normal"				
 		file-extensions="json"/>

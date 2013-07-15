@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -186,6 +186,7 @@ public class EditorUtility {
 		if (element == null)
 			return;
 
+		// only change selection if the part is not active
 		if (part instanceof JavaEditor) {
 			((JavaEditor) part).setSelection(element);
 			return;
@@ -404,7 +405,7 @@ public class EditorUtility {
 				if (Util.isMetadataFileName(elementName) || Util.isJavaLikeFileName(elementName))
 				{
 					IResource resource=element.getResource();
-					if (resource instanceof IFile)
+					if (resource instanceof IFile && !org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(resource.getName()))
 								return new FileEditorInput((IFile) resource);
 
 				}

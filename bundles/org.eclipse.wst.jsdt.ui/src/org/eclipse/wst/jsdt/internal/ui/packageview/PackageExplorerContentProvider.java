@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,12 +23,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -58,6 +59,9 @@ import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
+import org.eclipse.wst.jsdt.internal.ui.navigator.deferred.ClearPlaceHolderJob;
+import org.eclipse.wst.jsdt.internal.ui.navigator.deferred.LoadingModelNode;
+import org.eclipse.wst.jsdt.internal.ui.navigator.deferred.LoadingModelUIAnimationJob;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.ProjectLibraryRoot;
@@ -291,8 +295,23 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			if(parentElement instanceof ContainerFolder) {
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)((ContainerFolder)parentElement).getParentObject());
 			}
-			if (parentElement instanceof PackageFragmentRootContainer)
-				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, fIsFlatLayout, null);
+			if (parentElement instanceof PackageFragmentRootContainer) {
+				if(LoadingModelNode.isBeingLoaded((PackageFragmentRootContainer)parentElement)) {
+					return new Object[] { 
+							LoadingModelNode.createPlaceHolder((PackageFragmentRootContainer)parentElement) }; 
+				} else { 
+					LoadingModelNode placeHolder = 
+						LoadingModelNode.createPlaceHolder((PackageFragmentRootContainer)parentElement);
+					/* we need to load the model, 
+						possible long running operation */					
+					if(LoadingModelNode.canBeginLoading((PackageFragmentRootContainer)parentElement))
+						new LoadModelJob((AbstractTreeViewer)fViewer, 
+								 placeHolder, 
+								 (PackageFragmentRootContainer)parentElement)
+							.schedule();
+						return new Object[] { placeHolder }; 
+				}
+			}
 			else if (parentElement instanceof NamespaceGroup && ((NamespaceGroup) parentElement).getPackageFragmentRootContainer() != null) {
 				return getContainerPackageFragmentRoots(((NamespaceGroup) parentElement).getPackageFragmentRootContainer(), true, ((NamespaceGroup) parentElement));
 			}
@@ -714,7 +733,13 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean neverGroup, NamespaceGroup onlyGroup) {
 		
 			Object[] children = container.getChildren();
-			if(children==null) return new Object[0];
+			if (children == null)
+				return new Object[0];
+			for (int i = 0; i < children.length; i++) {
+				/* if one of the children is not a JS model element, or is an archive, return as-is for further navigation */
+				if (!(children[i] instanceof IJavaScriptElement) || (((IJavaScriptElement) children[i]).getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT && ((IPackageFragmentRoot) children[i]).isArchive()))
+					return children;
+			}
 			
 			ArrayList allChildren = new ArrayList();
 			ArrayList expanded = new ArrayList();
@@ -817,6 +842,8 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 		
 	}
 	private Object[] getContainerPackageFragmentRootsDeprc(PackageFragmentRootContainer container, boolean createFolder) {
+		
+		
 		if(container!=null) {	
 			
 			Object[] children = container.getChildren();
@@ -869,9 +896,8 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 			
 			
 			return allChildren.toArray();
-		}
-		else {
-			return new IAdaptable[0];
+		}else {
+			return new Object[0];
 		}
 	}
 
@@ -1506,5 +1532,41 @@ public class PackageExplorerContentProvider extends StandardJavaScriptElementCon
 				fViewer.getControl().setRedraw(true);
 			}
 		}
+	}
+	
+	// inner class for deferred model loading
+	public class LoadModelJob extends Job {
+		 
+		private LoadingModelNode placeHolder;
+		private AbstractTreeViewer viewer;
+		private PackageFragmentRootContainer packageFragmentRootContainer;
+	
+		public LoadModelJob(AbstractTreeViewer viewer, LoadingModelNode placeHolder, PackageFragmentRootContainer packageFragmentRootContainer) {
+			super(placeHolder.getText());
+			this.viewer = viewer;
+			this.placeHolder = placeHolder;
+			this.packageFragmentRootContainer = packageFragmentRootContainer;
+		}
+	
+		protected IStatus run(IProgressMonitor monitor) { 
+	
+			LoadingModelUIAnimationJob updateUIJob = new LoadingModelUIAnimationJob(viewer, placeHolder);
+			updateUIJob.schedule();
+	
+			Object[] retVal = new Object[0];
+			try {
+				// Load the model in the background after starting the animation job
+				
+				retVal = getContainerPackageFragmentRoots(packageFragmentRootContainer, fIsFlatLayout, null);
+				
+			} finally { 
+				/* dispose of the place holder, causes the termination of the animation job */
+				placeHolder.dispose();
+				new ClearPlaceHolderJob(viewer, placeHolder, packageFragmentRootContainer, retVal).schedule();
+			}
+			
+			return Status.OK_STATUS;
+		}
+	
 	}
 }

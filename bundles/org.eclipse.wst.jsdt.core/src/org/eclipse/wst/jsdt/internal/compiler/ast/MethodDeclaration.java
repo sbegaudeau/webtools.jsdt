@@ -53,13 +53,9 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 					(this.binding.isPrivate()
 						|| (((this.binding.modifiers & (ExtraCompilerModifiers.AccOverriding|ExtraCompilerModifiers.AccImplementing)) == 0) && this.binding.declaringClass.isLocalType()))) {
 				if (!classScope.referenceCompilationUnit().compilationResult.hasSyntaxError) {
-					scope.problemReporter().unusedPrivateMethod(this);
+					getScope().problemReporter().unusedPrivateMethod(this);
 				}
 			}
-
-//			// skip enum implicit methods
-//			if (binding.declaringClass.isEnum() && (this.selector == TypeConstants.VALUES || this.selector == TypeConstants.VALUEOF))
-//				return flowInfo;
 
 			// may be in a non necessary <clinit> for innerclass with static final constant fields
 			if (binding.isAbstract())
@@ -70,7 +66,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 					initializationContext,
 					this,
 					null,
-					scope,
+					this.getScope(),
 					FlowInfo.DEAD_END);
 
 			// tag parameters as being set
@@ -84,11 +80,11 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 				boolean didAlreadyComplain = false;
 				for (int i = 0, count = statements.length; i < count; i++) {
 					Statement stat = statements[i];
-					if (!stat.complainIfUnreachable(flowInfo, scope, didAlreadyComplain)) {
+					if (!stat.complainIfUnreachable(flowInfo, this.getScope(), didAlreadyComplain)) {
 						if (stat instanceof  AbstractMethodDeclaration) {
-							((AbstractMethodDeclaration)stat).analyseCode(this.scope, null, flowInfo.copy());
+							((AbstractMethodDeclaration)stat).analyseCode(this.getScope(), null, flowInfo.copy());
 						} else
-							flowInfo = stat.analyseCode(scope, methodContext, flowInfo);
+							flowInfo = stat.analyseCode(this.getScope(), methodContext, flowInfo);
 					} else {
 						didAlreadyComplain = true;
 					}
@@ -104,10 +100,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 				if (flowInfo != FlowInfo.DEAD_END) {
 					if ((this.inferredMethod==null || !this.inferredMethod.isConstructor) &&
 						!isJsDocInferredReturn)
-						scope.problemReporter().shouldReturn(returnTypeBinding, this);
+						this.getScope().problemReporter().shouldReturn(returnTypeBinding, this);
 				}
 			}
-			this.scope.reportUnusedDeclarations();
+			this.getScope().reportUnusedDeclarations();
 			// check unreachable catch blocks
 			if (JavaScriptCore.IS_ECMASCRIPT4)
 				methodContext.complainIfUnusedExceptionHandlers(this);
@@ -118,12 +114,10 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 	}
 
 	public boolean isMethod() {
-
 		return true;
 	}
 
 	public void parseStatements(Parser parser, CompilationUnitDeclaration unit) {
-
 		//fill up the method body with statement
 		if (ignoreFurtherInvestigation)
 			return;
@@ -131,9 +125,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 	}
 
 	public void resolveStatements() {
-
 		// ========= abort on fatal error =============
-
 		super.resolveStatements();
 	}
 
@@ -143,42 +135,39 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 
 		if (visitor.visit(this, classScope)) {
 			if (this.javadoc != null) {
-				this.javadoc.traverse(visitor, scope);
+				this.javadoc.traverse(visitor, this.getScope());
 			}
 			if (arguments != null) {
 				int argumentLength = arguments.length;
 				for (int i = 0; i < argumentLength; i++)
-					arguments[i].traverse(visitor, scope);
+					arguments[i].traverse(visitor, this.getScope());
 			}
 			if (statements != null) {
 				int statementsLength = statements.length;
 				for (int i = 0; i < statementsLength; i++)
-					statements[i].traverse(visitor, scope);
+					statements[i].traverse(visitor, this.getScope());
 			}
 		}
 		visitor.endVisit(this, classScope);
 	}
-	public void traverse(
-			ASTVisitor visitor,
-			BlockScope blockScope) {
-
-			if (visitor.visit(this, blockScope)) {
-				if (arguments != null) {
-					int argumentLength = arguments.length;
-					for (int i = 0; i < argumentLength; i++)
-						arguments[i].traverse(visitor, scope);
-				}
-				if (statements != null) {
-					int statementsLength = statements.length;
-					for (int i = 0; i < statementsLength; i++)
-						statements[i].traverse(visitor, scope);
-				}
+	
+	public void traverse(ASTVisitor visitor, BlockScope blockScope) {
+		if (visitor.visit(this, blockScope)) {
+			if (arguments != null) {
+				int argumentLength = arguments.length;
+				for (int i = 0; i < argumentLength; i++)
+					arguments[i].traverse(visitor, this.getScope());
 			}
-			visitor.endVisit(this, blockScope);
+			if (statements != null) {
+				int statementsLength = statements.length;
+				for (int i = 0; i < statementsLength; i++)
+					statements[i].traverse(visitor, this.getScope());
+			}
 		}
+		visitor.endVisit(this, blockScope);
+	}
 
 	public int getASTType() {
 		return IASTNode.FUNCTION_DECLARATION;
-	
 	}
 }

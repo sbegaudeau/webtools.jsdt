@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.zip.ZipFile;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -409,8 +411,7 @@ public IJavaScriptElement getElementAtConsideringSibling(int position) throws Ja
 	if (mapper == null) {
 		return null;
 	} else {
-		int index = this.name.indexOf('$');
-		int prefixLength = index < 0 ? this.name.length() : index;
+		int prefixLength = this.name.length();
 
 		IType type = null;
 		int start = -1;
@@ -419,8 +420,7 @@ public IJavaScriptElement getElementAtConsideringSibling(int position) throws Ja
 		for (int i = 0; i < children.length; i++) {
 			String childName = children[i].getElementName();
 
-			int childIndex = childName.indexOf('$');
-			int childPrefixLength = childIndex < 0 ? childName.indexOf('.') : childIndex;
+			int childPrefixLength = childName.indexOf('.');
 			if (prefixLength == childPrefixLength && this.name.regionMatches(0, childName, 0, prefixLength)) {
 				IClassFile classFile = (IClassFile) children[i];
 
@@ -483,8 +483,7 @@ protected void getHandleMemento(StringBuffer buff) {
 	
 	PackageFragmentRoot root = getPackageFragmentRoot();
 	try {
-		if (root.isArchive() ||
-				(( root instanceof LibraryFragmentRoot || (getParent() instanceof PackageFragment && ((PackageFragment)getParent()).getKind()==IPackageFragmentRoot.K_BINARY))
+		if ((( root instanceof LibraryFragmentRoot || (getParent() instanceof PackageFragment && ((PackageFragment)getParent()).getKind()==IPackageFragmentRoot.K_BINARY))
 						&& root.getPath().lastSegment().equalsIgnoreCase(getElementName()))
 			) {
 		
@@ -563,12 +562,12 @@ public ISourceRange getSourceRange() throws JavaScriptModelException {
  */
 public String getTopLevelTypeName() {
     String topLevelTypeName = getElementName();
-    int firstDollar = topLevelTypeName.indexOf('$');
-    if (firstDollar != -1) {
-        topLevelTypeName = topLevelTypeName.substring(0, firstDollar);
-    } else {
+//    int firstDollar = topLevelTypeName.indexOf('$');
+//    if (firstDollar != -1) {
+//        topLevelTypeName = topLevelTypeName.substring(0, firstDollar);
+//    } else {
         topLevelTypeName = topLevelTypeName.substring(0, topLevelTypeName.length()-SUFFIX_JAVA.length);
-    }
+//    }
     return topLevelTypeName;
 }
 /**
@@ -582,8 +581,7 @@ public IType getType() {
 }
 public String getTypeName() {
 	// Internal class file name doesn't contain ".class" file extension
-	int lastDollar = this.name.lastIndexOf('$');
-	return lastDollar > -1 ? Util.localTypeName(this.name, lastDollar, this.name.length()) : this.name;
+	return this.name;
 }
 /*
  * @see IClassFile
@@ -663,8 +661,23 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 		// resource not in workspace, use default encoding.
 	}
 	try {
-		contents=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),fileEncoding);
+		IPath rootpath = getAncestor(PACKAGE_FRAGMENT_ROOT).getPath();
+		if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(rootpath.lastSegment())) {
+			ZipFile zip = JavaModelManager.getJavaModelManager().getZipFile(rootpath);
+			String entryName = filePath.toString();
+			if (!((IPackageFragment) getAncestor(PACKAGE_FRAGMENT)).isDefaultPackage()) {
+				entryName = ((IPackageFragment) getAncestor(PACKAGE_FRAGMENT)).getElementName() + "/" + entryName; //$NON-NLS-1$
+			}
+			byte[] bytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(zip.getEntry(entryName), zip);
+			contents = org.eclipse.wst.jsdt.internal.compiler.util.Util.getInputStreamAsCharArray(new ByteArrayInputStream(bytes), bytes.length, fileEncoding);
+		}
+		else {
+			contents = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()), fileEncoding);
+		}
 	} catch (IOException ex){}
+	catch (CoreException e) {
+		e.printStackTrace();
+	}
 	//mapper.findSource(getType(), info);
 	if (contents != null) {
 		// create buffer
@@ -701,11 +714,7 @@ private IBuffer mapSource(SourceMapper mapper, IBinaryType info) {
 	if (className == null)
 		return null;
 	String simpleName = new String(unqualifiedName(className));
-	int lastDollar = simpleName.lastIndexOf('$');
-	if (lastDollar != -1)
-		return Util.localTypeName(simpleName, lastDollar, simpleName.length());
-	else
-		return simpleName;
+	return simpleName;
 }
 /**
  * Returns the Java Model representation of the given name
@@ -845,8 +854,30 @@ public IType[] getTypes() throws JavaScriptModelException {
  		}
 		char [] chars=null;
 		try {
-			chars=org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()),fileEncoding);
+			if (name.indexOf(JAR_FILE_ENTRY_SEPARATOR) > 0) {
+				ZipFile zip = JavaModelManager.getJavaModelManager().getZipFile(getAncestor(PACKAGE_FRAGMENT_ROOT).getPath());
+				String entryName = filePath.lastSegment().substring(name.indexOf(JAR_FILE_ENTRY_SEPARATOR)+1);
+				if(!((IPackageFragment)getAncestor(PACKAGE_FRAGMENT)).isDefaultPackage()) {
+					entryName = ((IPackageFragment)getAncestor(PACKAGE_FRAGMENT)).getElementName() + "/" + entryName; //$NON-NLS-1$
+				}
+				byte[] bytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(zip.getEntry(entryName), zip);
+				chars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getInputStreamAsCharArray(new ByteArrayInputStream(bytes), bytes.length, fileEncoding);
+			}
+			else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isArchiveFileName(getAncestor(PACKAGE_FRAGMENT_ROOT).getPath().lastSegment())) {
+				ZipFile zip = JavaModelManager.getJavaModelManager().getZipFile(getAncestor(PACKAGE_FRAGMENT_ROOT).getPath());
+				String entryName = filePath.toString();
+				if(!((IPackageFragment)getAncestor(PACKAGE_FRAGMENT)).isDefaultPackage()) {
+					entryName = ((IPackageFragment)getAncestor(PACKAGE_FRAGMENT)).getElementName() + "/" + entryName; //$NON-NLS-1$
+				}
+				byte[] bytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(zip.getEntry(entryName), zip);
+				chars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getInputStreamAsCharArray(new ByteArrayInputStream(bytes), bytes.length, fileEncoding);
+			}
+			else {
+				chars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(new File(filePath.toOSString()), fileEncoding);
+			}
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
 			e.printStackTrace();
 		}
 		return chars;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,6 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 	public void resolve(BlockScope upperScope) {
 
 	    try {
-//			boolean isEnumSwitch = false;
 			TypeBinding expressionType = expression.resolveType(upperScope);
 			if (statements != null) {
 				scope = !JavaScriptCore.IS_ECMASCRIPT4 ? upperScope :  new BlockScope(upperScope);
@@ -204,6 +203,8 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 			BlockScope blockScope) {
 
 		if (visitor.visit(this, blockScope)) {
+			if (this.scope == null) 
+				this.scope = blockScope;
 			expression.traverse(visitor, scope);
 			if (statements != null) {
 				int statementsLength = statements.length;

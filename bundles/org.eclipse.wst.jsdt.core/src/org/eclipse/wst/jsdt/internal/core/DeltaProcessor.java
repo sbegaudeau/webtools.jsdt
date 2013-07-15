@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2264,31 +2264,38 @@ public class DeltaProcessor {
 			int length = projects.length;
 			for (int i = 0; i < length; i++){
 				IProject project = projects[i];
-				JavaProject javaProject = (JavaProject)JavaScriptCore.create(project);
-				try {
-					IPath projectPath = project.getFullPath();
-					IIncludePathEntry[] classpath = javaProject.getResolvedClasspath(); // allowed to reuse model cache
-					for (int j = 0, cpLength = classpath.length; j < cpLength; j++) {
-						IIncludePathEntry entry = classpath[j];
-						switch (entry.getEntryKind()) {
-							case IIncludePathEntry.CPE_PROJECT:
-								if (affectedProjects.contains(entry.getPath())) {
-									this.state.addClasspathValidation(javaProject);
-									needCycleValidation = true;
-								}
-								break;
-							case IIncludePathEntry.CPE_LIBRARY:
-								IPath entryPath = entry.getPath();
-								IPath libProjectPath = entryPath.removeLastSegments(entryPath.segmentCount()-1);
-								if (!libProjectPath.equals(projectPath) // if library contained in another project
-										&& affectedProjects.contains(libProjectPath)) {
-									this.state.addClasspathValidation(javaProject);
-								}
-								break;
+				/* do not update classpath for closed projects
+				 * 
+				 * if class path is updated for a closed project then the correct classpath entries will
+				 * be overwritten by incorrect ones because the containers will not be able to inspect
+				 * the resources of closed projects */
+				if(project.isOpen()) {
+					JavaProject javaProject = (JavaProject)JavaScriptCore.create(project);
+					try {
+						IPath projectPath = project.getFullPath();
+						IIncludePathEntry[] classpath = javaProject.getResolvedClasspath(); // allowed to reuse model cache
+						for (int j = 0, cpLength = classpath.length; j < cpLength; j++) {
+							IIncludePathEntry entry = classpath[j];
+							switch (entry.getEntryKind()) {
+								case IIncludePathEntry.CPE_PROJECT:
+									if (affectedProjects.contains(entry.getPath())) {
+										this.state.addClasspathValidation(javaProject);
+										needCycleValidation = true;
+									}
+									break;
+								case IIncludePathEntry.CPE_LIBRARY:
+									IPath entryPath = entry.getPath();
+									IPath libProjectPath = entryPath.removeLastSegments(entryPath.segmentCount()-1);
+									if (!libProjectPath.equals(projectPath) // if library contained in another project
+											&& affectedProjects.contains(libProjectPath)) {
+										this.state.addClasspathValidation(javaProject);
+									}
+									break;
+							}
 						}
+					} catch(JavaScriptModelException e) {
+							// project no longer exists
 					}
-				} catch(JavaScriptModelException e) {
-						// project no longer exists
 				}
 			}
 		}

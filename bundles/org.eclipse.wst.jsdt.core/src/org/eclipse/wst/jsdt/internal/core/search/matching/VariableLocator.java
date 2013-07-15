@@ -58,7 +58,7 @@ protected int matchReference(Reference node, MatchingNodeSet nodeSet, boolean wr
 			return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 		} else if (node instanceof SingleNameReference) {
 			if (matchesName(this.pattern.name, ((SingleNameReference) node).token))
-				return nodeSet.addMatch(node, POSSIBLE_MATCH);
+				return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 		} else {
 			QualifiedNameReference qNameRef = (QualifiedNameReference) node;
 			char[][] tokens = qNameRef.tokens;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,17 +22,8 @@ import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 public class OrPattern extends SearchPattern implements IIndexConstants {
 
-	protected SearchPattern[] patterns;
-
-	/*
-	 * Whether this pattern is erasure match.
-	 */
-//	boolean isErasureMatch;
-
-	/**
-	 * One of {@link #R_ERASURE_MATCH}, {@link #R_EQUIVALENT_MATCH}, {@link #R_FULL_MATCH}.
-	 */
 	int matchCompatibility;
+	protected SearchPattern[] patterns;
 
 	public OrPattern(SearchPattern leftPattern, SearchPattern rightPattern) {
 		super(Math.max(leftPattern.getMatchRule(), rightPattern.getMatchRule()));
@@ -75,6 +66,19 @@ public class OrPattern extends SearchPattern implements IIndexConstants {
 		return null;
 	}
 
+	public SearchPattern findPatternKind(int patternKind) {
+		for (int i = 0; i < patterns.length; i++) {
+			if (((InternalSearchPattern)patterns[i]).kind == patternKind) {
+				return patterns[i];
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Whether this pattern is erasure match.
+	 * @return boolean isErasureMatch;
+	 */
 	boolean isErasureMatch() {
 		return (this.matchCompatibility & R_ERASURE_MATCH) != 0;
 	}

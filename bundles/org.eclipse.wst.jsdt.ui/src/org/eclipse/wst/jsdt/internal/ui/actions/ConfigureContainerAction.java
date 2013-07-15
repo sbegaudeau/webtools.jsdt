@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,16 +17,12 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.operation.IRunnableContext;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.navigator.CommonViewer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
@@ -55,22 +51,8 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		if (fCurrentSelection instanceof IStructuredSelection) {
-			JsGlobalScopeContainer container = (JsGlobalScopeContainer) ((IStructuredSelection) fCurrentSelection).getFirstElement();
+			JsGlobalScopeContainer container= (JsGlobalScopeContainer) ((IStructuredSelection) fCurrentSelection).getFirstElement();
 			openWizard(container.getClasspathEntry(), container.getLabel(), container.getJavaProject());
-			StructuredViewer viewer = (CommonViewer) fPart.getAdapter(StructuredViewer.class);
-			if (viewer == null) {
-				viewer = (CommonViewer) fPart.getAdapter(CommonViewer.class);
-			}
-			if (viewer != null) {
-				TreePath[] expanded = null;
-				if (viewer instanceof AbstractTreeViewer) {
-					expanded = ((AbstractTreeViewer) viewer).getExpandedTreePaths();
-				}
-				viewer.refresh(container.getJavaProject().getProject(), true);
-				if (expanded != null && viewer instanceof AbstractTreeViewer) {
-					((AbstractTreeViewer) viewer).setExpandedTreePaths(expanded);
-				}
-			}
 		}
 	}
 	

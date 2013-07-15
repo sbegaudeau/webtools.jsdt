@@ -31,7 +31,59 @@ import org.eclipse.wst.jsdt.internal.ui.text.JavaWordFinder;
  * 
  */
 public class JavaElementHyperlinkDetector extends AbstractHyperlinkDetector {
+	
+	/**
+	 * 
+	 * @param textViewer
+	 * @param region
+	 * @param canShowMultipleHyperlinks
+	 * @param ast
+	 * @return
+	 */
+	public IHyperlink[] detectHyperlinks(ITextViewer textViewer, IRegion region, boolean canShowMultipleHyperlinks, JavaScriptUnit ast) {
+		ITextEditor textEditor= (ITextEditor)getAdapter(ITextEditor.class);
+		if (region == null  || !(textEditor instanceof JavaEditor))
+			return null;
 
+		IAction openAction= textEditor.getAction("OpenEditor"); //$NON-NLS-1$
+		if (openAction == null)
+			return null;
+
+		int offset= region.getOffset();
+
+		IJavaScriptElement input= EditorUtility.getEditorInputJavaElement(textEditor, false);
+		if (input == null)
+			return null;
+
+			//get the possibly hyperlink word region
+			IDocument document= textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+			IRegion wordRegion= JavaWordFinder.findWord(document, offset);
+			if (wordRegion == null)
+				return null;
+			
+			if(ast==null) {
+			//search the AST for the word region to determine if it is a candidate for a link
+			ast = JavaScriptPlugin.getDefault().getASTProvider().getAST(
+							input, ASTProvider.WAIT_NO, null);
+			}
+			
+			if(ast != null) {
+				int start = wordRegion.getOffset();
+				int end = start + wordRegion.getLength();
+				HyperlinkCandidateVisitor visitor = new HyperlinkCandidateVisitor(start, end);
+				try {
+					ast.accept(visitor);
+				} catch(HyperlinkCandidateVisitor.HyperlinkCandidateFoundException e) {
+					//just means the visiting has been cut off early
+				}
+				if(visitor.fFoundCandidate) {
+					return new IHyperlink[] {new JavaElementHyperlink(wordRegion, openAction)};
+				}
+			}
+			
+		return null;
+	}
+	
 	/*
 	 * @see org.eclipse.jface.text.hyperlink.IHyperlinkDetector#detectHyperlinks(org.eclipse.jface.text.ITextViewer, org.eclipse.jface.text.IRegion, boolean)
 	 */
@@ -76,7 +128,7 @@ public class JavaElementHyperlinkDetector extends AbstractHyperlinkDetector {
 			
 		return null;
 	}
-	
+
 	/**
 	 * <p>Visits an AST looking for a node between the given start and end offsets
 	 * that could be a hyperlink candidate.</p>

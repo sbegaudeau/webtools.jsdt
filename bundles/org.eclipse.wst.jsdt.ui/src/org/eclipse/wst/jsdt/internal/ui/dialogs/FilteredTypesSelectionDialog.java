@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2009 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,8 @@ import org.eclipse.wst.jsdt.core.JavaScriptConventions;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.IInferEngine;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
@@ -379,9 +381,9 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			});
 			fFilterActionGroup.fillViewMenu(menuManager);
 		}
-		// 335480 - 'Open JavaScript Type' dialog suggest using type filters even though they don't exist
-//		menuManager.add(new Separator());
-//		menuManager.add(new TypeFiltersPreferencesAction());
+		//no type filter preference pages currently exist for JSDT
+		//menuManager.add(new Separator());
+		//menuManager.add(new TypeFiltersPreferencesAction());
 	}
 
 	/*
@@ -553,7 +555,6 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		TypeItemsFilter typeSearchFilter= (TypeItemsFilter) itemsFilter;
 		TypeSearchRequestor requestor= new TypeSearchRequestor(provider, typeSearchFilter);
 		SearchEngine engine= new SearchEngine((WorkingCopyOwner) null);
-		String packPattern= typeSearchFilter.getPackagePattern();
 		progressMonitor.setTaskName(JavaUIMessages.FilteredTypesSelectionDialog_searchJob_taskName);
 		
 		/*
@@ -563,25 +564,24 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		 * a terminator, the filter is not set to match everything mode because
 		 * jdt.core's SearchPattern does not support that case.
 		 */ 
-		String typePattern= itemsFilter.getPattern();
+		String prefix= typeSearchFilter.getInitialPattern();
 		int matchRule= typeSearchFilter.getMatchRule();
 		if (matchRule == SearchPattern.RULE_CAMELCASE_MATCH) {
 			 // If the pattern is empty, the RULE_BLANK_MATCH will be chosen, so we don't have to check the pattern length
-			char lastChar= typePattern.charAt(typePattern.length() - 1);
+			char lastChar= prefix.charAt(prefix.length() - 1);
 
 			if (lastChar == '<' || lastChar == ' ') {
-				typePattern= typePattern.substring(0, typePattern.length() - 1);
+				prefix= prefix.substring(0, prefix.length() - 1);
 			} else {
 				typeSearchFilter.setMatchEverythingMode(true);
 			}
+			matchRule |= SearchPattern.RULE_PREFIX_MATCH;
 		} else {
 			typeSearchFilter.setMatchEverythingMode(true);
 		}
 
 		try {
-			engine.searchAllTypeNames(packPattern == null ? null : packPattern.toCharArray(),
-					typeSearchFilter.getPackageFlags(), //TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=176017
-					typePattern.toCharArray(),
+			engine.searchAllTypeNames(prefix.toCharArray(),
 					matchRule, //TODO: https://bugs.eclipse.org/bugs/show_bug.cgi?id=176017
 					typeSearchFilter.getElementKind(),
 					typeSearchFilter.getSearchScope(),
@@ -1114,6 +1114,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		private boolean fMatchEverything= false;
 		
 		private final int fMyTypeFilterVersion= fTypeFilterVersion;
+		
+		private TypeSearchPattern fInitialPattern;
 
 		/**
 		 * Creates instance of TypeItemsFilter
@@ -1128,7 +1130,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			fIsWorkspaceScope= scope == null ? false : scope.equals(SearchEngine.createWorkspaceScope());
 			fElemKind= elementKind;
 			fFilterExt= extension;
+			String initialString = ((TypeSearchPattern) patternMatcher).getInitialString();
 			String stringPackage= ((TypeSearchPattern) patternMatcher).getPackagePattern();
+			fInitialPattern = new TypeSearchPattern();
+			fInitialPattern.setInitialPattern(initialString);
 			if (stringPackage != null) {
 				fPackageMatcher= new SearchPattern();
 				fPackageMatcher.setPattern(stringPackage);
@@ -1193,6 +1198,12 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 				return SearchPattern.RULE_PREFIX_MATCH;
 
 			return fPackageMatcher.getMatchRule();
+		}
+
+		public String getInitialPattern() {
+			if (fInitialPattern == null)
+				return null;
+			return fInitialPattern.getPattern();
 		}
 
 		public boolean matchesRawNamePattern(TypeNameMatch type) {
@@ -1274,11 +1285,14 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 
 			if (fMatchEverything) 
 				return true;
-
+			
 			TypeNameMatch type= (TypeNameMatch) item;
 			if (!(matchesPackage(type) && matchesModifiers(type) && matchesScope(type) && matchesFilterExtension(type)))
 				return false;
-			return matchesName(type);
+			
+			return  
+				fInitialPattern.matches(type.getPackageName()) ||
+			    matchesName(type);
 		}
 		
 		/*
@@ -1290,7 +1304,11 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			TypeNameMatch type= (TypeNameMatch) item;
 			return matchesRawNamePattern(type); 
 		}
-
+		
+		public int getMatchRule() {
+			return fInitialPattern.getMatchRule();
+		}
+	
 	}
 
 	/**
@@ -1299,6 +1317,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 	private static class TypeSearchPattern extends SearchPattern {
 
 		private String packagePattern;
+		private String initialString;
 
 		/*
 		 * (non-Javadoc)
@@ -1306,6 +1325,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		 * @see org.eclipse.ui.dialogs.SearchPattern#setPattern(java.lang.String)
 		 */
 		public void setPattern(String stringPattern) {
+			initialString = stringPattern;
 			String pattern= stringPattern;
 			String packPattern= null;
 			int index= stringPattern.lastIndexOf("."); //$NON-NLS-1$
@@ -1317,6 +1337,10 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			}
 			super.setPattern(pattern);
 			packagePattern= packPattern;
+		}
+		
+		public void setInitialPattern(String stringPattern) {
+			super.setPattern(stringPattern);
 		}
 
 		/*
@@ -1367,7 +1391,7 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		 * @see org.eclipse.ui.dialogs.SearchPattern#isValidCamelCaseChar(char)
 		 */
 		protected boolean isValidCamelCaseChar(char ch) {
-			return super.isValidCamelCaseChar(ch);
+			return ch != '.';
 		}
 
 		/**
@@ -1375,6 +1399,13 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 		 */
 		public String getPackagePattern() {
 			return packagePattern;
+		}
+		
+		/**
+		 * @return the initialPattern
+		 */
+		public String getInitialString() {
+			return initialString;
 		}
 
 	}
@@ -1411,6 +1442,8 @@ public class FilteredTypesSelectionDialog extends FilteredItemsSelectionDialog i
 			if (fStop)
 				return;
 			if (TypeFilter.isFiltered(match))
+				return;
+			if (CharOperation.indexOf(IInferEngine.ANONYMOUS_PREFIX, match.getSimpleTypeName().toCharArray(), false) == 0)
 				return;
 			if (fTypeItemsFilter.matchesFilterExtension(match))
 				fContentProvider.add(match, fTypeItemsFilter);

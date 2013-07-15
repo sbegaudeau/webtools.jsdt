@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ public LocalTypeBinding(ClassScope scope, SourceTypeBinding enclosingType, CaseS
 	MethodScope methodScope = scope.enclosingMethodScope();
 	AbstractMethodDeclaration declaration = methodScope.referenceMethod();
 	if (declaration != null) {
-		this.enclosingMethod = declaration.binding;
+		this.enclosingMethod = declaration.getBinding();
 	}
 }
 /* Record a dependency onto a source target type which may be altered
@@ -108,25 +108,10 @@ ArrayBinding createArrayType(int dimensionCount, LookupEnvironment lookupEnviron
 	return localArrayBindings[length] = new ArrayBinding(this, dimensionCount, lookupEnvironment);
 }
 
-/*
- * Overriden for code assist. In this case, the constantPoolName() has not been computed yet.
- * Slam the source name so that the signature is syntactically correct.
- * (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=99686)
- */
-public char[] genericTypeSignature() {
-	if (this.genericReferenceTypeSignature == null && constantPoolName() == null) {
-		if (isAnonymousType())
-			setConstantPoolName(superclass().sourceName());
-		else
-			setConstantPoolName(sourceName());
-	}
-	return super.signature();
-}
-
 public char[] readableName() /*java.lang.Object,  p.X<T> */ {
     char[] readableName;
 	if (isAnonymousType()) {
-		readableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.readableName(), TypeConstants.ANONYM_SUFFIX);
+		readableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, this.getSuperBinding0().readableName(), TypeConstants.ANONYM_SUFFIX);
 	} else if (isMemberType()) {
 		readableName = CharOperation.concat(enclosingType().readableName(), this.sourceName, '.');
 	} else {
@@ -138,7 +123,7 @@ public char[] readableName() /*java.lang.Object,  p.X<T> */ {
 public char[] shortReadableName() /*Object*/ {
     char[] shortReadableName;
 	if (isAnonymousType()) {
-		shortReadableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.shortReadableName(), TypeConstants.ANONYM_SUFFIX);
+		shortReadableName = CharOperation.concat(TypeConstants.ANONYM_PREFIX, this.getSuperBinding0().shortReadableName(), TypeConstants.ANONYM_SUFFIX);
 	} else if (isMemberType()) {
 		shortReadableName = CharOperation.concat(enclosingType().shortReadableName(), sourceName, '.');
 	} else {
@@ -163,7 +148,7 @@ public void setConstantPoolName(char[] computedConstantPoolName) /* java/lang/Ob
 public char[] signature() {
 	if (this.signature == null && constantPoolName() == null) {
 		if (isAnonymousType())
-			setConstantPoolName(superclass().sourceName());
+			setConstantPoolName(getSuperBinding().sourceName());
 		else
 			setConstantPoolName(sourceName());
 	}
@@ -171,7 +156,7 @@ public char[] signature() {
 }
 public char[] sourceName() {
 	if (isAnonymousType()) {
-		return CharOperation.concat(TypeConstants.ANONYM_PREFIX, superclass.sourceName(), TypeConstants.ANONYM_SUFFIX);
+		return CharOperation.concat(TypeConstants.ANONYM_PREFIX, this.getSuperBinding0().sourceName(), TypeConstants.ANONYM_SUFFIX);
 	} else
 		return sourceName;
 }

@@ -28,7 +28,7 @@ public abstract class MemberProposalInfo extends ProposalInfo {
 	protected final CompletionProposal fProposal;
 
 	/* cache filled lazily */
-	private boolean fJavaElementResolved= false;
+	protected boolean fJavaElementResolved= false;
 
 	/**
 	 * Creates a new proposal info.

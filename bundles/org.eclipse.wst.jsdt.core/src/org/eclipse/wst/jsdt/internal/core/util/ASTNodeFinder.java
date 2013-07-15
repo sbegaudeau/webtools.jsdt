@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -96,7 +96,7 @@ public class ASTNodeFinder {
 			int parameterCount = parameterTypeSignatures.length;
 			nextMethod: for (int i = 0, length = methods.length; i < length; i++) {
 				AbstractMethodDeclaration method = methods[i];
-				if (CharOperation.equals(selector, method.selector)) {
+				if (CharOperation.equals(selector, method.getName())) {
 					Argument[] args = method.arguments;
 					int argsLength = args == null ? 0 : args.length;
 					if (argsLength == parameterCount) {
@@ -197,10 +197,10 @@ public class ASTNodeFinder {
 		int count = 0;
 		for (int i = 0; i < this.unit.numberInferredTypes; i++) {
 			InferredType inferredType = this.unit.inferredTypes[i];
-			if (!inferredType.isDefinition || inferredType.isEmptyGlobal())
+			if (!inferredType.isDefinition())
 				continue;
 
-			if (!inferredType.isNamed()) {
+			if (inferredType.isAnonymous) {
 				if (findAnonymous && ++count == occurenceCount) {
 					return inferredType;
 				}

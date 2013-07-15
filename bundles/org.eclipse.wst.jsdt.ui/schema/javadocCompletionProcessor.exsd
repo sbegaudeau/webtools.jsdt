@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.wst.jsdt.ui" id="javadocCompletionProcessor" name="Jsdoc Completion Processor"/>
       </appInfo>
       <documentation>
-         This extension point adds completion processors to the list used for generating JSDoc proposals, e.g. to propose new JSDoc tags.
+         This extension point allows to add a JSdoc completion processor to e.g. offer new JSdoc tags.
 &lt;p&gt;
 Deprecated as of 3.2. Extenders should rather contribute to the &lt;tt&gt;org.eclipse.wst.jsdt.ui.javaCompletionProposalComputer&lt;/tt&gt; extension point, which allows to provide additional proposals not only for jsdoc, but any part of a JavaScript editor.
 &lt;/p&gt;

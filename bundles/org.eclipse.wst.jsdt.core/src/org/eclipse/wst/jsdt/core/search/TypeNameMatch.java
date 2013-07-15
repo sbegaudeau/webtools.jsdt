@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -87,7 +87,7 @@ public String getPackageName() {
 	String name=getType().getElementName();
 	int index=name.lastIndexOf(".");
 	if (index>=0)
-		name=name.substring(0,index);
+		return name.substring(0,index);
 	return "";
 }
 
@@ -106,6 +106,16 @@ public String getSimpleTypeName() {
 	if (index>=0)
 		name=name.substring(index+1);
 	return name;
+}
+
+/**
+ * Returns the stored super type names.
+ * 
+ * @return the stored super type names, or <b>null</b>.
+ * @since 1.2
+ */
+public char[][] getSuperTypeNames() {
+	return null;
 }
 
 /**

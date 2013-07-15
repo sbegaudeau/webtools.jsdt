@@ -44,9 +44,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 
 /**
- * Property page for configuring the JavaScript Include path
+ * Property page for configuring the Java build path
  */
-public final class BuildPathsPropertyPage extends PropertyPage implements IStatusChangeListener {
+public class BuildPathsPropertyPage extends PropertyPage implements IStatusChangeListener {
 	
 	public static final String PROP_ID= "org.eclipse.wst.jsdt.ui.propertyPages.BuildPathsPropertyPage"; //$NON-NLS-1$
 		

@@ -138,6 +138,10 @@ public class Logger {
 		_log(ERROR, message, exception);
 	}
 
+	public static void logException(int level, Throwable exception) {
+		_log(level, exception.getMessage(), exception);
+	}
+
 	public static void logException(Throwable exception) {
 		_log(ERROR, exception.getMessage(), exception);
 	}

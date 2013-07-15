@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,10 @@ package org.eclipse.wst.jsdt.libraries;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.wst.jsdt.core.IAccessRule;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
@@ -30,16 +34,18 @@ import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer {
 	private static final String CONTAINER_ID = org.eclipse.wst.jsdt.launching.JavaRuntime.BASE_BROWSER_LIB; //$NON-NLS-1$
 	private static final String BROWSER_SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
-		
-	/**
-	 * Union of all filenames composing web browser libraries
-	 */
+	
+	private static final String ContainerDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
+	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;
+	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;
+	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
+	
 	private static final char[][] LIBRARY_FILE_NAME = {
-		{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
-		{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'},
-		{'x','h','r','.','j','s'},
-		"dom5.js".toCharArray()
-	  };
+														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
+														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'},
+														{'x','h','r','.','j','s'},
+														{'d','o','m','5','.','j','s'}
+													  };
 
 	/**
 	 * Filenames composing our HTML4.01 web browser library
@@ -83,6 +89,17 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 	public LibraryLocation getLibraryLocation() {
 		return BasicLibLocation.getInstance();
 	}
+
+	public IIncludePathEntry[] getIncludepathEntries() {
+		LibraryLocation libLocation =  getLibraryLocation();
+		char[][] filesInLibs = libLocation.getLibraryFileNames();
+		IIncludePathEntry[] entries = new IIncludePathEntry[filesInLibs.length];
+		for (int i = 0; i < entries.length; i++) {
+			IPath workingLibPath = new Path(libLocation.getLibraryPath(filesInLibs[i]));
+			entries[i] = JavaScriptCore.newLibraryEntry(workingLibPath.makeAbsolute(), null, null, new IAccessRule[0], new IIncludePathAttribute[0], true);
+		}
+		return entries;
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaScriptProject)
@@ -92,7 +109,11 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 	}
 
 	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaScriptProject project) {
-		return new BasicBrowserLibraryContainer(containerPath);
+		return this;
+	}
+	
+	public String getDescription() {
+		return BasicBrowserLibraryJsGlobalScopeContainerInitializer.LibraryDescription;
 	}
 	
 	public String getDescription(IPath containerPath, IJavaScriptProject project) {
@@ -100,6 +121,14 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 			return null;
 
 		return containerPath.lastSegment(); 
+	}
+	
+	public int getKind() {
+		return IJsGlobalScopeContainer.K_SYSTEM;
+	}
+	
+	public IPath getPath() {
+		return new Path(BasicBrowserLibraryJsGlobalScopeContainerInitializer.CONTAINER_ID);
 	}
 	
 	public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {

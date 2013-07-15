@@ -491,7 +491,7 @@ void matchReportReference(Expression expr, int lastIndex, TypeBinding refBinding
 		locator.reportAccurateTypeReference(match, expr, this.pattern.simpleName);
 		return;
 	}
-	if (refBinding.isLocalType()) {
+	if (refBinding instanceof LocalTypeBinding) {
 		// see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=82673
 		LocalTypeBinding local = (LocalTypeBinding) refBinding;
 		IJavaScriptElement focus = ((InternalSearchPattern)pattern).focus;

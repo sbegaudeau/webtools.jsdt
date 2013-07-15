@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -99,7 +99,7 @@ public abstract class HierarchyBuilder {
 					new DefaultProblemFactory());
 		}
 		this.infoToHandle = new HashMap(5);
-		this.focusQualifiedName = focusType == null ? null : focusType.getFullyQualifiedName();
+		this.focusQualifiedName = focusType == null ? null : focusType.getTypeQualifiedName();
 	}
 
 	public abstract void build(boolean computeSubtypes)
@@ -182,6 +182,9 @@ public abstract class HierarchyBuilder {
 				this.infoToHandle.put(genericType, handle);
 			}
 			return handle;
+		} else if (genericType instanceof SourceTypeElementInfo) {
+			IType handle = ((SourceTypeElementInfo) genericType).getHandle();
+			return (IType) ((JavaElement) handle).resolved(binding);
 		} else if (genericType.isBinaryType()) {
 			ClassFile classFile = (ClassFile) this.infoToHandle.get(genericType);
 			// if it's null, it's from outside the region, so do lookup
@@ -194,12 +197,10 @@ public abstract class HierarchyBuilder {
 				classFile = (ClassFile) handle.getParent();
 				this.infoToHandle.put(genericType, classFile);
 			}
-			return new ResolvedBinaryType(classFile, classFile.getTypeName(), new String(binding.computeUniqueKey()));
-		} else if (genericType instanceof SourceTypeElementInfo) {
-			IType handle = ((SourceTypeElementInfo) genericType).getHandle();
-			return (IType) ((JavaElement) handle).resolved(binding);
-		} else
+			return new ResolvedBinaryType(classFile, new String(binding.readableName()), new String(binding.computeUniqueKey()));
+		} else {
 			return null;
+		}
 	}
 	protected IType getType() {
 		return this.hierarchy.getType();

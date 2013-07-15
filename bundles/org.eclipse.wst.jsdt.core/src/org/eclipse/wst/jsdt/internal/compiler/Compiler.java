@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -26,6 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
+import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor2;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -41,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSetOfCharArray;
 import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
-public class Compiler implements ITypeRequestor, ProblemSeverities {
+public class Compiler implements ITypeRequestor, ProblemSeverities, ITypeRequestor2 {
 	public Parser parser;
 	public ICompilerRequestor requestor;
 	public CompilerOptions options;
@@ -230,8 +232,17 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 				parsedUnit.bits |= ASTNode.IsImplicitUnit;
 				parser.inferTypes(parsedUnit, this.options);
 				parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
-				if (sourceUnit instanceof SourceFile)
-					this.addCompilationUnit(sourceUnit, parsedUnit);
+				if (sourceUnit instanceof SourceFile) {
+					// try to prevent, or at least reduce, the times the same file is processed multiple times
+					boolean addUnit = true;
+					if(this.lookupEnvironment != null && this.lookupEnvironment.unitBeingCompleted != null &&
+								CharOperation.equals(this.lookupEnvironment.unitBeingCompleted.getFileName(), parsedUnit.getFileName())) {
+						addUnit = false;
+						
+					}
+					if(addUnit)
+						this.addCompilationUnit(sourceUnit, parsedUnit);
+				}
 			}
 			// initial type binding creation
 			lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
@@ -343,18 +354,17 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			// process all units (some more could be injected in the loop by the lookup environment)
 			for (int i = 0; i < this.totalUnits; i++) {
 				unit = unitsToProcess[i];
-				try {
-					if (options.verbose)
-						this.out.println(
-							Messages.bind(Messages.compilation_process,
-							new String[] {
-								String.valueOf(i + 1),
-								String.valueOf(this.totalUnits),
-								new String(unitsToProcess[i].getFileName())
-							}));
-					process(unit, i);
-				} finally {
-				}
+				
+				if (options.verbose)
+					this.out.println(
+						Messages.bind(Messages.compilation_process,
+						new String[] {
+							String.valueOf(i + 1),
+							String.valueOf(this.totalUnits),
+							new String(unitsToProcess[i].getFileName())
+						}));
+				process(unit, i);
+				
 				requestor.acceptResult(unit.compilationResult.tagAsAccepted());
 				if (options.verbose)
 					this.out.println(
@@ -368,9 +378,8 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			
 			//clean up all units
 			for(int i = 0; i < this.totalUnits; i++) {
-				// cleanup compilation unit result
 				unitsToProcess[i].cleanUp();
-				unitsToProcess[i] = null; // release reference to processed unit declaration
+				unitsToProcess[i] = null;
 			}
 		} catch (AbortCompilation e) {
 			this.handleInternalException(e, unit);
@@ -565,7 +574,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 				SimpleSetOfCharArray defined = new SimpleSetOfCharArray();
 				for (int j = 0; j < parsedUnit.numberInferredTypes; j++) {
-					if (parsedUnit.inferredTypes[j].isDefinition && !parsedUnit.inferredTypes[j].isEmptyGlobal()) {
+					if (parsedUnit.inferredTypes[j].isDefinition()) {
 						defined.add(parsedUnit.inferredTypes[j].getName());
 						allDefinedTypes.add(parsedUnit.inferredTypes[j].getName());
 					}
@@ -598,10 +607,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		// fault in fields & methods
 		if (unit.scope != null)
 			unit.scope.faultInTypes();
-
-		// verify inherited methods
-		if (unit.scope != null)
-			unit.scope.verifyMethods(lookupEnvironment.methodVerifier());
 
 		// type checking
 		unit.resolve();
@@ -658,11 +663,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			if (unit.scope != null) {
 				// fault in fields & methods
 				unit.scope.faultInTypes();
-				if (unit.scope != null && verifyMethods) {
-					// http://dev.eclipse.org/bugs/show_bug.cgi?id=23117
- 					// verify inherited methods
-					unit.scope.verifyMethods(lookupEnvironment.methodVerifier());
-				}
+
 				// type checking
 				unit.resolve();
 
@@ -712,5 +713,53 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			verifyMethods,
 			analyzeCode,
 			generateCode);
+	}
+
+	public void accept(ICompilationUnit sourceUnit, char[][] typeNames, AccessRestriction accessRestriction) {
+		// Switch the current policy and compilation result for this unit to the requested one.
+		CompilationResult unitResult =
+			new CompilationResult(sourceUnit, totalUnits, totalUnits, this.options.maxProblemsPerUnit);
+		unitResult.packageName=sourceUnit.getPackageName();
+		try {
+			if (options.verbose) {
+				String count = String.valueOf(totalUnits + 1);
+				this.out.println(
+					Messages.bind(Messages.compilation_request,
+						new String[] {
+							count,
+							count,
+							new String(sourceUnit.getFileName())
+						}));
+			}
+			if (parsedUnits == null)
+				parsedUnits = new HashtableOfObject();
+			CompilationUnitDeclaration parsedUnit = (CompilationUnitDeclaration) parsedUnits.get(sourceUnit.getFileName());
+			if (parsedUnit == null) {
+				// diet parsing for large collection of unit
+				if (totalUnits < parseThreshold) {
+					parsedUnit = parser.parse(sourceUnit, unitResult);
+				}
+				else {
+					parsedUnit = parser.dietParse(sourceUnit, unitResult);
+				}
+				parsedUnit.bits |= ASTNode.IsImplicitUnit;
+				parser.inferTypes(parsedUnit, this.options);
+				parsedUnits.put(sourceUnit.getFileName(), parsedUnit);
+			}
+			// initial type binding creation
+			lookupEnvironment.buildTypeBindings(parsedUnit, typeNames, accessRestriction);
+
+			// binding resolution
+			lookupEnvironment.completeTypeBindings(parsedUnit, typeNames);
+		} catch (AbortCompilationUnit e) {
+			// at this point, currentCompilationUnitResult may not be sourceUnit, but some other
+			// one requested further along to resolve sourceUnit.
+			if (unitResult.compilationUnit == sourceUnit) { // only report once
+				requestor.acceptResult(unitResult.tagAsAccepted());
+			} else {
+				throw e; // want to abort enclosing request to compile
+			}
+		}
+		
 	}
 }

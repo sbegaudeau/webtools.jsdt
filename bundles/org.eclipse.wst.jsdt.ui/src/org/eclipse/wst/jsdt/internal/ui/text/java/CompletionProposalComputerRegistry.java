@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -320,36 +321,39 @@ public final class CompletionProposalComputerRegistry {
 	 */
 	void informUser(CompletionProposalComputerDescriptor descriptor, IStatus status) {
 		JavaScriptPlugin.log(status);
-        String title= JavaTextMessages.CompletionProposalComputerRegistry_error_dialog_title;
-        CompletionProposalCategory category= descriptor.getCategory();
-        IContributor culprit= descriptor.getContributor();
-        Set affectedPlugins= getAffectedContributors(category, culprit);
-        
-		final String avoidHint;
-		final String culpritName= culprit == null ? null : culprit.getName();
-		if (affectedPlugins.isEmpty())
-			avoidHint= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_messageAvoidanceHint, new Object[] {culpritName, category.getDisplayName()});
-		else
-			avoidHint= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_messageAvoidanceHintWithWarning, new Object[] {culpritName, category.getDisplayName(), toString(affectedPlugins)});
-        
-		String message= status.getMessage();
-        // inlined from MessageDialog.openError
-        MessageDialog dialog = new MessageDialog(JavaScriptPlugin.getActiveWorkbenchShell(), title, null /* default image */, message, MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0) {
-        	protected Control createCustomArea(Composite parent) {
-        		Link link= new Link(parent, SWT.NONE);
-        		link.setText(avoidHint);
-        		link.addSelectionListener(new SelectionAdapter() {
-        			public void widgetSelected(SelectionEvent e) {
-        				PreferencesUtil.createPreferenceDialogOn(getShell(), "org.eclipse.wst.jsdt.ui.preferences.CodeAssistPreferenceAdvanced", null, null).open(); //$NON-NLS-1$
-        			}
-        		});
-        		GridData gridData= new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-        		gridData.widthHint= this.getMinimumMessageWidth();
-				link.setLayoutData(gridData);
-        		return link;
-        	}
-        };
-        dialog.open();
+		
+		if(!ErrorDialog.AUTOMATED_MODE) {
+	        String title= JavaTextMessages.CompletionProposalComputerRegistry_error_dialog_title;
+	        CompletionProposalCategory category= descriptor.getCategory();
+	        IContributor culprit= descriptor.getContributor();
+	        Set affectedPlugins= getAffectedContributors(category, culprit);
+	        
+			final String avoidHint;
+			final String culpritName= culprit == null ? null : culprit.getName();
+			if (affectedPlugins.isEmpty())
+				avoidHint= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_messageAvoidanceHint, new Object[] {culpritName, category.getDisplayName()});
+			else
+				avoidHint= Messages.format(JavaTextMessages.CompletionProposalComputerRegistry_messageAvoidanceHintWithWarning, new Object[] {culpritName, category.getDisplayName(), toString(affectedPlugins)});
+	        
+			String message= status.getMessage();
+	        // inlined from MessageDialog.openError
+	        MessageDialog dialog = new MessageDialog(JavaScriptPlugin.getActiveWorkbenchShell(), title, null /* default image */, message, MessageDialog.ERROR, new String[] { IDialogConstants.OK_LABEL }, 0) {
+	        	protected Control createCustomArea(Composite parent) {
+	        		Link link= new Link(parent, SWT.NONE);
+	        		link.setText(avoidHint);
+	        		link.addSelectionListener(new SelectionAdapter() {
+	        			public void widgetSelected(SelectionEvent e) {
+	        				PreferencesUtil.createPreferenceDialogOn(getShell(), "org.eclipse.wst.jsdt.ui.preferences.CodeAssistPreferenceAdvanced", null, null).open(); //$NON-NLS-1$
+	        			}
+	        		});
+	        		GridData gridData= new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+	        		gridData.widthHint= this.getMinimumMessageWidth();
+					link.setLayoutData(gridData);
+	        		return link;
+	        	}
+	        };
+	        dialog.open();
+		}
 	}
 
 	/**

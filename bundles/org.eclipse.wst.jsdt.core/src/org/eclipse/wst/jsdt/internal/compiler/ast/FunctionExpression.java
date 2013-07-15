@@ -51,12 +51,20 @@ public class FunctionExpression extends Expression implements IFunctionExpressio
 
 	public TypeBinding resolveType(BlockScope scope) {
 		constant = Constant.NotAConstant;
-		this.methodDeclaration.scope=new MethodScope(scope,this.methodDeclaration,false);
-		this.methodDeclaration.binding=this.methodDeclaration.scope.createMethod(this.methodDeclaration, null, scope.enclosingCompilationUnit(), false, false);
-		methodDeclaration.bindArguments();
-		this.methodDeclaration.binding.createFunctionTypeBinding(scope);
+		this.methodDeclaration.setScope(new MethodScope(scope,this.methodDeclaration,false));
+		
+		if(!this.methodDeclaration.hasBinding()) {
+			this.methodDeclaration.setBinding(this.methodDeclaration.getScope().createMethod(this.methodDeclaration, this.methodDeclaration.selector, scope.enclosingCompilationUnit(), false, false));
+		}
+		
+		//add binding to scope only if named
+		if(this.methodDeclaration.getName() != null) {
+			scope.addLocalMethod(this.methodDeclaration.getBinding());
+		}
+		
+		this.methodDeclaration.getBinding().createFunctionTypeBinding(scope);
 		this.methodDeclaration.resolve(scope);
-		return this.methodDeclaration.binding.functionTypeBinding;
+		return this.methodDeclaration.getBinding().functionTypeBinding;
 	}
 
 	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {

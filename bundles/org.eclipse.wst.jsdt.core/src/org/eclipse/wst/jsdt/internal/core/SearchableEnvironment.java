@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -37,8 +37,11 @@ import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
 import org.eclipse.wst.jsdt.internal.core.search.IConstructorRequestor;
+import org.eclipse.wst.jsdt.internal.core.search.IFunctionRequester;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessBindingRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.IRestrictedAccessTypeRequestor;
+import org.eclipse.wst.jsdt.internal.core.search.IVariableRequester;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
 
 /**
  * This class provides a <code>SearchableBuilderEnvironment</code> for code
@@ -76,13 +79,7 @@ public class SearchableEnvironment implements INameEnvironment,
 		this.nameLookup = javaProject.newNameLookup(workingCopies);
 		this.nameLookup.setRestrictedAccessRequestor(resolutionScope);
 		// Create search scope with visible entry on the project's classpath
-		if (false){//this.checkAccessRestrictions) {
-			this.searchScope = BasicSearchEngine
-					.createJavaSearchScope(this.nameLookup.packageFragmentRoots );
-				} else {
-			this.searchScope = BasicSearchEngine
-					.createJavaSearchScope(this.nameLookup.packageFragmentRoots);
-		}
+		this.searchScope = BasicSearchEngine.createJavaSearchScope(this.nameLookup.packageFragmentRoots);
 		this.nameLookup.searchScope=this.searchScope;
 	}
 	public SearchableEnvironment(JavaProject project,
@@ -168,16 +165,10 @@ public class SearchableEnvironment implements INameEnvironment,
 					for (int i = 0, index = 1; i < length; i++) {
 						ISourceType otherType = (ISourceType) ((JavaElement) types[i])
 								.getElementInfo();
-						if (!otherType.equals(topLevelType) && index < length) // check
-																				// that
-																				// the
-																				// index
-																				// is
-																				// in
-																				// bounds
-																				// (see
-																				// https://bugs.eclipse.org/bugs/show_bug.cgi?id=62861)
+						//check that the index is in bounds (see Bug 62861)
+						if (!otherType.equals(topLevelType) && index < length) {
 							sourceTypes[index++] = otherType;
+						}
 					}
 					return new NameEnvironmentAnswer(sourceTypes,
 							answer.restriction);
@@ -231,8 +222,6 @@ public class SearchableEnvironment implements INameEnvironment,
 				System.arraycopy(elements, 0, units, 0, elements.length);
 				return new NameEnvironmentAnswer(units,answer.restriction);
 			}
-				// return new NameEnvironmentAnswer((IBinaryType) ((BinaryType)
-				// answer.type).getElementInfo(), answer.restriction);
 		}
 		return null;
 	}
@@ -278,35 +267,8 @@ public class SearchableEnvironment implements INameEnvironment,
 				excludePath = null;
 			}
 
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-				public void beginTask(String n, int totalWork) {
-					// implements interface method
-				}
-				public void done() {
-					// implements interface method
-				}
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-				public boolean isCanceled() {
-					return isCanceled;
-				}
-				public void setCanceled(boolean value) {
-					isCanceled = value;
-				}
-				public void setTaskName(String n) {
-					// implements interface method
-				}
-				public void subTask(String n) {
-					// implements interface method
-				}
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
 			IRestrictedAccessTypeRequestor typeRequestor = new IRestrictedAccessTypeRequestor() {
-				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
+				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] superTypeNames, char[][] enclosingTypeNames, String path, AccessRestriction access) {
 					if (excludePath != null && excludePath.equals(path))
 						return;
 					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
@@ -316,15 +278,12 @@ public class SearchableEnvironment implements INameEnvironment,
 			};
 			try {
 				new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-					null,
-					SearchPattern.R_EXACT_MATCH,
 					name,
 					SearchPattern.R_EXACT_MATCH,
-					searchFor,
 					this.searchScope,
 					typeRequestor,
 					CANCEL_IF_NOT_READY_TO_SEARCH,
-					progressMonitor);
+					new CancelableProgressMonitor());
 			} catch (OperationCanceledException e) {
 				findExactTypes(
 					new String(name),
@@ -433,72 +392,10 @@ public class SearchableEnvironment implements INameEnvironment,
 			} else {
 				excludePath = null;
 			}
-			
-			//int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
-			// just use the simple name field to hold the full type name
-			char[] qualification, simpleName;
-			qualification = null;
-			if (camelCaseMatch) {
-				simpleName = prefix;
-			} else {
-				simpleName = CharOperation.toLowerCase(prefix);
-			}
-			
-//			if (lastDotIndex < 0 || true) {
-//				qualification = null;
-//				if (camelCaseMatch) {
-//					simpleName = prefix;
-//				} else {
-//					simpleName = CharOperation.toLowerCase(prefix);
-//				}
-//			} else {
-//				qualification = CharOperation.subarray(prefix, 0, lastDotIndex);
-//				if (camelCaseMatch) {
-//					simpleName = CharOperation.subarray(prefix,
-//							lastDotIndex + 1, prefix.length);
-//				} else {
-//					simpleName = CharOperation.toLowerCase(CharOperation
-//							.subarray(prefix, lastDotIndex + 1, prefix.length));
-//				}
-//			}
 
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-
-				public void beginTask(String name, int totalWork) {
-					// implements interface method
-				}
-
-				public void done() {
-					// implements interface method
-				}
-
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-
-				public boolean isCanceled() {
-					return isCanceled;
-				}
-
-				public void setCanceled(boolean value) {
-					isCanceled = value;
-				}
-
-				public void setTaskName(String name) {
-					// implements interface method
-				}
-
-				public void subTask(String name) {
-					// implements interface method
-				}
-
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
+			IProgressMonitor progressMonitor = new CancelableProgressMonitor();
 			IRestrictedAccessTypeRequestor typeRequestor = new IRestrictedAccessTypeRequestor() {
-				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path, AccessRestriction access) {
+				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] superTypeNames, char[][] enclosingTypeNames, String path, AccessRestriction access) {
 					if (excludePath != null && excludePath.equals(path))
 						return;
 					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
@@ -507,15 +404,15 @@ public class SearchableEnvironment implements INameEnvironment,
 				}
 			};
 			try {
-				int matchRule = SearchPattern.R_PREFIX_MATCH;
-				if (camelCaseMatch)
+				//set the match rule
+				int matchRule = SearchPattern.R_PREFIX_MATCH ;
+				if (camelCaseMatch) {
 					matchRule |= SearchPattern.R_CAMELCASE_MATCH;
+				}
+				
 				new BasicSearchEngine(this.workingCopies).searchAllTypeNames(
-						qualification,
-						SearchPattern.R_EXACT_MATCH,
-						simpleName,
+						prefix,
 						matchRule, // not case sensitive
-						searchFor,
 						this.searchScope,
 						typeRequestor, CANCEL_IF_NOT_READY_TO_SEARCH,
 						progressMonitor);
@@ -526,8 +423,6 @@ public class SearchableEnvironment implements INameEnvironment,
 			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}
-
-
 
 	/**
 	 * Find the top-level types (classes and interfaces) that are defined in the
@@ -586,41 +481,8 @@ public class SearchableEnvironment implements INameEnvironment,
 				}
 			}
 
-			IProgressMonitor progressMonitor = new IProgressMonitor() {
-				boolean isCanceled = false;
-
-				public void beginTask(String name, int totalWork) {
-					// implements interface method
-				}
-
-				public void done() {
-					// implements interface method
-				}
-
-				public void internalWorked(double work) {
-					// implements interface method
-				}
-
-				public boolean isCanceled() {
-					return isCanceled;
-				}
-
-				public void setCanceled(boolean value) {
-					isCanceled = value;
-				}
-
-				public void setTaskName(String name) {
-					// implements interface method
-				}
-
-				public void subTask(String name) {
-					// implements interface method
-				}
-
-				public void worked(int work) {
-					// implements interface method
-				}
-			};
+			IProgressMonitor progressMonitor = new CancelableProgressMonitor();
+			
 			IRestrictedAccessBindingRequestor bindingRequestor = new IRestrictedAccessBindingRequestor() {
 				String exclude;
 				public boolean acceptBinding(int type,int modifiers, char[] packageName,
@@ -674,6 +536,138 @@ public class SearchableEnvironment implements INameEnvironment,
 			findTypes(new String(prefix), storage, NameLookup.ACCEPT_ALL);
 		}
 	}
+	
+	/**
+	 * <p>Used to find all functions in the environment using the given information.</p>
+	 * 
+	 * <p><b>NOTE:</b> this function will currently ignore any results either from the index
+	 * or working copies from the {@link #unitToSkip}.</p>
+	 * 
+	 * @param selectorPrefix prefix to the selector to search for functions matches for, or
+	 * <code>null</code> to search for functions with any selector.  The <code>null</code>
+	 * option is useful when searching for all functions on a given type.
+	 * @param declaringTypeName fully qualified type name that any function results should be
+	 * defined on, or <code>null</code> if the function results should not be defined on any type
+	 * @param searchRequester search requester to return any search results too
+	 */
+	public void findFunctions(char[] selectorPrefix, char[][] declaringTypeNames, boolean camelCaseMatch, final ISearchRequestor searchRequester) {
+		//calculate the exclude path
+		final String excludePath;
+		if (this.unitToSkip != null && this.unitToSkip instanceof IJavaScriptElement) {
+			excludePath = ((IJavaScriptElement)this.unitToSkip).getPath().toString();
+		} else {
+			excludePath = null;
+		}
+		
+		//create the requester
+		IFunctionRequester functionRequestor = new IFunctionRequester() {
+			public void acceptFunction(char[] signature,
+					char[][] parameterFullyQualifiedTypeNames,
+					char[][] parameterNames,
+					char[] returnQualification, char[] returnSimpleName,
+					char[] declaringQualification, char[] declaringSimpleName,
+					int modifiers,
+					String path) {
+				
+				if (excludePath == null || !excludePath.equals(path)) {
+					searchRequester.acceptFunction(signature, parameterFullyQualifiedTypeNames, parameterNames,
+							returnQualification, returnSimpleName, declaringQualification, declaringSimpleName, modifiers, path);
+				}
+			}
+		};
+		
+		/* if selector specified then search for any selector with the given selector as a prefix
+		 * else search for any selector
+		 */
+		char[] selectorPattern;
+		int selectorPatternMatchRule;
+		if(selectorPrefix != null) {
+			selectorPattern = selectorPrefix;
+			selectorPatternMatchRule = SearchPattern.R_PREFIX_MATCH;
+		} else {
+			selectorPattern = new char[] {'*'};
+			selectorPatternMatchRule = SearchPattern.R_PATTERN_MATCH;
+		}
+		
+		
+		if (camelCaseMatch)
+			selectorPatternMatchRule |= SearchPattern.R_CAMELCASE_MATCH;
+		
+		//do the search
+		new BasicSearchEngine(this.workingCopies).searchAllFunctions(
+				functionRequestor,
+				selectorPattern,
+				declaringTypeNames,
+				selectorPatternMatchRule,
+				this.searchScope,
+				WAIT_UNTIL_READY_TO_SEARCH,
+				new CancelableProgressMonitor());
+	}
+	
+	/**
+	 * <p>Used to find all varaibles in the environment using the given information.</p>
+	 * 
+	 * <p><b>NOTE:</b> this function will currently ignore any results either from the index
+	 * or working copies from the {@link #unitToSkip}.</p>
+	 * 
+	 * @param variablePrefix prefix to the variable to search for matches,, or
+	 * <code>null</code> to search for variables with any selector.  The <code>null</code>
+	 * option is useful when searching for all variables on a given type.
+	 * @param declaringTypeName fully qualified type name that any variable results should be
+	 * defined on, or <code>null</code> if the function results should not be defined on any type
+	 * @param searchRequester search requester to return any search results too
+	 */
+	public void findVariables(char[] variablePrefix, char[][] declaringTypeNames, boolean camelCaseMatch, final ISearchRequestor searchRequester) {
+		//calculate the exclude path
+		final String excludePath;
+		if (this.unitToSkip != null && this.unitToSkip instanceof IJavaScriptElement) {
+			excludePath = ((IJavaScriptElement)this.unitToSkip).getPath().toString();
+		} else {
+			excludePath = null;
+		}
+		
+		//create the requester
+		IVariableRequester variableRequestor = new IVariableRequester() {
+			public void acceptVariable(char[] signature,
+					char[] typeQualification, char[] typeSimpleName,
+					char[] declaringQualification, char[] declaringSimpleName,
+					int modifiers,
+					String path) {
+				
+				if (excludePath == null || !excludePath.equals(path)) {
+					searchRequester.acceptVariable(signature, typeQualification, typeSimpleName, 
+							declaringQualification, declaringSimpleName, modifiers, path);
+				}
+			}
+		};
+		
+		/* if selector specified then search for any selector with the given selector as a prefix
+		 * else search for any selector
+		 */
+		char[] variablePattern;
+		int variablePatternMatchRule;
+		if(variablePrefix != null) {
+			variablePattern = variablePrefix;
+			variablePatternMatchRule = SearchPattern.R_PREFIX_MATCH;
+		} else {
+			variablePattern = new char[] {'*'};
+			variablePatternMatchRule = SearchPattern.R_PATTERN_MATCH;
+		}
+		
+		
+		if (camelCaseMatch)
+			variablePatternMatchRule |= SearchPattern.R_CAMELCASE_MATCH;
+		
+		//do the search
+		new BasicSearchEngine(this.workingCopies).searchAllVariables(
+				variableRequestor,
+				variablePattern,
+				declaringTypeNames,
+				variablePatternMatchRule,
+				this.searchScope,
+				WAIT_UNTIL_READY_TO_SEARCH,
+				new CancelableProgressMonitor());
+	}
 
 	/**
 	 * <p>The progress monitor is used to be able to cancel completion operations</p>
@@ -689,7 +683,7 @@ public class SearchableEnvironment implements INameEnvironment,
 	 * @param prefix to use in the search
 	 * @param storage to report constructor declarations matching the given prefix to
 	 */
-	public void findConstructorDeclarations(char[] prefix, final ISearchRequestor storage) {
+	public void findConstructorDeclarations(char[] prefix, boolean camelCaseMatch, final ISearchRequestor storage) {
 		final String excludePath;
 		if (this.unitToSkip != null && this.unitToSkip instanceof IJavaScriptElement) {
 			excludePath = ((IJavaScriptElement) this.unitToSkip).getPath().toString();
@@ -697,33 +691,7 @@ public class SearchableEnvironment implements INameEnvironment,
 			excludePath = null;
 		}
 
-		IProgressMonitor progressMonitor = new IProgressMonitor() {
-			boolean isCanceled = false;
-			public void beginTask(String name, int totalWork) {
-				// implements interface method
-			}
-			public void done() {
-				// implements interface method
-			}
-			public void internalWorked(double work) {
-				// implements interface method
-			}
-			public boolean isCanceled() {
-				return this.isCanceled;
-			}
-			public void setCanceled(boolean value) {
-				this.isCanceled = value;
-			}
-			public void setTaskName(String name) {
-				// implements interface method
-			}
-			public void subTask(String name) {
-				// implements interface method
-			}
-			public void worked(int work) {
-				// implements interface method
-			}
-		};
+		IProgressMonitor progressMonitor = new CancelableProgressMonitor();
 		
 		IConstructorRequestor constructorRequestor = new IConstructorRequestor() {
 			/**
@@ -745,7 +713,6 @@ public class SearchableEnvironment implements INameEnvironment,
 				storage.acceptConstructor(
 						modifiers,
 						typeName,
-						parameterCount,
 						parameterTypes,
 						parameterNames, 
 						path,
@@ -753,21 +720,15 @@ public class SearchableEnvironment implements INameEnvironment,
 			}
 		};
 		
-		/* when matching on "Test|" will match on
-		 * Test
-		 * TestBar
-		 * foo.Test
-		 * foo.TestBar
-		 * test.foo.Bar
-		 */
-		int matchRule = SearchPattern.R_REGEXP_MATCH;
-		String escapedPrefix = new String(prefix);
-		escapedPrefix.replaceAll("\\.", "\\."); //replace all "." with "\."
-		String regex = "(.*\\." + escapedPrefix + "[^\\.]*)|(" + escapedPrefix + ".*)";
+		//set the match rule
+		int matchRule = SearchPattern.R_PREFIX_MATCH ;
+		if (camelCaseMatch) {
+			matchRule |= SearchPattern.R_CAMELCASE_MATCH;
+		}
 		
 		try {
 			new BasicSearchEngine(this.workingCopies).searchAllConstructorDeclarations(
-					regex.toCharArray(),
+					prefix,
 					matchRule,
 					this.searchScope,
 					constructorRequestor,
@@ -817,21 +778,84 @@ public class SearchableEnvironment implements INameEnvironment,
 			this.nameLookup.seekBindings(prefix, bindingType,null, true, type, requestor);
 		} else {
 			throw new UnimplementedException("shouldnt get here"); //$NON-NLS-1$
-//			String packageName = prefix.substring(0, index);
-//			JavaElementRequestor elementRequestor = new JavaElementRequestor();
-//			this.nameLookup.seekPackageFragments(packageName, false,
-//					elementRequestor);
-//			IPackageFragment[] fragments = elementRequestor
-//					.getPackageFragments();
-//			if (fragments != null) {
-//				String className = prefix.substring(index + 1);
-//				for (int i = 0, length = fragments.length; i < length; i++)
-//					if (fragments[i] != null)
-//						this.nameLookup.seekTypes(className, fragments[i],
-//								true, type, requestor);
-//			}
 		}
 	}
+
+	public ArrayList findSuperTypes(char[] typeName) {
+		final ArrayList superTypes = new ArrayList();
+		final ArrayList queue = new ArrayList();
+		final ArrayList alreadySearched = new ArrayList();
+
+		/*
+		 * if (true){ findTypes(new String(prefix), storage,
+		 * NameLookup.ACCEPT_CLASSES | NameLookup.ACCEPT_INTERFACES); return;
+		 * }
+		 */
+		try {
+			final String excludePath;
+			if (this.unitToSkip != null) {
+				excludePath = ((IJavaScriptElement) this.unitToSkip).getPath().toString();
+			}
+			else {
+				excludePath = null;
+			}
+
+			// int lastDotIndex = CharOperation.lastIndexOf('.', prefix);
+			// just use the simple name field to hold the full type name
+			char[] qualification, simpleName;
+			qualification = null;
+
+			simpleName = CharOperation.toLowerCase(typeName);
+
+			queue.add(simpleName);
+			IRestrictedAccessTypeRequestor typeRequestor = new IRestrictedAccessTypeRequestor() {
+				public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] superTypeNames, char[][] enclosingTypeNames, String path, AccessRestriction access) {
+					if (excludePath != null && excludePath.equals(path))
+						return;
+					boolean doAdd = true;
+					for (int i = 0; i < superTypes.size(); i++) {
+						if (CharOperation.equals(superTypeNames[0], (char[]) superTypes.get(i))) {
+							doAdd = false;
+							break;
+						}
+					}
+					if (doAdd)
+						superTypes.add(superTypeNames[0]);
+					queue.add(superTypeNames[0]);
+				}
+			};
+			try {
+				while (!queue.isEmpty()) {
+					char[] nextSearch = (char[]) queue.get(0);
+					boolean doSearch = true;
+					if (CharOperation.equals(nextSearch, IIndexConstants.OBJECT))
+						doSearch = false;
+
+					for (int i = 0; doSearch && i < alreadySearched.size(); i++) {
+						if (CharOperation.equals(nextSearch, (char[]) alreadySearched.get(i))) {
+							doSearch = false;
+						}
+					}
+					if (doSearch) {
+						alreadySearched.add(nextSearch);
+						new BasicSearchEngine(this.workingCopies).searchAllTypeNames(qualification, nextSearch, SearchPattern.R_EXACT_MATCH, //not case sensitive
+									this.searchScope, typeRequestor, WAIT_UNTIL_READY_TO_SEARCH, new CancelableProgressMonitor());
+
+					}
+					queue.remove(0);
+					doSearch = true;
+				}
+			}
+			catch (OperationCanceledException e) {
+			}
+		}
+		catch (JavaScriptModelException e) {
+		}
+		return superTypes;
+	}
+			
+
+		
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment#isPackage(char[][],
 	 *      char[])
@@ -876,5 +900,36 @@ public class SearchableEnvironment implements INameEnvironment,
 	public void setCompilationUnit(IInferenceFile file)
 	{
 		nameLookup.setScriptFile(file);
+	}
+	
+	/**
+	 * <p>A cancelable progress monitor</p>
+	 */
+	private static class CancelableProgressMonitor implements IProgressMonitor {
+		boolean isCanceled = false;
+		public void beginTask(String name, int totalWork) {
+			// implements interface method
+		}
+		public void done() {
+			// implements interface method
+		}
+		public void internalWorked(double work) {
+			// implements interface method
+		}
+		public boolean isCanceled() {
+			return this.isCanceled;
+		}
+		public void setCanceled(boolean value) {
+			this.isCanceled = value;
+		}
+		public void setTaskName(String name) {
+			// implements interface method
+		}
+		public void subTask(String name) {
+			// implements interface method
+		}
+		public void worked(int work) {
+			// implements interface method
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2010 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@
 
 package org.eclipse.wst.jsdt.internal.ui.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,11 +22,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,7 +38,6 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -59,16 +58,15 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 	private static final String FACET_NATURE = "org.eclipse.wst.common.project.facet.core.nature"; //$NON-NLS-1$
 	private static final String FACET_PROPERTY_PAGE = "org.eclipse.wst.common.project.facet.ui.FacetsPropertyPage"; //$NON-NLS-1$
 
-	private void doInstall(IProject project, final boolean openProperties, IProgressMonitor monitor) {
+	private void doInstall(IProject project) {
 		boolean configured = false;
 
-		monitor.beginTask(Messages.converter_ConfiguringForJavaScript, 5);
 		ConvertUtility convertor = new ConvertUtility(project);
 		try {
 			boolean hadBasicNature = ConvertUtility.hasNature(project);
 
-			convertor.configure(new SubProgressMonitor(monitor, 1));
-			convertor.addBrowserSupport(!hadBasicNature, new SubProgressMonitor(monitor, 1));
+			convertor.configure(new NullProgressMonitor());
+			convertor.addBrowserSupport(!hadBasicNature, new NullProgressMonitor());
 
 			if (!hadBasicNature) {
 				/*
@@ -98,7 +96,7 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 				
 				
 				try {
-					jp.setRawIncludepath(newEntries, project.getFullPath(), new SubProgressMonitor(monitor, 1));
+					jp.setRawIncludepath(newEntries, project.getFullPath(), new NullProgressMonitor());
 				}
 				catch (JavaScriptModelException ex1) {
 					Logger.log(Logger.ERROR_DEBUG, null, ex1);
@@ -109,11 +107,6 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 		catch (CoreException ex) {
 			Logger.logException(ex);
 		}
-
-		if (configured && openProperties) {
-			showPropertiesOn(project, new SubProgressMonitor(monitor, 1));
-		}
-		monitor.done();
 	}
 
 	private void doUninstall(IProject project, IProgressMonitor monitor) {
@@ -144,75 +137,56 @@ public class ConvertAction implements IObjectActionDelegate, IActionDelegate {
 		}
 	}
 
-	private void install(final IProject project, final boolean openProperties) {
-		IProgressService service = null;
-		if (fPart != null) {
-			service = (IProgressService) fPart.getSite().getService(IProgressService.class);
-		}
-		if (service == null) {
-			doInstall(project, openProperties, new NullProgressMonitor());
-		}
-		else {
-			IRunnableWithProgress runnable = new IRunnableWithProgress() {
-				public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-					doInstall(project, openProperties, monitor);
-				}
-			};
-			try {
-				service.run(false, false, runnable);
-			}
-			catch (InvocationTargetException e) {
-				Logger.logException(e);
-			}
-			catch (InterruptedException e) {
-				Logger.logException(e);
-			}
-		}
+	private void install(final IProject project) {
+		doInstall(project);
 	}
 
 	public void run(IAction action) {
 		if (fTarget == null)
 			return;
 
-		for (int i = 0; i < fTarget.length; i++) {
-			if (fTarget[i] instanceof IResource) {
-				final IProject project = ((IResource) fTarget[i]).getProject();
-				if (!project.isAccessible())
-					continue;
+		new Job(Messages.converter_ConfiguringForJavaScript) {
+			protected IStatus run(IProgressMonitor arg0) {
+				for (int i = 0; i < fTarget.length; i++) {
+					if (fTarget[i] instanceof IResource) {
+						final IProject project = ((IResource) fTarget[i]).getProject();
 
-				// Temporary until https://bugs.eclipse.org/bugs/show_bug.cgi?id=298483 is resolved
-//				enableForFacets(project);
-				
-				if (!ConvertUtility.hasNature(project)) {
-					/* Doesn't have nature, do a full install. */
-					install(project, i == fTarget.length - 1);
-				}
-				else {
-					/*
-					 * Has nature, check for browser library on include path
-					 * and setup if not found.
-					 */
-					IJavaScriptProject jp = JavaScriptCore.create(project);
-					IIncludePathEntry[] rawClasspath = null;
-					try {
-						rawClasspath = jp.getRawIncludepath();
-					}
-					catch (JavaScriptModelException ex1) {
-						Logger.log(Logger.ERROR_DEBUG, null, ex1);
-					}
+						/* Temporary until https://bugs.eclipse.org/bugs/show_bug.cgi?id=298483 is resolved */
+						// enableForFacets(project);
 
-					boolean browserFound = false;
-					for (int k = 0; rawClasspath != null && !browserFound && k < rawClasspath.length; k++) {
-						if (rawClasspath[k].getPath().equals(ConvertUtility.BROWSER_LIBRARY_PATH)) {
-							browserFound = true;
+						if (!ConvertUtility.hasNature(project)) {
+							/* Doesn't have nature, do a full install. */
+							install(project);
+						}
+						else {
+							/*
+							 * Has nature, check for browser library on
+							 * include path and setup if not found.
+							 */
+							IJavaScriptProject jp = JavaScriptCore.create(project);
+							IIncludePathEntry[] rawClasspath = null;
+							try {
+								rawClasspath = jp.getRawIncludepath();
+							}
+							catch (JavaScriptModelException ex1) {
+								Logger.log(Logger.ERROR_DEBUG, null, ex1);
+							}
+
+							boolean browserFound = false;
+							for (int k = 0; rawClasspath != null && !browserFound && k < rawClasspath.length; k++) {
+								if (rawClasspath[k].getPath().equals(ConvertUtility.BROWSER_LIBRARY_PATH)) {
+									browserFound = true;
+								}
+							}
+							if (!browserFound) {
+								install(project);
+							}
 						}
 					}
-					if (!browserFound) {
-						install(project, false);
-					}
 				}
+				return Status.OK_STATUS;
 			}
-		}
+		}.schedule();
 
 	}
 

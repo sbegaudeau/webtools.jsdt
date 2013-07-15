@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
+import org.eclipse.wst.jsdt.internal.ui.navigator.deferred.LoadingModelNode;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
@@ -85,6 +86,8 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 	public String getText(Object element) {
 		if(element instanceof ContainerFolder) {
 			return ((ContainerFolder)element).toString();
+		} else if (element instanceof LoadingModelNode) {
+			return ((LoadingModelNode)element).getText();
 		}
 		String text= getSpecificText(element);
 		if (text != null) {
@@ -108,7 +111,7 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 		}
 
 		if(element instanceof IClassFile) {
-			text = ((IClassFile)element).getPath().lastSegment();
+//			text = ((IClassFile)element).getPath().lastSegment();
 		}else if (element instanceof IJavaScriptUnit) {
 			text = ((IJavaScriptUnit)element).getPath().lastSegment();
 		}
@@ -149,6 +152,8 @@ public class PackageExplorerLabelProvider extends AppearanceAwareLabelProvider {
 		
 		if(element instanceof ContainerFolder) {
 			return super.getImage(((ContainerFolder)element).getParentObject());
+		} else if (element instanceof LoadingModelNode) {
+			return ((LoadingModelNode)element).getImage();
 		}
 		
 		if (element instanceof IWorkingSet) {

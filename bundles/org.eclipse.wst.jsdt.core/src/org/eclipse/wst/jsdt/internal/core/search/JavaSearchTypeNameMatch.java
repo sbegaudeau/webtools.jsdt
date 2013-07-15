@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,16 @@ public class JavaSearchTypeNameMatch extends TypeNameMatch {
 
 private IType type;
 private int modifiers = -1; // store modifiers to avoid java model population
+private char[][] superTypeNames;
+
+/**
+ * Creates a new Java Search type name match.
+ */
+public JavaSearchTypeNameMatch(IType type, char[][] superTypeNames, int modifiers) {
+	this.type = type;
+	this.modifiers = modifiers;
+	this.superTypeNames = superTypeNames;
+}
 
 /**
  * Creates a new Java Search type name match.
@@ -52,6 +62,13 @@ public boolean equals(Object obj) {
  */
 public int getModifiers() {
 	return this.modifiers;
+}
+
+/**
+ * @return
+ */
+public char[][] getSuperTypeNames() {
+	return this.superTypeNames;
 }
 
 /* (non-Javadoc)

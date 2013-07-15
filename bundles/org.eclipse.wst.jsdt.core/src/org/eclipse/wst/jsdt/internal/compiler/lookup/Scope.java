@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,12 +11,15 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
+import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CaseStatement;
@@ -29,7 +32,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
-import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.Logger;
 
 public abstract class Scope implements TypeConstants, TypeIds {
@@ -327,10 +329,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		MethodBinding concreteMatch) {
 
 		int startFoundSize = found.size;
-		ReferenceBinding currentType = classHierarchyStart;
-		while (currentType != null) {
-			currentType = currentType.superclass();
-		}
+
 		MethodBinding[] candidates = null;
 		int candidatesCount = 0;
 		MethodBinding problemMethod = null;
@@ -359,7 +358,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (concreteMatch == null) {
 				if (candidatesCount == 0)
 					return problemMethod; // can be null
-				concreteMatch = candidates[0];
+				concreteMatch = candidates != null ? candidates[0] : null;
 			}
 			return concreteMatch;
 		}
@@ -449,18 +448,32 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			return new ProblemFieldBinding(field /* closest match*/, field.declaringClass, fieldName, ProblemReasons.NotVisible);
 		}
 		// collect all superinterfaces of receiverType until the field is found in a supertype
-		int nextPosition = 0;
 		FieldBinding visibleField = null;
 		boolean keepLooking = true;
 		FieldBinding notVisibleField = null;
 		// we could hold onto the not visible field for extra error reporting
+		
+		Set checkedParents = new HashSet();
 		while (keepLooking) {
 			if (JavaScriptCore.IS_ECMASCRIPT4)
 			{
 				((SourceTypeBinding) currentType).classScope.connectTypeHierarchy();
 			}
-			if ((currentType = currentType.superclass()) == null)
+			if ((currentType = currentType.getSuperBinding()) == null) {
 				break;
+			}
+			
+			/* if current type is already a parent that was check break to prevent
+			 * infinite loop.  This can happen if something gets messed up with
+			 * the parentage of a type and there ends up being a parentage loop.
+			 * 
+			 * else add the current type to the checked parents and continue on
+			 */
+			if(checkedParents.contains(currentType)) {
+				break;
+			} else {
+				checkedParents.add(currentType);
+			}
 
 			unitScope.recordTypeReference(currentType);
 			if ((field = currentType.getField(fieldName, needResolve)) != null) {
@@ -512,6 +525,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		boolean keepLooking = true;
 		ReferenceBinding notVisible = null;
 		// we could hold onto the not visible field for extra error reporting
+		Set checkedParents = new HashSet();
 		while (keepLooking) {
 			
 			ReferenceBinding sourceType = currentType;
@@ -519,8 +533,21 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				return null; // looking for an undefined member type in its own superclass ref
 			((SourceTypeBinding) sourceType).classScope.connectTypeHierarchy();
 			
-			if ((currentType = currentType.superclass()) == null)
+			if ((currentType = currentType.getSuperBinding()) == null) {
 				break;
+			}
+			
+			/* if current type is already a parent that was check break to prevent
+			 * infinite loop.  This can happen if something gets messed up with
+			 * the parentage of a type and there ends up being a parentage loop.
+			 * 
+			 * else add the current type to the checked parents and continue on
+			 */
+			if(checkedParents.contains(currentType)) {
+				break;
+			} else {
+				checkedParents.add(currentType);
+			}
 
 			unitScope.recordReference(currentType, typeName);
 			if ((memberType = currentType.getMemberType(typeName)) != null) {
@@ -564,7 +591,15 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return null;
 	}
 
-	// Internal use only - use findMethod()
+	/**
+	 * <b>NOTE: </b> Internal use only - use findMethod()
+	 * 
+	 * @param receiverType
+	 * @param selector
+	 * @param argumentTypes <code>null</code> means match on any arguments
+	 * @param invocationSite
+	 * @return
+	 */
 	public MethodBinding findMethod(ReferenceBinding receiverType, char[] selector, TypeBinding[] argumentTypes, InvocationSite invocationSite) {
 		ReferenceBinding currentType = receiverType;
 		ObjectVector found = new ObjectVector(3);
@@ -584,7 +619,20 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		boolean isCompliant14 = complianceLevel >= ClassFileConstants.JDK1_4;
 		boolean isCompliant15 = complianceLevel >= ClassFileConstants.JDK1_5;
 		ReferenceBinding classHierarchyStart = currentType;
+		Set checkedParents = new HashSet();
 		while (currentType != null) {
+			/* if current type is already a parent that was check break to prevent
+			 * infinite loop.  This can happen if something gets messed up with
+			 * the parentage of a type and there ends up being a parentage loop.
+			 * 
+			 * else add the current type to the checked parents and continue on
+			 */
+			if(checkedParents.contains(currentType)) {
+				break;
+			} else {
+				checkedParents.add(currentType);
+			}
+			
 			unitScope.recordTypeReference(currentType);
 			MethodBinding[] currentMethods = currentType.getMethods(selector);
 			int currentLength = currentMethods.length;
@@ -627,7 +675,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					}
 				}
 			}
-			currentType = currentType.superclass();
+			currentType = currentType.getSuperBinding();
 		}
 
 		if (found.size==0 && (receiverType==null || receiverType instanceof CompilationUnitBinding))
@@ -1355,15 +1403,15 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 			
 			//get the methods
-			MethodBinding[] methods = receiverType.getMethods(receiverType.sourceName);
+			MethodBinding[] methods = receiverType.sourceName != null ? receiverType.getMethods(receiverType.sourceName) : null;
 			MethodBinding constructor = null;
 			if (methods == null || methods == Binding.NO_METHODS || methods.length == 0){
 				constructor = new MethodBinding(0, receiverType.sourceName, receiverType, null,receiverType);
 			} else {
-				
-				if(methods.length > 1) {
-					Logger.log(Logger.WARNING, "There should only ever be one match for a constructor search" +
-							" but found " + methods.length + " when looking for " +
+				//log warning about to many constructors
+				if(methods.length > 1 && Compiler.DEBUG) {
+					Logger.log(Logger.WARNING_DEBUG, "Scope#getConstructor: There should only ever be one match for a" +
+							" constructor search but found " + methods.length + " when looking for " +
 							new String(receiverType.sourceName) + ". Using the first match.");
 				}
 				
@@ -1407,7 +1455,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				MethodScope methodScope = methodScope();
 				if (!methodScope.isInsideInitializer()){
 					// check method modifiers to see if deprecated
-					MethodBinding context = ((AbstractMethodDeclaration)methodScope.referenceContext).binding;
+					MethodBinding context = ((AbstractMethodDeclaration)methodScope.referenceContext).getBinding();
 					if (context != null)
 						return context.modifiers;
 				} else {
@@ -1454,11 +1502,14 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			env.missingClassFileLocation = invocationSite;
 			//first look for field
 			FieldBinding field = findField(receiverType, fieldName, invocationSite, true /*resolve*/);
-			if (field != null) return field;
+			if (field != null) {
+				return field;
+			}
 
-
-			/* not sure if this fix is correct, but reciever type is [sometimes] coming in as "BaseTypeBinding" and causing a classcastexception */
-			MethodBinding method = findMethod( receiverType instanceof ReferenceBinding?(ReferenceBinding)receiverType:null, fieldName, new TypeBinding[0], invocationSite );
+			/* not sure if this fix is correct, but receiver type is [sometimes] coming in as "BaseTypeBinding" and causing a classcastexception */
+			MethodBinding method = findMethod(
+						receiverType instanceof ReferenceBinding?(ReferenceBinding)receiverType:null,
+						fieldName, null, invocationSite );
 			if( method != null )
 			{
 				if (!method.isValidBinding())
@@ -2352,7 +2403,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (scope instanceof MethodScope) {
 				ReferenceContext refContext = ((MethodScope) scope).referenceContext;
 				if (refContext instanceof AbstractMethodDeclaration)
-					if (((AbstractMethodDeclaration) refContext).binding == method)
+					if (((AbstractMethodDeclaration) refContext).getBinding() == method)
 						return true;
 			}
 			scope = scope.parent;
@@ -2419,7 +2470,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				MethodScope methodScope = methodScope();
 				if (!methodScope.isInsideInitializer()){
 					// check method modifiers to see if deprecated
-					MethodBinding context = ((AbstractMethodDeclaration)methodScope.referenceContext).binding;
+					MethodBinding context = ((AbstractMethodDeclaration)methodScope.referenceContext).getBinding();
 					if (context != null && context.isViewedAsDeprecated())
 						return true;
 				} else {
@@ -2538,7 +2589,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 			currentType = (ReferenceBinding) typeToVisit;
 			
-			TypeBinding itsSuperclass = currentType.superclass();
+			TypeBinding itsSuperclass = currentType.getSuperBinding();
 			if (itsSuperclass != null) {
 				TypeBinding superType = dim == 0 ? itsSuperclass : (TypeBinding)environment().createArrayType(itsSuperclass, dim); // recreate array if needed
 				if (!typesToVisit.contains(superType)) {
@@ -2696,7 +2747,16 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
 	}
 
-	// caveat: this is not a direct implementation of JLS
+	/**
+	 * caveat: this is not a direct implementation of JLS
+	 * 
+	 * @param visible
+	 * @param visibleSize
+	 * @param argumentTypes <code>null</code> means match on any arguments
+	 * @param invocationSite
+	 * @param receiverType
+	 * @return
+	 */
 	protected final MethodBinding mostSpecificMethodBinding(MethodBinding[] visible, int visibleSize, TypeBinding[] argumentTypes, InvocationSite invocationSite, ReferenceBinding receiverType) {
 		int[] compatibilityLevels = new int[visibleSize];
 		for (int i = 0; i < visibleSize; i++)
@@ -2758,8 +2818,6 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		nextSpecific : for (int i = 0; i < visibleSize; i++) {
 			MethodBinding current = moreSpecific[i];
 			if (current != null) {
-				ReferenceBinding[] mostSpecificExceptions = null;
-				SimpleSet possibleMethods = null;
 				MethodBinding original = current.original();
 				for (int j = 0; j < visibleSize; j++) {
 					MethodBinding next = moreSpecific[j];
@@ -2810,38 +2868,13 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						}
 					}
 				}
-				if (mostSpecificExceptions != null) {
-					Object[] values = possibleMethods.values;
-					int exceptionLength = mostSpecificExceptions.length;
-					nextMethod : for (int p = 0, vLength = values.length; p < vLength; p++) {
-						MethodBinding possible = (MethodBinding) values[p];
-						if (possible == null) continue nextMethod;
-						if (0 == exceptionLength) {
-							nextException : for (int e = 0; e < exceptionLength; e++) {
-								ReferenceBinding exception = null;
-								for (int f = 0; f < exceptionLength; f++)
-									if (exception == mostSpecificExceptions[f]) continue nextException;
-								continue nextMethod;
-							}
-							return possible;
-						}
-					}
-// do not return a new methodBinding until we know that it does not cause problems
-//					return new FunctionBinding(
-//						current.modifiers,
-//						current.selector,
-//						current.returnType,
-//						current.parameters,
-//						mostSpecificExceptions,
-//						current.declaringClass
-//					);
-				}
+
 				return current;
 			}
 		}
 
-		// if all moreSpecific methods are equal then see if duplicates exist because of substitution
-		return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
+		//if can not figure which one is best, just pick first one
+		return moreSpecific[0];
 	}
 
 	public final ClassScope outerMostClassScope() {
@@ -2866,7 +2899,19 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		return lastMethodScope; // may answer null if no method around
 	}
 
+	/**
+	 * 
+	 * @param method
+	 * @param arguments <code>null</code> means match on any arguments
+	 * 
+	 * @return
+	 */
 	public int parameterCompatibilityLevel(MethodBinding method, TypeBinding[] arguments) {
+		//if not arguments to compare against, assume arguments do not matter, so compatible
+		if(arguments == null) {
+			return COMPATIBLE;
+		}
+		
 		TypeBinding[] parameters = method.parameters;
 		int paramLength = parameters.length;
 		int argLength = arguments.length;

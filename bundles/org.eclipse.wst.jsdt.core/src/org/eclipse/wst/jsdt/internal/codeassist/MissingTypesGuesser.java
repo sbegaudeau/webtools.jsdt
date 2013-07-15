@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2011 IBM Corporation and others.
+ * Copyright (c) 2007, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -325,15 +325,35 @@ public class MissingTypesGuesser extends ASTVisitor {
 			
 			/**
 			 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptConstructor(
-			 * 		int, char[], int, char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
+			 * 		int, char[], char[][], char[][], java.lang.String, org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction)
 			 */
 			public void acceptConstructor(int modifiers, char[] typeName,
-					int parameterCount, char[][] parameterTypes, char[][] parameterNames,
+					char[][] parameterTypes, char[][] parameterNames,
 					String path, AccessRestriction access) {
 				
 				//do nothing
 			}
-
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptFunction(char[], char[][], char[][], char[], char[], char[], char[], int, java.lang.String)
+			 */
+			public void acceptFunction(char[] signature, char[][] parameterFullyQualifedTypeNames,
+						char[][] parameterNames, char[] returnQualification, char[] returnSimpleName,
+						char[] declaringQualification, char[] declaringSimpleName, int modifiers, String path) {
+				
+				//do nothing
+			}
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.codeassist.ISearchRequestor#acceptVariable(char[], char[], char[], char[], char[], int, java.lang.String)
+			 */
+			public void acceptVariable(char[] signature,
+					char[] typeQualification, char[] typeSimpleName,
+					char[] declaringQualification, char[] declaringSimpleName,
+					int modifiers, String path) {
+				
+				//do nothing
+			}
 		};
 		nameEnvironment.findExactTypes(missingSimpleName, true, IJavaScriptSearchConstants.TYPE, storage);
 		if(results.size() == 0) return null;

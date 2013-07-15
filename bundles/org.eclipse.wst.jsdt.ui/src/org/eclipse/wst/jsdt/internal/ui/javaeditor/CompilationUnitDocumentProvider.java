@@ -104,7 +104,6 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaStatusConstants;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
-import org.eclipse.wst.jsdt.internal.ui.Logger;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.saveparticipant.IPostSaveListener;
 import org.eclipse.wst.jsdt.internal.ui.text.correction.JavaCorrectionProcessor;
 import org.eclipse.wst.jsdt.internal.ui.text.java.IProblemRequestorExtension;
@@ -1015,15 +1014,8 @@ public class CompilationUnitDocumentProvider extends TextFileDocumentProvider im
 		try {
 			final IStorage storage= editorInput.getStorage();
 			final IPath storagePath= storage.getFullPath();
-			if (storage.getName() == null || storagePath == null) {
-				if (storagePath == null) {
-					Logger.log(Logger.INFO, "Unsupported editor input: null path"); //$NON-NLS-1$
-				}
-				else if (storage.getName() == null) {
-					Logger.log(Logger.INFO, "Unsupported editor input: no name"); //$NON-NLS-1$
-				}
+			if (storage.getName() == null || storagePath == null)
 				return null;
-			}
 			
 			final IPath documentPath;
 			if (storage instanceof IFileState)

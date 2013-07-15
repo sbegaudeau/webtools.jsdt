@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2011 IBM Corporation and others.
+ * Copyright (c) 2005, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,9 @@ import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
@@ -43,10 +46,11 @@ import org.eclipse.wst.jsdt.ui.JavaScriptElementLabels;
  * (repeatedly) as the API evolves. */
 public class CompletionProposalLabelProvider {
 
+	/** Used to filter out parameter type names of the ANY type */
+	private static final char[] C_ANY = new char[] {Signature.C_ANY};
+	
 	/**
 	 * The completion context.
-	 * 
-	 * 
 	 */
 	private CompletionContext fContext;
 
@@ -92,20 +96,17 @@ public class CompletionProposalLabelProvider {
 	 * @return the modified <code>buffer</code>
 	 */
 	private StringBuffer appendUnboundedParameterList(StringBuffer buffer, CompletionProposal methodProposal) {
-		// TODO remove once https://bugs.eclipse.org/bugs/show_bug.cgi?id=85293
-		// gets fixed.
 		char[] signature= methodProposal.getSignature();
 		char[][] parameterNames= methodProposal.getParamaterNames();
-		char[][] parameterTypes;
+		char[][] parameterTypes = methodProposal.getParameterTypeNames();
 
-		//if there is a signature use that, else get type names from proposal
-		if(signature != null && signature.length > 0) {
+		/* TODO: remove this because it uses signatures
+		 * if did not get parameter types attempt to use signature */
+		if((parameterTypes == null || parameterTypes.length == 0) && signature != null && signature.length > 0) {
 			parameterTypes = Signature.getParameterTypes(signature);
 			for (int i= 0; i < parameterTypes.length; i++) {
 				parameterTypes[i]= createTypeDisplayName(parameterTypes[i]);
 			}
-		} else {
-			parameterTypes = methodProposal.getParameterTypeNames();
 		}
 
 		if (Flags.isVarargs(methodProposal.getFlags())) {
@@ -197,18 +198,23 @@ public class CompletionProposalLabelProvider {
 	 * @return the display string of the parameter list defined by the passed arguments
 	 */
 	private final StringBuffer appendParameterSignature(StringBuffer buffer, char[][] parameterTypes, char[][] parameterNames) {
-		if (parameterTypes != null) {
-			for (int i = 0; i < parameterTypes.length; i++) {
+		if (parameterNames != null) {
+			for (int i = 0; i < parameterNames.length; i++) {
 				if (i > 0) {
 					buffer.append(',');
 					buffer.append(' ');
 				}
-				if (parameterTypes[i].length > 0 & !Arrays.equals(Signature.ANY, parameterTypes[i])) {
-					buffer.append(parameterTypes[i]);
+				//do not display the ANY type
+				if (parameterTypes != null && parameterTypes.length > i &&
+						parameterTypes[i] != null && parameterTypes[i].length > 0 &&
+						!Arrays.equals(Signature.ANY, parameterTypes[i]) &&
+						!Arrays.equals(C_ANY, parameterTypes[i])) {
+					
+					Util.insertTypeLabel(parameterTypes[i], buffer);
 					buffer.append(' ');
 				}
 					
-				if (parameterNames != null && parameterNames[i] != null) {
+				if (parameterNames[i] != null) {
 					buffer.append(parameterNames[i]);
 				}
 			}
@@ -249,22 +255,23 @@ public class CompletionProposalLabelProvider {
 
 		// return type
 		if (!methodProposal.isConstructor()) {
-			// TODO remove SignatureUtil.fix83600 call when bugs are fixed
-			char[] returnType= createTypeDisplayName(Signature.getReturnType(methodProposal.getSignature()));
-			if (!Arrays.equals(Signature.ANY,returnType))
-			{
-				nameBuffer.append("  "); //$NON-NLS-1$
+			char[] returnType= methodProposal.getReturnType();
+			if (returnType != null && returnType.length > 0 &&  !Arrays.equals(Signature.ANY,returnType) && !Arrays.equals(Signature.VOID,returnType)) {
+				nameBuffer.append(" : "); //$NON-NLS-1$
 				//@GINO: Anonymous UI Label
 				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( returnType, nameBuffer );
 			}
 		}
 
 		// declaring type
-		nameBuffer.append(" - "); //$NON-NLS-1$
 		String declaringType= extractDeclaringTypeFQN(methodProposal);
-		
-		//@GINO: Anonymous UI Label
-		org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaringType, nameBuffer );
+		if(declaringType != null) {
+			nameBuffer.append(" - "); //$NON-NLS-1$
+			if(CharOperation.equals(declaringType.toCharArray(), IIndexConstants.GLOBAL_SYMBOL)) {
+				declaringType = JavaTextMessages.Global;
+			}
+			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaringType, nameBuffer );
+		}
 
 		return nameBuffer.toString();
 	}
@@ -336,21 +343,23 @@ public class CompletionProposalLabelProvider {
 	 * @return the qualified name of the declaring type
 	 */
 	private String extractDeclaringTypeFQN(CompletionProposal methodProposal) {
-		char[] declaringTypeSignature= methodProposal.getDeclarationSignature();
+		String qualifedName = null;
+		
 		char[] compUnit = methodProposal.getDeclarationTypeName();
-		IJavaScriptProject project = methodProposal.getJavaProject();
-		JsGlobalScopeContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
-		if(init!=null) {
-			String description = init.getDescription(new Path(new String(compUnit)),project);
-			if( description!=null) return  "[" +  description + "]"; //$NON-NLS-1$ //$NON-NLS-2$
-			
+		if(compUnit != null) {
+			IJavaScriptProject project = methodProposal.getJavaProject();
+			JsGlobalScopeContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
+			if(init!=null) {
+				String description = init.getDescription(new Path(new String(compUnit)),project);
+				if( description!=null) return  "[" +  description + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+			}
 		}
 		
-		// special methods may not have a declaring type: methods defined on arrays etc.
-		// TODO remove when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690 gets fixed
-		if (declaringTypeSignature == null)
-			return "java.lang.Object"; //$NON-NLS-1$
-		return SignatureUtil.stripSignatureToFQN(String.valueOf(declaringTypeSignature));
+		if(methodProposal.getDeclarationTypeName() != null){
+			qualifedName = new String(methodProposal.getDeclarationTypeName());
+		}
+		
+		return qualifedName;
 	}
 
 	/**
@@ -379,38 +388,11 @@ public class CompletionProposalLabelProvider {
 			buf.append(declarationSignature);
 		}
 		return buf.toString();
-//		char[] signature;
-//		if (fContext != null && fContext.isInJavadoc())
-//			signature= Signature.getTypeErasure(typeProposal.getSignature());
-//		else
-//			signature= typeProposal.getSignature();
-//		char[] fullName= Signature.toCharArray(signature);
-//		return createTypeProposalLabel(fullName);
 	}
 	
 	String createJavadocTypeProposalLabel(CompletionProposal typeProposal) {
 		char[] fullName= Signature.toCharArray(typeProposal.getSignature());
 		return createJavadocTypeProposalLabel(fullName);
-	}
-	
-	String createJavadocSimpleProposalLabel(CompletionProposal proposal) {
-		// TODO get rid of this
-		return createSimpleLabel(proposal);
-	}
-	
-	String createTypeProposalLabel(char[] fullName) {
-		// only display innermost type name as type name, using any
-		// enclosing types as qualification
-//		int qIndex= findSimpleNameStart(fullName);
-//
-		StringBuffer buf= new StringBuffer();
-//		buf.append(fullName, qIndex, fullName.length - qIndex);
-//		if (qIndex > 0) {
-//			buf.append(JavaScriptElementLabels.CONCAT_STRING);
-//			buf.append(fullName, 0, qIndex - 1);
-//		}
-		buf.append(fullName);
-		return buf.toString();
 	}
 	
 	String createJavadocTypeProposalLabel(char[] fullName) {
@@ -447,7 +429,7 @@ public class CompletionProposalLabelProvider {
 		char[] typeName= Signature.getSignatureSimpleName(proposal.getSignature());
 		
 		if (typeName.length > 0) {
-			buf.append("    "); //$NON-NLS-1$
+			buf.append(" : "); //$NON-NLS-1$
 			
 			//@GINO: Anonymous UI Label
 			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( typeName, buf );
@@ -474,22 +456,33 @@ public class CompletionProposalLabelProvider {
 		
 		StringBuffer buf= new StringBuffer();
 		buf.append(name);
-		char[] typeName= Signature.getSignatureSimpleName(proposal.getSignature());
-		if (typeName.length > 0&& !(Arrays.equals(Signature.ANY, typeName))) {
-			buf.append("    "); //$NON-NLS-1$
+		char[] returnType = proposal.getReturnType();
+		if (returnType != null && returnType.length > 0&& !(Arrays.equals(Signature.ANY, returnType))) {
+			buf.append(" : "); //$NON-NLS-1$
 			
 			//@GINO: Anonymous UI Label
-			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( typeName, buf );
+			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( returnType, buf );
 		}
-		char[] declaration= proposal.getDeclarationSignature();
-		if (declaration != null) {
-			declaration= Signature.getSignatureSimpleName(declaration);
-			if (declaration.length > 0) {
-				buf.append(" - "); //$NON-NLS-1$
-				
-				//@GINO: Anonymous UI Label
-				org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declaration, buf );
-			}
+
+		//get the declaration type
+		char[] declarationType = null;
+		if(proposal.getDeclarationTypeName() != null) {
+			declarationType = proposal.getDeclarationTypeName();
+		} else if (proposal.getDeclarationSignature() != null) {
+			declarationType = Signature.getSignatureSimpleName(proposal.getDeclarationSignature());
+		}
+		
+		//deal with if global type
+		if(CharOperation.equals(declarationType, IIndexConstants.GLOBAL_SYMBOL)) {
+			declarationType = JavaTextMessages.Global.toCharArray();
+		}
+		
+		//append declaration type
+		if (declarationType != null && declarationType.length > 0) {
+			buf.append(" - "); //$NON-NLS-1$
+			
+			//@GINO: Anonymous UI Label
+			org.eclipse.wst.jsdt.internal.core.util.Util.insertTypeLabel( declarationType, buf );
 		}
 
 		return buf.toString();
@@ -545,7 +538,7 @@ public class CompletionProposalLabelProvider {
 			case CompletionProposal.JSDOC_BLOCK_TAG:
 			case CompletionProposal.JSDOC_INLINE_TAG:
 			case CompletionProposal.JSDOC_PARAM_REF:
-				return createJavadocSimpleProposalLabel(proposal);
+				return createSimpleLabel(proposal);
 			case CompletionProposal.JSDOC_METHOD_REF:
 				return createJavadocMethodProposalLabel(proposal);
 			case CompletionProposal.PACKAGE_REF:

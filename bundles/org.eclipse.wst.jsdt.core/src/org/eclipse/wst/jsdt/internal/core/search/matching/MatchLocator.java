@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -232,6 +232,12 @@ class ReportMatchingVisitor extends ASTVisitor
 		int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 		try {
 			reportMatching(localDeclaration, null, null, enclosingElement, accuracy, typeInHierarchy, nodeSet);
+			
+			//check for a method declaration nested under the local declaration to report
+			AbstractMethodDeclaration methodDeclaration = AbstractMethodDeclaration.findMethodDeclaration(localDeclaration);
+			if(methodDeclaration != null && methodDeclaration instanceof MethodDeclaration) {
+				visit((MethodDeclaration)methodDeclaration, scope);
+			}
 		} catch (CoreException e) {
 			exception=e;
 		}
@@ -471,7 +477,7 @@ public void accept(ICompilationUnit sourceUnit, char[][] typeNames, AccessRestri
 	}
 }
 public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
-	accept(sourceUnit, new char[0][0], accessRestriction);
+	accept(sourceUnit, CharOperation.NO_CHAR_CHAR, accessRestriction);
 }
 
 
@@ -635,10 +641,14 @@ protected IJavaScriptElement createHandle(AbstractMethodDeclaration method, IJav
 		}
 	}
 
-	char [] methodName=method.isInferred()?method.inferredMethod.name:method.selector;
-	if (methodName==null)
-		return null;
-	return createMethodHandle(parent, new String(methodName), parameterTypeSignatures);
+	String methodName = null;
+	if (method.getName() != null) {
+		methodName = new String( method.getName());
+	}
+	else {
+		methodName = "___anonymous"; //$NON-NLS-1$
+	}
+	return createMethodHandle(parent, methodName, parameterTypeSignatures);
 }
 /*
  * Create method handle.
@@ -780,10 +790,7 @@ protected IJavaScriptElement createImportHandle(ImportReference importRef) {
 
 	// binary types do not contain import statements so just answer the top-level type as the element
 	IType binaryType = ((ClassFile) openable).getType();
-	String typeName = binaryType.getElementName();
-	int lastDollar = typeName.lastIndexOf('$');
-	if (lastDollar == -1) return binaryType;
-	return createTypeHandle(typeName.substring(0, lastDollar));
+	return binaryType;
 }
 /**
  * Creates an IType from the given simple top level type name.
@@ -925,11 +932,7 @@ public MethodBinding getMethodBinding(MethodPattern methodPattern) {
 		return null;
 	}
 	//	Get binding from unit scope
-	char[] typeName = PatternLocator.qualifiedPattern(methodPattern.declaringSimpleName, methodPattern.declaringQualification);
-	if (typeName == null) {
-		if (methodPattern.declaringType == null) return null;
-		typeName = methodPattern.declaringType.getFullyQualifiedName().toCharArray();
-	}
+	char[] typeName = PatternLocator.qualifiedPattern(methodPattern.getDeclaringSimpleName(), methodPattern.getDeclaringQualification());
 	TypeBinding declaringTypeBinding = getType(typeName, typeName);
 	if (declaringTypeBinding != null) {
 		if (declaringTypeBinding.isArrayType()) {
@@ -1094,7 +1097,6 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 		if (this.progressMonitor != null && this.progressMonitor.isCanceled())
 			throw new OperationCanceledException();
 		PossibleMatch possibleMatch = this.matchesToProcess[i];
-		this.matchesToProcess[i] = null; // release reference to processed possible match
 		try {
 			process(possibleMatch, bindingsWereCreated);
 		} catch (AbortCompilation e) {
@@ -2001,7 +2003,7 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 					match = this.patternLocator.newDeclarationMatch(type, parent, type.binding, accuracy, type.sourceEnd-offset+1, this);
 				} else {
 					int length = scanner.currentPosition - nameSourceStart;
-					match = this.patternLocator.newDeclarationMatch(method, enclosingElement, method.binding, accuracy, length, this);
+					match = this.patternLocator.newDeclarationMatch(method, enclosingElement, method.getBinding(), accuracy, length, this);
 				}
 				if (match != null) {
 					report(match);
@@ -2014,7 +2016,7 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 	if ((method.bits & ASTNode.HasLocalType) != 0) {
 		if (enclosingElement == null)
 			enclosingElement = createHandle(method, parent);
-		LocalDeclarationVisitor localDeclarationVisitor = new LocalDeclarationVisitor(enclosingElement, method.binding, nodeSet);
+		LocalDeclarationVisitor localDeclarationVisitor = new LocalDeclarationVisitor(enclosingElement, method.getBinding(), nodeSet);
 		try {
 			method.traverse(localDeclarationVisitor, (ClassScope) null);
 		} catch (WrappedCoreException e) {
@@ -2033,7 +2035,7 @@ protected void reportMatching(TypeDeclaration type, AbstractMethodDeclaration me
 					for (int i = 0, l = nodes.length; i < l; i++) {
 						ASTNode node = nodes[i];
 						Integer level = (Integer) nodeSet.matchingNodes.removeKey(node);
-						this.patternLocator.matchReportReference(node, enclosingElement, method.binding, method.scope, level.intValue(), this);
+						this.patternLocator.matchReportReference(node, enclosingElement, method.getBinding(), method.getScope(), level.intValue(), this);
 					}
 					return;
 				}
@@ -2386,10 +2388,7 @@ protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFi
 		// Look in initializer
 		ASTNode[] nodes = nodeSet.matchingNodes(field.sourceStart, field.declarationSourceEnd);
 		if (nodes != null) {
-			if ((this.matchContainer & PatternLocator.FIELD_CONTAINER) == 0) {
-				for (int i = 0, l = nodes.length; i < l; i++)
-					nodeSet.matchingNodes.removeKey(nodes[i]);
-			} else {
+			if ((this.matchContainer & PatternLocator.FIELD_CONTAINER) != 0) {
 				if (enclosingElement == null) {
 					enclosingElement = createHandle(field,  parent);
 				}

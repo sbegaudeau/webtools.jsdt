@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1236,9 +1236,9 @@ public class CompilerOptions {
 				case (int) (OverridingMethodWithoutSuperInvocation >>> 32) :
 					return "super"; //$NON-NLS-1$
 				case (int) (UninitializedLocalVariable >>> 32) :
-					return "uninitializedLocalVariable";
+					return "uninitializedLocalVariable"; //$NON-NLS-1$
 				case (int) (UninitializedGlobalVariable >>> 32) :
-					return "uninitializedGlobalVariable";
+					return "uninitializedGlobalVariable"; //$NON-NLS-1$
 			}
 		}
 		return null;
@@ -1246,7 +1246,6 @@ public class CompilerOptions {
 	// keep in sync with warningTokenToIrritant and warningTokenFromIrritant
 	public final static String[] warningTokens = {
 		"all", //$NON-NLS-1$
-		"boxing", //$NON-NLS-1$
 		"cast", //$NON-NLS-1$
 		"deprecation", //$NON-NLS-1$
 		"fallthrough", //$NON-NLS-1$
@@ -1261,6 +1260,8 @@ public class CompilerOptions {
 		"unchecked", //$NON-NLS-1$
 		"unqualified-field-access", //$NON-NLS-1$
 		"unused", //$NON-NLS-1$
+		"uninitializedLocalVariable", //$NON-NLS-1$
+		"uninitializedGlobalVariable" //$NON-NLS-1$
 	};
 	public static long warningTokenToIrritant(String warningToken) {
 		// keep in sync with warningTokens and warningTokenFromIrritant

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2010 IBM Corporation and others.
+ * Copyright (c) 2005, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
+import org.eclipse.wst.jsdt.internal.core.Logger;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
@@ -35,6 +37,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
  */
 public class InferrenceManager {
 
+	private static final boolean _debugInfer = "true".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.wst.jsdt.core/debug/inferEngine")); //$NON-NLS-1$  //$NON-NLS-2$
 	public static final String EXTENSION_POINT= "inferrenceSupport"; //$NON-NLS-1$
 
 	protected static final String TAG_INFERENCE_PROVIDER = "inferenceProvider"; //$NON-NLS-1$
@@ -74,82 +77,74 @@ public class InferrenceManager {
 
 	public InferrenceProvider [] getInferenceProviders(IInferenceFile script)
 	{
+		List proposedProviders = new ArrayList();
 		InferrenceProvider[] inferenceProviders = getInferenceProviders();
-		List extProviders=new ArrayList(inferenceProviders.length);
-		for (int i = 0; i < inferenceProviders.length; i++) {
-			    int applies = inferenceProviders[i].applysTo(script);
-			    switch (applies) {
+
+		if (inferenceProviders.length==1)
+			return new InferrenceProvider [] {inferenceProviders[0]};
+		else if (inferenceProviders.length>1){		
+			//Always add the default provider - ModuleInferrenceProvider
+			proposedProviders.add(inferenceProviders[0]);
+		}		
+
+		for (int i = 1; i < inferenceProviders.length; i++) {
+
+			if (inferenceProviders[i].getID().equals(script.getInferenceID())) {
+				proposedProviders.clear();
+				proposedProviders.add(inferenceProviders[0]);
+				proposedProviders.add(inferenceProviders[i]);
+				break;
+			}
+
+			int applies = InferrenceProvider.NOT_THIS;
+			try {
+				applies = inferenceProviders[i].applysTo(script);
+			} catch (Exception e) {
+				Util.log(e, "exception in inference provider "+inferenceProviders[i].getID());
+			}
+			switch (applies) {
 				case InferrenceProvider.MAYBE_THIS:
-					  extProviders.add(inferenceProviders[i]);
+					proposedProviders.add(inferenceProviders[i]);
 					break;
 
 				case InferrenceProvider.ONLY_THIS:
-					InferrenceProvider [] thisProvider = {inferenceProviders[i]};
-					return thisProvider;
-
+					proposedProviders.clear();
+					proposedProviders.add(inferenceProviders[0]);
+					proposedProviders.add(inferenceProviders[i]);
+					return (InferrenceProvider [] )proposedProviders.toArray(new InferrenceProvider[proposedProviders.size()]);
 
 				default:
 					break;
-				}
 			}
-		return (InferrenceProvider [] )extProviders.toArray(new InferrenceProvider[extProviders.size()]);
-	}
-
-
+		}
+		if (_debugInfer){
+			String proposedProvidersString = "";			
+			Iterator providers = proposedProviders.iterator();
+			while(providers.hasNext())			
+				proposedProvidersString += ((InferrenceProvider)providers.next()).getID().toString()+", ";			
+			Logger.log(Logger.INFO_DEBUG, "Proposed Inference Providers: " + proposedProvidersString);
+		}
 	
-
+		return (InferrenceProvider [] )proposedProviders.toArray(new InferrenceProvider[proposedProviders.size()]);
+	}
+	
+	/**
+	 *	The base Inference Engine is always added first. This method adds 
+	 *  additional inference engines.
+	 * 
+	 * @param script
+	 * @return
+	 */
 	public IInferEngine [] getInferenceEngines(CompilationUnitDeclaration script)
 	{
-		InferrenceProvider[] inferenceProviders = getInferenceProviders();
-		if (inferenceProviders.length==1)
-			  return getSingleEngine(inferenceProviders[0]);
-			
-		List extEngines=new ArrayList();
+		List proposedEngines = new ArrayList();
+		InferrenceProvider[] inferenceProviders = getInferenceProviders(script);
+		
 		for (int i = 0; i < inferenceProviders.length; i++) {
-			    if (script.compilationResult!=null && script.compilationResult.compilationUnit!=null)
-			    {
-			    	String inferenceID = script.compilationResult.compilationUnit.getInferenceID();
-			    	if (inferenceProviders[i].getID().equals(inferenceID)) {
-			    		return getSingleEngine(inferenceProviders[i]);
-//			    		InferEngine eng=inferenceProviders[i].getInferEngine();
-//						eng.appliesTo=InferrenceProvider.MAYBE_THIS;
-//						eng.inferenceProvider=inferenceProviders[i];
-//						extEngines.add(eng);
-//						continue;
-			    	}
-			    }
-			    int applies = InferrenceProvider.NOT_THIS;
-			    try {
-			    	applies = inferenceProviders[i].applysTo(script);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					Util.log(e, "exception in inference provider "+inferenceProviders[i].getID());
-				}
-			    switch (applies) {
-				case InferrenceProvider.MAYBE_THIS:
-					  IInferEngine eng=inferenceProviders[i].getInferEngine();
-					  extEngines.add(eng);
-					break;
-
-				case InferrenceProvider.ONLY_THIS:
-					  return getSingleEngine(inferenceProviders[i]);
-
-
-				default:
-					break;
-				}
-			}
-		return (IInferEngine [] )extEngines.toArray(new IInferEngine[extEngines.size()]);
+			  proposedEngines.add(inferenceProviders[i].getInferEngine()) ;
+		}
+		return (IInferEngine [] )proposedEngines.toArray(new IInferEngine[proposedEngines.size()]);
 	}
-
-	
-	private IInferEngine [] getSingleEngine(InferrenceProvider provider)
-	{
-		  IInferEngine engine=provider.getInferEngine();
-		  IInferEngine [] thisEngine = {engine};
-		  return thisEngine;
-	}
-	
 	
 	protected void loadInferenceExtensions() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();

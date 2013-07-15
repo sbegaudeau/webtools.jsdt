@@ -125,18 +125,13 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 	}
 
 
-	public ReferenceBinding superclass() {
-		return functionTypeBinding.superclass();
+	public ReferenceBinding getSuperBinding() {
+		return functionTypeBinding.getSuperBinding();
 	}
 
 	public String toString() {
 		return functionTypeBinding.toString();
 	}
-
-	void verifyMethods(MethodVerifier verifier) {
-		functionTypeBinding.verifyMethods(verifier);
-	}
-	
 	
 	public boolean isFunctionType()
 	{

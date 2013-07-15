@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,24 +11,56 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.CRC32;
 
+import org.eclipse.wst.jsdt.core.ast.IAssignment;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFieldReference;
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
+import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class SourceTypeBinding extends ReferenceBinding {
-	public ReferenceBinding superclass;
+	/**
+	 * <p>
+	 * Enable for enhanced debugging
+	 * </p>
+	 */
+	private static final boolean DEBUG = false;
+	
+	/**
+	 * <p>
+	 * Super type binding for this binding.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>WARNING:</b> a linked binding may have a different supper binding.
+	 * </p>
+	 * 
+	 * @see #getSuperBinding0()
+	 * @see #getSuperBinding()
+	 * @see #setSuperBinding(ReferenceBinding)
+	 */
+	private ReferenceBinding fSuperBinding;
+	
 	protected FieldBinding[] fields;
 	protected MethodBinding[] methods;
 	public ReferenceBinding[] memberTypes = Binding.NO_MEMBER_TYPES;
@@ -36,14 +68,85 @@ public class SourceTypeBinding extends ReferenceBinding {
 	public Scope scope;
 	public ClassScope classScope;
 
-	char[] genericReferenceTypeSignature;
-
-	public SourceTypeBinding nextType;
+	/**
+	 * <p>
+	 * The next type in the circular linked list of linked types.  If this type is not linked to any other
+	 * types then the value of {@link #fNextType} will be this type forming a circle of 1.
+	 * </p>
+	 * 
+	 * <p>
+	 * Due to the circular nature of this linked list always use {@link #performActionOnLinkedBindings(LinkedBindingAction)}
+	 * when needing to perform any action on all of the linked types.
+	 * </p>
+	 * 
+	 * @see #performActionOnLinkedBindings(LinkedBindingAction)
+	 * @see LinkedBindingAction
+	 */
+	private SourceTypeBinding fNextType;
 	
 	private static final CRC32 checksumCalculator = new CRC32();
+	
+	/**
+	 * <code>true</code> if all fields and functions have already been built,
+	 * <code>false</code> otherwise
+	 */
+	private boolean fHasBuiltFieldsAndMethods;
+	
+	/**
+	 * <code>true</code> if currently building fields and functions,
+	 * <code>false</code> otherwise
+	 */
+	private boolean fBuildingAllFieldsAndFunctions;
+	
+	/**
+	 * <p>
+	 * When building specific selectors using
+	 * {@link #buildFieldsAndMethods(char[])} then this list contains all of
+	 * the selectors currently being built.
+	 * </p>
+	 * 
+	 * <p>
+	 * If all fields and functions are being built at once then this list is
+	 * not used. use {@link #fBuildingAllFieldsAndFunctions} to detect this situation.
+	 * </p>
+	 * 
+	 * @see #buildFieldsAndMethods(char[])
+	 * @see #fBuildingAllFieldsAndFunctions
+	 */
+	private char[][] fBuildingSelectors;
+	
+	/**
+	 * <p>
+	 * If have built specific selectors using
+	 * {@link #buildFieldsAndMethods(char[])} then this list contains all of
+	 * the selectors that have already been built.
+	 * </p>
+	 * 
+	 * <p>
+	 * If all fields and functions have been built then this list is not accurate.
+	 * Use {@link #fHasBuiltFieldsAndMethods} to detect this situation.
+	 * </p>
+	 * 
+	 * @see #buildFieldsAndMethods(char[])
+	 * @see #fHasBuiltFieldsAndMethods
+	 */
+	private char[][] fBuiltSelectors;
+	
+	/**
+	 * <p>
+	 * Used to synchronize access to fields that keep track of field and function building.
+	 * </p>
+	 * 
+	 * @see #fBuildingAllFieldsAndFunctions
+	 * @see #fBuildingSelectors
+	 * @see #fBuiltSelectors
+	 */
+	private final Object fBuildFieldsAndFunctionsLock = new Object();
 
 	public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,
 			Scope scope) {
+		
+		this();
 		this.compoundName = compoundName;
 		this.fPackage = fPackage;
 		this.fileName = scope.referenceCompilationUnit().getFileName();
@@ -65,17 +168,133 @@ public class SourceTypeBinding extends ReferenceBinding {
 		this.methods = Binding.NO_METHODS;
 
 		computeId();
-
 	}
 
 	protected SourceTypeBinding() {
-
+		//next type is a circular linked list
+		this.fNextType = this;
+		
+		this.fHasBuiltFieldsAndMethods = false;
+		this.fBuildingAllFieldsAndFunctions = false;
+		this.fBuildingSelectors = null;
+		this.fBuiltSelectors = null;
+	}
+	
+	/**
+	 * <p>
+	 * Builds all fields and functions for this type.
+	 * </p>
+	 * 
+	 * <p>
+	 * No operation if all fields and functions are already built. Also if an
+	 * individual field or function has already been built then it will not be
+	 * built again.
+	 * </p>
+	 */
+	void buildFieldsAndMethods() {
+		this.buildFieldsAndMethods(null);
 	}
 
-	void buildFieldsAndMethods() {
-		buildFields();
-		buildMethods();
-
+	/**
+	 * <p>
+	 * If no restriction is given then the same as
+	 * {@link #buildFieldsAndMethods()}, else if a restriction is given only
+	 * fields and functions with the given selector are built.
+	 * </p>
+	 * 
+	 * <p>
+	 * No operation if all fields and functions are already built. Also if an
+	 * individual field or function has already been built then it will not be
+	 * built again.
+	 * </p>
+	 * 
+	 * @param restrictToSelector
+	 *            restrict building to only fields and functions with this
+	 *            selector, or if <code>null</code> build all fields and
+	 *            functions
+	 */
+	private void buildFieldsAndMethods(char[] restrictToSelector) {
+		synchronized (this.fBuildFieldsAndFunctionsLock) {
+			//if already building or have already built then do nothing
+			if(this.fBuildingAllFieldsAndFunctions || this.fHasBuiltFieldsAndMethods ) {
+				return;
+			}
+			
+			//if already building restrict to selector then do nothing
+			if(restrictToSelector != null && this.fBuildingSelectors != null && this.fBuildingSelectors.length > 0) {
+				if(CharOperation.contains(restrictToSelector, this.fBuildingSelectors)) {
+					return;
+				}
+			}
+			
+			//if already built selector then do nothing
+			if(restrictToSelector != null && this.fBuiltSelectors != null && this.fBuiltSelectors.length > 0) {
+				if(CharOperation.contains(restrictToSelector, this.fBuiltSelectors)) {
+					return;
+				}
+			}
+			
+			/* if restrict building to specific selector add it to list of currently building specific selectors
+			 * else set building all fields and functions */
+			if(restrictToSelector != null) {
+				if(this.fBuildingSelectors == null) {
+					this.fBuildingSelectors = new char[1][];
+					this.fBuildingSelectors[0] = restrictToSelector;
+				} else {
+					char[][] newBuildingSelectors = new char[this.fBuildingSelectors.length+1][];
+					System.arraycopy(this.fBuildingSelectors, 0, newBuildingSelectors, 0, this.fBuildingSelectors.length);
+					this.fBuildingSelectors = newBuildingSelectors;
+					this.fBuildingSelectors[this.fBuildingSelectors.length-1] = restrictToSelector;
+				}
+			} else {
+				this.fBuildingAllFieldsAndFunctions = true;
+			}
+		}
+		
+		try {			
+			/* build functions first because building fields depends on built functions
+			 * 
+			 * This is because building fields can add functions if their assignment is a function
+			 * but only if a function with the fields name has not already been created */
+			buildFunctions(restrictToSelector);
+			buildFields(restrictToSelector);
+			
+			if(restrictToSelector == null) {
+				this.fHasBuiltFieldsAndMethods = true;
+			}
+		} finally {
+			synchronized (this.fBuildFieldsAndFunctionsLock) {
+				if(restrictToSelector != null) {
+					//remove selector from list of building selectors
+					if(this.fBuildingSelectors.length == 1) {
+						this.fBuildingSelectors = null;
+					} else {
+						char[][] newBuildingSelectors = new char[this.fBuildingSelectors.length-1][];
+						int j = 0;
+						for(int i = 0; i < this.fBuildingSelectors.length; ++i) {
+							if(!CharOperation.equals(restrictToSelector, this.fBuildingSelectors[i])) {
+								newBuildingSelectors[j++] = this.fBuildingSelectors[i];
+							}
+						}
+						
+						this.fBuildingSelectors = newBuildingSelectors;
+					}
+					
+					//add selector to list of built selectors
+					if(this.fBuiltSelectors == null) {
+						this.fBuiltSelectors = new char[1][];
+						this.fBuiltSelectors[0] = restrictToSelector;
+					} else {
+						char[][] newBuiltSelectors = new char[this.fBuiltSelectors.length+1][];
+						System.arraycopy(this.fBuiltSelectors, 0, newBuiltSelectors, 0, this.fBuiltSelectors.length);
+						this.fBuiltSelectors = newBuiltSelectors;
+						this.fBuiltSelectors[this.fBuiltSelectors.length-1] = restrictToSelector;
+					}
+				} else {
+					this.fBuildingAllFieldsAndFunctions = false;
+				}
+			}
+		}
 	}
 
 	/**
@@ -90,73 +309,201 @@ public class SourceTypeBinding extends ReferenceBinding {
 		return classScope.inferredType;
 	}
 
-	private void buildFields() {
-		FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE,
-				TypeBinding.UNKNOWN, modifiers
-						| ExtraCompilerModifiers.AccUnresolved, this);
+	/**
+	 * <p>
+	 * Build all or a specific field.
+	 * </p>
+	 * 
+	 * @param restrictToSelector
+	 *            build only fields with this selector, or if
+	 *            <code>null</code> build all fields
+	 */
+	private void buildFields(char[] restrictToSelector) {
+		if(this.classScope == null)
+			return;
 		InferredType inferredType = this.classScope.inferredType;
 		int size = inferredType.numberAttributes;
-		if (size == 0) {
-			setFields(new FieldBinding[] { prototype });
-			return;
-		}
-
-		// iterate the field declarations to create the bindings, lose all
-		// duplicates
+		
+		// iterate the field declarations to create the bindings, lose all duplicates
 		FieldBinding[] fieldBindings = new FieldBinding[size + 1];
 		HashtableOfObject knownFieldNames = new HashtableOfObject(size);
 		boolean duplicate = false;
 		int count = 0;
 		for (int i = 0; i < size; i++) {
 			InferredAttribute field = inferredType.attributes[i];
-			int modifiers = 0;
-			if (field.isStatic)
-				modifiers |= ClassFileConstants.AccStatic;
-			InferredType fieldType = field.type;
-			TypeBinding fieldTypeBinding = null;
-			if (fieldType != null) {
-				// fieldTypeBinding = BaseTypeBinding.UNKNOWN;
-				// fieldTypeBinding = scope.getType(fieldType.getName());
-				fieldTypeBinding = fieldType.resolveType(scope, field.node);
-			}
-			if (fieldTypeBinding == null)
-				fieldTypeBinding = TypeBinding.UNKNOWN;
-
-			FieldBinding fieldBinding = new FieldBinding(field,
-					fieldTypeBinding, modifiers
-							| ExtraCompilerModifiers.AccUnresolved, this);
-			fieldBinding.id = count;
-			// field's type will be resolved when needed for top level types
-			// checkAndSetModifiersForField(fieldBinding, field);
-
-			if (knownFieldNames.containsKey(field.name)) {
-				duplicate = true;
-				FieldBinding previousBinding = (FieldBinding) knownFieldNames
-						.get(field.name);
-				if (previousBinding != null) {
-					for (int f = 0; f < i; f++) {
-						InferredAttribute previousField = inferredType.attributes[f];
-						if (previousField.binding == previousBinding) {
-							scope.problemReporter().duplicateFieldInType(this,
-									previousField);
-							previousField.binding = null;
-							break;
+			
+			/* only build field if either the restricted selector is not set or
+			 * the field name matches the restricted selector.
+			 * 
+			 * Also skip any field that is already building or has already been built */
+			if((restrictToSelector == null || CharOperation.equals(field.name, restrictToSelector)) &&
+						(restrictToSelector != null || !CharOperation.contains(field.name, this.fBuildingSelectors)) &&
+						!CharOperation.contains(field.name, this.fBuiltSelectors)) {
+			
+				int modifiers = 0;
+				if (field.isStatic) {
+					modifiers |= ClassFileConstants.AccStatic;
+				}
+				
+				InferredType fieldType = field.type;
+				TypeBinding fieldTypeBinding = null;
+				
+				Scope searchScope = null;
+				
+				/* if field type set then use that for binding
+				 * else if field node is an assignment use that
+				 * 
+				 * TODO: this is not the correct logic because it does not deal
+				 * with cases where the RHS is a function and the field type
+				 * has already been resolved to function because then the function
+				 * itself has not actually been resolved yet, so we can not create
+				 * a function binding on this type for it.  Initial attempts to fix
+				 * this flaw have caused performance issues, so it will have to be
+				 * addressed latter. To fix this turn this into two ifs, but again
+				 * that then tanks performance for SOME scenarios.*/
+				if (fieldType != null) {
+					fieldTypeBinding = fieldType.resolveType(scope, field.node);
+				} else if(field.node instanceof IAssignment) {
+					IExpression rhs = ((IAssignment)field.node).getExpression();
+					
+					if(rhs instanceof Expression) {
+						fieldTypeBinding = ((Expression) rhs).resolvedType;
+						
+						/* if field binding for RHS not set or is any look for a better one,
+						 * if function then local scope needs to be built so function can be resolved */
+						if(fieldTypeBinding == null || fieldTypeBinding.isAnyType()) {	
+							
+							/* if node is an assignment and that assignment is contained
+							 * in a function resolve the function first */
+							IFunctionDeclaration containingFunction = null;
+							if(field.node instanceof Assignment) {
+								containingFunction = ((Assignment)field.node).getContainingFunction();
+								if(containingFunction != null && containingFunction instanceof AbstractMethodDeclaration) {	
+									((AbstractMethodDeclaration)containingFunction).buildLocals(this.scope.compilationUnitScope());
+									searchScope = ((AbstractMethodDeclaration)containingFunction).getScope();
+								}
+							}
+							
+							//if no search scope found yet find first parent scope that is a BlockScope
+							if(searchScope == null) {
+								searchScope = this.scope;
+								while(searchScope != null && !(searchScope instanceof BlockScope)) {
+									searchScope = searchScope.parent;
+								}
+							}
+							
+							//use search scope to find binding
+							TypeBinding resolvedBinding = ((Expression) rhs).resolveType((BlockScope)searchScope);
+							if(resolvedBinding != null) {
+								fieldTypeBinding = resolvedBinding;
+							}
+						}
+					}
+						
+					//if RHS binding is a function so create a new function binding on this source binding
+					if(fieldTypeBinding != null && isFunctionType(fieldTypeBinding)) {
+						
+						/* if RHS is a field reference search its receiver for the function binding for the assigned function
+						 * else if single name reference just use its method bindingn */
+						MethodBinding assignedFuncBinding = null;
+						
+						/* this is to deal with cases like:
+						 * foo = (bar = function() {}); */
+						while(rhs instanceof IAssignment) {
+							rhs = ((IAssignment)rhs).getExpression();
+						}
+						
+						if(rhs instanceof IFieldReference) {
+							char[] selector = ((IFieldReference) rhs).getToken();
+							IExpression receiver = ((IFieldReference) rhs).getReceiver();
+							if(receiver instanceof Expression) {
+								TypeBinding receiverType = ((Expression) receiver).resolvedType;
+								if(receiverType instanceof SourceTypeBinding) {
+									//if found bindings use first one
+									MethodBinding[] funcBindings = ((SourceTypeBinding) receiverType).getMethods(selector);
+									if(funcBindings != null && funcBindings.length > 0) {
+										assignedFuncBinding = funcBindings[0];
+									}
+								}
+							}
+						} else if(rhs instanceof SingleNameReference) {
+							Binding binding = ((SingleNameReference) rhs).binding;
+							
+							/* if binding is method binding just use that
+							 * else if binding is local variable, find func binding in scope with same name as variable
+							 * 		var foo;
+							 * 		foo = function() {} */
+							if(binding instanceof MethodBinding) {
+								assignedFuncBinding = (MethodBinding)binding;
+							} else if(binding instanceof LocalVariableBinding && searchScope != null) {
+								if(searchScope instanceof BlockScope) {
+									assignedFuncBinding = ((BlockScope)searchScope).findMethod(field.name, null, true);
+								} else {
+									assignedFuncBinding = searchScope.findMethod(null, field.name, null, null);
+								}
+							}
+						}
+						
+						//if RHS was a function binding create a new function binding on this type binding
+						if(assignedFuncBinding != null) {
+							InferredMethod dupMeth = inferredType.findMethod(field.name, null);
+							if(dupMeth == null) {
+								MethodBinding[] funcBindings = this.getMethods(field.name);
+								if(funcBindings == null || funcBindings.length == 0) {
+									MethodBinding funcBinding = new MethodBinding(assignedFuncBinding, this);
+									funcBinding.setSelector(field.name);
+									this.addMethod(funcBinding);
+								}
+							}
 						}
 					}
 				}
-				knownFieldNames.put(field.name, null); // ensure that the
-														// duplicate field is
-														// found & removed
-				scope.problemReporter().duplicateFieldInType(this, field);
-				field.binding = null;
-			} else {
-				knownFieldNames.put(field.name, fieldBinding);
-				// remember that we have seen a field with this name
-				if (fieldBinding != null)
+				
+				if (fieldTypeBinding == null) {
+					fieldTypeBinding = TypeBinding.UNKNOWN;
+				}
+	
+				FieldBinding fieldBinding = new FieldBinding(field,
+						fieldTypeBinding, modifiers
+								| ExtraCompilerModifiers.AccUnresolved, this);
+				fieldBinding.id = count;
+	
+				if (knownFieldNames.containsKey(field.name)) {
+					duplicate = true;
+					FieldBinding previousBinding = (FieldBinding) knownFieldNames
+							.get(field.name);
+					if (previousBinding != null) {
+						for (int f = 0; f < i; f++) {
+							InferredAttribute previousField = inferredType.attributes[f];
+							if (previousField.binding == previousBinding) {
+								scope.problemReporter().duplicateFieldInType(this,
+										previousField);
+								previousField.binding = null;
+								break;
+							}
+						}
+					}
+					// ensure that the duplicate field is found & removed
+					knownFieldNames.put(field.name, null); 
+					scope.problemReporter().duplicateFieldInType(this, field);
+					field.binding = null;
+				} else {
+					knownFieldNames.put(field.name, fieldBinding);
+					// remember that we have seen a field with this name
 					fieldBindings[count++] = fieldBinding;
+				}
 			}
 		}
-		fieldBindings[count++] = prototype;
+		
+		//only add prototype if not building specific selector
+		if(restrictToSelector == null) {
+			FieldBinding prototype = new FieldBinding(TypeConstants.PROTOTYPE,
+						TypeBinding.UNKNOWN, modifiers
+								| ExtraCompilerModifiers.AccUnresolved, this);
+			
+			fieldBindings[count++] = prototype;
+		}
+		
 		// remove duplicate fields
 		if (duplicate) {
 			FieldBinding[] newFieldBindings = new FieldBinding[fieldBindings.length];
@@ -172,19 +519,34 @@ public class SourceTypeBinding extends ReferenceBinding {
 			}
 			fieldBindings = newFieldBindings;
 		}
-		if (count != fieldBindings.length)
+		
+		//make sure array length is correct
+		if (count != fieldBindings.length) {
 			System.arraycopy(fieldBindings, 0,
 					fieldBindings = new FieldBinding[count], 0, count);
-		setFields(fieldBindings);
+		}
+		
+		this.addFields(fieldBindings);
 	}
 
-	private void buildMethods() {
+	/**
+	 * <p>
+	 * Build all or a specific function.
+	 * </p>
+	 * 
+	 * @param restrictToSelector
+	 *            build only functions with this selector, or if
+	 *            <code>null</code> build all functions
+	 */
+	private void buildFunctions(char[] restrictToSelector) {
+		if(this.classScope == null) {
+			return;
+		}
 		InferredType inferredType = this.classScope.inferredType;
 		int size = (inferredType.methods != null) ? inferredType.methods.size()
 				: 0;
 
 		if (size == 0) {
-			setMethods(Binding.NO_METHODS);
 			return;
 		}
 
@@ -192,40 +554,80 @@ public class SourceTypeBinding extends ReferenceBinding {
 		MethodBinding[] methodBindings = new MethodBinding[size];
 		// create bindings for source methods
 		for (int i = 0; i < size; i++) {
-			InferredMethod method = (InferredMethod) inferredType.methods.get(i);
+			InferredMethod inferredMethod = (InferredMethod) inferredType.methods.get(i);
 			
-			//determine if the method already has a resolved scope or not
-			boolean doesNotHaveResolvedScope = method.getFunctionDeclaration() instanceof AbstractMethodDeclaration &&
-					((AbstractMethodDeclaration)method.getFunctionDeclaration()).scope == null;
-			
-			//build method scope
-			MethodDeclaration methDec = (MethodDeclaration) method.getFunctionDeclaration();
-			MethodScope scope = new MethodScope(this.scope, methDec, false);
-			MethodBinding methodBinding = scope.createMethod(method, this);
-			
-			//bind arguments
-			method.methodBinding = methodBinding;
-			methDec.binding = methodBinding;
-			methDec.bindArguments();
-			
-			if (methodBinding != null) // is null if binding could not be
-										// created
-				methodBindings[count++] = methodBinding;
-			
-			// if method did not already have a resolved scope, then add it to the environment
-			if(doesNotHaveResolvedScope) {
-				this.scope.environment().defaultPackage.addBinding(
-						methodBinding, methodBinding.selector,
-						Binding.METHOD);
+			/* only build function if either the restricted selector is not set or
+			 * the function name matches the restricted selector.
+			 * 
+			 * Also skip any function that is already building or has already been built */
+			if((restrictToSelector == null || CharOperation.equals(inferredMethod.name, restrictToSelector)) &&
+						(restrictToSelector != null || !CharOperation.contains(inferredMethod.name, this.fBuildingSelectors)) &&
+						!CharOperation.contains(inferredMethod.name, this.fBuiltSelectors)) {
+					
+				//determine if the method already has a resolved scope or not
+				boolean doesNotHaveResolvedScope = inferredMethod.getFunctionDeclaration() instanceof AbstractMethodDeclaration &&
+						((AbstractMethodDeclaration)inferredMethod.getFunctionDeclaration()).getScope() == null;
+				
+				//build method scope
+				MethodDeclaration methDec = (MethodDeclaration) inferredMethod.getFunctionDeclaration();
+				MethodBinding methodBinding;
+				
+				/* if does not already have a binding or existing binding has a different name then
+				 * 		current inferred function create a new method binding
+				 * else use existing method binding */
+				if(!methDec.hasBinding() || !CharOperation.equals(methDec.getBinding().selector, inferredMethod.name)) {
+					MethodScope scope = new MethodScope(this.scope, methDec, false);
+					
+					/* if the inferred method specifies that it is in a type use that one.
+					 * 
+					 * This is for the case where a method has been mixed in from another type
+					 * but we still want that method to be reported as defined on the other
+					 * type and not this type */
+					SourceTypeBinding declaringTypeBinding = null;
+					if(inferredMethod.inType != null && inferredMethod.inType.binding != null && !inferredMethod.isConstructor) {
+						declaringTypeBinding = inferredMethod.inType.binding;
+					} else {
+						declaringTypeBinding = this;
+					}
+					
+					/* if not existing binding or is a constructor then use scope to create new binding
+					 * else create new binding based on existing binding */
+					if(!methDec.hasBinding() || inferredMethod.isConstructor) {
+						methodBinding = scope.createMethod(inferredMethod, declaringTypeBinding);
+					} else {
+						methodBinding = new MethodBinding(methDec.getBinding(), declaringTypeBinding);
+						methodBinding.setSelector(inferredMethod.name);
+					}
+				} else {
+					methodBinding = methDec.getBinding();
+				}
+				
+				//set bindings
+				inferredMethod.methodBinding = methodBinding;
+				methDec.setBinding(methodBinding);
+				
+				//is null if binding could not be created
+				if (methodBinding != null) {
+					methodBindings[count++] = methodBinding;
+					
+					// if method did not already have a resolved scope, then add it to the environment
+					if(doesNotHaveResolvedScope) {
+						this.scope.environment().defaultPackage.addBinding(
+								methodBinding, methodBinding.selector,
+								Binding.METHOD);
+					}
+				}
 			}
 		}
-		if (count != methodBindings.length)
+		if (count != methodBindings.length) {
 			System.arraycopy(methodBindings, 0,
 					methodBindings = new MethodBinding[count], 0, count);
-		tagBits &= ~TagBits.AreMethodsSorted; // in case some static imports
-												// reached already into this
-												// type
-		setMethods(methodBindings);
+		}
+		
+		// in case some static imports reached already into this type
+		tagBits &= ~TagBits.AreMethodsSorted; 
+		
+		this.addMethods(methodBindings);
 	}
 
 	public int kind() {
@@ -252,9 +654,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 			start = CharOperation.lastIndexOf('/', uniqueKey) + 1;
 			if (start == 0)
 				start = 1; // start after L
-			end = CharOperation.indexOf('$', uniqueKey, start);
-			if (end == -1)
-				end = CharOperation.indexOf('<', uniqueKey, start);
+			end = CharOperation.indexOf('<', uniqueKey, start);
 			if (end == -1)
 				end = CharOperation.indexOf(';', uniqueKey, start);
 			char[] topLevelType = CharOperation.subarray(uniqueKey, start, end);
@@ -283,162 +683,162 @@ public class SourceTypeBinding extends ReferenceBinding {
 			this.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
 		fields();
 		methods();
-
-		// for (int i = 0, length = this.memberTypes.length; i < length; i++)
-		// ((SourceTypeBinding)
-		// this.memberTypes[i]).faultInTypesForFieldsAndMethods();
 	}
 
-	// NOTE: the type of each field of a source type is resolved when needed
+	/**
+	 * <p>
+	 * NOTE: the type of each field of a source type is resolved when needed
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#fields()
+	 */
 	public FieldBinding[] fields() {
-		Map fieldCache = new HashMap();
-		if ((this.tagBits & TagBits.AreFieldsComplete) == 0) {
-
-			int failed = 0;
-			FieldBinding[] resolvedFields = this.fields;
-			try {
-				// lazily sort fields
-				if ((this.tagBits & TagBits.AreFieldsSorted) == 0) {
-					int length = this.fields.length;
-					if (length > 1)
-						ReferenceBinding.sortFields(this.fields, 0, length);
-					this.tagBits |= TagBits.AreFieldsSorted;
-				}
-				for (int i = 0, length = this.fields.length; i < length; i++) {
-					if (resolveTypeFor(this.fields[i]) == null) {
-						// do not alter original field array until resolution is
-						// over, due to reentrance (143259)
-						if (resolvedFields == this.fields) {
-							System.arraycopy(this.fields, 0,
-									resolvedFields = new FieldBinding[length],
-									0, length);
+		final Map fieldCache = new HashMap();
+		
+		//get fields across all linked types
+		this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				//be sure fields and methods are built
+				linkedBinding.buildFieldsAndMethods();
+				
+				// complete fields if not yet complete
+				if ((linkedBinding.tagBits & TagBits.AreFieldsComplete) == 0) {
+					int failed = 0;
+					FieldBinding[] resolvedFields = linkedBinding.fields;
+					try {
+						// lazily sort fields
+						if ((linkedBinding.tagBits & TagBits.AreFieldsSorted) == 0) {
+							int length = linkedBinding.fields.length;
+							if (length > 1) {
+								ReferenceBinding.sortFields(linkedBinding.fields, 0, length);
+							}
+							linkedBinding.tagBits |= TagBits.AreFieldsSorted;
 						}
-						resolvedFields[i] = null;
-						failed++;
+						for (int i = 0, length = linkedBinding.fields.length; i < length; i++) {
+							if (linkedBinding.resolveTypeFor(linkedBinding.fields[i]) == null) {
+								/* do not alter original field array until resolution is
+								 * over, due to reentrance (143259) */
+								if (resolvedFields == linkedBinding.fields) {
+									System.arraycopy(linkedBinding.fields, 0,
+											resolvedFields = new FieldBinding[length],
+											0, length);
+								}
+								resolvedFields[i] = null;
+								failed++;
+							}
+						}
+					} finally {
+						if (failed > 0) {
+							// ensure fields are consistent regardless of the error
+							int newSize = resolvedFields.length - failed;
+							if (newSize == 0) {
+								linkedBinding.setFields(Binding.NO_FIELDS);
+							} else {
+								FieldBinding[] newFields = new FieldBinding[newSize];
+								for (int i = 0, j = 0, length = resolvedFields.length; i < length; i++) {
+									if (resolvedFields[i] != null) {
+										newFields[j++] = resolvedFields[i];
+									}
+								}
+								linkedBinding.setFields(newFields);
+							}
+						}
 					}
-					fieldCache.put(this.fields[i].name, this.fields[i]);
+					
+					//mark fields as complete
+					linkedBinding.tagBits |= TagBits.AreFieldsComplete;
 				}
-			} finally {
-				if (failed > 0) {
-					// ensure fields are consistent reqardless of the error
-					int newSize = resolvedFields.length - failed;
-					if (newSize == 0)
-						return this.fields = Binding.NO_FIELDS;
-
-					FieldBinding[] newFields = new FieldBinding[newSize];
-					for (int i = 0, j = 0, length = resolvedFields.length; i < length; i++) {
-						if (resolvedFields[i] != null)
-							newFields[j++] = resolvedFields[i];
+				
+				//add fields to combined cache
+				for(int i = 0; i < linkedBinding.fields.length; i++) {
+					if(linkedBinding.fields[i] != null) {
+						fieldCache.put(linkedBinding.fields[i].name, linkedBinding.fields[i]);
 					}
-					this.fields = newFields;
 				}
+				
+				// always search every linked type
+				return true;
 			}
-			this.tagBits |= TagBits.AreFieldsComplete;
-		} else {
-			for(int i = 0; i < this.fields.length; i++) {
-				if(this.fields[i] != null)
-					fieldCache.put(this.fields[i].name, this.fields[i]);
-			}
-		}
-		if (this.nextType != null) {
-			FieldBinding[] moreFields = this.nextType.fields();
-			for(int i = 0; i < moreFields.length; i++) {
-				if(fieldCache.get(moreFields[i].name) == null) {
-					fieldCache.put(moreFields[i].name, moreFields[i]);
-				}
-			}
-//			FieldBinding[] combinedFields = new FieldBinding[this.fields.length
-//					+ moreFields.length];
-//			System.arraycopy(this.fields, 0, combinedFields, 0,
-//					this.fields.length);
-//			System.arraycopy(moreFields, 0, combinedFields, this.fields.length,
-//					moreFields.length);
-
-			return (FieldBinding[]) fieldCache.values().toArray(new FieldBinding[0]);
-			//return combinedFields;
-
-		} else
-			return this.fields;
+		});
+		
+		return (FieldBinding[]) fieldCache.values().toArray(new FieldBinding[0]);
 	}
 
-	public MethodBinding[] getDefaultAbstractMethods() {
-		int count = 0;
-		for (int i = this.methods.length; --i >= 0;)
-			if (this.methods[i].isDefaultAbstract())
-				count++;
-		if (count == 0)
-			return Binding.NO_METHODS;
-
-		MethodBinding[] result = new MethodBinding[count];
-		count = 0;
-		for (int i = this.methods.length; --i >= 0;)
-			if (this.methods[i].isDefaultAbstract())
-				result[count++] = this.methods[i];
-		return result;
-	}
-
-	public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
-		MethodBinding exactConstructor = getExactConstructor0(argumentTypes);
-		if (exactConstructor == null && this.nextType != null)
-			exactConstructor = this.nextType.getExactConstructor(argumentTypes);
+	/**
+	 * <p>
+	 * Finds an exact constructor match searching across all linked type bindings.
+	 * </p>
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getExactConstructor(org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[])
+	 */
+	public MethodBinding getExactConstructor(final TypeBinding[] argumentTypes) {
+		MethodBinding exactConstructor = (MethodBinding)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * <p>
+			 * The exact constructor match found on any of the linked types.
+			 * </p>
+			 */
+			private MethodBinding fExactConstructorMatch = null;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				//be sure fields and methods are built
+				linkedBinding.buildFieldsAndMethods();
+				
+				this.fExactConstructorMatch = linkedBinding.getExactConstructor0(argumentTypes);
+				
+				//keep processing if have not yet found exact match
+				return this.fExactConstructorMatch == null;
+			}
+			
+			/**
+			 * @return {@link MethodBinding}
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return this.fExactConstructorMatch;
+			}
+		});
+		
 		return exactConstructor;
 	}
 
 	// NOTE: the return type, arg & exception types of each method of a source
 	// type are resolved when needed
 	private MethodBinding getExactConstructor0(TypeBinding[] argumentTypes) {
-		int argCount = argumentTypes.length;
-		if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved
-																// all arg types
-																// & return type
-																// of the
-																// methods
+		// have resolved all arg types & return type of the methods
+		if ((this.tagBits & TagBits.AreMethodsComplete) != 0) {
 			long range;
-			if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT,
-					this.methods)) >= 0) {
-				// nextMethod:
-				for (int imethod = (int) range, end = (int) (range >> 32); imethod <= end; imethod++) {
-					MethodBinding method = this.methods[imethod];
-					// if (method.parameters.length == argCount) {
-					// TypeBinding[] toMatch = method.parameters;
-					// for (int iarg = 0; iarg < argCount; iarg++)
-					// if (toMatch[iarg] != argumentTypes[iarg])
-					// continue nextMethod;
+			if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT, this.methods)) >= 0) {
+				if((int) range <= (int) (range >> 32)) {
+					MethodBinding method = this.methods[(int) range];
 					return method;
-					// }
 				}
 			}
 		} else {
 			// lazily sort methods
 			if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
 				int length = this.methods.length;
-				if (length > 1)
+				if (length > 1) {
 					ReferenceBinding.sortMethods(this.methods, 0, length);
+				}
 				this.tagBits |= TagBits.AreMethodsSorted;
 			}
 			long range;
-			if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT,
-					this.methods)) >= 0) {
-				// nextMethod:
-				for (int imethod = (int) range, end = (int) (range >> 32); imethod <= end; imethod++) {
-					MethodBinding method = this.methods[imethod];
+			if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT, this.methods)) >= 0) {
+				if((int) range <= (int) (range >> 32)) {
+					MethodBinding method = this.methods[(int) range];
 					if (resolveTypesFor(method) == null
 							|| method.returnType == null) {
 						methods();
-						return getExactConstructor(argumentTypes); // try again
-																	// since the
-																	// problem
-																	// methods
-																	// have been
-																	// removed
+						// try again since the problem methods have been removed
+						return getExactConstructor(argumentTypes); 
 					}
-					// if (method.parameters.length == argCount) {
-					// TypeBinding[] toMatch = method.parameters;
-					// for (int iarg = 0; iarg < argCount; iarg++)
-					// if (toMatch[iarg] != argumentTypes[iarg])
-					// continue nextMethod;
-					// return method;
-					// }
 					return method;
 				}
 			}
@@ -446,49 +846,168 @@ public class SourceTypeBinding extends ReferenceBinding {
 		return null;
 	}
 
-	public MethodBinding getExactMethod(char[] selector,
-			TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
-		MethodBinding exactMethod = getExactMethod0(selector, argumentTypes,
-				refScope);
-		if (exactMethod == null && this.nextType != null)
-			exactMethod = this.nextType.getExactMethod(selector, argumentTypes,
-					refScope);
+	/**
+	 * <p>
+	 * Finds an exact function match searching across all linked type bindings
+	 * and their super types.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>NOTE:</b> this uses a breadth first search to find an exact function
+	 * binding, first it searches all linked bindings, then their parents, so
+	 * forth and so on.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getExactMethod(char[],
+	 *      org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding[],
+	 *      org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope)
+	 */
+	public MethodBinding getExactMethod(final char[] selector,
+			final TypeBinding[] argumentTypes, final CompilationUnitScope refScope) {
+		
+		MethodBinding exactMethod = null;
+		
+		//search all linked types for exact method match
+		if(selector != null) {
+			final LinkedList typesToCheck = new LinkedList();
+			
+			/* this set will contain every type that has already been checked
+			 * this includes all linked types, therefore a simple contains check
+			 * can be done to see if a given type has already been checked
+			 * rather then having to iterate and do an expensive #isEquivalentTo check */
+			final Set checkedTypes = new HashSet();
+			typesToCheck.add(this);
+			
+			while(!typesToCheck.isEmpty() && exactMethod == null) {
+				ReferenceBinding typeToCheck = (ReferenceBinding)typesToCheck.removeFirst();
+				
+				
+				/* if type to check is SourceTypeBinding then have to check all linked bindings
+				 * else just check the ReferenceBinding directly */
+				if(typeToCheck instanceof SourceTypeBinding) {
+					exactMethod = (MethodBinding)((SourceTypeBinding)typeToCheck).performActionOnLinkedBindings(new LinkedBindingAction() {
+						/**
+						 * <p>
+						 * The located exact function match.
+						 * </p>
+						 */
+						private MethodBinding fExactFunctionMatch;
+						
+						/**
+						 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+						 */
+						public boolean performAction(SourceTypeBinding typeToCheckLinkedBinding) {
+							checkedTypes.add(typeToCheckLinkedBinding);
+							
+							/* only build fields and functions if inferred type has a function with correct name,
+							 * and only bother checking inferred type if the fields and functions have not already been built
+							 * 
+							 * this saves time avoiding building fields and functions when it is not needed */
+							if(!SourceTypeBinding.this.fHasBuiltFieldsAndMethods && typeToCheckLinkedBinding.inferredTypeHasFunction(selector)) {
+								//be sure fields and methods are built
+								typeToCheckLinkedBinding.buildFieldsAndMethods(selector);
+							}
+							
+							//check self for exact function
+							this.fExactFunctionMatch = typeToCheckLinkedBinding.getExactMethod0(selector, argumentTypes, refScope);
+							
+							/* add super type of current linked binding to types to check if
+							 * not already there and not already checked */
+							if(this.fExactFunctionMatch == null) {
+								boolean alreadyGoingToCheck = false;
+								ReferenceBinding superBinding = typeToCheckLinkedBinding.getSuperBinding0();
+								if(superBinding != null) {
+									Iterator typesToCheckIter = typesToCheck.iterator();
+									while(typesToCheckIter.hasNext()) {
+										alreadyGoingToCheck = ((ReferenceBinding)typesToCheckIter.next()).isEquivalentTo(superBinding);
+									}
+									
+									boolean alreadyChecked = false;
+									if(!alreadyGoingToCheck) {
+										alreadyChecked = checkedTypes.contains(superBinding);
+									}
+									
+									if(!alreadyGoingToCheck && !alreadyChecked) {
+										typesToCheck.add(superBinding);
+									}
+								}
+							}
+							
+							//keep processing if have not yet found exact match
+							return this.fExactFunctionMatch == null;
+						}
+						
+						/**
+						 * @return {@link MethodBinding}
+						 * 
+						 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+						 */
+						public Object getFinalResult() {
+							return this.fExactFunctionMatch;
+						}
+					});
+				} else {
+					checkedTypes.add(typeToCheck);
+					
+					exactMethod = typeToCheck.getExactMethod(selector, argumentTypes, refScope);
+					
+					/* add super type of current binding to types to check if
+					 * not already there and not already checked */
+					if(exactMethod == null) {
+						boolean alreadyGoingToCheck = false;
+						ReferenceBinding superBinding = typeToCheck.getSuperBinding();
+						if(superBinding != null) {
+							Iterator typesToCheckIter = typesToCheck.iterator();
+							while(typesToCheckIter.hasNext()) {
+								alreadyGoingToCheck = ((ReferenceBinding)typesToCheckIter.next()).isEquivalentTo(superBinding);
+							}
+							
+							boolean alreadyChecked = false;
+							if(!alreadyGoingToCheck) {
+								alreadyChecked = checkedTypes.contains(superBinding);
+							}
+							
+							if(!alreadyGoingToCheck && !alreadyChecked) {
+								typesToCheck.add(superBinding);
+							}
+						}
+					}
+				}
+			}
+		}
+		
 		return exactMethod;
 	}
 
-	// NOTE: the return type, arg & exception types of each method of a source
-	// type are resolved when needed
-	// searches up the hierarchy as long as no potential (but not exact) match
-	// was found.
+	/**
+	 * <p>
+	 * <b>NOTES:</b>
+	 * <ul>
+	 * <li>the return type, arg & exception types of each method of a source
+	 * type are resolved when needed.</li>
+	 * <li>this method only searches this specific binding, it does not search
+	 * any linked bindings or any super bindings</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param selector
+	 * @param argumentTypes
+	 * @param refScope
+	 * @return
+	 */
 	private MethodBinding getExactMethod0(char[] selector,
 			TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
-		// sender from refScope calls recordTypeReference(this)
-		// int argCount = argumentTypes.length;
-		boolean foundNothing = true;
+		
+		if(selector == null || this.methods == null || this.methods.length == 0)
+			return null;
 
-		if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved
-																// all arg types
-																// & return type
-																// of the
-																// methods
+		// have resolved all arg types & return type of the methods
+		if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { 
 			long range;
 			if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
-				// nextMethod:
-				for (int imethod = (int) range, end = (int) (range >> 32); imethod <= end; imethod++) {
-					MethodBinding method = this.methods[imethod];
-					foundNothing = false; // inner type lookups must know that a
-											// method with this name exists
-					// if (method.parameters.length == argCount) {
-					// TypeBinding[] toMatch = method.parameters;
-					// for (int iarg = 0; iarg < argCount; iarg++)
-					// if (toMatch[iarg] != argumentTypes[iarg])
-					// {
-					// if (toMatch[iarg].id!=TypeIds.T_any &&
-					// argumentTypes[iarg].id!=TypeIds.T_any)
-					// continue nextMethod;
-					// }
-					// return method;
-					// }
+				if((int) range <= (int) (range >> 32)) {
+					MethodBinding method = this.methods[(int) range];
+					// inner type lookups must know that a  method with this name exists
 					return method;
 				}
 			}
@@ -510,15 +1029,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 					if (resolveTypesFor(method) == null
 							|| method.returnType == null) {
 						methods();
-						return getExactMethod(selector, argumentTypes, refScope); // try
-																					// again
-																					// since
-																					// the
-																					// problem
-																					// methods
-																					// have
-																					// been
-																					// removed
+						// try again since the problem methods have been removed
+						return getExactMethod0(selector, argumentTypes, refScope); 
 					}
 				}
 				// check dup collisions
@@ -533,56 +1045,84 @@ public class SourceTypeBinding extends ReferenceBinding {
 								.areParametersEqual(method2);
 						if (paramsMatch) {
 							methods();
-							return getExactMethod(selector, argumentTypes,
-									refScope); // try again since the problem
-												// methods have been removed
+							// try again since the problem methods have been removed
+							return getExactMethod0(selector, argumentTypes, refScope); 
 						}
 					}
 				}
 				return this.methods[start];
-				// nextMethod: for (int imethod = start; imethod <= end;
-				// imethod++) {
-				// FunctionBinding method = this.methods[imethod];
-				// TypeBinding[] toMatch = method.parameters;
-				// if (toMatch.length == argCount) {
-				// for (int iarg = 0; iarg < argCount; iarg++)
-				// if (toMatch[iarg] != argumentTypes[iarg])
-				// continue nextMethod;
-				// return method;
-				// }
-				// }
 			}
 		}
 
-		if (foundNothing) {
-			if (this.superclass != null && this.superclass != this) {
-				if (refScope != null)
-					refScope.recordTypeReference(this.superclass);
-				MethodBinding exactMethod = this.superclass.getExactMethod(
-						selector, argumentTypes, refScope);
-				if (exactMethod != null && exactMethod.isValidBinding())
-					return exactMethod;
-			}
-
-		}
 		return null;
 	}
 
-	public FieldBinding getField(char[] fieldName, boolean needResolve) {
-		FieldBinding field = getField0(fieldName, needResolve);
-		if (field == null && this.nextType != null)
-			field = this.nextType.getField(fieldName, needResolve);
+	/**
+	 * <p>
+	 * Searches all linked types for a field with the given name.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>NOTE:</p> this does not check super types.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getField(char[], boolean)
+	 */
+	public FieldBinding getField(final char[] fieldName, final boolean needResolve) {
+		FieldBinding field = null;
+		
+		//search all linked types for exact method match
+		if(fieldName != null) {
+			field = (FieldBinding)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+				/**
+				 * <p>
+				 * The located exact function match.
+				 * </p>
+				 */
+				private FieldBinding fFieldMatch;
+				
+				/**
+				 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+				 */
+				public boolean performAction(SourceTypeBinding linkedBinding) {
+					/* only build fields and functions if inferred type has field with correct name,
+					 * and only bother checking inferred type if the fields and functions have not already been built
+					 * 
+					 * this saves time avoiding building fields and functions when it is not needed */
+					if(!SourceTypeBinding.this.fHasBuiltFieldsAndMethods && linkedBinding.inferredTypeHasField(fieldName)) {
+						//be sure fields and methods are built
+						linkedBinding.buildFieldsAndMethods(fieldName);
+					}
+						
+					//check self for exact field
+					this.fFieldMatch = linkedBinding.getField0(fieldName, needResolve);
+					
+					//keep processing if have not yet found exact match
+					return this.fFieldMatch == null;
+				}
+				
+				/**
+				 * @return {@link FieldBinding}
+				 * 
+				 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+				 */
+				public Object getFinalResult() {
+					return this.fFieldMatch;
+				}
+			});
+		}
+		
 		return field;
 	}
 
-	public FieldBinding getFieldInHierarchy(char[] fieldName,
-			boolean needResolve) {
+	public FieldBinding getFieldInHierarchy(char[] fieldName, boolean needResolve) {
 		SourceTypeBinding currentType = this;
 		while (currentType != null) {
 			FieldBinding field = currentType.getField(fieldName, needResolve);
-			if (field != null)
+			if (field != null) {
 				return field;
-			currentType = (SourceTypeBinding) currentType.superclass();
+			}
+			currentType = (SourceTypeBinding) currentType.getSuperBinding();
 		}
 		return null;
 	}
@@ -590,8 +1130,9 @@ public class SourceTypeBinding extends ReferenceBinding {
 	// NOTE: the type of a field of a source type is resolved when needed
 	private FieldBinding getField0(char[] fieldName, boolean needResolve) {
 
-		if ((this.tagBits & TagBits.AreFieldsComplete) != 0)
+		if ((this.tagBits & TagBits.AreFieldsComplete) != 0) {
 			return ReferenceBinding.binarySearch(fieldName, this.fields);
+		}
 
 		// lazily sort fields
 		if ((this.tagBits & TagBits.AreFieldsSorted) == 0) {
@@ -601,8 +1142,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 			this.tagBits |= TagBits.AreFieldsSorted;
 		}
 		// always resolve anyway on source types
-		FieldBinding field = ReferenceBinding.binarySearch(fieldName,
-				this.fields);
+		FieldBinding field = ReferenceBinding.binarySearch(fieldName, this.fields);
 		if (field != null) {
 			FieldBinding result = null;
 			try {
@@ -613,17 +1153,18 @@ public class SourceTypeBinding extends ReferenceBinding {
 					// ensure fields are consistent reqardless of the error
 					int newSize = this.fields.length - 1;
 					if (newSize == 0) {
-						this.fields = Binding.NO_FIELDS;
+						this.setFields(Binding.NO_FIELDS);
 					} else {
 						FieldBinding[] newFields = new FieldBinding[newSize];
 						int index = 0;
 						for (int i = 0, length = this.fields.length; i < length; i++) {
 							FieldBinding f = this.fields[i];
-							if (f == field)
+							if (f == field) {
 								continue;
+							}
 							newFields[index++] = f;
 						}
-						this.fields = newFields;
+						this.setFields(newFields);
 					}
 				}
 			}
@@ -631,23 +1172,96 @@ public class SourceTypeBinding extends ReferenceBinding {
 		return null;
 	}
 
-	public MethodBinding[] getMethods(char[] selector) {
-		MethodBinding[] meths = getMethods0(selector);
-		if (this.nextType == null)
-			return meths;
-		MethodBinding[] moreMethods = this.nextType.getMethods(selector);
-		MethodBinding[] combinedMethods = new MethodBinding[meths.length
-				+ moreMethods.length];
-		System.arraycopy(meths, 0, combinedMethods, 0, meths.length);
-		System.arraycopy(moreMethods, 0, combinedMethods, meths.length,
-				moreMethods.length);
-
-		return combinedMethods;
+	/**
+	 * <p>
+	 * Get all methods across all linked type bindings.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>NOTE:</p> this does not check super types.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getMethods(char[])
+	 */
+	public MethodBinding[] getMethods(final char[] selector) {
+		MethodBinding[] allFunctionMatches = Binding.NO_METHODS;
+		
+		//search all linked types for functions matching the given selector
+		if(selector != null) {
+			allFunctionMatches = (MethodBinding[])this.performActionOnLinkedBindings(new LinkedBindingAction() {
+				/**
+				 * <p>
+				 * All of the functions matching a given selector found across all of the linked types.
+				 * </p>
+				 */
+				private MethodBinding[] fAllFunctionMatches = Binding.NO_METHODS;
+				
+				/**
+				 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+				 */
+				public boolean performAction(SourceTypeBinding linkedBinding) {
+					/* only build fields and functions if inferred type has field with correct name,
+					 * and only bother checking inferred type if the fields and functions have not already been built
+					 * 
+					 * this saves time avoiding building fields and functions when it is not needed */
+					if(!SourceTypeBinding.this.fHasBuiltFieldsAndMethods && linkedBinding.inferredTypeHasFunction(selector)) {
+						linkedBinding.buildFieldsAndMethods(selector);
+					}
+					
+					//get current types functions
+					MethodBinding[] functionMatches = linkedBinding.getMethods0(selector);
+					
+					//combine all function matches into one array
+					if(this.fAllFunctionMatches == null) {
+						this.fAllFunctionMatches = functionMatches;
+					} else {
+						MethodBinding[] combinedFunctionMatches = new MethodBinding[this.fAllFunctionMatches.length + functionMatches.length];
+			    		System.arraycopy(this.fAllFunctionMatches, 0, combinedFunctionMatches, 0, this.fAllFunctionMatches.length);
+			    		System.arraycopy(functionMatches, 0, combinedFunctionMatches, this.fAllFunctionMatches.length, functionMatches.length);
+			    		this.fAllFunctionMatches = combinedFunctionMatches;
+					}
+		    		
+					// always search every linked type for methods
+					return true;
+				}
+				
+				/**
+				 * @return {@link MethodBinding}[]
+				 * 
+				 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+				 */
+				public Object getFinalResult() {
+					return this.fAllFunctionMatches;
+				}
+			});
+		}
+		
+		return allFunctionMatches;
 	}
 
-	// NOTE: the return type, arg & exception types of each method of a source
-	// type are resolved when needed
+	/**
+	 * <p>
+	 * <b>NOTES:</b>
+	 * <ul>
+	 * <li>the return type, arg & exception types of each method of a source
+	 * type are resolved when needed</li>
+	 * <li>this does not check super types</li>
+	 * </ul>
+	 * </p>
+	 * 
+	 * @param selector
+	 * @return
+	 */
 	private MethodBinding[] getMethods0(char[] selector) {
+		// lazily sort methods
+		if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
+			int length = this.methods.length;
+			if (length > 1) {
+				ReferenceBinding.sortMethods(this.methods, 0, length);
+			}
+			this.tagBits |= TagBits.AreMethodsSorted;
+		}
+		
 		if ((this.tagBits & TagBits.AreMethodsComplete) != 0) {
 			long range;
 			if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
@@ -661,24 +1275,17 @@ public class SourceTypeBinding extends ReferenceBinding {
 				return Binding.NO_METHODS;
 			}
 		}
-		// lazily sort methods
-		if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
-			int length = this.methods.length;
-			if (length > 1)
-				ReferenceBinding.sortMethods(this.methods, 0, length);
-			this.tagBits |= TagBits.AreMethodsSorted;
-		}
+		
 		MethodBinding[] result;
 		long range;
 		if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
 			int start = (int) range, end = (int) (range >> 32);
 			for (int i = start; i <= end; i++) {
 				MethodBinding method = this.methods[i];
-				if (resolveTypesFor(method) == null
-						|| method.returnType == null) {
+				if (resolveTypesFor(method) == null || method.returnType == null) {
+					// try again since the problem methods have been removed
 					methods();
-					return getMethods(selector); // try again since the problem
-													// methods have been removed
+					return getMethods(selector); 
 				}
 			}
 			int length = end - start + 1;
@@ -697,9 +1304,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 						.areParametersEqual(result[j]);
 				if (paramsMatch) {
 					methods();
-					return getMethods(selector); // try again since the
-													// duplicate methods have
-													// been removed
+					// try again since the duplicate methods have been removed
+					return getMethods(selector);
 				}
 			}
 		}
@@ -707,32 +1313,87 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 
 	/**
-	 * Returns true if a type is identical to another one, or for generic types,
-	 * true if compared to its raw type.
+	 * Returns true if a type is identical to another one.
 	 */
-	public boolean isEquivalentTo(TypeBinding otherType) {
+	public boolean isEquivalentTo(final TypeBinding otherType) {
+		//short cut for simple case
+		boolean isEquivalent = this == otherType;
+		
+		if(!isEquivalent && otherType != null) {
+			final boolean isOtherTypeSourceType = otherType instanceof SourceTypeBinding;
+			
+			isEquivalent = ((Boolean)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+				
+				private boolean fIsEquivalent = false;
+				
+				public boolean performAction(final SourceTypeBinding selfLinkedBinding) {
+					
+				/* if other type is also a source type binding have to loop
+				 * through all its types as well
+				 * 
+				 * else just compare current linked binding with other type */
 
-		if (this == otherType)
-			return true;
-		if (otherType == null)
-			return false;
-		return false;
+					this.fIsEquivalent = selfLinkedBinding == otherType;
+					
+					return !this.fIsEquivalent;
+				}
+				
+				public Object getFinalResult() {
+					return new Boolean(this.fIsEquivalent);
+				}
+			})).booleanValue();
+		}
+		
+		return isEquivalent;
 	}
 
+	/**
+	 * <p>
+	 * Get all member types across all of the linked type bindings.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#memberTypes()
+	 */
 	public ReferenceBinding[] memberTypes() {
-		if (this.nextType == null)
-			return this.memberTypes;
-
-		ReferenceBinding[] moreTypes = this.nextType.memberTypes();
-		ReferenceBinding[] combinedTypes = new ReferenceBinding[this.memberTypes.length
-				+ moreTypes.length];
-		System.arraycopy(this.memberTypes, 0, combinedTypes, 0,
-				this.memberTypes.length);
-		System.arraycopy(moreTypes, 0, combinedTypes, this.memberTypes.length,
-				moreTypes.length);
-
-		return combinedTypes;
-
+		//search all linked types for member types 
+		ReferenceBinding[] allMemberTypes = (ReferenceBinding[])this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * <p>
+			 * All of the member types found across all of the linked types.
+			 * </p>
+			 */
+			private ReferenceBinding[] fAllMemberTypes;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {				
+				//combine all methods into one array
+				
+				if(this.fAllMemberTypes == null) {
+					this.fAllMemberTypes = linkedBinding.memberTypes;
+				} else {
+					ReferenceBinding[] combinedMemberTypes = new ReferenceBinding[this.fAllMemberTypes.length + linkedBinding.memberTypes.length];
+		    		System.arraycopy(this.fAllMemberTypes, 0, combinedMemberTypes, 0, this.fAllMemberTypes.length);
+		    		System.arraycopy(linkedBinding.memberTypes, 0, combinedMemberTypes, this.fAllMemberTypes.length, linkedBinding.memberTypes.length);
+		    		this.fAllMemberTypes = combinedMemberTypes;
+				}
+	    		
+				// always search every linked type for member types
+				return true;
+			}
+			
+			/**
+			 * @return {@link ReferenceBinding}[]
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return this.fAllMemberTypes;
+			}
+		});
+		
+		return allMemberTypes;
 	}
 
 	public FieldBinding getUpdatedFieldBinding(FieldBinding targetField,
@@ -752,302 +1413,290 @@ public class SourceTypeBinding extends ReferenceBinding {
 		return updatedMethod;
 	}
 
+	/**
+	 * <p>
+	 * <code>true</code> if any of the linked types has have member types, <code>false</code> otherwise.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#hasMemberTypes()
+	 */
 	public boolean hasMemberTypes() {
-		boolean hasMembers = this.memberTypes != null
-				&& this.memberTypes.length > 0;
-		if (!hasMembers && this.nextType != null)
-			hasMembers = this.nextType.hasMemberTypes();
-		return hasMembers;
+		//search all linked types for member types 
+		Boolean hasMemberTypes = (Boolean)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * <p>
+			 * <code>true</code> if any linked type has member types, <code>false</code> otherwise
+			 * </p>
+			 */
+			private boolean fHasMemberTypes = false;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				//check if this type has member types
+				this.fHasMemberTypes = (linkedBinding.memberTypes != null
+							&& linkedBinding.memberTypes.length > 0);
+				
+				//keep checking linked types if have not yet found member types
+				return !this.fHasMemberTypes;
+			}
+			
+			/**
+			 * @return {@link Boolean}
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return new Boolean(this.fHasMemberTypes);
+			}
+		});
+		
+		return hasMemberTypes.booleanValue();
 	}
 
-	// NOTE: the return type, arg & exception types of each method of a source
-	// type are resolved when needed
+	/**
+	 * <p>
+	 * NOTE: the return type, arg & exception types of each method of a source
+	 * type are resolved when needed
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#methods()
+	 */
 	public MethodBinding[] methods() {
+		//gather all the functions across all the linked types
+		MethodBinding[] allFunctions = (MethodBinding[])this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * <p>
+			 * All of the functions defined across all the linked types.
+			 * </p>
+			 */
+			private MethodBinding[] fAllFunctions;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				//be sure fields and methods are built
+				linkedBinding.buildFieldsAndMethods();
 
-		if ((this.tagBits & TagBits.AreMethodsComplete) == 0) {
-			// lazily sort methods
-			if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
-				int length = this.methods.length;
-				if (length > 1)
-					ReferenceBinding.sortMethods(this.methods, 0, length);
-				this.tagBits |= TagBits.AreMethodsSorted;
-			}
-			int failed = 0;
-			MethodBinding[] resolvedMethods = this.methods;
-			try {
-				for (int i = 0, length = this.methods.length; i < length; i++) {
-					if (resolveTypesFor(this.methods[i]) == null) {
-						// do not alter original method array until resolution
-						// is over, due to reentrance (143259)
-						if (resolvedMethods == this.methods) {
-							System
-									.arraycopy(
-											this.methods,
-											0,
-											resolvedMethods = new MethodBinding[length],
-											0, length);
+				if ((linkedBinding.tagBits & TagBits.AreMethodsComplete) == 0) {
+					// lazily sort methods
+					if ((linkedBinding.tagBits & TagBits.AreMethodsSorted) == 0) {
+						int length = linkedBinding.methods.length;
+						if (length > 1) {
+							ReferenceBinding.sortMethods(linkedBinding.methods, 0, length);
 						}
-						resolvedMethods[i] = null; // unable to resolve
-													// parameters
-						failed++;
+						linkedBinding.tagBits |= TagBits.AreMethodsSorted;
 					}
-				}
-
-				// find & report collision cases
-
-				boolean complyTo15 = (this.scope != null && this.scope
-						.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5);
-				for (int i = 0, length = this.methods.length; i < length; i++) {
-					MethodBinding method = resolvedMethods[i];
-					if (method == null)
-						continue;
-					char[] selector = method.selector;
-					AbstractMethodDeclaration methodDecl = null;
-					nextSibling: for (int j = i + 1; j < length; j++) {
-						MethodBinding method2 = resolvedMethods[j];
-						if (method2 == null)
-							continue nextSibling;
-						if (!CharOperation.equals(selector, method2.selector))
-							break nextSibling; // methods with same selector are
-												// contiguous
-
-						if (complyTo15 && method.returnType != null
-								&& method2.returnType != null) {
-							// 8.4.2, for collision to be detected between m1
-							// and m2:
-							// signature(m1) == signature(m2) i.e. same arity,
-							// same type parameter count, can be substituted
-							// signature(m1) == erasure(signature(m2)) or
-							// erasure(signature(m1)) == signature(m2)
-							TypeBinding[] params1 = method.parameters;
-							TypeBinding[] params2 = method2.parameters;
-							int pLength = params1.length;
-							if (pLength != params2.length)
-								continue nextSibling;
-
-							MethodBinding subMethod = method2;
-							boolean equalParams = method
-									.areParametersEqual(subMethod);
-							if (equalParams) {
-								// duplicates regardless of return types
-							} else if (method.returnType == subMethod.returnType
-									&& (equalParams || method
-											.areParametersEqual(method2))) {
-								// name clash for sure if not duplicates, report
-								// as duplicates
-							} else if (pLength > 0) {
-								// check to see if the erasure of either method
-								// is equal to the other
-								int index = pLength;
-								for (; --index >= 0;) {
-									if (params1[index] != params2[index])
-										break;
+					int failed = 0;
+					MethodBinding[] resolvedMethods = linkedBinding.methods;
+					try {
+						for (int i = 0, length = linkedBinding.methods.length; i < length; i++) {
+							if (resolveTypesFor(linkedBinding.methods[i]) == null) {
+								/* do not alter original method array until resolution
+								 * is over, due to reentrance (143259) */
+								if (resolvedMethods == linkedBinding.methods) {
+									System.arraycopy(linkedBinding.methods, 0,
+											resolvedMethods = new MethodBinding[length], 0, length);
 								}
-								if (index >= 0 && index < pLength) {
-									for (index = pLength; --index >= 0;)
-										if (params1[index] != params2[index])
-											break;
-								}
-								if (index >= 0)
-									continue nextSibling;
+								
+								// unable to resolve parameters
+								resolvedMethods[i] = null; 
+								failed++;
 							}
-						} else if (!method.areParametersEqual(method2)) { // prior
-																			// to
-																			// 1.5,
-																			// parameter
-																			// identity
-																			// meant
-																			// a
-																			// collision
-																			// case
-							continue nextSibling;
 						}
-						// report duplicate
-						if (methodDecl == null) {
-							methodDecl = method.sourceMethod(); // cannot be
-																// retrieved
-																// after binding
-																// is lost & may
-																// still be null
-																// if method is
-																// special
-							if (methodDecl != null
-									&& methodDecl.binding != null) { // ensure
-																		// its a
-																		// valid
-																		// user
-																		// defined
-																		// method
-								this.scope
-										.problemReporter()
-										.duplicateMethodInType(this, methodDecl);
 
-								methodDecl.binding = null;
-								// do not alter original method array until
-								// resolution is over, due to reentrance
-								// (143259)
-								if (resolvedMethods == this.methods) {
-									System
-											.arraycopy(
-													this.methods,
-													0,
-													resolvedMethods = new MethodBinding[length],
-													0, length);
+						// find & report collision cases
+						boolean complyTo15 = (linkedBinding.scope != null &&
+									linkedBinding.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5);
+						for (int i = 0, length = linkedBinding.methods.length; i < length; i++) {
+							MethodBinding method = resolvedMethods[i];
+							if (method == null) {
+								continue;
+							}
+							char[] selector = method.selector;
+							AbstractMethodDeclaration methodDecl = null;
+							nextSibling: for (int j = i + 1; j < length; j++) {
+								MethodBinding method2 = resolvedMethods[j];
+								if (method2 == null) {
+									continue nextSibling;
+								}
+								
+								//if its the same method skip ahead
+								if(method == method2) {
+									break nextSibling;
+								}
+								
+								// methods with same selector are contiguous
+								if (!CharOperation.equals(selector, method2.selector)) {
+									break nextSibling;
+								}
+
+								if (complyTo15 && method.returnType != null
+										&& method2.returnType != null) {
+									/* 8.4.2, for collision to be detected between m1
+									 * and m2:
+									 * signature(m1) == signature(m2) i.e. same arity,
+									 * same type parameter count, can be substituted
+									 * signature(m1) == erasure(signature(m2)) or
+									 * erasure(signature(m1)) == signature(m2) */
+									TypeBinding[] params1 = method.parameters;
+									TypeBinding[] params2 = method2.parameters;
+									int pLength = params1.length;
+									if (pLength != params2.length) {
+										continue nextSibling;
+									}
+
+									MethodBinding subMethod = method2;
+									boolean equalParams = method .areParametersEqual(subMethod);
+									if (equalParams) {
+										// duplicates regardless of return types
+									} else if (method.returnType == subMethod.returnType
+											&& (equalParams || method.areParametersEqual(method2))) {
+										
+										// name clash for sure if not duplicates, report as duplicates
+									} else if (pLength > 0) {
+										// check to see if the erasure of either method is equal to the other
+										int index = pLength;
+										for (; --index >= 0;) {
+											if (params1[index] != params2[index]) {
+												break;
+											}
+										}
+										if (index >= 0 && index < pLength) {
+											for (index = pLength; --index >= 0;) {
+												if (params1[index] != params2[index]) {
+													break;
+												}
+											}
+										}
+										if (index >= 0) {
+											continue nextSibling;
+										}
+									}
+								}
+								// prior to 1.5, parameter identity meant a collision case
+								else if (!method.areParametersEqual(method2)) {
+									continue nextSibling;
+								}
+								
+								// report duplicate
+								if (methodDecl == null) {
+									// cannot be retrieved after binding is lost & may still be null if method is special
+									methodDecl = method.sourceMethod();
+									
+									//ensure its a valid user defined method
+									if (methodDecl != null && methodDecl.hasBinding()) {
+										linkedBinding.scope.problemReporter().duplicateMethodInType(linkedBinding, methodDecl);
+
+										methodDecl.setBinding(null);
+										/* do not alter original method array until
+										 * resolution is over, due to reentrance (143259) */
+										if (resolvedMethods == linkedBinding.methods) {
+											System.arraycopy(linkedBinding.methods, 0,
+														resolvedMethods = new MethodBinding[length], 0, length);
+										}
+										resolvedMethods[i] = null;
+										failed++;
+									}
+								}
+								AbstractMethodDeclaration method2Decl = method2.sourceMethod();
+								
+								//ensure its a valid user defined method
+								if (method2Decl != null && method2Decl.hasBinding()) {
+									linkedBinding.scope.problemReporter().duplicateMethodInType(linkedBinding, method2Decl);
+
+									method2Decl.setBinding(null);
+									/* do not alter original method array until
+									 * resolution is over, due to reentrance (143259) */
+									if (resolvedMethods == linkedBinding.methods) {
+										System.arraycopy(linkedBinding.methods, 0,
+													resolvedMethods = new MethodBinding[length], 0, length);
+									}
+									resolvedMethods[j] = null;
+									failed++;
+								}
+							}
+							
+							//forget method with invalid return type... was kept to detect possible collisions
+							if (method != null && method.returnType == null && methodDecl == null) {
+								methodDecl = method.sourceMethod();
+								if (methodDecl != null) {
+									methodDecl.setBinding(null);
+								}
+								/* do not alter original method array until resolution
+								 * is over, due to reentrance (143259) */
+								if (resolvedMethods == linkedBinding.methods) {
+									System.arraycopy(linkedBinding.methods, 0,
+												resolvedMethods = new MethodBinding[length], 0, length);
 								}
 								resolvedMethods[i] = null;
 								failed++;
 							}
 						}
-						AbstractMethodDeclaration method2Decl = method2
-								.sourceMethod();
-						if (method2Decl != null && method2Decl.binding != null) { // ensure
-																					// its
-																					// a
-																					// valid
-																					// user
-																					// defined
-																					// method
-							this.scope.problemReporter().duplicateMethodInType(
-									this, method2Decl);
-
-							method2Decl.binding = null;
-							// do not alter original method array until
-							// resolution is over, due to reentrance (143259)
-							if (resolvedMethods == this.methods) {
-								System
-										.arraycopy(
-												this.methods,
-												0,
-												resolvedMethods = new MethodBinding[length],
-												0, length);
+					} finally {
+						if (failed > 0) {
+							int newSize = resolvedMethods.length - failed;
+							if (newSize == 0) {
+								linkedBinding.setMethods(Binding.NO_METHODS);
+							} else {
+								MethodBinding[] newMethods = new MethodBinding[newSize];
+								for (int i = 0, j = 0, length = resolvedMethods.length; i < length; i++) {
+									if (resolvedMethods[i] != null) {
+										newMethods[j++] = resolvedMethods[i];
+									}
+								}
+								linkedBinding.setMethods(newMethods);
 							}
-							resolvedMethods[j] = null;
-							failed++;
 						}
-					}
-					if (method.returnType == null && methodDecl == null) { // forget
-																			// method
-																			// with
-																			// invalid
-																			// return
-																			// type...
-																			// was
-																			// kept
-																			// to
-																			// detect
-																			// possible
-																			// collisions
-						methodDecl = method.sourceMethod();
-						if (methodDecl != null) {
-							methodDecl.binding = null;
-						}
-						// do not alter original method array until resolution
-						// is over, due to reentrance (143259)
-						if (resolvedMethods == this.methods) {
-							System
-									.arraycopy(
-											this.methods,
-											0,
-											resolvedMethods = new MethodBinding[length],
-											0, length);
-						}
-						resolvedMethods[i] = null;
-						failed++;
-					}
-				}
-			} finally {
-				if (failed > 0) {
-					int newSize = resolvedMethods.length - failed;
-					if (newSize == 0) {
-						this.methods = Binding.NO_METHODS;
-					} else {
-						MethodBinding[] newMethods = new MethodBinding[newSize];
-						for (int i = 0, j = 0, length = resolvedMethods.length; i < length; i++)
-							if (resolvedMethods[i] != null)
-								newMethods[j++] = resolvedMethods[i];
-						this.methods = newMethods;
-					}
-				}
 
-				// handle forward references to potential default abstract
-				// methods
-				// addDefaultAbstractMethods();
-				this.tagBits |= TagBits.AreMethodsComplete;
+						// mark functions as complete
+						linkedBinding.tagBits |= TagBits.AreMethodsComplete;
+					}
+				}
+				
+				//combine newly found functions with already found ones
+				if(this.fAllFunctions == null) {
+					this.fAllFunctions = linkedBinding.methods;
+				} else {
+					MethodBinding[] combinedFunctions = new MethodBinding[this.fAllFunctions.length + linkedBinding.methods.length];
+		    		System.arraycopy(this.fAllFunctions, 0, combinedFunctions, 0, this.fAllFunctions.length);
+		    		System.arraycopy(linkedBinding.methods, 0, combinedFunctions, this.fAllFunctions.length, linkedBinding.methods.length);
+		    		this.fAllFunctions = combinedFunctions;
+				}
+				
+				// always search every linked type
+				return true;
 			}
-		}
-		if (this.nextType != null) {
-			MethodBinding[] moreMethods = this.nextType.methods();
-			MethodBinding[] combinedMethods = new MethodBinding[this.methods.length
-					+ moreMethods.length];
-			System.arraycopy(this.methods, 0, combinedMethods, 0,
-					this.methods.length);
-			System.arraycopy(moreMethods, 0, combinedMethods,
-					this.methods.length, moreMethods.length);
-
-			return combinedMethods;
-
-		} else
-			return this.methods;
-
+			
+			/**
+			 * @return {@link MethodBinding}[]
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return this.fAllFunctions;
+			}
+		});
+		
+		return allFunctions;
 	}
 
 	private FieldBinding resolveTypeFor(FieldBinding field) {
-		if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
+		if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0) {
 			return field;
+		}
 
-		if (isViewedAsDeprecated() && !field.isDeprecated())
+		if (isViewedAsDeprecated() && !field.isDeprecated()) {
 			field.modifiers |= ExtraCompilerModifiers.AccDeprecatedImplicitly;
-		if (hasRestrictedAccess())
+		}
+		
+		if (hasRestrictedAccess()) {
 			field.modifiers |= ExtraCompilerModifiers.AccRestrictedAccess;
+		}
+		
 		return field;
-		// FieldDeclaration[] fieldDecls =
-		// this.classScope.referenceContext.fields;
-		// for (int f = 0, length = fieldDecls.length; f < length; f++) {
-		// if (fieldDecls[f].binding != field)
-		// continue;
-		//
-		// MethodScope initializationScope = field.isStatic()
-		// ? this.classScope.referenceContext.staticInitializerScope
-		// : this.classScope.referenceContext.initializerScope;
-		// FieldBinding previousField = initializationScope.initializedField;
-		// try {
-		// initializationScope.initializedField = field;
-		// FieldDeclaration fieldDecl = fieldDecls[f];
-		// TypeBinding fieldType =
-		// fieldDecl.getKind() == AbstractVariableDeclaration.ENUM_CONSTANT
-		// ? initializationScope.environment().convertToRawType(this) // enum
-		// constant is implicitly of declaring enum type
-		// : fieldDecl.type.resolveType(initializationScope, true /* check
-		// bounds*/);
-		// field.type = fieldType;
-		// field.modifiers &= ~ExtraCompilerModifiers.AccUnresolved;
-		// if (fieldType == null) {
-		// fieldDecl.binding = null;
-		// return null;
-		// }
-		// if (fieldType == TypeBinding.VOID) {
-		// this.scope.problemReporter().variableTypeCannotBeVoid(fieldDecl);
-		// fieldDecl.binding = null;
-		// return null;
-		// }
-		// if (fieldType.isArrayType() && ((ArrayBinding)
-		// fieldType).leafComponentType == TypeBinding.VOID) {
-		// this.scope.problemReporter().variableTypeCannotBeVoidArray(fieldDecl);
-		// fieldDecl.binding = null;
-		// return null;
-		// }
-		// TypeBinding leafType = fieldType.leafComponentType();
-		// if (leafType instanceof ReferenceBinding &&
-		// (((ReferenceBinding)leafType).modifiers &
-		// ExtraCompilerModifiers.AccGenericSignature) != 0) {
-		// field.modifiers |= ExtraCompilerModifiers.AccGenericSignature;
-		// }
-		// } finally {
-		// initializationScope.initializedField = previousField;
-		// }
-		// return field;
-		// }
-		// return null; // should never reach this point
 	}
 
 	public MethodBinding resolveTypesFor(MethodBinding method) {
@@ -1068,37 +1717,48 @@ public class SourceTypeBinding extends ReferenceBinding {
 			methodDecl = method.sourceMethod();
 		if (methodDecl == null)
 			return null; // method could not be resolved in previous iteration
-
+		
 		boolean foundArgProblem = false;
 		Argument[] arguments = methodDecl.arguments;
 		if (arguments != null) {
 			int size = arguments.length;
-			method.parameters = Binding.NO_PARAMETERS;
+			method.setParameters(Binding.NO_PARAMETERS);
 			TypeBinding[] newParameters = new TypeBinding[size];
 			for (int i = 0; i < size; i++) {
 				Argument arg = arguments[i];
 				TypeBinding parameterType = TypeBinding.UNKNOWN;
-				if (arg.type != null)
+				if (arg.type != null) {
 					parameterType = arg.type
-							.resolveType(methodDecl.scope, true /* check bounds */);
-				else if (arg.inferredType != null)
+							.resolveType(methodDecl.getScope(), true /* check bounds */);
+				} else if (arg.inferredType != null) {
+					/* if argument has an anonymous inferred type then it has not been built
+					 * at this point, so build it before attempt to resolve it. */
+					if(arg.inferredType.isAnonymous && arg.inferredType.binding == null) {
+						ReferenceBinding argTypeBinding = methodDecl.getScope().findType(
+									arg.inferredType.getName(), this.getPackage(), this.getPackage());
+						if(argTypeBinding instanceof SourceTypeBinding) {
+							arg.inferredType.binding = (SourceTypeBinding) argTypeBinding;
+						}
+					}
+					
 					parameterType = arg.inferredType.resolveType(
-							methodDecl.scope, arg);
+							methodDecl.getScope(), arg);
+				}
 
 				if (parameterType == null) {
-					// foundArgProblem = true;
 					parameterType = TypeBinding.ANY;
 				}
 				
 				newParameters[i] = parameterType;
-				if(arg.binding == null)
+				if(arg.binding == null) {
 					arg.binding = new LocalVariableBinding(arg, parameterType,
 						arg.modifiers, true);
-				
+				}
 			}
 			// only assign parameters if no problems are found
-			if (!foundArgProblem)
-				method.parameters = newParameters;
+			if (!foundArgProblem) {
+				method.setParameters(newParameters);
+			}
 		}
 
 		boolean foundReturnTypeProblem = false;
@@ -1107,29 +1767,28 @@ public class SourceTypeBinding extends ReferenceBinding {
 					: null;
 			if (returnType == null
 					&& !(methodDecl instanceof MethodDeclaration)) {
-				methodDecl.scope.problemReporter()
+				methodDecl.getScope().problemReporter()
 						.missingReturnType(methodDecl);
 				method.returnType = null;
 				foundReturnTypeProblem = true;
 			} else {
 				TypeBinding methodType = (returnType != null) ? returnType
-						.resolveType(methodDecl.scope, true /* check bounds */)
+						.resolveType(methodDecl.getScope(), true /* check bounds */)
 						: null;
 				if (methodType == null)
 					methodType = (methodDecl.inferredType != null) ? methodDecl.inferredType
-							.resolveType(methodDecl.scope, methodDecl)
+							.resolveType(methodDecl.getScope(), methodDecl)
 							: TypeBinding.UNKNOWN;
 				if (methodType == null) {
 					foundReturnTypeProblem = true;
 				} else {
 					method.returnType = methodType;
-					TypeBinding leafType = methodType.leafComponentType();
 				}
 			}
 		}
 		if (foundArgProblem) {
-			methodDecl.binding = null;
-			method.parameters = Binding.NO_PARAMETERS; // see 107004
+			methodDecl.setBinding(null);
+			method.setParameters(Binding.NO_PARAMETERS); // see 107004
 			// nullify type parameter bindings as well as they have a
 			// backpointer to the method binding
 			// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=81134)
@@ -1144,52 +1803,124 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 
 	public void setFields(FieldBinding[] fields) {
-		// if (this.nextType!=null)
-		//		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
-
+		this.tagBits &= ~TagBits.AreFieldsSorted;
 		this.fields = fields;
 	}
 
 	public void setMethods(MethodBinding[] methods) {
-		// if (this.nextType!=null)
-		//		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
+		this.tagBits &= ~TagBits.AreMethodsSorted;
 		this.methods = methods;
 	}
 
 	public int sourceEnd() {
-		if (this.classScope.referenceContext != null)
+		if (this.classScope.referenceContext != null) {
 			return this.classScope.referenceContext.sourceEnd;
-		else
+		} else {
 			return this.classScope.inferredType.sourceEnd;
+	}
 	}
 
 	public int sourceStart() {
-		if (this.classScope.referenceContext != null)
+		if (this.classScope.referenceContext != null) {
 			return this.classScope.referenceContext.sourceStart;
-		else
+		} else {
 			return this.classScope.inferredType.sourceStart;
 	}
+	}
 
-	public ReferenceBinding superclass() {
-		if (this.nextType == null) {
-			//fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=282372
-			if(this == this.superclass)
-				return null;
-			return this.superclass;
-		}
-		if (this.superclass != null
-				&& this.superclass.id != TypeIds.T_JavaLangObject) {
-			//fix for https://bugs.eclipse.org/bugs/show_bug.cgi?id=282372
-			if(this == this.superclass)
-				return null;
-			return this.superclass;
-		}
-		return this.nextType.superclass();
-
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#superclass()
+	 */
+	/**
+	 * <p>
+	 * Will return the super binding set on this binding or if this bindings
+	 * super biding is null or <code>Object</code> will return the super
+	 * binding set on the first linked binding who's super binding is not null
+	 * and not <code>Object</code>
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#getSuperBinding()
+	 * 
+	 * @see #getSuperBinding0()
+	 */
+	public ReferenceBinding getSuperBinding() {
+		//search all linked type bindings for the first one with a super type that is not Object
+		ReferenceBinding superBinding = (ReferenceBinding)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			/**
+			 * <p>
+			 * First super type found when searching all linked type bindings.
+			 * </p>
+			 */
+			private ReferenceBinding fFoundSuperBinding = null;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				ReferenceBinding linkedSuperBinding = linkedBinding.getSuperBinding0();
+				
+				/* Be sure that the super type of a linked binding is not the same as this type
+				 * This can legitimately happen when using a pattern like:
+				 * 
+				 * define("foo.BarImpl", "foo.Bar", {}):
+				 * foo.Bar = foo.BarImpl;
+				 * 
+				 * A best effort is made to avoid this at the infer level by setting it only as the
+				 * super type and not as a synonym, but still best to have this check here */
+				if(linkedSuperBinding != null && linkedSuperBinding != SourceTypeBinding.this &&
+							(this.fFoundSuperBinding == null || (linkedSuperBinding.id != TypeIds.T_JavaLangObject))) {
+					
+					this.fFoundSuperBinding = linkedSuperBinding;
+				}
+				
+				//keep searching if super type is null or Object
+				return this.fFoundSuperBinding == null || this.fFoundSuperBinding.id == TypeIds.T_JavaLangObject;
+			}
+			
+			/**
+			 * @return {@link ReferenceBinding}
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return this.fFoundSuperBinding;
+			}
+		});
+		
+		return superBinding;
+	}
+	
+	/**
+	 * @return {@link SourceTypeBinding} set as the super binding for this
+	 *         binding only. Unlike {@link #getSuperBinding()} this function
+	 *         will not search the linked bindings.
+	 * 
+	 * @see #getSuperBinding()
+	 */
+	public ReferenceBinding getSuperBinding0() {
+		return this.fSuperBinding;
+	}
+	
+	/**
+	 * <p>
+	 * Sets the super binding for this specific binding. This will overwrite
+	 * any currently set super binding for this binding.
+	 * </p>
+	 * 
+	 * <p>
+	 * <b>WARNING:</b> A linked binding may have a different super binding.
+	 * </p>
+	 * 
+	 * @param newSuperBinding
+	 *            {@link SourceTypeBinding} to set as the super binding for
+	 *            this binding, will overwrite any currently set super binding
+	 */
+	public void setSuperBinding(ReferenceBinding newSuperBinding) {
+		this.fSuperBinding = newSuperBinding;
 	}
 
 	public String toString() {
-		StringBuffer buffer = new StringBuffer(30);
+		final StringBuffer buffer = new StringBuffer(30);
 		buffer.append("(id="); //$NON-NLS-1$
 		if (this.id == TypeIds.NoId)
 			buffer.append("NoId"); //$NON-NLS-1$
@@ -1213,7 +1944,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 				.toString(this.compoundName) : "UNNAMED TYPE"); //$NON-NLS-1$
 
 		buffer.append("\n\textends "); //$NON-NLS-1$
-		buffer.append((this.superclass != null) ? this.superclass.debugName()
+		buffer.append((this.fSuperBinding != null) ? this.fSuperBinding.debugName()
 				: "NULL TYPE"); //$NON-NLS-1$
 
 		if (enclosingType() != null) {
@@ -1256,33 +1987,92 @@ public class SourceTypeBinding extends ReferenceBinding {
 		} else {
 			buffer.append("NULL MEMBER TYPES"); //$NON-NLS-1$
 		}
+		
+		//if debugging enabled then print out all the linked type names and their hashes
+		if(DEBUG) {
+			buffer.append("\n\nLINKED TYPE NAMES:\n"); //$NON-NLS-1$
+			this.performActionOnLinkedBindings(new LinkedBindingAction() {
+				public boolean performAction(SourceTypeBinding linkedBinding) {
+					buffer.append(linkedBinding.qualifiedSourceName0());
+					buffer.append(" -> "); //$NON-NLS-1$
+					buffer.append(Integer.toHexString(System.identityHashCode(linkedBinding)));
+					buffer.append("\n"); //$NON-NLS-1$
+					return true;
+				}
+			});
+		}
 
 		buffer.append("\n\n"); //$NON-NLS-1$
 		return buffer.toString();
 	}
 
-	void verifyMethods(MethodVerifier verifier) {
-		//verifier.verify(this);
+	public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
+		if (this.classScope == null) {
+			return null;
 	}
 
-	public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
-		if (this.classScope == null)
-			return null;
 		InferredType inferredType = this.classScope.inferredType;
 		InferredMethod inferredMethod = inferredType.findMethod(
 				binding.selector, null);
-		if (inferredMethod != null)
-			return (AbstractMethodDeclaration) inferredMethod
-					.getFunctionDeclaration();
+		if (inferredMethod != null) {
+			return (AbstractMethodDeclaration) inferredMethod.getFunctionDeclaration();
+		}
 		return null;
 	}
 
 	public void addMethod(MethodBinding binding) {
+		this.tagBits &= ~TagBits.AreMethodsSorted;
+		
 		int length = this.methods.length;
 		System.arraycopy(this.methods, 0,
 				this.methods = new MethodBinding[length + 1], 0, length);
 		this.methods[length] = binding;
-
+	}
+	
+	/**
+	 * @param binding {@link FieldBinding} to add to this type binding
+	 */
+	public void addField(FieldBinding binding) {
+		this.tagBits &= ~TagBits.AreFieldsSorted;
+		
+		int length = this.fields.length;
+		System.arraycopy(this.fields, 0,
+				this.fields = new FieldBinding[length + 1], 0, length);
+		this.fields[length] = binding;
+	}
+	
+	/**
+	 * <p>
+	 * Adds new function bindings to this type binding.
+	 * </p>
+	 * 
+	 * @param newFunctionBindings
+	 *            {@link MethodBinding}s to add to this type binding
+	 */
+	private void addMethods(MethodBinding[] newFunctionBindings) {
+		this.tagBits &= ~TagBits.AreMethodsSorted;
+		
+		int length = this.methods.length;
+		System.arraycopy(this.methods, 0,
+					this.methods = new MethodBinding[length + newFunctionBindings.length], 0, length);
+		System.arraycopy(newFunctionBindings, 0, this.methods, length, newFunctionBindings.length);
+	}
+	
+	/**
+	 * <p>
+	 * Adds new field bindings to this type binding.
+	 * </p>
+	 * 
+	 * @param newFieldBindings
+	 *            {@link FieldBinding}s to add to this type binding
+	 */
+	private void addFields(FieldBinding[] newFieldBindings) {
+		this.tagBits &= ~TagBits.AreFieldsSorted;
+		
+		int length = this.fields.length;
+		System.arraycopy(this.fields, 0,
+					this.fields = new FieldBinding[length + newFieldBindings.length], 0, length);
+		System.arraycopy(newFieldBindings, 0, this.fields, length, newFieldBindings.length);
 	}
 
 	public void cleanup() {
@@ -1290,38 +2080,113 @@ public class SourceTypeBinding extends ReferenceBinding {
 		this.classScope = null;
 	}
 
-	public boolean contains(ReferenceBinding binding) {
-		if (binding == this)
-			return true;
-		if (this.nextType != null)
-			return this.nextType.contains(binding);
-		return false;
+	/**
+	 * <p>
+	 * Determines if a given binding is linked to this binding.
+	 * </p>
+	 * 
+	 * @param searchBinding
+	 *            check if this {@link ReferenceBinding} is linked to this binding
+	 * 
+	 * @return <code>true</code> if any linked types are the given binding,
+	 *         <code>false</code> otherwise
+	 */
+	boolean isLinkedType(final ReferenceBinding searchBinding) {
+		// searches all linked bindings to see if any of them are the given search binding
+		Boolean isBindingLinked = (Boolean)this.performActionOnLinkedBindings(new LinkedBindingAction() {
+			
+			/**
+			 * <p>
+			 * <code>true</code> if any linked types are the given binding, <code>false</code> otherwise
+			 * </p>
+			 */
+			private boolean fIsBindingLinked = false;
+			
+			/**
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+			 */
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				this.fIsBindingLinked = searchBinding == linkedBinding;
+				
+				// keep searching if not found linked the given binding to be linked
+				return !this.fIsBindingLinked;
+			}
+			
+			/**
+			 * @return {@link Boolean}
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return new Boolean(this.fIsBindingLinked);
+			}
+		});
+		
+		return isBindingLinked.booleanValue();
 	}
 
-	public void addNextType(SourceTypeBinding type) {
-		SourceTypeBinding binding = this;
+	/**
+	 * <p>
+	 * Adds the given new linked type and all of its linked types to this
+	 * types circle of linked types. If the given new linked type is already
+	 * linked to this type then no operation is taken.
+	 * </p>
+	 * 
+	 * <p>
+	 * EX: <br>
+	 * this type: A0 -> A1 -> A2 -> A3 -> A0<br>
+	 * new linked type: B0 -> B1 -> B0<br>
+	 * <br>
+	 * combined after this operation:<br>
+	 * A0 -> B0 -> B1 -> A1 -> A2 -> A3 -> A0
+	 * </p>
+	 * 
+	 * @param newLinkedBinding
+	 *            {@link SourceTypeBinding} to link to this one
+	 */
+	public void addLinkedBinding(final SourceTypeBinding newLinkedBinding) {
+		// determine if the new linked type is a duplicate of a current linked type
+		boolean isDuplicate = this.isLinkedType(newLinkedBinding);
 		
-		// attempt to remove duplicates
-		boolean isDuplicate = checkIfDuplicateType(binding, type);
-
-		while (!isDuplicate && binding.nextType != null) {
-			binding = binding.nextType;
-			if(binding != null && checkIfDuplicateType(binding, type))
-				isDuplicate = true;
+		/* if linked type is not a duplicate then combine this types linked types
+		 * circle with the new types circle into one giant circle
+		 * 
+		 * EX:
+		 * 
+		 * this type:  A0 -> A1 -> A2 -> A3 -> A0
+		 * new linked type: B0 -> B1 -> B0
+		 * 
+		 * combined after this operation:
+		 * A0 -> B0 -> B1 -> A1 -> A2 -> A3 -> A0
+		 */
+		if(!isDuplicate) {
+			SourceTypeBinding currNextType = this.fNextType;
+			this.fNextType = newLinkedBinding;
+			
+			//search for the end of the linked type circle, aka the type that links back to the new linked type
+			SourceTypeBinding newTypesLastNextType = newLinkedBinding;
+			while(newTypesLastNextType.fNextType != newLinkedBinding) {
+				newTypesLastNextType = newTypesLastNextType.fNextType;
+			}
+			
+			/* assign what was this types next type as the next type for
+			 * the last next type in the new linked type's next type circle
+			 * 
+			 * clear as mud, see comment up a few lines for example of what is going on
+			 */
+			newTypesLastNextType.fNextType = currNextType;
 		}
-		if(!isDuplicate)
-			binding.nextType = type;
 	}
 	
-	public boolean checkIfDuplicateType(SourceTypeBinding binding1, SourceTypeBinding binding2) {
+	public static boolean checkIfDuplicateType(SourceTypeBinding binding1, SourceTypeBinding binding2) {
 		InferredType type2 = binding2.classScope.inferredType;
 		if(binding1.classScope == null) {
-			if(binding1.superclass == null && type2.superClass != null)
+			if(binding1.fSuperBinding == null && type2.getSuperType() != null)
 				return false;
-			if(binding1.superclass != null && type2.superClass == null)
+			if(binding1.fSuperBinding != null && type2.getSuperType() == null)
 				return false;
-			if(binding1.superclass != null && type2.superClass != null &&
-					!CharOperation.equals(binding1.superclass.sourceName, type2.superClass.getName()))
+			if(binding1.fSuperBinding != null && type2.getSuperType() != null &&
+					!CharOperation.equals(binding1.fSuperBinding.sourceName, type2.getSuperType().getName()))
 				return false;
 			if(binding1.fields.length != type2.attributes.length)
 				return false;
@@ -1334,12 +2199,12 @@ public class SourceTypeBinding extends ReferenceBinding {
 		} else {
 			InferredType type1 = binding1.classScope.inferredType;
 
-			if(type1.superClass == null && type2.superClass != null)
+			if(type1.getSuperType() == null && type2.getSuperType() != null)
 				return false;
-			if(type1.superClass != null && type2.superClass == null)
+			if(type1.getSuperType() != null && type2.getSuperType() == null)
 				return false;
-			if(type1.superClass != null && type2.superClass != null &&
-					!CharOperation.equals(type1.superClass.getName(), type2.superClass.getName()))
+			if(type1.getSuperType() != null && type2.getSuperType() != null &&
+					!CharOperation.equals(type1.getSuperType().getName(), type2.getSuperType().getName()))
 				return false;
 			if(type1.attributes.length != type2.attributes.length)
 				return false;
@@ -1350,12 +2215,12 @@ public class SourceTypeBinding extends ReferenceBinding {
 			if(type1.methods != null && type2.methods != null && type1.methods.size() != type2.methods.size())
 				return false;
 			
-			StringBuffer checkSumString1 = new StringBuffer(); //$NON-NLS-1$
-			StringBuffer checkSumString2 = new StringBuffer(); //$NON-NLS-1$
+			StringBuffer checkSumString1 = new StringBuffer();
+			StringBuffer checkSumString2 = new StringBuffer();
 			
 			for(int i = 0; i < type1.attributes.length; i++) {
-				checkSumString1.append((type1.attributes[i] == null ? "" : new String(type1.attributes[i].name)));
-				checkSumString2.append((type2.attributes[i] == null ? "" : new String(type2.attributes[i].name)));
+				checkSumString1.append((type1.attributes[i] == null ? "" : new String(type1.attributes[i].name))); //$NON-NLS-1$
+				checkSumString2.append((type2.attributes[i] == null ? "" : new String(type2.attributes[i].name))); //$NON-NLS-1$
 			}
 			checksumCalculator.reset();
 			checksumCalculator.update(checkSumString1.toString().getBytes());
@@ -1388,19 +2253,23 @@ public class SourceTypeBinding extends ReferenceBinding {
 	}
 
 	public TypeBinding reconcileAnonymous(TypeBinding other) {
-		if (!(other instanceof SourceTypeBinding))
+		if (!(other instanceof SourceTypeBinding)) {
 			return null;
+		}
 		SourceTypeBinding otherBinding = (SourceTypeBinding) other;
-		if (!otherBinding.isAnonymousType())
+		if (!otherBinding.isAnonymousType()) {
 			return null;
+		}
+		
 		if (otherBinding.methods != null) {
 			for (int i = 0; i < otherBinding.methods.length; i++) {
 				MethodBinding methodBinding = otherBinding.methods[i];
 				MethodBinding exactMethod = this.getExactMethod(
 						methodBinding.selector, methodBinding.parameters, null);
-				if (exactMethod == null)
+				if (exactMethod == null) {
 					return null;
 			}
+		}
 		}
 
 		if (otherBinding.fields != null) {
@@ -1408,11 +2277,286 @@ public class SourceTypeBinding extends ReferenceBinding {
 				FieldBinding fieldBinding = otherBinding.fields[i];
 				FieldBinding myField = this.getFieldInHierarchy(
 						fieldBinding.name, true);
-				if (myField == null)
+				if (myField == null) {
 					return null;
 			}
 		}
+		}
 
 		return this;
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#readableName()
+	 */
+	public char[] readableName() {
+		return this.qualifiedSourceName();
+	}
+	
+	/**
+	 * <p>
+	 * Will return the qualified source name from the first linked binding
+	 * that is not anonymous, or if no linked bindings are not anonymous then
+	 * returns the qualified source name for this binding.
+	 * </p>
+	 * 
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#qualifiedSourceName()
+	 */
+	public char[] qualifiedSourceName() {
+		char[] qualifiedSourceName = (char[])performActionOnLinkedBindings(new LinkedBindingAction() {
+			
+			private char[] fQualifiedSourceName = null;
+			
+			public boolean performAction(SourceTypeBinding linkedBinding) {
+				if(!linkedBinding.isAnonymousType()) {
+					this.fQualifiedSourceName = linkedBinding.qualifiedSourceName0();
+				}
+				
+				return this.fQualifiedSourceName == null;
+			}
+			
+			/**
+			 * @return char[]
+			 * 
+			 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+			 */
+			public Object getFinalResult() {
+				return this.fQualifiedSourceName;
+			}
+		});
+		
+		if(qualifiedSourceName == null) {
+			qualifiedSourceName = this.qualifiedSourceName0();
+		}
+		
+		return qualifiedSourceName;
+	}
+	
+	/**
+	 * @return qualified source name for this binding
+	 */
+	private char[] qualifiedSourceName0() {
+		return super.qualifiedSourceName();
+	}
+	
+	/**
+	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding#isSuperclassOf(org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding)
+	 */
+	public boolean isSuperclassOf(ReferenceBinding otherType) {
+		boolean isSuperTypeOf = false;
+		
+		if(otherType instanceof SourceTypeBinding) {
+			//NOTE: this is a breadth first search of the super types
+			
+			/* compare this type against the super types of the types in this list
+			 * 
+			 * use the list for quickly iterating over and the set for preventing
+			 * duplicates. */
+			final LinkedList compareAgainstSupersOfList = new LinkedList();
+			compareAgainstSupersOfList.add(otherType);
+			final Set compareAgainstSupersOfSet = new HashSet();
+			compareAgainstSupersOfSet.add(otherType);
+			
+			//prevent searching the super of the same types more then once
+			final Set alreadyComparedAgainstSupersOf = new HashSet();
+			
+			//while there are types to compare this type against their super types with keep going
+			while(!compareAgainstSupersOfList.isEmpty() && !isSuperTypeOf) {
+				SourceTypeBinding checkSupersOf = (SourceTypeBinding)compareAgainstSupersOfList.removeFirst();
+				compareAgainstSupersOfSet.remove(checkSupersOf);
+				alreadyComparedAgainstSupersOf.add(checkSupersOf);
+				
+				isSuperTypeOf = ((Boolean)checkSupersOf.performActionOnLinkedBindings(new LinkedBindingAction() {
+
+					private boolean fIsSuperTypeOf = false;
+					
+					/**
+					 * 
+					 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#performAction(org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding)
+					 */
+					public boolean performAction(SourceTypeBinding otherLinkedBinding) {
+						ReferenceBinding otherLinkedSuperBinding = otherLinkedBinding.getSuperBinding0();
+						
+						if(otherLinkedSuperBinding != null &&
+									!alreadyComparedAgainstSupersOf.contains(otherLinkedSuperBinding)) {
+							
+							fIsSuperTypeOf = otherLinkedSuperBinding.isEquivalentTo(SourceTypeBinding.this);
+							
+							//prevent searching the super of the same types more then once
+							if(!compareAgainstSupersOfSet.contains(otherLinkedSuperBinding)) {
+								compareAgainstSupersOfList.add(otherLinkedSuperBinding);
+								compareAgainstSupersOfSet.add(otherLinkedSuperBinding);
+							}
+						}
+						
+						return !fIsSuperTypeOf;
+					}
+					
+					/**
+					 * @return {@link ReferenceBinding}
+					 * 
+					 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding.LinkedBindingAction#getFinalResult()
+					 */
+					public Object getFinalResult() {
+						return new Boolean(this.fIsSuperTypeOf);
+					}
+				})).booleanValue();
+			}
+			
+			
+		} else {
+			isSuperTypeOf = super.isSuperclassOf(otherType);
+		}
+		
+		return isSuperTypeOf;
+	}
+	
+	/**
+	 * <p>
+	 * Determine if this binding's inferred type has a function with the given
+	 * name
+	 * </p>
+	 * 
+	 * @param functionName
+	 *            determine if this binding's inferred type has a function
+	 *            with this name
+	 * 
+	 * @return <code>true</code>if this binding's inferred type has a function
+	 *         with the given name, <code>false</code> otherwise
+	 */
+	private boolean inferredTypeHasFunction(char[] functionName) {
+		InferredType currentType = this.classScope != null ? this.classScope.inferredType : null;
+		if(currentType != null) {
+			if(currentType.methods != null && currentType.methods.size() > 0) {
+				for(int i = 0; i < currentType.methods.size(); i++) {
+					InferredMethod method = (InferredMethod) currentType.methods.get(i);
+					if(method != null && CharOperation.equals(method.name, functionName)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * <p>
+	 * Determine if this binding's inferred type has a field with the given
+	 * name
+	 * </p>
+	 * 
+	 * @param fieldName
+	 *            determine if this binding's inferred type has a field with
+	 *            this name
+	 * 
+	 * @return <code>true</code>if this binding's inferred type has a field
+	 *         with the given name, <code>false</code> otherwise
+	 */
+	private boolean inferredTypeHasField(char[] fieldName) {
+		InferredType currentType = this.classScope != null ? this.classScope.inferredType : null;
+		if(currentType != null) {
+			InferredAttribute[] attributes = currentType.attributes;
+			if(attributes != null && currentType.numberAttributes > 0) {
+				for(int i = 0; i < currentType.numberAttributes; i++) {
+					if(attributes[i] != null && CharOperation.equals(attributes[i].name, fieldName)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * @param binding
+	 *            determine if this binding is a function binding
+	 * 
+	 * @return <code>true</code> if the given {@link TypeBinding} is a
+	 *         function binding, <code>false</code> otherwise
+	 */
+	private static boolean isFunctionType(TypeBinding binding) {
+		return binding.isFunctionType() ||
+					binding instanceof FunctionTypeBinding ||
+					CharOperation.equals(binding.sourceName(), InferredType.FUNCTION_NAME);
+	}
+	
+	/**
+	 * <p>
+	 * Performs the given action on all of the {@link SourceTypeBinding}s
+	 * linked to this one, including this one, unless the loop is cut short by
+	 * a <code>false</code> result from
+	 * {@link LinkedBindingAction#performAction(SourceTypeBinding)}.
+	 * </p>
+	 * 
+	 * <p>
+	 * Whenever an action needs to be performed on all of the linked bindings
+	 * this is the method that should be used.
+	 * </p>
+	 * 
+	 * @param action
+	 *            {@link LinkedBindingAction} to perform on this binding and
+	 *            all of its linked bindings or until
+	 *            {@link LinkedBindingAction#performAction(SourceTypeBinding)}
+	 *            returns <code>false</code>
+	 * 
+	 * @return the result of a call to
+	 *         {@link LinkedBindingAction#getFinalResult()} on the given action
+	 *         after running
+	 *         {@link LinkedBindingAction#performAction(SourceTypeBinding)} on
+	 *         each of the linked bindings or until
+	 *         {@link LinkedBindingAction#performAction(SourceTypeBinding)}
+	 *         returned <code>false</code>
+	 * 
+	 * @see LinkedBindingAction
+	 */
+	Object performActionOnLinkedBindings(LinkedBindingAction action) {
+		SourceTypeBinding currBinding = this;
+		
+		/* perform the given action each linked type stopping either
+		 * when looped back to the beginning or #performAction returns false */
+		boolean keepProcessing = true;
+		do {
+			keepProcessing = action.performAction(currBinding);
+			currBinding = currBinding.fNextType;
+		} while(currBinding != this && keepProcessing);
+		
+		return action.getFinalResult();
+	}
+	
+	/**
+	 * <p>
+	 * An action to perform on a set of linked {@link SourceTypeBinding}s
+	 * </p>
+	 * 
+	 * @see #performAction(SourceTypeBinding)
+	 */
+	static abstract class LinkedBindingAction {
+		/**
+		 * <p>
+		 * Performs an action on the given {@link SourceTypeBinding}.
+		 * </p>
+		 * 
+		 * @param linkedBinding
+		 *            {@link SourceTypeBinding} to perform the action on
+		 * 
+		 * @return <code>true</code> if the next linked binding should be
+		 *         passed to this function, <code>false</code> if the loop
+		 *         should stop prematurely
+		 */
+		public abstract boolean performAction(SourceTypeBinding linkedBinding);
+
+		/**
+		 * <p>
+		 * Default implementation is to return <code>null</code> assuming no
+		 * accumulative result was gathered.
+		 * </p>
+		 * 
+		 * @return final result gathered after calling
+		 *         {@link #performAction(SourceTypeBinding)} on the linked
+		 *         bindings, default result is <code>null</code>
+		 */
+		public Object getFinalResult() {
+			return null;
+		}
 	}
 }

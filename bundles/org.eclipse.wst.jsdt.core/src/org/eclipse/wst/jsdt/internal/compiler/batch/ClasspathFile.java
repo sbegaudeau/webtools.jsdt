@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ private void parseFile(ITypeRequestor requestor) {
 		for (int i = 0; i < declaration.statements.length; i++) {
 			if (declaration.statements[i] instanceof AbstractMethodDeclaration) {
 				AbstractMethodDeclaration method = (AbstractMethodDeclaration) declaration.statements[i];
-				definedItems[Binding.METHOD].put(method.selector, foundAnswer);
+				definedItems[Binding.METHOD].put(method.getName(), foundAnswer);
 			}
 			else if (declaration.statements[i] instanceof AbstractVariableDeclaration) {
 				AbstractVariableDeclaration var = (AbstractVariableDeclaration) declaration.statements[i];
@@ -103,7 +103,7 @@ private void parseFile(ITypeRequestor requestor) {
 		}
 		for (int inx=0;inx<declaration.numberInferredTypes;inx++) {
 			InferredType inferredType = declaration.inferredTypes[inx];
-			if (inferredType.isDefinition && !inferredType.isEmptyGlobal())
+			if (inferredType.isDefinition())
 				definedItems[Binding.TYPE].put(inferredType.getName(), foundAnswer);
 		}
 

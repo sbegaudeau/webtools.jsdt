@@ -50,7 +50,7 @@ public class Clinit extends AbstractMethodDeclaration  {
 					staticInitializerFlowContext.parent,
 					this,
 					Binding.NO_EXCEPTIONS,
-					scope,
+					this.getScope(),
 					FlowInfo.DEAD_END);
 
 			// check for missing returning path
@@ -62,7 +62,7 @@ public class Clinit extends AbstractMethodDeclaration  {
 			
 			// check static initializers thrown exceptions
 			staticInitializerFlowContext.checkInitializerExceptions(
-				scope,
+				this.getScope(),
 				clinitContext,
 				flowInfo);
 		} catch (AbortMethod e) {
@@ -99,7 +99,7 @@ public class Clinit extends AbstractMethodDeclaration  {
 
 	public void resolve(ClassScope classScope) {
 
-		this.scope = new MethodScope(classScope, classScope.referenceContext, true);
+		this.setScope(new MethodScope(classScope, classScope.referenceContext, true));
 	}
 
 	public void traverse(
@@ -115,7 +115,7 @@ public class Clinit extends AbstractMethodDeclaration  {
 		// we need to add the field right now, because the field infos are generated before the methods
 		if (needClassLiteralField) {
 			SourceTypeBinding sourceType =
-				this.scope.outerMostClassScope().enclosingSourceType();
+				this.getScope().outerMostClassScope().enclosingSourceType();
 			// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=22334
 		}
 	}

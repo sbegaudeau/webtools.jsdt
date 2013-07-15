@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (c) 2004,2009 IBM Corporation and others.
+ * Copyright (c) 2004,2013 IBM Corporation and others.
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License v1.0 which
@@ -18,6 +18,9 @@ import junit.framework.TestSuite;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests;
+import org.eclipse.wst.jsdt.core.tests.compiler.JSDTCompilerTests;
+import org.eclipse.wst.jsdt.ui.tests.JSDTUITests;
 import org.eclipse.wst.jsdt.web.core.tests.AllWebCoreTests;
 import org.eclipse.wst.jsdt.web.ui.tests.AllWebUITests;
 import org.osgi.framework.Bundle;
@@ -32,12 +35,17 @@ public class MasterJSDTTestSuite extends TestSuite {
 
 		System.setProperty("wtp.autotest.noninteractive", "true");
 
-//		addTest(JSDTCompilerTests.suite());
-//		addTest(RunJSDTCoreTests.suite());
+		System.setProperty("org.eclipse.wst.jsdt.ui/ContentAssist/allowDuplicates", "true");
+
+		// JSDT Core and UI
+		addTest(JSDTCompilerTests.suite());
+		addTest(RunJSDTCoreTests.suite());
+		addTest(JSDTUITests.suite());
+
+		// JSDT Web Core and Web UI
 		addTest(AllWebCoreTests.suite());
 		addTest(AllWebUITests.suite());
-//		addTest(JSDTUITests.suite());
-
+		
 		IConfigurationElement[] elements = Platform.getExtensionRegistry().getConfigurationElementsFor(EXTENSION_POINT_ID);
 		for (int i = 0; i < elements.length; i++) {
 			if (elements[i].getName().equals("suite")) {

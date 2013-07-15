@@ -16,7 +16,7 @@ public interface ParserBasicInformation {
 
 	int
 
-		ERROR_SYMBOL = 120,
+	ERROR_SYMBOL = 120,
 		MAX_NAME_LENGTH = 36,
 		NUM_STATES = 558,
 

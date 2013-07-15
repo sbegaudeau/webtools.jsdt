@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2012 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.search;
+
+import java.util.regex.Pattern;
 
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IFunction;
@@ -35,10 +37,10 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.OrPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.PackageDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.PackageReferencePattern;
-import org.eclipse.wst.jsdt.internal.core.search.matching.QualifiedTypeDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.SuperTypeReferencePattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeDeclarationPattern;
 import org.eclipse.wst.jsdt.internal.core.search.matching.TypeReferencePattern;
+import org.eclipse.wst.jsdt.internal.core.util.QualificationHelpers;
 
 
 /**
@@ -534,8 +536,10 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 	char[] fieldNameChars = fieldName.toCharArray();
 	if (fieldNameChars.length == 1 && fieldNameChars[0] == '*') fieldNameChars = null;
 
-	char[] declaringTypeQualification = null, declaringTypeSimpleName = null;
-	char[] typeQualification = null, typeSimpleName = null;
+	char[] declaringTypeQualification = null;
+	char[] declaringTypeSimpleName = null;
+	char[] typeQualification = null;
+	char[] typeSimpleName = null;
 
 	// extract declaring type infos
 	if (declaringType != null) {
@@ -549,9 +553,10 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 		} else {
 			declaringTypeSimpleName = declaringTypePart;
 		}
-		if (declaringTypeSimpleName.length == 1 && declaringTypeSimpleName[0] == '*')
+		if (declaringTypeSimpleName.length == 1 && declaringTypeSimpleName[0] == '*') {
 			declaringTypeSimpleName = null;
-	}
+		}
+	} 
 	// extract type infos
 	if (type != null) {
 		char[] typePart = type.toCharArray();
@@ -580,9 +585,6 @@ private static SearchPattern createFieldPattern(String patternString, int limitT
 			findDeclarations = true;
 			break;
 		case IJavaScriptSearchConstants.REFERENCES :
-			readAccess = true;
-			writeAccess = true;
-			break;
 		case IJavaScriptSearchConstants.READ_ACCESSES :
 			readAccess = true;
 			break;
@@ -638,7 +640,6 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 
 	String declaringType = null, selector = null, parameterType = null;
 	String[] parameterTypes = null;
-	char[][] typeArguments = null;
 	String typeArgumentsString = null;
 	int parameterCount = -1;
 	String returnType = null;
@@ -732,7 +733,6 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 					case TerminalTokens.TokenNameUNSIGNED_RIGHT_SHIFT:
 						argCount--;
 						if (argCount == 0) {
-							typeArguments = new char[0][0];
 							mode = InsideSelector;
 						}
 						break;
@@ -768,7 +768,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 						case TerminalTokens.TokenNameLESS:
 							argCount++;
 							if (parameterType == null) return null; // invalid syntax
-							// fall through next case to add token
+							//$FALL-THROUGH$ next case to add token
 						default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 							if (parameterType == null)
 								parameterType = scanner.getCurrentTokenString();
@@ -804,7 +804,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 						case TerminalTokens.TokenNameLESS:
 							argCount++;
 							if (returnType == null) return null; // invalid syntax
-							// fall through next case to add token
+							//$FALL-THROUGH$ next case to add token
 						default: // all other tokens are considered identifiers (see bug 21763 Problem in JavaScript search [search])
 							if (returnType == null)
 								returnType = scanner.getCurrentTokenString();
@@ -858,8 +858,6 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 	char[] returnTypeQualification = null, returnTypeSimpleName = null;
 	char[][] parameterTypeQualifications = null, parameterTypeSimpleNames = null;
 	// Signatures
-	String declaringTypeSignature = null;
-	String returnTypeSignature = null;
 	String[] parameterTypeSignatures = null;
 
 	// extract declaring type infos
@@ -867,7 +865,6 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		// get declaring type part and signature
 		char[] declaringTypePart = null;
 		try {
-			declaringTypeSignature = Signature.createTypeSignature(declaringType, false);
 			declaringTypePart = declaringType.toCharArray();
 		}
 		catch (IllegalArgumentException iae) {
@@ -885,7 +882,7 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		}
 		if (declaringTypeSimpleName.length == 1 && declaringTypeSimpleName[0] == '*')
 			declaringTypeSimpleName = null;
-	}
+	} 
 	// extract parameter types infos
 	if (parameterCount >= 0) {
 		parameterTypeQualifications = new char[parameterCount][];
@@ -927,7 +924,6 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 		// get return type part and signature
 		char[] returnTypePart = null;
 		try {
-			returnTypeSignature = Signature.createTypeSignature(returnType, false);
 			returnTypePart = returnType.toCharArray();
 		}
 		catch (IllegalArgumentException iae) {
@@ -964,33 +960,19 @@ private static SearchPattern createMethodOrConstructorPattern(String patternStri
 			break;
 	}
 	if (isConstructor) {
-		return new ConstructorPattern(
-				findDeclarations,
-				findReferences,
-				declaringTypeSimpleName,
-				declaringTypeQualification,
-				declaringTypeSignature,
-				parameterTypeQualifications,
-				parameterTypeSimpleNames,
-				parameterTypeSignatures,
-				typeArguments,
-				matchRule);
+		return new ConstructorPattern(patternString.toCharArray(), matchRule, findDeclarations, findReferences);
 	} else {
 		return new MethodPattern(
 				findDeclarations,
 				findReferences,
 				isFunction,
 				selectorChars,
-				declaringTypeQualification,
-				declaringTypeSimpleName,
-				declaringTypeSignature,
-				returnTypeQualification,
-				returnTypeSimpleName,
-				returnTypeSignature,
 				parameterTypeQualifications,
 				parameterTypeSimpleNames,
-				parameterTypeSignatures,
-				typeArguments,
+				returnTypeQualification,
+				returnTypeSimpleName,
+				declaringTypeQualification,
+				declaringTypeSimpleName,
 				matchRule);
 	}
 }
@@ -1243,7 +1225,7 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 				if (declaringClassForField!=null)
 				{
 					declaringSimpleName = declaringClassForField.getElementName().toCharArray();
-					declaringQualification = declaringClassForField.getPackageFragment().getElementName().toCharArray();
+					declaringQualification= declaringClassForField.getPackageFragment().getElementName().toCharArray();
 					char[][] enclosingNames = enclosingTypeNames(declaringClassForField);
 					if (enclosingNames.length > 0) {
 						declaringQualification = CharOperation.concat(declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
@@ -1259,7 +1241,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					typeSignature = field.getTypeSignature();
 					char[] signature = typeSignature.toCharArray();
 					char[] typeErasure = Signature.toCharArray(signature);
-					CharOperation.replace(typeErasure, '$', '.');
 					if ((lastDot = CharOperation.lastIndexOf('.', typeErasure)) == -1) {
 						typeSimpleName = typeErasure;
 					} else {
@@ -1284,9 +1265,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					findDeclarations = true;
 					break;
 				case IJavaScriptSearchConstants.REFERENCES :
-					readAccess = true;
-					writeAccess = true;
-					break;
 				case IJavaScriptSearchConstants.READ_ACCESSES :
 					readAccess = true;
 					break;
@@ -1310,7 +1288,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					declaringSimpleName,
 					typeQualification,
 					typeSimpleName,
-					typeSignature,
 					matchRule,field);
 			break;
 		case IJavaScriptElement.IMPORT_DECLARATION :
@@ -1378,19 +1355,14 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 			if (declaringClass!=null) {
 				if (ignoreDeclaringType) {
 					if (isConstructor)
-						declaringSimpleName = declaringClass.getElementName()
-								.toCharArray();
+						declaringSimpleName = declaringClass.getElementName().toCharArray();
 				} else {
-					declaringSimpleName = declaringClass.getElementName()
-							.toCharArray();
-					declaringQualification = declaringClass
-							.getPackageFragment().getElementName()
-							.toCharArray();
+					declaringSimpleName = declaringClass.getElementName().toCharArray();
+					declaringQualification = declaringClass.getPackageFragment().getElementName().toCharArray();
 					char[][] enclosingNames = enclosingTypeNames(declaringClass);
 					if (enclosingNames.length > 0) {
 						declaringQualification = CharOperation.concat(
-								declaringQualification, CharOperation
-										.concatWith(enclosingNames, '.'), '.');
+								declaringQualification, CharOperation.concatWith(enclosingNames, '.'), '.');
 					}
 				}
 			}
@@ -1405,7 +1377,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					returnSignature = method.getReturnType();
 					char[] signature = returnSignature.toCharArray();
 					char[] returnErasure = Signature.toCharArray(signature);
-					CharOperation.replace(returnErasure, '$', '.');
 					if ((lastDot = CharOperation.lastIndexOf('.', returnErasure)) == -1) {
 						returnSimpleName = returnErasure;
 					} else {
@@ -1429,7 +1400,6 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 				parameterSignatures[i] = parameterTypes[i];
 				char[] signature = parameterSignatures[i].toCharArray();
 				char[] paramErasure = Signature.toCharArray(signature);
-				CharOperation.replace(paramErasure, '$', '.');
 				if ((lastDot = CharOperation.lastIndexOf('.', paramErasure)) == -1) {
 					parameterSimpleNames[i] = paramErasure;
 					parameterQualifications[i] = null;
@@ -1461,12 +1431,10 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 					new ConstructorPattern(
 						findMethodDeclarations,
 						findMethodReferences,
-						declaringSimpleName,
-						declaringQualification,
 						parameterQualifications,
 						parameterSimpleNames,
-						parameterSignatures,
-						method,
+						declaringSimpleName,
+						declaringQualification,
 						matchRule);
 			} else {
 				searchPattern =
@@ -1475,15 +1443,12 @@ public static SearchPattern createPattern(IJavaScriptElement element, int limitT
 						findMethodReferences,
 						isFunction,
 						selector,
-						declaringQualification,
-						declaringSimpleName,
-						returnQualification,
-						returnSimpleName,
-						returnSignature,
 						parameterQualifications,
 						parameterSimpleNames,
-						parameterSignatures,
-						method,
+						returnQualification,
+						returnSimpleName,
+						declaringQualification,
+						declaringSimpleName,
 						matchRule);
 			}
 			break;
@@ -1512,9 +1477,8 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 		case IJavaScriptSearchConstants.DECLARATIONS :
 			return new TypeDeclarationPattern(
 				packageName,
-				enclosingTypeNames,
 				simpleName,
-				IIndexConstants.TYPE_SUFFIX,
+				enclosingTypeNames,
 				matchRule);
 		case IJavaScriptSearchConstants.REFERENCES :
 			if (type != null) {
@@ -1531,16 +1495,14 @@ private static SearchPattern createTypePattern(char[] simpleName, char[] package
 				matchRule);
 		case IJavaScriptSearchConstants.IMPLEMENTORS :
 			return new SuperTypeReferencePattern(
-				CharOperation.concatWith(packageName, enclosingTypeNames, '.'),
-				simpleName,
+						QualificationHelpers.createFullyQualifiedName(packageName, simpleName),
 				matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
 				new TypeDeclarationPattern(
 					packageName,
-					enclosingTypeNames,
 					simpleName,
-					IIndexConstants.TYPE_SUFFIX,
+					enclosingTypeNames,
 					matchRule),
 				(type != null)
 					? new TypeReferencePattern(
@@ -1639,14 +1601,14 @@ private static SearchPattern createTypePattern(String patternString, int limitTo
 	}
 	switch (limitTo) {
 		case IJavaScriptSearchConstants.DECLARATIONS : // cannot search for explicit member types
-			return new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule);
+			return new TypeDeclarationPattern(typePart, matchRule);
 		case IJavaScriptSearchConstants.REFERENCES :
 			return new TypeReferencePattern(qualificationChars, typeChars, typeSignature, matchRule);
 		case IJavaScriptSearchConstants.IMPLEMENTORS :
-			return new SuperTypeReferencePattern(qualificationChars, typeChars, matchRule);
+			return new SuperTypeReferencePattern(QualificationHelpers.createFullyQualifiedName(qualificationChars, typeChars), matchRule);
 		case IJavaScriptSearchConstants.ALL_OCCURRENCES :
 			return new OrPattern(
-				new QualifiedTypeDeclarationPattern(qualificationChars, typeChars, indexSuffix, matchRule),// cannot search for explicit member types
+				new TypeDeclarationPattern(typePart, matchRule),// cannot search for explicit member types
 				new TypeReferencePattern(qualificationChars, typeChars, matchRule));
 	}
 	return null;
@@ -1747,7 +1709,6 @@ public char[][] getIndexCategories() {
  * @return one of R_EXACT_MATCH, R_PREFIX_MATCH, R_PATTERN_MATCH, R_REGEXP_MATCH combined with R_CASE_SENSITIVE,
  *   e.g. R_EXACT_MATCH | R_CASE_SENSITIVE if an exact and case sensitive match is requested,
  *   or R_PREFIX_MATCH if a prefix non case sensitive match is requested.
- * [TODO (frederic) I hope R_ERASURE_MATCH doesn't need to be on this list. Because it would be a breaking API change.]
  */
 public final int getMatchRule() {
 	return this.matchRule;
@@ -1800,7 +1761,7 @@ public boolean matchesName(char[] pattern, char[] name) {
 					}
 					break;
 				}
-				// fall through next case to match as prefix if camel case failed
+			//$FALL-THROUGH$ next case to match as prefix if camel case failed
 			case R_PREFIX_MATCH :
 				if (canBePrefix && matchFirstChar) {
 					return CharOperation.prefixEquals(pattern, name, isCaseSensitive);
@@ -1812,12 +1773,36 @@ public boolean matchesName(char[] pattern, char[] name) {
 					pattern = CharOperation.toLowerCase(pattern);
 				return CharOperation.match(pattern, name, isCaseSensitive);
 
-			case R_REGEXP_MATCH :
-				// TODO (frederic) implement regular expression match
-				return true;
+			case R_REGEXP_MATCH : {
+				int flags = 0;
+				if(!isCaseSensitive) {
+					flags = Pattern.CASE_INSENSITIVE;
+				}
+				return Pattern.compile(new String(pattern), flags).matcher(new String(name)).matches();
+			}
 		}
 	}
 	return false;
+}
+
+/**
+ * <p>Returns whether this pattern's prefix qualifier matches the other patterns qualified name.
+ * This pattern's qualifier must have a match rule of pattern match for a match to occur.</p>
+ * 
+ * @param thisQualifiedName  this qualifier pattern to inspect
+ * @param otherQualifiedName other qualifier pattern to inspect 
+ * @param isCaseSensitive whether this qualifier pattern is case sensitive
+ * @return whether this pattern's prefix qualifier matches the other patterns qualified name
+ */
+public static boolean matchesQualificationPattern(char[] thisQualifiedName, char[] otherQualifiedName, boolean isCaseSensitive) {
+	if (thisQualifiedName != null && isPatternMatch(String.valueOf(thisQualifiedName))) {
+		if (otherQualifiedName != null && otherQualifiedName.length > 0) {
+			if (!isCaseSensitive)
+				thisQualifiedName = CharOperation.toLowerCase(thisQualifiedName);
+			return CharOperation.match(thisQualifiedName, otherQualifiedName, isCaseSensitive);
+		}
+	}
+	return false;	
 }
 
 /**
@@ -1910,6 +1895,18 @@ public static int validateMatchRule(String stringPattern, int matchRule) {
 		}
 	}
 	return matchRule;
+}
+
+/**
+ * Returns whether the given pattern is a pattern case or not.
+ * 
+ * @param pattern the pattern to inspect
+ * @return whether it is a pattern case or not
+ */
+public static boolean isPatternMatch(String pattern) {
+	return SearchPattern.validateMatchRule(
+		pattern, 
+		SearchPattern.R_PATTERN_MATCH) == SearchPattern.R_PATTERN_MATCH;
 }
 
 /**

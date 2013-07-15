@@ -72,9 +72,9 @@ public ExceptionHandlingFlowContext(
 }
 
 public void complainIfUnusedExceptionHandlers(AbstractMethodDeclaration method) {
-	MethodScope scope = method.scope;
+	MethodScope scope = method.getScope();
 	// can optionally skip overriding methods
-	if ((method.binding.modifiers & (ExtraCompilerModifiers.AccOverriding | ExtraCompilerModifiers.AccImplementing)) != 0
+	if ((method.getBinding().modifiers & (ExtraCompilerModifiers.AccOverriding | ExtraCompilerModifiers.AccImplementing)) != 0
 	        && !scope.compilerOptions().reportUnusedDeclaredThrownExceptionWhenOverriding) {
 	    return;
 	}

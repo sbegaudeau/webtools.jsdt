@@ -14,12 +14,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
-/**
- * A provider of defaul include path entries to be added when converting a
- * project. Any extension returning any entrieswill supercede the values
- * returned in this class.
- * 
- */
 public abstract class DefaultSourcePathProvider {
 	public DefaultSourcePathProvider() {
 	}

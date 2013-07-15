@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2011 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -153,6 +153,11 @@ public class JavaPluginImages {
 	public static final String IMG_OBJS_SEARCH_OCCURRENCE= NAME_PREFIX + "occ_match.gif"; //$NON-NLS-1$
 	
 	public static final String IMG_OBJS_HELP= NAME_PREFIX + "help.gif"; //$NON-NLS-1$
+	
+	public static final String IMG_LOADING_1 = NAME_PREFIX + "loading1.gif"; //$NON-NLS-1$
+	public static final String IMG_LOADING_2 = NAME_PREFIX + "loading2.gif"; //$NON-NLS-1$
+	public static final String IMG_LOADING_3 = NAME_PREFIX + "loading3.gif"; //$NON-NLS-1$
+	public static final String IMG_LOADING_4 = NAME_PREFIX + "loading4.gif"; //$NON-NLS-1$
 
 	/*
 	 * Set of predefined Image Descriptors.
@@ -406,6 +411,11 @@ public class JavaPluginImages {
 	public static final ImageDescriptor DESC_TOOL_NEWSNIPPET= createUnManaged(T_ETOOL, "newsbook_wiz.gif"); 			//$NON-NLS-1$
     public static final ImageDescriptor DESC_TOOL_NEWPACKROOT= createUnManaged(T_ETOOL, "newpackfolder_wiz.gif");         //$NON-NLS-1$
     public static final ImageDescriptor DESC_DLCL_NEWPACKROOT= createUnManaged(T_DLCL, "newpackfolder_wiz.gif");        //$NON-NLS-1$
+    
+    public static final ImageDescriptor DESC_TOOL_LOADING_1 = createUnManaged(T_ETOOL, "loading1.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor DESC_TOOL_LOADING_2 = createUnManaged(T_ETOOL, "loading2.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor DESC_TOOL_LOADING_3 = createUnManaged(T_ETOOL, "loading3.gif"); //$NON-NLS-1$
+    public static final ImageDescriptor DESC_TOOL_LOADING_4 = createUnManaged(T_ETOOL, "loading4.gif"); //$NON-NLS-1$
 
 	public static final ImageDescriptor DESC_TOOL_CLASSPATH_ORDER= createUnManaged(T_OBJ, "cp_order_obj.gif"); 		//$NON-NLS-1$
 	public static final ImageDescriptor DESC_ELCL_COLLAPSEALL= createUnManaged(T_ELCL, "collapseall.gif"); //$NON-NLS-1$
