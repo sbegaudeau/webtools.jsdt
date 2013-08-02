@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2011 IBM Corporation and others.
+ * Copyright (c) 2002, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -947,8 +947,6 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		 */
 		String class_declaration_brace;
 		boolean space_before_opening_brace;
-		int kind = TypeDeclaration.kind(typeDeclaration.modifiers);
-		
 		class_declaration_brace = this.preferences.brace_position_for_type_declaration;
 		space_before_opening_brace = this.preferences.insert_space_before_opening_brace_in_type_declaration;
 
@@ -1315,7 +1313,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
         }
     }
 
-	private void formatLocalDeclaration(LocalDeclaration localDeclaration, BlockScope scope, boolean insertSpaceBeforeComma, boolean insertSpaceAfterComma) {
+	private void formatLocalDeclaration(LocalDeclaration localDeclaration, BlockScope scope, boolean insertSpaceBeforeComma, boolean insertSpaceAfterComma, boolean insertSpaceBeforeVar) {
 
 		if (!isMultipleLocalDeclaration(localDeclaration)) {
 			if (localDeclaration.modifiers != NO_MODIFIERS) {
@@ -1324,7 +1322,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 				this.scribe.space();
 			}
 
-			this.scribe.printNextToken(TerminalTokens.TokenNamevar, true);
+			this.scribe.printNextToken(TerminalTokens.TokenNamevar, insertSpaceBeforeVar);
 
 			/*
 			 * Argument type
@@ -3336,7 +3334,11 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		if (this.preferences.insert_space_after_opening_paren_in_for) {
 			this.scribe.space();
 		}
-		formatLocalDeclaration(forStatement.elementVariable, scope, false, false);
+		formatLocalDeclaration(forStatement.elementVariable, 
+				scope, 
+				false, 
+				false,
+				this.preferences.insert_space_after_opening_paren_in_for);
 
 		this.scribe.printNextToken(TerminalTokens.TokenNameCOLON, this.preferences.insert_space_before_colon_in_for);
 		if (this.preferences.insert_space_after_colon_in_for) {
@@ -3441,7 +3443,12 @@ public class CodeFormatterVisitor extends ASTVisitor {
 			int length = initializations.length;
 			for (int i = 0; i < length; i++) {
 				if (initializations[i] instanceof LocalDeclaration) {
-					formatLocalDeclaration((LocalDeclaration) initializations[i], scope, this.preferences.insert_space_before_comma_in_for_inits, this.preferences.insert_space_after_comma_in_for_inits);
+					formatLocalDeclaration(
+							(LocalDeclaration) initializations[i], 
+							scope, 
+							this.preferences.insert_space_before_comma_in_for_inits, 
+							this.preferences.insert_space_after_comma_in_for_inits,
+							this.preferences.insert_space_after_opening_paren_in_for);
 				} else {
 					initializations[i].traverse(this, scope);
 					if (i >= 0 && (i < length - 1)) {
@@ -3729,7 +3736,12 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */
 	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
-		formatLocalDeclaration(localDeclaration, scope, this.preferences.insert_space_before_comma_in_multiple_local_declarations, this.preferences.insert_space_after_comma_in_multiple_local_declarations);
+		formatLocalDeclaration(
+				localDeclaration, 
+				scope, 
+				this.preferences.insert_space_before_comma_in_multiple_local_declarations, 
+				this.preferences.insert_space_after_comma_in_multiple_local_declarations,
+				true);
 		return false;
 	}
 	/**
