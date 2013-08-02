@@ -12,12 +12,15 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IArrayReference;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class ArrayReference extends Reference implements IArrayReference {
@@ -80,6 +83,18 @@ public FlowInfo analyseCode(
 			if (arrayType.isArrayType()) {
 				TypeBinding elementType = ((ArrayBinding) arrayType).elementsType();
 				this.resolvedType = elementType;
+			} else if (arrayType instanceof SourceTypeBinding) {
+				this.resolvedType = TypeBinding.UNKNOWN;
+				FieldBinding[] fields = ((SourceTypeBinding) arrayType).fields();
+				if (position instanceof StringLiteral) {
+					char[] positionSource = ((StringLiteral) position).source;
+					for (int idx = 0; idx < fields.length; idx++) {
+						if (CharOperation.equals(positionSource, fields[idx].name)) {
+							this.resolvedType = fields[idx].type;
+							break;
+						}
+					}
+				}
 			} else {
 //				scope.problemReporter().referenceMustBeArrayTypeAt(arrayType, this);
 				this.resolvedType=TypeBinding.UNKNOWN;
