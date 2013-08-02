@@ -1189,7 +1189,17 @@ public void markAsDefinitelyNonNull(LocalVariableBinding local) {
 				for (int j = 0; j < extraLength; j++) {
 					this.extra[j] = new long[length];
 				}
+			} else {
+				int oldLength; // might need to grow the arrays
+				if (vectorIndex >= (oldLength = this.extra[0].length)) {
+					for (int j = 0; j < extraLength; j++) {
+						System.arraycopy(this.extra[j], 0,
+							(this.extra[j] = new long[vectorIndex + 1]), 0,
+							oldLength);
+					}
+				}
 			}
+
     		this.extra[2][vectorIndex]
     		    |= (mask = 1L << (position % BitCacheSize));
     		this.extra[4][vectorIndex] |= mask;
