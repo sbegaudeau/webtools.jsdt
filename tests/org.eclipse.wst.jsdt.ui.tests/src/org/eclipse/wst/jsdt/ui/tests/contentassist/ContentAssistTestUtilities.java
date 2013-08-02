@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.ui.tests.contentassist;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +25,7 @@ import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.JavaEditor;
 import org.eclipse.wst.jsdt.internal.ui.text.html.HTML2TextReader;
@@ -382,4 +384,57 @@ public class ContentAssistTestUtilities {
 
 		set.clear();
 	}
+	
+	/**
+	 * Get a proposal and test by inserting computed proposal into the Editor.
+	 */
+	public static void runProposalandInertTest(TestProjectSetup testProject, String filePath, int lineNum, int lineRelativeCharOffset, String expectedResult) throws Exception{
+		
+			IFile file = testProject.getFile(filePath);
+			JavaEditor editor  = testProject.getEditor(file);
+			IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+			int offset = doc.getLineOffset(lineNum) + lineRelativeCharOffset;
+
+			ICompletionProposal[][] pages = getProposals(editor, offset, 1);
+		
+			verifyInsertProposalToEditor(editor, offset, pages, expectedResult);
+	}
+	
+	/**
+	 * Verify insert proposal to Editor between parenthesis.
+	 * 
+	 * @param editor JavaEditor of Content Assist invoked
+	 * @param offset Location of Content Assist invoked.
+	 * @param pages computed CompletionProposals
+	 * @param expectedResult Expected result after proposal inserted to Editor
+	 * @throws Exception
+	 */
+	public static void verifyInsertProposalToEditor(JavaEditor editor, int offset, ICompletionProposal[][] pages, String expectedResult) throws Exception {
+		ISourceViewer viewer = editor.getViewer();
+		Field fContentAssistant = SourceViewer.class.getDeclaredField("fContentAssistant");
+		fContentAssistant.setAccessible(true);
+		ContentAssistant contentassistant = (ContentAssistant)fContentAssistant.get(viewer);
+		
+		Field fProposalPopup = ContentAssistant.class.getDeclaredField("fProposalPopup");
+		fProposalPopup.setAccessible(true);
+		Object objPopup = fProposalPopup.get(contentassistant);
+		
+		Class proposalPopupClass = Class.forName("org.eclipse.jface.text.contentassist.CompletionProposalPopup");
+		Method privateInsertProposalMethod = proposalPopupClass.getDeclaredMethod("insertProposal", new Class[]{ICompletionProposal.class,char.class,int.class,int.class});
+		privateInsertProposalMethod.setAccessible(true);
+		
+		// Set selected range to properly compute ReplacementLength in AbstractJavaCompletionProposal.
+		viewer.setSelectedRange(offset, 0);
+		
+		// Invoke insertProposal of CompletionProposalPopup
+		privateInsertProposalMethod.invoke(objPopup, new Object[]{pages[0][0], new Character((char) 0), new Integer(524288), new Integer(offset)});
+		
+		// Get result of inserted proposal in the Editor
+		String strAfterInsert = viewer.getDocument().get();
+
+		if (!expectedResult.equals(strAfterInsert)) {
+			Assert.fail("\n<ExpectedResult>\n" + expectedResult + "\n<The result after inserting to Editor>\n" + strAfterInsert);
+		}
+	}
+	
 }
