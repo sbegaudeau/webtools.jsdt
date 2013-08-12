@@ -22,6 +22,6 @@
 
   <groupId>org.eclipse.webtools.jsdt</groupId>
   <artifactId>org.eclipse.wst.jsdt.support.firefox</artifactId>
-  <version>1.0.402-SNAPSHOT</version>
+  <version>1.0.500-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
