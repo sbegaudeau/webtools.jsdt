@@ -1228,7 +1228,7 @@ public final class CompletionEngine
 			if (qualifiedBinding == null) {
 			
 					this.completionToken = computeToken(access);
-					setSourceRange((int) (completionPosition >>> 32) - (this.completionToken.length - access.token.length), (int) completionPosition);
+					setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 				
 					ObjectVector typesFound = new ObjectVector();
 					findTypesAndPackages(this.completionToken, scope, typesFound);
