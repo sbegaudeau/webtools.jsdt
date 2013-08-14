@@ -91,6 +91,7 @@ public class AllContentAssistTests extends TestSuite {
 		all.addTest(AddToNavigatorTests.suite());
 		all.addTest(Dom5LibraryTests.suite());
 		all.addTest(NestedWithinParenthesesTests.suite());
+		all.addTest(ArrayStylePropertyAccessTests.suite());
 		
 		// tests that do editing to the files
 		all.addTest(GlobalFunctionTests_Edited.suite());
