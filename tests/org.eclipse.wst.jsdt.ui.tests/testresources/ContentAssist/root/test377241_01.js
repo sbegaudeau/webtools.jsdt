@@ -1,6 +1,6 @@
-function foo() {
+function bar() {
 	 this.id = 0;
 }
-var obj = {};
-obj.p2 = new foo();
-obj["p2"].
+var tst = {};
+tst.p2 = new bar();
+tst["p2"].

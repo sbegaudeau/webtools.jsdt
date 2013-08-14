@@ -61,13 +61,14 @@ public class AllContentAssistTests extends TestSuite {
 
 	public static Test suite() {
 		TestSuite all = new TestSuite(TEST_NAME);
+		
 		all.addTest(GlobalFunctionTests.suite());
 		all.addTest(GlobalVariableTests.suite());
 		all.addTest(ConstructorTests.suite());
 		all.addTest(InnerFunctionTests.suite());
 		all.addTest(DoublyNestedFunctionTests.suite());
 		all.addTest(CamelCasingTests.suite());
-		all.addTest(OtherContentAssistTests.suite());
+		all.addTest(OtherContentAssistTests.suite());		
 		all.addTest(TypeTests.suite());
 		all.addTest(DuplicatesTests.suite());
 		all.addTest(StaticTests.suite());

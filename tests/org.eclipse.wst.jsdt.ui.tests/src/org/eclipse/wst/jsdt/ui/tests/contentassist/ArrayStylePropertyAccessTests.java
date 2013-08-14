@@ -84,21 +84,21 @@ public class ArrayStylePropertyAccessTests extends TestCase {
 	public void testPropertyAccessUsingArrayStyle_377241() throws Exception {
 		// When an object property is referenced by array-style, test if
 		// ContentAssist lists are properly show.
-		String[][] expectedProposals = new String[][]{{"id : Number - foo"}};
+		String[][] expectedProposals = new String[][]{{"id : Number - bar"}};
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup, "test377241.js", 5, 10, expectedProposals);		
 	}
 
 	public void testPropertyAccessUsingArrayStyle_377241_01() throws Exception {
 		// When an object property is referenced by array-style, test if
 		// ContentAssist lists are properly show.
-		String[][] expectedProposals = new String[][]{{"id : Number - foo"}};
+		String[][] expectedProposals = new String[][]{{"id : Number - bar"}};
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup,"test377241_01.js", 5, 10, expectedProposals);
 	}
 
 	public void testPropertyAccessUsingArrayStyle_377241_02() throws Exception {
 		// When an object property is referenced by array-style, test if
 		// ContentAssist lists are properly show.
-		String[][] expectedProposals = new String[][]{{"id : Number - foo"}};
+		String[][] expectedProposals = new String[][]{{"id : Number - bar"}};
 		ContentAssistTestUtilities.runProposalTest(fTestProjectSetup,"test377241_02.js", 5, 10, expectedProposals);
 	}
 

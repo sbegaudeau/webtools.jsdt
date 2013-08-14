@@ -1,3 +1,3 @@
-var obj = {};
-obj.p1 = {id:10, data:"empty"};
-obj["p1"].
+var tst = {};
+tst.p1 = {id:10, data:"empty"};
+tst["p1"].
