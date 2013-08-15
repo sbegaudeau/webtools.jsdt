@@ -1,8 +1,8 @@
-var data1;
-var data2;
+var myData1;
+var myData2;
 (
-	// data
+	// myData
 	(
-        da	
+        myDa	
 	)
 );

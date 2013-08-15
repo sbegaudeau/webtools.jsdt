@@ -105,15 +105,15 @@ public class NestedWithinParenthesesTests extends TestCase {
 	
 	public void testInsertToEditor_315660_3() throws Exception {
 		String expectedResult = 
-				"var data1;\n"+
-				"var data2;\n"+
+				"var myData1;\n"+
+				"var myData2;\n"+
 				"(\n"+
-				"	// data\n"+
+				"	// myData\n"+
 				"	(\n"+
-				"        data1	\n"+
+				"        myData1	\n"+
 				"	)\n"+
 				");";
-		ContentAssistTestUtilities.runProposalandInertTest(fTestProjectSetup, "validateTest_315660_3.js", 5, 10, expectedResult);
+		ContentAssistTestUtilities.runProposalandInertTest(fTestProjectSetup, "validateTest_315660_3.js", 5, 12, expectedResult);
 	}
 
 	public void testInsertToEditor_315660_4() throws Exception {
