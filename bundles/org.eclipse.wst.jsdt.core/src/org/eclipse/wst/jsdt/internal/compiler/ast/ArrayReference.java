@@ -84,9 +84,9 @@ public FlowInfo analyseCode(
 				TypeBinding elementType = ((ArrayBinding) arrayType).elementsType();
 				this.resolvedType = elementType;
 			} else if (arrayType instanceof SourceTypeBinding) {
-				this.resolvedType = TypeBinding.UNKNOWN;
-				FieldBinding[] fields = ((SourceTypeBinding) arrayType).fields();
+				this.resolvedType = TypeBinding.UNKNOWN;				
 				if (position instanceof StringLiteral) {
+					FieldBinding[] fields = ((SourceTypeBinding) arrayType).fields();
 					char[] positionSource = ((StringLiteral) position).source;
 					for (int idx = 0; idx < fields.length; idx++) {
 						if (CharOperation.equals(positionSource, fields[idx].name)) {
