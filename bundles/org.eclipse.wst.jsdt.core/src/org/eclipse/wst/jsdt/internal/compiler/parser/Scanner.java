@@ -1884,6 +1884,7 @@ public NLSTag[] getNLSTags() {
 public char[] getSource(){
 	return this.source;
 }
+
 public final void jumpOverMethodBody() {
 
 	this.wasAcr = false;
@@ -4324,7 +4325,8 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 	if (this.withoutUnicodePtr != 0) {
 		unicodeStore();
 	}
-
+	//inCharacterClass = true if any one character between brackets [...]
+	boolean inCharacterClass = false;
 	try {
 		loop: while (true) {
 
@@ -4337,9 +4339,18 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 						unicodeStore();
 					}
 					break;
+				case '[' :
+					inCharacterClass = true;
+					break;
+				case ']' :
+					inCharacterClass = false;
+					break;
 				case '/' :
-					regExp = true;
-					break loop;
+					if (!inCharacterClass) {
+						regExp = true;
+						break loop;
+					}
+					break;
 				case '\r' :
 				case '\n' :
 					break loop;
