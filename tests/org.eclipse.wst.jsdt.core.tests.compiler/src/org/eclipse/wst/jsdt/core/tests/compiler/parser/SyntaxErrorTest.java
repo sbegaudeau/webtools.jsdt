@@ -346,4 +346,28 @@ public void testWI106610() {
 		expectedSyntaxErrorDiagnosis,
 		testName);
 }
+
+public void testRegExpression01() {
+	String s = "searchStr.replace( /([!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~])/g, '//' )";
+	String expectedSyntaxErrorDiagnosis = "";
+	String testName = "<test>";
+	
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+
+public void testRegExpression02() {
+	String s = "searchStr.replace(/\\n( |\t)*[/][/]/g,'//')";
+	String expectedSyntaxErrorDiagnosis = "";
+	String testName = "<test>";
+	
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+
+
 }
