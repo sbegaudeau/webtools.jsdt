@@ -4329,7 +4329,6 @@ protected boolean checkIfRegExp() throws IndexOutOfBoundsException, InvalidInput
 	boolean inCharacterClass = false;
 	try {
 		loop: while (true) {
-
 			switch(this.currentCharacter) {
 				case '\\' :
 					// read next character

@@ -81,7 +81,7 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 		
 		int lastNonWhitespaceChar = NONE;
 		int currentChar = NONE;
-		
+		boolean onCharList = false;
 		while (true) {
 			if (!Character.isWhitespace((char)currentChar))
 				lastNonWhitespaceChar = currentChar;
@@ -251,9 +251,10 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 							default:
 								//check if regexp
 								fLast= NONE; // ignore fLast
-								if (fTokenLength > 0)
+								onCharList = false; //reset char list;
+								if (fTokenLength > 0) {
 									return preFix(JAVASCRIPT, REGULAR_EXPRESSION, NONE, 1);
-								else {
+								} else {
 									preFix(JAVASCRIPT, REGULAR_EXPRESSION, NONE, 1);
 									fTokenOffset += fTokenLength;
 									fTokenLength= fPrefixLength;
@@ -398,10 +399,27 @@ public class FastJavaPartitionScanner implements IPartitionTokenScanner, IJavaSc
 					fLast= (fLast == BACKSLASH) ? NONE : BACKSLASH;
 					fTokenLength++;
 					break;
-
+				case '[':
+					onCharList = true;
+					consume();
+					break;
+				case ']':
+					onCharList = false;
+					if (fLast==SLASH || fLast==REGULAR_EXPRESSION_END)
+		 			{
+		 				fTokenLength--;
+		 				fScanner.unread();
+		 				return postFix(REGULAR_EXPRESSION);
+		 			}
+					consume();
+					break;
 				case '/':
-					fLast= (fLast == BACKSLASH) ? NONE : SLASH;
-					fTokenLength++;
+					if (!onCharList) {
+						fLast= (fLast == BACKSLASH) ? NONE : SLASH;
+						fTokenLength++;
+					} else {
+						consume();
+					}
 					break;	 				
 
 				case 'g':
