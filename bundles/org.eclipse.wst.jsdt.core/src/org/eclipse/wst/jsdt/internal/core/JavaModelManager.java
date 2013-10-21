@@ -1729,6 +1729,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, JavaScriptCore.ENABLED);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_SEMANTIC_VALIDATION, JavaScriptCore.ENABLED);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_MAX_PER_UNIT, String.valueOf(100));
 
 		// Builder settings
 		defaultOptionsMap.put(JavaScriptCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER, ""); //$NON-NLS-1$

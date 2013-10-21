@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -21,10 +22,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
@@ -115,6 +118,10 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 	/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */	
 	
+	/* START -------------------------------- Bug 417465 - JavaScript Validation reports max 100 problems per .js file --------------------- */
+	private static final Key PREF_PB_MAX_PER_UNIT= getJDTCoreKey(JavaScriptCore.COMPILER_PB_MAX_PER_UNIT);
+	/* END   -------------------------------- Bug 417465 - JavaScript Validation reports max 100 problems per .js file --------------------- */	
+	
 	// values
 	private static final String ERROR= JavaScriptCore.ERROR;
 	private static final String WARNING= JavaScriptCore.WARNING;
@@ -141,6 +148,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	
 	private static Key[] getKeys() {
 		return new Key[] {
+				PREF_PB_MAX_PER_UNIT,
 				PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT,
 				PREF_PB_UNDEFINED_FIELD,
 				/*PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME,*/ PREF_PB_DEPRECATION, PREF_PB_HIDDEN_CATCH_BLOCK, PREF_PB_UNUSED_LOCAL,
@@ -174,14 +182,24 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		fPixelConverter= new PixelConverter(parent);
 		setShell(parent.getShell());
 		
+		int nColumns= 3;
+		
 		Composite mainComp= new Composite(parent, SWT.NONE);
 		mainComp.setFont(parent.getFont());
 		GridLayout layout= new GridLayout();
+		layout.numColumns= nColumns;
 		layout.marginHeight= 0;
 		layout.marginWidth= 0;
 		mainComp.setLayout(layout);
 	
-		String label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableSemanticValidation;
+		String label= PreferencesMessages.JavaBuildConfigurationBlock_pb_max_per_unit_label; 
+		Text text= addTextField(mainComp, label, PREF_PB_MAX_PER_UNIT, 0, 0);
+		GridData gd= (GridData) text.getLayoutData();
+		gd.widthHint= fPixelConverter.convertWidthInCharsToPixels(8);
+		gd.horizontalAlignment= GridData.END;
+		text.setTextLimit(6);
+		
+		label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableSemanticValidation;
 		semanticCheckBox = addCheckBox(mainComp, label, PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, new String[]{ENABLED, DISABLED}, 0);
 		Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
 		horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
@@ -519,12 +537,17 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 			return;
 		}
 		
+		IStatus maxNumberProblemsStatus = new StatusInfo();
 		if (changedKey != null) {
-			if (PREF_PB_UNUSED_PARAMETER.equals(changedKey) || PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT.equals(changedKey) )
+			if ( PREF_PB_MAX_PER_UNIT.equals(changedKey) || 
+					PREF_PB_UNUSED_PARAMETER.equals(changedKey) || PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT.equals(changedKey) )
 //					PREF_PB_DEPRECATION.equals(changedKey) ||
 //					PREF_PB_LOCAL_VARIABLE_HIDING.equals(changedKey) ||
 //					PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION.equals(changedKey)) 
 			{				
+				if (PREF_PB_MAX_PER_UNIT.equals(changedKey)) {
+					maxNumberProblemsStatus= validateMaxNumberProblems();
+				}
 				updateEnableStates();
 //			} else if (PREF_PB_SIGNAL_PARAMETER_IN_OVERRIDING.equals(changedKey)) {
 //				// merging the two options
@@ -533,9 +556,10 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 				return;
 			}
 		} else {
+			maxNumberProblemsStatus= validateMaxNumberProblems();
 			updateEnableStates();
-		}		
-		fContext.statusChanged(new StatusInfo());
+		}
+		fContext.statusChanged(maxNumberProblemsStatus);
 	}
 	
 	private void updateEnableStates() {
@@ -581,6 +605,24 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 			message= PreferencesMessages.ProblemSeveritiesConfigurationBlock_needsprojectbuild_message; 
 		}
 		return new String[] { title, message };
+	}
+	
+	private IStatus validateMaxNumberProblems() {
+		String number= getValue(PREF_PB_MAX_PER_UNIT);
+		StatusInfo status= new StatusInfo();
+		if (number.length() == 0) {
+			status.setError(PreferencesMessages.JavaBuildConfigurationBlock_empty_input); 
+		} else {
+			try {
+				int value= Integer.parseInt(number);
+				if (value <= 0) {
+					status.setError(Messages.format(PreferencesMessages.JavaBuildConfigurationBlock_invalid_input, number)); 
+				}
+			} catch (NumberFormatException e) {
+				status.setError(Messages.format(PreferencesMessages.JavaBuildConfigurationBlock_invalid_input, number)); 
+			}
+		}
+		return status;
 	}
 	
 	/* (non-Javadoc)

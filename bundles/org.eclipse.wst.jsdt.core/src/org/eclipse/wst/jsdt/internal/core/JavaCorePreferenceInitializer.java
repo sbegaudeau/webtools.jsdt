@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -108,6 +108,10 @@ public class JavaCorePreferenceInitializer extends AbstractPreferenceInitializer
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_DUPLICATE_LOCAL_VARIABLES, JavaScriptCore.WARNING);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_UNINITIALIZED_LOCAL_VARIABLE, JavaScriptCore.WARNING);
 		/* END   -------------------------------- Bug 197884 Loosly defined var (for statement) and optional semi-colon --------------------- */
+
+		/* START -------------------------------- Bug 417465 - JavaScript Validation reports max 100 problems per .js file --------------------- */
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_MAX_PER_UNIT, String.valueOf(100));
+		/* END   -------------------------------- Bug 417465 - JavaScript Validation reports max 100 problems per .js file --------------------- */	
 
 		// Time out for parameter names
 		defaultOptionsMap.put(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "50"); //$NON-NLS-1$
