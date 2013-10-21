@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -485,7 +485,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			result.addFatalError(msg);
 			return;
 		}
-		if (fMethodName.equals(fMethod.getDeclaringType().getElementName())) {
+		if (fMethod.getDeclaringType() != null && fMethodName.equals(fMethod.getDeclaringType().getElementName())) {
 			String msg= RefactoringCoreMessages.ChangeSignatureRefactoring_constructor_name; 
 			result.addWarning(msg);
 		}
