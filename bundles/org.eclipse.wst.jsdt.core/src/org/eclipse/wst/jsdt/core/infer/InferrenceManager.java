@@ -109,7 +109,6 @@ public class InferrenceManager {
 
 				case InferrenceProvider.ONLY_THIS:
 					proposedProviders.clear();
-					proposedProviders.add(inferenceProviders[0]);
 					proposedProviders.add(inferenceProviders[i]);
 					return (InferrenceProvider [] )proposedProviders.toArray(new InferrenceProvider[proposedProviders.size()]);
 
