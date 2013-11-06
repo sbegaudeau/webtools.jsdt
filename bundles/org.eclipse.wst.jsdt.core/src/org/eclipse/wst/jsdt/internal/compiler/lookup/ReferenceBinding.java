@@ -272,7 +272,8 @@ public ReferenceBinding closestMatch() {
 }
 
 public void computeId() {
-
+	if (this.compoundName == null) return;
+	
 	switch (this.compoundName.length) {
 
 		case 1 :

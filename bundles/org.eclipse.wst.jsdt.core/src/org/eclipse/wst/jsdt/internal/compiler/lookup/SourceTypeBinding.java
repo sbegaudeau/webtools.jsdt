@@ -149,7 +149,7 @@ public class SourceTypeBinding extends ReferenceBinding {
 		this();
 		this.compoundName = compoundName;
 		this.fPackage = fPackage;
-		this.fileName = scope.referenceCompilationUnit().getFileName();
+		this.fileName = scope == null ? null : scope.referenceCompilationUnit().getFileName();
 		if (scope instanceof ClassScope) {
 			this.classScope = (ClassScope) scope;
 			if (this.classScope.referenceContext != null) {

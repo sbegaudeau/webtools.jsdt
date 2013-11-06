@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2011, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -751,7 +751,7 @@ public void resolve() {
 				// if the type is package-info, the javadoc was resolved as part of the compilation unit javadoc
 				this.javadoc.resolve(this.scope);
 			}
-		} else if (sourceType != null && !sourceType.isLocalType()) {
+		} else if (this.scope != null && sourceType != null && !sourceType.isLocalType()) {
 			this.scope.problemReporter().javadocMissing(this.sourceStart, this.sourceEnd, sourceType.modifiers);
 		}
 
@@ -947,7 +947,7 @@ public void traverse(ASTVisitor visitor, ClassScope classScope) {
  * This method is doing either up/down propagation.
  */
 void updateMaxFieldCount() {
-	if (this.binding == null)
+	if (this.scope == null || this.binding == null)
 		return; // error scenario
 	TypeDeclaration outerMostType = this.scope.outerMostClassScope().referenceType();
 	if (this.maxFieldCount > outerMostType.maxFieldCount) {
