@@ -192,12 +192,14 @@
 	<!-- declares a content type for JavaScript Source files -->
 	<content-type id="jsSource" name="%jsSourceName" 
 		base-type="org.eclipse.core.runtime.text"
-		priority="high"				
+		priority="high"	
+		default-charset="UTF-8"			
 		file-extensions="js"/>
 	<!-- declares a content type for JSON files -->
 	<content-type id="jsonSource" name="%jsonSourceName" 
 		base-type="org.eclipse.core.runtime.text"
-		priority="normal"				
+		priority="normal"	
+		default-charset="UTF-8"			
 		file-extensions="json"/>
 </extension>
       
