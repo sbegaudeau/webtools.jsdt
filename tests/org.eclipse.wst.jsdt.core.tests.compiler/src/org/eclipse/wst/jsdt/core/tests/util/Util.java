@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -71,7 +71,7 @@ public class Util {
 
 	private static final boolean DEBUG = false;
 	/**
-	 * Initially, output directory was located in System.getProperty("user.home")+"\comptest".
+	 * Initially, output directory was located in System.getProperty("user.dir")+"\comptest".
 	 * To allow user to run several compiler tests at the same time, main output directory
 	 * is now located in a sub-directory of "comptest" which name is "run."+<code>System.currentMilliseconds</code>.
 	 * 
@@ -108,7 +108,7 @@ public class Util {
 		// Get output directory root from system properties
 		String container = System.getProperty("jdt.test.output_directory");
 		if (container == null){
-			container = System.getProperty("user.home");
+			container = System.getProperty("user.dir");
 		}
 		if (container == null) {
 			container = ".";	// use current directory
