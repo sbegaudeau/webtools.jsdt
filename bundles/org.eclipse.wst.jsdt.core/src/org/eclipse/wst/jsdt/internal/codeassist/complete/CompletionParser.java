@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
+import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.AssistParser;
 import org.eclipse.wst.jsdt.internal.codeassist.impl.Keywords;
@@ -3317,6 +3318,10 @@ protected JavadocParser createJavadocParser() {
 				} else if(receiver instanceof ISingleNameReference) {
 					ISingleNameReference ref = (ISingleNameReference)receiver;
 					token = new String(ref.getToken()) + "." + token;
+					receiver = null;
+				} else if(receiver instanceof IThisReference) {
+					IThisReference ref = (IThisReference)receiver;
+					token =  "this." + token;
 					receiver = null;
 				}
 			}
