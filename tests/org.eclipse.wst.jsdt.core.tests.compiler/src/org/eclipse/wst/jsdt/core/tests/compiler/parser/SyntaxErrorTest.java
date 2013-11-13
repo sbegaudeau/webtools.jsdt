@@ -329,6 +329,25 @@ public void test05h() {
 		testName);
 }
 
+/**
+ * https://bugs.eclipse.org/bugs/show_bug.cgi?id=406519
+ */
+public void testWhitespaces01() {
+	String s = 
+				"var " + '\t' + '\r' + '\n' +
+				'\u000b' + '\u000c' +
+				'\u0020' + '\u00a0' + " x;\r"; 	
+
+	String expectedSyntaxErrorDiagnosis =
+		"";
+
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		expectedSyntaxErrorDiagnosis,
+		testName);
+}
+
 public void testWI106610() {
 	String s = "\n<!-- Begin"; 	
 
