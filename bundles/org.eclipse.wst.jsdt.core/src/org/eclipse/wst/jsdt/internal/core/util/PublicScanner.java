@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -971,11 +971,13 @@ public int scanIdentifier() throws InvalidInputException {
 				//isWhiteSpace =
 				//	(this.currentCharacter == ' ') || ScannerHelper.isWhitespace(this.currentCharacter);
 				switch (this.currentCharacter) {
+					case 9 :  /* \ u0009: HORIZONTAL TABULATION   */
 					case 10 : /* \ u000a: LINE FEED               */
+					case 11 : /* \ u000b: VERTICAL TAB            */
 					case 12 : /* \ u000c: FORM FEED               */
 					case 13 : /* \ u000d: CARRIAGE RETURN         */
 					case 32 : /* \ u0020: SPACE                   */
-					case 9 : /* \ u0009: HORIZONTAL TABULATION   */
+					case 160: /* \ u00a0: NO-BREAK SPACE          */
 						isWhiteSpace = true;
 						break;
 					default :
@@ -1088,11 +1090,13 @@ public int getNextToken() throws InvalidInputException {
 					//isWhiteSpace =
 					//	(this.currentCharacter == ' ') || ScannerHelper.isWhitespace(this.currentCharacter);
 					switch (this.currentCharacter) {
+						case 9 :  /* \ u0009: HORIZONTAL TABULATION   */
 						case 10 : /* \ u000a: LINE FEED               */
+						case 11 : /* \ u000b: VERTICAL TAB            */
 						case 12 : /* \ u000c: FORM FEED               */
 						case 13 : /* \ u000d: CARRIAGE RETURN         */
 						case 32 : /* \ u0020: SPACE                   */
-						case 9 : /* \ u0009: HORIZONTAL TABULATION   */
+						case 160: /* \ u00a0: NO-BREAK SPACE          */
 							isWhiteSpace = true;
 							break;
 						default :

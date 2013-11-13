@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -149,9 +149,11 @@ public class JavadocParser extends AbstractCommentParser {
 						char c = readChar(); // consider unicodes
 						switch (c) {
 							case '*' :
-							case '\u000c' :	/* FORM FEED               */
-							case ' ' :			/* SPACE                   */
 							case '\t' :			/* HORIZONTAL TABULATION   */
+							case '\u000b' :		/* FORM FEED               */
+							case '\u000c' :		/* VERTICAL TAB            */
+							case ' ' :			/* SPACE                   */
+							case '\u00a0' :		/* NO-BREAK SPACE          */
 							case '\n' :			/* LINE FEED   */
 							case '\r' :			/* CR */
 								// do nothing for space or '*' characters

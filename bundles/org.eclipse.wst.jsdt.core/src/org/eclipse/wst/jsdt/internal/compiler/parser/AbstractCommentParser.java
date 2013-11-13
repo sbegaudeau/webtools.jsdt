@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2010 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -289,9 +289,11 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 						this.inlineTagStart = previousPosition;
 						break;
 					case '*' :
-					case '\u000c' :	/* FORM FEED               */
-					case ' ' :			/* SPACE                   */
-					case '\t' :			/* HORIZONTAL TABULATION   */
+					case '\t' :		/* HORIZONTAL TABULATION   */
+					case '\u000b' :	/* FORM FEED               */
+					case '\u000c' :	/* VERTICAL TAB            */
+					case ' ' :		/* SPACE                   */
+					case '\u00a0' :	/* NO-BREAK SPACE          */
 						// do nothing for space or '*' characters
 						break;
 					default :
@@ -1440,9 +1442,11 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					}
 					this.index = previousPosition;
 					return true;
-				case '\u000c' :	/* FORM FEED               */
-				case ' ' :			/* SPACE                   */
-				case '\t' :			/* HORIZONTAL TABULATION   */
+				case '\t' :		/* HORIZONTAL TABULATION   */
+				case '\u000b' :	/* FORM FEED               */
+				case '\u000c' :	/* VERTICAL TAB            */
+				case ' ' :		/* SPACE                   */
+				case '\u00a0' :	/* NO-BREAK SPACE          */
 					if (this.starPosition >= 0) break nextChar;
 					break;
 				case '*':
