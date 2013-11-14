@@ -855,7 +855,7 @@ class JavaScriptUnitResolver extends Compiler {
 				unit.resolve();
 
 				// flow analysis
-				if (analyzeCode) unit.analyseCode();
+				if (analyzeCode && this.options.enableSemanticValidation) unit.analyseCode();
 
 			}
 			if (this.unitsToProcess != null) this.unitsToProcess[0] = null; // release reference to processed unit declaration

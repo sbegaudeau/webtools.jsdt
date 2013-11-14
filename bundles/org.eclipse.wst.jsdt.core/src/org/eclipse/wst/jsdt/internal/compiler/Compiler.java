@@ -611,7 +611,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities, ITypeRequest
 		// type checking
 		unit.resolve();
 
-		unit.analyseCode();
+		if ( this.options.enableSemanticValidation ) unit.analyseCode();
 
 
 		// reference info
@@ -668,7 +668,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities, ITypeRequest
 				unit.resolve();
 
 				// flow analysis
-				if (analyzeCode) unit.analyseCode();
+				if (analyzeCode && this.options.enableSemanticValidation) unit.analyseCode();
 
 				// code generation
 //				if (generateCode) unit.generateCode();
