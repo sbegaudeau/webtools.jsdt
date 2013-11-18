@@ -347,6 +347,25 @@ public void testWI106610() {
 		testName);
 }
 
+/**
+ * https://bugs.eclipse.org/bugs/show_bug.cgi?id=417387
+ */
+public void testCommaExpression01() {
+	String s =  "!function(){\n" +
+				"	window.alert(\"passed 1\");\n" +
+				"}(),\n" +
+				"	function(){\n" +
+				"		window.alert(\"passed 2\");\n" +
+				"}();\n" +
+				"window.alert(\"passed 3\");";
+	String testName = "<test>";
+	checkParse(
+		s.toCharArray(),
+		"",
+		testName);
+}
+
+
 public void testRegExpression01() {
 	String s = "searchStr.replace( /([!\"#$%&'()*+,./:;<=>?@[\\]^`{|}~])/g, '//' )";
 	String expectedSyntaxErrorDiagnosis = "";
