@@ -765,7 +765,7 @@ ListExpressionNoIn ::= ListExpressionNoIn ',' AssignmentExpressionNoIn
 /:$readableName ListExpression:/
 
 ListExpressionStmt -> AssignmentExpressionStmt
-ListExpressionStmt ::= ListExpressionStmt ',' AssignmentExpressionStmt
+ListExpressionStmt ::= ListExpressionStmt ',' AssignmentExpression
 /.$putCase consumeListExpression(); $break ./
 /:$readableName ListExpression:/
 
@@ -1053,12 +1053,12 @@ MemberExpressionStmt ::= MemberExpressionStmt '[' Expression ']'
 /.$putCase consumeMemberExpressionWithArrayReference(); $break ./
 MemberExpressionStmt ::= MemberExpressionStmt '.' SimpleName
 /.$putCase consumeMemberExpressionWithSimpleName(); $break ./
-MemberExpressionStmt ::= 'new' MemberExpressionStmt Arguments
+MemberExpressionStmt ::= 'new' MemberExpression Arguments
 /.$putCase consumeNewMemberExpressionWithArguments(); $break ./
 /:$readableName MemberExpression:/
 
 NewExpressionStmt -> MemberExpressionStmt
-NewExpressionStmt ::= 'new' NewExpressionStmt
+NewExpressionStmt ::= 'new' NewExpression
 /.$putCase consumeNewExpression(); $break ./
 /:$readableName NewExpression:/
 
@@ -1087,11 +1087,11 @@ PostfixExpressionStmt ::= LeftHandSideExpressionStmt '--'
 /.$putCase consumeUnaryExpression(OperatorIds.MINUS, true); $break ./
 /:$readableName PostfixExpression:/
 
-PreIncrementExpressionStmt ::= '++' PushPosition UnaryExpressionStmt
+PreIncrementExpressionStmt ::= '++' PushPosition UnaryExpression
 /.$putCase consumeUnaryExpression(OperatorIds.PLUS, false); $break ./
 /:$readableName PreIncrementExpression:/
 
-PreDecrementExpressionStmt ::= '--' PushPosition UnaryExpressionStmt
+PreDecrementExpressionStmt ::= '--' PushPosition UnaryExpression
 /.$putCase consumeUnaryExpression(OperatorIds.MINUS, false); $break ./
 /:$readableName PreDecrementExpression:/
 
@@ -1194,7 +1194,7 @@ ConditionalOrExpressionStmt ::= ConditionalOrExpressionStmt '||' ConditionalAndE
 /:$readableName Expression:/
 
 ConditionalExpressionStmt -> ConditionalOrExpressionStmt
-ConditionalExpressionStmt ::= ConditionalOrExpressionStmt '?' AssignmentExpressionStmt ':' AssignmentExpressionStmt
+ConditionalExpressionStmt ::= ConditionalOrExpressionStmt '?' AssignmentExpression ':' AssignmentExpression
 /.$putCase consumeConditionalExpression(OperatorIds.QUESTIONCOLON) ; $break ./
 /:$readableName Expression:/
 
@@ -1310,4 +1310,5 @@ DOT ::=    '.'
 EQUAL ::=    '='    
 
 $end
+
 -- need a carriage return after the $end

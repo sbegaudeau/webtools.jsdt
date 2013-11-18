@@ -3541,11 +3541,11 @@ protected void consumeRule(int act) {
 		    consumeMemberExpressionWithSimpleName();  
 			break;
  
-    case 320 : if (DEBUG) { System.out.println("MemberExpressionStmt ::= new MemberExpressionStmt..."); }  //$NON-NLS-1$
+    case 320 : if (DEBUG) { System.out.println("MemberExpressionStmt ::= new MemberExpression Arguments"); }  //$NON-NLS-1$
 		    consumeNewMemberExpressionWithArguments();  
 			break;
  
-    case 322 : if (DEBUG) { System.out.println("NewExpressionStmt ::= new NewExpressionStmt"); }  //$NON-NLS-1$
+    case 322 : if (DEBUG) { System.out.println("NewExpressionStmt ::= new NewExpression"); }  //$NON-NLS-1$
 		    consumeNewExpression();  
 			break;
  
@@ -3751,7 +3751,6 @@ protected void consumeRule(int act) {
  
 	}
 }
-
 
 private void consumeElisionList() {
 	int flag=this.intStack[this.intPtr];
