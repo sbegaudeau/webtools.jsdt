@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -92,13 +92,13 @@ public class SimpleWorkingSetSelectionDialog extends SelectionDialog {
 		
 	}
 	
-	private class Filter extends ViewerFilter {
+	private static class Filter extends ViewerFilter {
 		
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			return isCompatible((IWorkingSet)element);
 		}
 				
-		private boolean isCompatible(IWorkingSet set) {
+		protected boolean isCompatible(IWorkingSet set) {
 			if (set.isAggregateWorkingSet() || !set.isSelfUpdating())
 				return false;
 			
@@ -113,6 +113,31 @@ public class SimpleWorkingSetSelectionDialog extends SelectionDialog {
 		
 	}
 	
+	private static class JSFilter extends Filter {
+		
+		private String[] jsWorkingSetIds = null;
+		
+		public void setJSWorkingSetIds(String[] workingSetIds) {
+			jsWorkingSetIds = workingSetIds;
+		}
+		
+		protected boolean isCompatible(IWorkingSet set) {
+			if (!super.isCompatible(set))
+				return false;
+			
+			for (int i = 0; jsWorkingSetIds != null && i < jsWorkingSetIds.length; i++) {
+				if (jsWorkingSetIds[i].equals(set.getId()))
+					return true;
+			}
+			
+			return false;
+		}
+		
+	}
+	
+	private static final Filter[] ALL_WORKINGSETS = {new Filter()};
+	private static final JSFilter[] JS_ONLY_WORKINGSETS = {new JSFilter()};
+		
 	private final IWorkingSet[] fWorkingSets;
 	private final IWorkingSet[] fInitialSelection;
 	private final ArrayList fCreatedWorkingSets;
@@ -120,21 +145,31 @@ public class SimpleWorkingSetSelectionDialog extends SelectionDialog {
 	private CheckboxTableViewer fTableViewer;
 	private IWorkingSet[] fCheckedElements;
 	
+	private boolean fShowOnlyJSEnabled;
+
 	private Button fSelectAll;
 	private Button fDeselectAll;
 	private Button fNewWorkingSet;
+	
+	private Button fShowOnlyJSWorkingSets;
 
 	public SimpleWorkingSetSelectionDialog(Shell shell, String[] workingSetIds, IWorkingSet[] initialSelection) {
+		this(shell, workingSetIds, initialSelection, false);
+	}
+	
+	public SimpleWorkingSetSelectionDialog(Shell shell, String[] workingSetIds, IWorkingSet[] initialSelection, boolean showOnlyJSEnabled) {
 		super(shell);
 		
 		setTitle(WorkingSetMessages.SimpleWorkingSetSelectionDialog_SimpleSelectWorkingSetDialog_title);
 		setHelpAvailable(false);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 
-		fWorkingSets= WorkingSetConfigurationBlock.filter(PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets(), workingSetIds);
+		JS_ONLY_WORKINGSETS[0].setJSWorkingSetIds(workingSetIds);
+		fWorkingSets= PlatformUI.getWorkbench().getWorkingSetManager().getWorkingSets();
 		fInitialSelection= initialSelection;
 		fCheckedElements= fInitialSelection;
 		fCreatedWorkingSets= new ArrayList();
+		fShowOnlyJSEnabled = showOnlyJSEnabled;
 	}
 	
 	protected final Control createDialogArea(Composite parent) {
@@ -160,6 +195,20 @@ public class SimpleWorkingSetSelectionDialog extends SelectionDialog {
 		tableComposite.setLayout(layout);
 		
 		fTableViewer= createTableViewer(tableComposite);
+		fTableViewer.setFilters(fShowOnlyJSEnabled ? JS_ONLY_WORKINGSETS : ALL_WORKINGSETS); 
+		
+		fShowOnlyJSWorkingSets= new Button(composite, SWT.CHECK);
+		fShowOnlyJSWorkingSets.setText(WorkingSetMessages.SimpleWorkingSetSelectionDialog_show_only_js_working_sets_button);
+		fShowOnlyJSWorkingSets.setLayoutData(new GridData(SWT.LEAD, SWT.CENTER, true, false));
+		fShowOnlyJSWorkingSets.setSelection(fShowOnlyJSEnabled);
+		fShowOnlyJSWorkingSets.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				fShowOnlyJSEnabled= fShowOnlyJSWorkingSets.getSelection();
+				fTableViewer.setFilters(fShowOnlyJSEnabled ? JS_ONLY_WORKINGSETS : ALL_WORKINGSETS); 
+				checkedStateChanged();
+			}
+		});
+
 		createRightButtonBar(inner);
 		
 		createBottomButtonBar(composite);
@@ -169,6 +218,10 @@ public class SimpleWorkingSetSelectionDialog extends SelectionDialog {
 
 	public IWorkingSet[] getSelection() {
 		return fCheckedElements;
+	}
+	
+	public boolean isShowOnlyJSWorkingSetsEnabled() {
+		return fShowOnlyJSEnabled;
 	}
 	
 	protected CheckboxTableViewer createTableViewer(Composite parent) {

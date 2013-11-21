@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,6 +142,7 @@ public class WorkingSetConfigurationBlock {
 	}
 	
 	private static final String WORKINGSET_SELECTION_HISTORY= "workingset_selection_history"; //$NON-NLS-1$
+	private static final String SHOW_ONLY_JS_WORKINGSETS_HISTORY= "show_only_js_workingsets_history"; //$NON-NLS-1$
 	private static final int MAX_HISTORY_SIZE= 5;
 	
 	private Label fLabel;
@@ -151,6 +152,7 @@ public class WorkingSetConfigurationBlock {
 	private String fMessage;
 	private Button fEnableButton;
 	private ArrayList fSelectionHistory;
+	private boolean fShowOnlyJSWorkingSets;
 	private final IDialogSettings fSettings;
 	private final String fEnableButtonText;
 	private final String[] fWorkingSetIds;
@@ -169,7 +171,8 @@ public class WorkingSetConfigurationBlock {
 		fEnableButtonText= enableButtonText;
 		fSelectedWorkingSets= new IWorkingSet[0];
 		fSettings= settings;
-		fSelectionHistory= loadSelectionHistory(settings, workingSetIds);
+		fShowOnlyJSWorkingSets= settings.getBoolean(SHOW_ONLY_JS_WORKINGSETS_HISTORY);
+		fSelectionHistory= loadSelectionHistory(settings, workingSetIds, fShowOnlyJSWorkingSets);
 	}
 
 	/**
@@ -238,7 +241,8 @@ public class WorkingSetConfigurationBlock {
 		fConfigure.addSelectionListener(new SelectionAdapter() {
 
 			public void widgetSelected(SelectionEvent e) {
-				SimpleWorkingSetSelectionDialog dialog= new SimpleWorkingSetSelectionDialog(parent.getShell(), fWorkingSetIds, fSelectedWorkingSets);
+				boolean showOnlyJSWorkingSets = fSettings.getBoolean(SHOW_ONLY_JS_WORKINGSETS_HISTORY);
+				SimpleWorkingSetSelectionDialog dialog= new SimpleWorkingSetSelectionDialog(parent.getShell(), fWorkingSetIds, fSelectedWorkingSets, showOnlyJSWorkingSets);
 				if (fMessage != null)
 					dialog.setMessage(fMessage);
 
@@ -250,6 +254,7 @@ public class WorkingSetConfigurationBlock {
 					} else {
 						fSelectedWorkingSets= new IWorkingSet[0];
 					}
+					fShowOnlyJSWorkingSets = dialog.isShowOnlyJSWorkingSetsEnabled();
 					updateWorkingSetSelection();
 				}
 			}
@@ -298,6 +303,7 @@ public class WorkingSetConfigurationBlock {
 			String currentSelection= buf.toString();
 			int index= historyIndex(currentSelection);
 			historyInsert(currentSelection);
+			fSettings.put(SHOW_ONLY_JS_WORKINGSETS_HISTORY, fShowOnlyJSWorkingSets);
 			if (index >= 0) {
 				fWorkingSetCombo.select(index);
 			} else {
@@ -359,7 +365,7 @@ public class WorkingSetConfigurationBlock {
 		settings.put(WORKINGSET_SELECTION_HISTORY, history);
 	}
 	
-	private ArrayList loadSelectionHistory(IDialogSettings settings, String[] workingSetIds) {
+	private ArrayList loadSelectionHistory(IDialogSettings settings, String[] workingSetIds, boolean showOnlyJSWorkingSets) {
 		String[] strings= settings.getArray(WORKINGSET_SELECTION_HISTORY);
 		if (strings == null || strings.length == 0)
 			return new ArrayList();
@@ -377,7 +383,7 @@ public class WorkingSetConfigurationBlock {
 				if (workingSet == null) {
 					valid= false;
 				} else {
-					if (!workingSetIdsSet.contains(workingSet.getId()))
+					if (showOnlyJSWorkingSets && !workingSetIdsSet.contains(workingSet.getId()))
 						valid= false;
 				}
 			}

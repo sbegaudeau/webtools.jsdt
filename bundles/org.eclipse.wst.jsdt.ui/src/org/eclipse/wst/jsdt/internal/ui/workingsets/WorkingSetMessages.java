@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public final class WorkingSetMessages extends NLS {
 	public static String SimpleWorkingSetSelectionDialog_DeselectAll_button;
 	public static String SimpleWorkingSetSelectionDialog_New_button;
 	public static String SimpleWorkingSetSelectionDialog_SelectAll_button;
+	public static String SimpleWorkingSetSelectionDialog_show_only_js_working_sets_button;
 	public static String SimpleWorkingSetSelectionDialog_SimpleSelectWorkingSetDialog_title;
 	public static String ViewActionGroup_show_label;
 	public static String ViewActionGroup_projects_label;
