@@ -348,11 +348,11 @@ class ASTConverter {
 		int start = methodDeclaration.sourceStart;
 		int end;
 		 SimpleName methodName =null;
-		 char[] name = methodDeclaration.getName();
-		if (name!=null)
+		if (methodDeclaration.selector != null) // We couldn't use inferred method name here, so 
+												// do not use methodDeclaration.getName() here!
 		{
 			  methodName = new SimpleName(this.ast);
-			methodName.internalSetIdentifier(new String(name));
+			methodName.internalSetIdentifier(new String(methodDeclaration.selector));
 			end = retrieveIdentifierEndPosition(start, methodDeclaration.sourceEnd);
 
 			methodName.setSourceRange(start, end == -1 ? 0 : end - start + 1);
