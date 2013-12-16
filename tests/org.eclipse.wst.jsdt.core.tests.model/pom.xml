@@ -8,6 +8,7 @@
  
   Contributors:
     Thanh Ha (Eclipse Foundation) - initial implementation
+    Mickael Istria (Red Hat Inc.) - 419113 Enable tests with Tycho
 -->
 
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -23,5 +24,10 @@
   <groupId>org.eclipse.webtools.jsdt</groupId>
   <artifactId>org.eclipse.wst.jsdt.core.tests.model</artifactId>
   <version>1.0.600-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+  <packaging>eclipse-test-plugin</packaging>
+  
+  <properties>
+  	<testSuite>${project.artifactId}</testSuite>
+  	<testClass>org.eclipse.wst.jsdt.core.tests.RunJSDTCoreTests</testClass>
+  </properties>
 </project>

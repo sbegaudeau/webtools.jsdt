@@ -35,4 +35,18 @@
     <module>tests/org.eclipse.wst.jsdt.debug.rhino.tests</module>
     <module>tests/org.eclipse.wst.jsdt.ui.tests</module>
   </modules>
+
+  <repositories>
+    <!-- To reference parent pom -->
+    <repository>
+      <id>Webtools Repository - Releases</id>
+      <name>Webtools Repository - Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/webtools-releases/</url>
+    </repository>
+    <repository>
+      <id>Webtools Repository - Snapshots</id>
+      <name>Webtools Repository - Snapshots</name>
+      <url>https://repo.eclipse.org/content/repositories/webtools-snapshots/</url>
+    </repository>
+  </repositories>
 </project>
