@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1471,7 +1471,8 @@ public class AdvancedQuickAssistProcessor implements IQuickAssistProcessor {
 			if (declaration == null || declaration.isConstructor()) {
 				return false;
 			}
-			exprBinding= declaration.getReturnType2().resolveBinding();
+			if (declaration.getReturnType2() != null)
+				exprBinding= declaration.getReturnType2().resolveBinding();
 		} else if (thenStatement instanceof ExpressionStatement && elseStatement instanceof ExpressionStatement) {
 			Expression inner1= ((ExpressionStatement) thenStatement).getExpression();
 			Expression inner2= ((ExpressionStatement) elseStatement).getExpression();

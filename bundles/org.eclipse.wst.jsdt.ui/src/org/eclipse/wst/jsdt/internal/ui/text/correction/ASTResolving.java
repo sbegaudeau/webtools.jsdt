@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2009 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -239,7 +239,7 @@ public class ASTResolving {
 		case ASTNode.RETURN_STATEMENT:
 			FunctionDeclaration decl= ASTResolving.findParentMethodDeclaration(parent);
 			if (decl != null && !decl.isConstructor()) {
-				return decl.getReturnType2().resolveBinding();
+				return decl.getReturnType2() != null ? decl.getReturnType2().resolveBinding() : null;
 			}
 			break;
 		case ASTNode.THROW_STATEMENT:
