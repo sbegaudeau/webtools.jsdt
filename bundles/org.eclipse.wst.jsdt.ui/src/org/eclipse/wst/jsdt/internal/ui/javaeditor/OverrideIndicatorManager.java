@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -184,7 +184,9 @@ class OverrideIndicatorManager implements IJavaReconcilingListener {
 							text= Messages.format(JavaEditorMessages.OverrideIndicatorManager_overrides, qualifiedMethodName);
 
 						SimpleName name= node.getName();
-						Position position= new Position(name.getStartPosition(), name.getLength());
+						Position position= name != null ?
+									new Position(name.getStartPosition(), name.getLength()) :
+										new Position(node.getStartPosition());
 
 						annotationMap.put(
 								new OverrideIndicator(isImplements, text, binding.getKey()), 
