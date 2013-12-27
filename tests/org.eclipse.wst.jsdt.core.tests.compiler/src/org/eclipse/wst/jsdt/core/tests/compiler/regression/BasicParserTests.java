@@ -488,6 +488,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 			"\n"
 		 );
 	}
+	
 	public void test009a() {	// for
 		this.runParseTest(
 				"for (;i<3;i++)\n" +
@@ -495,6 +496,16 @@ public class BasicParserTests extends AbstractRegressionTest {
 				"\n",
 			"X.js",
 			"for (; (i < 3); i ++) \n  f ++;"+	
+			"\n"
+		 );
+	}
+	
+	public void test009b() {	// for
+		this.runParseTest(
+				"for (i=1;i<3;i++) var y\n" +
+				"\n",
+			"X.js",
+			"for (i = 1; (i < 3); i ++) \n  var y;"+	
 			"\n"
 		 );
 	}
@@ -509,19 +520,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 			"\n"
 		 );
 	}
-
-
-	public void test011() {	// for in
-		this.runParseTest(
-				"with (foo)\n" +
-				"  bar;" +
-				"\n",
-			"X.js",
-			"with (foo)\n"+	
-			"  bar;\n"
-		 );
-	}
-
+	
 	public void test010a() {	// for in
 		this.runParseTest(
 				"for (a in this.vars)\n" +
@@ -533,6 +532,53 @@ public class BasicParserTests extends AbstractRegressionTest {
 		 );
 	}
 
+	public void test010b() {	// for in
+		this.runParseTest(
+				"for (var a in this.vars) var y\n" +
+				"\n",
+			"X.js",
+			"for (var a in this.vars) \n  var y;"+	
+			"\n"
+		 );
+	}
+	
+	public void test011() {	// with
+		this.runParseTest(
+				"with (foo)\n" +
+				"  bar;" +
+				"\n",
+			"X.js",
+			"with (foo)\n"+	
+			"  bar;\n"
+		 );
+	}
+
+	public void test011a() {	// with
+		this.runParseTest(
+				"with (foo) var bar\n",
+			"X.js",
+			"with (foo)\n" +
+			"  var bar;\n"
+		 );
+	}
+
+	public void test012() {	// while
+		this.runParseTest(
+				"while (foo)\n" +
+				"  bar;" +
+				"\n",
+			"X.js",
+			"while (foo)  bar;\n"
+		 );
+	}
+
+	public void test012a() {	// while
+		this.runParseTest(
+				"while (foo) var bar\n",
+			"X.js",
+			"while (foo)  var bar;\n"
+		 );
+	}
 
 	public void test015() {	// missing semicolon
 		this.runParseTest(
@@ -545,6 +591,8 @@ public class BasicParserTests extends AbstractRegressionTest {
 			"}\n" 
 		 );
 	}
+	
+	
 	
 	public void test015a() {	// missing semicolon
 		this.runParseTest(

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -972,18 +972,12 @@ public void test0011() {
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
 		"function X() {\n" + 
-		"  function foo() {\n" + 
-		"    if (true)\n" + 
-		"        {\n" + 
-		"          foo();\n" + 
-		"        }\n" + 
-		"    for (; ; ) \n" + 
-		"      ;\n" + 
-		"    if (true)\n" + 
-		"        {\n" + 
-		"          foo();\n" + 
-		"        }\n" + 
-		"  }\n" + 
+		"}\n" + 
+		"function foo() {\n" + 
+		"  if (true)\n" + 
+		"      {\n" + 
+		"        foo();\n" + 
+		"      }\n" + 
 		"}\n";
 	
 	String expectedFullUnitToString =
@@ -1082,10 +1076,9 @@ public void test0013() {
 
 	String expectedDietPlusBodyWithStatementRecoveryUnitToString = 
 		"function X() {\n" + 
-		"  function foo() {\n" + 
-		"    for (var i in $missing$) \n" + 
-		"      ;\n" + 
-		"  }\n" + 
+		"}\n" +
+		"function foo() {\n" + 
+		"  var i;\n" + 
 		"}\n";
 	
 	String expectedFullUnitToString =
