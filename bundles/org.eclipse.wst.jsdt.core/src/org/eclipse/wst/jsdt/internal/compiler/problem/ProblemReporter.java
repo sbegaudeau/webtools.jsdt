@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
+ * Copyright (c) 2000, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -528,13 +528,13 @@ public void cannotReturnOutsideFunction(ASTNode location) {
  * to indicate that this problem is configurable through options
  */
 public int computeSeverity(int problemID){
- 	
-
 	/*
 	 * If semantic validation is not enabled and this is anything but a
 	 * syntax, documentation, or task problem, ignore.
 	 */
-	if (!this.options.enableSemanticValidation && (problemID & IProblem.Syntax) == 0 && (problemID & IProblem.Javadoc) == 0 && problemID != IProblem.Task) {
+	if (!this.options.enableSemanticValidation && 
+				((problemID & ProblemSeverities.Optional) != 0 ||
+					((problemID & IProblem.Syntax) == 0 && (problemID & IProblem.Javadoc) == 0 && problemID != IProblem.Task))) {
 		return ProblemSeverities.Ignore;
 	}
 	
