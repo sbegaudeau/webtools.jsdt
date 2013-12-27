@@ -501,7 +501,7 @@ SwitchLabel ::= 'default' ':'
 /. $putCase consumeDefaultLabel(); $break ./
 /:$readableName SwitchLabel:/
 
-WhileStatement ::= 'while' '(' Expression ')' Statement
+WhileStatement ::= 'while' '(' Expression ')' BlockStatement
 /.$putCase consumeStatementWhile() ; $break ./
 /:$readableName WhileStatement:/
 
@@ -509,7 +509,7 @@ WhileStatementNoShortIf ::= 'while' '(' Expression ')' StatementNoShortIf
 /.$putCase consumeStatementWhile() ; $break ./
 /:$readableName WhileStatement:/
 
-WithStatement ::= 'with' '(' Expression ')' Statement
+WithStatement ::= 'with' '(' Expression ')' BlockStatement
 /.$putCase consumeStatementWith() ; $break ./
 /:$readableName WithStatement:/
 
@@ -521,11 +521,11 @@ DoStatement ::= 'do' Statement 'while' '(' Expression ')' ';'
 /.$putCase consumeStatementDo() ; $break ./
 /:$readableName DoStatement:/
 
-ForStatement ::= 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateopt ')' Statement
+ForStatement ::= 'for' '(' ForInitopt ';' Expressionopt ';' ForUpdateopt ')' BlockStatement
 /.$putCase consumeStatementFor() ; $break ./
 /:$readableName ForStatement:/
 
-ForStatement ::= 'for' '(' ForInInit 'in' Expression ')' Statement
+ForStatement ::= 'for' '(' ForInInit 'in' Expression ')' BlockStatement
 /.$putCase consumeStatementForIn() ; $break ./
 /:$readableName ForStatement:/
 
