@@ -616,7 +616,10 @@ public int computeSeverity(int problemID){
 	if (irritant != 0) {
 		if ((problemID & IProblem.Javadoc) != 0 && !this.options.docCommentSupport)
 			return ProblemSeverities.Ignore;
-		return this.options.getSeverity(irritant);
+		int severity = this.options.getSeverity(irritant);
+		return (!options.enableSemanticValidation && ((severity & ProblemSeverities.Optional) != 0) ?
+					ProblemSeverities.Ignore : 
+						severity);
 	}
 	return ProblemSeverities.Error | ProblemSeverities.Fatal;
 }
