@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JSDT Unit Tests
+Bundle-SymbolicName: org.eclipse.wst.jsdt.unittests;singleton:=true
+Bundle-Version: 0.0.1
+Bundle-Activator: org.eclipse.wst.jsdt.unittests.internal.Activator
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.wst.jsdt.core.tests.compiler,
+ org.eclipse.wst.jsdt.core.tests.model,
+ org.eclipse.wst.jsdt.web.core.tests,
+ org.eclipse.wst.jsdt.web.ui.tests,
+ org.eclipse.wst.jsdt.core,
+ org.eclipse.wst.jsdt.ui,
+ org.eclipse.wst.jsdt.ui.tests,
+ org.junit;bundle-version=3.8.2
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="JavaScriptElement View"
+            icon="icons/view.gif"
+            category="org.eclipse.jdt.ui.java"
+            class="org.eclipse.wst.jsdt.jseview.views.JavaElementView"
+            id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+      </view>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            name="JavaScriptElement"
+            description="JavaScriptElement View"
+            categoryId="org.eclipse.ui.category.views"
+            id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+      </command>
+   </extension> 
+
+
+  <extension
+     point="org.eclipse.ui.bindings">
+  <key
+        sequence="M2+M3+K E"
+        commandId="org.eclipse.wst.jsdt.jseview.views.JavaElementView"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+  </key>
+  <key
+        platform="carbon"
+        sequence="M2+M3+K E"
+        commandId=""
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+  </key>
+  <key
+        platform="carbon"
+        sequence="M1+M3+K E"
+        commandId="org.eclipse.wst.jsdt.jseview.views.JavaElementView"
+        schemeId="org.eclipse.ui.defaultAcceleratorConfiguration">
+  </key>
+  </extension>
+  
+  
+  <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+            <viewShortcut id="org.eclipse.wst.jsdt.jseview.views.JavaElementView"/>
+      </perspectiveExtension>
+      
+      <perspectiveExtension
+            targetID="org.eclipse.wst.jsdt.ui.JavaPerspective">
+         <showInPart
+               id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.wst.jsdt.ui.JavaBrowsingPerspective">
+         <showInPart
+               id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.wst.jsdt.ui.JavaHierarchyPerspective">
+         <showInPart
+               id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+         </showInPart>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <showInPart
+               id="org.eclipse.wst.jsdt.jseview.views.JavaElementView">
+         </showInPart>
+      </perspectiveExtension>
+  </extension>
+  
+  
+</plugin>

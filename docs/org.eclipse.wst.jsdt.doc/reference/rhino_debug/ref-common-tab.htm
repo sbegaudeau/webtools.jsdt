@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en">
+<head>
+  <meta name="copyright"
+ content="Copyright (c) IBM Corporation and others 2010, 2013. This page is made available under license. For full details see the LEGAL in the documentation book that contains this page.">
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=ISO-8859-1">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <link rel="STYLESHEET" href="../../book.css" type="text/css">
+  <title>Common Tab</title>
+</head>
+<body>
+<h1>Common Tab</h1>
+<p>The Common tab allows you to change settings that related to the launch configuration itself, like its location, favorites lists and console
+allocation.</p>
+<p>
+	<img src="../../images/rhino_debug/common_tab.png" alt="The Common tab" border="0"/>
+</p>
+<table border="1" cellspacing="0" cellpadding= "5" width="75%">
+  <thead>
+    <tr>
+      <th rowspan="1" colspan="1" width="30%"> <p> Option </p></th>
+      <th rowspan="1" colspan="1"> <p> Description </p></th>
+      <th rowspan="1" colspan="1" width="5%"> <p> Default </p></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td rowspan="1" colspan="1" valign="top" align="left">Save As</td>
+      <td rowspan="1" colspan="1" valign="top" align="left">Allows you to change the physical location of the saved <code>*.launch</code> file the configuration is saved to. <code>Local file</code>
+      means the configuration is saved in local workspace metadata, while <code>Shared file</code> moves the configuration to the workspace so it can be shared via some VCS.</td>
+      <td rowspan="1" colspan="1" valign="top" align="left">Local file</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Display in favorites menu</td>
+      <td colspan="1" valign="top" align="left">Allows you to select the favorites menus that this configuration will appear in as a favorite. Rhino configurations only support
+      the <code>debug</code> mode, so it is your only choice.</td>
+      <td colspan="1" valign="top" align="left">&nbsp;</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Encoding</td>
+      <td colspan="1" valign="top" align="left">Allows you to set the encoding to use for the configuration. The encoding is passed to the VM and is also used in the console (if one is to be allocated).</td>
+      <td colspan="1" valign="top" align="left">Default - inherited</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Standard input and output</td>
+      <td colspan="1" valign="top" align="left">Allows you to allocate a console for I/O and specify an output file. If an output file is specified you can configure the configuration
+      to append new data to the file as opposed to over-writing it.</td>
+      <td colspan="1" valign="top" align="left">Allocate Console selected</td>
+    </tr>
+    <tr>
+      <td colspan="1" valign="top" align="left">Launch in background</td>
+      <td colspan="1" valign="top" align="left">When selected the launch of the configuration will take place in the background in a separate job, otherwise the launch
+      will block the user until it is complete.</td>
+      <td colspan="1" valign="top" align="left">On</td>
+    </tr>
+  </tbody>
+</table>
+<br>
+
+<p><img src="../../images/ngrelr.png" alt="Related reference" border="0"></p>
+<p>
+<a href="ref-main-tab.htm">Main Tab</a><br>
+<a href="ref-include-tab.htm">Include Tab</a><br>
+<a href="ref-source-tab.htm">Source Tab</a><br>
+<a href="ref-rhino-tab-group.htm">Rhino Tab Group</a><br>
+</p>
+</body>
+</html>
