@@ -532,9 +532,7 @@ public int computeSeverity(int problemID){
 	 * If semantic validation is not enabled and this is anything but a
 	 * syntax, documentation, or task problem, ignore.
 	 */
-	if (!this.options.enableSemanticValidation && 
-				((problemID & ProblemSeverities.Optional) != 0 ||
-					((problemID & IProblem.Syntax) == 0 && (problemID & IProblem.Javadoc) == 0 && problemID != IProblem.Task))) {
+	if (!this.options.enableSemanticValidation && (problemID & IProblem.Syntax) == 0 && (problemID & IProblem.Javadoc) == 0 && problemID != IProblem.Task) {
 		return ProblemSeverities.Ignore;
 	}
 	
