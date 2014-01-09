@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   	<!-- Classpath variable initializer -->
+	<extension point = "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
+		<JsGlobalScopeVariableInitializer
+			variable="TEST_LIB"
+			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
+		<JsGlobalScopeVariableInitializer
+			variable="TEST_SRC"
+			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
+		<JsGlobalScopeVariableInitializer
+			variable="TEST_ROOT"
+			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
+  <JsGlobalScopeVariableInitializer
+        class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
+        deprecated="%JsGlobalScopeVariableInitializer.deprecated.0"
+        variable="TEST_DEPRECATED">
+  </JsGlobalScopeVariableInitializer>
+  <JsGlobalScopeVariableInitializer
+        class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
+        readOnly="true"
+        variable="TEST_READ_ONLY">
+  </JsGlobalScopeVariableInitializer>
+  <JsGlobalScopeVariableInitializer
+        class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
+        deprecated="%JsGlobalScopeVariableInitializer.deprecated.1"
+        readOnly="true"
+        variable="TEST_DEPRECATED_READ_ONLY">
+  </JsGlobalScopeVariableInitializer>
+	</extension>		
+
+	<!-- Classpath container initializer -->
+	<extension point = "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+		<JsGlobalScopeContainerInitializer
+			id="org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"
+			class="org.eclipse.wst.jsdt.core.tests.model.ContainerInitializer"/>
+	</extension>
+
+	<!-- Extra JavaScript-like file extensions -->
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+	    <file-association 
+	        content-type="org.eclipse.wst.jsdt.core.javaSource"
+	        file-extensions="foo,bar"/>
+	</extension>
+
+	<!-- Repository provider -->
+	<extension point="org.eclipse.team.core.repository">
+		<repository
+			id="org.eclipse.wst.jsdt.core.tests.model.pessimisticnature"
+			class="org.eclipse.wst.jsdt.core.tests.model.TestPessimisticProvider">
+		</repository>;
+	</extension>
+	
+	<!-- Compilation participant -->
+	 <extension point="org.eclipse.wst.jsdt.core.validationParticipant">
+	   <validationParticipant
+          class="org.eclipse.wst.jsdt.core.tests.model.TestvalidationParticipant"
+          createsProblems="true"
+          id="org.eclipse.wst.jsdt.core.tests.model.validationParticipant"
+          requiredSourceLevel="1.4"
+          modifiesEnvironment="true">
+       <requires id="non.existing"/>
+    </validationParticipant>
+	 </extension>
+	
+</plugin>

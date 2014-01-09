@@ -1,0 +1,5 @@
+ 
+  /** JavaDoc Comment*/
+  var i;/**/
+
+ 

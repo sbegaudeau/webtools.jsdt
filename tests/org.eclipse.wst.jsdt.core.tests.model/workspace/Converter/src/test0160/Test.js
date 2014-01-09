@@ -1,0 +1,3 @@
+ 
+	var t, g  = null;
+ 

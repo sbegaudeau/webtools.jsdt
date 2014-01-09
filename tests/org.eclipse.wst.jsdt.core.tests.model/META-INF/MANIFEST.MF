@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.eclipse.wst.jsdt.core.tests.model; singleton:=true
+Bundle-Version: 1.0.600.qualifier
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Export-Package: org.eclipse.wst.jsdt.core.tests,
+ org.eclipse.wst.jsdt.core.tests.dom,
+ org.eclipse.wst.jsdt.core.tests.formatter,
+ org.eclipse.wst.jsdt.core.tests.formatter.comment,
+ org.eclipse.wst.jsdt.core.tests.model,
+ org.eclipse.wst.jsdt.core.tests.rewrite.describing,
+ org.eclipse.wst.jsdt.core.tests.rewrite.modifying
+Import-Package: com.ibm.icu.text; version="3.8",
+ com.ibm.icu.util; version="3.8"
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.junit;bundle-version=3.8.2,
+ org.eclipse.wst.jsdt.core.tests.compiler,
+ org.eclipse.team.core,
+ org.eclipse.text,
+ org.eclipse.wst.jsdt.core
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-Activator: org.eclipse.wst.jsdt.core.tests.internal.Activator
