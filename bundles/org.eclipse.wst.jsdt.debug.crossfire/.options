@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#option file for tracing options for Crossfire debugger port
+org.eclipse.wst.jsdt.debug.crossfire/debug=true
+
+#option to trace packets being sent / received
+org.eclipse.wst.jsdt.debug.crossfire/packets=false
+
+#option to trace the event queue
+org.eclipse.wst.jsdt.debug.crossfire/eventqueue=false
+
+#option to trace the jsdi impl* elements
+org.eclipse.wst.jsdt.debug.crossfire/jsdi=false
+
+#option to trace the JSON parser
+org.eclipse.wst.jsdt.debug.crossfire/json=false

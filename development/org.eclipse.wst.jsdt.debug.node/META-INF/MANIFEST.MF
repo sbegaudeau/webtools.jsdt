@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.node;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.wst.jsdt.debug.internal.node.NodePlugin
+Bundle-Vendor: %Bundle-Vendor
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.wst.jsdt.debug.core;bundle-version="3.1.0"
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.wst.jsdt.debug.internal.node;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.internal.node.launching;x-internal:=true

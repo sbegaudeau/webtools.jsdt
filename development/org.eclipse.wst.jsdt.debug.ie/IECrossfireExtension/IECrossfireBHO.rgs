@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+HKCR {
+	IECrossfireExtension.IECrossfireBHO.1 = s 'IECrossfireBHO Class' {
+		CLSID = s '{E8779887-5AF1-4071-B4D4-6135157F142C}'
+	}
+	IECrossfireExtension.IECrossfireBHO = s 'IECrossfireBHO Class' {
+		CLSID = s '{E8779887-5AF1-4071-B4D4-6135157F142C}'
+		CurVer = s 'IECrossfireExtension.IECrossfireBHO.1'
+	}
+	NoRemove CLSID {
+		ForceRemove {E8779887-5AF1-4071-B4D4-6135157F142C} = s 'IECrossfireBHO Class' {
+			ProgID = s 'IECrossfireExtension.IECrossfireBHO.1'
+			VersionIndependentProgID = s 'IECrossfireExtension.IECrossfireBHO'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%' {
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{3FE86E35-0025-45C7-A841-E10AFE660A7F}'
+		}
+	}
+}
+
+HKLM {
+  NoRemove SOFTWARE {
+    NoRemove Microsoft {   
+      NoRemove Windows {
+        NoRemove CurrentVersion {
+          NoRemove Explorer {
+            NoRemove 'Browser Helper Objects' {
+              ForceRemove '{E8779887-5AF1-4071-B4D4-6135157F142C}' = s 'IECrossfireBHO Class' {
+                val 'NoExplorer' = d '1'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

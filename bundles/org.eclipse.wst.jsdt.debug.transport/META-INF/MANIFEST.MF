@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.transport
+Bundle-Version: 1.0.200.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-Vendor: %providerName
+Export-Package: org.eclipse.wst.jsdt.debug.transport,
+ org.eclipse.wst.jsdt.debug.transport.exception,
+ org.eclipse.wst.jsdt.debug.transport.packet,
+ org.eclipse.wst.jsdt.debug.transport.socket

@@ -1,0 +1,31 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+HKCR {
+	IECrossfireServer.BrowserContext.1 = s 'BrowserContext Class' {
+		CLSID = s '{2FA65B09-5063-45FA-91F9-50EB7F4AF2C6}'
+	}
+	IECrossfireServer.BrowserContext = s 'BrowserContext Class' {
+		CLSID = s '{2FA65B09-5063-45FA-91F9-50EB7F4AF2C6}'
+		CurVer = s 'IECrossfireServer.IBrowserContext.1'
+	}
+	NoRemove CLSID {
+		ForceRemove {2FA65B09-5063-45FA-91F9-50EB7F4AF2C6} = s 'BrowserContext Class' {
+			ProgID = s 'IECrossfireServer.BrowserContext.1'
+			VersionIndependentProgID = s 'IECrossfireServer.BrowserContext'
+			ForceRemove 'Programmable'
+			LocalServer32 = s '%MODULE%'
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}'
+		}
+	}
+}

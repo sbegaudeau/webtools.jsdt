@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IECrossfireExtension", "IECrossfireExtension\IECrossfireExtension.vcxproj", "{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IECrossfireServer", "IECrossfireServer\IECrossfireServer.vcxproj", "{2B73B89A-A1B4-479B-8751-A25B9036A9AF}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "IECrossfireInstaller", "IECrossfireInstaller\IECrossfireInstaller.vdproj", "{CDECB8BE-5076-4AF2-9E70-D990325F9E77}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IECrossfireServerPS", "IECrossfireServer\IECrossfireServerPS.vcxproj", "{668D1F72-89E4-47B7-AB3C-6851CDD0073D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2B73B89A-A1B4-479B-8751-A25B9036A9AF} = {2B73B89A-A1B4-479B-8751-A25B9036A9AF}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IECrossfireExtensionPS", "IECrossfireExtension\IECrossfireExtensionPS.vcxproj", "{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EFAC86C6-2F6E-4657-A971-632DE21EFF9F} = {EFAC86C6-2F6E-4657-A971-632DE21EFF9F}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}.Debug|Win32.Build.0 = Debug|Win32
+		{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}.Release|Win32.ActiveCfg = Release|Win32
+		{EFAC86C6-2F6E-4657-A971-632DE21EFF9F}.Release|Win32.Build.0 = Release|Win32
+		{2B73B89A-A1B4-479B-8751-A25B9036A9AF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2B73B89A-A1B4-479B-8751-A25B9036A9AF}.Debug|Win32.Build.0 = Debug|Win32
+		{2B73B89A-A1B4-479B-8751-A25B9036A9AF}.Release|Win32.ActiveCfg = Release|Win32
+		{2B73B89A-A1B4-479B-8751-A25B9036A9AF}.Release|Win32.Build.0 = Release|Win32
+		{CDECB8BE-5076-4AF2-9E70-D990325F9E77}.Debug|Win32.ActiveCfg = Debug
+		{CDECB8BE-5076-4AF2-9E70-D990325F9E77}.Debug|Win32.Build.0 = Debug
+		{CDECB8BE-5076-4AF2-9E70-D990325F9E77}.Release|Win32.ActiveCfg = Release
+		{CDECB8BE-5076-4AF2-9E70-D990325F9E77}.Release|Win32.Build.0 = Release
+		{668D1F72-89E4-47B7-AB3C-6851CDD0073D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{668D1F72-89E4-47B7-AB3C-6851CDD0073D}.Debug|Win32.Build.0 = Debug|Win32
+		{668D1F72-89E4-47B7-AB3C-6851CDD0073D}.Release|Win32.ActiveCfg = Release|Win32
+		{668D1F72-89E4-47B7-AB3C-6851CDD0073D}.Release|Win32.Build.0 = Release|Win32
+		{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}.Debug|Win32.Build.0 = Debug|Win32
+		{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}.Release|Win32.ActiveCfg = Release|Win32
+		{0B6A6526-C6C0-4619-A938-E3D90A16A9B7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,37 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+HKCR {
+	NoRemove AppID {
+		'%APPID%' = s 'IECrossfireServer'
+		'IECrossfireServer.EXE' {
+			val AppID = s '%APPID%'
+		}
+	}
+	NoRemove CLSID {
+		ForceRemove {47836AF4-3E0C-4995-8029-FF931C5A43FC} = s 'CrossfireServer Class' {
+			LocalServer32 = s '%MODULE%'
+		}
+	}
+	NoRemove Interface {
+		ForceRemove {031DB015-B1BE-4D39-84D2-D7F96D2ACBFE} = s 'CrossfireServer Interface' {
+			ProxyStubClsid32 = s '{00020424-0000-0000-C000-000000000046}'
+			TypeLib = s '{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}'
+		}
+	}
+	NoRemove Interface {
+		ForceRemove {F48260BB-C061-4410-9CE1-4C5C7602690E} = s 'CrossfireServerClass Interface' {
+			ProxyStubClsid32 = s '{00020424-0000-0000-C000-000000000046}'
+			TypeLib = s '{A8FFC284-CE2C-40B5-98D1-D3112811E9D9}'
+		}
+	}
+}

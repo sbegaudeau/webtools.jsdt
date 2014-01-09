@@ -1,0 +1,145 @@
+/*******************************************************************************
+ * Copyright (c) 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(31DC44C3-7C98-4737-8D62-0E78FCCC503C),
+	helpstring("IJSEvalCallback Interface"),
+	pointer_default(unique)
+]
+interface IJSEvalCallback : IUnknown {
+};
+[
+	object,
+	uuid(0F9DDD31-746A-4EBC-873D-7A988B5EE088),
+	helpstring("IIEDebugger Interface"),
+	pointer_default(unique)
+]
+interface IIEDebugger : IUnknown {
+};
+[
+	object,
+	uuid(E4121804-5350-4DDD-BE57-9C5B2A13EA29),
+	oleautomation,
+	dual,
+	nonextensible,
+	helpstring("IBrowserContext Interface"),
+	pointer_default(unique)
+]
+interface IBrowserContext : IUnknown {
+	HRESULT displayMessage([in, string] OLECHAR* message);
+	HRESULT navigate([in, string] OLECHAR* url, [in] boolean openNewTab);
+};
+[
+	object,
+	uuid(031DB015-B1BE-4D39-84D2-D7F96D2ACBFE),
+	oleautomation,
+	dual,
+	nonextensible,
+	helpstring("ICrossfireServer Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServer : IDispatch {
+	HRESULT contextCreated([in] DWORD processId, [in] DWORD threadId, [in, string] OLECHAR* url);
+	HRESULT contextDestroyed([in] DWORD processId);
+	HRESULT contextLoaded([in] DWORD processId);
+	HRESULT getPort([out] unsigned int* value);
+	HRESULT getState([out] int* value);
+	HRESULT registerBrowser([in] DWORD processId, [in] IBrowserContext* browser);
+	HRESULT removeBrowser([in] DWORD processId);
+	HRESULT setCurrentContext([in] DWORD processId);
+	HRESULT start([in] unsigned int port, [in] unsigned int debugPort);
+	HRESULT stop();
+};
+[
+	object,
+	uuid(F48260BB-C061-4410-9CE1-4C5C7602690E),
+	oleautomation,
+	dual,
+	nonextensible,
+	helpstring("ICrossfireServerClass Interface"),
+	pointer_default(unique)
+]
+interface ICrossfireServerClass : IDispatch {
+//	HRESULT GetServer([in] unsigned long windowHandle, [out, retval] ICrossfireServer** _value);
+	HRESULT GetServer([out, retval] ICrossfireServer** _value);
+	HRESULT RemoveServer([in] unsigned long windowHandle);
+};
+[
+	object,
+	uuid(56C1AD62-3E69-46BA-BE6D-E1D2A0D88AB5),
+	dual,
+	nonextensible,
+	helpstring("IPendingScriptLoad Interface"),
+	pointer_default(unique)
+]
+interface IPendingScriptLoad : IDispatch {
+};
+[
+	uuid(A8FFC284-CE2C-40B5-98D1-D3112811E9D9),
+	version(1.0),
+	helpstring("IECrossfireServer 1.0 Type Library")
+]
+library IECrossfireServerLib {
+	importlib("stdole2.tlb");
+	[
+		uuid(4EC15DD3-9E2F-43A7-A686-3FA90E22ABB7),
+		helpstring("JSEvalCallback Class")
+	]
+	coclass JSEvalCallback
+	{
+		[default] interface IJSEvalCallback;
+	};
+	[
+		uuid(B63BD92F-6C66-4AB2-A243-D5AFCCF4B587),
+		helpstring("IEDebugger Class")
+	]
+	coclass IEDebugger
+	{
+		[default] interface IIEDebugger;
+	};
+	[
+		uuid(47836AF4-3E0C-4995-8029-FF931C5A43FC),
+		helpstring("CrossfireServer Class")
+	]
+	coclass CrossfireServer
+	{
+		[default] interface ICrossfireServer;
+	};
+	[
+		uuid(7C3C5D7A-AF4D-4F32-A3C9-462BFBAFDC25),
+		helpstring("CrossfireServerClass Class")
+	]
+	coclass CrossfireServerClass
+	{
+		[default] interface ICrossfireServerClass;
+	};
+	[
+		uuid(88E7C480-7B7A-47C5-8329-CE1FDF415527),
+		helpstring("PendingScriptLoad Class")
+	]
+	coclass PendingScriptLoad
+	{
+		[default] interface IPendingScriptLoad;
+	};
+	[
+		uuid(2FA65B09-5063-45FA-91F9-50EB7F4AF2C6),
+		helpstring("BrowserContext Class")
+	]
+	coclass BrowserContext
+	{
+		[default] interface IBrowserContext;
+	};
+};

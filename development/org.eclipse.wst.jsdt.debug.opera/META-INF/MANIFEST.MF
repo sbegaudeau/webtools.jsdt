@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.wst.jsdt.debug.opera;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Activator: org.eclipse.wst.jsdt.debug.opera.OperaPlugin
+Bundle-Vendor: %Bundle-Vendor
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.wst.jsdt.debug.core;bundle-version="2.0.100",
+ org.eclipse.debug.core;bundle-version="3.7.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.wst.jsdt.debug.opera;uses:="org.osgi.framework",
+ org.eclipse.wst.jsdt.debug.opera.internal.jsdi;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.opera.internal.jsdi.request;x-internal:=true,
+ org.eclipse.wst.jsdt.debug.opera.internal.launching;x-internal:=true

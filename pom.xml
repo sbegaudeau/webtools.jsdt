@@ -22,7 +22,7 @@
   </parent>
 
   <groupId>org.eclipse.webtools.jsdt</groupId>
-  <artifactId>org.eclipse.webtools.jsdt.core</artifactId>
+  <artifactId>parent</artifactId>
   <version>3.6.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -40,5 +40,40 @@
     <module>bundles/org.eclipse.wst.jsdt.support.firefox</module>
     <module>bundles/org.eclipse.wst.jsdt.support.ie</module>
     <module>bundles/org.eclipse.wst.jsdt.ui</module>
+
+    <module>bundles/org.eclipse.wst.jsdt.debug.core</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.crossfire</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.rhino</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.rhino.debugger</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.rhino.ui</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.transport</module>
+    <module>bundles/org.eclipse.wst.jsdt.debug.ui</module>
+
+    <module>development/org.eclipse.wst.jsdt.debug.chrome</module>
+    <module>development/org.eclipse.wst.jsdt.debug.jsd2</module>
+    <module>development/org.eclipse.wst.jsdt.debug.node</module>
+    <module>development/org.eclipse.wst.jsdt.debug.opera</module>
+
+    <module>features/org.eclipse.wst.jsdt_tests.feature</module>
+
+    <module>tests/org.eclipse.wst.jsdt.core.tests.compiler</module>
+    <module>tests/org.eclipse.wst.jsdt.core.tests.model</module>
+    <module>tests/org.eclipse.wst.jsdt.debug.core.tests</module>
+    <module>tests/org.eclipse.wst.jsdt.debug.rhino.tests</module>
+    <module>tests/org.eclipse.wst.jsdt.ui.tests</module>
   </modules>
+
+  <repositories>
+    <!-- To reference parent pom -->
+    <repository>
+      <id>Webtools Repository - Releases</id>
+      <name>Webtools Repository - Releases</name>
+      <url>https://repo.eclipse.org/content/repositories/webtools-releases/</url>
+    </repository>
+    <repository>
+      <id>Webtools Repository - Snapshots</id>
+      <name>Webtools Repository - Snapshots</name>
+      <url>https://repo.eclipse.org/content/repositories/webtools-snapshots/</url>
+    </repository>
+  </repositories>
 </project>

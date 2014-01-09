@@ -8,6 +8,9 @@ heapdump.*
 core.*
 Snap.*
 
+/*/bin/
+/*/*/bin/
+
 # suggested by github
 *.log
 *.sql

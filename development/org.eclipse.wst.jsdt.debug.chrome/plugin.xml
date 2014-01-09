@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.wst.jsdt.debug.core.launchingConnectors">
+      <connector
+            class="org.eclipse.wst.jsdt.debug.internal.chrome.connect.ChromeAttachingConnector"
+            id="org.eclipse.wst.jsdt.debug.chrome.connector.attach">
+      </connector>
+   </extension>
+
+</plugin>
