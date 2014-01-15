@@ -27,40 +27,11 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>development/org.eclipse.wst.jsdt.astview</module>
-    <module>development/org.eclipse.wst.jsdt.jseview</module>
-
-    <module>docs/org.eclipse.wst.jsdt.doc</module>
-
-    <module>features/org.eclipse.wst.jsdt.feature</module>
-    <module>features/org.eclipse.wst.jsdt_sdk.feature</module>
-
-    <module>bundles/org.eclipse.wst.jsdt.core</module>
-    <module>bundles/org.eclipse.wst.jsdt.manipulation</module>
-    <module>bundles/org.eclipse.wst.jsdt.support.firefox</module>
-    <module>bundles/org.eclipse.wst.jsdt.support.ie</module>
-    <module>bundles/org.eclipse.wst.jsdt.ui</module>
-
-    <module>bundles/org.eclipse.wst.jsdt.debug.core</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.crossfire</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.rhino</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.rhino.debugger</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.rhino.ui</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.transport</module>
-    <module>bundles/org.eclipse.wst.jsdt.debug.ui</module>
-
-    <module>development/org.eclipse.wst.jsdt.debug.chrome</module>
-    <module>development/org.eclipse.wst.jsdt.debug.jsd2</module>
-    <module>development/org.eclipse.wst.jsdt.debug.node</module>
-    <module>development/org.eclipse.wst.jsdt.debug.opera</module>
-
-    <module>features/org.eclipse.wst.jsdt_tests.feature</module>
-
-    <module>tests/org.eclipse.wst.jsdt.core.tests.compiler</module>
-    <module>tests/org.eclipse.wst.jsdt.core.tests.model</module>
-    <module>tests/org.eclipse.wst.jsdt.debug.core.tests</module>
-    <module>tests/org.eclipse.wst.jsdt.debug.rhino.tests</module>
-    <module>tests/org.eclipse.wst.jsdt.ui.tests</module>
+    <module>bundles</module>
+    <module>development</module>
+    <module>docs</module>
+    <module>tests</module>
+    <module>features</module>
   </modules>
 
   <profiles>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2014 Red Hat Inc.
+  All rights reserved. This program and the accompanying materials
+  are made available under the terms of the Eclipse Distribution License v1.0
+  which accompanies this distribution, and is available at
+  http://www.eclipse.org/org/documents/edl-v10.php
+ 
+  Contributors:
+    Mickael Istria (Red Hat Inc.) - initial implementation
+-->
+
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.webtools.jsdt</groupId>
+    <artifactId>jsdt-parent</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>bundles</artifactId>
+  <packaging>pom</packaging>
+
+  <modules>
+    <module>org.eclipse.wst.jsdt.core</module>
+    <module>org.eclipse.wst.jsdt.manipulation</module>
+    <module>org.eclipse.wst.jsdt.support.firefox</module>
+    <module>org.eclipse.wst.jsdt.support.ie</module>
+    <module>org.eclipse.wst.jsdt.ui</module>
+
+    <module>org.eclipse.wst.jsdt.debug.core</module>
+    <module>org.eclipse.wst.jsdt.debug.crossfire</module>
+    <module>org.eclipse.wst.jsdt.debug.rhino</module>
+    <module>org.eclipse.wst.jsdt.debug.rhino.debugger</module>
+    <module>org.eclipse.wst.jsdt.debug.rhino.ui</module>
+    <module>org.eclipse.wst.jsdt.debug.transport</module>
+    <module>org.eclipse.wst.jsdt.debug.ui</module>
+  </modules>
+</project>
