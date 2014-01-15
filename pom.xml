@@ -63,6 +63,15 @@
     <module>tests/org.eclipse.wst.jsdt.ui.tests</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>build-individual-bundles</id>
+      <modules>
+        <module>site</module>
+      </modules>
+    </profile>
+  </profiles>
+
   <repositories>
     <!-- To reference parent pom -->
     <repository>

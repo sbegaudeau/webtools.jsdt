@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <category-def name="JSDT" label="JavaScript Development Tools">Editor and debugger to efficiently develop JavaScript applications in Eclipse</category-def>
+
+   <feature id="org.eclipse.wst.jsdt.feature" version="0.0.0">
+      <category name="JSDT"/>
+   </feature>
+   <feature id="org.eclipse.wst.jsdt_sdk.feature" version="0.0.0">
+      <category name="JSDT"/>
+   </feature>
+   <feature id="org.eclipse.wst.jsdt_tests.feature" version="0.0.0">
+      <category name="JSDT"/>
+   </feature>
+</site>
