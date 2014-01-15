@@ -108,36 +108,40 @@ public class PipedTransportService implements TransportService {
 			PipedOutputStream clientos = new PipedOutputStream();
 			PipedOutputStream serveros = new PipedOutputStream();
 			PipedInputStream clientis = new PipedInputStream();
+			serveris.connect(clientos);
+			serveros.connect(clientis);
+	
+			PipedConnection clientConnection = new PipedConnection(clientis, clientos);
+			PipedConnection serverConnection = new PipedConnection(serveris, serveros);
 			
-			try {
-				serveris.connect(clientos);
-				serveros.connect(clientis);
-	
-				listeners.put(key, new PipedConnection(clientis, clientos));
-				listeners.notifyAll();
-				long startTime = System.currentTimeMillis();
-				while (true) {
-					try {
-						listeners.wait(timeout);
-					} catch (InterruptedException e) {
-						throw new IOException("accept failed: interrupted"); //$NON-NLS-1$
-					}
-					if (!listeners.containsKey(key))
-						throw new IOException("accept failed: stopped listening"); //$NON-NLS-1$
-	
-					if (listeners.get(key) != null) {
-						if (System.currentTimeMillis() - startTime > timeout) {
-							listeners.put(key, null);
-							throw new IOException("accept failed: timed out"); //$NON-NLS-1$
-						}
-						continue;
-					}
-					return new PipedConnection(serveris, serveros);
+			listeners.put(key, clientConnection);
+			listeners.notifyAll();
+			long startTime = System.currentTimeMillis();
+			while (true) {
+				try {
+					listeners.wait(timeout);
+				} catch (InterruptedException e) {
+					clientConnection.close(); // Close unused client connection (and its streams);
+					serverConnection.close(); // Close unused server connection (and its streams);
+					throw new IOException("accept failed: interrupted"); //$NON-NLS-1$
 				}
-			}
-			finally {
-				serveris.close();
-				serveros.close();
+				if (!listeners.containsKey(key)) {
+					clientConnection.close(); // Close unused client connection (and its streams);
+					serverConnection.close(); // Close unused server connection (and its streams);
+					throw new IOException("accept failed: stopped listening"); //$NON-NLS-1$
+				}
+				
+				if (listeners.get(key) != null) {
+					if (System.currentTimeMillis() - startTime > timeout) {
+						listeners.put(key, null);
+						clientConnection.close(); // Close unused client connection (and its streams);
+						serverConnection.close(); // Close unused server connection (and its streams);
+						throw new IOException("accept failed: timed out"); //$NON-NLS-1$
+					}
+					continue;
+				}
+				return serverConnection; // From this point both, the server and the client, 
+																// are responsible to close their connections
 			}
 		}
 	}
