@@ -2606,4 +2606,30 @@ public class InferTypesTests extends AbstractRegressionTest {
 		 );
 		assertNull("There should not be a global function def()", declaration.findInferredType("@G".toCharArray()).findMethod("def".toCharArray(), null));
 	}
+	
+	/*
+	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=411589 - Invalid this detection
+	 */
+	public void testInitializationWithThisReference() {
+		CompilationUnitDeclaration declaration = this.runInferTest(
+			"(function() {\n" +
+			"	var clazz = function() {\n" +
+			"		var me = this;\n" +
+			"		var you = me;\n" +
+			"		me.funcMe = function() {return this;};\n" +
+			"		you.funcYou = function() {return this;};\n" +
+			"		this.funcWe = function() {return this;};\n" +
+			"	}\n" +
+			"})();",
+			"X.js",
+			null,
+			getDefaultOptions()
+		 );
+		assertNull("There should not be a global function funcMe()", declaration.findInferredType("@G".toCharArray()).findMethod("funcMe".toCharArray(), null));
+		assertNull("There should not be a global function funcYou()", declaration.findInferredType("@G".toCharArray()).findMethod("funcYou".toCharArray(), null));
+
+		assertNotNull("There should be a local method funcMe() in class clazz", declaration.findInferredType("clazz".toCharArray()).findMethod("funcMe".toCharArray(), null));
+		assertNotNull("There should be a local method funcYou() in class clazz", declaration.findInferredType("clazz".toCharArray()).findMethod("funcYou".toCharArray(), null));
+		assertNotNull("There should be a local method funcWe() in class clazz", declaration.findInferredType("clazz".toCharArray()).findMethod("funcWe".toCharArray(), null));
+	}
 }

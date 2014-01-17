@@ -44,6 +44,7 @@ import org.eclipse.wst.jsdt.core.ast.ITrueLiteral;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayReference;
@@ -434,6 +435,7 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			} else {
 				if (this.isExpressionAType(localDeclaration.getInitialization())) {
 					localDeclaration.setIsType(true);
+					handleLocalDeclarationExpressionType(localDeclaration);
 				}
 				InferredType type = this.getTypeForVariableInitialization(localDeclaration.getName(), localDeclaration.getInitialization());
 				if (localDeclaration.getInferredType() == null || (type != null && type.isAnonymous))
@@ -1166,6 +1168,129 @@ public class InferEngine extends ASTVisitor implements IInferEngine {
 			keepVisiting = false;
 		}
 		return keepVisiting;
+	}
+
+	/**
+	 * @param assignment
+	 * @return whether a type was not created for this assignment
+	 * @since 1.3
+	 */
+	protected boolean handleLocalDeclarationExpressionType(ILocalDeclaration localDeclaration) {
+		IExpression expr = localDeclaration.getInitialization();
+		InferredType type = null;
+
+		if(expr instanceof IAssignment) {
+			type = ((IAssignment) expr).getInferredType();
+		} else if(expr instanceof IAbstractVariableDeclaration) {
+			type = ((IAbstractVariableDeclaration) expr).getInferredType();
+		} else if(expr instanceof IFieldReference) {
+			IExpression receiver = ((IFieldReference) expr).getReceiver();
+			InferredType receiverType = this.getTypeOf(receiver);
+			if(receiverType != null) {
+				InferredAttribute attr = receiverType.findAttribute(((IFieldReference) expr).getToken());
+				if (attr != null)
+					type = attr.inType;
+			}
+		} else if(expr instanceof ISingleNameReference) {
+			IAbstractVariableDeclaration varDecl = this.getVariable(expr);
+			if(varDecl != null) {
+				type = varDecl.getInferredType();
+			}
+			
+			if(type == null) {
+				IAssignment assign = this.getAssignment(expr);
+				if(assign != null) {
+					type = assign.getInferredType();
+				}
+			}
+			
+			if(type == null) {
+				IAbstractFunctionDeclaration funcDecl = this.getFunction(expr);
+			if(funcDecl != null && funcDecl.getName() != null) {
+					type = this.findDefinedType(funcDecl.getName());
+				}
+			}
+
+			if(type == null) {
+				type =this.compUnit.findInferredType(((ISingleNameReference) expr).getToken());
+			}
+		} else if(expr instanceof IThisReference) {
+			InferredType newType = null;
+
+			IFunctionDeclaration parentMethod = this.currentContext.currentMethod;
+			IAssignment parentAssignment = this.currentContext.parent.currentAssignment;
+			ILocalDeclaration parentLocalDeclaration = this.currentContext.parent.currentLocalDeclaration;
+			char[] newTypeName = null;
+			int typeStart = 0;
+			int typeEnd = 0;
+			/* if there is a current assignment and LHS is a function and that function
+			 * is the current method then use the RHS as the type name
+			 * 
+			 * else if there is a current local declaration and the LHS is a function and
+			 * that function is the current method then use the RHS as the type name
+			 * 
+			 * else if the parent method is not in a type and has a name use that as the type
+			 * name */
+			if(this.currentContext.parent != null
+					&& parentAssignment != null
+					&& parentAssignment.getExpression() instanceof IFunctionExpression
+					&& ((IFunctionExpression) parentAssignment.getExpression()).getMethodDeclaration() == parentMethod) {
+				// see if we're adding a field through the prototype
+				if (parentAssignment.getLeftHandSide().getASTType() == IASTNode.FIELD_REFERENCE
+					&& ((Expression) ((IFieldReference) parentAssignment.getLeftHandSide()).getReceiver()).isPrototype()) {
+					newTypeName = Util.getTypeName(((IFieldReference) ((IFieldReference) parentAssignment.getLeftHandSide()).getReceiver()).getReceiver());
+				}
+				else {
+					newTypeName = Util.getTypeName(parentAssignment.getLeftHandSide());
+				}
+				typeStart = parentAssignment.sourceStart();
+				typeEnd = parentAssignment.sourceEnd();
+			} else if(this.currentContext.parent != null
+					&& parentLocalDeclaration != null
+					&& parentLocalDeclaration.getInitialization() instanceof IFunctionExpression
+					&& ((IFunctionExpression) parentLocalDeclaration.getInitialization()).getMethodDeclaration() == parentMethod) {
+
+				newTypeName = parentLocalDeclaration.getName();
+				typeStart = parentLocalDeclaration.sourceStart();
+				typeEnd = parentLocalDeclaration.sourceEnd();
+			} else if(parentMethod != null
+					&& parentMethod.getName() != null
+					&& (parentMethod.getInferredMethod() == null || parentMethod.getInferredMethod().inType == null)) {
+
+				newTypeName = parentMethod.getName();
+				typeStart = parentMethod.sourceStart();
+				typeEnd = parentMethod.sourceEnd();
+			}
+
+			// if calculated new type name, use it to create a new type
+			if(newTypeName != null) {
+				newType = compUnit.findInferredType(newTypeName);
+				// create the new type if not found
+				if(newType == null) {
+					newType = addType(newTypeName);
+				}
+			} else {
+				return false; // no type to create
+			}
+
+			newType.setIsDefinition(true);
+			newType.updatePositions(typeStart, typeEnd);
+			type = newType;
+		}			
+		// prevent Object literal based anonymous types from being created more than once
+		if(passNumber == 1 && expr instanceof IObjectLiteral) {
+			return false;
+		}
+	
+		if (type != null) {
+			this.setTypeOf(expr, type);
+			if (localDeclaration instanceof AbstractVariableDeclaration) {
+				((AbstractVariableDeclaration)localDeclaration).setInferredType(type);
+			}
+			return true;
+		}
+		
+		return false;
 	}
 
 	/**
