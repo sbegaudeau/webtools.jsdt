@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *     Sebastian Davids <sdavids@gmx.de> bug 38692
+ *     Mickael Istria (Red Hat Inc.) - 426209 Java 6 + Warnings cleanup
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
@@ -15,6 +16,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,8 +60,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.OpenBrowserUtil;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.OptionalMessageDialog;
 import org.eclipse.wst.jsdt.internal.ui.javaeditor.EditorUtility;
@@ -147,25 +150,28 @@ public class JavadocWizard extends Wizard implements IExportWizard {
 		//Ask if you wish to set the javadoc location for the projects (all) to 
 		//the location of the newly generated javadoc 
 		if (fStore.isFromStandard()) {
-			try {
-
-				URL newURL= fDestination.toFile().toURL();
-				List projs= new ArrayList();
-				//get javadoc locations for all projects
-				for (int i= 0; i < checkedProjects.length; i++) {
-					IJavaScriptProject curr= checkedProjects[i];
-					URL currURL= JavaScriptUI.getProjectJSdocLocation(curr);
-					if (!newURL.equals(currURL)) { // currURL can be null
+			URI newURI= fDestination.toFile().toURI();
+			List<IJavaScriptProject> projs= new ArrayList<IJavaScriptProject>();
+			//get javadoc locations for all projects
+			for (int i= 0; i < checkedProjects.length; i++) {
+				IJavaScriptProject curr= checkedProjects[i];
+				try {
+					URI currURI = JavaScriptUI.getProjectJSdocLocation(curr).toURI();
+					if (!newURI.equals(currURI)) { // currURL can be null
 						//if not all projects have the same javadoc location ask if you want to change
 						//them to have the same javadoc location
 						projs.add(curr);
 					}
+				} catch (URISyntaxException ex) {
+					JavaScriptPlugin.log(ex);
 				}
-				if (!projs.isEmpty()) {
-					setAllJavadocLocations((IJavaScriptProject[]) projs.toArray(new IJavaScriptProject[projs.size()]), newURL);
+			}
+			if (!projs.isEmpty()) {
+				try {
+					setAllJavadocLocations(projs.toArray(new IJavaScriptProject[projs.size()]), newURI.toURL());
+				} catch (MalformedURLException e) {
+					JavaScriptPlugin.log(e);
 				}
-			} catch (MalformedURLException e) {
-				JavaScriptPlugin.log(e);
 			}
 		}
 

@@ -15,7 +15,7 @@ Bundle-Activator: org.eclipse.wst.jsdt.internal.core.manipulation.JavaManipulati
 Eclipse-LazyStart: true
 Bundle-SymbolicName: org.eclipse.wst.jsdt.manipulation;singleton:=true
 Bundle-Name: %pluginName
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
 Bundle-Vendor: %providerName
 Bundle-ActivationPolicy: lazy

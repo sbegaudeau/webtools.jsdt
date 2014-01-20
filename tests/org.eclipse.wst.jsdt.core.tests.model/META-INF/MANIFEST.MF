@@ -22,5 +22,5 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.text,
  org.eclipse.wst.jsdt.core
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.eclipse.wst.jsdt.core.tests.internal.Activator

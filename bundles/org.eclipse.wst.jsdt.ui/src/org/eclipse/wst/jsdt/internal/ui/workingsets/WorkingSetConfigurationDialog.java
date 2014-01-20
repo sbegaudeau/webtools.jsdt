@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2007 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,8 @@
  * Contributors:
  *      IBM Corporation - initial API and implementation 
  * 		Sebastian Davids <sdavids@gmx.de> - Fix for bug 19346 - Dialog font
- *   	should be activated and used by other components.
+ *          should be activated and used by other components.
+ *      Mickael Istria (Red Hat Inc.) - 426209 Java 6 + Warnings cleanup
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.workingsets;
 
@@ -20,6 +21,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -132,10 +134,10 @@ public class WorkingSetConfigurationDialog extends SelectionDialog {
 	private Button fDeselectAll;
 
 	private IWorkingSet[] fResult;
-	private List fAddedWorkingSets;
-	private List fRemovedWorkingSets;
-	private Map fEditedWorkingSets;
-	private List fRemovedMRUWorkingSets;
+	private List<IWorkingSet> fAddedWorkingSets;
+	private List<IWorkingSet> fRemovedWorkingSets;
+	private Map<IWorkingSet, IWorkingSet> fEditedWorkingSets;
+	private List<IWorkingSet> fRemovedMRUWorkingSets;
 
 	private int nextButtonId= IDialogConstants.CLIENT_ID + 1;
 
@@ -469,16 +471,14 @@ public class WorkingSetConfigurationDialog extends SelectionDialog {
 	 * Rolls back changes to working sets.
 	 */
 	private void restoreChangedWorkingSets() {
-		Iterator iterator= fEditedWorkingSets.keySet().iterator();
+		for (Entry<IWorkingSet, IWorkingSet> entry : this.fEditedWorkingSets.entrySet()) {
+			IWorkingSet editedWorkingSet= entry.getKey();
+			IWorkingSet originalWorkingSet= entry.getValue();
 
-		while (iterator.hasNext()) {
-			IWorkingSet editedWorkingSet= (IWorkingSet)iterator.next();
-			IWorkingSet originalWorkingSet= (IWorkingSet)fEditedWorkingSets.get(editedWorkingSet);
-
-			if (editedWorkingSet.getName().equals(originalWorkingSet.getName()) == false) {
+			if (! editedWorkingSet.getName().equals(originalWorkingSet.getName())) {
 				editedWorkingSet.setName(originalWorkingSet.getName());
 			}
-			if (editedWorkingSet.getElements().equals(originalWorkingSet.getElements()) == false) {
+			if (! Arrays.equals(editedWorkingSet.getElements(), originalWorkingSet.getElements())) {
 				editedWorkingSet.setElements(originalWorkingSet.getElements());
 			}
 		}

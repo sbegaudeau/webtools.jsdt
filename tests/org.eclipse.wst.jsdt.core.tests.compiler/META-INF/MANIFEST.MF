@@ -15,5 +15,5 @@ Export-Package: org.eclipse.wst.jsdt.core.tests.compiler,
  org.eclipse.wst.jsdt.core.tests.interpret,
  org.eclipse.wst.jsdt.core.tests.junit.extension,
  org.eclipse.wst.jsdt.core.tests.util
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
