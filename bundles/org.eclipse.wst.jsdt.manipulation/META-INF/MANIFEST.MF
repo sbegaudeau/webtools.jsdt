@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 1.0.400.qualifier
+Bundle-Version: 1.0.500.qualifier
 Export-Package: org.eclipse.wst.jsdt.core.manipulation,
  org.eclipse.wst.jsdt.core.refactoring,
  org.eclipse.wst.jsdt.core.refactoring.descriptors,
