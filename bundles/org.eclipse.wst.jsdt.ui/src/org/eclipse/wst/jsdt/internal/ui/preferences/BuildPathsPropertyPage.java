@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaScriptPlugin;
@@ -180,8 +181,12 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	private IProject getProject() {
 		IAdaptable adaptable= getElement();
 		if (adaptable != null) {
-			IProject elem= (IProject) adaptable.getAdapter(IProject.class);
-			if(elem!=null) return elem;
+			IJavaScriptProject elem= (IJavaScriptProject) adaptable.getAdapter(IJavaScriptProject.class);
+			if(elem!=null) {
+				return elem.getProject();
+			} else {
+				return (IProject) adaptable.getAdapter(IProject.class);
+			}
 		}
 		return null;
 	}

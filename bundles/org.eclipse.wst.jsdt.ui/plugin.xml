@@ -549,20 +549,12 @@
             class="org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.BuildPathsPropertyPage">
          <enabledWhen>
-		     <adapt type="org.eclipse.core.resources.IProject">
-		          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
-		     </adapt>         
-         </enabledWhen>
-         <keywordReference id="org.eclipse.wst.jsdt.ui.buildpath"/>
-      </page>
-      
-      <page
-            name="%buildPathPageName"        
-            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
-            class="org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage"
-            id="org.eclipse.wst.jsdt.ui.propertyPages.BuildPathsPropertyPageMenu">
-         <enabledWhen>
-		     <adapt type="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot"/>       
+         	 <or>
+			     <adapt type="org.eclipse.core.resources.IProject">
+			          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+			     </adapt>
+			     <adapt type="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot"/>
+			 </or>
          </enabledWhen>
          <keywordReference id="org.eclipse.wst.jsdt.ui.buildpath"/>
       </page>
@@ -5343,6 +5335,7 @@
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof	value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+						<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 					</or>
 				</enablement>
 			</actionProvider> 
@@ -5361,10 +5354,34 @@
 						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
 						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" /> 
 						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" /> 				
+						<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
 						<instanceof value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
 					</or>
 				</enablement>
 			</actionProvider> 
+			<actionProvider
+					class="org.eclipse.ui.navigator.resources.GoIntoActionProvider"
+					id="org.eclipse.jsdt.ui.navigator.resources.GoIntoActions"
+					overrides="org.eclipse.ui.navigator.resources.GoIntoActions">
+				<enablement>
+					<or>
+						<adapt
+							type="org.eclipse.core.resources.IProject">
+							<test
+								property="org.eclipse.core.resources.open">
+							</test>
+						</adapt>
+						<adapt type="org.eclipse.core.resources.IFolder" />
+						<adapt type="org.eclipse.ui.IWorkingSet" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJavaScriptElement" />
+						<instanceof value="org.eclipse.wst.jsdt.core.IJarEntryResource" />
+						<instanceof value="org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer" />
+						<instanceof value="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot" />
+						<instanceof value="org.eclipse.wst.jsdt.internal.core.JarEntryFile" />
+					</or>
+				</enablement>
+			</actionProvider>
+			
 			<commonSorter
 					class="org.eclipse.wst.jsdt.ui.JavaElementSorter"
 					id="org.eclipse.wst.jsdt.ui.javaElementSorter"/>

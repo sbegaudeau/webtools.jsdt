@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,14 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * 
- */
 package org.eclipse.wst.jsdt.ui;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -163,8 +159,8 @@ public class ProjectLibraryRoot implements IAdaptable{
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class) {
 			return new WorkBenchAdapter();
-		} else if(adapter == IProject.class){
-			return getProject().getProject();
+		} else if (adapter == IJavaScriptProject.class) {
+			return getProject();
 		}
 		
 		return Platform.getAdapterManager().getAdapter(this, adapter);
