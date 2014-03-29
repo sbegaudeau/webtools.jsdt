@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,20 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 	}
 
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
+		// Do not analyseCode for the nextLocal local variables in recursion
+		// because it may cause StackOverflowError
+		AbstractVariableDeclaration currVarDecl = this;
+		while (currVarDecl != null) {
+			if (currVarDecl instanceof LocalDeclaration) {
+				flowInfo = ((LocalDeclaration)currVarDecl).analyseCodeLocal(currentScope, flowContext, flowInfo);
+			}
+			currVarDecl = currVarDecl.nextLocal;
+		}
+		
+		return flowInfo;
+	}
+	
+	public FlowInfo analyseCodeLocal(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 		// record variable initialization if any
 		if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
 			// only set if actually reached
@@ -90,9 +104,6 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 			}
 			// no need to inform enclosing try block since its locals won't get
 			// known by the finally block
-		}
-		if (this.nextLocal != null) {
-			flowInfo = this.nextLocal.analyseCode(currentScope, flowContext, flowInfo);
 		}
 
 		return flowInfo;
@@ -134,14 +145,18 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 	}
 
 	public void resolve(BlockScope scope) {
-		resolve0(scope);
-		if (this.nextLocal != null) {
-			this.nextLocal.resolve(scope);
+		// Do not resolve the nextLocal local variables in recursion
+		// because it may cause StackOverflowError
+		AbstractVariableDeclaration currVarDecl = this;
+		while (currVarDecl != null) {
+			if (currVarDecl instanceof LocalDeclaration) {
+				((LocalDeclaration)currVarDecl).resolveLocal(scope);
+			}
+			currVarDecl = currVarDecl.nextLocal;
 		}
 	}
 
-
-	private void resolve0(BlockScope scope) {
+	public void resolveLocal(BlockScope scope) {
 		// create a binding and add it to the scope
 		TypeBinding variableType = resolveVarType(scope);
 
@@ -258,7 +273,18 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
-
+		// Do not traverse the nextLocal local variables in recursion
+		// because it may cause StackOverflowError
+		AbstractVariableDeclaration currVarDecl = this;
+		while (currVarDecl != null) {
+			if (currVarDecl instanceof LocalDeclaration) {
+				((LocalDeclaration)currVarDecl).traverseLocal(visitor, scope);
+			}
+			currVarDecl = currVarDecl.nextLocal;
+		}
+	}
+	
+	private void traverseLocal(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
 			if (type != null) {
 				type.traverse(visitor, scope);
@@ -273,9 +299,6 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 			}
 		}
 		visitor.endVisit(this, scope);
-		if (this.nextLocal != null) {
-			this.nextLocal.traverse(visitor, scope);
-		}
 	}
 
 	public String getTypeName() {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -680,7 +680,7 @@ public abstract class AbstractMethodDeclaration extends Statement
 					
 					return true;
 				}
-				
+
 				/**
 				 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 				 */
@@ -688,13 +688,29 @@ public abstract class AbstractMethodDeclaration extends Statement
 					if(scope != null && scope instanceof MethodScope) {
 						/* be sure to add all variable declarations
 						 * 
-						 * var b, c, d = "foo" */
-						AbstractVariableDeclaration currVarDecl = localDeclaration;
-						while(currVarDecl != null) {
-							((MethodScope) scope).addUnresolvedLocalVar(currVarDecl.getName(), currVarDecl);
-							
-							currVarDecl = currVarDecl.nextLocal;
+						 * var b, c, d = "foo" 
+						 * 
+						 * do nothing in case of localDeclaration is already added in order to prevent 
+						 * repeat on adding the same variables
+						 * (which means that all the variable declarations were added before
+						 *
+						MethodScope methodScope = (MethodScope)scope;
+						if (methodScope.getUnresolvedLocalVar(localDeclaration.getName()) == null) {
+							AbstractVariableDeclaration currVarDecl = localDeclaration;
+							while(currVarDecl != null) {
+								methodScope.addUnresolvedLocalVar(currVarDecl.getName(), currVarDecl);
+								currVarDecl = currVarDecl.nextLocal;
+							}
 						}
+						*/
+						/* 
+						 * No need to add all localDeclaration.nextLocal-s here, 
+						 * because it's done by LocalDeclaration.traverse() method 
+						 * (the only place that calls this visit method.
+						 * 
+						 * See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=431547
+						 */  
+						((MethodScope)scope).addUnresolvedLocalVar(localDeclaration.getName(), localDeclaration);
 					}
 					
 					return true;

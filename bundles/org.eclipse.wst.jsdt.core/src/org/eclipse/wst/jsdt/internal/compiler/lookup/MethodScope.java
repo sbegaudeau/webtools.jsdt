@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ConstructorDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.QualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
@@ -52,7 +53,6 @@ public class MethodScope extends BlockScope {
 	public int lastIndex = 0;
 	public long[] definiteInits = new long[4];
 	public long[][] extraDefiniteInits = new long[4][];
-
 
 	public static final char [] ARGUMENTS_NAME={'a','r','g','u','m','e','n','t','s'};
 
@@ -453,7 +453,11 @@ public class MethodScope extends BlockScope {
 			IAbstractVariableDeclaration statement = (IAbstractVariableDeclaration)this.fUnresolvedLocalVars.removeKey(variableName);
 			if(statement != null && statement instanceof ProgramElement) {
 				//resolve and then call super again
-				((ProgramElement)statement).resolve(this);
+				if (statement instanceof LocalDeclaration) {
+					((LocalDeclaration)statement).resolveLocal(this);
+				} else {
+					((ProgramElement)statement).resolve(this);
+				}
 				binding = super.findVariable(variableName);
 			}
 		}
