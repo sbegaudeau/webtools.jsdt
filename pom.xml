@@ -32,7 +32,6 @@
 
   <modules>
     <module>bundles</module>
-    <module>development</module>
     <module>docs</module>
     <module>tests</module>
     <module>features</module>
