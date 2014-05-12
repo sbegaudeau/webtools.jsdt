@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2012 IBM Corporation and others.
+ * Copyright (c) 2010, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,9 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Sumit Singh <sumit.singh@infineon.com> - 423274 - Debug breakpoints not 
+ *     skip after selecting "Skip all Breakpoints" from breakpoints view after 
+ *     starting debug session.
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.internal.core.breakpoints;
 
@@ -435,9 +438,15 @@ public abstract class JavaScriptBreakpoint extends Breakpoint implements IJavaSc
 		// get the thread and suspend it
 		if (event instanceof BreakpointEvent) {
 			JavaScriptThread thread = target.findThread(((BreakpointEvent) event).thread());
-			if (thread != null) {
-				return !thread.suspendForBreakpoint(this, suspendVote);
+			boolean skipBreakpoint = false;
+			try {
+				skipBreakpoint = shouldSkipBreakpoint();
+			} catch (CoreException e) {
+				JavaScriptDebugPlugin.log(e);
 			}
+            if (thread != null && !skipBreakpoint) {
+                return !thread.suspendForBreakpoint(this, suspendVote);
+            }
 		}
 		if (event instanceof ScriptLoadEvent) {
 			ScriptLoadEvent sevent = (ScriptLoadEvent) event;
