@@ -342,7 +342,11 @@ public abstract class Constant implements TypeIds, OperatorIds {
 					case T_float:	return FloatConstant.fromValue(left.intValue() / right.floatValue());
 					case T_double:	return DoubleConstant.fromValue(left.intValue() / right.doubleValue());
 					case T_short:	return IntConstant.fromValue(left.intValue() / right.shortValue());
-					case T_int:		return IntConstant.fromValue(left.intValue() / right.intValue());
+					case T_int:		
+						if (left.doubleValue() % right.doubleValue() != 0) { // its a JavaScript , we cannot force cast to int while divide
+							return DoubleConstant.fromValue(left.doubleValue() / right.doubleValue());
+						}
+						return IntConstant.fromValue(left.intValue() / right.intValue());
 					case T_long:	return LongConstant.fromValue(left.intValue() / right.longValue());
 				}
 			break;

@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.core.tests.compiler.regression.CompilerInvocationTes
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InternalScannerTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.ScannerTest;
+import org.eclipse.wst.jsdt.core.tests.compiler.regression.SwitchTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.UtilTest;
 import org.eclipse.wst.jsdt.core.tests.compiler.util.ExclusionTests;
 import org.eclipse.wst.jsdt.core.tests.interpret.BasicInterpretTest;
@@ -76,6 +77,7 @@ public static Test suite() {
 	standardTests.add(InternalScannerTest.class);
 	standardTests.add(ScannerTest.class);
 	standardTests.add(UtilTest.class);
+	standardTests.add(SwitchTest.class);
 	
 	// parser tests
 	

@@ -153,7 +153,14 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 				for (int i = 0; i < length; i++) {
 					Constant constant;
 					final Statement statement = statements[i];
-					if ((constant = statement.resolveCase(scope, expressionType, this)) != Constant.NotAConstant) {
+					constant = statement.resolveCase(scope, expressionType, this);
+					if (constant == Constant.NotAConstant && statement instanceof CaseStatement) {
+						CaseStatement cs = (CaseStatement) statement;
+						if (cs.constantExpression != null && cs.constantExpression.constant != null) {
+							constant = cs.constantExpression.constant;
+						}
+					}
+					if (constant != Constant.NotAConstant) {
 						Constant key = constant;
 						if (constant==null)
 							continue;
