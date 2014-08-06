@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2012 IBM Corporation and others.
+ * Copyright (c) 2007, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -2812,66 +2812,66 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			return new ProblemMethodBinding(visible[0], visible[0].selector, visible[0].parameters, ProblemReasons.Ambiguous);
 		}
 
-		// found several methods that are mutually acceptable -> must be equal
-		// so now with the first acceptable method, find the 'correct' inherited method for each other acceptable method AND
-		// see if they are equal after substitution of type variables (do the type variables have to be equal to be considered an override???)
-		nextSpecific : for (int i = 0; i < visibleSize; i++) {
-			MethodBinding current = moreSpecific[i];
-			if (current != null) {
-				MethodBinding original = current.original();
-				for (int j = 0; j < visibleSize; j++) {
-					MethodBinding next = moreSpecific[j];
-					if (next == null || i == j) continue;
-					MethodBinding original2 = next.original();
-					if (original.declaringClass == original2.declaringClass)
-						break nextSpecific; // duplicates thru substitution
-
-					if (!original.isAbstract()) {
-						if (original2.isAbstract())
-							continue; // only compare current against other concrete methods
-						TypeBinding superType = original.declaringClass.findSuperTypeWithSameErasure(original2.declaringClass);
-						if (superType == null)
-							continue nextSpecific; // current's declaringClass is not a subtype of next's declaringClass
-					} else if (receiverType != null) { // should not be null if original isAbstract, but be safe
-						TypeBinding superType = receiverType.findSuperTypeWithSameErasure(original.declaringClass);
-						if (original.declaringClass == superType || !(superType instanceof ReferenceBinding)) {
-							// keep original
-						} else {
-							// must find inherited method with the same substituted variables
-							MethodBinding[] superMethods = ((ReferenceBinding) superType).getMethods(original.selector);
-							for (int m = 0, l = superMethods.length; m < l; m++) {
-								if (superMethods[m].original() == original) {
-									original = superMethods[m];
-									break;
-								}
-							}
-						}
-						superType = receiverType.findSuperTypeWithSameErasure(original2.declaringClass);
-						if (original2.declaringClass == superType || !(superType instanceof ReferenceBinding)) {
-							// keep original2
-						} else {
-							// must find inherited method with the same substituted variables
-							MethodBinding[] superMethods = ((ReferenceBinding) superType).getMethods(original2.selector);
-							for (int m = 0, l = superMethods.length; m < l; m++) {
-								if (superMethods[m].original() == original2) {
-									original2 = superMethods[m];
-									break;
-								}
-							}
-						}
-						if (original2 == null || !original.areParametersEqual(original2))
-							continue nextSpecific; // current does not override next
-						if (!original.returnType.isCompatibleWith(original2.returnType) &&
-								!original.returnType.isCompatibleWith(original2.returnType)) {
-							// 15.12.2
-							continue nextSpecific; // choose original2 instead
-						}
-					}
-				}
-
-				return current;
-			}
-		}
+//		// found several methods that are mutually acceptable -> must be equal
+//		// so now with the first acceptable method, find the 'correct' inherited method for each other acceptable method AND
+//		// see if they are equal after substitution of type variables (do the type variables have to be equal to be considered an override???)
+//		nextSpecific : for (int i = 0; i < visibleSize; i++) {
+//			MethodBinding current = moreSpecific[i];
+//			if (current != null) {
+//				MethodBinding original = current.original();
+//				for (int j = 0; j < visibleSize; j++) {
+//					MethodBinding next = moreSpecific[j];
+//					if (next == null || i == j) continue;
+//					MethodBinding original2 = next.original();
+//					if (original.declaringClass == original2.declaringClass)
+//						break nextSpecific; // duplicates thru substitution
+//
+//					if (!original.isAbstract()) {
+//						if (original2.isAbstract())
+//							continue; // only compare current against other concrete methods
+//						TypeBinding superType = original.declaringClass.findSuperTypeWithSameErasure(original2.declaringClass);
+//						if (superType == null)
+//							continue nextSpecific; // current's declaringClass is not a subtype of next's declaringClass
+//					} else if (receiverType != null) { // should not be null if original isAbstract, but be safe
+//						TypeBinding superType = receiverType.findSuperTypeWithSameErasure(original.declaringClass);
+//						if (original.declaringClass == superType || !(superType instanceof ReferenceBinding)) {
+//							// keep original
+//						} else {
+//							// must find inherited method with the same substituted variables
+//							MethodBinding[] superMethods = ((ReferenceBinding) superType).getMethods(original.selector);
+//							for (int m = 0, l = superMethods.length; m < l; m++) {
+//								if (superMethods[m].original() == original) {
+//									original = superMethods[m];
+//									break;
+//								}
+//							}
+//						}
+//						superType = receiverType.findSuperTypeWithSameErasure(original2.declaringClass);
+//						if (original2.declaringClass == superType || !(superType instanceof ReferenceBinding)) {
+//							// keep original2
+//						} else {
+//							// must find inherited method with the same substituted variables
+//							MethodBinding[] superMethods = ((ReferenceBinding) superType).getMethods(original2.selector);
+//							for (int m = 0, l = superMethods.length; m < l; m++) {
+//								if (superMethods[m].original() == original2) {
+//									original2 = superMethods[m];
+//									break;
+//								}
+//							}
+//						}
+//						if (original2 == null || !original.areParametersEqual(original2))
+//							continue nextSpecific; // current does not override next
+//						if (!original.returnType.isCompatibleWith(original2.returnType) &&
+//								!original.returnType.isCompatibleWith(original2.returnType)) {
+//							// 15.12.2
+//							continue nextSpecific; // choose original2 instead
+//						}
+//					}
+//				}
+//
+//				return current;
+//			}
+//		}
 
 		//if can not figure which one is best, just pick first one
 		return moreSpecific[0];
