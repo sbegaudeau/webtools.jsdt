@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.wst.jsdt.feature"
       label="%featureName"
-      version="1.6.0.qualifier"
+      version="1.6.100.qualifier"
       provider-name="%providerName"
       plugin="org.eclipse.wst.jsdt.ui"
       license-feature="org.eclipse.license"
@@ -110,12 +110,5 @@
          install-size="0"
          version="1.7.2.qualifier"
          unpack="false"/>
-
-   <!-- plugin
-         id="org.eclipse.wst.jsdt.debug.rhino.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/ -->
 
 </feature>
