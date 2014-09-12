@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	private static final String SETTINGS_SECTION_NAME= "ProblemSeveritiesConfigurationBlock";  //$NON-NLS-1$
 	
 	private static final Key PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT = getJDTCoreKey(JavaScriptCore.COMPILER_SEMANTIC_VALIDATION);
+	private static final Key PREF_PB_STRICT_ON_KEYWORD_USAGE = getJDTCoreKey(JavaScriptCore.COMPILER_STRICT_ON_KEYWORD_USAGE);
 	
 	// Preference store keys, see JavaScriptCore.getOptions
 	private static final Key PREF_PB_UNDEFINED_FIELD= getJDTCoreKey(JavaScriptCore.COMPILER_PB_UNDEFINED_FIELD);
@@ -136,6 +137,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 	private ControlEnableState fBlockEnableState;
 	private Composite fControlsComposite;
 	private Button semanticCheckBox;
+	private Button strictOnKeywordsCheckBox;
 	
 	public ProblemSeveritiesConfigurationBlock(IStatusChangeListener context, IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getKeys(), container);
@@ -150,6 +152,7 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		return new Key[] {
 				PREF_PB_MAX_PER_UNIT,
 				PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT,
+				PREF_PB_STRICT_ON_KEYWORD_USAGE,
 				PREF_PB_UNDEFINED_FIELD,
 				/*PREF_PB_METHOD_WITH_CONSTRUCTOR_NAME,*/ PREF_PB_DEPRECATION, PREF_PB_HIDDEN_CATCH_BLOCK, PREF_PB_UNUSED_LOCAL,
 				PREF_PB_UNUSED_PARAMETER, PREF_PB_UNUSED_PARAMETER_INCLUDE_DOC_COMMENT_REFERENCE,
@@ -199,9 +202,15 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		gd.horizontalAlignment= GridData.END;
 		text.setTextLimit(6);
 		
+		label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableStrictOnKeywordUsageValidation;
+		strictOnKeywordsCheckBox = addCheckBox(mainComp, label, PREF_PB_STRICT_ON_KEYWORD_USAGE, new String[]{ENABLED, DISABLED}, 0);
+		Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
+		horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
+		horizontalLine.setFont(mainComp.getFont());
+
 		label = PreferencesMessages.ProblemSeveritiesConfigurationBlock_enableSemanticValidation;
 		semanticCheckBox = addCheckBox(mainComp, label, PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT, new String[]{ENABLED, DISABLED}, 0);
-		Label horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
+		horizontalLine= new Label(mainComp, SWT.SEPARATOR | SWT.HORIZONTAL);
 		horizontalLine.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, false, 2, 1));
 		horizontalLine.setFont(mainComp.getFont());
 		
@@ -540,7 +549,9 @@ public class ProblemSeveritiesConfigurationBlock extends OptionsConfigurationBlo
 		IStatus maxNumberProblemsStatus = new StatusInfo();
 		if (changedKey != null) {
 			if ( PREF_PB_MAX_PER_UNIT.equals(changedKey) || 
-					PREF_PB_UNUSED_PARAMETER.equals(changedKey) || PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT.equals(changedKey) )
+					PREF_PB_UNUSED_PARAMETER.equals(changedKey) || 
+					PREF_PB_SEMANTIC_VALIDATION_ENABLEMENT.equals(changedKey) ||
+					PREF_PB_STRICT_ON_KEYWORD_USAGE.equals(changedKey) )
 //					PREF_PB_DEPRECATION.equals(changedKey) ||
 //					PREF_PB_LOCAL_VARIABLE_HIDING.equals(changedKey) ||
 //					PREF_PB_UNUSED_DECLARED_THROWN_EXCEPTION.equals(changedKey)) 

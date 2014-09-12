@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1730,6 +1730,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, JavaScriptCore.ENABLED);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_SEMANTIC_VALIDATION, JavaScriptCore.DISABLED);
+		defaultOptionsMap.put(JavaScriptCore.COMPILER_STRICT_ON_KEYWORD_USAGE, JavaScriptCore.ENABLED);
 		defaultOptionsMap.put(JavaScriptCore.COMPILER_PB_MAX_PER_UNIT, String.valueOf(100));
 
 		// Builder settings

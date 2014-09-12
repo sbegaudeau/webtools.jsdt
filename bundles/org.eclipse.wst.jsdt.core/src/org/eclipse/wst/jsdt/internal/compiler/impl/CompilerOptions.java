@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ public class CompilerOptions {
 	 * Option IDs
 	 */
 	public static final String OPTION_SemanticValidation = "semanticValidation"; //$NON-NLS-1$
+	public static final String OPTION_StrictOnKeywordUsage = "strictOnKeywordUsage"; //$NON-NLS-1$
 	public static final String OPTION_LocalVariableAttribute = "org.eclipse.wst.jsdt.core.compiler.debug.localVariable"; //$NON-NLS-1$
 	public static final String OPTION_LineNumberAttribute = "org.eclipse.wst.jsdt.core.compiler.debug.lineNumber"; //$NON-NLS-1$
 	public static final String OPTION_SourceFileAttribute = "org.eclipse.wst.jsdt.core.compiler.debug.sourceFile"; //$NON-NLS-1$
@@ -335,6 +336,7 @@ public class CompilerOptions {
 
 
 	public boolean enableSemanticValidation=false;
+	public boolean strictOnKeywordUsage=true;
 	
 
 	/**
@@ -364,6 +366,7 @@ public class CompilerOptions {
 	public Map getMap() {
 		HashMap optionsMap = new HashMap(30);
 		optionsMap.put(OPTION_SemanticValidation, this.enableSemanticValidation ? ENABLED : DISABLED);
+		optionsMap.put(OPTION_StrictOnKeywordUsage, this.strictOnKeywordUsage? ENABLED : DISABLED);
 		optionsMap.put(OPTION_LocalVariableAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_VARS) != 0 ? GENERATE : DO_NOT_GENERATE);
 		optionsMap.put(OPTION_LineNumberAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_LINES) != 0 ? GENERATE : DO_NOT_GENERATE);
 		optionsMap.put(OPTION_SourceFileAttribute, (this.produceDebugAttributes & ClassFileConstants.ATTR_SOURCE) != 0 ? GENERATE : DO_NOT_GENERATE);
@@ -645,6 +648,13 @@ public class CompilerOptions {
 				this.enableSemanticValidation = true;
 			} else if (DISABLED.equals(optionValue)) {
 				this.enableSemanticValidation = false;
+			}
+		}
+		if ((optionValue = optionsMap.get(OPTION_StrictOnKeywordUsage)) != null) {
+			if (ENABLED.equals(optionValue)) {
+				this.strictOnKeywordUsage = true;
+			} else if (DISABLED.equals(optionValue)) {
+				this.strictOnKeywordUsage = false;
 			}
 		}
 		if ((optionValue = optionsMap.get(OPTION_LocalVariableAttribute)) != null) {

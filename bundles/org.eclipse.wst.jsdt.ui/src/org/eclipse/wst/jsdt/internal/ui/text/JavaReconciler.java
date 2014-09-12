@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2008 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -287,7 +287,10 @@ public class JavaReconciler extends MonoReconciler {
 		
 		fPropertyChangeListener= new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
-				if (SpellingService.PREFERENCE_SPELLING_ENABLED.equals(event.getProperty()) || SpellingService.PREFERENCE_SPELLING_ENGINE.equals(event.getProperty()))
+				if (SpellingService.PREFERENCE_SPELLING_ENABLED.equals(event.getProperty()) || 
+							SpellingService.PREFERENCE_SPELLING_ENGINE.equals(event.getProperty()) ||
+							JavaScriptCore.COMPILER_SEMANTIC_VALIDATION.equals(event.getProperty()) || 
+							JavaScriptCore.COMPILER_STRICT_ON_KEYWORD_USAGE.equals(event.getProperty()))
 					forceReconciling();
 			}
 		};
