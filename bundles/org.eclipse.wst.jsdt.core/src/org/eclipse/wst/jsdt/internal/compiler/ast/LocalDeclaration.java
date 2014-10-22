@@ -249,12 +249,6 @@ public class LocalDeclaration extends AbstractVariableDeclaration implements ILo
 					}
 					if (variableType == TypeBinding.UNKNOWN && initializationType != TypeBinding.NULL)
 						this.binding.type = initializationType;
-					else {
-						TypeBinding reconcileAnonymous = initializationType.reconcileAnonymous(this.binding.type);
-						if (reconcileAnonymous != null) {
-							this.binding.type = variableType = reconcileAnonymous;
-						}
-					}
 				}
 			}
 			
