@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.wst.jsdt.webapp.ide.builder"
+         name="%Builder.Name"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="true"
+            hasNature="true"
+            isConfigurable="true">
+         <run
+               class="org.eclipse.wst.jsdt.webapp.ide.internal.builder.WebappBuilder">
+         </run></builder>
+   </extension>
+   <extension
+         id="org.eclipse.wst.jsdt.webapp.ide.nature"
+         name="%Nature.Name"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.wst.jsdt.webapp.ide.internal.nature.WebappNature">
+         </run>
+      </runtime>
+   </extension>
+
+</plugin>

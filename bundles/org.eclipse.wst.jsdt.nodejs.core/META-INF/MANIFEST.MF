@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.wst.jsdt.nodejs.core
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: %Bundle-Vendor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.wst.jsdt.nodejs.core.api;version="1.0.0",
+ org.eclipse.wst.jsdt.nodejs.core.api.commands;version="1.0.0",
+ org.eclipse.wst.jsdt.nodejs.core.api.projects;version="1.0.0",
+ org.eclipse.wst.jsdt.nodejs.core.api.semver;version="1.0.0"
+Require-Bundle: org.eclipse.xtend.lib;bundle-version="2.6.0"

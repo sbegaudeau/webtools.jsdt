@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name
+Bundle-SymbolicName: org.eclipse.wst.jsdt.bower.server
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.wst.jsdt.bower.server.internal.BowerServerActivator
+Bundle-Vendor: %Bundle-Vendor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javax.servlet;version="2.6.0",
+ javax.servlet.http;version="2.6.0",
+ org.osgi.framework;version="[1.3.0,2.0.0)",
+ org.osgi.service.http;version="1.2.1",
+ org.osgi.util.tracker;version="1.5.1"
+Bundle-ActivationPolicy: lazy
+Bundle-Localization: bundle
