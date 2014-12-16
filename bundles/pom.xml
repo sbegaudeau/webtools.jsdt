@@ -36,5 +36,11 @@
     <module>org.eclipse.wst.jsdt.debug.rhino.ui</module>
     <module>org.eclipse.wst.jsdt.debug.transport</module>
     <module>org.eclipse.wst.jsdt.debug.ui</module>
+    
+    <module>org.eclipse.wst.jsdt.nodejs.core</module>
+    <module>org.eclipse.wst.jsdt.bower.core</module>
+    <module>org.eclipse.wst.jsdt.bower.ide</module>
+    <module>org.eclipse.wst.jsdt.bower.ide.ui</module>
+    
   </modules>
 </project>
