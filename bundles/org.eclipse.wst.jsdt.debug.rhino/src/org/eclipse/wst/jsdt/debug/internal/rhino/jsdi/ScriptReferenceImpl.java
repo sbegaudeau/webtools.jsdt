@@ -29,7 +29,7 @@ import org.osgi.framework.Constants;
 
 /**
  * Rhino implementation of {@link ScriptReference}
- * 
+ *
  * @see MirrorImpl
  * @see ScriptReference
  * @since 1.0
@@ -50,7 +50,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param vm
 	 * @param jsonScript
 	 */
@@ -127,7 +127,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 		return scriptId;
 	}
 
-	
+
 	/**
 	 * Return if the script is generated or not
 	 * @return <code>true</code> if the script was generated <code>false</code> otherwise
@@ -163,7 +163,7 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 		}
 		return this.sourceuri;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

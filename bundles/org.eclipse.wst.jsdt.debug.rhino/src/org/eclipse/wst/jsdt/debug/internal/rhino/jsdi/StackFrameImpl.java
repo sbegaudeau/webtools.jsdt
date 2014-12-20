@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Rhino implementation of {@link StackFrame}
- * 
+ *
  * @see MirrorImpl
  * @see StackFrame
  * @since 1.0
@@ -48,7 +48,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param vm
 	 * @param jsonFrame
 	 */
@@ -95,7 +95,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 	/**
 	 * Utility method to look up the {@link Value} with the given reference id <br>
 	 * or <code>null</code> if there is no {@link Value} with the given id
-	 * 
+	 *
 	 * @param ref
 	 * @return the {@link Value} or <code>null</code>
 	 */
@@ -122,7 +122,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 
 	/**
 	 * Creates a new type value for the given type description in the map
-	 * 
+	 *
 	 * @param body
 	 * @param iseval
 	 * @return the new type
@@ -225,7 +225,7 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 
 	/**
 	 * Returns if this stack frame is visible
-	 * 
+	 *
 	 * @param variable
 	 * @return true if this frame is visible, false otherwise
 	 */
