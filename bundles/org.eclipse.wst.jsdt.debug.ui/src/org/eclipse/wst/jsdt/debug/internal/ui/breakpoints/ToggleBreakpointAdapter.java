@@ -62,11 +62,11 @@ import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 
 /**
  * JavaScript adapter for toggling breakpoints in the JSDT editor
- * 
+ *
  * @since 1.0
  */
 public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtension {
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTargetExtension#canToggleBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
@@ -82,7 +82,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	}
 
 	/**
-	 * Toggles a line breakpoint 
+	 * Toggles a line breakpoint
 	 * @param part
 	 * @param selection
 	 * @param element
@@ -135,7 +135,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
         job.setSystem(true);
         job.schedule();
 	}
-	
+
 	/**
 	 * Callback from {@link JavaScriptHtmlBreakpointProvider}
 	 * @param resource
@@ -161,18 +161,18 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		attributes.put(IJavaScriptBreakpoint.ELEMENT_HANDLE, null);
 		JavaScriptDebugModel.createLineBreakpoint(resource, linenumber, charstart, charend, attributes, true);
 	}
-	
+
 	/**
 	 * Returns the path to the script in the workspace or the name of the script in the event it is
 	 * and external or virtual script
 	 * @param element
-	 * @return the path to the script 
+	 * @return the path to the script
 	 */
 	String getScriptPath(IJavaScriptElement element) {
 		IPath path = element.getPath();
 		return path.makeAbsolute().toString();
 	}
-	
+
 	/**
 	 * Resolves the type name from the given element
 	 * @param element
@@ -197,7 +197,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 			}
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
@@ -220,7 +220,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 			}
 		}
 	}
-	
+
 	/**
 	 * Resolves the declaring type for the member
 	 * @param member
@@ -250,11 +250,11 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Resolves the region from the given document and tries to parse the text of the region. Returns the {@link JavaScriptUnit}
 	 * representing the region or <code>null</code> if it could not be computed
-	 * 
+	 *
 	 * @param doc
 	 * @param offset
 	 * @return the {@link JavaScriptUnit} for the region from the document or <code>null</code>
@@ -274,13 +274,13 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns the resource on which a breakpoint marker should
-	 * be created for the given member. The resource returned is the 
-	 * associated file, or workspace root in the case of a binary in 
+	 * be created for the given member. The resource returned is the
+	 * associated file, or workspace root in the case of a binary in
 	 * an external archive.
-	 * 
+	 *
 	 * @param element member in which a breakpoint is being created
 	 * @return resource the resource on which a breakpoint marker
 	 *  should be created
@@ -295,7 +295,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Returns the {@link ITypeRoot} for the given editor input
 	 * @param input
@@ -308,14 +308,14 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return root;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public boolean canToggleMethodBreakpoints(IWorkbenchPart part, ISelection selection) {
 		return selection instanceof ITextSelection;
 	}
-	
+
 	/**
 	 * Delegate for toggling a method breakpoint
 	 * @param part
@@ -370,7 +370,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
         job.setSystem(true);
         job.schedule();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleMethodBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
@@ -397,9 +397,9 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
             }
 		});
 	}
-	
+
 	/**
-	 * Returns the standard display to be used. 
+	 * Returns the standard display to be used.
 	 */
 	Display getStandardDisplay() {
 		Display display;
@@ -407,9 +407,9 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		if (display == null) {
 			display = Display.getDefault();
 		}
-		return display;		
+		return display;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTargetExtension#toggleBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
@@ -464,7 +464,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
         	}
 		}
 	}
-	
+
 	/**
 	 * Returns if a line breakpoint exists on the given line in the given resource
 	 * @param resource
@@ -488,7 +488,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns if a method breakpoint exists with the given name and signature in the given resource
 	 * @param resource
@@ -512,7 +512,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 		}
 		return null;
 	}
-	
+
 	/**
      * Returns the resource associated with the specified editor part
      * @param editor the currently active editor part
@@ -526,12 +526,12 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
         }
         return resource;
     }
-	
+
     /**
      * Returns the text editor associated with the given part or <code>null</code>
      * if none. In case of a multi-page editor, this method should be used to retrieve
      * the correct editor to perform the breakpoint operation on.
-     * 
+     *
      * @param part workbench part
      * @return text editor part or <code>null</code>
      */
@@ -541,7 +541,7 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
     	}
     	return (ITextEditor) part.getAdapter(ITextEditor.class);
     }
-    
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#canToggleWatchpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
