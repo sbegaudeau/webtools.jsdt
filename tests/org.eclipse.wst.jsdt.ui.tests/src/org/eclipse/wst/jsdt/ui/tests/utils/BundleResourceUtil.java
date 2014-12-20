@@ -7,7 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *     
+ *
  *******************************************************************************/
 package org.eclipse.wst.jsdt.ui.tests.utils;
 
@@ -37,7 +37,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.ui.tests.internal.Activator;
 
 public class BundleResourceUtil {
-	
+
 	static WeakHashMap exists = new WeakHashMap();
 
 	public static void _copyBundleEntriesIntoWorkspace(final String rootEntry, final String fullTargetPath)
@@ -197,7 +197,7 @@ public class BundleResourceUtil {
 
 	/**
 	 * Creates a simple project.
-	 * 
+	 *
 	 * @param name
 	 *            -
 	 *            the name of the project

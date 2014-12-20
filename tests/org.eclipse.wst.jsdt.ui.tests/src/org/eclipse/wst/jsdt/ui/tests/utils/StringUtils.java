@@ -77,7 +77,7 @@ public class StringUtils {
 
 	/**
 	 * Method getNextChar.
-	 * 
+	 *
 	 * @param s1Reader
 	 * @return char
 	 */
