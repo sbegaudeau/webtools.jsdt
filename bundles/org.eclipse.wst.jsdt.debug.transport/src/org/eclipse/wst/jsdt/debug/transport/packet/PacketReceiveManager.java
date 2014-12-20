@@ -3,7 +3,7 @@
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * Contributors: IBM Corporation - initial API and implementation
  *******************************************************************************/
 package org.eclipse.wst.jsdt.debug.transport.packet;
@@ -20,9 +20,9 @@ import org.eclipse.wst.jsdt.debug.transport.exception.DisconnectedException;
 import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
- * Default implementation of {@link PacketManager} for receiving packets from the 
+ * Default implementation of {@link PacketManager} for receiving packets from the
  * {@link VirtualMachine}
- * 
+ *
  * @since 1.0
  */
 public final class PacketReceiveManager extends PacketManager {
@@ -52,7 +52,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param connection the underlying connection to communicate on, <code>null</code> is not accepted
 	 */
 	public PacketReceiveManager(Connection connection) {
@@ -74,7 +74,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
@@ -97,10 +97,10 @@ public final class PacketReceiveManager extends PacketManager {
 	 * <br>
 	 * This method cannot return <code>null</code> an exception is thrown if the desired packet cannot
 	 * be returned.
-	 * 
+	 *
 	 * @param type the type of the packet to get
 	 * @param timeToWait the amount of time to wait for the {@link Packet} to arrive
-	 * 
+	 *
 	 * @return the specified command packet never <code>null</code>
 	 * @throws TimeoutException if the request times out
 	 * @throws DisconnectedException if the manager is disconnected
@@ -141,10 +141,10 @@ public final class PacketReceiveManager extends PacketManager {
 	 * <br>
 	 * This method cannot return <code>null</code> an exception is thrown if the desired response cannot
 	 * be returned.
-	 * 
+	 *
 	 * @param requestSequence the sequence of the response to acquire
 	 * @param timeToWait the amount of time to wait for the {@link Response}
-	 * 
+	 *
 	 * @return a specified response packet from the {@link VirtualMachine} never <code>null</code>
 	 * @throws TimeoutException if the request times out
 	 * @throws DisconnectedException if the manager is disconnected
@@ -196,7 +196,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Removes and returns the command packet for the given type or <code>null</code> if there is no command packet for the given type.
-	 * 
+	 *
 	 * @param type
 	 * @return The command packet for the given type that has been removed
 	 */
@@ -214,7 +214,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Removes and returns the response packet with the given request sequence or <code>null</code> if there is no response packet with the given request sequence
-	 * 
+	 *
 	 * @param requestSequence
 	 * @return the response packet with the given request sequence that has been removed
 	 */
@@ -232,7 +232,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Adds the given command packet to the listing of command packets. This method is a no-op if the given packet is <code>null</code>
-	 * 
+	 *
 	 * @param packet
 	 */
 	private void addCommandPacket(Packet packet) {
@@ -247,7 +247,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Adds the given response packet to the listing of response packets. This method is a no-op if the given packet is <code>null</code>
-	 * 
+	 *
 	 * @param response
 	 */
 	private void addResponsePacket(Response response) {
@@ -267,7 +267,7 @@ public final class PacketReceiveManager extends PacketManager {
 
 	/**
 	 * Reads the next packet from the underlying connection and adds it to the correct packet listing.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	private void readAvailablePacket() throws IOException {
