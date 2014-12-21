@@ -67,8 +67,9 @@ public class BundleResourceUtil {
 			IPath path = new Path(fullPath);
 			for (int j = path.segmentCount() - 2; j > 0; j--) {
 				IPath folderPath = path.removeLastSegments(j);
-				if (exists.get(folderPath) != null)
+				if (exists.get(folderPath) != null) {
 					continue;
+				}
 				IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(folderPath);
 				if (!folder.exists()) {
 					folder.create(true, true, null);

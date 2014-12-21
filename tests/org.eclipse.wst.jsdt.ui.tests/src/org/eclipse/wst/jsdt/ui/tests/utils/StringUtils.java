@@ -24,8 +24,9 @@ public class StringUtils {
 	 * Replace matching literal portions of a string with another string
 	 */
 	public static String replace(String aString, String source, String target) {
-		if(aString == null)
+		if (aString == null) {
 			return null;
+		}
 		String normalString = ""; //$NON-NLS-1$
 		int length = aString.length();
 		int position = 0;
@@ -48,10 +49,12 @@ public class StringUtils {
 
 	public static boolean equalsIgnoreLineSeperator(String string1, String string2) {
 
-		if(string1 == null)
+		if (string1 == null) {
 			return false;
-		if(string2 == null)
+		}
+		if (string2 == null) {
 			return false;
+		}
 
 		StringReader s1Reader = new StringReader(string1);
 		StringReader s2Reader = new StringReader(string2);
