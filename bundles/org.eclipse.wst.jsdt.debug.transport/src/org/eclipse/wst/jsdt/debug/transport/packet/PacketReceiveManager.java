@@ -112,11 +112,13 @@ public final class PacketReceiveManager extends PacketManager {
 			//even if disconnected try to send the remaining events
 			while (!isDisconnected() || !this.commandPackets.isEmpty()) {
 				Packet packet = removeCommandPacket(type);
-				if (packet != null)
+				if (packet != null) {
 					return packet;
+				}
 
-				if (remainingTime < 0 && timeToWait != TIMEOUT_INFINITE)
+				if (remainingTime < 0 && timeToWait != TIMEOUT_INFINITE) {
 					break;
+				}
 
 				long timeBeforeWait = System.currentTimeMillis();
 				try {
@@ -155,11 +157,13 @@ public final class PacketReceiveManager extends PacketManager {
 			// Wait until command is available.
 			while (!isDisconnected()) {
 				Response response = removeResponsePacket(requestSequence);
-				if (response != null)
+				if (response != null) {
 					return response;
+				}
 
-				if (remainingTime < 0 && timeToWait != TIMEOUT_INFINITE)
+				if (remainingTime < 0 && timeToWait != TIMEOUT_INFINITE) {
 					break;
+				}
 
 				long timeBeforeWait = System.currentTimeMillis();
 				try {
@@ -186,12 +190,15 @@ public final class PacketReceiveManager extends PacketManager {
 	 * Wait for an available packet from the Virtual Machine.
 	 */
 	private void waitForPacketAvailable(long timeToWait, Object lock) throws InterruptedException {
-		if (timeToWait == 0)
+		if (timeToWait == 0) {
 			return;
-		else if (timeToWait < 0)
+		}
+		else if (timeToWait < 0) {
 			lock.wait();
-		else
+		}
+		else {
 			lock.wait(timeToWait);
+		}
 	}
 
 	/**
@@ -257,8 +264,9 @@ public final class PacketReceiveManager extends PacketManager {
 		synchronized (this.responsePackets) {
 			if (!this.timedOutPackets.isEmpty()) {
 				Integer requestSeq = new Integer(response.getRequestSequence());
-				if (this.timedOutPackets.remove(requestSeq))
+				if (this.timedOutPackets.remove(requestSeq)) {
 					return; // already timed out. No need to keep this one
+				}
 			}
 			this.responsePackets.add(response);
 			this.responsePackets.notifyAll();
