@@ -35,23 +35,23 @@ import org.mozilla.javascript.Scriptable;
 
 /**
  * Abstract test for making requests
- * 
+ *
  * @since 1.0
  */
 public abstract class RequestTest extends TestCase {
-	
+
 	/**
 	 * Default implementation of a {@link Subhandler}
 	 */
 	abstract class SubHandler implements Subhandler {
 
 		private String testname = null;
-		
+
 		public SubHandler(String testname) {
 			assertNotNull("The test name cannot be null", testname); //$NON-NLS-1$
 			this.testname = testname;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#testName()
 		 */
@@ -59,7 +59,7 @@ public abstract class RequestTest extends TestCase {
 			return this.testname;
 		}
 	}
-	
+
 	/**
 	 * Handler to check that we can get frames from a suspended thread
 	 * @since 1.1
@@ -72,7 +72,7 @@ public abstract class RequestTest extends TestCase {
 		public FrameCheckHandler() {
 			super(getName());
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
@@ -106,9 +106,9 @@ public abstract class RequestTest extends TestCase {
 			}
 			return false;
 		}
-		
+
 	}
-	
+
 	/**
 	 * Handler to check that the thread returned when suspended is the same thread
 	 * from the break event
@@ -121,7 +121,7 @@ public abstract class RequestTest extends TestCase {
 		public ThreadCheckHandler() {
 			super(getName());
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
@@ -146,7 +146,7 @@ public abstract class RequestTest extends TestCase {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Handler for setting breakpoints on all executable lines in a loaded script
 	 * @since 1.1
@@ -184,7 +184,7 @@ public abstract class RequestTest extends TestCase {
 						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(testName()+": the request to set a breakpoint on line ["+lineNumber+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
-						
+
 						Map breakpoint = (Map) response.getBody().get(JSONConstants.BREAKPOINT);
 						Number breakpointId = (Number) breakpoint.get(JSONConstants.BREAKPOINT_ID);
 						request = new RhinoRequest(JSONConstants.BREAKPOINT);
@@ -212,7 +212,7 @@ public abstract class RequestTest extends TestCase {
 	/**
 	 * Handler to set breakpoints on a given set of lines. The lines are not checked
 	 * to see if they are valid.
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	final class SetBreakpointHandler extends SubHandler {
@@ -249,7 +249,7 @@ public abstract class RequestTest extends TestCase {
 						debugSession.send(request);
 						response = debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 						assertTrue(testName()+": the request to set a breakpoint on line ["+adds[i]+"] was not successful", response.isSuccess()); //$NON-NLS-1$ //$NON-NLS-2$
-					}					
+					}
 				} catch (DisconnectedException e) {
 					e.printStackTrace();
 				} catch (TimeoutException e) {
@@ -263,7 +263,7 @@ public abstract class RequestTest extends TestCase {
 
 	/**
 	 * Clears all of the breakpoints that are hit
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	final class ClearBreakpointsHandler extends SubHandler {
@@ -273,7 +273,7 @@ public abstract class RequestTest extends TestCase {
 		public ClearBreakpointsHandler() {
 			super(getName());
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see org.eclipse.wst.jsdt.debug.rhino.tests.TestEventHandler.Subhandler#handleEvent(org.eclipse.wst.jsdt.debug.transport.DebugSession, org.eclipse.wst.jsdt.debug.internal.rhino.transport.EventPacket)
 		 */
@@ -299,7 +299,7 @@ public abstract class RequestTest extends TestCase {
 			return false;
 		}
 	}
-	
+
 	protected RhinoDebuggerImpl debugger;
 	protected DebugSession debugSession;
 	protected TestEventHandler eventHandler;
@@ -312,23 +312,23 @@ public abstract class RequestTest extends TestCase {
 	protected void useTracing() {
 		tracing = true;
 	}
-	
+
 	/**
 	 * Turns off tracing. This method is called on every {@link #tearDown()} invocation.
 	 */
 	protected void disableTracing() {
 		tracing = false;
 	}
-	
+
 	/**
 	 * Returns if tracing is enabled
-	 * 
+	 *
 	 * @return if tracing is enabled
 	 */
 	public static boolean isTracing() {
 		return tracing;
 	}
-	
+
 	/**
 	 * Evaluates the given script source
 	 * @param script
@@ -344,7 +344,7 @@ public abstract class RequestTest extends TestCase {
 			Context.exit();
 		}
 	}
-	
+
 	/**
 	 * Evaluates the given script source and waits for the given number of events
 	 * @param script
@@ -355,7 +355,7 @@ public abstract class RequestTest extends TestCase {
 		evalScript(script);
 		waitForEvents(eventcount);
 	}
-	
+
 	/**
 	 * Evaluates the given script and waits for the specific events to be received
 	 * @param script
@@ -366,7 +366,7 @@ public abstract class RequestTest extends TestCase {
 		evalScript(script);
 		waitForEvents(events);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
@@ -389,7 +389,7 @@ public abstract class RequestTest extends TestCase {
 
 	/**
 	 * Suspend waiting for the debugger to have a connected session
-	 * 
+	 *
 	 * @param debug the debugger to poll for a session connection
 	 * @param timeout the amount of time to wait
 	 * @return true when a {@link DebugSession} has connected
@@ -403,7 +403,7 @@ public abstract class RequestTest extends TestCase {
 			}
 		return debug.isConnected();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#tearDown()
 	 */
@@ -417,9 +417,9 @@ public abstract class RequestTest extends TestCase {
 	}
 
 	/**
-	 * Forces the backing event handler to block until the given number of events have been 
+	 * Forces the backing event handler to block until the given number of events have been
 	 * received or a timeout occurs.
-	 * 
+	 *
 	 * @param count the event count to wait for
 	 */
 	synchronized void waitForEvents(int count) {
@@ -428,24 +428,24 @@ public abstract class RequestTest extends TestCase {
 
 	/**
 	 * Sets the collection of specific events we are expecting to handle
-	 * 
+	 *
 	 * @param events the collection of events
 	 */
 	synchronized void setExpectedEvents(EventPacket[] events) {
 		eventHandler.setExpectedEvents(events);
 	}
-	
+
 	/**
-	 * Forces the backing event handler to block until the given number of events have been 
+	 * Forces the backing event handler to block until the given number of events have been
 	 * received or a timeout occurs.
-	 * 
+	 *
 	 * @param events the specific set of events expected
 	 * @see #setExpectedEvents(EventPacket[])
 	 */
 	synchronized void waitForEvents(EventPacket[] events) {
 		eventHandler.waitForEvents(events);
 	}
-	
+
 	/**
 	 * @param props
 	 * @param varname
@@ -463,7 +463,7 @@ public abstract class RequestTest extends TestCase {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @param session
 	 * @param threadid

@@ -34,7 +34,7 @@ import org.eclipse.wst.jsdt.debug.transport.packet.Response;
 public class DebugSessionTest extends TestCase {
 
 	boolean complete = false;
-	
+
 	public void testReceiveEvent() throws IOException, InterruptedException, TimeoutException, DisconnectedException {
 		final TransportService service = new PipedTransportService();
 		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$
@@ -136,7 +136,7 @@ public class DebugSessionTest extends TestCase {
 		t.join(5000);
 		service.stopListening(key);
 	}
-	
+
 	public void testSendEvent() throws IOException, InterruptedException {
 		final TransportService service = new PipedTransportService();
 		final ListenerKey key = service.startListening("9000"); //$NON-NLS-1$

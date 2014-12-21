@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.debug.transport.exception.TimeoutException;
 
 /**
  * Event handler for testing purposes
- * 
+ *
  * @since 1.0
  */
 public class TestEventHandler implements Runnable {
@@ -43,20 +43,20 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Sub-handler for breakpoint specific operations
-	 * 
+	 *
 	 * @since 1.1
 	 */
 	public interface BreakpointSubHandler extends Subhandler {
 		/**
 		 * Array of line numbers to add breakpoints to
-		 * 
+		 *
 		 * @param lines
 		 */
 		void linesToAddBreakpoints(int[] lines);
 
 		/**
 		 * Array of lines to remove breakpoints from
-		 * 
+		 *
 		 * @param lines
 		 */
 		void linesToRemoveBreakpoints(int[] lines);
@@ -74,7 +74,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param debugSession
 	 *            the current session to handle
 	 * @param testname
@@ -114,7 +114,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Sets the events that the handler is expected to receive
-	 * 
+	 *
 	 * @param events
 	 */
 	public synchronized void setExpectedEvents(EventPacket[] events) {
@@ -126,7 +126,7 @@ public class TestEventHandler implements Runnable {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
@@ -144,7 +144,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Add a sub handler
-	 * 
+	 *
 	 * @param subhandler
 	 */
 	public synchronized void addSubhandler(Subhandler subhandler) {
@@ -153,7 +153,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Remove a sub handler
-	 * 
+	 *
 	 * @param subhandler
 	 */
 	public synchronized void removeSubhandler(Subhandler subhandler) {
@@ -162,7 +162,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Handles the given event packet
-	 * 
+	 *
 	 * @param event
 	 */
 	private synchronized void handleEvent(EventPacket event) {
@@ -195,7 +195,7 @@ public class TestEventHandler implements Runnable {
 
 	/**
 	 * Continues the handler
-	 * 
+	 *
 	 * @param event
 	 * @param step
 	 */
@@ -220,7 +220,7 @@ public class TestEventHandler implements Runnable {
 	/**
 	 * Waits for all of the events specified from
 	 * {@link #setExpectedEvents(EventPacket[])}
-	 * 
+	 *
 	 * @param count
 	 */
 	public synchronized void waitForEvents(int count) {
@@ -247,7 +247,7 @@ public class TestEventHandler implements Runnable {
 	/**
 	 * Waits for the given collection of events to be handled, or a default
 	 * timeout to occur
-	 * 
+	 *
 	 * @param events
 	 */
 	public synchronized void waitForEvents(EventPacket[] events) {
