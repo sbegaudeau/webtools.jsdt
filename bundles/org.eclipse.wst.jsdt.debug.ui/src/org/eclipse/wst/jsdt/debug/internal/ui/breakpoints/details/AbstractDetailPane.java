@@ -239,8 +239,9 @@ public abstract class AbstractDetailPane implements IDetailPane3 {
 			if (activePart instanceof IEditorPart) {
 				IEditorPart activeEditorPart= (IEditorPart)activePart;
 				IEditorActionBarContributor contributor= activeEditorPart.getEditorSite().getActionBarContributor();
-				if (contributor instanceof EditorActionBarContributor)
+				if (contributor instanceof EditorActionBarContributor) {
 					return ((EditorActionBarContributor) contributor).getActionBars().getStatusLineManager();
+				}
 			}
 			// no active part
 			return site.getActionBars().getStatusLineManager();

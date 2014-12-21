@@ -202,8 +202,9 @@ public class ToggleBreakpointAdapter implements IToggleBreakpointsTargetExtensio
 	 * @see org.eclipse.debug.ui.actions.IToggleBreakpointsTarget#toggleLineBreakpoints(org.eclipse.ui.IWorkbenchPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void toggleLineBreakpoints(final IWorkbenchPart part, final ISelection selection) throws CoreException {
-		if (!(part instanceof IEditorPart) || !(selection instanceof ITextSelection))
+		if (!(part instanceof IEditorPart) || !(selection instanceof ITextSelection)) {
 			return;
+		}
 
 		ITextEditor textEditor = (ITextEditor) part.getAdapter(ITextEditor.class);
 		if (textEditor != null) {
