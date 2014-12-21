@@ -48,8 +48,9 @@ public abstract class DebugSuite extends TestSuite {
 			Runnable r = new Runnable() {
 				public void run() {
 					for (Enumeration e= tests(); e.hasMoreElements(); ) {
-				  		if (result.shouldStop() )
+				  		if (result.shouldStop()) {
 				  			break;
+				  		}
 						Test test= (Test)e.nextElement();
 						runTest(test, result);
 					}
@@ -65,8 +66,9 @@ public abstract class DebugSuite extends TestSuite {
 
 		while (fTesting) {
 			try {
-				if (!display.readAndDispatch())
+				if (!display.readAndDispatch()) {
 					display.sleep();
+				}
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
