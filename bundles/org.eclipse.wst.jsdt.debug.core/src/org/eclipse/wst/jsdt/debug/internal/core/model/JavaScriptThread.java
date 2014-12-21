@@ -596,8 +596,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	synchronized void markSuspended() {
 		if (DEBUG){
-			if (!thread.isSuspended())
+			if (!thread.isSuspended()) {
 				System.err.println("Warning: model thread marked suspended when underlything thread is not suspended"); //$NON-NLS-1$
+			}
 		}
 		this.state = SUSPENDED;
 	}
@@ -608,8 +609,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	synchronized void markResumed() {
 		if (DEBUG){
-			if (thread.isSuspended())
+			if (thread.isSuspended()) {
 				System.err.println("Warning: model thread marked resumed when underlything thread is suspended"); //$NON-NLS-1$
+			}
 		}
 		this.state = RUNNING;
 		clearFrames();
@@ -692,8 +694,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	public synchronized void stepInto() throws DebugException {
 		if (!canStepInto()) {
-			if (DEBUG)
+			if (DEBUG) {
 				System.err.println("Warning: StepInto called on model thread when it canStepInto is false"); //$NON-NLS-1$
+			}
 			return;
 		}
 		StepHandler handler = new StepHandler();
@@ -707,8 +710,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	public synchronized void stepOver() throws DebugException {
 		if (!canStepOver()) {
-			if (DEBUG)
+			if (DEBUG) {
 				System.err.println("Warning: stepOver called on model thread when it canStepOver is false"); //$NON-NLS-1$
+			}
 			return;
 		}
 		StepHandler handler = new StepHandler();
@@ -722,8 +726,9 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 */
 	public synchronized void stepReturn() throws DebugException {
 		if (!canStepReturn()) {
-			if (DEBUG)
+			if (DEBUG) {
 				System.err.println("Warning: stepReturn called on model thread when it canStepReturn is false"); //$NON-NLS-1$
+			}
 			return;
 		}
 		StepHandler handler = new StepHandler();

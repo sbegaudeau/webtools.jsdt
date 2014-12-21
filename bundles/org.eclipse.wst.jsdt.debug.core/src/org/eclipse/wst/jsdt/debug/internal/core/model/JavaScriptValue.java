@@ -92,15 +92,17 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			ArrayReference array = (ArrayReference) this.value;
 			List values = array.getValues();
 			Iterator iterator = values.iterator();
-			if (! iterator.hasNext())
+			if (! iterator.hasNext()) {
 			    return "[]"; //$NON-NLS-1$
+			}
 			StringBuffer buffer = new StringBuffer();
 			buffer.append('[');
 			for (;;) {
 				Value jsValue = (Value) iterator.next();
 				buffer.append(getValueString(jsValue));
-				if (! iterator.hasNext())
+				if (! iterator.hasNext()) {
 					return buffer.append(']').toString();
+				}
 				buffer.append(", "); //$NON-NLS-1$
 			}
 		}
@@ -228,12 +230,14 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 					String name1 = ((IVariable) arg1).getName();
 
 					if (Character.isDigit(name0.charAt(0))) {
-						if (Character.isDigit(name1.charAt(0)))
+						if (Character.isDigit(name1.charAt(0))) {
 							return Integer.valueOf(name0).compareTo(Integer.valueOf(name1));
+						}
 						return -1;
 					}
-					if (Character.isDigit(name1.charAt(0)))
+					if (Character.isDigit(name1.charAt(0))) {
 						return 1;
+					}
 
 					return name0.compareToIgnoreCase(name1);
 					} catch (DebugException e) {
