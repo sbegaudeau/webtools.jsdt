@@ -41,13 +41,13 @@ import org.eclipse.wst.jsdt.debug.internal.core.JavaScriptDebugPlugin;
 
 /**
  * Default implementation of {@link IValue}
- * 
+ *
  * @since 1.0
  */
 public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScriptValue {
 
 	public static final IVariable[] NO_VARIABLES = new IVariable[0];
-	
+
 	/**
 	 * the '[proto]' value
 	 */
@@ -60,13 +60,13 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 	 * The 'this' value
 	 */
 	public static final String THIS = "this"; //$NON-NLS-1$
-	
+
 	private Value value;
 	private List properties;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param target
 	 * @param value
 	 */
@@ -74,10 +74,10 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 		super(target);
 		this.value = value;
 	}
-	
+
 	/**
 	 * Hook to return the underlying value for this {@link JavaScriptValue}
-	 * 
+	 *
 	 * @return the underlying {@link Value}
 	 */
 	protected Value getUnderlyingValue() {
@@ -101,7 +101,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				buffer.append(getValueString(jsValue));
 				if (! iterator.hasNext())
 					return buffer.append(']').toString();
-				buffer.append(", "); //$NON-NLS-1$				
+				buffer.append(", "); //$NON-NLS-1$
 			}
 		}
 
@@ -122,7 +122,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 						return doc.get();
 					} catch (Exception e) {
 						JavaScriptDebugPlugin.log(e);
-					} 
+					}
 				}
 			}
 			return f.valueString();
@@ -135,7 +135,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IValue#getReferenceTypeName()
 	 */
 	public String getReferenceTypeName() throws DebugException {
@@ -164,13 +164,13 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IValue#getValueString()
 	 */
 	public String getValueString() throws DebugException {
 		return getValueString(value);
 	}
-	
+
 	private static String getValueString(Value jsValue) {
 		if (jsValue instanceof ObjectReference) {
 			ObjectReference ref = (ObjectReference) jsValue;
@@ -197,13 +197,13 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 			buffer.append('"');
 			return buffer.toString();
 		}
-		
+
 		return jsValue.valueString();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IValue#getVariables()
 	 */
 	public synchronized IVariable[] getVariables() throws DebugException {
@@ -219,16 +219,16 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				JavaScriptProperty jsdiProperty = new JavaScriptProperty(this, property);
 				this.properties.add(jsdiProperty);
 			}
-			
+
 			// sort - array values (e.g integer names) first then alphabetically
-			Collections.sort(properties, new Comparator() {		
+			Collections.sort(properties, new Comparator() {
 				public int compare(Object arg0, Object arg1) {
-					try {		
+					try {
 					String name0 = ((IVariable) arg0).getName();
 					String name1 = ((IVariable) arg1).getName();
-					
+
 					if (Character.isDigit(name0.charAt(0))) {
-						if (Character.isDigit(name1.charAt(0))) 
+						if (Character.isDigit(name1.charAt(0)))
 							return Integer.valueOf(name0).compareTo(Integer.valueOf(name1));
 						return -1;
 					}
@@ -241,7 +241,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 					}
 				}
 			});
-			
+
 			// add the prototype
 			Property prototype = new Property() {
 				public VirtualMachine virtualMachine() {
@@ -255,14 +255,14 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 				}
 			};
 			properties.add(0, new JavaScriptProperty(this, prototype));
-			
+
 			//add the constructor
 			Property constructor = new Property() {
 				public VirtualMachine virtualMachine() {
 					return reference.virtualMachine();
 				}
 				public String name() {
-					return CONSTRUCTOR; 
+					return CONSTRUCTOR;
 				}
 				public Value value() {
 					return reference.constructor();
@@ -275,7 +275,7 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IValue#hasVariables()
 	 */
 	public boolean hasVariables() throws DebugException {
@@ -287,23 +287,23 @@ public class JavaScriptValue extends JavaScriptDebugElement implements IJavaScri
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IValue#isAllocated()
 	 */
 	public boolean isAllocated() throws DebugException {
 		return this.properties != null;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.debug.core.model.IJavaScriptValue#isNull()
 	 */
 	public boolean isNull() {
 		return this.value instanceof NullValue;
 	}
-	
+
 	/**
 	 * Delegate method to create the proper kind of {@link IJavaScriptValue}
-	 * 
+	 *
 	 * @param target the target to create the value for
 	 * @param value the value to wrap
 	 * @return a new {@link IJavaScriptValue}

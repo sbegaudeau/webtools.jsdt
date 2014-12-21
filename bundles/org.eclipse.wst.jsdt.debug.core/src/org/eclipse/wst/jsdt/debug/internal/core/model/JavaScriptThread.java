@@ -51,11 +51,11 @@ import org.eclipse.wst.jsdt.debug.internal.core.breakpoints.JavaScriptLoadBreakp
 
 /**
  * A JavaScript thread.
- * 
+ *
  * JavaScript threads act as their own event listener for suspend and step
  * events and are called out to from JavaScript breakpoints to handle suspending
  * at a breakpoint.
- * 
+ *
  * @since 1.0
  */
 public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScriptThread, IJavaScriptEventListener {
@@ -80,7 +80,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 		/**
 		 * Creates a new step request
-		 * 
+		 *
 		 * @param listener
 		 *            the element that will respond to the event
 		 * @param step
@@ -113,7 +113,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener
 		 * #handleEvent(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event,
@@ -127,7 +127,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see
 		 * org.eclipse.wst.jsdt.debug.internal.core.model.IJavaScriptEventListener
 		 * #eventSetComplete(org.eclipse.wst.jsdt.debug.core.jsdi.event.Event,
@@ -141,7 +141,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 		/**
 		 * Handles a {@link StepEvent}
-		 * 
+		 *
 		 * @param listener
 		 *            the listener to remove
 		 * @param event
@@ -166,7 +166,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 		/**
 		 * Delete the given event request
-		 * 
+		 *
 		 * @param listener
 		 *            the element that will be removed as a listener
 		 * @param request
@@ -180,14 +180,14 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Constant for no stack frames
-	 * 
+	 *
 	 * @see #getStackFrames()
 	 */
 	static final IStackFrame[] NO_STACK_FRAMES = new IStackFrame[0];
 
 	/**
 	 * Constant for no breakpoints
-	 * 
+	 *
 	 * @see #getBreakpoints()
 	 */
 	static final IBreakpoint[] NO_BREAKPOINTS = new IBreakpoint[0];
@@ -229,13 +229,13 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * {@link StepHandler} handle to know if a step has been initiated
 	 */
 	private StepHandler pendingstep = null;
-	
+
 	private SuspendRequest suspendreq = null;
 	private ResumeRequest resumereq = null;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param target
 	 *            the target the thread belongs to
 	 * @param thread
@@ -256,7 +256,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#getBreakpoints()
 	 */
 	public synchronized IBreakpoint[] getBreakpoints() {
@@ -268,7 +268,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#getName()
 	 */
 	public String getName() throws DebugException {
@@ -277,7 +277,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#getPriority()
 	 */
 	public int getPriority() throws DebugException {
@@ -286,7 +286,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#getStackFrames()
 	 */
 	public synchronized IStackFrame[] getStackFrames() throws DebugException {
@@ -324,7 +324,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#getTopStackFrame()
 	 */
 	public IStackFrame getTopStackFrame() throws DebugException {
@@ -337,7 +337,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IThread#hasStackFrames()
 	 */
 	public boolean hasStackFrames() throws DebugException {
@@ -346,7 +346,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canResume()
 	 */
 	public synchronized boolean canResume() {
@@ -355,7 +355,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ISuspendResume#canSuspend()
 	 */
 	public synchronized boolean canSuspend() {
@@ -364,7 +364,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ISuspendResume#isSuspended()
 	 */
 	public synchronized boolean isSuspended() {
@@ -373,7 +373,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ISuspendResume#resume()
 	 */
 	public synchronized void resume() throws DebugException {
@@ -393,7 +393,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Performs the actual resume of the thread
-	 * 
+	 *
 	 * @param fireevent
 	 */
 	private void resume(boolean fireevent) {
@@ -411,7 +411,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ISuspendResume#suspend()
 	 */
 	public synchronized void suspend() throws DebugException {
@@ -481,7 +481,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Suspend the thread because an exception has been caught
-	 * 
+	 *
 	 * @param breakpoint
 	 * @since 1.1
 	 */
@@ -490,10 +490,10 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 		markSuspended();
 		fireSuspendEvent(DebugEvent.BREAKPOINT);
 	}
-	
+
 	/**
 	 * Call-back from a breakpoint that has been hit
-	 * 
+	 *
 	 * @param breakpoint
 	 * @param vote
 	 * @return if the thread should stay suspended
@@ -518,7 +518,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Call-back from
 	 * {@link JavaScriptBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)}
 	 * to handle suspending / cleanup
-	 * 
+	 *
 	 * @param breakpoint
 	 * @param suspend
 	 *            if the thread should suspend
@@ -541,7 +541,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Call-back for a script that has been loaded
-	 * 
+	 *
 	 * @param breakpoint
 	 * @param script
 	 * @param vote
@@ -560,7 +560,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	 * Call-back from
 	 * {@link JavaScriptLoadBreakpoint#eventSetComplete(Event, JavaScriptDebugTarget, boolean, EventSet)}
 	 * to handle suspending / cleanup
-	 * 
+	 *
 	 * @param breakpoint
 	 * @param script
 	 * @param suspend
@@ -573,7 +573,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Adds the given breakpoint to the collection for this thread
-	 * 
+	 *
 	 * @param breakpoint
 	 * @return if the breakpoint added removed an existing entry
 	 */
@@ -583,7 +583,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/**
 	 * Removes the breakpoint from the cached collection of breakpoints
-	 * 
+	 *
 	 * @param breakpoint
 	 * @return if the breakpoint was removed
 	 */
@@ -625,7 +625,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#canStepInto()
 	 */
 	public synchronized boolean canStepInto() {
@@ -635,7 +635,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	/**
 	 * Returns if the top breakpoint the thread is suspended on is an
 	 * {@link IJavaScriptLoadBreakpoint}
-	 * 
+	 *
 	 * @return <code>true</code> if the thread is suspended at a script load
 	 *         breakpoint, <code>false</code> otherwise
 	 */
@@ -648,7 +648,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#canStepOver()
 	 */
 	public synchronized boolean canStepOver() {
@@ -657,7 +657,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#canStepReturn()
 	 */
 	public synchronized boolean canStepReturn() {
@@ -678,7 +678,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#isStepping()
 	 */
 	public synchronized boolean isStepping() {
@@ -687,7 +687,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#stepInto()
 	 */
 	public synchronized void stepInto() throws DebugException {
@@ -702,7 +702,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#stepOver()
 	 */
 	public synchronized void stepOver() throws DebugException {
@@ -717,7 +717,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.IStep#stepReturn()
 	 */
 	public synchronized void stepReturn() throws DebugException {
@@ -732,7 +732,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ITerminate#canTerminate()
 	 */
 	public boolean canTerminate() {
@@ -741,7 +741,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ITerminate#isTerminated()
 	 */
 	public synchronized boolean isTerminated() {
@@ -750,7 +750,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.debug.core.model.ITerminate#terminate()
 	 */
 	public void terminate() throws DebugException {
@@ -771,7 +771,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 	/**
 	 * Returns if the underlying {@link ThreadReference} of this thread matches
 	 * the given {@link ThreadReference} using pointer equality
-	 * 
+	 *
 	 * @param thread
 	 * @return true if the {@link ThreadReference}s are the same
 	 */
@@ -781,7 +781,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.debug.core.model.DebugElement#getAdapter(java.lang.Class)
 	 */
@@ -811,7 +811,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#evaluate(java
 	 * .lang.String)
@@ -830,7 +830,7 @@ public class JavaScriptThread extends JavaScriptDebugElement implements IJavaScr
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * org.eclipse.wst.jsdt.debug.core.model.IJavaScriptThread#getFrameCount()
 	 */
