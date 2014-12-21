@@ -395,12 +395,13 @@ public abstract class RequestTest extends TestCase {
 	 * @return true when a {@link DebugSession} has connected
 	 */
 	public synchronized boolean suspendForRuntime(RhinoDebuggerImpl debug, long timeout) {
-		while (!debug.isConnected())
+		while (!debug.isConnected()) {
 			try {
 				wait(timeout);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
 		return debug.isConnected();
 	}
 

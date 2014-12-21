@@ -60,8 +60,9 @@ public class DebugSessionTest extends TestCase {
 				} catch (InterruptedException e) {
 					fail();
 				} finally {
-					if (runtime != null)
+					if (runtime != null) {
 						runtime.dispose();
+					}
 				}
 			}
 		};
@@ -111,8 +112,9 @@ public class DebugSessionTest extends TestCase {
 				} catch (TimeoutException e) {
 					fail();
 				} finally {
-					if (runtime != null)
+					if (runtime != null) {
 						runtime.dispose();
+					}
 				}
 			}
 		};
@@ -152,8 +154,9 @@ public class DebugSessionTest extends TestCase {
 					runtime = new DebugSession(c);
 					runtime.send(new EventPacket("test")); //$NON-NLS-1$
 					synchronized (Thread.currentThread()) {
-						if (!complete)
+						if (!complete) {
 							Thread.currentThread().wait(5000);
+						}
 					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -164,8 +167,9 @@ public class DebugSessionTest extends TestCase {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				} finally {
-					if (runtime != null)
+					if (runtime != null) {
 						runtime.dispose();
+					}
 				}
 			}
 		};
@@ -219,8 +223,9 @@ public class DebugSessionTest extends TestCase {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} finally {
-					if (runtime != null)
+					if (runtime != null) {
 						runtime.dispose();
+					}
 				}
 			}
 		};

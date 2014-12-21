@@ -209,11 +209,13 @@ public class TestEventHandler implements Runnable {
 			debugSession.send(request);
 			debugSession.receiveResponse(request.getSequence(), VirtualMachine.DEFAULT_TIMEOUT);
 		} catch (DisconnectedException e) {
-			if (!shutdown)
+			if (!shutdown) {
 				e.printStackTrace();
+			}
 		} catch (TimeoutException e) {
-			if (!shutdown)
+			if (!shutdown) {
 				e.printStackTrace();
+			}
 		}
 	}
 

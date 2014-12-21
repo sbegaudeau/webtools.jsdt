@@ -46,12 +46,13 @@ public class ConnectionHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (key != null)
+			if (key != null) {
 				try {
 					transportService.stopListening(key);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
 		}
 		return null;
 	}
