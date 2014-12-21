@@ -95,8 +95,9 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 	public Location functionLocation(String functionName) {
 		for (Iterator iterator = functionLocations.iterator(); iterator.hasNext();) {
 			Location location = (Location) iterator.next();
-			if (location.functionName().equals(functionName))
+			if (location.functionName().equals(functionName)) {
 				return location;
+			}
 		}
 		return null;
 	}
@@ -107,8 +108,9 @@ public class ScriptReferenceImpl extends MirrorImpl implements ScriptReference {
 	public Location lineLocation(int lineNumber) {
 		for (Iterator iterator = lineLocations.iterator(); iterator.hasNext();) {
 			Location location = (Location) iterator.next();
-			if (location.lineNumber() == lineNumber)
+			if (location.lineNumber() == lineNumber) {
 				return location;
+			}
 		}
 		return null;
 	}

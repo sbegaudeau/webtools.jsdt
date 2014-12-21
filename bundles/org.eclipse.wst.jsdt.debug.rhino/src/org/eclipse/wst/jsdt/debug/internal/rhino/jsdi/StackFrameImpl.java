@@ -210,10 +210,12 @@ public class StackFrameImpl extends MirrorImpl implements StackFrame {
 					String name = (String) property.get(JSONConstants.NAME);
 					Number ref = (Number) property.get(JSONConstants.REF);
 					VariableImpl variable = new VariableImpl(vm, this, name, ref);
-					if (name.equals(JSONConstants.THIS))
+					if (name.equals(JSONConstants.THIS)) {
 						thisVariable = variable;
-					else
+					}
+					else {
 						variables.add(variable);
+					}
 				}
 			}
 		} catch (DisconnectedException e) {
