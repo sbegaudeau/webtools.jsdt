@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2000, 2012 IBM Corporation and others.
+ * Copyright (c) 2000, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -97,6 +97,8 @@ public class Util {
 
 	private static final char[] VOID = "void".toCharArray(); //$NON-NLS-1$
 	private static final char[] INIT = "<init>".toCharArray(); //$NON-NLS-1$
+
+	private static final char[] NO_CHAR = new char[0];
 
 	private Util() {
 		// cannot be instantiated
@@ -986,8 +988,13 @@ public class Util {
 		long length;
 		if (location == null) {
 			// non local file
+			
+			URI uri = file.getLocationURI();
+			if (uri == null)
+				return NO_CHAR; // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=456180
+			
 			try {
-				length = EFS.getStore(file.getLocationURI()).fetchInfo().getLength();
+				length = EFS.getStore(uri).fetchInfo().getLength();
 			} catch (CoreException e) {
 				throw new JavaScriptModelException(e);
 			}
