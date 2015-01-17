@@ -22,7 +22,7 @@
 
   <groupId>org.eclipse.webtools.jsdt.bundles</groupId>
   <artifactId>org.eclipse.wst.jsdt.debug.core</artifactId>
-  <version>3.1.100-SNAPSHOT</version>
+  <version>3.1.200-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 
   <build>
