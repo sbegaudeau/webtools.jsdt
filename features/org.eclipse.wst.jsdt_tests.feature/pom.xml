@@ -22,6 +22,6 @@
 
   <groupId>org.eclipse.webtools.jsdt.features</groupId>
   <artifactId>org.eclipse.wst.jsdt_tests.feature</artifactId>
-  <version>1.6.100-SNAPSHOT</version>
+  <version>1.6.200-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 </project>
