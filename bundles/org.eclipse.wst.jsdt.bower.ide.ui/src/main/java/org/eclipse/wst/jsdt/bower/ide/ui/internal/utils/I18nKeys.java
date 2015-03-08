@@ -30,4 +30,19 @@ public interface I18nKeys {
 	 * bower.json.
 	 */
 	String BOWER_EDITOR_TITLE = "Bower-Editor-Title"; //$NON-NLS-1$
+
+	/**
+	 * The name of the job "Bower Install".
+	 */
+	String BOWER_INSTALL_JOB_NAME = "BowerInstallJobName"; //$NON-NLS-1$
+
+	/**
+	 * The name of the job "Bower Update".
+	 */
+	String BOWER_UPDATE_JOB_NAME = "BowerUpdateJobName"; //$NON-NLS-1$
+
+	/**
+	 * The name of the job "Bower Clear".
+	 */
+	String BOWER_CLEAR_JOB_NAME = "BowerClearJobName"; //$NON-NLS-1$
 }

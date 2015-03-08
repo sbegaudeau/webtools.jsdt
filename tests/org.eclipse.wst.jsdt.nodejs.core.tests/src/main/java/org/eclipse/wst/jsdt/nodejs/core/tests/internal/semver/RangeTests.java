@@ -49,6 +49,9 @@ public class RangeTests {
 		assertTrue(Version.fromString("1.0.0").isIn(Range.fromString("=v1"))); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// invalid
+		assertFalse(Version.fromString("1.0.1").isIn(Range.fromString("1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$
+		assertFalse(Version.fromString("1.1.0").isIn(Range.fromString("1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$
+		assertFalse(Version.fromString("2.0.0").isIn(Range.fromString("1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$
 		assertFalse(Version.fromString("1.0.1").isIn(Range.fromString("=1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$
 		assertFalse(Version.fromString("0.9.9").isIn(Range.fromString("=1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$
 		assertFalse(Version.fromString("1.0.0-beta").isIn(Range.fromString("=1.0.0"))); //$NON-NLS-1$ //$NON-NLS-2$

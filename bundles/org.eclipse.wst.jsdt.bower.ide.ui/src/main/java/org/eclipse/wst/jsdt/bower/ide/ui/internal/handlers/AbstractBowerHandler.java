@@ -12,25 +12,21 @@ package org.eclipse.wst.jsdt.bower.ide.ui.internal.handlers;
 
 import com.google.common.base.Optional;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.jobs.ISchedulingRule;
-import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.wst.jsdt.bower.core.api.BowerJson;
 import org.eclipse.wst.jsdt.bower.core.api.BowerRc;
 import org.eclipse.wst.jsdt.bower.core.api.BowerReaders;
@@ -103,22 +99,21 @@ public abstract class AbstractBowerHandler extends AbstractHandler {
 					logger.log(IBowerIdeUiConstants.BOWER_IDE_UI_BUNDLE_ID, ILogger.ERROR, e);
 				}
 
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, true,
-							this.getRunnable(bowerJsonFile.getProject()));
-
-				} catch (InvocationTargetException e) {
-					logger.log(IBowerIdeUiConstants.BOWER_IDE_UI_BUNDLE_ID, ILogger.ERROR, e);
-				} catch (InterruptedException e) {
-					logger.log(IBowerIdeUiConstants.BOWER_IDE_UI_BUNDLE_ID, ILogger.ERROR, e);
-				} finally {
-					try {
-						bowerJsonFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
-								new NullProgressMonitor());
-					} catch (CoreException e) {
-						logger.log(IBowerIdeUiConstants.BOWER_IDE_UI_BUNDLE_ID, ILogger.ERROR, e);
+				Job job = new Job(this.getJobName()) {
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						IStatus status = AbstractBowerHandler.this.doExecute(monitor);
+						try {
+							bowerJsonFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
+									new NullProgressMonitor());
+						} catch (CoreException e) {
+							logger.log(IBowerIdeUiConstants.BOWER_IDE_UI_BUNDLE_ID, ILogger.ERROR, e);
+						}
+						return status;
 					}
-				}
+				};
+				job.setUser(true);
+				job.schedule();
 			}
 
 		}
@@ -126,36 +121,20 @@ public abstract class AbstractBowerHandler extends AbstractHandler {
 	}
 
 	/**
-	 * Returns the runnable which will realize the operation.
+	 * Returns the name of the job to display to the user.
 	 *
-	 * @param project
-	 *            The project on which this runnable will work
-	 * @return The runnable which will realize the operation
+	 * @return The name of the job
 	 */
-	private IRunnableWithProgress getRunnable(final IProject project) {
-		WorkspaceModifyOperation workspaceModifyOperation = new WorkspaceModifyOperation() {
-
-			@Override
-			protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-					InterruptedException {
-				AbstractBowerHandler.this.doExecute(monitor);
-			}
-
-			@Override
-			public ISchedulingRule getRule() {
-				return project;
-			}
-		};
-		return workspaceModifyOperation;
-	}
+	protected abstract String getJobName();
 
 	/**
 	 * Execute the operation.
 	 *
 	 * @param monitor
 	 *            The progress monitor
+	 * @return The status of the execution
 	 */
-	protected abstract void doExecute(IProgressMonitor monitor);
+	protected abstract IStatus doExecute(IProgressMonitor monitor);
 
 	/**
 	 * Returns the bowerJson.

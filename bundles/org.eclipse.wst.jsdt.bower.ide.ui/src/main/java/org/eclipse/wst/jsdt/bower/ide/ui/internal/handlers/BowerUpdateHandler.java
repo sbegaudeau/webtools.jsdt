@@ -15,11 +15,15 @@ import java.io.File;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.bower.core.api.Bower;
 import org.eclipse.wst.jsdt.bower.core.api.BowerJson;
 import org.eclipse.wst.jsdt.bower.ide.api.EclipseGitProgressTransformer;
 import org.eclipse.wst.jsdt.bower.ide.ui.internal.BowerUiPlugin;
 import org.eclipse.wst.jsdt.bower.ide.ui.internal.preferences.IPreferenceConstants;
+import org.eclipse.wst.jsdt.bower.ide.ui.internal.utils.I18n;
+import org.eclipse.wst.jsdt.bower.ide.ui.internal.utils.I18nKeys;
 import org.eclipse.wst.jsdt.bower.ide.ui.internal.utils.IBowerIdeUiConstants;
 import org.eclipse.wst.jsdt.nodejs.core.api.utils.ILogger;
 
@@ -36,7 +40,8 @@ public class BowerUpdateHandler extends AbstractBowerHandler {
 	 * @see org.eclipse.wst.jsdt.bower.ide.ui.internal.handlers.AbstractBowerHandler#doExecute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	@Override
-	protected void doExecute(IProgressMonitor monitor) {
+	protected IStatus doExecute(IProgressMonitor monitor) {
+		IStatus status = Status.OK_STATUS;
 		if (this.getBowerJson().isPresent()) {
 			IFolder outputDirectory = this.getOutputDirectory();
 			if (outputDirectory != null && outputDirectory.exists()) {
@@ -52,10 +57,26 @@ public class BowerUpdateHandler extends AbstractBowerHandler {
 				String serverUrl = BowerUiPlugin.getInstance().getPreferenceStore().getString(
 						IPreferenceConstants.BOWER_SERVER_URL);
 
-				Bower.install().setMonitor(new EclipseGitProgressTransformer(monitor)).setOutputDirectory(
-						directory).setBowerJson(bowerJson).setBowerServerURL(serverUrl).call();
+				if (!monitor.isCanceled()) {
+					Bower.install().setMonitor(new EclipseGitProgressTransformer(monitor))
+					.setOutputDirectory(directory).setBowerJson(bowerJson).setBowerServerURL(
+							serverUrl).call();
+				} else {
+					status = Status.CANCEL_STATUS;
+				}
 			}
 		}
+		return status;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @see org.eclipse.wst.jsdt.bower.ide.ui.internal.handlers.AbstractBowerHandler#getJobName()
+	 */
+	@Override
+	protected String getJobName() {
+		return I18n.getString(I18nKeys.BOWER_UPDATE_JOB_NAME);
 	}
 
 }

@@ -29,8 +29,8 @@ public class Range {
 	 * values in this array matters!!! /!\.
 	 */
 	private static final ConstraintKind[] constraintKinds = new ConstraintKind[] {
-			ConstraintKind.GREATER_THAN_OR_EQUALS_TO, ConstraintKind.GREATER_THAN, ConstraintKind.EQUALS_TO,
-			ConstraintKind.LOWER_THAN_OR_EQUALS_TO, ConstraintKind.LOWER_THAN };
+		ConstraintKind.GREATER_THAN_OR_EQUALS_TO, ConstraintKind.GREATER_THAN, ConstraintKind.EQUALS_TO,
+		ConstraintKind.LOWER_THAN_OR_EQUALS_TO, ConstraintKind.LOWER_THAN };
 
 	/**
 	 * The list of constraints of the range.
@@ -70,12 +70,29 @@ public class Range {
 			String nextToken = tokenizer.nextToken();
 			nextToken = nextToken.trim();
 
+			ConstraintKind constraint = null;
+
 			for (ConstraintKind constraintKind : Range.constraintKinds) {
 				if (nextToken.startsWith(constraintKind.getLabel())) {
-					Version version = Version.fromString(nextToken.substring(constraintKind.getLabel()
-							.length()));
-					range.addVersionedConstraint(new VersionedConstraint(version, constraintKind));
+					constraint = constraintKind;
 					break;
+				}
+			}
+
+			if (constraint != null) {
+				Version version = Version.fromString(nextToken.substring(constraint.getLabel().length()));
+				range.addVersionedConstraint(new VersionedConstraint(version, constraint));
+			} else {
+				// Test to see if we have an exact version only
+				Version version = null;
+				try {
+					version = Version.fromString(nextToken);
+				} catch (IllegalArgumentException e) {
+					// do nothing
+				}
+
+				if (version != null) {
+					range.addVersionedConstraint(new VersionedConstraint(version, ConstraintKind.EQUALS_TO));
 				}
 			}
 		}

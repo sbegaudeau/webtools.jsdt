@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.bower.core.api;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.BufferedReader;
@@ -44,7 +45,7 @@ public abstract class AbstractBowerCommand<BOWER_COMMAND extends AbstractBowerCo
 	 * The prefixes to consider to determines if a package id is the URL of a Git repository or just its name.
 	 */
 	private static String[] PREFIXES = new String[] {IBowerConstants.GIT_PREFIX, IBowerConstants.HTTP_PREFIX,
-		IBowerConstants.HTTPS_PREFIX, IBowerConstants.SSH_PREFIX };
+			IBowerConstants.HTTPS_PREFIX, IBowerConstants.SSH_PREFIX };
 
 	/**
 	 * The URL of the bower server on which the request should be made.
@@ -304,7 +305,10 @@ public abstract class AbstractBowerCommand<BOWER_COMMAND extends AbstractBowerCo
 				for (String line : lines) {
 					content.append(line);
 				}
-				return Optional.fromNullable(new Gson().fromJson(content.toString(), BowerJson.class));
+				GsonBuilder gsonBuilder = new GsonBuilder();
+				gsonBuilder.registerTypeAdapter(BowerJson.class, new BowerJsonDeserializer());
+				Gson gson = gsonBuilder.create();
+				return Optional.fromNullable(gson.fromJson(content.toString(), BowerJson.class));
 			} catch (JsonSyntaxException e) {
 				logger.log(IBowerConstants.BOWER_CORE_BUNDLE_ID, ILogger.ERROR, e);
 			} catch (IOException e) {
